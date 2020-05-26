@@ -9,40 +9,110 @@
             use both the "grid" and "grid-Ncol" class where "N" can be any number
             from 1 to 12 and will create that number of columns.  --}}
             <div class="resources grid grid-2col">
-              {{!-- "flex-group-center" is also defined in the _grid.scss file
-              and it will add a small amount of padding, a border, and will
-              center all of its child elements content and text. --}}
-              <div class="resource flex-group-center">
-                  <label for="data.wounds.value" class="resource-label">Wounds</label>
-                  <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.wounds.value" value="{{data.wounds.value}}" data-dtype="Number"/>
-                    <span> / </span>
-                    <input type="text" name="data.wounds.max" value="{{data.wounds.max}}" data-dtype="Number"/>
-                  </div>
-              </div>
-              <div class="resource flex-group-center">
-                  <label for="data.fatigue.value" class="resource-label">Fatigue</label>
-                  <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.fatigue.value" value="{{data.fatigue.value}}" data-dtype="Number"/>
-                    <span> / </span>
-                    <input type="text" name="data.fatigue.max" value="{{data.fatigue.max}}" data-dtype="Number"/>
-                  </div>
-              </div>
-          </div>
-          {{!-- The grid classes are defined in scss/global/_grid.scss. To use,
-          use both the "grid" and "grid-Ncol" class where "N" can be any number
-          from 1 to 12 and will create that number of columns.  --}}
-          <div class="characteristics grid grid-3col">
-            <div class="characteristic flexrow flex-group-center">
-                
-               {{#each data.characteristics as |ability key|}}
-              <div class="ability flexrow flex-group-center">
-                <label for="data.characteristics.{{key}}.value" class="resource-label">{{key}}</label>
-                <input type="text" name="data.characteristics.{{key}}.value" value="{{ability.value}}" data-dtype="Number"/>
-               
-              </div>
-            {{/each}}
-          </div>
+                {{!-- "flex-group-center" is also defined in the _grid.scss file
+                and it will add a small amount of padding, a border, and will
+                center all of its child elements content and text. --}}
+                <div class="resource flex-group-center">
+                    <label for="data.wounds.value" class="resource-label">Wounds</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" name="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
+                        <span> / </span>
+                        <input type="text" name="data.secChar.wounds.max" value="{{data.secChar.wounds.max}}" data-dtype="Number"/>
+                    </div>
+                </div>
+                <div class="resource flex-group-center">
+                    <label for="data.fatigue.value" class="resource-label">Fatigue</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" name="data.secChar.fatigue.value" value="{{data.secChar.fatigue.value}}" data-dtype="Number"/>
+                        <span> / </span>
+                        <input type="text" name="data.secChar.fatigue.max" value="{{data.secChar.fatigue.max}}" data-dtype="Number" disabled/>
+                    </div>
+                </div>
+                <div class="resource flex-group-center">
+                    <label for="data.fatigue.value" class="resource-label">Influence</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" name="data.inf.starting" value="{{data.inf.starting}}" data-dtype="Number"/>
+                        <span> / </span>
+                        <input type="text" name="data.inf.value" value="{{data.inf.value}}" data-dtype="Number" disabled/>
+                    </div>
+                </div>
+                <div class="resource flex-group-center">
+                    <label for="data.fatigue.value" class="resource-label">Global Modifier</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" name="data.globalMOD.value" value="{{data.globalMOD.value}}" data-dtype="Number"/>
+                    </div>
+                </div>
+            </div>
+            {{!-- The grid classes are defined in scss/global/_grid.scss. To use,
+            use both the "grid" and "grid-Ncol" class where "N" can be any number
+            from 1 to 12 and will create that number of columns.  --}}
+            <div class="characteristics grid grid-10col">
+
+
+
+
+                <span class="characteristicsSpan"></span>
+
+                {{#each data.characteristics as |char key|}}
+
+                <div class="charCross flexcol flex-group-center">
+                    <label for="data.characteristics.{{key}}.value" class="resource-label">{{key}}</label>
+                </div>
+                {{/each}}
+
+
+                <div class="charCross flexcol flex-group-center">
+                    <span class="characteristicsSpan">Base
+                    </span>
+                </div>
+                {{#each data.characteristics as |char key|}}
+                <div>
+                    <input type="text" name="data.characteristics.{{key}}.value" value="{{char.value}}" data-dtype="Number"/>
+
+                </div>
+                {{/each}}
+
+                <div class="charCross flexcol flex-group-center">
+                    <span class="characteristicsSpan">Unnat</span>
+                </div>
+                {{#each data.characteristics as |char key|}}
+                <div>
+
+                    <input class="ub" type="text" name="data.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number"/>
+                </div>
+                {{/each}}
+                <div class="charCross flexcol flex-group-center">  
+                    <span class="characteristicsSpan">Adv</span>
+                </div>
+                {{#each data.characteristics as |char key|}}
+
+                <input type="text" name="data.characteristics.{{key}}.advance" value="{{char.advance}}"/>
+
+                {{/each}}
+
+
+                <div class="charCross flexcol flex-group-center"> 
+                    <span class="characteristicsSpan">Mod</span>
+                </div>
+                {{#each data.characteristics as |char key|}}
+
+                <input type="text" name="data.characteristics.{{key}}.mod" value="{{char.mod}}" data-dtype="Number"/>
+
+                {{/each}}
+
+
+                <div class="charCross flexcol flex-group-center">
+                    <span class="characteristicsSpan">Total</span>
+                </div>
+                {{#each data.characteristics as |char key|}}
+                <div class="charCross flexcol flex-group-center">
+                    <span class="char-total rollable " data-roll="d100<@characteristics.{{key}}.total" data-label="{{key}}">{{char.total}}</span>
+                </div>
+                {{/each}}
+
+
+
+            </div>
         </div>
     </header>
 
@@ -64,13 +134,13 @@
         <div class="tab items" data-group="primary" data-tab="items">
             <ol class="items-list">
                 <li class="item flexrow item-header">
-                  <div class="item-image"></div>
-                  <div class="item-name">Name</div>
-                  <div class="item-controls">
-                    <a class="item-control item-create" title="Create item" data-type="item"><i class="fas fa-plus"></i> Add item</a>
-                  </div>
+                    <div class="item-image"></div>
+                    <div class="item-name">Name</div>
+                    <div class="item-controls">
+                        <a class="item-control item-create" title="Create item" data-type="item"><i class="fas fa-plus"></i> Add item</a>
+                    </div>
                 </li>
-            {{#each actor.items as |item id|}}
+                {{#each actor.items as |item id|}}
                 <li class="item flexrow" data-item-id="{{item._id}}">
                     <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/></div>
                     <h4 class="item-name">{{item.name}}</h4>
@@ -79,7 +149,7 @@
                         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
                 </li>
-            {{/each}}
+                {{/each}}
             </ol>
         </div>
 

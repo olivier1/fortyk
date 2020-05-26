@@ -24,7 +24,11 @@ export class FortyKActor extends Actor {
    */
   _prepareCharacterData(actorData) {
     const data = actorData.data;
-
+      for (let [key, char] of Object.entries(data.characteristics)){
+          char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod)+parseInt(data.globalMOD.value);
+          char.bonus=Math.floor(char.total/10)+parseInt(char.uB);
+      }
+      data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
     // Make modifications to data here. For example:
 
     // Loop through ability scores, and add their modifiers to our sheet output.

@@ -32,7 +32,7 @@
 				"Specialty": ""
 			},
 			"characters": {
-				"secondaryCharacteristics": {
+				"secChar": {
 					"wounds": {
 						"min": -10,
 						"value": 10,
@@ -303,98 +303,100 @@
 				"globalMOD": {
 					"value": 0
 				}
-			},
-			"dwPC": {
-				"templates": ["description", "characters", "creationOptions", "creationOptionsDW", "player"]
-			},
-			"npc": {
-				"templates": ["description", "characters"]
-			},
-			"dhPC": {
-				"templates": ["description", "characters", "creationOptions", "creationOptionsDH", "player"]
-				
-			},
-			"owPC": {
-				"templates": ["description", "characters", "creationOptions", "creationOptionsOW", "player"]
-				
 			}
 		},
-		"Item": {
-			"types": ["meleeWeapon", "rangedWeapon", "ammunition", "warGear", "cybernetic", "armor", "forceField", "mod", "consummable", "psychicPower"],
-			"templates": {
-				"weapon": {
-					"damageDice": "1d10",
-					"damageBonus": 0,
-					"pen": 0,
-					"special": "",
-					"range": 1,
-					"damageType": "",
-					"class": ""
-				},
-				"description": {
-					"name": "",
-					"description": ""
-				},
-				"physicalProp": {
-					"weight": 0,
-					"rarity": ""
-				}
-			},
-			"meleeWeapon": {
-				"templates": ["weapon", "description", "physicalProp"],
-				"mods": []
-			},
-			"rangedWeapon": {
-				"templates": ["weapon", "description", "physicalProp"],
-				"rof": [0, 0, 0],
-				"clip": 0,
-				"clipMax": 0,
-				"mods": [],
-				"ammo": {},
-				"reload": ""
-			},
-			"ammunition": {
-				"templates": ["weapon", "description", "physicalProp"],
-				"ammount": 0,
-				"ammountMax": 0,
-				"weapon": {}
-			},
-			"warGear": {
-				"templates": ["description", "physicalProp"]
-			},
-			"cybernetic": {
-				"templates": ["description", "physicalProp"],
-				"location": ""
-			},
-			"armor": {
-				"templates": ["description", "physicalProp"],
-				"maxAg": 0,
-				"ap": [0, 0, 0, 0, 0, 0]
-			},
-			"forceField": {
-				"templates": ["description", "physicalProp"],
-				"rating": 0,
-				"overload": 0
-			},
-			"mod": {
-				"templates": ["description", "physicalProp"]
-			},
-			"consummable": {
-				"templates": ["description", "physicalProp"],
-				"ammount": 0,
-				"ammountMax": 0
-			},
-			"psychicPower": {
-				"templates": ["weapon", "description"],
-				"action": "",
-				"subtype": "",
-				"discipline": "",
-				"testChar": "",
-				"testMod": 0,
-				"sustain": "",
-				"curPR": 0,
-				"reqs": ""
-			}
+		"dwPC": {
+			"templates": ["description", "characters", "creationOptions", "creationOptionsDW", "player"]
+		},
+		"npc": {
+			"templates": ["description", "characters"]
+		},
+		"dhPC": {
+			"templates": ["description", "characters", "creationOptions", "creationOptionsDH", "player"]
+			
+		},
+		"owPC": {
+			"templates": ["description", "characters", "creationOptions", "creationOptionsOW", "player"]
+			
 		}
+	},
+
+
+"Item": {
+	"types": ["meleeWeapon", "rangedWeapon", "ammunition", "warGear", "cybernetic", "armor", "forceField", "mod", "consummable", "psychicPower"],
+	"templates": {
+		"weapon": {
+			"damageDice": "1d10",
+			"damageBonus": 0,
+			"pen": 0,
+			"special": "",
+			"range": 1,
+			"damageType": "",
+			"class": ""
+		},
+		"description": {
+			"name": "",
+			"description": ""
+		},
+		"physicalProp": {
+			"weight": 0,
+			"rarity": ""
+		}
+	},
+	"meleeWeapon": {
+		"templates": ["weapon", "description", "physicalProp"],
+		"mods": []
+	},
+	"rangedWeapon": {
+		"templates": ["weapon", "description", "physicalProp"],
+		"rof": [0, 0, 0],
+		"clip": 0,
+		"clipMax": 0,
+		"mods": [],
+		"ammo": {},
+		"reload": ""
+	},
+	"ammunition": {
+		"templates": ["weapon", "description", "physicalProp"],
+		"ammount": 0,
+		"ammountMax": 0,
+		"weapon": {}
+	},
+	"warGear": {
+		"templates": ["description", "physicalProp"]
+	},
+	"cybernetic": {
+		"templates": ["description", "physicalProp"],
+		"location": ""
+	},
+	"armor": {
+		"templates": ["description", "physicalProp"],
+		"maxAg": 0,
+		"ap": [0, 0, 0, 0, 0, 0]
+	},
+	"forceField": {
+		"templates": ["description", "physicalProp"],
+		"rating": 0,
+		"overload": 0
+	},
+	"mod": {
+		"templates": ["description", "physicalProp"]
+	},
+	"consummable": {
+		"templates": ["description", "physicalProp"],
+		"ammount": 0,
+		"ammountMax": 0
+	},
+	"psychicPower": {
+		"templates": ["weapon", "description"],
+		"action": "",
+		"subtype": "",
+		"discipline": "",
+		"testChar": "",
+		"testMod": 0,
+		"sustain": "",
+		"curPR": 0,
+		"reqs": ""
 	}
+}
 }
