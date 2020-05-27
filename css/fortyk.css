@@ -174,17 +174,18 @@
     margin-top:0px;
     margin-bottom:2px;
 }
+.fortyk .sheet-header .header-fields .creationOps .creationRow{
+    padding-left: 10px;
+}
 .fortyk .sheet-header .header-fields .eliteAdvances{
     border:1px solid #999;
     font-weight:bold;
     text-transform: uppercase;
 }
-.fortyk .sheet-header .header-fields .descr .descrRow label{
-    
+.fortyk .sheet-header .header-fields .eliteAdvances .eliteRow{
+      padding-left: 10px;
 }
-.fortyk .sheet-header .header-fields .descr .descrRow .input{
-    flex 1;
-}
+
 
 .fortyk .sheet-header .header-fields {
   -webkit-box-flex: 1;
