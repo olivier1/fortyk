@@ -2,18 +2,14 @@
 
     {{!-- Sheet Header --}}
     <header class="sheet-header">
-        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
-        <div class="header-fields">
-            <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
-            {{!-- The grid classes are defined in scss/global/_grid.scss. To use,
-            use both the "grid" and "grid-Ncol" class where "N" can be any number
-            from 1 to 12 and will create that number of columns.  --}}
-            <div class="resources grid grid-2col">
+        <div class="header-left">
+            <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
+            <div class="resources">
                 {{!-- "flex-group-center" is also defined in the _grid.scss file
                 and it will add a small amount of padding, a border, and will
                 center all of its child elements content and text. --}}
                 <div class="resource flex-group-center">
-                    <label for="data.wounds.value" class="resource-label">Wounds</label>
+                    <label for="data.secChar.wounds.value" class="resource-label">Wounds</label>
                     <div class="resource-content flexrow flex-center flex-between">
                         <input type="text" name="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
                         <span> / </span>
@@ -21,7 +17,7 @@
                     </div>
                 </div>
                 <div class="resource flex-group-center">
-                    <label for="data.fatigue.value" class="resource-label">Fatigue</label>
+                    <label for="data.secChar.fatigue.value" class="resource-label">Fatigue</label>
                     <div class="resource-content flexrow flex-center flex-between">
                         <input type="text" name="data.secChar.fatigue.value" value="{{data.secChar.fatigue.value}}" data-dtype="Number"/>
                         <span> / </span>
@@ -42,7 +38,88 @@
                         <input type="text" name="data.globalMOD.value" value="{{data.globalMOD.value}}" data-dtype="Number"/>
                     </div>
                 </div>
+                <div class="resource flex-group-center">
+                    <label for="data.fatigue.value" class="resource-label">Fate</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" name="data.secChar.fate.value" value="{{data.secChar.fate.value}}" data-dtype="Number"/>
+                        <span> / </span>
+                        <input type="text" name="data.secChar.fate.max" value="{{data.secChar.fate.max}}" data-dtype="Number"/>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <div class="header-fields">
+            <div class="descr grid grid-3col">
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Name:</span>
+                    <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
+                </div>
+
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Age:</span>
+                    <input name="data.age" type="text" value="{{data.age}}" placeholder="??"/>
+                </div>
+
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Race:</span>
+                    <input name="data.race" type="text" value="{{data.race}}" placeholder="Astartes"/>
+                </div>
+
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Build:</span>
+                    <input name="data.build" type="text" value="{{data.build}}" placeholder="??"/>
+                </div>
+
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Hair:</span>
+                    <input name="data.hair" type="text" value="{{data.hair}}" placeholder="bald"/>
+                </div>
+
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Eye:</span>
+                    <input name="data.eye" type="text" value="{{data.eye}}" placeholder="??"/>
+                </div>
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Quirks:</span>
+                    <input name="data.quirks" type="text" value="{{data.quirks}}" placeholder="??"/>
+                </div>
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Superstitions:</span>
+                    <input name="data.superstitions" type="text" value="{{data.superstitions}}" placeholder="??"/>
+                </div>
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">momentos:</span>
+                    <input name="data.momentos" type="text" value="{{data.momentos}}" placeholder="??"/>
+                </div>
+
+            </div>
+            <div class="creationOps grid grid-3col">
+                <div class="creationRow flexcol">
+                    <span class="descrSpan">Chapter:</span>
+                    <input name="data.chapter" type="text" value="{{data.chapter}}" placeholder="???"/>
+                </div>
+             <div class="creationRow flexcol">
+                    <span class="descrSpan">Background:</span>
+                    <input name="data.background" type="text" value="{{data.background}}" placeholder="???"/>
+                </div>
+                <div class="creationRow flexcol">
+                    <span class="descrSpan">Role:</span>
+                    <input name="data.role" type="text" value="{{data.role}}" placeholder="???"/>
+                </div>
+                
+            </div>
+            <div class="eliteAdvances">
+            <div class="creationRow flexcol">
+                    <span class="descrSpan">Elite Advances:</span>
+                    <input name="data.eliteAdvances" type="text" value="{{data.eliteAdvances}}" placeholder="???"/>
+                </div>
+            </div>
+
+            {{!-- The grid classes are defined in scss/global/_grid.scss. To use,
+            use both the "grid" and "grid-Ncol" class where "N" can be any number
+            from 1 to 12 and will create that number of columns.  --}}
+
             {{!-- The grid classes are defined in scss/global/_grid.scss. To use,
             use both the "grid" and "grid-Ncol" class where "N" can be any number
             from 1 to 12 and will create that number of columns.  --}}

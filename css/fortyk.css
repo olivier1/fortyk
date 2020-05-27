@@ -1,5 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Martel:wght@400;800&family=Roboto:wght@300;400;500&display=swap");
 /* Global styles */
+.fortyk .header-left{
+    width: 100px;
+    flex: 0;
+}
 .window-app {
     font-family: "CaslonAntique";
     src: url('../fonts/CaslonAntique.ttf');
@@ -124,8 +128,8 @@
 
 .fortyk .sheet-header {
   -webkit-box-flex: 0;
-  -ms-flex: 0 0 350px;
-  flex: 0 0 350px;
+  -ms-flex: 1 0 260px;
+  flex: 1 0 260px;
   overflow: hidden;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -149,11 +153,46 @@
   height: 100px;
   margin-right: 10px;
 }
+.fortyk .sheet-header .header-fields .descr{
+    flex:0;   
+    place-items: center stretch;
+    margin-top: 0px;
+    margin-bottom:5px;
+}
+.fortyk .sheet-header .header-fields .descr .descrRow{
+    padding-left: 10px;
+    margin-bottom:2px;
+    border: 1px solid #999;
+    font-weight: bold;
+    text-transform: uppercase;
+    
+}
+.fortyk .sheet-header .header-fields .creationOps{
+    border:1px solid #999;
+    font-weight:bold;
+    text-transform: uppercase;
+    margin-top:0px;
+    margin-bottom:2px;
+}
+.fortyk .sheet-header .header-fields .eliteAdvances{
+    border:1px solid #999;
+    font-weight:bold;
+    text-transform: uppercase;
+}
+.fortyk .sheet-header .header-fields .descr .descrRow label{
+    
+}
+.fortyk .sheet-header .header-fields .descr .descrRow .input{
+    flex 1;
+}
 
 .fortyk .sheet-header .header-fields {
   -webkit-box-flex: 1;
   -ms-flex: 1;
   flex: 1;
+}
+.fortyk .sheet-header .header-fields .characteristics{
+    margin-top:9px;
 }
 .fortyk .sheet-header .header-fields .characteristics  span.characteristicsSpan{
     font-weight: bold;
@@ -170,6 +209,7 @@
     border: 1px solid #999;
     justify-content: center;
     align-content: center;
+    
 }
 
 .char-total{
@@ -208,6 +248,9 @@
 
 .fortyk .tox .tox-edit-area {
   padding: 0 8px;
+}
+.fortyk .resource{
+    width: 100px;
 }
 
 .fortyk .resource-label {

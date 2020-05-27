@@ -12,24 +12,24 @@
 				"race": ""
 			},
 			"creationOptions": {
-				"Elite Advances": "",
-				"Quirks": "",
-				"Superstitions": "",
-				"Momentos": ""
+				"eliteAdvances": "",
+				"quirks": "",
+				"superstitions": "",
+				"momentos": ""
 			},
 			"creationOptionsDH2": {
-				"Home World": "",
-				"Background": "",
-				"Role": ""
+				"homeWorld": "",
+				"background": "",
+				"role": ""
 			},
 			"creationOptionsDW": {
-				"Chapter": "",
-				"Background": "",
-				"Role": ""
+				"chapter": "",
+				"background": "",
+				"role": ""
 			},
 			"creationOptionsOW": {
-				"Home World/Regiment": "",
-				"Specialty": ""
+				"homeWorld/Regiment": "",
+				"specialty": ""
 			},
 			"characters": {
 				"secChar": {
@@ -271,7 +271,7 @@
 					},
 					"survival": {
 						"value": -20,
-						"characteristic": "wp"
+						"characteristic": "per"
 					},
 					"techUse": {
 						"value": -20,
