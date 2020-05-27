@@ -128,8 +128,8 @@
 
 .fortyk .sheet-header {
   -webkit-box-flex: 0;
-  -ms-flex: 1 0 260px;
-  flex: 1 0 260px;
+  -ms-flex: 1 0 250px;
+  flex: 1 0 250px;
   overflow: hidden;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -191,6 +191,7 @@
   -webkit-box-flex: 1;
   -ms-flex: 1;
   flex: 1;
+    flex-direction: column;
 }
 .fortyk .sheet-header .header-fields .characteristics{
     margin-top:9px;
@@ -232,15 +233,21 @@
 }
 
 .fortyk .sheet-tabs {
-  -webkit-box-flex: 0;
-  -ms-flex: 0;
-  flex: 0;
+  -webkit-box-flex: 1;
+  -ms-flex: 0 0 30px;
+  flex: 0 0 30px;
+    height: 30px;
+    
+    
 }
 
 .fortyk .sheet-body,
 .fortyk .sheet-body .tab,
 .fortyk .sheet-body .tab .editor {
   height: 100%;
+}
+.fortyk .sheet-body{
+    flex: 1;
 }
 
 .fortyk .tox .tox-editor-container {
@@ -260,14 +267,17 @@
 }
 
 .fortyk .tabs {
-  height: 40px;
   border-top: 1px solid #AAA;
   border-bottom: 1px solid #AAA;
+   
 }
 
 .fortyk .tabs .item {
-  line-height: 40px;
+  line-height: 12px;
   font-weight: bold;
+     font-size: 10px;
+    height:30px;
+   
 }
 
 .fortyk .tabs .item.active {
@@ -291,6 +301,7 @@
   line-height: 24px;
   padding: 3px 0;
   border-bottom: 1px solid #BBB;
+   
 }
 
 .fortyk .items-list .item .item-image {

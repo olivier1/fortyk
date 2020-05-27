@@ -28,7 +28,7 @@
                     <label for="data.fatigue.value" class="resource-label">Influence</label>
                     <div class="resource-content flexrow flex-center flex-between">
                         <input type="text" name="data.inf.starting" value="{{data.inf.starting}}" data-dtype="Number"/>
-                        <span> / </span>
+                        <span> -> </span>
                         <input type="text" name="data.inf.value" value="{{data.inf.value}}" data-dtype="Number" disabled/>
                     </div>
                 </div>
@@ -195,41 +195,42 @@
 
     {{!-- Sheet Tab Navigation --}}
     <nav class="sheet-tabs tabs" data-group="primary">
-        <a class="item" data-tab="description">Description</a>
-        <a class="item" data-tab="items">Items</a>
+        <a class="item" data-tab="skills">SKILLS</a>
+        <a class="item" data-tab="tnt">TALENTS & TRAITS</a>
+        <a class="item" data-tab="exp">EXP & MISSIONS</a>
+        <a class="item" data-tab="weapons">WEAPONS</a>
+        <a class="item" data-tab="gear">GEAR & CYBERNETICS</a>
+        <a class="item" data-tab="corruption">CORRUPTION & INSANITY</a>
+        <a class="item" data-tab="psykana">PSYKANA</a>
     </nav>
 
     {{!-- Sheet Body --}}
     <section class="sheet-body">
 
-        {{!-- Biography Tab --}}
-        <div class="tab biography" data-group="primary" data-tab="description">
-            {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}}
+        {{!-- Skills Tab --}}
+       
+ <div class="tab skills" data-group="primary" data-tab="skills">
+            {{> "systems/fortyk/templates/actors/actor-skills.html"}}
         </div>
 
-        {{!-- Owned Items Tab --}}
-        <div class="tab items" data-group="primary" data-tab="items">
-            <ol class="items-list">
-                <li class="item flexrow item-header">
-                    <div class="item-image"></div>
-                    <div class="item-name">Name</div>
-                    <div class="item-controls">
-                        <a class="item-control item-create" title="Create item" data-type="item"><i class="fas fa-plus"></i> Add item</a>
-                    </div>
-                </li>
-                {{#each actor.items as |item id|}}
-                <li class="item flexrow" data-item-id="{{item._id}}">
-                    <div class="item-image"><img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/></div>
-                    <h4 class="item-name">{{item.name}}</h4>
-                    <div class="item-controls">
-                        <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                    </div>
-                </li>
-                {{/each}}
-            </ol>
+       <div class="tab tnt" data-group="primary" data-tab="tnt">
+            {{> "systems/fortyk/templates/actor/actor-tnt.html"}}
         </div>
-
+        <div class="tab exp" data-group="primary" data-tab="exp">
+            {{> "systems/fortyk/templates/actor/actor-exp.html"}}
+        </div>
+        <div class="tab weapons" data-group="primary" data-tab="weapons">
+            {{> "systems/fortyk/templates/actor/actor-weapons.html"}}
+        </div>
+        <div class="tab gear" data-group="primary" data-tab="gear">
+            {{> "systems/fortyk/templates/actor/actor-gear.html"}}
+        </div>
+        <div class="tab corruption" data-group="primary" data-tab="corruption">
+            {{> "systems/fortyk/templates/actor/actor-corruption.html"}}
+        </div>
+        <div class="tab psykana" data-group="primary" data-tab="psykana">
+            {{> "systems/fortyk/templates/actor/actor-psykana.html"}}
+        </div>
     </section>
 </form>
 
