@@ -171,111 +171,180 @@
 				"skills": {
 					"acrobatics": {
 						"value": -20,
-						"characteristic": "ag"
+						"characteristic": "ag",
+                        "bonus": 0,
+                        "total": 0,
+                        "name":"Acrobatics"
 					},
 					"athletics": {
 						"value": -20,
-						"characteristic": "s"
+						"characteristic": "s",
+                        "bonus": 0,
+                        "total": 0,
+                        "name":"Athletics"
 					},
 					"awareness": {
 						"value": -20,
-						"characteristic": "int"
+						"characteristic": "int",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Awareness"
 					},
 					"charm": {
 						"value": -20,
-						"characteristic": "fel"
+						"characteristic": "fel",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Charm"
 					},
 					"command": {
 						"value": -20,
-						"characteristic": "fel"
+						"characteristic": "fel",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Command"
 					},
 					"commerce": {
 						"value": -20,
-						"characteristic": "int"
+						"characteristic": "int",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Commerce"
 					},
 					"commonLore": {
 						"characteristic": "int",
-						"specialties": []
+						"specialties": [],
+                        "name": "Common Lore"
 					},
 					"deceive": {
 						"value": -20,
-						"characteristic": "fel"
+						"characteristic": "fel",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Deceive"
 					},
 					"dodge": {
 						"value": -20,
-						"characteristic": "ag"
+						"characteristic": "ag",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Dodge"
 					},
 					"forbiddenLore": {
 						"characteristic": "int",
-						"specialties": []
+						"specialties": [],
+                        "name": "Forbidden Lore"
 					},
 					"inquiry": {
 						"value": -20,
-						"characteristic": "fel"
+						"characteristic": "fel",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Inquiry"
 					},
 					"interrogation": {
 						"value": -20,
-						"characteristic": "wp"
+						"characteristic": "wp",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Interrogation"
 					},
 					"intimidate": {
 						"value": -20,
-						"characteristic": "s"
+						"characteristic": "s",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Intimidate"
 					},
 					"linguistics": {
 						"characteristic": "int",
-						"specialties": []
+						"specialties": [],
+                        "name": "Linguistics"
 					},
 					"logic": {
 						"value": -20,
-						"characteristic": "int"
+						"characteristic": "int",
+                        "bonus": 0,
+                        "total": 0,
+                        "name":"Logic"
 					},
 					"medicae": {
 						"value": -20,
-						"characteristic": "int"
+						"characteristic": "int",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Medicae"
 					},
 					"navigate": {
 						"characteristic": "int",
-						"specialties": ["surface", -20, "stellar", -20, "warp", -20]
+						"specialties": ["surface", -20, "stellar", -20, "warp", -20],
+                        "name": "Navigate"
 					},
 					"operate": {
 						"characteristic": "ag",
-						"specialties": ["surface", -20, "aeronautica", 20, "voidship", 20]
+						"specialties": ["surface", -20, "aeronautica", 20, "voidship", 20],
+                        "name": "Operate"
 					},
 					"parry": {
 						"value": -20,
-						"characteristic": "ws"
+						"characteristic": "ws",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Parry"
 					},
 					"psyniscience": {
 						"value": -20,
-						"characteristic": "per"
+						"characteristic": "per",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Psyniscience"
 					},
 					"scholasticLore": {
 						"characteristic": "int",
-						"specialties": []
+						"specialties": [],
+                        "name": "Scholastic Lore"
 					},
 					"scrutiny": {
 						"value": -20,
-						"characteristic": "per"
+						"characteristic": "per",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Scrutiny"
 					},
 					"security": {
 						"value": -20,
-						"characteristic": "int"
+						"characteristic": "int",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Security"
 					},
 					"sleightOfHand": {
 						"value": -20,
-						"characteristic": "ag"
+						"characteristic": "ag",
+                        "bonus": 0,
+                        "total": 0,
+                        "name":" Sleight of Hand"
 					},
 					"stealth": {
 						"value": -20,
-						"characteristic": "ag"
+						"characteristic": "ag",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Stealth"
 					},
 					"survival": {
 						"value": -20,
-						"characteristic": "per"
+						"characteristic": "per",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Survival"
 					},
 					"techUse": {
 						"value": -20,
-						"characteristic": "int"
+						"characteristic": "int",
+                        "bonus": 0,
+                        "total": 0,
+                        "name": "Tech-Use"
 					}
 				},
 				"psykana": {

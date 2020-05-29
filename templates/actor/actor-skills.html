@@ -1,5 +1,45 @@
 <div class="skills grid grid-2col">
+    <div class="skills-header grid grid-5col">
+        <span class="skillItem">SKILL</span>
+        <span class="skillItem">CHAR</span>
+        <span class="skillItem">RANK</span>
+        <span class="skillItem">MOD</span>
+        <span class="skillItem">TOTAL</span>
+    </div>
+    <div class="skills-header grid grid-5col">
+        <span class="skillItem">SKILL</span>
+        <span class="skillItem">CHAR</span>
+        <span class="skillItem">RANK</span>
+        <span class="skillItem">MOD</span>
+        <span class="skillItem">TOTAL</span>
+    </div>
+    {{#each data.skills as |skill key|}}
 
-hey
+    <div class="skills-header grid grid-5col">
+        <span class="skillItem">{{skill.name}}</span>
+        <select  class="skillItem" name="data.skills.{{key}}.characteristic" value="{{skill.characteristic}}">
+            <option value="ws">WS</option>
+            <option value="bs">BS</option>
+            <option value="s">S</option>
+            <option value="t">T</option>
+            <option value="ag">AG</option>
+            <option value="int">INT</option>
+            <option value="per">PER</option>
+            <option value="wp">WP</option>
+            <option value="FEL">FEL</option>
+        </select>
+        <select  class="skillItem" name="data.skills.{{key}}.value" value="{{skill.value}}">
+            <option value=-20>Untrained</option>
+            <option value=0>Known</option>
+            <option value=10>Trained</option>
+            <option value=20>Experienced</option>
+            <option value=30>Veteran</option>
+        </select>
+        <input  class="skillItem" type="text" name="data.skills.{{key}}.mod" value="{{skill.mod}}" data-dtype="Number"/>
+        <div class="skillItem">
+            <span class="rollable skillItem" data-roll="d100<@skills.{{key}}.total" data-label="{{key}}">{{skill.total}}</span>
+        </div>
 
+    </div>  
+    {{/each}}
 </div>

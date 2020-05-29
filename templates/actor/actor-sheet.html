@@ -163,7 +163,14 @@
                 </div>
                 {{#each data.characteristics as |char key|}}
 
-                <input type="text" name="data.characteristics.{{key}}.advance" value="{{char.advance}}"/>
+                <select class="charSelect" name="data.characteristics.{{key}}.advance" value="{{char.advance}}">
+                    <option value=0>0%</option>
+                    <option value=5>5%</option>
+                    <option value=10>10%</option>
+                    <option value=15>15%</option>
+                    <option value=20>20%</option>
+                    <option value=25>25%</option>
+                </select>
 
                 {{/each}}
 
@@ -194,11 +201,11 @@
     </header>
 
     {{!-- Sheet Tab Navigation --}}
-    <nav class="sheet-tabs tabs" data-group="primary">
+    <nav class="sheet-tabs tabs flexrow" data-group="primary">
         <a class="item" data-tab="skills">SKILLS</a>
         <a class="item" data-tab="tnt">TALENTS & TRAITS</a>
         <a class="item" data-tab="exp">EXP & MISSIONS</a>
-        <a class="item" data-tab="weapons">WEAPONS</a>
+        <a class="item" data-tab="COMBAT">COMBAT</a>
         <a class="item" data-tab="gear">GEAR & CYBERNETICS</a>
         <a class="item" data-tab="corruption">CORRUPTION & INSANITY</a>
         <a class="item" data-tab="psykana">PSYKANA</a>
@@ -209,18 +216,17 @@
 
         {{!-- Skills Tab --}}
        
- <div class="tab skills" data-group="primary" data-tab="skills">
-            {{> "systems/fortyk/templates/actors/actor-skills.html"}}
+ <div class="tab skillsContainer" data-group="primary" data-tab="skills">
+            {{> "systems/fortyk/templates/actor/actor-skills.html"}}
         </div>
-
        <div class="tab tnt" data-group="primary" data-tab="tnt">
             {{> "systems/fortyk/templates/actor/actor-tnt.html"}}
         </div>
         <div class="tab exp" data-group="primary" data-tab="exp">
             {{> "systems/fortyk/templates/actor/actor-exp.html"}}
         </div>
-        <div class="tab weapons" data-group="primary" data-tab="weapons">
-            {{> "systems/fortyk/templates/actor/actor-weapons.html"}}
+        <div class="tab combat" data-group="primary" data-tab="combat">
+            {{> "systems/fortyk/templates/actor/actor-combat.html"}}
         </div>
         <div class="tab gear" data-group="primary" data-tab="gear">
             {{> "systems/fortyk/templates/actor/actor-gear.html"}}

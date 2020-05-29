@@ -1,5 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Martel:wght@400;800&family=Roboto:wght@300;400;500&display=swap");
 /* Global styles */
+.fortyk{
+    font-size:12px;
+    
+}
 .fortyk .header-left{
     width: 100px;
     flex: 0;
@@ -128,9 +132,9 @@
 
 .fortyk .sheet-header {
   -webkit-box-flex: 0;
-  -ms-flex: 1 0 250px;
-  flex: 1 0 250px;
-  overflow: hidden;
+  -ms-flex: 1 0 0px;
+  flex: 1 0 0px;
+  overflow: visible;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -143,7 +147,7 @@
   -webkit-box-pack: start;
   -ms-flex-pack: start;
   justify-content: flex-start;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 }
 
 .fortyk .sheet-header .profile-img {
@@ -194,11 +198,15 @@
     flex-direction: column;
 }
 .fortyk .sheet-header .header-fields .characteristics{
-    margin-top:9px;
+    margin-top:19px;
 }
 .fortyk .sheet-header .header-fields .characteristics  span.characteristicsSpan{
     font-weight: bold;
    
+    
+}
+.fortyk .charSelect{
+    width:100%;
     
 }
 
@@ -248,6 +256,7 @@
 }
 .fortyk .sheet-body{
     flex: 1;
+    overflow:scroll;
 }
 
 .fortyk .tox .tox-editor-container {
@@ -278,6 +287,38 @@
      font-size: 10px;
     height:30px;
    
+}
+.fortyk .skills{
+   
+    border: 1px solid #AAA;
+   
+   
+}
+.fortyk .skills .skills-header{
+     border: 1px solid #AAA;
+    width:100%;
+    grid-column:initial;
+    grid-template-columns: 30% 20% 20% 14% 16%;
+    place-items: start stretch;
+     margin:0px;
+   
+    
+}
+.fortyk .skills .skills-header select{
+    width:100%;
+}
+.fortyk .skills .skills-header span{
+    border: 1px solid #AAA;
+    font-weight:bold;
+    padding:3px;
+   
+}
+.fortyk .skill .skillItem{
+     flex:1;
+    grid-column:initial;
+    width:100%;
+    height:100%;
+
 }
 
 .fortyk .tabs .item.active {
