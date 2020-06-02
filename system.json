@@ -6,7 +6,7 @@
   "minimumCoreVersion": "0.5.5",
   "compatibleCoreVersion": "0.6.0",
   "templateVersion": 2,
-  "author": "Olivier Bouchard vanasse",
+  "author": "Olivier Bouchard Vanasse",
   "esmodules": ["module/fortyk.js"],
   "styles": ["css/fortyk.css"],
   "scripts": [],

@@ -46,4 +46,6 @@ Hooks.once('init', async function() {
     Handlebars.registerHelper('toLowerCase', function(str) {
         return str.toLowerCase();
     });
+   
+
 });

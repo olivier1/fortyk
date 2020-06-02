@@ -4,6 +4,7 @@ export const preloadHandlebarsTemplates = async function() {
   const templatePaths = [
 
     // Actor Sheet Partials
+      "systems/fortyk/templates/actor/actor-main.html",
    "systems/fortyk/templates/actor/actor-skills.html",
     "systems/fortyk/templates/actor/actor-tnt.html",
     "systems/fortyk/templates/actor/actor-exp.html",
@@ -11,6 +12,7 @@ export const preloadHandlebarsTemplates = async function() {
       "systems/fortyk/templates/actor/actor-gear.html",
       "systems/fortyk/templates/actor/actor-corruption.html",
       "systems/fortyk/templates/actor/actor-psykana.html"
+      
 
     // Item Sheet Partials
    

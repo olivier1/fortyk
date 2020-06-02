@@ -1,0 +1,200 @@
+<div class="sheet-main flexrow">
+    <div class="header-left">
+
+        <div class="resources">
+            {{!-- "flex-group-center" is also defined in the _grid.scss file
+            and it will add a small amount of padding, a border, and will
+            center all of its child elements content and text. --}}
+            <div class="resource flex-group-center">
+                <label for="data.secChar.wounds.value" class="resource-label">Wounds</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" name="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
+                    <span> / </span>
+                    <input type="text" name="data.secChar.wounds.max" value="{{data.secChar.wounds.max}}" data-dtype="Number"/>
+                </div>
+            </div>
+            <div class="resource flex-group-center">
+                <label for="data.secChar.fatigue.value" class="resource-label">Fatigue</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" name="data.secChar.fatigue.value" value="{{data.secChar.fatigue.value}}" data-dtype="Number"/>
+                    <span> / </span>
+                    <input type="text" name="data.secChar.fatigue.max" value="{{data.secChar.fatigue.max}}" data-dtype="Number" disabled/>
+                </div>
+            </div>
+            <div class="resource flex-group-center">
+                <label for="data.fatigue.value" class="resource-label">Influence</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" name="data.inf.starting" value="{{data.inf.starting}}" data-dtype="Number"/>
+                    <span> -> </span>
+                    <input type="text" name="data.inf.value" value="{{data.inf.value}}" data-dtype="Number" disabled/>
+                </div>
+            </div>
+            <div class="resource flex-group-center">
+                <label for="data.fatigue.value" class="resource-label">Global Modifier</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" name="data.globalMOD.value" value="{{data.globalMOD.value}}" data-dtype="Number"/>
+                </div>
+            </div>
+            <div class="resource flex-group-center">
+                <label for="data.fatigue.value" class="resource-label">Fate</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" name="data.secChar.fate.value" value="{{data.secChar.fate.value}}" data-dtype="Number"/>
+                    <span> / </span>
+                    <input type="text" name="data.secChar.fate.max" value="{{data.secChar.fate.max}}" data-dtype="Number"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-fields">
+        <div class="descr grid grid-3col">
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Name:</span>
+                <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
+            </div>
+
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Age:</span>
+                <input name="data.age" type="text" value="{{data.age}}" placeholder="??"/>
+            </div>
+
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Race:</span>
+                <input name="data.race" type="text" value="{{data.race}}" placeholder="Astartes"/>
+            </div>
+
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Build:</span>
+                <input name="data.build" type="text" value="{{data.build}}" placeholder="??"/>
+            </div>
+
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Hair:</span>
+                <input name="data.hair" type="text" value="{{data.hair}}" placeholder="bald"/>
+            </div>
+
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Eye:</span>
+                <input name="data.eye" type="text" value="{{data.eye}}" placeholder="??"/>
+            </div>
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Quirks:</span>
+                <input name="data.quirks" type="text" value="{{data.quirks}}" placeholder="??"/>
+            </div>
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Superstitions:</span>
+                <input name="data.superstitions" type="text" value="{{data.superstitions}}" placeholder="??"/>
+            </div>
+            <div class="descrRow flexcol">
+                <span class="descrSpan">momentos:</span>
+                <input name="data.momentos" type="text" value="{{data.momentos}}" placeholder="??"/>
+            </div>
+
+        </div>
+        <div class="creationOps grid grid-3col">
+            <div class="creationRow flexcol">
+                <span class="descrSpan">Chapter:</span>
+                <input name="data.chapter" type="text" value="{{data.chapter}}" placeholder="???"/>
+            </div>
+            <div class="creationRow flexcol">
+                <span class="descrSpan">Background:</span>
+                <input name="data.background" type="text" value="{{data.background}}" placeholder="???"/>
+            </div>
+            <div class="creationRow flexcol">
+                <span class="descrSpan">Role:</span>
+                <input name="data.role" type="text" value="{{data.role}}" placeholder="???"/>
+            </div>
+
+        </div>
+        <div class="eliteAdvances flexcol">
+
+            <span class="descrSpan">Elite Advances:</span>
+            <input name="data.eliteAdvances" type="text" value="{{data.eliteAdvances}}" placeholder="???"/>
+
+        </div>
+
+        {{!-- The grid classes are defined in scss/global/_grid.scss. To use,
+        use both the "grid" and "grid-Ncol" class where "N" can be any number
+        from 1 to 12 and will create that number of columns.  --}}
+
+        {{!-- The grid classes are defined in scss/global/_grid.scss. To use,
+        use both the "grid" and "grid-Ncol" class where "N" can be any number
+        from 1 to 12 and will create that number of columns.  --}}
+        <div class="characteristics grid grid-10col">
+
+
+
+
+            <span class="characteristicsSpan"></span>
+
+            {{#each data.characteristics as |char key|}}
+
+            <div class="charCross flexcol flex-group-center">
+                <label for="data.characteristics.{{key}}.value" class="resource-label">{{key}}</label>
+            </div>
+            {{/each}}
+
+
+            <div class="charCross flexcol flex-group-center">
+                <span class="characteristicsSpan">Base
+                </span>
+            </div>
+            {{#each data.characteristics as |char key|}}
+            <div>
+                <input type="text" name="data.characteristics.{{key}}.value" value="{{char.value}}" data-dtype="Number"/>
+
+            </div>
+            {{/each}}
+
+            <div class="charCross flexcol flex-group-center">
+                <span class="characteristicsSpan">Unnat</span>
+            </div>
+            {{#each data.characteristics as |char key|}}
+            <div>
+
+                <input class="ub" type="text" name="data.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number"/>
+            </div>
+            {{/each}}
+            <div class="charCross flexcol flex-group-center">  
+                <span class="characteristicsSpan">Adv</span>
+            </div>
+            {{#each data.characteristics as |char key|}}
+
+            <select class="charSelect" name="data.characteristics.{{key}}.advance" data-dtype="Number">
+                {{#select char.advance}}
+                <option value="0">0%</option>
+                <option value="5">5%</option>
+                <option value="10">10%</option>
+                <option value="15">15%</option>
+                <option value="20">20%</option>
+                <option value="25">25%</option>
+                {{/select}}
+            </select>
+
+            {{/each}}
+
+
+            <div class="charCross flexcol flex-group-center"> 
+                <span class="characteristicsSpan">Temp</span>
+            </div>
+            {{#each data.characteristics as |char key|}}
+
+            <input type="text" name="data.characteristics.{{key}}.mod" value="{{char.mod}}" data-dtype="Number"/>
+
+            {{/each}}
+
+
+            <div class="charCross flexcol flex-group-center">
+                <span class="characteristicsSpan">Total</span>
+            </div>
+            {{#each data.characteristics as |char key|}}
+            <div class="charCross flexcol flex-group-center">
+                <span class="char-total rollable " data-roll="d100<@characteristics.{{key}}.total" data-label="{{key}}">{{char.total}}</span>
+            </div>
+            {{/each}}
+
+
+
+        </div>
+    </div>
+</div>
