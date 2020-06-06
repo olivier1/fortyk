@@ -1,50 +1,8 @@
-<div class="sheet-main flexrow">
-    <div class="header-left">
+<div class="sheet-main flexcol">
+   
 
-        <div class="resources">
-            {{!-- "flex-group-center" is also defined in the _grid.scss file
-            and it will add a small amount of padding, a border, and will
-            center all of its child elements content and text. --}}
-            <div class="resource flex-group-center">
-                <label for="data.secChar.wounds.value" class="resource-label">Wounds</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
-                    <span> / </span>
-                    <input type="text" name="data.secChar.wounds.max" value="{{data.secChar.wounds.max}}" data-dtype="Number"/>
-                </div>
-            </div>
-            <div class="resource flex-group-center">
-                <label for="data.secChar.fatigue.value" class="resource-label">Fatigue</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.secChar.fatigue.value" value="{{data.secChar.fatigue.value}}" data-dtype="Number"/>
-                    <span> / </span>
-                    <input type="text" name="data.secChar.fatigue.max" value="{{data.secChar.fatigue.max}}" data-dtype="Number" disabled/>
-                </div>
-            </div>
-            <div class="resource flex-group-center">
-                <label for="data.fatigue.value" class="resource-label">Influence</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.inf.starting" value="{{data.inf.starting}}" data-dtype="Number"/>
-                    <span> -> </span>
-                    <input type="text" name="data.inf.value" value="{{data.inf.value}}" data-dtype="Number" disabled/>
-                </div>
-            </div>
-            <div class="resource flex-group-center">
-                <label for="data.fatigue.value" class="resource-label">Global Modifier</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.globalMOD.value" value="{{data.globalMOD.value}}" data-dtype="Number"/>
-                </div>
-            </div>
-            <div class="resource flex-group-center">
-                <label for="data.fatigue.value" class="resource-label">Fate</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.secChar.fate.value" value="{{data.secChar.fate.value}}" data-dtype="Number"/>
-                    <span> / </span>
-                    <input type="text" name="data.secChar.fate.max" value="{{data.secChar.fate.max}}" data-dtype="Number"/>
-                </div>
-            </div>
-        </div>
-    </div>
+        
+   
 
     <div class="header-fields">
         <div class="descr grid grid-3col">
@@ -111,6 +69,49 @@
             <span class="descrSpan">Elite Advances:</span>
             <input name="data.eliteAdvances" type="text" value="{{data.eliteAdvances}}" placeholder="???"/>
 
+        </div>
+        <div class="resources flexrow">
+            {{!-- "flex-group-center" is also defined in the _grid.scss file
+            and it will add a small amount of padding, a border, and will
+            center all of its child elements content and text. --}}
+            <div class="resource flex-group-center">
+                <label for="data.secChar.wounds.value" class="resource-label">Wounds</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" name="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
+                    <span> / </span>
+                    <input type="text" name="data.secChar.wounds.max" value="{{data.secChar.wounds.max}}" data-dtype="Number"/>
+                </div>
+            </div>
+            <div class="resource flex-group-center">
+                <label for="data.secChar.fatigue.value" class="resource-label">Fatigue</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" name="data.secChar.fatigue.value" value="{{data.secChar.fatigue.value}}" data-dtype="Number"/>
+                    <span> / </span>
+                    <input type="text" name="data.secChar.fatigue.max" value="{{data.secChar.fatigue.max}}" data-dtype="Number" disabled/>
+                </div>
+            </div>
+            <div class="resource flex-group-center">
+                <label for="data.fatigue.value" class="resource-label">Influence</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" name="data.inf.starting" value="{{data.inf.starting}}" data-dtype="Number"/>
+                    <span> -> </span>
+                    <input type="text" name="data.inf.value" value="{{data.inf.value}}" data-dtype="Number" disabled/>
+                </div>
+            </div>
+            <div class="resource flex-group-center">
+                <label for="data.fatigue.value" class="resource-label">Global Modifier</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" name="data.globalMOD.value" value="{{data.globalMOD.value}}" data-dtype="Number"/>
+                </div>
+            </div>
+            <div class="resource flex-group-center">
+                <label for="data.fatigue.value" class="resource-label">Fate</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" name="data.secChar.fate.value" value="{{data.secChar.fate.value}}" data-dtype="Number"/>
+                    <span> / </span>
+                    <input type="text" name="data.secChar.fate.max" value="{{data.secChar.fate.max}}" data-dtype="Number"/>
+                </div>
+            </div>
         </div>
 
         {{!-- The grid classes are defined in scss/global/_grid.scss. To use,

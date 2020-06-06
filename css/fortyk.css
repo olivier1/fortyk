@@ -4,10 +4,7 @@
     font-size:12px;
     
 }
-.fortyk .header-left{
-    width: 100px;
-    flex: 0;
-}
+
 .window-app {
     font-family: "CaslonAntique";
     src: url('../fonts/CaslonAntique.ttf');
@@ -198,7 +195,7 @@
 
 
 .fortyk .sheet-main .header-fields .characteristics{
-    margin-top:19px;
+    margin-top:5px;
 }
 .fortyk .sheet-main .header-fields .characteristics  span.characteristicsSpan{
     font-weight: bold;
@@ -253,7 +250,7 @@
   padding: 0 8px;
 }
 .fortyk .resource{
-    width: 100px;
+
 }
 
 .fortyk .resource-label {
@@ -318,6 +315,9 @@
     width:100%;
     height:100%;
 
+}
+.fortyk .skills .skills-header .skillSubItem{
+    padding-left:10px !important;
 }
 
 

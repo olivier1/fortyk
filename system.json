@@ -10,7 +10,15 @@
   "esmodules": ["module/fortyk.js"],
   "styles": ["css/fortyk.css"],
   "scripts": [],
-  "packs": [],
+  "packs": [ {
+      "name": "skills",
+      "label": "Skills",
+      "system": "fortyk",
+      "module": "fortyk",
+      "path": "./packs/skills.db",
+      "entity": "Item",
+      "tag" : "skill"
+    }],
   "languages": [
     {
       "lang": "en",

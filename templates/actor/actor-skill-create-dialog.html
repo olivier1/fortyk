@@ -1,0 +1,41 @@
+
+
+    <form class="new-skill flexcol">
+        <div class="flexrow">
+            <label>Skill Type:</label>
+            <select class="skill-type" name="skillType">
+             
+                <option class="new-skill-select" value="new" selected>New Skill</option>
+                {{#each skills as |skill key|}}
+               
+                {{#if (isdefined skill.specialties)}}
+                <option class="new-skill-select" value="{{key}}">{{skill.name}}</option>
+                {{/if}}
+                {{/each}}
+               
+            </select>
+        </div>
+        <div class="flexrow">
+            <label>Name:</label>
+            <input type="text" class="name skill-dialog" name="skillName" data-dtype="String" required>
+        </div>
+        <div class="flex row">
+            <label>Characteristic</label>
+            <select class="skill-characteristic" name="char">
+            
+                <option value="ws">Weapon Skill</option>
+                <option value="bs">Ballistic Skill</option>
+                <option value="s">Strength</option>
+                <option value="t">Toughness</option>
+                <option value="ag">Agility</option>
+                <option value="int">Intelligence</option>
+                <option value="per">Perception</option>
+                <option value="wp">Willpower</option>
+                <option value="fel">Fellowship</option>   
+               
+            </select>
+        </div>
+
+        
+
+    </form>
