@@ -1,6 +1,6 @@
 
 
-    
+
 <div class="skills flexcol">
     <a class="create-skill" title="Add new skill">New Skill</a>
     <div class="skills-header grid grid-5col">
@@ -10,23 +10,26 @@
         <span class="skillItem">TEMP</span>
         <span class="skillItem">TOTAL</span>
     </div>
-
-    {{#each data.sortedSkills as |skill key|}}
-    {{#if (isdefined skill.specialties)}}
-     <div class="skills-header grid grid-5col">
-        <span class="skillItem">{{skill.name}}</span>
-       <span hidden></span>
-         <span hidden></span>
-         <span hidden></span>
-         <span hidden></span>
+    
+    {{#each actor.skills as |skill key|}}
+    {{#if skill.data.hasChildren.value}}
+    <div class="skills-header grid grid-5col">
+        <span class="skillItem">{{skill.data.label.value}}</span>
+        <span hidden></span>
+        <span hidden></span>
+        <span hidden></span>
+        <span hidden></span>
 
 
     </div>
-    {{#each skill.specialties as |spec a|}}
+    {{#each ../actor.skills as |spec a|}}
+    
+   
+    {{#if (compareString spec.data.parent.value skill.data.name.value)}}
     <div class="skills-header grid grid-5col">
-        <span class="skillSubItem" padding-left="10px">{{spec.name}}</span>
-        <select  class="skillItem" name="data.skills.{{key}}.specialties.{{a}}.characteristic">
-            {{#select spec.characteristic}}
+        <span class="skillSubItem" padding-left="10px">{{spec.data.label.value}}</span>
+        <select data-item-id="{{spec._id}}" class="skillItem skill-char" >
+            {{#select spec.data.characteristic.value}}
             <option value="ws">WS</option>
             <option value="bs">BS</option>
             <option value="s">S</option>
@@ -38,8 +41,8 @@
             <option value="fel">FEL</option>
             {{/select}}
         </select>
-        <select  class="skillItem" name="data.skills.{{key}}.specialties.{{a}}.value">
-            {{#select spec.value}}
+        <select  data-item-id="{{spec._id}}" class="skillItem skill-adv">
+            {{#select spec.data.value}}
             <option value="-20">Untrained</option>
             <option value="0">Known</option>
             <option value="10">Trained</option>
@@ -47,27 +50,29 @@
             <option value="30">Veteran</option>
             {{/select}}
         </select>
-        <input  class="skillItem" type="text" name="data.skills.{{key}}.specialties.{{a}}.mod" value="{{spec.mod}}" data-dtype="Number"/>
+        <input data-item-id="{{spec._id}}" class="skillItem skill-mod" type="text" value="{{spec.data.mod.value}}" data-dtype="Number"/>
 
-        <span class="rollable skillItem" data-roll="d100<data.skills.{{key}}.specialties.{{a}}.total" data-label="{{a}}">{{spec.total}}</span>
+        <span data-item-id="{{spec._id}}" class="rollable skillItem" data-roll="d100" data-label="{{a}}">{{spec.data.total.value}}</span>
 
 
     </div>
+    {{/if}}
     {{/each}}
+
     <div class="skills-header grid grid-5col">
         <span class="skillItem"></span>
-       <span hidden></span>
-          <span  hidden></span>
-         <span  hidden></span>
-          <span  hidden></span>
+        <span hidden></span>
+        <span  hidden></span>
+        <span  hidden></span>
+        <span  hidden></span>
 
 
     </div>
-    {{else}}
+    {{else unless (compareString skill.data.parent.value )}}
     <div class="skills-header grid grid-5col">
-        <span class="skillItem">{{skill.name}}</span>
-        <select  class="skillItem" name="data.skills.{{key}}.characteristic">
-            {{#select skill.characteristic}}
+        <span class="skillItem">{{skill.data.label.value}}</span>
+        <select  data-item-id="{{skill._id}}" class="skillItem skill-char">
+            {{#select skill.data.characteristic.value}}
             <option value="ws">WS</option>
             <option value="bs">BS</option>
             <option value="s">S</option>
@@ -79,8 +84,8 @@
             <option value="fel">FEL</option>
             {{/select}}
         </select>
-        <select  class="skillItem" name="data.skills.{{key}}.value">
-            {{#select skill.value}}
+        <select data-item-id="{{skill._id}}" class="skillItem skill-adv">
+            {{#select skill.data.value}}
             <option value="-20">Untrained</option>
             <option value="0">Known</option>
             <option value="10">Trained</option>
@@ -88,13 +93,13 @@
             <option value="30">Veteran</option>
             {{/select}}
         </select>
-        <input  class="skillItem" type="text" name="data.skills.{{key}}.mod" value="{{skill.mod}}" data-dtype="Number"/>
+        <input data-item-id="{{skill._id}}" class="skillItem skill-mod" type="text" value="{{skill.data.mod.value}}" data-dtype="Number"/>
 
-        <span class="rollable skillItem" data-roll="d100<@skills.{{key}}.total" data-label="{{key}}">{{skill.total}}</span>
+        <span class="rollable skillItem" data-roll="d100" data-label="{{key}}">{{skill.data.total.value}}</span>
 
 
     </div>
-   
+
     {{/if}}
     {{/each}}
 </div>

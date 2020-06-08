@@ -4,7 +4,9 @@
  */
 export class FortyKActorSheet extends ActorSheet {
 
+
     /** @override */
+
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
@@ -19,20 +21,15 @@ export class FortyKActorSheet extends ActorSheet {
 
     /** @override */
     getData() {
+
+
+
         const data = super.getData();
+        mergeObject(data.actor,this.actor.prepare());
+        data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
-        //sort skills for sheet
-        var skills=data.skills;
-        const ordered = {};
-        var count=0;
-        Object.keys(skills).sort().forEach(function(key) {
-
-            ordered[key] = skills[key];
 
 
-        });
-        
-        data.sortedSkills=ordered;
         return data;
     }
 
@@ -44,6 +41,15 @@ export class FortyKActorSheet extends ActorSheet {
         if (!this.options.editable) return;
         //Add skill to actor
         html.find('.create-skill').click(this._onSkillCreate.bind(this));
+        //change skill characteristic
+        html.find('.skill-char').change(this._onSkillCharEdit.bind(this));
+        //change skill advancement
+        html.find('.skill-adv').change(this._onSkillAdvEdit.bind(this));
+        //change modifier
+        html.find('skill-mod').timeout=null;
+        html.find('.skill-mod').keydown(this._onSkillModEdit.bind(this));
+        html.find('.skill-mod').focusout(this._onSkillModEdit.bind(this));
+        //add a timeout to the skillmods
 
         // Add Inventory Item
         html.find('.item-create').click(this._onItemCreate.bind(this));
@@ -71,7 +77,7 @@ export class FortyKActorSheet extends ActorSheet {
     //Handle creating a new skill or skill group, ensures no duplicates
 
     _onSkillCreate(event) {
-       
+
         var templateData = {
             actor: this.actor,
             skills: this.actor.data.data.skills
@@ -82,7 +88,7 @@ export class FortyKActorSheet extends ActorSheet {
             height: 180
         };
         var renderedTemplate= renderTemplate(template, templateData);
-        
+
         renderedTemplate.then(content => {
 
             let dlg = new Dialog({
@@ -102,7 +108,7 @@ export class FortyKActorSheet extends ActorSheet {
                 },
                 default: "submit",
             }, options);
-           
+
             dlg.render(true);
         });
     }
@@ -132,7 +138,68 @@ export class FortyKActorSheet extends ActorSheet {
         // Finally, create the item!
         return this.actor.createOwnedItem(itemData);
     }
+    /**
+    *Handle select change for skill characterteristic selector
+    * @param {Event} event   The originating change event
+    * @private
+    */
+    async _onSkillCharEdit(event){
 
+
+        let newChar=event.target.value;
+        let dataItemId=event.target.attributes["data-item-id"].value;
+        let item= duplicate(this.actor.getEmbeddedEntity("OwnedItem", dataItemId));
+        item.data.characteristic.value=newChar;
+        await this.actor.updateEmbeddedEntity("OwnedItem",item);
+
+    }
+    /**
+    *Handle select change for skill advancement selector
+    * @param {Event} event   The originating click event
+    * @private
+    */
+    async _onSkillAdvEdit(event){
+
+        let newAdv=event.target.value;
+        let dataItemId=event.target.attributes["data-item-id"].value;
+        let item= duplicate(this.actor.getEmbeddedEntity("OwnedItem", dataItemId));
+        item.data.value.value=newAdv;
+        await this.actor.updateEmbeddedEntity("OwnedItem",item);
+
+
+    }
+    /**
+    *Handle input edits for skill modifier input
+    * @param {Event} event   The originating click event
+    * @private
+    */
+    async _onSkillModEdit(event){
+
+
+        this.delay(async function(event, actor){
+
+
+            let newMod=event.target.value;
+            let dataItemId=event.target.attributes["data-item-id"].value;
+            let item= duplicate(actor.actor.getEmbeddedEntity("OwnedItem", dataItemId));
+            item.data.mod.value=newMod;
+            await actor.actor.updateEmbeddedEntity("OwnedItem",item);},1000, event, this);
+
+
+
+    }
+    async delay(callback, ms) {
+
+        var timer = 0;
+        console.log(timer);
+        return function() {
+            var context = this, args = arguments;
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                callback.apply(context, args);
+            }, ms || 0);
+        };
+    }
     /**
    * Handle clickable rolls.
    * @param {Event} event   The originating click event
