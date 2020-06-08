@@ -42,7 +42,7 @@
             {{/select}}
         </select>
         <select  data-item-id="{{spec._id}}" class="skillItem skill-adv">
-            {{#select spec.data.value}}
+            {{#select spec.data.value.value}}
             <option value="-20">Untrained</option>
             <option value="0">Known</option>
             <option value="10">Trained</option>
@@ -85,7 +85,7 @@
             {{/select}}
         </select>
         <select data-item-id="{{skill._id}}" class="skillItem skill-adv">
-            {{#select skill.data.value}}
+            {{#select skill.data.value.value}}
             <option value="-20">Untrained</option>
             <option value="0">Known</option>
             <option value="10">Trained</option>
