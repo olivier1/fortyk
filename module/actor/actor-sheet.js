@@ -39,34 +39,22 @@ export class FortyKActorSheet extends ActorSheet {
 
         // Everything below here is only needed if the sheet is editable
         if (!this.options.editable) return;
-        //Add skill to actor
-        html.find('.create-skill').click(this._onSkillCreate.bind(this));
+        //Add item to actor
+        html.find('.item-create').click(this._onItemCreate.bind(this));
+        //edit item on actor
+        html.find('.item-edit').click(this._onItemEdit.bind(this));
+        //delete item on actor
+        html.find('.item-delete').click(this._onItemDelete.bind(this));
         //change skill characteristic
         html.find('.skill-char').change(this._onSkillCharEdit.bind(this));
         //change skill advancement
         html.find('.skill-adv').change(this._onSkillAdvEdit.bind(this));
         //change modifier
-        html.find('skill-mod').timeout=null;
+
         html.find('.skill-mod').keydown(this._onSkillModEdit.bind(this));
         html.find('.skill-mod').focusout(this._onSkillModEdit.bind(this));
-        //add a timeout to the skillmods
-
-        // Add Inventory Item
-        html.find('.item-create').click(this._onItemCreate.bind(this));
-
-        // Update Inventory Item
-        html.find('.item-edit').click(ev => {
-            const li = $(ev.currentTarget).parents(".item");
-            const item = this.actor.getOwnedItem(li.data("itemId"));
-            item.sheet.render(true);
-        });
-
-        // Delete Inventory Item
-        html.find('.item-delete').click(ev => {
-            const li = $(ev.currentTarget).parents(".item");
-            this.actor.deleteOwnedItem(li.data("itemId"));
-            li.slideUp(200, () => this.render(false));
-        });
+        //get item description
+        html.find('.item-descr').click(this._onSkillDescrGet.bind(this));
 
         // Rollable abilities.
         html.find('.rollable').click(this._onRoll.bind(this));
@@ -74,69 +62,105 @@ export class FortyKActorSheet extends ActorSheet {
 
     /* -------------------------------------------- */
 
-    //Handle creating a new skill or skill group, ensures no duplicates
 
-    _onSkillCreate(event) {
+    //Handle the popup when use clicks skill name to show item description
+    _onSkillDescrGet(event){
+        let descr = event.target.attributes["data-item-descr"].value;
+        var options = {
+            width: 300,
+            height: 400
+        };
+        
+        
+        let dlg = new Dialog({
+            title: "Skill Description",
+            content: "<p>"+descr+"</p>",
+            buttons: {
+                submit: {
+
+                    label: "OK",
+                    callback: null
+                }
+            },
+            default: "submit",
+        }, options);
+
+        dlg.render(true);
+
+
+    }
+    //Handle creating a new item, will sort the item type before making the new item
+
+    _onItemCreate(event) {
 
         var templateData = {
             actor: this.actor,
-            skills: this.actor.data.data.skills
-        }
-        let template = 'systems/fortyk/templates/actor/actor-skill-create-dialog.html';
-        var options = {
-            width: 250,
-            height: 180
+            skills: this.getData().entity.skills
         };
-        var renderedTemplate= renderTemplate(template, templateData);
 
-        renderedTemplate.then(content => {
 
-            let dlg = new Dialog({
-                title: "Create Skill",
-                content: content,
-                buttons: {
-                    submit: {
+        var type=event.currentTarget.attributes["data-type"].value;
+        if(type==="skill"){
+            let template = 'systems/fortyk/templates/actor/dialogs/actor-newskill-dialog.html';
+            var options = {
+                width: 300,
+                height: 400
+            };
+            var renderedTemplate= renderTemplate(template, templateData);
 
-                        label: "OK",
-                        callback: html => this.actor.createSkill(html)
+            renderedTemplate.then(content => {
+
+                let dlg = new Dialog({
+                    title: "Create Skill",
+                    content: content,
+                    buttons: {
+                        submit: {
+
+                            label: "OK",
+                            callback: html => this.actor.createSkill(html)
+                        },
+                        cancel: {
+
+                            label: "Cancel",
+                            callback: null
+                        }
                     },
-                    cancel: {
+                    default: "submit"
+                }, options);
 
-                        label: "Cancel",
-                        callback: null
-                    }
-                },
-                default: "submit",
-            }, options);
+                dlg.render(true);
+            });
 
-            dlg.render(true);
-        });
+        }
+
     }
-    /**
-   * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
-   * @param {Event} event   The originating click event
-   * @private
-   */
-    _onItemCreate(event) {
-        event.preventDefault();
-        const header = event.currentTarget;
-        // Get the type of item to create.
-        const type = header.dataset.type;
-        // Grab any data associated with this control.
-        const data = duplicate(header.dataset);
-        // Initialize a default name.
-        const name = `New ${type.capitalize()}`;
-        // Prepare the item object.
-        const itemData = {
-            name: name,
-            type: type,
-            data: data
-        };
-        // Remove the type from the dataset since it's in the itemData.type prop.
-        delete itemData.data["type"];
-
-        // Finally, create the item!
-        return this.actor.createOwnedItem(itemData);
+    //Edits the item that was clicked
+    _onItemEdit(event){
+        let itemId = event.currentTarget.attributes["data-item-id"].value;
+    const item = this.actor.items.find(i => i.data._id == itemId)
+    item.sheet.render(true);
+    }
+    //deletes the selected item from the actor
+    _onItemDelete(event){
+        let itemId = event.currentTarget.attributes["data-item-id"].value;
+        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
+        renderedTemplate.then(content => {
+            new Dialog({
+                title: "Deletion Confirmation",
+                content: content,
+                buttons:{
+                    submit:{
+                        label:"Yes",
+                        callback: dlg => { this.actor.deleteEmbeddedEntity("OwnedItem", itemId);}
+                    },
+                        cancel:{
+                            label: "No",
+                            callback: null
+                        }
+                },
+                    default: "submit"
+            }).render(true)
+        });
     }
     /**
     *Handle select change for skill characterteristic selector
@@ -163,7 +187,7 @@ export class FortyKActorSheet extends ActorSheet {
         let newAdv=event.target.value;
         let dataItemId=event.target.attributes["data-item-id"].value;
         let item= duplicate(this.actor.getEmbeddedEntity("OwnedItem", dataItemId));
-        item.data.value.value=newAdv;
+        item.data.value=newAdv;
         await this.actor.updateEmbeddedEntity("OwnedItem",item);
 
 
@@ -175,8 +199,8 @@ export class FortyKActorSheet extends ActorSheet {
     */
     async _onSkillModEdit(event){
 
-
-        this.delay(async function(event, actor){
+        clearTimeout(event.currentTarget.timeout);
+        event.currentTarget.timeout=setTimeout(async function(event, actor){
 
 
             let newMod=event.target.value;
@@ -188,18 +212,7 @@ export class FortyKActorSheet extends ActorSheet {
 
 
     }
-    async delay(callback, ms) {
 
-        var timer = 0;
-        console.log(timer);
-        return function() {
-            var context = this, args = arguments;
-            clearTimeout(timer);
-            timer = setTimeout(function () {
-                callback.apply(context, args);
-            }, ms || 0);
-        };
-    }
     /**
    * Handle clickable rolls.
    * @param {Event} event   The originating click event

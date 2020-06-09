@@ -51,6 +51,11 @@ Hooks.once('init', async function() {
         return value !== undefined;
     });
     Handlebars.registerHelper('compareString', function (str1, str2) {
+       
+        if(str2==="empty"){
+            return str1==="";    
+        }
+        
         return str1===str2;
     });
     Handlebars.registerHelper("debug", function(optionalValue) {

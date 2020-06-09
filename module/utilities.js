@@ -11,7 +11,8 @@ export const preloadHandlebarsTemplates = async function() {
     "systems/fortyk/templates/actor/actor-combat.html",
       "systems/fortyk/templates/actor/actor-gear.html",
       "systems/fortyk/templates/actor/actor-corruption.html",
-      "systems/fortyk/templates/actor/actor-psykana.html"
+      "systems/fortyk/templates/actor/actor-psykana.html",
+      "system/fortyk/templates/item/item-header.html"
       
 
     // Item Sheet Partials

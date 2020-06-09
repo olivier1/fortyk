@@ -1,163 +1,164 @@
 @import url("https://fonts.googleapis.com/css2?family=Martel:wght@400;800&family=Roboto:wght@300;400;500&display=swap");
 /* Global styles */
-.fortyk{
-    font-size:12px;
-    
-}
 
-.window-app {
+
+@font-face {
     font-family: "CaslonAntique";
     src: url('../fonts/CaslonAntique.ttf');
 }
+.fortyk{
+    font-size:14px;
+    font-family: "CaslonAntique";
+}
 
 .rollable:hover, .rollable:focus {
-  color: #000;
-  text-shadow: 0 0 10px red;
-  cursor: pointer;
+    color: #000;
+    text-shadow: 0 0 10px red;
+    cursor: pointer;
 }
 
 .grid,
 .grid-2col {
-  display: grid;
-  grid-column: span 2 / span 2;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-gap: 0px;
-  margin: 10px 0;
-  padding: 0;
+    display: grid;
+    grid-column: span 2 / span 2;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-gap: 0px;
+    margin: 10px 0;
+    padding: 0;
     place-items: center;
-    
+
 }
 
 .grid-3col {
-  grid-column: span 3 / span 3;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-column: span 3 / span 3;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .grid-4col {
-  grid-column: span 4 / span 4;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-column: span 4 / span 4;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .grid-5col {
-  grid-column: span 5 / span 5;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-column: span 5 / span 5;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .grid-6col {
-  grid-column: span 5 / span 5;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-column: span 5 / span 5;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .grid-7col {
-  grid-column: span 7 / span 7;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-column: span 7 / span 7;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
 .grid-8col {
-  grid-column: span 8 / span 8;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
+    grid-column: span 8 / span 8;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
 }
 
 .grid-9col {
-  grid-column: span 9 / span 9;
-  grid-template-columns: repeat(9, minmax(0, 1fr));
+    grid-column: span 9 / span 9;
+    grid-template-columns: repeat(9, minmax(0, 1fr));
 }
 
 .grid-10col {
-  grid-column: span 10 / span 10;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
+    grid-column: span 10 / span 10;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
 }
 
 .grid-11col {
-  grid-column: span 11 / span 11;
-  grid-template-columns: repeat(11, minmax(0, 1fr));
+    grid-column: span 11 / span 11;
+    grid-template-columns: repeat(11, minmax(0, 1fr));
 }
 
 .grid-12col {
-  grid-column: span 12 / span 12;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-column: span 12 / span 12;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
 }
 
 .flex-group-center,
 .flex-group-left,
 .flex-group-right {
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  text-align: center;
-  padding: 5px;
-  border: 1px solid #999;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    text-align: center;
+    padding: 5px;
+    border: 1px solid #999;
 }
 
 .flex-group-left {
-  -webkit-box-pack: start;
-  -ms-flex-pack: start;
-  justify-content: flex-start;
-  text-align: left;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    text-align: left;
 }
 
 .flex-group-right {
-  -webkit-box-pack: end;
-  -ms-flex-pack: end;
-  justify-content: flex-end;
-  text-align: right;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    text-align: right;
 }
 
 .flex-center {
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  text-align: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .flex-between {
-  -webkit-box-pack: justify;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
 }
 
 /* Styles limited to fortyk sheets */
 .fortyk .item-form {
-  font-family: "Roboto", sans-serif;
+    font-family: "Roboto", sans-serif;
 }
 
 .fortyk .sheet-header {
-  -webkit-box-flex: 0;
-  -ms-flex: 0 0 0px;
-  flex: 0 0 0px;
-  overflow: visible;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  -webkit-box-pack: start;
-  -ms-flex-pack: start;
-  justify-content: flex-start;
-  margin-bottom: 0px;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 0px;
+    flex: 0 0 0px;
+    overflow: visible;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    margin-bottom: 0px;
 }
 
 .fortyk .sheet-header .profile-img {
-  -webkit-box-flex: 0;
-  -ms-flex: 0 0 100px;
-  flex: 0 0 100px;
-  height: 100px;
-  margin-right: 10px;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 100px;
+    flex: 0 0 100px;
+    height: 100px;
+    margin-right: 10px;
 }
 .fortyk .sheet-main .header-fields {
-  -webkit-box-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
     flex-direction: column;
 }
 .fortyk .sheet-main .header-fields .descr{
@@ -172,7 +173,7 @@
     border: 1px solid #999;
     font-weight: bold;
     text-transform: uppercase;
-    
+
 }
 .fortyk .sheet-main .header-fields .creationOps{
     border:1px solid #999;
@@ -199,12 +200,12 @@
 }
 .fortyk .sheet-main .header-fields .characteristics  span.characteristicsSpan{
     font-weight: bold;
-   
-    
+
+
 }
 .fortyk .charSelect{
     width:100%;
-    
+
 }
 
 .fortyk .sheet-main .header-fields .char{
@@ -216,7 +217,7 @@
     border: 1px solid #999;
     justify-content: center;
     align-content: center;
-    
+
 }
 
 .char-total{
@@ -225,17 +226,17 @@
 }
 
 .fortyk .sheet-tabs {
-  -webkit-box-flex: 1;
- 
+    -webkit-box-flex: 1;
+
     height: 100px;
     font-weight:bold;
-    
+
 }
 
 .fortyk .sheet-body,
 .fortyk .sheet-body .tab,
 .fortyk .sheet-body .tab .editor {
-  height: 100%;
+    height: 100%;
 }
 .fortyk .sheet-body{
     flex: 1;
@@ -243,55 +244,60 @@
 }
 
 .fortyk .tox .tox-editor-container {
-  background: #fff;
+    background: #fff;
 }
 
 .fortyk .tox .tox-edit-area {
-  padding: 0 8px;
+    padding: 0 8px;
 }
 .fortyk .resource{
 
 }
 
 .fortyk .resource-label {
-  font-weight: bold;
-  text-transform: uppercase;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .fortyk .tabs {
-  border-top: 1px solid #AAA;
-  border-bottom: 1px solid #AAA;
-   
+    border-top: 1px solid #AAA;
+    border-bottom: 1px solid #AAA;
+
 }
 
 .fortyk .tabs .item {
-  line-height: 12px;
- height:100%;
+    line-height: 12px;
+    height:100%;
     width:100%;
-     border: 1px solid #999;
+    border: 1px solid #999;
     height:30px;
-   
+    padding-top:3px;
+
 }
 .fortyk .tabs .item.active {
-  text-decoration: underline;
-  text-shadow: none;
+    text-decoration: underline;
+    text-shadow: none;
     border: 3px solid #999;
 }
 .fortyk .skills{
-   
+
     border: 1px solid #AAA;
-   
-   
+
+
 }
 .fortyk .skills .skills-header{
-     border: 1px solid #AAA;
+    border: 1px solid #AAA;
     width:100%;
     grid-column:initial;
-    grid-template-columns: 30% 20% 20% 14% 16%;
+    grid-template-columns: 25% 15% 20% 14% 16% 5% 5% ;
     place-items: start stretch;
-     margin:0px;
-   
-    
+    margin:0px;
+
+
+}
+.fortyk .skills .skills-header .gap{
+    background-image:"" !important;
+    background-color: black !important;
 }
 .fortyk .skills .skills-header select{
     width:100%;
@@ -300,66 +306,79 @@
     border: 1px solid #AAA;
     font-weight:bold;
     padding:3px;
-   
+
 }
 .fortyk .skills .skillItem{
-     flex:1;
+    flex:1;
     grid-column:initial;
     width:100%;
     height:100%;
 
 }
-.fortyk .skills .skillButton{
-     
-  
-    width:100%;
-    height:100%;
 
-}
 .fortyk .skills .skills-header .skillSubItem{
     padding-left:10px !important;
+    height:100%;
 }
-
+.fortyk .skills .skills-header  .item-edit{
+    background-image: url("../icons/editicon.png") !important;
+    background-size: contain;
+    background-repeat: no-repeat;
+    width:30px !important; 
+    height:30px !important;
+    margin-left:3px;
+}
+.fortyk .skills .skills-header  .item-delete{
+    background-image: url("../icons/deleteicon.png") !important; 
+    background-size: contain;
+    background-repeat: no-repeat;
+    width:30px !important;
+    height:30px !important;
+    margin-left:3px;
+}
 
 
 .fortyk .items-list {
-  list-style: none;
-  margin: 7px 0;
-  padding: 0;
-  overflow-y: auto;
+    list-style: none;
+    margin: 7px 0;
+    padding: 0;
+    overflow-y: auto;
 }
 
 .fortyk .items-list .item-header {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .fortyk .items-list .item {
-  height: 30px;
-  line-height: 24px;
-  padding: 3px 0;
-  border-bottom: 1px solid #BBB;
-   
+    height: 30px;
+    line-height: 24px;
+    padding: 3px 0;
+    border-bottom: 1px solid #BBB;
+
 }
 
 .fortyk .items-list .item .item-image {
-  -webkit-box-flex: 0;
-  -ms-flex: 0 0 24px;
-  flex: 0 0 24px;
-  margin-right: 5px;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 24px;
+    flex: 0 0 24px;
+    margin-right: 5px;
 }
 
 .fortyk .items-list .item img {
-  display: block;
+    display: block;
 }
 
 .fortyk .items-list .item-name {
-  margin: 0;
+    margin: 0;
 }
 
 .fortyk .items-list .item-controls {
-  -webkit-box-flex: 0;
-  -ms-flex: 0 0 86px;
-  flex: 0 0 86px;
-  text-align: right;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 86px;
+    flex: 0 0 86px;
+    text-align: right;
+}
+.fortyk .new-skill{
+    font-weight 14px;
 }
 

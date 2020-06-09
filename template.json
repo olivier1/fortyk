@@ -1,332 +1,700 @@
 {
-	"Actor": {
-		"types": ["dwPC", "owPC", "dhPC", "NPC"],
-		"templates": {
-			"description": {
-				"name": "",
-				"sex": "",
-				"age": "",
-				"build": "",
-				"hair": "",
-				"eye": "",
-				"race": ""
-			},
-			"creationOptions": {
-				"eliteAdvances": "",
-				"quirks": "",
-				"superstitions": "",
-				"momentos": ""
-			},
-			"creationOptionsDH2": {
-				"homeWorld": "",
-				"background": "",
-				"role": ""
-			},
-			"creationOptionsDW": {
-				"chapter": "",
-				"background": "",
-				"role": ""
-			},
-			"creationOptionsOW": {
-				"homeWorld/Regiment": "",
-				"specialty": ""
-			},
-			"characters": {
-				"secChar": {
-					"wounds": {
-						"min": -10,
-						"value": 10,
-						"max": 10
-					},
-					"fatigue": {
-						"min": 0,
-						"value": 0,
-						"max": 6
-					},
-					"initiative": {
-						"roll": "1d10",
-						"bonus": 0,
-						"char": "Ag"
-					},
-					"fate": {
-						"min": 0,
-						"value": 3,
-						"max": 3
-					},
-					"corruption": {
-						"value": 0
-					},
-					"insanity": {
-						"value": 0,
-						"shock": ""
-					},
-					"injuries": []
-				},
-				"statuses": {
-					"fire": false,
-					"prone": false,
-					"stunned": 0,
-					"bleeding": 0,
-					"shock": false,
-					"pinned": false,
-					"helpless": false
-				},
-				"characteristics": {
-					"ws": {
-						"value": 30,
-						"mod": 0,
-						"advance": 0,
-						"total": 0,
-						"bonus": 0,
-						"uB": 0
-					},
-					"bs": {
-						"value": 30,
-						"mod": 0,
-						"advance": 0,
-						"total": 0,
-						"bonus": 0,
-						"uB": 0
-					},
-					"s": {
-						"value": 30,
-						"mod": 0,
-						"advance": 0,
-						"total": 0,
-						"bonus": 0,
-						"uB": 0
-					},
-					"t": {
-						"value": 30,
-						"mod": 0,
-						"advance": 0,
-						"total": 0,
-						"bonus": 0,
-						"uB": 0
-					},
-					"ag": {
-						"value": 30,
-						"mod": 0,
-						"advance": 0,
-						"total": 0,
-						"bonus": 0,
-						"uB": 0
-					},
-					"int": {
-						"value": 30,
-						"mod": 0,
-						"advance": 0,
-						"total": 0,
-						"bonus": 0,
-						"uB": 0
-					},
-					"per": {
-						"value": 30,
-						"mod": 0,
-						"advance": 0,
-						"total": 0,
-						"bonus": 0,
-						"uB": 0
-					},
-					"wp": {
-						"value": 30,
-						"mod": 0,
-						"advance": 0,
-						"total": 0,
-						"bonus": 0,
-						"uB": 0
-					},
-					"fel": {
-						"value": 30,
-						"mod": 0,
-						"advance": 0,
-						"total": 0,
-						"bonus": 0,
-						"uB": 0
-					}
-				},
-				"characterHitLocations": {
-					"head": {
-						"armor": 30
-					},
-					"body": {
-						"armor": 30
-					},
-					"rArm": {
-						"armor": 30
-					},
-					"lArm": {
-						"armor": 30
-					},
-					"rLeg": {
-						"armor": 30
-					},
-					"lLeg": {
-						"armor": 30
-					}
-
-				},
-				"psykana": {
-					"pr": 0,
-					"type": ["None", "Bound", "Unbound", "Daemon"],
-					"modifier": 0
-				}
-			},
-			"player": {
-
-				"experience": {
-					"spent": 0,
-					"starting": 2000,
-					"earned": 0,
-					"value": 0
-				},
-				"inf": {
-					"value": 20,
-					"earned": 0,
-					"starting": 20
-				},
-				"globalMOD": {
-					"value": 0
-				}
-			}
-		},
-		"dwPC": {
-			"templates": ["description", "characters", "creationOptions", "creationOptionsDW", "player"]
-		},
-		"npc": {
-			"templates": ["description", "characters"],
-			"skills": "",
-			"talents&traits": ""
-		},
-		"dhPC": {
-			"templates": ["description", "characters", "creationOptions", "creationOptionsDH", "player"]
-
-		},
-		"owPC": {
-			"templates": ["description", "characters", "creationOptions", "creationOptionsOW", "player"]
-
-		}
-	},
-
-
-	"Item": {
-		"types": ["meleeWeapon", "rangedWeapon", "ammunition", "warGear", "cybernetic", "armor", "forceField", "mod", "consummable", "psychicPower", "skill", "mutation", "malignancy", "disorder", "talent&trait", "aptitude", "advancement", "mission"],
-		"templates": {
-			"weapon": {
-				"damageDice": "1d10",
-				"damageBonus": 0,
-				"pen": 0,
-				"special": "",
-				"range": 1,
-				"damageType": "",
-				"class": ""
-			},
-			"description": {
-				"name": "",
-				"description": ""
-			},
-			"physicalProp": {
-				"weight": 0,
-				"rarity": ""
-			},
-			"tableEntry": {
-				"min": 0,
-				"max": 0
-			}
-		},
-		"meleeWeapon": {
-			"templates": ["weapon", "description", "physicalProp"],
-			"mods": []
-		},
-		"rangedWeapon": {
-			"templates": ["weapon", "description", "physicalProp"],
-			"rof": [0, 0, 0],
-			"clip": 0,
-			"clipMax": 0,
-			"mods": [],
-			"ammo": {},
-			"reload": ""
-		},
-		"ammunition": {
-			"templates": ["weapon", "description", "physicalProp"],
-			"ammount": 0,
-			"ammountMax": 0,
-			"weapon": {}
-		},
-		"warGear": {
-			"templates": ["description", "physicalProp"]
-		},
-		"cybernetic": {
-			"templates": ["description", "physicalProp"],
-			"location": ""
-		},
-		"armor": {
-			"templates": ["description", "physicalProp"],
-			"maxAg": 0,
-			"ap": [0, 0, 0, 0, 0, 0]
-		},
-		"forceField": {
-			"templates": ["description", "physicalProp"],
-			"rating": 0,
-			"overload": 0
-		},
-		"mod": {
-			"templates": ["description", "physicalProp"]
-		},
-		"consummable": {
-			"templates": ["description", "physicalProp"],
-			"ammount": 0,
-			"ammountMax": 0
-		},
-		"psychicPower": {
-			"templates": ["weapon", "description"],
-			"action": "",
-			"subtype": "",
-			"discipline": "",
-			"testChar": "",
-			"testMod": 0,
-			"sustain": "",
-			"curPR": 0,
-			"reqs": ""
-		},
-		"skill": {
-			"templates": ["description"],
-            "parent":"",
-            "hasChildren":false,
-			"value": -20,
-			"characteristic": "",
-			"mod": 0,
-			"total": 0,
-			"label": "",
-            "aptitudes":"",
-            "skillUse":""
-		},
-		"mutation": {
-			"templates": ["description", "tableEntry"]
-
-		},
-		"malignancy": {
-			"templates": ["description", "tableEntry"]
-		},
-		"disorder": {
-			"templates": ["description", "tableEntry"]
-		},
-		"talent&trait": {
-			"templates": ["description"]
-		},
-		"aptitude": {
-			"templates": ["description"],
-			"label": ""
-		},
-		"advancement": {
-			"templates": ["description"],
-			"cost": 0
-		},
-		"mission": {
-			"templates": ["description"],
-			"exp": 0,
-			"inf": 0
-		}
-
-	}
+  "Actor": {
+    "types": [
+      "dwPC",
+      "owPC",
+      "dhPC",
+      "NPC"
+    ],
+    "templates": {
+      "description": {
+        "name": {
+          "value": "",
+          "type": "String"
+        },
+        "sex": {
+          "value": "",
+          "type": "String"
+        },
+        "age": {
+          "value": 0,
+          "type": "Number"
+        },
+        "build": {
+          "value": "",
+          "type": "String"
+        },
+        "hair": {
+          "value": "",
+          "type": "String"
+        },
+        "eye": {
+          "value": "",
+          "type": "String"
+        },
+        "race": {
+          "value": "",
+          "type": "String"
+        }
+      },
+      "creationOptions": {
+        "eliteAdvances": {
+          "value": "",
+          "type": "String"
+        },
+        "quirks": {
+          "value": "",
+          "type": "String"
+        },
+        "superstitions": {
+          "value": "",
+          "type": "String"
+        },
+        "momentos": {
+          "value": "",
+          "type": "String"
+        }
+      },
+      "creationOptionsDH2": {
+        "homeWorld": {
+          "value": "",
+          "type": "String"
+        },
+        "background": {
+          "value": "",
+          "type": "String"
+        },
+        "role": {
+          "value": "",
+          "type": "String"
+        }
+      },
+      "creationOptionsDW": {
+        "chapter": {
+          "value": "",
+          "type": "String"
+        },
+        "background": {
+          "value": "",
+          "type": "String"
+        },
+        "role": {
+          "value": "",
+          "type": "String"
+        }
+      },
+      "creationOptionsOW": {
+        "homeWorld/Regiment": {
+          "value": "",
+          "type": "String"
+        },
+        "specialty": {
+          "value": "",
+          "type": "String"
+        }
+      },
+      "characters": {
+        "secChar": {
+          "wounds": {
+            "type": "Number",
+            "min": -10,
+            "value": 10,
+            "max": 10
+          },
+          "fatigue": {
+            "type": "Number",
+            "min": 0,
+            "value": 0,
+            "max": 6
+          },
+          "initiative": {
+            "roll": "1d10",
+            "bonus": 0,
+            "char": "Ag"
+          },
+          "fate": {
+            "type": "Number",
+            "min": 0,
+            "value": 3,
+            "max": 3
+          },
+          "corruption": {
+            "value": 0,
+            "type": "Number"
+          },
+          "insanity": {
+            "type": "Number",
+            "value": 0,
+            "shock": ""
+          },
+          "injuries": [],
+          "hands": {
+            "rightHand": {
+              "_id": "",
+              "type": "String"
+            },
+            "leftHand": {
+              "_id": "",
+              "type": "String"
+            }
+          }
+        },
+        "statuses": {
+          "fire": false,
+          "prone": false,
+          "stunned": 0,
+          "bleeding": 0,
+          "shock": false,
+          "pinned": false,
+          "helpless": false
+        },
+        "characteristics": {
+          "ws": {
+            "type": "Number",
+            "value": 30,
+            "mod": 0,
+            "advance": 0,
+            "total": 0,
+            "bonus": 0,
+            "uB": 0
+          },
+          "bs": {
+            "type": "Number",
+            "value": 30,
+            "mod": 0,
+            "advance": 0,
+            "total": 0,
+            "bonus": 0,
+            "uB": 0
+          },
+          "s": {
+            "type": "Number",
+            "value": 30,
+            "mod": 0,
+            "advance": 0,
+            "total": 0,
+            "bonus": 0,
+            "uB": 0
+          },
+          "t": {
+            "type": "Number",
+            "value": 30,
+            "mod": 0,
+            "advance": 0,
+            "total": 0,
+            "bonus": 0,
+            "uB": 0
+          },
+          "ag": {
+            "type": "Number",
+            "value": 30,
+            "mod": 0,
+            "advance": 0,
+            "total": 0,
+            "bonus": 0,
+            "uB": 0
+          },
+          "int": {
+            "type": "Number",
+            "value": 30,
+            "mod": 0,
+            "advance": 0,
+            "total": 0,
+            "bonus": 0,
+            "uB": 0
+          },
+          "per": {
+            "type": "Number",
+            "value": 30,
+            "mod": 0,
+            "advance": 0,
+            "total": 0,
+            "bonus": 0,
+            "uB": 0
+          },
+          "wp": {
+            "type": "Number",
+            "value": 30,
+            "mod": 0,
+            "advance": 0,
+            "total": 0,
+            "bonus": 0,
+            "uB": 0
+          },
+          "fel": {
+            "type": "Number",
+            "value": 30,
+            "mod": 0,
+            "advance": 0,
+            "total": 0,
+            "bonus": 0,
+            "uB": 0
+          }
+        },
+        "characterHitLocations": {
+          "head": {
+            "value": 30,
+            "type": "Number"
+          },
+          "body": {
+            "value": 30,
+            "type": "Number"
+          },
+          "rArm": {
+            "value": 30,
+            "type": "Number"
+          },
+          "lArm": {
+            "value": 30
+          },
+          "type": "Number",
+          "rLeg": {
+            "value": 30,
+            "type": "Number"
+          },
+          "lLeg": {
+            "value": 30,
+            "type": "Number"
+          }
+        },
+        "psykana": {
+          "pr": {
+            "value": 0,
+            "type": "Number"
+          },
+          "psykerType": [
+            "None",
+            "Bound",
+            "Unbound",
+            "Daemon"
+          ],
+          "modifier": {
+            "value": 0,
+            "type": "Number"
+          }
+        }
+      },
+      "player": {
+        "experience": {
+          "type": "Number",
+          "spent": 0,
+          "starting": 2000,
+          "earned": 0,
+          "value": 0
+        },
+        "inf": {
+          "type": "Number",
+          "value": 20,
+          "earned": 0,
+          "starting": 20
+        },
+        "globalMOD": {
+          "value": 0,
+          "type": "Number"
+        }
+      }
+    },
+    "dwPC": {
+      "templates": [
+        "description",
+        "characters",
+        "creationOptions",
+        "creationOptionsDW",
+        "player"
+      ]
+    },
+    "npc": {
+      "templates": [
+        "description",
+        "characters"
+      ],
+      "skills": {
+        "value": "",
+        "type": "String"
+      },
+      "talentsntraits": {
+        "value": "",
+        "type": "String"
+      }
+    },
+    "dhPC": {
+      "templates": [
+        "description",
+        "characters",
+        "creationOptions",
+        "creationOptionsDH",
+        "player"
+      ]
+    },
+    "owPC": {
+      "templates": [
+        "description",
+        "characters",
+        "creationOptions",
+        "creationOptionsOW",
+        "player"
+      ]
+    }
+  },
+  "Item": {
+    "types": [
+      "meleeWeapon",
+      "rangedWeapon",
+      "ammunition",
+      "warGear",
+      "cybernetic",
+      "armor",
+      "forceField",
+      "mod",
+      "consummable",
+      "psychicPower",
+      "skill",
+      "mutation",
+      "malignancy",
+      "disorder",
+      "talentntrait",
+      "aptitude",
+      "advancement",
+      "mission"
+    ],
+    "templates": {
+      "weapon": {
+        "damageDice": {
+          "value": "1d10",
+          "type": "String"
+        },
+        "damageBonus": {
+          "value": 0,
+          "type": "Number"
+        },
+        "pen": {
+          "value": 0,
+          "type": "Number"
+        },
+        "special": {
+          "type": "String",
+          "value": ""
+        },
+        "range": {
+          "value": 1,
+          "type": "Number"
+        },
+        "damageType": {
+          "value": "",
+          "type": "String"
+        },
+        "class": {
+          "value": "",
+          "type": "String"
+        }
+      },
+      "description": {
+        "name": {
+          "value": "",
+          "type": "String"
+        },
+        "description": {
+          "value": "",
+          "type": "String"
+        }
+      },
+      "physicalProp": {
+        "weight": {
+          "value": 0,
+          "type": "Number"
+        },
+        "rarity": {
+          "value": "",
+          "type": "String"
+        }
+      },
+      "tableEntry": {
+        "min": {
+          "value": 0,
+          "type": "Number"
+        },
+        "max": {
+          "value": 0,
+          "type": "Number"
+        }
+      }
+    },
+    "meleeWeapon": {
+      "templates": [
+        "weapon",
+        "description",
+        "physicalProp"
+      ],
+      "mods": []
+    },
+    "rangedWeapon": {
+      "templates": [
+        "weapon",
+        "description",
+        "physicalProp"
+      ],
+      "rof": [
+        {
+          "value": 0,
+          "type": "Number"
+        },
+        {
+          "value": 0,
+          "type": "Number"
+        },
+        {
+          "value": 0,
+          "type": "Number"
+        }
+      ],
+      "clip": {
+        "value": 0,
+        "max": 0,
+        "type": "Number"
+      },
+      "mods": [],
+      "ammo": {},
+      "reload": {
+        "value": "",
+        "type": "String"
+      }
+    },
+    "ammunition": {
+      "templates": [
+        "weapon",
+        "description",
+        "physicalProp"
+      ],
+      "ammount": {
+        "value": 0,
+        "type": "Number"
+      },
+      "ammountMax": {
+        "value": 0,
+        "type": "Number"
+      },
+      "weapon": {
+        "_id": "",
+        "type": "String"
+      }
+    },
+    "warGear": {
+      "templates": [
+        "description",
+        "physicalProp"
+      ]
+    },
+    "cybernetic": {
+      "templates": [
+        "description",
+        "physicalProp"
+      ],
+      "location": {
+        "value": "",
+        "type": "String"
+      }
+    },
+    "armor": {
+      "templates": [
+        "description",
+        "physicalProp"
+      ],
+      "maxAg": {
+        "value": 0,
+        "type": "Number"
+      },
+      "ap": [
+        {
+          "value": 0,
+          "type": "Number"
+        },
+        {
+          "value": 0,
+          "type": "Number"
+        },
+        {
+          "value": 0,
+          "type": "Number"
+        },
+        {
+          "value": 0,
+          "type": "Number"
+        },
+        {
+          "value": 0,
+          "type": "Number"
+        },
+        {
+          "value": 0,
+          "type": "Number"
+        }
+      ]
+    },
+    "forceField": {
+      "templates": [
+        "description",
+        "physicalProp"
+      ],
+      "rating": {
+        "value": 0,
+        "type": "Number"
+      },
+      "overload": {
+        "value": 0,
+        "type": "Number"
+      }
+    },
+    "mod": {
+      "templates": [
+        "description",
+        "physicalProp"
+      ]
+    },
+    "consummable": {
+      "templates": [
+        "description",
+        "physicalProp"
+      ],
+      "ammount": {
+        "value": 0,
+        "max": 0,
+        "type": "Number"
+      }
+    },
+    "psychicPower": {
+      "templates": [
+        "weapon",
+        "description"
+      ],
+      "action": {
+        "value": "",
+        "type": "String"
+      },
+      "subtype": {
+        "value": "",
+        "type": "String"
+      },
+      "discipline": {
+        "value": "",
+        "type": "String"
+      },
+      "testChar": {
+        "value": "",
+        "type": "String"
+      },
+      "testMod": {
+        "value": 0,
+        "type": "Number"
+      },
+      "sustain": {
+        "value": "",
+        "type": "String"
+      },
+      "curPR": {
+        "value": 0,
+        "number": "String"
+      },
+      "reqs": {
+        "value": "",
+        "type": "String"
+      }
+    },
+    "skill": {
+      "templates": [
+        "description"
+      ],
+      "parent": {
+        "value": "",
+        "type": "String"
+      },
+      "hasChildren": {
+        "value": false,
+        "type": "Boolean"
+      },
+      "type": "Number",
+      "value": -20,
+      "characteristic": {
+        "type": "String",
+        "value": ""
+      },
+      "mod": {
+        "value": 0,
+        "type": "Number"
+      },
+      "total": {
+        "value": 0,
+        "type": "Number"
+      },
+      "label": {
+        "value": "",
+        "type": "String"
+      },
+      "aptitudes": {
+        "value": "",
+        "type": "String"
+      },
+      "skillUse": {
+        "value": "",
+        "type": "String"
+      }
+    },
+    "mutation": {
+      "templates": [
+        "description",
+        "tableEntry"
+      ]
+    },
+    "malignancy": {
+      "templates": [
+        "description",
+        "tableEntry"
+      ]
+    },
+    "disorder": {
+      "templates": [
+        "description",
+        "tableEntry"
+      ]
+    },
+    "talentntrait": {
+      "templates": [
+        "description"
+      ],
+      "aptitudes": {
+        "value": "",
+        "type": "String"
+      }
+    },
+    "aptitude": {
+      "templates": [
+        "description"
+      ],
+      "label": {
+        "value": "",
+        "type": "String"
+      }
+    },
+    "advancement": {
+      "templates": [
+        "description"
+      ],
+      "cost": {
+        "value": 0,
+        "type": "Number"
+      }
+    },
+    "mission": {
+      "templates": [
+        "description"
+      ],
+      "exp": {
+        "value": 0,
+        "type": "Number"
+      },
+      "inf": {
+        "value": 0,
+        "type": "Number"
+      }
+    }
+  }
 }

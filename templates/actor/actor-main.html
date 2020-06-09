@@ -13,61 +13,61 @@
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Age:</span>
-                <input name="data.age" type="text" value="{{data.age}}" placeholder="??"/>
+                <input name="data.age.value" type="text" value="{{data.age.value}}" placeholder="??"/>
             </div>
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Race:</span>
-                <input name="data.race" type="text" value="{{data.race}}" placeholder="Astartes"/>
+                <input name="data.race.value" type="text" value="{{data.race.value}}" placeholder="Astartes"/>
             </div>
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Build:</span>
-                <input name="data.build" type="text" value="{{data.build}}" placeholder="??"/>
+                <input name="data.build.value" type="text" value="{{data.build.value}}" placeholder="??"/>
             </div>
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Hair:</span>
-                <input name="data.hair" type="text" value="{{data.hair}}" placeholder="bald"/>
+                <input name="data.hair.value" type="text" value="{{data.hair.value}}" placeholder="bald"/>
             </div>
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Eye:</span>
-                <input name="data.eye" type="text" value="{{data.eye}}" placeholder="??"/>
+                <input name="data.eye.value" type="text" value="{{data.eye.value}}" placeholder="??"/>
             </div>
             <div class="descrRow flexcol">
                 <span class="descrSpan">Quirks:</span>
-                <input name="data.quirks" type="text" value="{{data.quirks}}" placeholder="??"/>
+                <input name="data.quirks.value" type="text" value="{{data.quirks.value}}" placeholder="??"/>
             </div>
             <div class="descrRow flexcol">
                 <span class="descrSpan">Superstitions:</span>
-                <input name="data.superstitions" type="text" value="{{data.superstitions}}" placeholder="??"/>
+                <input name="data.superstitions.value" type="text" value="{{data.superstitions.value}}" placeholder="??"/>
             </div>
             <div class="descrRow flexcol">
                 <span class="descrSpan">momentos:</span>
-                <input name="data.momentos" type="text" value="{{data.momentos}}" placeholder="??"/>
+                <input name="data.momentos.value" type="text" value="{{data.momentos.value}}" placeholder="??"/>
             </div>
 
         </div>
         <div class="creationOps grid grid-3col">
             <div class="creationRow flexcol">
                 <span class="descrSpan">Chapter:</span>
-                <input name="data.chapter" type="text" value="{{data.chapter}}" placeholder="???"/>
+                <input name="data.chapter.value" type="text" value="{{data.chapter.value}}" placeholder="???"/>
             </div>
             <div class="creationRow flexcol">
                 <span class="descrSpan">Background:</span>
-                <input name="data.background" type="text" value="{{data.background}}" placeholder="???"/>
+                <input name="data.background.value" type="text" value="{{data.background.value}}" placeholder="???"/>
             </div>
             <div class="creationRow flexcol">
                 <span class="descrSpan">Role:</span>
-                <input name="data.role" type="text" value="{{data.role}}" placeholder="???"/>
+                <input name="data.role.value" type="text" value="{{data.role.value}}" placeholder="???"/>
             </div>
 
         </div>
         <div class="eliteAdvances flexcol">
 
             <span class="descrSpan">Elite Advances:</span>
-            <input name="data.eliteAdvances" type="text" value="{{data.eliteAdvances}}" placeholder="???"/>
+            <input name="data.eliteAdvances.value" type="text" value="{{data.eliteAdvances.value}}" placeholder="???"/>
 
         </div>
         <div class="resources flexrow">
@@ -190,7 +190,7 @@
             </div>
             {{#each data.characteristics as |char key|}}
             <div class="charCross flexcol flex-group-center">
-                <span class="char-total rollable " data-roll="d100<@characteristics.{{key}}.total" data-label="{{key}}">{{char.total}}</span>
+                <span class="char-total rollable " data-roll="d100<@characteristics.{{key}}.total" data-label="{{key}}" title="Bonus: {{char.bonus}}">{{char.total}}</span>
             </div>
             {{/each}}
 

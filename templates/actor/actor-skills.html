@@ -2,32 +2,36 @@
 
 
 <div class="skills flexcol">
-    <a class="create-skill" title="Add new skill">New Skill</a>
-    <div class="skills-header grid grid-5col">
-        <span class="skillItem">SKILL</span>
-        <span class="skillItem">CHAR</span>
-        <span class="skillItem">RANK</span>
-        <span class="skillItem">TEMP</span>
-        <span class="skillItem">TOTAL</span>
+    <a class="item-create" data-type="skill" title="Add new skill">New Skill</a>
+    <div class="skills-header grid grid-7col">
+        <span class="skillItem">Skill</span>
+        <span class="skillItem">Characteristic</span>
+        <span class="skillItem">Rank</span>
+        <span class="skillItem">Temporary</span>
+        <span class="skillItem">Total</span>
+        <span class="skillItem">Edit</span>
+        <span class="skillItem">Del.</span>
     </div>
     
     {{#each actor.skills as |skill key|}}
     {{#if skill.data.hasChildren.value}}
-    <div class="skills-header grid grid-5col">
-        <span class="skillItem">{{skill.data.label.value}}</span>
-        <span hidden></span>
-        <span hidden></span>
-        <span hidden></span>
-        <span hidden></span>
-
+    
+    <div class="skills-header grid grid-7col">
+        <span class="skillItem item-descr" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{skill.data.label.value}}</span>
+        <span class="skillItem" ></span>
+        <span class="skillItem" ></span>
+        <span class="skillItem" ></span>
+        <span class="skillItem" ></span>
+        <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{skill._id}}"></a>
+        <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{skill._id}}"></a>
 
     </div>
     {{#each ../actor.skills as |spec a|}}
     
    
-    {{#if (compareString spec.data.parent.value skill.data.name.value)}}
-    <div class="skills-header grid grid-5col">
-        <span class="skillSubItem" padding-left="10px">{{spec.data.label.value}}</span>
+    {{#if (compareString skill.data.name.value spec.data.parent.value )}}
+    <div class="skills-header grid grid-7col">
+        <span class="skillSubItem item-descr" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{spec.data.label.value}}</span>
         <select data-item-id="{{spec._id}}" class="skillItem skill-char" >
             {{#select spec.data.characteristic.value}}
             <option value="ws">WS</option>
@@ -42,7 +46,7 @@
             {{/select}}
         </select>
         <select  data-item-id="{{spec._id}}" class="skillItem skill-adv">
-            {{#select spec.data.value.value}}
+            {{#select spec.data.value}}
             <option value="-20">Untrained</option>
             <option value="0">Known</option>
             <option value="10">Trained</option>
@@ -53,24 +57,21 @@
         <input data-item-id="{{spec._id}}" class="skillItem skill-mod" type="text" value="{{spec.data.mod.value}}" data-dtype="Number"/>
 
         <span data-item-id="{{spec._id}}" class="rollable skillItem" data-roll="d100" data-label="{{a}}">{{spec.data.total.value}}</span>
-
+        <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{spec._id}}"></a>
+        <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{spec._id}}"></a>
 
     </div>
     {{/if}}
     {{/each}}
 
-    <div class="skills-header grid grid-5col">
-        <span class="skillItem"></span>
-        <span hidden></span>
-        <span  hidden></span>
-        <span  hidden></span>
-        <span  hidden></span>
-
+    <div class="skills-header flexrow">
+        <span class="skillItem gap"></span>
+    
 
     </div>
-    {{else unless (compareString skill.data.parent.value )}}
-    <div class="skills-header grid grid-5col">
-        <span class="skillItem">{{skill.data.label.value}}</span>
+    {{else if (compareString skill.data.parent.value "empty")}}
+    <div class="skills-header grid grid-7col">
+        <span class="skillItem item-descr" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{skill.data.label.value}}</span>
         <select  data-item-id="{{skill._id}}" class="skillItem skill-char">
             {{#select skill.data.characteristic.value}}
             <option value="ws">WS</option>
@@ -85,7 +86,7 @@
             {{/select}}
         </select>
         <select data-item-id="{{skill._id}}" class="skillItem skill-adv">
-            {{#select skill.data.value.value}}
+            {{#select skill.data.value}}
             <option value="-20">Untrained</option>
             <option value="0">Known</option>
             <option value="10">Trained</option>
@@ -96,7 +97,8 @@
         <input data-item-id="{{skill._id}}" class="skillItem skill-mod" type="text" value="{{skill.data.mod.value}}" data-dtype="Number"/>
 
         <span class="rollable skillItem" data-roll="d100" data-label="{{key}}">{{skill.data.total.value}}</span>
-
+        <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{skill._id}}"></a>
+        <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{skill._id}}"></a>
 
     </div>
 

@@ -16,9 +16,13 @@ export class FortyKItemSheet extends ItemSheet {
 
   /** @override */
   get template() {
-    const path = "systems/fortyk/templates/item";
+      
+    let type = this.item.type;
+    return `systems/fortyk/templates/item/item-${type}-sheet.html`;
+  
+  
     // Return a single sheet for all item types.
-    return `${path}/item-sheet.html`;
+    
     // Alternatively, you could use the following return statement to do a
     // unique item sheet by type, like `weapon-sheet.html`.
 
@@ -30,6 +34,13 @@ export class FortyKItemSheet extends ItemSheet {
   /** @override */
   getData() {
     const data = super.getData();
+      
+      if(this.item.type==="skill"){
+          //GET THE SKILLS WITH CHILDREN
+          
+          data['skillgroups']=this.actor.items.filter(function(item){return item.data.data.hasChildren.value});
+          
+      }
     return data;
   }
 
@@ -54,5 +65,7 @@ export class FortyKItemSheet extends ItemSheet {
     if (!this.options.editable) return;
 
     // Roll handlers, click handlers, etc. would go here.
+     
   }
+  
 }

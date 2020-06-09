@@ -1,0 +1,71 @@
+
+<script>
+
+    document.getElementById('skill-type').addEventListener("change", _onParentChange, true);
+    function _onParentChange(event){
+
+        let children=document.getElementById("children");
+        if(event.currentTarget.value!==""){
+            children.disabled=true;
+            children.checked=false;
+
+        }else{
+            children.disabled=false;
+
+        }
+    }
+</script>
+<form class="new-skill flexcol">
+    <div class="flexrow">
+        <label>Skill Type:</label>
+        <select id="skill-type" class="skill-type" name="skillGroup" >
+
+            <option class="new-skill-select" value="" selected>New Skill</option>
+
+            {{#each skills as |skill key|}}
+
+            {{#if skill.data.hasChildren.value}}
+            <option class="new-skill-select" value="{{skill.data.name.value}}">{{skill.data.label.value}}</option>
+            {{/if}}
+            {{/each}}
+
+        </select>
+    </div>
+    <div class="flexrow">
+        <label>Specialisations:</label>
+        <input type="checkbox" class="skill-children" name="skillChildren" id="children">
+    </div>
+    <div class="flexrow">
+        <label>Name:</label>
+        <input type="text" class="name skill-dialog" name="skillName" data-dtype="String" autofocus required>
+    </div>
+    <div class="flex row">
+        <label>Characteristic</label>
+        <select class="skill-characteristic" name="skillChar">
+
+            <option value="ws">Weapon Skill</option>
+            <option value="bs">Ballistic Skill</option>
+            <option value="s">Strength</option>
+            <option value="t">Toughness</option>
+            <option value="ag">Agility</option>
+            <option value="int">Intelligence</option>
+            <option value="per">Perception</option>
+            <option value="wp">Willpower</option>
+            <option value="fel">Fellowship</option>   
+
+        </select>
+    </div>
+    <div class="flex-row">
+        <label>Aptitudes:</label>
+        <input type="text" class="aptitudes skill-dialog" name="skillAptitudes" data-dtype="String" required>
+    </div>
+    <div class="flex-row">
+        <label>Skill Use:</label>
+        <input type="text" class="skill-use skill-dialog" name="skillUse" data-dtype="String" required>
+    </div>
+    <div class="flex-col">
+        <label>Skill Description:</label>
+        <textarea type="text" class="skill-description skill-dialog" name="skillDescr" data-dtype="String"></textarea>
+    </div>
+
+</form>

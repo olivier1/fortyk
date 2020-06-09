@@ -58,8 +58,8 @@ export class FortyKActor extends Actor {
                 char.total=Math.ceil(char.total/2);
             }
         }
-        
-       
+
+
 
 
     }
@@ -87,13 +87,24 @@ export class FortyKActor extends Actor {
         //put all items in their respective containers
         for(let i of data.items){
             if(i.type=="skill"){
-              i.data.total.value=parseInt(i.data.value.value)+parseInt(i.data.mod.value)+parseInt(data.data.characteristics[i.data.characteristic.value].total);
-               
+                i.data.total.value=parseInt(i.data.value)+parseInt(i.data.mod.value)+parseInt(data.data.characteristics[i.data.characteristic.value].total);
+
                 skills.push(i);
             }
         }
-        skills.sort();
-        let preparedItems={skills:skills,
+
+        let sortedSkills=skills.sort(function compare(a, b) {
+            if (a.name<b.name) {
+                return -1;
+            }
+            if (a.name>b.name) {
+                return 1;
+            }
+            // a must be equal to b
+            return 0;
+        });
+        
+        let preparedItems={skills:sortedSkills,
                            wargear:wargear,
                            cybernetics:cybernetics,
                            forceFields:forceFields,
@@ -115,8 +126,10 @@ export class FortyKActor extends Actor {
     }
     prepare(){
         let preparedData = duplicate(this.data)
+
         // Call prepareItems first to organize and process OwnedItems
         mergeObject(preparedData, this.prepareItems());
+
         return preparedData;
     }
     //add a new skill to the skill list for the character
@@ -126,23 +139,56 @@ export class FortyKActor extends Actor {
         const $content=$(dlg);
 
         var skillName=$content.find('input[name="skillName"]').val().toLowerCase().replace(" ","");
-        var newSkill={value:-20,characteristic:$content.find('select[name="char"]').val(),mod:0,total:0,name:$content.find('input[name="skillName"]').val()};
+        var newSkill={
+            "type": "skill",
+            "name": skillName,
+            "data": {
+                "aptitudes": {
+                    "value": $content.find('input[name="skillAptitudes"]').val(),
+                    "type": "String"
+                },
+                "characteristic": {
+                    "type": "String",
+                    "value": $content.find('select[name="skillChar"]').val()
+                },
+                "description": {
+                    "value": $content.find('input[name="skillDescr"]').val(),
+                    "type": "String"
+                },
+                "hasChildren": {
+                    "value": $('input[name="skillCHildren"]').is(":checked"),
+                    "type": "Boolean"
+                },
+                "label": {
+                    "value": $content.find('input[name="skillName"]').val(),
+                    "type": "String"
+                },
+                "mod": {
+                    "value": 0,
+                    "type": "Number"
+                },
+                "parent": {
+                    "value": $content.find('select[name="skillGroup"]').val() ,
+                    "type": "String"
+                },
+                "skillUse": {
+                    "value": $content.find('input[name="skillUse"]').val(),
+                    "type": "String"
+                },
+                "total": {
+                    "value": 0,
+                    "type": "Number"
+                },
+                "type": "Number",
+                "value": -20
+            }
+        };
+
+        this.createEmbeddedEntity("OwnedItem",newSkill);
 
 
 
-        if($content.find('select[name="skillType"]').val()=="new"){
-            let target="data.skills."+skillName;
 
-
-
-        }else{
-
-            let special=data.skills[$content.find('select[name="skillType"]').val()];
-            //this.update({'data.skills['$content.find('select[name="skillType"]').val()'].specialties':newSkill})
-
-
-
-        }
 
 
 

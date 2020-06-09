@@ -1,37 +1,38 @@
 {
-  "name": "fortyk",
-  "title": "fortyk",
-  "description": "The fortyk system for FoundryVTT!",
-  "version": "1.0.0",
-  "minimumCoreVersion": "0.5.5",
-  "compatibleCoreVersion": "0.6.0",
-  "templateVersion": 2,
-  "author": "Olivier Bouchard Vanasse",
-  "esmodules": ["module/fortyk.js"],
-  "styles": ["css/fortyk.css"],
-  "scripts": [],
-  "packs": [ {
-      "name": "skills",
-      "label": "Skills",
-      "system": "fortyk",
-      "module": "fortyk",
-      "path": "./packs/skills.db",
-      "entity": "Item",
-      "tag" : "skill"
+    "name": "fortyk",
+    "title": "fortyk",
+    "description": "The fortyk system for FoundryVTT!",
+    "version": "1.0.0",
+    "minimumCoreVersion": "0.5.5",
+    "compatibleCoreVersion": "0.6.0",
+    "templateVersion": 2,
+    "author": "Olivier Bouchard Vanasse",
+    "esmodules": ["module/fortyk.js"],
+    "styles": ["css/fortyk.css"],
+    "scripts": [],
+    "packs": [ {
+        "name": "skills",
+        "label": "Skills",
+        "system": "fortyk",
+        "module": "fortyk",
+        "path": "./packs/skills.db",
+        "entity": "Item",
+        "tag" : "skill"
     }],
-  "languages": [
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "lang/en.json"
-    }
-  ],
-  "gridDistance": 1,
-  "gridUnits": "m",
-  "primaryTokenAttribute": "secChar.wounds",
-  "secondaryTokenAttribute": "secChar.fatigue",
-  "url": "",
-  "manifest": "",
-  "download": "",
-  "license": "LICENSE.txt"
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json"
+        }
+    ],
+    "gridDistance": 1,
+    "gridUnits": "m",
+    "primaryTokenAttribute": "secChar.wounds",
+    "secondaryTokenAttribute": "secChar.fatigue",
+    "socket":true,
+    "url": "",
+    "manifest": "",
+    "download": "",
+    "license": "LICENSE.txt"
 }
