@@ -1,3 +1,4 @@
+import {fortykTest} from "../fortyk-rolls.js";
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
@@ -12,7 +13,7 @@ export class FortyKActorSheet extends ActorSheet {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/actor-sheet.html",
             width: 600,
-            height: 600,
+            height: 660,
             tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }]
         });
     }
@@ -65,13 +66,14 @@ export class FortyKActorSheet extends ActorSheet {
 
     //Handle the popup when use clicks skill name to show item description
     _onSkillDescrGet(event){
+        event.preventDefault();
         let descr = event.target.attributes["data-item-descr"].value;
         var options = {
             width: 300,
             height: 400
         };
-        
-        
+
+
         let dlg = new Dialog({
             title: "Skill Description",
             content: "<p>"+descr+"</p>",
@@ -92,6 +94,7 @@ export class FortyKActorSheet extends ActorSheet {
     //Handle creating a new item, will sort the item type before making the new item
 
     _onItemCreate(event) {
+        event.preventDefault();
 
         var templateData = {
             actor: this.actor,
@@ -136,12 +139,14 @@ export class FortyKActorSheet extends ActorSheet {
     }
     //Edits the item that was clicked
     _onItemEdit(event){
+        event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;
-    const item = this.actor.items.find(i => i.data._id == itemId)
-    item.sheet.render(true);
+        const item = this.actor.items.find(i => i.data._id == itemId)
+        item.sheet.render(true);
     }
     //deletes the selected item from the actor
     _onItemDelete(event){
+        event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
         renderedTemplate.then(content => {
@@ -151,14 +156,14 @@ export class FortyKActorSheet extends ActorSheet {
                 buttons:{
                     submit:{
                         label:"Yes",
-                        callback: dlg => { this.actor.deleteEmbeddedEntity("OwnedItem", itemId);}
+                        callback: dlg => { this.actor.deleteItem(itemId);}
                     },
-                        cancel:{
-                            label: "No",
-                            callback: null
-                        }
+                    cancel:{
+                        label: "No",
+                        callback: null
+                    }
                 },
-                    default: "submit"
+                default: "submit"
             }).render(true)
         });
     }
@@ -169,7 +174,7 @@ export class FortyKActorSheet extends ActorSheet {
     */
     async _onSkillCharEdit(event){
 
-
+        event.preventDefault();
         let newChar=event.target.value;
         let dataItemId=event.target.attributes["data-item-id"].value;
         let item= duplicate(this.actor.getEmbeddedEntity("OwnedItem", dataItemId));
@@ -183,7 +188,7 @@ export class FortyKActorSheet extends ActorSheet {
     * @private
     */
     async _onSkillAdvEdit(event){
-
+        event.preventDefault();
         let newAdv=event.target.value;
         let dataItemId=event.target.attributes["data-item-id"].value;
         let item= duplicate(this.actor.getEmbeddedEntity("OwnedItem", dataItemId));
@@ -198,7 +203,7 @@ export class FortyKActorSheet extends ActorSheet {
     * @private
     */
     async _onSkillModEdit(event){
-
+        event.preventDefault();
         clearTimeout(event.currentTarget.timeout);
         event.currentTarget.timeout=setTimeout(async function(event, actor){
 
@@ -218,19 +223,41 @@ export class FortyKActorSheet extends ActorSheet {
    * @param {Event} event   The originating click event
    * @private
    */
-    _onRoll(event) {
+    async _onRoll(event) {
         event.preventDefault();
         const element = event.currentTarget;
         const dataset = element.dataset;
+        
+        let testType=dataset["rollType"];
+        
+        var testTarget=parseInt(dataset["target"]);
+        var testLabel=dataset["label"];
+       
+        var testChar=this.actor.data.data.characteristics[dataset["char"]];
+        
+        if(testType==="char"||testType==="skill"){
+            new Dialog({
+                title: `${testLabel} Test`,
+                content: `<p><label>Modifier:</label> <input type="text" name="modifier" value="0" autofocus/></p>`,
+                buttons: {
+                    submit: {
+                        label: 'OK',
+                        callback: (el) => {
+                            const bonus = Number($(el).find('input[name="modifier"]').val());
+                            console.log(testTarget);
+                            testTarget+=parseInt(bonus);
+                            fortykTest(testChar, testType, testTarget, this.actor, testLabel);
+                        }
+                    }
+                },
+                default: "submit",
+                
 
-        if (dataset.roll) {
-            let roll = new Roll(dataset.roll, this.actor.data.data);
-            let label = dataset.label ? `Rolling ${dataset.label}` : '';
-            roll.roll().toMessage({
-                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-                flavor: label
-            });
+                width: 500}
+            ).render(true);
         }
+
+
     }
 
 }

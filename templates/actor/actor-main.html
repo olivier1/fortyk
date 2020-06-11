@@ -93,9 +93,9 @@
             <div class="resource flex-group-center">
                 <label for="data.fatigue.value" class="resource-label">Influence</label>
                 <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.inf.starting" value="{{data.inf.starting}}" data-dtype="Number"/>
+                    <input type="text" name="data.characteristics.inf.value" value="{{data.characteristics.inf.value}}" data-dtype="Number"/>
                     <span> -> </span>
-                    <input type="text" name="data.inf.value" value="{{data.inf.value}}" data-dtype="Number" disabled/>
+                    <span class="char-total rollable " data-roll-type="char" data-target="{{data.characteristics.inf.total}}" data-label="{{data.characteristics.inf.label}}" data-char="inf">{{data.characteristics.inf.total}}</span>
                 </div>
             </div>
             <div class="resource flex-group-center">
@@ -129,10 +129,11 @@
             <span class="characteristicsSpan"></span>
 
             {{#each data.characteristics as |char key|}}
-
+            {{#unless (compareString key "inf")}}
             <div class="charCross flexcol flex-group-center">
                 <label for="data.characteristics.{{key}}.value" class="resource-label">{{key}}</label>
             </div>
+            {{/unless}}
             {{/each}}
 
 
@@ -141,25 +142,30 @@
                 </span>
             </div>
             {{#each data.characteristics as |char key|}}
+            {{#unless (compareString key "inf")}}
             <div>
                 <input type="text" name="data.characteristics.{{key}}.value" value="{{char.value}}" data-dtype="Number"/>
 
             </div>
+            {{/unless}}
             {{/each}}
 
             <div class="charCross flexcol flex-group-center">
                 <span class="characteristicsSpan">Unnat</span>
             </div>
             {{#each data.characteristics as |char key|}}
+            {{#unless (compareString key "inf")}}
             <div>
 
                 <input class="ub" type="text" name="data.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number"/>
             </div>
+            {{/unless}}
             {{/each}}
             <div class="charCross flexcol flex-group-center">  
                 <span class="characteristicsSpan">Adv</span>
             </div>
             {{#each data.characteristics as |char key|}}
+            {{#unless (compareString key "inf")}}
 
             <select class="charSelect" name="data.characteristics.{{key}}.advance" data-dtype="Number">
                 {{#select char.advance}}
@@ -171,7 +177,7 @@
                 <option value="25">25%</option>
                 {{/select}}
             </select>
-
+            {{/unless}}
             {{/each}}
 
 
@@ -179,9 +185,10 @@
                 <span class="characteristicsSpan">Temp</span>
             </div>
             {{#each data.characteristics as |char key|}}
+            {{#unless (compareString key "inf")}}
 
             <input type="text" name="data.characteristics.{{key}}.mod" value="{{char.mod}}" data-dtype="Number"/>
-
+            {{/unless}}
             {{/each}}
 
 
@@ -189,9 +196,11 @@
                 <span class="characteristicsSpan">Total</span>
             </div>
             {{#each data.characteristics as |char key|}}
+            {{#unless (compareString key "inf")}}
             <div class="charCross flexcol flex-group-center">
-                <span class="char-total rollable " data-roll="d100<@characteristics.{{key}}.total" data-label="{{key}}" title="Bonus: {{char.bonus}}">{{char.total}}</span>
+                <span class="char-total rollable " data-roll-type="char" data-target="{{char.total}}" data-label="{{char.label}}" data-char="{{key}}" title="Bonus: {{char.bonus}}">{{char.total}}</span>
             </div>
+            {{/unless}}
             {{/each}}
 
 

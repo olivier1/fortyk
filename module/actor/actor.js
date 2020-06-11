@@ -47,8 +47,13 @@ export class FortyKActor extends Actor {
         const data = actorData.data;
         //prepare characteristics data
         for (let [key, char] of Object.entries(data.characteristics)){
-            char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod)+parseInt(data.globalMOD.value);
-            char.bonus=Math.floor(char.total/10)+parseInt(char.uB);
+            if(key==="inf"){
+                
+            }else{
+              char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod)+parseInt(data.globalMOD.value);
+            char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
+            }
+            
         }
         data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
         //modify total characteristics depending on fatigue
@@ -87,6 +92,7 @@ export class FortyKActor extends Actor {
         //put all items in their respective containers
         for(let i of data.items){
             if(i.type=="skill"){
+               
                 i.data.total.value=parseInt(i.data.value)+parseInt(i.data.mod.value)+parseInt(data.data.characteristics[i.data.characteristic.value].total);
 
                 skills.push(i);
@@ -192,6 +198,22 @@ export class FortyKActor extends Actor {
 
 
 
+    }
+    //this function deletes items from an actor, certain items need more logic to process
+    deleteItem(itemId){
+        console.log(this.items);
+        let item=this.getEmbeddedEntity("OwnedItem",itemId);
+        //iterate through skills to delete all the children of a group skill
+        if(item.type==="skill"&&item.data.hasChildren){
+            let skills=this.items.filter(function(item){return item.type==="skill"});
+            for(let s of skills){                
+                if(s.data.data.parent.value===item.name){
+                    this.deleteEmbeddedEntity("OwnedItem",s._id);
+                }
+            }
+        }
+        this.deleteEmbeddedEntity("OwnedItem", itemId);
+        console.log(this.items);
     }
 
 }

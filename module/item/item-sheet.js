@@ -71,6 +71,7 @@ export class FortyKItemSheet extends ItemSheet {
     }
     //when changing parents check to see if the skill is part of a group if it is change the value of children to false
     async _onParentChange(event){
+        event.preventDefault();
         let value=event.currentTarget.value;
         console.log(value);
         if(value!==""){
@@ -91,6 +92,7 @@ export class FortyKItemSheet extends ItemSheet {
 
     } 
     async _onChildrenClick(event){
+        event.preventDefault();
         let value=event.currentTarget.checked;
         if(value){
             await this.item.update({'data.parent.value':""});

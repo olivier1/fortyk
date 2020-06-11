@@ -17,7 +17,7 @@
     {{#if skill.data.hasChildren.value}}
     
     <div class="skills-header grid grid-7col">
-        <span class="skillItem item-descr" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{skill.data.label.value}}</span>
+        <span class="skillItem skill-group item-descr" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{skill.data.label.value}}</span>
         <span class="skillItem" ></span>
         <span class="skillItem" ></span>
         <span class="skillItem" ></span>
@@ -43,7 +43,7 @@
             <option value="bs">BS</option>
             <option value="s">S</option>
             <option value="t">T</option>
-            <option value="ag">AG</option>
+            <option value="agi">AGI</option>
             <option value="int">INT</option>
             <option value="per">PER</option>
             <option value="wp">WP</option>
@@ -61,7 +61,7 @@
         </select>
         <input data-item-id="{{spec._id}}" class="skillItem skill-mod" type="text" value="{{spec.data.mod.value}}" data-dtype="Number"/>
 
-        <span data-item-id="{{spec._id}}" class="rollable skillItem" data-roll="d100" data-label="{{a}}">{{spec.data.total.value}}</span>
+        <span data-item-id="{{spec._id}}" class="rollable skillItem" data-roll-type="skill" data-target="{{spec.data.total.value}}" data-label="{{spec.data.label.value}}" data-char="{{spec.data.characteristic.value}}">{{spec.data.total.value}}</span>
         <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{spec._id}}"></a>
         <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{spec._id}}"></a>
 
@@ -83,7 +83,7 @@
             <option value="bs">BS</option>
             <option value="s">S</option>
             <option value="t">T</option>
-            <option value="ag">AG</option>
+            <option value="agi">AGI</option>
             <option value="int">INT</option>
             <option value="per">PER</option>
             <option value="wp">WP</option>
@@ -101,7 +101,7 @@
         </select>
         <input data-item-id="{{skill._id}}" class="skillItem skill-mod" type="text" value="{{skill.data.mod.value}}" data-dtype="Number"/>
 
-        <span class="rollable skillItem" data-roll="d100" data-label="{{key}}">{{skill.data.total.value}}</span>
+        <span class="rollable skillItem" data-roll-type="skill" data-target="{{skill.data.total.value}}" data-label="{{skill.data.label.value}}" data-char="{{skill.data.characteristic.value}}" >{{skill.data.total.value}}</span>
         <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{skill._id}}"></a>
         <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{skill._id}}"></a>
 

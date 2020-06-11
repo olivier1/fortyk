@@ -22,7 +22,7 @@
         "type": "Boolean"
       },
       "characteristic": {
-        "value": "ag",
+        "value": "agi",
         "type": "String"
       },
       "mod": {
@@ -406,7 +406,7 @@
         "type": "Boolean"
       },
       "characteristic": {
-        "value": "ag",
+        "value": "agi",
         "type": "String"
       },
       "mod": {
@@ -981,7 +981,7 @@
       },
       "value": -20,
       "characteristic": {
-        "value": "ag",
+        "value": "agi",
         "type": "String"
       },
       "mod": {
@@ -1029,7 +1029,7 @@
       },
       "value": -20,
       "characteristic": {
-        "value": "ag",
+        "value": "agi",
         "type": "String"
       },
       "mod": {
@@ -1076,7 +1076,7 @@
       },
       "value": -20,
       "characteristic": {
-        "value": "ag",
+        "value": "agi",
         "type": "String"
       },
       "mod": {
@@ -1124,7 +1124,7 @@
       },
       "value": -20,
       "characteristic": {
-        "value": "ag",
+        "value": "agi",
         "type": "String"
       },
       "mod": {
@@ -1412,7 +1412,7 @@
       },
       "value": -20,
       "characteristic": {
-        "value": "ag",
+        "value": "agi",
         "type": "String"
       },
       "mod": {
@@ -1460,7 +1460,7 @@
       },
       "value": -20,
       "characteristic": {
-        "value": "ag",
+        "value": "agi",
         "type": "String"
       },
       "mod": {
