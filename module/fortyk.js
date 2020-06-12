@@ -50,12 +50,11 @@ Hooks.once('init', async function() {
     Handlebars.registerHelper('isdefined', function (value) {
         return value !== undefined;
     });
-    Handlebars.registerHelper('compareString', function (str1, str2) {
-       
-        if(str2==="empty"){
-            return str1==="";    
-        }
+    Handlebars.registerHelper('compareString', function (str1, str2="") {
         
+        if(typeof str2!=="string"){
+            str2="";
+        }
         return str1===str2;
     });
     Handlebars.registerHelper("debug", function(optionalValue) {
@@ -67,6 +66,16 @@ Hooks.once('init', async function() {
             console.log("Value");
             console.log("====================");
             console.log(optionalValue);
+        }
+    });
+    Handlebars.registerHelper("contains", function(str1, str2) {
+        
+        if(str2===""){
+            
+            return true;
+        }else{
+            
+            return str1.toLowerCase().includes(str2.toLowerCase());
         }
     });
 });

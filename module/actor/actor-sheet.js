@@ -5,7 +5,10 @@ import {fortykTest} from "../fortyk-rolls.js";
  */
 export class FortyKActorSheet extends ActorSheet {
 
-
+    static async create(data, options) {
+        data.skillFilter="";
+        super.create(data,options);
+    }
     /** @override */
 
     static get defaultOptions() {
@@ -14,7 +17,8 @@ export class FortyKActorSheet extends ActorSheet {
             template: "systems/fortyk/templates/actor/actor-sheet.html",
             width: 600,
             height: 660,
-            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }]
+            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }],
+            default:null
         });
     }
 
@@ -29,8 +33,7 @@ export class FortyKActorSheet extends ActorSheet {
         mergeObject(data.actor,this.actor.prepare());
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
-
-
+        
         return data;
     }
 
@@ -56,7 +59,8 @@ export class FortyKActorSheet extends ActorSheet {
         html.find('.skill-mod').focusout(this._onSkillModEdit.bind(this));
         //get item description
         html.find('.item-descr').click(this._onSkillDescrGet.bind(this));
-
+        //filters
+        html.find('.filter').keydown(this._onFilterChange.bind(this));
         // Rollable abilities.
         html.find('.rollable').click(this._onRoll.bind(this));
     }
@@ -203,7 +207,7 @@ export class FortyKActorSheet extends ActorSheet {
     * @private
     */
     async _onSkillModEdit(event){
-        event.preventDefault();
+        
         clearTimeout(event.currentTarget.timeout);
         event.currentTarget.timeout=setTimeout(async function(event, actor){
 
@@ -244,7 +248,7 @@ export class FortyKActorSheet extends ActorSheet {
                         label: 'OK',
                         callback: (el) => {
                             const bonus = Number($(el).find('input[name="modifier"]').val());
-                            console.log(testTarget);
+                            
                             testTarget+=parseInt(bonus);
                             fortykTest(testChar, testType, testTarget, this.actor, testLabel);
                         }
@@ -253,11 +257,15 @@ export class FortyKActorSheet extends ActorSheet {
                 default: "submit",
                 
 
-                width: 500}
+                width:100}
             ).render(true);
         }
 
 
+    }
+    _onFilterChange(event){
+        
+        
     }
 
 }

@@ -14,11 +14,13 @@
 @font-face {
     font-family: "CaslonAntique";
     src: url('../fonts/CaslonAntique-Italic.ttf');
-    font-weight:italic;
+    font-style:italic;
 }
 .fortyk{
     font-size:14px;
     font-family: "CaslonAntique";
+    font-weight:normal;
+    font-style:normal;
 }
 
 .rollable:hover, .rollable:focus {
@@ -125,6 +127,12 @@
     -ms-flex-pack: center;
     justify-content: center;
     text-align: center;
+}
+.fortyk .button{
+    text-align:center;
+    border-style:inset;
+    border-color:dimgray;
+    border-width: medium;
 }
 
 .flex-between {

@@ -34,6 +34,9 @@ export class FortyKActor extends Actor {
         const actorData = this.data;
         const data = actorData.data;
         const flags = actorData.flags;
+        if(data.skillFilter===undefined){
+            data.skillFilter="";
+        }
 
         // Make separate methods for each Actor type (character, npc, etc.) to keep
         // things organized.
@@ -89,6 +92,7 @@ export class FortyKActor extends Actor {
         const rangedWeapons=[];
         const armors=[];
         const ammunitions=[];
+        
         //put all items in their respective containers
         for(let i of data.items){
             if(i.type=="skill"){
@@ -201,7 +205,7 @@ export class FortyKActor extends Actor {
     }
     //this function deletes items from an actor, certain items need more logic to process
     deleteItem(itemId){
-        console.log(this.items);
+        
         let item=this.getEmbeddedEntity("OwnedItem",itemId);
         //iterate through skills to delete all the children of a group skill
         if(item.type==="skill"&&item.data.hasChildren){
@@ -213,7 +217,7 @@ export class FortyKActor extends Actor {
             }
         }
         this.deleteEmbeddedEntity("OwnedItem", itemId);
-        console.log(this.items);
+        
     }
 
 }

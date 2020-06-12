@@ -14,10 +14,10 @@ export const fortykTest= async function(char, type, target, actor, label, ranged
     if(target>100){
         target=100;
     }
-    
+
     let roll=new Roll("1d100ms<@tar",{tar:target});
     roll.roll();
-    
+
     let template='systems/fortyk/templates/chat/chat-test.html';
     var templateOptions={
         title:"",
@@ -25,9 +25,10 @@ export const fortykTest= async function(char, type, target, actor, label, ranged
         target:"",
         pass:"",
         dos:""
+        
     }
     //prepare chat output
-   
+
     templateOptions["title"]="Rolling "+label+" test.";
     const testRoll=roll.dice[0].rolls[0].roll;
 
@@ -38,7 +39,7 @@ export const fortykTest= async function(char, type, target, actor, label, ranged
 
     //calculate degrees of failure and success
     if(testResult&&testRoll<96){
-        
+
         const testDos=Math.floor(Math.abs(roll._result)/10)+1+char.uB;
         templateOptions["dos"]="with "+testDos.toString()+" degrees of success!";
         templateOptions["pass"]="Pass!";
@@ -49,17 +50,19 @@ export const fortykTest= async function(char, type, target, actor, label, ranged
         if(testRoll>=96){
             templateOptions["pass"]="96+ is an automatic failure!"
         }else{
-           templateOptions["pass"]="Failure!"; 
+            templateOptions["pass"]="Failure!"; 
         }
-        
+
     }
+    
     //give the chat object options and stuff
     let renderedTemplate= await renderTemplate(template,templateOptions);
+
     var chatOptions={user: game.user._id,
                      speaker:{actor,alias:actor.name},
                      content:renderedTemplate,
                      classes:["fortyk"],
-
+                     roll:roll,
                      author:actor.name};
     ChatMessage.create(chatOptions,{});
 

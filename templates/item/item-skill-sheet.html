@@ -20,7 +20,7 @@
         </div>
         <div class="flexcol">
             <label>Specialisations:</label>
-        <input id="children" type="checkbox" class="skill-children" name="data.hasChildren.value" {{#if (compareString data.parent.value "empty")}} {{checked data.hasChildren.value}}{{else}} disabled {{/if}}>
+        <input id="children" type="checkbox" class="skill-children" name="data.hasChildren.value" {{#if (compareString data.parent.value)}} {{checked data.hasChildren.value}}{{else}} disabled {{/if}}>
         </div>
         <div class="flexcol">
             <label>Name:</label>

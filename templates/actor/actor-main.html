@@ -49,16 +49,16 @@
             </div>
 
         </div>
-        <div class="creationOps grid grid-3col">
-            <div class="creationRow flexcol">
+        <div class="descr grid grid-3col">
+            <div class="descrRow flexcol">
                 <span class="descrSpan">Chapter:</span>
                 <input name="data.chapter.value" type="text" value="{{data.chapter.value}}" placeholder="???"/>
             </div>
-            <div class="creationRow flexcol">
+            <div class="descrRow flexcol">
                 <span class="descrSpan">Background:</span>
                 <input name="data.background.value" type="text" value="{{data.background.value}}" placeholder="???"/>
             </div>
-            <div class="creationRow flexcol">
+            <div class="descrRow flexcol">
                 <span class="descrSpan">Role:</span>
                 <input name="data.role.value" type="text" value="{{data.role.value}}" placeholder="???"/>
             </div>
@@ -95,7 +95,7 @@
                 <div class="resource-content flexrow flex-center flex-between">
                     <input type="text" name="data.characteristics.inf.value" value="{{data.characteristics.inf.value}}" data-dtype="Number"/>
                     <span> -> </span>
-                    <span class="char-total rollable " data-roll-type="char" data-target="{{data.characteristics.inf.total}}" data-label="{{data.characteristics.inf.label}}" data-char="inf">{{data.characteristics.inf.total}}</span>
+                    <span class="char-total rollable button" data-roll-type="char" data-target="{{data.characteristics.inf.total}}" data-label="{{data.characteristics.inf.label}}" data-char="inf">{{data.characteristics.inf.total}}</span>
                 </div>
             </div>
             <div class="resource flex-group-center">
@@ -198,7 +198,7 @@
             {{#each data.characteristics as |char key|}}
             {{#unless (compareString key "inf")}}
             <div class="charCross flexcol flex-group-center">
-                <span class="char-total rollable " data-roll-type="char" data-target="{{char.total}}" data-label="{{char.label}}" data-char="{{key}}" title="Bonus: {{char.bonus}}">{{char.total}}</span>
+                <span class="char-total rollable button" data-roll-type="char" data-target="{{char.total}}" data-label="{{char.label}}" data-char="{{key}}" title="Bonus: {{char.bonus}}">{{char.total}}</span>
             </div>
             {{/unless}}
             {{/each}}

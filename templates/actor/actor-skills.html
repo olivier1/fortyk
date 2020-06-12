@@ -2,7 +2,12 @@
 
 
 <div class="skills flexcol">
-    <a class="item-create" data-type="skill" title="Add new skill">New Skill</a>
+    {{debug this}}
+    <div class="flexrow">
+        <input type="text"  placeholder="Filter" value="{{data.skillFilter}}" name="data.skillFilter">
+        <a class="item-create button" data-type="skill" title="Add new skill">New Skill</a>
+    </div>
+
     <div class="skills-header grid grid-7col">
         <span class="skillItem">Skill</span>
         <span class="skillItem">Characteristic</span>
@@ -12,10 +17,12 @@
         <span class="skillItem">Edit</span>
         <span class="skillItem">Del.</span>
     </div>
-    
+
     {{#each actor.skills as |skill key|}}
+
+    {{#if (contains skill.data.label.value ../data.skillFilter)}}
     {{#if skill.data.hasChildren.value}}
-    
+
     <div class="skills-header grid grid-7col">
         <span class="skillItem skill-group item-descr" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{skill.data.label.value}}</span>
         <span class="skillItem" ></span>
@@ -28,13 +35,13 @@
     </div>
     <div class="skills-header flexrow">
         <span class="skillItem gap"></span>
-    
+
 
     </div>
     {{#each ../actor.skills as |spec a|}}
-    
-   
-    {{#if (compareString skill.data.name.value spec.data.parent.value )}}
+
+
+    {{#if (compareString skill.data.name.value spec.data.parent.value)}}
     <div class="skills-header grid grid-7col">
         <span class="skillSubItem item-descr" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{spec.data.label.value}}</span>
         <select data-item-id="{{spec._id}}" class="skillItem skill-char" >
@@ -61,7 +68,7 @@
         </select>
         <input data-item-id="{{spec._id}}" class="skillItem skill-mod" type="text" value="{{spec.data.mod.value}}" data-dtype="Number"/>
 
-        <span data-item-id="{{spec._id}}" class="rollable skillItem" data-roll-type="skill" data-target="{{spec.data.total.value}}" data-label="{{spec.data.label.value}}" data-char="{{spec.data.characteristic.value}}">{{spec.data.total.value}}</span>
+        <span data-item-id="{{spec._id}}" class="rollable skillItem button" data-roll-type="skill" data-target="{{spec.data.total.value}}" data-label="{{spec.data.label.value}}" data-char="{{spec.data.characteristic.value}}">{{spec.data.total.value}}</span>
         <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{spec._id}}"></a>
         <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{spec._id}}"></a>
 
@@ -71,10 +78,10 @@
 
     <div class="skills-header flexrow">
         <span class="skillItem gap"></span>
-    
+
 
     </div>
-    {{else if (compareString skill.data.parent.value "empty")}}
+    {{else if (compareString skill.data.parent.value)}}
     <div class="skills-header grid grid-7col">
         <span class="skillItem item-descr" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{skill.data.label.value}}</span>
         <select  data-item-id="{{skill._id}}" class="skillItem skill-char">
@@ -101,12 +108,12 @@
         </select>
         <input data-item-id="{{skill._id}}" class="skillItem skill-mod" type="text" value="{{skill.data.mod.value}}" data-dtype="Number"/>
 
-        <span class="rollable skillItem" data-roll-type="skill" data-target="{{skill.data.total.value}}" data-label="{{skill.data.label.value}}" data-char="{{skill.data.characteristic.value}}" >{{skill.data.total.value}}</span>
+        <span class="rollable skillItem button" data-roll-type="skill" data-target="{{skill.data.total.value}}" data-label="{{skill.data.label.value}}" data-char="{{skill.data.characteristic.value}}" >{{skill.data.total.value}}</span>
         <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{skill._id}}"></a>
         <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{skill._id}}"></a>
 
     </div>
-
+    {{/if}}
     {{/if}}
     {{/each}}
 </div>

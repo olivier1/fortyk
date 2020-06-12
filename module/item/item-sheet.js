@@ -73,7 +73,7 @@ export class FortyKItemSheet extends ItemSheet {
     async _onParentChange(event){
         event.preventDefault();
         let value=event.currentTarget.value;
-        console.log(value);
+        
         if(value!==""){
             let item=this.item;
             if(item.data.data.hasChildren){
