@@ -1,0 +1,68 @@
+<form class="{{cssClass}} flexcol">
+    <div class="flexcol">
+        <label>Name:</label>
+        <input type="text" value="{{item.name}}" name="name">
+    </div>
+    <div class="flexcol">
+        <label>Action:</label>
+        <input type="text" value="{{data.action.value}}" name="data.action.value">
+    </div>
+    <div class="flexcol">
+        <label>Subtype:</label>
+        <input type="text" value="{{data.subtype.value}}" name="data.subtype.value">
+    </div>
+     <div class="flexcol">
+        <label>Discipline:</label>
+        <input type="text" value="{{data.discipline.value}}" name="data.discipline.value">
+    </div>
+    <div class="flexcol">
+        <label>Test Type:</label>
+        <input type="text" value="{{data.testChar.value}}" name="data.testChar.value">
+        <select class="power-type" name="data.testChar.type">
+                {{#select data.testChar.type}}
+                <option value="char">Characteristic</option>
+                <option value="skill">Skill</option>  
+               {{/select}}
+            </select>
+    </div>
+    <div class="flexcol">
+        <label>Modifier:</label>
+        <input type="text" value="{{data.mod.value}}" name="data.mod.value">
+    </div>
+    <div class="flexcol">
+        <label>Sustain:</label>
+        <input type="text" value="{{data.sustain.value}}" name="data.sustain.value">
+    </div>
+    <div class="flexcol">
+        <label>Requirements:</label>
+        <input type="text" value="{{data.reqs.value}}" name="data.reqs.value">
+    </div>
+    <div class="flexcol">
+        <label>Range:</label>
+        <input type="text" value="{{data.range.value}}" name="data.range.value">
+    </div>
+    <div class="flexcol">
+        <label>Damage:</label>
+        <input type="text" value="{{data.damageFormula.value}}" name="data.damageFormula.value">
+    </div>
+    <div class="flexcol">
+        <label>Penetration:</label>
+        <input type="text" value="{{data.pen.value}}" name="data.pen.value">
+    </div>
+    <div class="flexcol">
+        <label>Special:</label>
+        <input type="text" value="{{data.special.value}}" name="data.special.value">
+    </div>
+    <div class="flexcol">
+        <label>Damage Type:</label>
+        <input type="text" value="{{data.damageType.value}}" name="data.damageType.value">
+    </div>
+    <div class="flexcol">
+        <label>Power Type:</label>
+        <input type="text" value="{{data.class.value}}" name="data.class.value">
+    </div>
+    <div class="flexcol">
+        <label>Description:</label>
+        <textarea type="text" name="data.description.value">{{data.description.value}}</textarea>
+    </div>
+</form>

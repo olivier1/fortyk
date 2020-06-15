@@ -1,5 +1,6 @@
 
 import {getSkills} from "../utilities.js";
+import {FORTYK} from "../FortykConfig.js";
 /**
  * Extend the base Actor entity by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
@@ -51,12 +52,12 @@ export class FortyKActor extends Actor {
         //prepare characteristics data
         for (let [key, char] of Object.entries(data.characteristics)){
             if(key==="inf"){
-                
+
             }else{
-              char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod)+parseInt(data.globalMOD.value);
-            char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
+                char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod)+parseInt(data.globalMOD.value);
+                char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
             }
-            
+
         }
         data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
         //modify total characteristics depending on fatigue
@@ -67,7 +68,36 @@ export class FortyKActor extends Actor {
             }
         }
 
-
+        //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
+        data.experience.earned=0;
+        data.characteristics["inf"].advance=0;
+        data.experience.spent=0;
+        data.carry.value=0;
+        
+        for(let item of this.data.items){
+            
+            if(item.type==="mission"){
+                
+                data.experience.earned=parseInt(data.experience.earned)+parseInt(item.data.exp.value);
+                data.characteristics["inf"].advance= parseInt(data.characteristics["inf"].advance)+parseInt(item.data.inf.value);
+            }
+            if(item.type==="advancement"){
+                data.experience.spent=parseInt(data.experience.spent)+parseInt(item.data.cost.value);
+            }
+            if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="warGear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
+                item.data.weight.total=parseInt(item.data.amount.value)*parseInt(item.data.weight.value);
+                
+                data.carry.value=parseInt(data.carry.value)+parseInt(item.data.weight.total);
+            }
+        }
+        data.characteristics["inf"].total=data.characteristics["inf"].value+data.characteristics["inf"].advance;
+        data.experience.value=parseInt(data.experience.starting)+parseInt(data.experience.earned)-parseInt(data.experience.spent);
+        data.carry.max=FORTYK.carry[(data.characteristics["s"].bonus+data.characteristics["t"].bonus)].carry;
+        data.secChar.movement.half=data.characteristics["agi"].bonus+data.secChar.size.movement;
+        data.secChar.movement.full=data.secChar.movement.half*2;
+        data.secChar.movement.charge=data.secChar.movement.half*3;
+        data.secChar.movement.run=data.secChar.movement.half*6;
+        
 
 
     }
@@ -84,7 +114,6 @@ export class FortyKActor extends Actor {
         const mutations=[];
         const malignancies=[];
         const disorders=[];
-        const aptitudes=[];
         const talentsntraits=[];
         const missions=[];
         const advancements=[];
@@ -92,14 +121,68 @@ export class FortyKActor extends Actor {
         const rangedWeapons=[];
         const armors=[];
         const ammunitions=[];
-        
+
         //put all items in their respective containers
         for(let i of data.items){
             if(i.type=="skill"){
-               
+
                 i.data.total.value=parseInt(i.data.value)+parseInt(i.data.mod.value)+parseInt(data.data.characteristics[i.data.characteristic.value].total);
 
                 skills.push(i);
+            }
+            if(i.type==="malignancy"){
+                malignancies.push(i);
+            }
+            if(i.type==="mutation"){
+                mutations.push(i);
+            }
+            if(i.type==="disorder"){
+                disorders.push(i);
+            }
+            if(i.type==="warGear"){
+                wargear.push(i);
+            }
+            if(i.type==="cybernetic"){
+                cybernetics.push(i);
+            }
+            if(i.type==="forceField"){
+                forceFields.push(i);
+                wargear.push(i);
+            }
+            if(i.type==="mod"){
+                mods.push(i);
+            }
+            if(i.type==="consummable"){
+                consummables.push(i);
+                wargear.push(i);
+            }
+            if(i.type==="psychicPower"){
+                psychicPowers.push(i);
+            }
+            if(i.type==="talentntrait"){
+                talentsntraits.push(i);
+            }
+            if(i.type==="mission"){
+                missions.push(i);
+            }
+            if(i.type==="advancement"){
+                advancements.push(i);
+            }
+            if(i.type==="meleeweapon"){
+                meleeweapons.push(i);
+                wargear.push(i);
+            }
+            if(i.type==="rangedWeapon"){
+                rangedWeapons.push(i);
+                wargear.push(i);
+            }
+            if(i.type==="armor"){
+                armors.push(i);
+                wargear.push(i);
+            }
+            if(i.type==="ammunition"){
+                ammunitions.push(i);
+                wargear.push(i);
             }
         }
 
@@ -113,7 +196,7 @@ export class FortyKActor extends Actor {
             // a must be equal to b
             return 0;
         });
-        
+
         let preparedItems={skills:sortedSkills,
                            wargear:wargear,
                            cybernetics:cybernetics,
@@ -124,7 +207,6 @@ export class FortyKActor extends Actor {
                            mutations:mutations,
                            malignancies:malignancies,
                            disorders:disorders,
-                           aptitudes:aptitudes,
                            talentsntraits:talentsntraits,
                            missions:missions,
                            advancements:advancements,
@@ -148,7 +230,7 @@ export class FortyKActor extends Actor {
         const data=this.data.data;
         const $content=$(dlg);
 
-        var skillName=$content.find('input[name="skillName"]').val().toLowerCase().replace(" ","");
+        var skillName=$content.find('input[name="skillName"]').val();
         var newSkill={
             "type": "skill",
             "name": skillName,
@@ -162,16 +244,12 @@ export class FortyKActor extends Actor {
                     "value": $content.find('select[name="skillChar"]').val()
                 },
                 "description": {
-                    "value": $content.find('input[name="skillDescr"]').val(),
+                    "value": $content.find('textarea[name="skillDescr"]').val(),
                     "type": "String"
                 },
                 "hasChildren": {
-                    "value": $('input[name="skillCHildren"]').is(":checked"),
+                    "value": $('input[name="skillChildren"]').is(":checked"),
                     "type": "Boolean"
-                },
-                "label": {
-                    "value": $content.find('input[name="skillName"]').val(),
-                    "type": "String"
                 },
                 "mod": {
                     "value": 0,
@@ -205,7 +283,7 @@ export class FortyKActor extends Actor {
     }
     //this function deletes items from an actor, certain items need more logic to process
     deleteItem(itemId){
-        
+
         let item=this.getEmbeddedEntity("OwnedItem",itemId);
         //iterate through skills to delete all the children of a group skill
         if(item.type==="skill"&&item.data.hasChildren){
@@ -217,7 +295,7 @@ export class FortyKActor extends Actor {
             }
         }
         this.deleteEmbeddedEntity("OwnedItem", itemId);
-        
+
     }
 
 }

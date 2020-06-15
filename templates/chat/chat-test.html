@@ -8,5 +8,7 @@
     </div>
     <span class="chat-line">{{pass}}</span>
     <span class="roll-result">{{dos}}</span>
-    
+    {{#unless reroll}}
+    <a class="button reroll" data-actor="{{actor}}" data-char="{{char}}" data-roll-type="{{type}}" data-target="{{targetNumber}}" data-label="{{label}}">Reroll</a>
+    {{/unless}}
 </div>

@@ -1,4 +1,5 @@
-import {fortykTest} from "../fortyk-rolls.js";
+import {FortykRolls} from "../FortykRolls.js";
+import {FORTYK} from "../FortykConfig.js";
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
@@ -33,7 +34,7 @@ export class FortyKActorSheet extends ActorSheet {
         mergeObject(data.actor,this.actor.prepare());
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
-        
+        data.aptitudes=FORTYK.aptitudes;
         return data;
     }
 
@@ -57,8 +58,15 @@ export class FortyKActorSheet extends ActorSheet {
 
         html.find('.skill-mod').keydown(this._onSkillModEdit.bind(this));
         html.find('.skill-mod').focusout(this._onSkillModEdit.bind(this));
+        //change cybernetic location
+        html.find('.cyber-location-select').change(this._onCyberLocationEdit.bind(this));
+        //create different types of wargear
+        html.find('.wargear-create').click(this._onWargearCreate.bind(this));
+        //change the amount of a piece of equipment
+        html.find('.wargear-amount').keydown(this._onWargearAmountEdit.bind(this));
+        html.find('.wargear-amount').focusout(this._onWargearAmountEdit.bind(this));
         //get item description
-        html.find('.item-descr').click(this._onSkillDescrGet.bind(this));
+        html.find('.item-descr').click(this._onItemDescrGet.bind(this));
         //filters
         html.find('.filter').keydown(this._onFilterChange.bind(this));
         // Rollable abilities.
@@ -68,8 +76,8 @@ export class FortyKActorSheet extends ActorSheet {
     /* -------------------------------------------- */
 
 
-    //Handle the popup when use clicks skill name to show item description
-    _onSkillDescrGet(event){
+    //Handle the popup when user clicks item name to show item description
+    _onItemDescrGet(event){
         event.preventDefault();
         let descr = event.target.attributes["data-item-descr"].value;
         var options = {
@@ -97,55 +105,102 @@ export class FortyKActorSheet extends ActorSheet {
     }
     //Handle creating a new item, will sort the item type before making the new item
 
-    _onItemCreate(event) {
+    async _onItemCreate(event) {
         event.preventDefault();
-
-        var templateData = {
-            actor: this.actor,
-            skills: this.getData().entity.skills
+        const header = event.currentTarget;
+        const type = header.dataset["type"];
+        const itemData = {
+            name: `new ${type}`,
+            type: type
         };
+        let item= await this.actor.createEmbeddedEntity("OwnedItem",itemData);
+        const newItem = await this.actor.items.find(i => i.data._id == item._id);
+        newItem.sheet.render(true);
 
 
-        var type=event.currentTarget.attributes["data-type"].value;
-        if(type==="skill"){
-            let template = 'systems/fortyk/templates/actor/dialogs/actor-newskill-dialog.html';
-            var options = {
-                width: 300,
-                height: 400
-            };
-            var renderedTemplate= renderTemplate(template, templateData);
 
-            renderedTemplate.then(content => {
 
-                let dlg = new Dialog({
-                    title: "Create Skill",
-                    content: content,
-                    buttons: {
-                        submit: {
+    }
+    //handle creating a wargear item, these can be several types of different item types
+    async _onWargearCreate(event){
+        event.preventDefault();
+        let templateOptions={"type":[{"name":"warGear","label":"Wargear"},{"name":"meleeWeapon","label":"Melee Weapon"},{"name":"rangedWeapon","label":"Ranged Weapon"},{"name":"ammunition","label":"Ammunition"},{"name":"armor","label":"Armor"},{"name":"forceField","label":"Forcefield"},{"name":"mod","label":"Mod"},{"name":"consummable","label":"Consummable"}]};
 
-                            label: "OK",
-                            callback: html => this.actor.createSkill(html)
-                        },
-                        cancel: {
+        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/select-wargear-type-dialog.html', templateOptions);
 
-                            label: "Cancel",
-                            callback: null
+        renderedTemplate.then(content => { 
+            new Dialog({
+                title: "New Wargear Type",
+                content: content,
+                buttons:{
+                    submit:{
+                        label:"Yes",
+                        callback: async html => {
+                            const type = html.find('select[name="wargear-type"]').val();
+                            const itemData = {
+                                name: `new ${type}`,
+                                type: type
+                            };
+
+                            let item=  await this.actor.createEmbeddedEntity("OwnedItem",itemData);
+                            const newItem =  await this.actor.items.find(i => i.data._id == item._id);
+                            newItem.sheet.render(true);
                         }
                     },
-                    default: "submit"
-                }, options);
+                    cancel:{
+                        label: "No",
+                        callback: null
+                    }
+                },
+                default: "submit"
+            }).render(true)
+        });
 
-                dlg.render(true);
-            });
+        /* const itemData = {
+            name: `new ${type}`,
+            type: type
+        };
 
-        }
+        let item= await this.actor.createEmbeddedEntity("OwnedItem",itemData);
+        const newItem = await this.actor.items.find(i => i.data._id == item._id);
+        newItem.sheet.render(true);*/
+    }
+    //handles when a wargear amount is changed
+    _onWargearAmountEdit(event){
+        
+        clearTimeout(event.currentTarget.timeout);
+        event.currentTarget.timeout=setTimeout(async function(event, actor){
+
+
+            let newAmt=event.target.value;
+            let dataItemId=event.target.attributes["data-item-id"].value;
+            let item= duplicate(actor.actor.getEmbeddedEntity("OwnedItem", dataItemId));
+            item.data.amount.value=newAmt;
+            await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this);
+    }
+     /**
+    *Handle select change for cybernetic location selector
+    * @param {Event} event   The originating click event
+    * @private
+    */
+    async _onCyberLocationEdit(event){
+        event.preventDefault();
+
+        let newLoc=event.target.value;
+        let dataItemId=event.target.attributes["data-item-id"].value;
+        let item= duplicate(this.actor.getEmbeddedEntity("OwnedItem", dataItemId));
+        item.data.location.value=newLoc;
+
+        console.log(this.actor);
+        await this.actor.updateEmbeddedEntity("OwnedItem",item);
+
 
     }
     //Edits the item that was clicked
     _onItemEdit(event){
         event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;
-        const item = this.actor.items.find(i => i.data._id == itemId)
+        const item = this.actor.items.find(i => i.data._id == itemId);
         item.sheet.render(true);
     }
     //deletes the selected item from the actor
@@ -201,13 +256,14 @@ export class FortyKActorSheet extends ActorSheet {
 
 
     }
+   
     /**
     *Handle input edits for skill modifier input
     * @param {Event} event   The originating click event
     * @private
     */
     async _onSkillModEdit(event){
-        
+
         clearTimeout(event.currentTarget.timeout);
         event.currentTarget.timeout=setTimeout(async function(event, actor){
 
@@ -231,14 +287,14 @@ export class FortyKActorSheet extends ActorSheet {
         event.preventDefault();
         const element = event.currentTarget;
         const dataset = element.dataset;
-        
+
         let testType=dataset["rollType"];
-        
+
         var testTarget=parseInt(dataset["target"]);
         var testLabel=dataset["label"];
-       
-        var testChar=this.actor.data.data.characteristics[dataset["char"]];
-        
+
+        var testChar=dataset["char"];
+
         if(testType==="char"||testType==="skill"){
             new Dialog({
                 title: `${testLabel} Test`,
@@ -248,24 +304,24 @@ export class FortyKActorSheet extends ActorSheet {
                         label: 'OK',
                         callback: (el) => {
                             const bonus = Number($(el).find('input[name="modifier"]').val());
-                            
+
                             testTarget+=parseInt(bonus);
-                            fortykTest(testChar, testType, testTarget, this.actor, testLabel);
+                            FortykRolls.fortykTest(testChar, testType, testTarget, this.actor, testLabel);
                         }
                     }
                 },
                 default: "submit",
-                
+
 
                 width:100}
-            ).render(true);
+                      ).render(true);
         }
 
 
     }
     _onFilterChange(event){
-        
-        
+
+
     }
 
 }

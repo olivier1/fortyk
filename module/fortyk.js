@@ -3,7 +3,8 @@ import { FortyKActor } from "./actor/actor.js";
 import { FortyKActorSheet } from "./actor/actor-sheet.js";
 import { FortyKItem } from "./item/item.js";
 import { FortyKItemSheet } from "./item/item-sheet.js";
-import { preloadHandlebarsTemplates} from "./utilities.js"
+import { preloadHandlebarsTemplates} from "./utilities.js";
+import {FortykRolls} from "./FortykRolls.js";
 
 Hooks.once('init', async function() {
 
@@ -82,3 +83,4 @@ Hooks.once('init', async function() {
 Hooks.once('ready', async function() {
 
 });
+Hooks.on('renderChatLog', (log, html, data) => FortykRolls.chatListeners(html));

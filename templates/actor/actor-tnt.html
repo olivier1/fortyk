@@ -1,0 +1,16 @@
+<div class="tnt flexcol">
+    <a class="item-create button" data-type="talentntrait" title="Add a new Talent or Trait">Add Talent or Trait</a>
+    <dl>
+        {{#each actor.talentsntraits as |t key|}}
+        <div class="list-item flexrow">
+            <dt>{{t.name}}</dt>
+            <a class="tntItem item-edit" title="Edit" data-item-id="{{t._id}}"></a>
+            <a class="tntItem item-delete" title="Delete" data-item-id="{{t._id}}"></a>
+        </div>
+
+        <dd class="list-item">{{t.data.description.value}}</dd>
+        {{/each}}
+
+    </dl>
+
+</div>

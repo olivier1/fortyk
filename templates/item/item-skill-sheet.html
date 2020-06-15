@@ -11,7 +11,7 @@
                 {{#each skillgroups as |skill key|}}
                 
                 
-                <option class="new-skill-select" value="{{skill.data.data.name.value}}">{{skill.data.data.label.value}}</option>
+                <option class="new-skill-select" value="{{skill.data.name}}">{{skill.data.name}}</option>
                 
                 {{/each}}
                 {{/select}}
@@ -24,17 +24,18 @@
         </div>
         <div class="flexcol">
             <label>Name:</label>
-            <input type="text" class="name skill-dialog" name="data.label.value" value="{{data.label.value}}" data-dtype="String" required>
+            
+            <input type="text" class="name skill-dialog" name="name" value="{{item.name}}" data-dtype="String" required>
         </div>
         <div class="flexcol">
             <label>Characteristic</label>
-            <select class="skill-characteristic" name="char">
+            <select class="skill-characteristic" name="data.characteristic.value">
                 {{#select data.characteristic.value}}
                 <option value="ws">Weapon Skill</option>
                 <option value="bs">Ballistic Skill</option>
                 <option value="s">Strength</option>
                 <option value="t">Toughness</option>
-                <option value="ag">Agility</option>
+                <option value="agi">Agility</option>
                 <option value="int">Intelligence</option>
                 <option value="per">Perception</option>
                 <option value="wp">Willpower</option>

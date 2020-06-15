@@ -1,0 +1,54 @@
+<form class="{{cssClass}} flexcol">
+    <div class="flexcol">
+        <label>Name:</label>
+        <input type="text" value="{{item.name}}" name="name">
+    </div>
+    <div class="flexcol">
+        <label>Weight:</label>
+        <input type="text" value="{{data.weight.value}}" name="data.weight.value">
+    </div>
+    <div class="flexcol">
+        <label>Rarity:</label>
+        <select class="power-type" name="data.rarity.value">
+            {{#select data.rarity.value}}
+            <option value="100">Ubiquitous</option>
+            <option value="30">Abundant</option>  
+            <option value="20">Plentiful</option>
+            <option value="10">Common</option> 
+            <option value="0">Average</option>
+            <option value="-10">Scarce</option> 
+            <option value="-20">Rare</option>
+            <option value="-30">Very rare</option> 
+            <option value="-40">Extremely rare</option>
+            <option value="-50">Near Unique</option>
+            <option value="-60">Unique</option>
+
+
+            {{/select}}
+        </select>
+    </div>
+    <div class="flexcol">
+        <label>Damage:</label>
+        <input type="text" value="{{data.damage.value}}" name="data.damage.value">
+    </div>
+    <div class="flexcol">
+        <label>Penetration:</label>
+        <input type="text" value="{{data.pen.value}}" name="data.pen.value">
+    </div>
+    <div class="flexcol">
+        <label>Special:</label>
+        <input type="text" value="{{data.special.value}}" name="data.special.value">
+    </div>
+    <div class="flexcol">
+        <label>Damage Type:</label>
+        <input type="text" value="{{data.damageType.value}}" name="data.damageType.value">
+    </div>
+    <div class="flexcol">
+        <label>Weapon Types:</label>
+        <input type="text" value="{{data.class.value}}" name="data.class.value">
+    </div>
+    <div class="flexcol">
+        <label>Description:</label>
+        <textarea type="text" name="data.description.value">{{data.description.value}}</textarea>
+    </div>
+</form>

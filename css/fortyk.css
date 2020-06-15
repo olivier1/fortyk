@@ -9,7 +9,7 @@
 @font-face {
     font-family: "CaslonAntique";
     src: url('../fonts/CaslonAntique-Bold.ttf');
-    font-weight:bold;
+    font-style:bold;
 }
 @font-face {
     font-family: "CaslonAntique";
@@ -190,12 +190,14 @@
     margin-bottom:2px;
     border: 1px solid #999;
     font-weight: bold;
+    font-style:bold;
     text-transform: uppercase;
 
 }
 .fortyk .sheet-main .header-fields .creationOps{
     border:1px solid #999;
     font-weight:bold;
+    font-style:bold;
     text-transform: uppercase;
     margin-top:0px;
     margin-bottom:2px;
@@ -206,6 +208,7 @@
 .fortyk .sheet-main .header-fields .eliteAdvances{
     border:1px solid #999;
     font-weight:bold;
+    font-style:bold;
     text-transform: uppercase;
     padding-left: 10px;
 }
@@ -218,6 +221,7 @@
 }
 .fortyk .sheet-main .header-fields .characteristics  span.characteristicsSpan{
     font-weight: bold;
+    font-style:bold;
 
 
 }
@@ -248,6 +252,7 @@
 
     height: 100px;
     font-weight:bold;
+    font-style:bold;
 
 }
 
@@ -274,6 +279,7 @@
 
 .fortyk .resource-label {
     font-weight: bold;
+    font-style:bold;
     text-transform: uppercase;
 }
 
@@ -323,6 +329,7 @@
 .fortyk .skills .skills-header span{
     border: 1px solid #AAA;
     font-weight:bold;
+    font-style:bold;
     padding:3px;
 
 }
@@ -335,6 +342,7 @@
 }
 .fortyk .skills .skills-header .skill-group{
     font-weight: bold !important;
+    font-style:bold;
     text-transform: uppercase;
 }
 
@@ -342,7 +350,7 @@
     padding-left:10px !important;
     height:100%;
 }
-.fortyk .skills .skills-header  .item-edit{
+.fortyk .item-edit{
     background-image: url("../icons/editicon.png") !important;
     background-size: contain;
     background-repeat: no-repeat;
@@ -350,7 +358,7 @@
     height:30px !important;
     margin-left:3px;
 }
-.fortyk .skills .skills-header  .item-delete{
+.fortyk .item-delete{
     background-image: url("../icons/deleteicon.png") !important; 
     background-size: contain;
     background-repeat: no-repeat;
@@ -369,6 +377,7 @@
 
 .fortyk .items-list .item-header {
     font-weight: bold;
+    font-style:bold;
 }
 
 .fortyk .items-list .item {

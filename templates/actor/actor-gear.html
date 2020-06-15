@@ -1,0 +1,53 @@
+<div class="gear grid grid-2col">
+    <div class="cyber flexcol">
+        <label>CYBERNETICS</label>
+        <a class="item-create button" data-type="cybernetic" title="Add a new Cybernetic">Add Cybernetic</a>
+        <dl>
+            {{#each actor.cybernetics as |c key|}}
+            <div class="list-item flexrow">
+                <dt>{{c.name}}</dt>
+                <select data-item-id="{{c._id}}" class="cyber-location-select" data-dtype="String">
+                    {{#select c.data.location.value}}
+
+                    {{#each ../data.characterHitLocations as |l key|}}
+
+                    <option value="{{key}}">{{l.label}}</option>
+                    {{/each}}
+                    {{/select}}
+                </select>
+                <a class="cyberItem item-edit" title="Edit" data-item-id="{{c._id}}"></a>
+                <a class="cyberItem item-delete" title="Delete" data-item-id="{{c._id}}"></a>
+            </div>
+
+            <dd class="list-item">{{c.data.description.value}}</dd>
+            {{/each}}
+
+        </dl>
+    </div>
+    <div class="wargear flexcol">
+        <label>CARRY</label>
+        <div class="carry flexcol">
+            <label>Total Weight: {{data.carry.value}}</label>
+            <label>Max Weight: {{data.carry.max}}</label>
+        </div>
+        <label>WARGEAR</label>
+        <a class="wargear-create button" title="Add a new Wargear">Add Wargear</a>
+        
+        <dl>
+            {{#each actor.wargear as |w key|}}
+            {{debug this}}
+            <div class="list-item flexrow">
+                <dt>{{w.name}}</dt>
+                <input type="text" class="wargear-amount" value="{{w.data.amount.value}}" data-item-id="{{w._id}}" data-dtype="Number">
+                <label>Weight: {{w.data.weight.total}}</label>
+
+                <a class="wargearItem item-edit" title="Edit" data-item-id="{{w._id}}"></a>
+                <a class="wargearItem item-delete" title="Delete" data-item-id="{{w._id}}"></a>
+            </div>
+
+            <dd class="list-item">{{w.data.description.value}}</dd>
+            {{/each}}
+
+        </dl>
+    </div>
+</div>
