@@ -122,13 +122,13 @@
                         "value": 0,
                         "type": "Number",
                         "chars":"",
-                        "modifier": 0
+                        "mod": 0
                     },
                     "insanity": {
                         "type": "Number",
                         "value": 0,
                         "shock": "",
-                        "modifier": 0
+                        "mod": 0
                     },
                     "injuries": [],
                     "hands": {
@@ -301,15 +301,14 @@
                 "psykana": {
                     "pr": {
                         "value": 0,
+                        "maxPush":0,
                         "type": "Number"
                     },
-                    "psykerType": [
-                        "None",
-                        "Bound",
-                        "Unbound",
-                        "Daemon"
-                    ],
-                    "modifier": {
+                    "psykerType":{
+                        "value":"bound",
+                        "type":"String"
+                    },
+                    "mod": {
                         "value": 0,
                         "type": "Number"
                     }
@@ -388,7 +387,7 @@
             "meleeWeapon",
             "rangedWeapon",
             "ammunition",
-            "warGear",
+            "wargear",
             "cybernetic",
             "armor",
             "forceField",
@@ -513,7 +512,7 @@
                 "type": "String"
             }
         },
-        "warGear": {
+        "wargear": {
             "templates": [
                 "description",
                 "physicalProp"
@@ -610,7 +609,7 @@
                 "type": "String"
             },
             "testChar": {
-                "value": "",
+                "value": "wp",
                 "type": "Characteristic"
             },
             "testMod": {
@@ -622,12 +621,16 @@
                 "type": "String"
             },
             "curPR": {
-                "value": 0,
-                "number": "String"
+                "value": 1,
+                "number": "Number"
             },
             "reqs": {
                 "value": "",
                 "type": "String"
+            },
+            "target":{
+                "value":0,
+                "type":"Number"
             }
         },
         "skill": {

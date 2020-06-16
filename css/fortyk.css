@@ -21,6 +21,7 @@
     font-family: "CaslonAntique";
     font-weight:normal;
     font-style:normal;
+    text-transform: uppercase;
 }
 
 .rollable:hover, .rollable:focus {

@@ -67,28 +67,34 @@ export class FortyKActor extends Actor {
                 char.total=Math.ceil(char.total/2);
             }
         }
-
+        //prepare psyker stuff
+        data.psykana.pr.maxPush=parseInt(data.psykana.pr.value)+parseInt(FORTYK.psykerTypes[data.psykana.psykerType.value].push);
         //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
         data.experience.earned=0;
         data.characteristics["inf"].advance=0;
         data.experience.spent=0;
         data.carry.value=0;
-        
+
         for(let item of this.data.items){
             
+            if(item.type==="skill"){
+               
+               
+            }
             if(item.type==="mission"){
-                
+
                 data.experience.earned=parseInt(data.experience.earned)+parseInt(item.data.exp.value);
                 data.characteristics["inf"].advance= parseInt(data.characteristics["inf"].advance)+parseInt(item.data.inf.value);
             }
             if(item.type==="advancement"){
                 data.experience.spent=parseInt(data.experience.spent)+parseInt(item.data.cost.value);
             }
-            if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="warGear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
+            if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="wargear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
                 item.data.weight.total=parseInt(item.data.amount.value)*parseInt(item.data.weight.value);
-                
+
                 data.carry.value=parseInt(data.carry.value)+parseInt(item.data.weight.total);
             }
+            
         }
         data.characteristics["inf"].total=data.characteristics["inf"].value+data.characteristics["inf"].advance;
         data.experience.value=parseInt(data.experience.starting)+parseInt(data.experience.earned)-parseInt(data.experience.spent);
@@ -97,7 +103,7 @@ export class FortyKActor extends Actor {
         data.secChar.movement.full=data.secChar.movement.half*2;
         data.secChar.movement.charge=data.secChar.movement.half*3;
         data.secChar.movement.run=data.secChar.movement.half*6;
-        
+
 
 
     }
@@ -126,7 +132,7 @@ export class FortyKActor extends Actor {
         for(let i of data.items){
             if(i.type=="skill"){
 
-                i.data.total.value=parseInt(i.data.value)+parseInt(i.data.mod.value)+parseInt(data.data.characteristics[i.data.characteristic.value].total);
+
 
                 skills.push(i);
             }
@@ -139,7 +145,7 @@ export class FortyKActor extends Actor {
             if(i.type==="disorder"){
                 disorders.push(i);
             }
-            if(i.type==="warGear"){
+            if(i.type==="wargear"){
                 wargear.push(i);
             }
             if(i.type==="cybernetic"){
@@ -157,6 +163,7 @@ export class FortyKActor extends Actor {
                 wargear.push(i);
             }
             if(i.type==="psychicPower"){
+                i.data
                 psychicPowers.push(i);
             }
             if(i.type==="talentntrait"){
@@ -224,63 +231,7 @@ export class FortyKActor extends Actor {
 
         return preparedData;
     }
-    //add a new skill to the skill list for the character
-    createSkill(dlg){
 
-        const data=this.data.data;
-        const $content=$(dlg);
-
-        var skillName=$content.find('input[name="skillName"]').val();
-        var newSkill={
-            "type": "skill",
-            "name": skillName,
-            "data": {
-                "aptitudes": {
-                    "value": $content.find('input[name="skillAptitudes"]').val(),
-                    "type": "String"
-                },
-                "characteristic": {
-                    "type": "String",
-                    "value": $content.find('select[name="skillChar"]').val()
-                },
-                "description": {
-                    "value": $content.find('textarea[name="skillDescr"]').val(),
-                    "type": "String"
-                },
-                "hasChildren": {
-                    "value": $('input[name="skillChildren"]').is(":checked"),
-                    "type": "Boolean"
-                },
-                "mod": {
-                    "value": 0,
-                    "type": "Number"
-                },
-                "parent": {
-                    "value": $content.find('select[name="skillGroup"]').val() ,
-                    "type": "String"
-                },
-                "skillUse": {
-                    "value": $content.find('input[name="skillUse"]').val(),
-                    "type": "String"
-                },
-                "total": {
-                    "value": 0,
-                    "type": "Number"
-                },
-                "type": "Number",
-                "value": -20
-            }
-        };
-
-        this.createEmbeddedEntity("OwnedItem",newSkill);
-
-
-
-
-
-
-
-    }
     //this function deletes items from an actor, certain items need more logic to process
     deleteItem(itemId){
 

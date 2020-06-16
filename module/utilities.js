@@ -22,6 +22,18 @@ export const preloadHandlebarsTemplates = async function() {
   // Load the template parts
   return loadTemplates(templatePaths);
 };
+
+
+
+export const getItem= function(actor, name){
+    for(let item of actor.items){
+        if(item.name===name){
+            return item;
+        }
+    }
+    return null;
+};
+
 export const getSkills= async function(){
     let skillCollection=[];
     const pack = game.packs.find(p => p.collection == "fortyk.skills");
@@ -36,6 +48,18 @@ export const getSkills= async function(){
     return skillCollection;
 };
 
+export const makeRangeArray=function (upperBounds, values) {
+   var rangeArray = new Array(upperBounds[upperBounds.length-1]);
+
+   var idx = 0;
+   for (var i=0; i < rangeArray.length; i++) {
+      if (i > upperBounds[idx]) {
+        idx++;
+      }
+      rangeArray[i] = values[idx];
+   }
+   return rangeArray;
+}
 //import data packs
 // Reference a Compendium pack by it's callection ID
 

@@ -1,6 +1,6 @@
 /* provides functions for doing tests or damage rolls, will eventually take into account talents and special qualities but not yet
 */
-
+import {FORTYKTABLES} from "./FortykTables.js"
 export class FortykRolls{
     /*The base test function, will roll against the target and return the success and degree of failure/success, the whole roll message is handled by the calling function.
 @char: a characteristic object that contains any unattural characteristic the object may have
@@ -83,7 +83,9 @@ returns the roll message*/
                          author:actor.name};
         ChatMessage.create(chatOptions,{});
 
-
+        if(type==="focuspower"){
+            
+        }
 
     }
     static chatListeners(html){

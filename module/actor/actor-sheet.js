@@ -65,6 +65,9 @@ export class FortyKActorSheet extends ActorSheet {
         //change the amount of a piece of equipment
         html.find('.wargear-amount').keydown(this._onWargearAmountEdit.bind(this));
         html.find('.wargear-amount').focusout(this._onWargearAmountEdit.bind(this));
+        //change active pr for psy power
+        html.find('.psy-pr').keydown(this._onPRedit.bind(this));
+        html.find('.psy-pr').focusout(this._onPRedit.bind(this));
         //get item description
         html.find('.item-descr').click(this._onItemDescrGet.bind(this));
         //filters
@@ -124,7 +127,7 @@ export class FortyKActorSheet extends ActorSheet {
     //handle creating a wargear item, these can be several types of different item types
     async _onWargearCreate(event){
         event.preventDefault();
-        let templateOptions={"type":[{"name":"warGear","label":"Wargear"},{"name":"meleeWeapon","label":"Melee Weapon"},{"name":"rangedWeapon","label":"Ranged Weapon"},{"name":"ammunition","label":"Ammunition"},{"name":"armor","label":"Armor"},{"name":"forceField","label":"Forcefield"},{"name":"mod","label":"Mod"},{"name":"consummable","label":"Consummable"}]};
+        let templateOptions={"type":[{"name":"wargear","label":"Wargear"},{"name":"meleeWeapon","label":"Melee Weapon"},{"name":"rangedWeapon","label":"Ranged Weapon"},{"name":"ammunition","label":"Ammunition"},{"name":"armor","label":"Armor"},{"name":"forceField","label":"Forcefield"},{"name":"mod","label":"Mod"},{"name":"consummable","label":"Consummable"}]};
 
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/select-wargear-type-dialog.html', templateOptions);
 
@@ -156,18 +159,11 @@ export class FortyKActorSheet extends ActorSheet {
             }).render(true)
         });
 
-        /* const itemData = {
-            name: `new ${type}`,
-            type: type
-        };
-
-        let item= await this.actor.createEmbeddedEntity("OwnedItem",itemData);
-        const newItem = await this.actor.items.find(i => i.data._id == item._id);
-        newItem.sheet.render(true);*/
+        
     }
     //handles when a wargear amount is changed
     _onWargearAmountEdit(event){
-        
+
         clearTimeout(event.currentTarget.timeout);
         event.currentTarget.timeout=setTimeout(async function(event, actor){
 
@@ -178,7 +174,7 @@ export class FortyKActorSheet extends ActorSheet {
             item.data.amount.value=newAmt;
             await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this);
     }
-     /**
+    /**
     *Handle select change for cybernetic location selector
     * @param {Event} event   The originating click event
     * @private
@@ -195,6 +191,26 @@ export class FortyKActorSheet extends ActorSheet {
         await this.actor.updateEmbeddedEntity("OwnedItem",item);
 
 
+    }
+    //handles when a psychic power changes its pr value
+    async _onPRedit(event){
+        clearTimeout(event.currentTarget.timeout);
+        var newPR=event.target.value;
+        if(newPR>0&&newPR<=this.actor.data.data.psykana.pr.maxPush){
+           event.currentTarget.timeout=setTimeout(async function(event, actor){
+
+
+            
+            let dataItemId=event.target.attributes["data-item-id"].value;
+            let item= duplicate(actor.actor.getEmbeddedEntity("OwnedItem", dataItemId));
+            console.log(item);
+            item.data.curPR.value=newPR;
+            await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this); 
+        }else{
+            alert("Psy rating is out of bounds!");
+            event.target.value=this.actor.data.data.psykana.pr.value;
+        }
+        
     }
     //Edits the item that was clicked
     _onItemEdit(event){
@@ -256,7 +272,7 @@ export class FortyKActorSheet extends ActorSheet {
 
 
     }
-   
+
     /**
     *Handle input edits for skill modifier input
     * @param {Event} event   The originating click event
@@ -295,10 +311,10 @@ export class FortyKActorSheet extends ActorSheet {
 
         var testChar=dataset["char"];
 
-        if(testType==="char"||testType==="skill"){
+        
             new Dialog({
                 title: `${testLabel} Test`,
-                content: `<p><label>Modifier:</label> <input type="text" name="modifier" value="0" autofocus/></p>`,
+                content: `<p><label>Modifier:</label> <input type="text" name="modifier" value="0" data-dtype="Number" autofocus/></p>`,
                 buttons: {
                     submit: {
                         label: 'OK',
@@ -315,7 +331,7 @@ export class FortyKActorSheet extends ActorSheet {
 
                 width:100}
                       ).render(true);
-        }
+        
 
 
     }

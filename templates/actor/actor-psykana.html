@@ -1,0 +1,83 @@
+<div class="psy flexcol">
+
+    <div class="psy-header flexrow">
+        <div class="flexcol">
+            <label>Psy Rating:</label>
+            <input type="text" name="data.psykana.pr.value" value="{{data.psykana.pr.value}}">
+        </div>
+        <div class="flexcol">
+            <label>Class:</label>
+            <select class="psyType-select" name="data.psykana.psykerType.value" data-dtype="String">
+                {{#select data.psykana.psykerType.value}}
+                <option value="bound">Bound</option>
+                <option value="unbound">Unbound</option>
+                <option value="daemon">Daemon</option>
+
+                {{/select}}
+            </select>
+        </div>
+        <div class="flexcol">
+            <label>Psy Modifier:</label>
+            <input type="text" name="data.psykana.mod.value" value="{{data.psykana.mod.value}}">
+        </div>
+    </div>
+    <a class="item-create button" data-type="psychicPower" title="Add a new Psychic Power">Add Psychic Power</a>
+    <div class="psy-powers grid grid-2col">
+        {{#each actor.psychicPowers as |power key|}}
+        <div class="flexcol">
+
+            <div class="grid grid-3col">
+                
+                    <a class="item-edit" title="Edit Power" data-item-id="{{power._id}}"></a>
+                    <a class="item-delete" title="Delete Power" data-item-id="{{power._id}}"></a>
+                
+
+                <label>Name: {{power.name}}</label>
+
+
+
+                <label>Action: {{power.data.action.value}}</label>
+
+
+
+                <label>Subtype: {{power.data.subtype.value}}</label>
+
+                <label>Discipline: {{power.data.discipline.value}}</label>
+
+                <label>Test Type: {{power.data.testChar.value}}</label>
+
+
+                <label>Modifier: {{power.data.mod.value}}</label>
+
+                <label>Sustain: {{power.data.sustain.value}}</label>
+
+                <label>Range: {{power.data.range.value}}</label>
+
+                <label>Damage: {{power.data.damageFormula.value}}</label>
+
+                <label>Penetration: {{power.data.pen.value}}</label>
+
+                <label>Special: {{power.data.special.value}}</label>
+
+                <label>Damage Type: {{power.data.damageType.value}}</label>
+
+                <label>Power Type: {{power.data.class.value}}</label>
+                <div class="flexrow">
+                    <label>PR: </label>
+                    <input type="text" class="psy-pr" data-item-id="{{power._id}}" value="{{power.data.curPR.value}}">
+                </div>
+                <div class="flexrow">
+                    <label>Test Target: </label>
+                    <span data-item-id="{{power._id}}" class="rollable powerItem button" data-roll-type="focuspower" data-target="{{power.data.target.value}}" data-label="{{power.name}}" data-char="{{power.data.testChar.type}}">{{power.data.target.value}}</span>
+                </div>
+            </div>
+            <div class="flexcol">
+                <label>Description:</label>
+                <span>{{power.data.description.value}}</span>
+            </div>
+
+
+        </div>
+        {{/each}}
+    </div>
+</div>
