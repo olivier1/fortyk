@@ -21,6 +21,7 @@
             <input type="text" name="data.psykana.mod.value" value="{{data.psykana.mod.value}}">
         </div>
     </div>
+    {{#if (greaterThan data.psykana.pr.value 0)}}
     <a class="item-create button" data-type="psychicPower" title="Add a new Psychic Power">Add Psychic Power</a>
     <div class="psy-powers grid grid-2col">
         {{#each actor.psychicPowers as |power key|}}
@@ -80,4 +81,5 @@
         </div>
         {{/each}}
     </div>
+    {{/if}}
 </div>

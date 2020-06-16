@@ -34,7 +34,7 @@ Hooks.once('init', async function() {
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });
 
 
-    // If you need to add Handlebars helpers, here are a few useful examples:
+    // Handlebars helpers
     Handlebars.registerHelper('concat', function() {
         var outStr = '';
         for (var arg in arguments) {
@@ -52,7 +52,7 @@ Hooks.once('init', async function() {
         return value !== undefined;
     });
     Handlebars.registerHelper('compareString', function (str1, str2="") {
-        
+
         if(typeof str2!=="string"){
             str2="";
         }
@@ -70,16 +70,22 @@ Hooks.once('init', async function() {
         }
     });
     Handlebars.registerHelper("contains", function(str1, str2) {
-        
+
         if(str2===""){
-            
+
             return true;
         }else{
-            
+
             return str1.toLowerCase().includes(str2.toLowerCase());
         }
     });
+    Handlebars.registerHelper("greaterThan", function(num1,num2){
+        return num1>num2;
+    });
+
+
 });
+//HOOKS
 Hooks.once('ready', async function() {
 
 });
