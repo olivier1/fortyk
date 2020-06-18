@@ -105,7 +105,7 @@ FORTYK.carry=[{"carry":0.9,
               "push":9000}]
 FORTYK.damageTypes=["Explosive","Rending","Impact","Energy"]
 FORTYK.meleeWeaponTypes=["Chain", "Force", "Power", "Shock", "Low-tech", "Exotic"]
-FORTYK.meleeRangedTypes=["Bolt", "Flame", "Las", "Launcher", "Low-tech", "Melta", "Plasma", "Solid projectile", "Exotic"]
+FORTYK.rangedWeaponTypes=["Bolt", "Flame", "Las", "Launcher", "Low-tech", "Melta", "Plasma", "Solid projectile", "Exotic"]
 FORTYK.rangedWeaponClasses=["Pistol", "Basic", "Heavy", "Thrown"]
 FORTYK.meleeWeaponClasses=["Melee", "Melee Two-handed", "Shield"]
 FORTYK.aptitudes=["Weapon Skill", "Ballistic Skill", "Strength", "Toughness", "Agility", "Intelligence", "Perception", "Willpower", "Fellowship", "Offence", "Finesse", "Defence", "Psyker", "Tech", "Knowledge", "Leadership", "Fieldcraft", "Social"]

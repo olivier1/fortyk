@@ -24,7 +24,7 @@
     {{#if skill.data.hasChildren.value}}
 
     <div class="skills-header grid grid-7col">
-        <span class="skillItem skill-group item-descr" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{skill.name}}</span>
+        <span class="skillItem skill-group item-descr" data-name="{{skill.name}}" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{skill.name}}</span>
         <span class="skillItem" ></span>
         <span class="skillItem" ></span>
         <span class="skillItem" ></span>
@@ -43,7 +43,7 @@
 
     {{#if (compareString skill.name spec.data.parent.value)}}
     <div class="skills-header grid grid-7col">
-        <span class="skillSubItem item-descr" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{spec.name}}</span>
+        <span class="skillSubItem item-descr" data-name="{{skill.name}}" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{spec.name}}</span>
         <select data-item-id="{{spec._id}}" class="skillItem skill-char" name="spec.data.characteristic.value">
             {{#select spec.data.characteristic.value}}
             <option value="ws">WS</option>
@@ -84,7 +84,7 @@
     {{else if (compareString skill.data.parent.value)}}
     <div class="skills-header grid grid-7col">
         
-        <span class="skillItem item-descr" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{skill.name}}</span>
+        <span class="skillItem item-descr" data-name="{{skill.name}}" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{skill.name}}</span>
         <select  data-item-id="{{skill._id}}" class="skillItem skill-char">
             {{#select skill.data.characteristic.value}}
             <option value="ws">WS</option>

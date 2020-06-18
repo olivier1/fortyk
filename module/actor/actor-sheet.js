@@ -71,6 +71,9 @@ export class FortyKActorSheet extends ActorSheet {
         //handles combat tab resources
         html.find('.combat-resources').keydown(this._onCombatResourceEdit.bind(this));
         html.find('.combat-resources').focusout(this._onCombatResourceEdit.bind(this));
+        //handles ranged weapon clips
+        html.find('.clip-current').keydown(this._onClipEdit.bind(this));
+        html.find('.clip-current').focusout(this._onClipEdit.bind(this));
         //handles swapping weapons
         html.find('.hand-weapon').change(this._onWeaponChange.bind(this));
         //get item description
@@ -92,10 +95,10 @@ export class FortyKActorSheet extends ActorSheet {
             width: 300,
             height: 400
         };
-
+        var name=event.currentTarget.dataset["name"];
 
         let dlg = new Dialog({
-            title: "Skill Description",
+            title: `${name} Description`,
             content: "<p>"+descr+"</p>",
             buttons: {
                 submit: {
@@ -311,6 +314,18 @@ export class FortyKActorSheet extends ActorSheet {
             let options={};
             options[target]=newValue;
             actor.actor.update(options);},200, event, this);
+    }
+    //handles when a ranged weapons clip is editted
+    _onClipEdit(event){
+        clearTimeout(event.currentTarget.timeout);
+        event.currentTarget.timeout=setTimeout(async function(event, actor){
+
+
+            let newClip=event.target.value;
+            let dataItemId=event.target.attributes["data-item-id"].value;
+            let item= duplicate(actor.actor.getEmbeddedEntity("OwnedItem", dataItemId));
+            item.data.clip.value=newClip;
+            await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this);
     }
     //handles when weapons are swapped and stuff
     _onWeaponChange(event){

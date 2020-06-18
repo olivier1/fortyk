@@ -140,13 +140,13 @@ export class FortyKActor extends Actor {
         data.characterHitLocations.body.shield= 0;
         data.characterHitLocations.rArm.shield= 0;
         data.characterHitLocations.lArm.shield= 0;
-        if(rightHandWeapon!==null){
-
+        if(rightHandWeapon!==null&&rightHandWeapon.type!=="rangedWeapon"){
+            
             data.characterHitLocations.rArm.shield= parseInt(rightHandWeapon.data.shield.value);
 
             data.characterHitLocations.body.shield= Math.max(data.characterHitLocations.body.shield,parseInt(rightHandWeapon.data.shield.value));
         }
-        if(leftHandWeapon!==null){
+        if(leftHandWeapon!==null&&leftHandWeapon.type!=="rangedWeapon"){
             data.characterHitLocations.lArm.shield= parseInt(leftHandWeapon.data.shield.value);
             data.characterHitLocations.body.shield= 0;
             data.characterHitLocations.body.shield= Math.max(data.characterHitLocations.body.shield,parseInt(leftHandWeapon.data.shield.value));

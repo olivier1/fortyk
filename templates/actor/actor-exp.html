@@ -82,7 +82,7 @@
     <ul>
         {{#each actor.advancements as |a key|}}
         <div class="list-item flexrow">
-            <dt class="item-descr" data-item-descr="{{a.data.description.value}}">{{a.name}}</dt>
+            <dt class="item-descr" data-name="{{a.name}}" data-item-descr="{{a.data.description.value}}">{{a.name}}</dt>
             <label>Cost:{{a.data.cost.value}}</label>
            
             <a class="tntItem item-edit" title="Edit" data-item-id="{{a._id}}"></a>
@@ -98,7 +98,7 @@
     <ul>
         {{#each actor.missions as |m key|}}
         <div class="list-item flexrow">
-            <dt class="item-descr" data-item-descr="{{m.data.description.value}}">{{m.name}}</dt>
+            <dt class="item-descr" data-name="{{m.name}}" data-item-descr="{{m.data.description.value}}">{{m.name}}</dt>
             <label>Exp:{{m.data.exp.value}}</label>
             <label>Inf:{{m.data.inf.value}}</label>
             <a class="tntItem item-edit" title="Edit" data-item-id="{{m._id}}"></a>

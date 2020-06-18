@@ -5,7 +5,7 @@
         <ul>
             {{#each actor.cybernetics as |c key|}}
             <div class="list-item flexrow">
-                <dt class="item-descr" data-item-descr="{{c.data.description.value}}">{{c.name}}</dt>
+                <dt class="item-descr" data-name="{{c.name}}" data-item-descr="{{c.data.description.value}}">{{c.name}}</dt>
                 <select data-item-id="{{c._id}}" class="cyber-location-select" data-dtype="String">
                     {{#select c.data.location.value}}
 
@@ -37,7 +37,7 @@
             {{#each actor.wargear as |w key|}}
             
             <div class="list-item flexrow">
-                <dt class="item-descr" data-item-descr="{{w.data.description.value}}">{{w.name}}</dt>
+                <dt class="item-descr" data-name="{{w.name}}" data-item-descr="{{w.data.description.value}}">{{w.name}}</dt>
                 <input type="text" class="wargear-amount" value="{{w.data.amount.value}}" data-item-id="{{w._id}}" data-dtype="Number">
                 <label>Weight: {{w.data.weight.total}}</label>
 

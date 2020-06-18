@@ -3,7 +3,7 @@
     <ul>
         {{#each actor.talentsntraits as |t key|}}
         <div class="list-item flexrow">
-            <dt class="item-descr" data-item-descr="{{t.data.description.value}}">{{t.name}}</dt>
+            <dt class="item-descr" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}</dt>
             <a class="tntItem item-edit" title="Edit" data-item-id="{{t._id}}"></a>
             <a class="tntItem item-delete" title="Delete" data-item-id="{{t._id}}"></a>
         </div>
