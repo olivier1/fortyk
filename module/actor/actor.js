@@ -127,6 +127,7 @@ export class FortyKActor extends Actor {
         const rangedWeapons=[];
         const armors=[];
         const ammunitions=[];
+        const worngear={};
 
         //put all items in their respective containers
         for(let i of data.items){
@@ -175,7 +176,7 @@ export class FortyKActor extends Actor {
             if(i.type==="advancement"){
                 advancements.push(i);
             }
-            if(i.type==="meleeweapon"){
+            if(i.type==="meleeWeapon"){
                 meleeweapons.push(i);
                 wargear.push(i);
             }

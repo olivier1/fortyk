@@ -68,6 +68,9 @@ export class FortyKActorSheet extends ActorSheet {
         //change active pr for psy power
         html.find('.psy-pr').keydown(this._onPRedit.bind(this));
         html.find('.psy-pr').focusout(this._onPRedit.bind(this));
+        //handles combat tab resources
+        html.find('.combat-resources').keydown(this._onCombatResourceEdit.bind(this));
+        html.find('.combat-resources').focusout(this._onCombatResourceEdit.bind(this));
         //get item description
         html.find('.item-descr').click(this._onItemDescrGet.bind(this));
         //filters
@@ -159,7 +162,7 @@ export class FortyKActorSheet extends ActorSheet {
             }).render(true)
         });
 
-        
+
     }
     //handles when a wargear amount is changed
     _onWargearAmountEdit(event){
@@ -197,20 +200,20 @@ export class FortyKActorSheet extends ActorSheet {
         clearTimeout(event.currentTarget.timeout);
         var newPR=event.target.value;
         if(newPR>0&&newPR<=this.actor.data.data.psykana.pr.maxPush){
-           event.currentTarget.timeout=setTimeout(async function(event, actor){
+            event.currentTarget.timeout=setTimeout(async function(event, actor){
 
 
-            
-            let dataItemId=event.target.attributes["data-item-id"].value;
-            let item= duplicate(actor.actor.getEmbeddedEntity("OwnedItem", dataItemId));
-            console.log(item);
-            item.data.curPR.value=newPR;
-            await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this); 
+
+                let dataItemId=event.target.attributes["data-item-id"].value;
+                let item= duplicate(actor.actor.getEmbeddedEntity("OwnedItem", dataItemId));
+                console.log(item);
+                item.data.curPR.value=newPR;
+                await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this); 
         }else{
             alert("Psy rating is out of bounds!");
             event.target.value=this.actor.data.data.psykana.pr.value;
         }
-        
+
     }
     //Edits the item that was clicked
     _onItemEdit(event){
@@ -288,12 +291,24 @@ export class FortyKActorSheet extends ActorSheet {
             let dataItemId=event.target.attributes["data-item-id"].value;
             let item= duplicate(actor.actor.getEmbeddedEntity("OwnedItem", dataItemId));
             item.data.mod.value=newMod;
-            await actor.actor.updateEmbeddedEntity("OwnedItem",item);},1000, event, this);
+            await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this);
 
 
 
     }
+    async _onCombatResourceEdit(event){
+        clearTimeout(event.currentTarget.timeout);
+        var actor=this.actor;
+        event.currentTarget.timeout=setTimeout(async function(event, actor){
+            console.log(actor);
 
+            let newValue=event.target.value;
+            let target=event.target.attributes["data-target"].value;
+            
+            let options={};
+            options[target]=newValue;
+            actor.actor.update(options);},200, event, this);
+    }
     /**
    * Handle clickable rolls.
    * @param {Event} event   The originating click event
@@ -311,27 +326,27 @@ export class FortyKActorSheet extends ActorSheet {
 
         var testChar=dataset["char"];
 
-        
-            new Dialog({
-                title: `${testLabel} Test`,
-                content: `<p><label>Modifier:</label> <input type="text" name="modifier" value="0" data-dtype="Number" autofocus/></p>`,
-                buttons: {
-                    submit: {
-                        label: 'OK',
-                        callback: (el) => {
-                            const bonus = Number($(el).find('input[name="modifier"]').val());
 
-                            testTarget+=parseInt(bonus);
-                            FortykRolls.fortykTest(testChar, testType, testTarget, this.actor, testLabel);
-                        }
+        new Dialog({
+            title: `${testLabel} Test`,
+            content: `<p><label>Modifier:</label> <input type="text" name="modifier" value="0" data-dtype="Number" autofocus/></p>`,
+            buttons: {
+                submit: {
+                    label: 'OK',
+                    callback: (el) => {
+                        const bonus = Number($(el).find('input[name="modifier"]').val());
+
+                        testTarget+=parseInt(bonus);
+                        FortykRolls.fortykTest(testChar, testType, testTarget, this.actor, testLabel);
                     }
-                },
-                default: "submit",
+                }
+            },
+            default: "submit",
 
 
-                width:100}
-                      ).render(true);
-        
+            width:100}
+                  ).render(true);
+
 
 
     }

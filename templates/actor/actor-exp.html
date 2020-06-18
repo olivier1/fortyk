@@ -79,34 +79,34 @@
     </div>
     <label class="exp-title">ADVANCEMENTS</label>
     <a class="item-create button" data-type="advancement" title="Add a new Advancement">Add Advancement</a>
-    <dl>
+    <ul>
         {{#each actor.advancements as |a key|}}
         <div class="list-item flexrow">
-            <dt>{{a.name}}</dt>
+            <dt class="item-descr" data-item-descr="{{a.data.description.value}}">{{a.name}}</dt>
             <label>Cost:{{a.data.cost.value}}</label>
            
             <a class="tntItem item-edit" title="Edit" data-item-id="{{a._id}}"></a>
             <a class="tntItem item-delete" title="Delete" data-item-id="{{a._id}}"></a>
         </div>
 
-        <dd class="list-item">{{a.data.description.value}}</dd>
+        
         {{/each}}
 
-    </dl>
+    </ul>
     <label class="exp-title">MISSIONS</label>
     <a class="item-create button" data-type="mission" title="Add a new Mission">Add Mission</a>
-    <dl>
+    <ul>
         {{#each actor.missions as |m key|}}
         <div class="list-item flexrow">
-            <dt>{{m.name}}</dt>
+            <dt class="item-descr" data-item-descr="{{m.data.description.value}}">{{m.name}}</dt>
             <label>Exp:{{m.data.exp.value}}</label>
             <label>Inf:{{m.data.inf.value}}</label>
             <a class="tntItem item-edit" title="Edit" data-item-id="{{m._id}}"></a>
             <a class="tntItem item-delete" title="Delete" data-item-id="{{m._id}}"></a>
         </div>
 
-        <dd class="list-item">{{m.data.description.value}}</dd>
+        
         {{/each}}
 
-    </dl>
+    </ul>
 </div>

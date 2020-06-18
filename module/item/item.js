@@ -2,7 +2,8 @@
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
-import {getItem} from "../utilities.js"
+import {getItem} from "../utilities.js";
+import {FORTYK} from "../FortykConfig.js";
 export class FortyKItem extends Item {
     /**
    * Augment the basic Item data model with additional dynamic data.
@@ -12,14 +13,26 @@ export class FortyKItem extends Item {
 
         // Get the Item's data
         const itemData = this.data;
+        const data = itemData.data;
+        itemData["FORTYK"]=FORTYK;
+        //logic for weapons
+         if(itemData.type==="meleeWeapon"){
+            //ensure that a weapon that is not a shield does not have an armor rating
+                if(data.class.value!=="Shield"&&data.shield.value!==0){
+                    data.shield.value=0;
+                    console.log(this.update({'data.shield.value':0}));
+                }
+            }
         //ensure this is an owned item
         if(this.options.actor!==undefined){
             const actorData = this.actor ? this.actor.data : {};
-            const data = itemData.data;
-            //prepare skill total values
+            
+            //prepare skill total value
             if(itemData.type==="skill"){
                 data.total.value=parseInt(data.value)+parseInt(data.mod.value)+parseInt(actorData.data.characteristics[data.characteristic.value].total);
             }
+            
+           
             //prepare psychicpowers, calculates pushing and target numbers
             if(itemData.type==="psychicPower"){
                 let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.value)-parseInt(data.curPR.value));

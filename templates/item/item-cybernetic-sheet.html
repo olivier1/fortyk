@@ -29,6 +29,6 @@
     </div>
     <div class="flexcol">
         <label>Description:</label>
-        <textarea type="text" name="data.description.value">{{data.description.value}}</textarea>
+        {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
     </div>
 </form>

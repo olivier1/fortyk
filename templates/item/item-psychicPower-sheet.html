@@ -57,12 +57,11 @@
         </div>
         <div class="flexcol">
             <label>Damage Type:</label>
-            <select class="damage-type" name=data.damageType.value>
+            <select class="damage-type" name="data.damageType.value">
                 {{#select data.damageType.value}}
-                <option value="energy">Energy</option>
-                <option value="explosive">Explosive</option>
-                <option value="impact">Impact</option>
-                <option value="rending">Rending</option>
+                {{#each item.FORTYK.damageTypes}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
                 {{/select}}
             </select>
         </div>
@@ -73,6 +72,6 @@
     </div>
     <div class="flexcol">
         <label>Description:</label>
-        <textarea type="text" name="data.description.value">{{data.description.value}}</textarea>
+        {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
     </div>
 </form>

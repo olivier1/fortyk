@@ -103,8 +103,10 @@ FORTYK.carry=[{"carry":0.9,
              {"carry":2250,
               "lift":4500,
               "push":9000}]
-FORTYK.damageTypes=["explosive","rending","impact","energy"]
-FORTYK.weaponTypes=["bolt", "flame", "las", "launcher", "low-tech", "melta", "plasma", "solid projectile", "exotic", "chain", "force", "power", "shock"]
-FORTYK.weaponClasses=["pistol", "basic", "heavy", "melee", "melee two-handed", "thrown"]
+FORTYK.damageTypes=["Explosive","Rending","Impact","Energy"]
+FORTYK.meleeWeaponTypes=["Chain", "Force", "Power", "Shock", "Low-tech", "Exotic"]
+FORTYK.meleeRangedTypes=["Bolt", "Flame", "Las", "Launcher", "Low-tech", "Melta", "Plasma", "Solid projectile", "Exotic"]
+FORTYK.rangedWeaponClasses=["Pistol", "Basic", "Heavy", "Thrown"]
+FORTYK.meleeWeaponClasses=["Melee", "Melee Two-handed", "Shield"]
 FORTYK.aptitudes=["Weapon Skill", "Ballistic Skill", "Strength", "Toughness", "Agility", "Intelligence", "Perception", "Willpower", "Fellowship", "Offence", "Finesse", "Defence", "Psyker", "Tech", "Knowledge", "Leadership", "Fieldcraft", "Social"]
 FORTYK.psykerTypes={"bound":{"push":2,"sustain":"+10 to Phenomena rolls, -1 to PR per power after the first","perils":0},"unbound":{"push":4,"sustain":"+10 to all rolls on Table 6–2: Psychic Phenomena (see page 196), decrease psy rating by 1 per power.","perils":5}, "daemon":{"push":3, "sustain":"+10 to all rolls on Table 6–2: Psychic Phenomena (see page 196), decrease psy rating by 1 per power. He is not affected by the result unless the result causes Perils of the Warp, though those around him might be.","perils":10}}

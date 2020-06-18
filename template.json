@@ -131,12 +131,20 @@
                         "mod": 0
                     },
                     "injuries": [],
-                    "hands": {
+                    "wornGear": {
                         "rightHand": {
                             "_id": "",
                             "type": "String"
                         },
                         "leftHand": {
+                            "_id": "",
+                            "type": "String"
+                        },
+                        "armor":{
+                            "_id": "",
+                            "type": "String"
+                        },
+                        "forceField":{
                             "_id": "",
                             "type": "String"
                         }
@@ -267,33 +275,48 @@
                 },
                 "characterHitLocations": {
                     "head": {
-                        "value": 30,
+                        "value": 0,
+                        "armor": 0,
+                        "cyber":false,
                         "type": "Number",
                         "label":"Head"
                     },
                     "body": {
-                        "value": 30,
+                        "value": 0,
+                        "armor": 0,
+                        "cyber":false,
+                        "shield":0,
                         "type": "Number",
                         "label":"Body"
                     },
                     "rArm": {
-                        "value": 30,
+                        "value": 0,
+                        "armor": 0,
+                        "cyber":false,
+                        "shield":0,
                         "type": "Number",
                         "label":"Right Arm"
                     },
                     "lArm": {
-                        "value": 30,
+                        "value": 0,
+                        "armor": 0,
+                        "cyber":false,
+                        "shield":0,
                         "type": "Number",
                         "label":"Left Arm"
                     },
-                    
+
                     "rLeg": {
-                        "value": 30,
+                        "value": 0,
+                        "armor": 0,
+                        "cyber":false,
                         "type": "Number",
                         "label":"Right Leg"
                     },
                     "lLeg": {
-                        "value": 30,
+                        "value": 0,
+                        "armor": 0,
+                        "cyber":false,
                         "type": "Number",
                         "label":"Left Leg"
                     }
@@ -427,6 +450,10 @@
                 "class": {
                     "value": "",
                     "type": "String"
+                },
+                "type":{
+                    "value":"",
+                    "type":"String"
                 }
             },
             "description": {
@@ -467,7 +494,11 @@
                 "description",
                 "physicalProp"
             ],
-            "mods": []
+            "mods": [],
+            "shield":{
+                "value":0,
+                "type":"Number"
+            }
         },
         "rangedWeapon": {
             "templates": [
@@ -537,32 +568,32 @@
                 "value": 0,
                 "type": "Number"
             },
-            "ap": [
-                {
+            "ap": {
+                "head":{
                     "value": 0,
                     "type": "Number"
                 },
-                {
+                "body":{
                     "value": 0,
                     "type": "Number"
                 },
-                {
+                "lArm":{
                     "value": 0,
                     "type": "Number"
                 },
-                {
+                "rArm": {
                     "value": 0,
                     "type": "Number"
                 },
-                {
+                "lLeg":{
                     "value": 0,
                     "type": "Number"
                 },
-                {
+                "rLeg":{
                     "value": 0,
                     "type": "Number"
                 }
-            ]
+            }
         },
         "forceField": {
             "templates": [

@@ -18,7 +18,7 @@ Hooks.once('init', async function() {
    * @type {String}
    */
     CONFIG.Combat.initiative = {
-        formula: "1d10",
+        formula: "1d10 + @characteristics.agi.bonus + (@characteristics.agi.value / 100)",
         decimals: 2
     };
     //preload handlebars templates

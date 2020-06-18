@@ -2,10 +2,10 @@
     <div class="cyber flexcol">
         <label>CYBERNETICS</label>
         <a class="item-create button" data-type="cybernetic" title="Add a new Cybernetic">Add Cybernetic</a>
-        <dl>
+        <ul>
             {{#each actor.cybernetics as |c key|}}
             <div class="list-item flexrow">
-                <dt>{{c.name}}</dt>
+                <dt class="item-descr" data-item-descr="{{c.data.description.value}}">{{c.name}}</dt>
                 <select data-item-id="{{c._id}}" class="cyber-location-select" data-dtype="String">
                     {{#select c.data.location.value}}
 
@@ -19,10 +19,10 @@
                 <a class="cyberItem item-delete" title="Delete" data-item-id="{{c._id}}"></a>
             </div>
 
-            <dd class="list-item">{{c.data.description.value}}</dd>
+           
             {{/each}}
 
-        </dl>
+        </ul>
     </div>
     <div class="wargear flexcol">
         <label>CARRY</label>
@@ -33,11 +33,11 @@
         <label>WARGEAR</label>
         <a class="wargear-create button" title="Add a new Wargear">Add Wargear</a>
         
-        <dl>
+        <ul>
             {{#each actor.wargear as |w key|}}
-            {{debug this}}
+            
             <div class="list-item flexrow">
-                <dt>{{w.name}}</dt>
+                <dt class="item-descr" data-item-descr="{{w.data.description.value}}">{{w.name}}</dt>
                 <input type="text" class="wargear-amount" value="{{w.data.amount.value}}" data-item-id="{{w._id}}" data-dtype="Number">
                 <label>Weight: {{w.data.weight.total}}</label>
 
@@ -45,9 +45,9 @@
                 <a class="wargearItem item-delete" title="Delete" data-item-id="{{w._id}}"></a>
             </div>
 
-            <dd class="list-item">{{w.data.description.value}}</dd>
+           
             {{/each}}
 
-        </dl>
+        </ul>
     </div>
 </div>

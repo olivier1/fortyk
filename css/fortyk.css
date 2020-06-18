@@ -17,11 +17,11 @@
     font-style:italic;
 }
 .fortyk{
-    font-size:14px;
+    font-size:16px;
     font-family: "CaslonAntique";
-    font-weight:normal;
-    font-style:normal;
-    text-transform: uppercase;
+    font-weight:bold;
+    font-style:bold;
+    
 }
 
 .rollable:hover, .rollable:focus {
@@ -217,10 +217,10 @@
 
 
 
-.fortyk .sheet-main .header-fields .characteristics{
+.fortyk  .characteristics{
     margin-top:5px;
 }
-.fortyk .sheet-main .header-fields .characteristics  span.characteristicsSpan{
+.fortyk  .characteristics  span.characteristicsSpan{
     font-weight: bold;
     font-style:bold;
 

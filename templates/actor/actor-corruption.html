@@ -13,29 +13,29 @@
             <input type="text" name="data.secChar.corruption.chars" value="{{data.secChar.corruption.chars}}">
         </div>
         <a class="item-create button" data-type="malignancy" title="Add new malignancy">Add Malignancy</a>
-        <dl>
+        <ul>
             {{#each actor.malignancies as |m key|}}
-            <div class="list-item flexrow"><dt>{{m.name}}</dt>
+            <div class="list-item flexrow "><dt class="item-descr" data-item-descr="{{m.data.description.value}}">{{m.name}}</dt>
                 <a class="corrItem item-edit" title="Edit Malignancy" data-item-id="{{m._id}}"></a>
                 <a class="corrItem item-delete" title="Delete Malignancy" data-item-id="{{m._id}}"></a>
             </div>
 
-            <dd class="list-item">{{m.data.description.value}}</dd>
+           
             {{/each}}
             
-        </dl>
+        </ul>
         <a class="item-create button" data-type="mutation" title="Add new mutation">Add Mutation</a>
-        <dl>
+        <ul>
             {{#each actor.mutations as |m key|}}
-            <div class="list-item flexrow"><dt>{{m.name}}</dt>
+            <div class="list-item flexrow"><dt class="item-descr" data-item-descr="{{m.data.description.value}}">{{m.name}}</dt>
                 <a class="corrItem item-edit" title="Edit Mutation" data-item-id="{{m._id}}"></a>
                 <a class="corrItem item-delete" title="Delete Mutation" data-item-id="{{m._id}}"></a>
             </div>
 
-            <dd class="list-item">{{m.data.description.value}}</dd>
+            
             {{/each}}
             
-        </dl>
+        </ul>
     </div>
     <div class="insanity flexcol">
         <div class="flexrow">
@@ -51,17 +51,17 @@
             <input type="text" name="data.secChar.shock" value="{{data.secChar.insanity.shock}}">
         </div>
         <a class="item-create button" data-type="disorder" title="Add new disorder">Add Disorder</a>
-        <dl>
+        <ul>
             {{#each actor.disorders as |d key|}}
-            <div class="list-item flexrow"><dt>{{d.name}}</dt>
+            <div class="list-item flexrow"><dt class="item-descr" data-item-descr="{{d.data.description.value}}">{{d.name}}</dt>
                 <a class="corrItem item-edit" title="Edit Disorder" data-item-id="{{d._id}}"></a>
                 <a class="corrItem item-delete" title="Delete Disorder" data-item-id="{{d._id}}"></a>
             </div>
 
-            <dd class="list-item">{{d.data.description.value}}</dd>
+            
             {{/each}}
             
-        </dl>
+        </ul>
         
     </div>
 </div>
