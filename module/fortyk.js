@@ -70,7 +70,7 @@ Hooks.once('init', async function() {
         }
     });
     Handlebars.registerHelper("contains", function(str1, str2) {
-
+       
         if(str2===""){
 
             return true;

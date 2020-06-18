@@ -74,13 +74,13 @@
         {{/each}}
     </div>
     <div class="grid grid-2col">
-        <div class="flexcol">
+        <div class="flexcol flex-group-center">
             <label>WEAPONS</label>
 
             <div class="flexrow">
                 <div class="flexcol">
                     <label>Left Hand</label>
-                    <select class="left-hand-weapon" name="data.secChar.wornGear.leftHand._id">
+                    <select class="hand-weapon" data-hand="left" name="data.secChar.wornGear.leftHand._id">
                         {{#select data.secChar.wornGear.leftHand._id}}
                         <option value="">None</option>
                         {{#each actor.meleeWeapons}}
@@ -94,7 +94,7 @@
                 </div>
                 <div class="flexcol">
                     <label>Right Hand</label>
-                    <select class="right-hand-weapon" name="data.secChar.wornGear.rightHand._id">
+                    <select class="hand-weapon" data-hand="right" name="data.secChar.wornGear.rightHand._id">
                         {{#select data.secChar.wornGear.rightHand._id}}
                         <option value="">None</option>
                         {{#each actor.meleeWeapons}}
@@ -108,51 +108,52 @@
                 </div>
 
             </div>
+
             {{#unless (compareString data.secChar.wornGear.leftHand._id)}}
             {{#if (contains actor.wornGear.leftHand.type "ranged")}}
             <div class="grid grid-3col">
                 <div class="flexcol">
-                    <label>Name: {{data.secChar.wornGear.leftHand.name}}</label>
+                    <label>Name: {{actor.wornGear.leftHand.name}}</label>
                 </div>
 
                 <div class="flexcol">
-                    <label>Range: {{data.secChar.wornGear.leftHand.data.range.value}}</label>
+                    <label>Range: {{actor.wornGear.leftHand.data.range.value}}</label>
                 </div>
                 <div class="flexcol">
-                    <label>Damage: {{data.secChar.wornGear.leftHand.data.damageFormula.value}}</label>
+                    <label>Damage: {{actor.wornGear.leftHand.data.damageFormula.value}}</label>
 
                 </div>
                 <div class="flexcol">
-                    <label>Penetration: {{data.secChar.wornGear.leftHand.data.pen.value}}</label>
+                    <label>Penetration: {{actor.wornGear.leftHand.data.pen.value}}</label>
 
                 </div>
                 <div class="flexcol">
                     <label>Clip: </label>
                     <div class="flexrow">
-                        <input class="clip-current" type="text" value="{{data.secChar.wornGear.leftHand.data.clip.value}}" name="data.secChar.wornGear.leftHand.data.clip.value" data-dtype="Number">
+                        <input class="clip-current" type="text" value="{{actor.wornGear.leftHand.data.clip.value}}" name="actor.wornGear.leftHand.data.clip.value" data-dtype="Number">
                         <span>/</span>
-                        <span>{{data.secChar.wornGear.leftHand.data.clip.max}}</span>
+                        <span>{{actor.wornGear.leftHand.data.clip.max}}</span>
                     </div>
                 </div>
                 <div class="flexcol">
-                    <label>Reload: {{data.secChar.wornGear.leftHand.data.reload.value}}</label>
+                    <label>Reload: {{actor.wornGear.leftHand.data.reload.value}}</label>
 
                 </div>
                 <div class="flexcol">
-                    <label>Special: {{data.secChar.wornGear.leftHand.data.special.value}}</label>
-                    <input type="text" value="{{data.special.value}}" name="data.special.value">
-                </div>
-                <div class="flexcol">
-                    <label>Damage Type: {{data.secChar.wornGear.leftHand.data.damageType.value}}</label>
+                    <label>Special: {{actor.wornGear.leftHand.data.special.value}}</label>
 
                 </div>
                 <div class="flexcol">
-                    <label>Weapon Class: {{data.secChar.wornGear.leftHand.data.class.value}}</label>
+                    <label>Damage Type: {{actor.wornGear.leftHand.data.damageType.value}}</label>
+
+                </div>
+                <div class="flexcol">
+                    <label>Weapon Class: {{actor.wornGear.leftHand.data.class.value}}</label>
 
 
                 </div>
                 <div class="flexcol">
-                    <label>Weapon Type: {{data.secChar.wornGear.leftHand.data.type.value}}</label>
+                    <label>Weapon Type: {{actor.wornGear.leftHand.data.type.value}}</label>
 
 
                 </div>
@@ -162,35 +163,35 @@
             {{else}}
             <div class="grid grid-3col">
                 <div class="flexcol">
-                    <label>Name: {{data.secChar.wornGear.leftHand.name}}</label>
+                    <label>Name: {{actor.wornGear.leftHand.name}}</label>
                 </div>
 
                 <div class="flexcol">
-                    <label>Reach: {{data.secChar.wornGear.leftHand.data.range.value}}</label>
+                    <label>Reach: {{actor.wornGear.leftHand.data.range.value}}</label>
                 </div>
                 <div class="flexcol">
-                    <label>Damage: {{data.secChar.wornGear.leftHand.data.damageFormula.value}}</label>
+                    <label>Damage: {{actor.wornGear.leftHand.data.damageFormula.value}}</label>
 
                 </div>
                 <div class="flexcol">
-                    <label>Penetration: {{data.secChar.wornGear.leftHand.data.pen.value}}</label>
+                    <label>Penetration: {{actor.wornGear.leftHand.data.pen.value}}</label>
 
                 </div>
                 <div class="flexcol">
-                    <label>Special: {{data.secChar.wornGear.leftHand.data.special.value}}</label>
-                    <input type="text" value="{{data.special.value}}" name="data.special.value">
-                </div>
-                <div class="flexcol">
-                    <label>Damage Type: {{data.secChar.wornGear.leftHand.data.damageType.value}}</label>
+                    <label>Special: {{actor.wornGear.leftHand.data.special.value}}</label>
 
                 </div>
                 <div class="flexcol">
-                    <label>Weapon Class: {{data.secChar.wornGear.leftHand.data.class.value}}</label>
+                    <label>Damage Type: {{actor.wornGear.leftHand.data.damageType.value}}</label>
+
+                </div>
+                <div class="flexcol">
+                    <label>Weapon Class: {{actor.wornGear.leftHand.data.class.value}}</label>
 
 
                 </div>
                 <div class="flexcol">
-                    <label>Weapon Type: {{data.secChar.wornGear.leftHand.data.type.value}}</label>
+                    <label>Weapon Type: {{actor.wornGear.leftHand.data.type.value}}</label>
 
 
                 </div>
@@ -199,51 +200,53 @@
 
             {{/if}}
             {{/unless}}
+
             {{#unless (compareString data.secChar.wornGear.rightHand._id)}}
+            {{#unless (compareString data.secChar.worngear.rightHand._id data.secChar.worngear.leftHand._id)}}
             {{#if (contains actor.wornGear.rightHand.type "ranged")}}
             <div class="grid grid-3col">
                 <div class="flexcol">
-                    <label>Name: {{data.secChar.wornGear.rightHand.name}}</label>
+                    <label>Name: {{actor.wornGear.rightHand.name}}</label>
                 </div>
 
                 <div class="flexcol">
-                    <label>Range: {{data.secChar.wornGear.rightHand.data.range.value}}</label>
+                    <label>Range: {{actor.wornGear.rightHand.data.range.value}}</label>
                 </div>
                 <div class="flexcol">
-                    <label>Damage: {{data.secChar.wornGear.rightHand.data.damageFormula.value}}</label>
+                    <label>Damage: {{actor.wornGear.rightHand.data.damageFormula.value}}</label>
 
                 </div>
                 <div class="flexcol">
-                    <label>Penetration: {{data.secChar.wornGear.rightHand.data.pen.value}}</label>
+                    <label>Penetration: {{actor.wornGear.rightHand.data.pen.value}}</label>
 
                 </div>
                 <div class="flexcol">
                     <label>Clip: </label>
                     <div class="flexrow">
-                        <input class="clip-current" type="text" value="{{data.secChar.wornGear.rightHand.data.clip.value}}" name="data.secChar.wornGear.rightHand.data.clip.value" data-dtype="Number">
+                        <input class="clip-current" type="text" value="{{actor.wornGear.rightHand.data.clip.value}}" name="actor.wornGear.rightHand.data.clip.value" data-dtype="Number">
                         <span>/</span>
-                        <span>{{data.secChar.wornGear.rightHand.data.clip.max}}</span>
+                        <span>{{actor.wornGear.rightHand.data.clip.max}}</span>
                     </div>
                 </div>
                 <div class="flexcol">
-                    <label>Reload: {{data.secChar.wornGear.rightHand.data.reload.value}}</label>
+                    <label>Reload: {{actor.wornGear.rightHand.data.reload.value}}</label>
 
                 </div>
                 <div class="flexcol">
-                    <label>Special: {{data.secChar.wornGear.rightHand.data.special.value}}</label>
-                    <input type="text" value="{{data.special.value}}" name="data.special.value">
-                </div>
-                <div class="flexcol">
-                    <label>Damage Type: {{data.secChar.wornGear.rightHand.data.damageType.value}}</label>
+                    <label>Special: {{actor.wornGear.rightHand.data.special.value}}</label>
 
                 </div>
                 <div class="flexcol">
-                    <label>Weapon Class: {{data.secChar.wornGear.rightHand.data.class.value}}</label>
+                    <label>Damage Type: {{actor.wornGear.rightHand.data.damageType.value}}</label>
+
+                </div>
+                <div class="flexcol">
+                    <label>Weapon Class: {{actor.wornGear.rightHand.data.class.value}}</label>
 
 
                 </div>
                 <div class="flexcol">
-                    <label>Weapon Type: {{data.secChar.wornGear.rightHand.data.type.value}}</label>
+                    <label>Weapon Type: {{actor.wornGear.rightHand.data.type.value}}</label>
 
 
                 </div>
@@ -253,39 +256,40 @@
             {{else}}
             <div class="grid grid-3col">
                 <div class="flexcol">
-                    <label>Name: {{data.secChar.wornGear.rightHand.name}}</label>
+                    <label>Name: {{actor.wornGear.rightHand.name}}</label>
                 </div>
 
                 <div class="flexcol">
-                    <label>Reach: {{data.secChar.wornGear.rightHand.data.range.value}}</label>
+                    <label>Reach: {{actor.wornGear.rightHand.data.range.value}}</label>
                 </div>
                 <div class="flexcol">
-                    <label>Damage: {{data.secChar.wornGear.rightHand.data.damageFormula.value}}</label>
+                    <label>Damage: {{actor.wornGear.rightHand.data.damageFormula.value}}</label>
 
                 </div>
                 <div class="flexcol">
-                    <label>Penetration: {{data.secChar.wornGear.rightHand.data.pen.value}}</label>
+                    <label>Penetration: {{actor.wornGear.rightHand.data.pen.value}}</label>
 
                 </div>
                 <div class="flexcol">
-                    <label>Special: {{data.secChar.wornGear.rightHand.data.special.value}}</label>
-                    <input type="text" value="{{data.special.value}}" name="data.special.value">
-                </div>
-                <div class="flexcol">
-                    <label>Damage Type: {{data.secChar.wornGear.rightHand.data.damageType.value}}</label>
+                    <label>Special: {{actor.wornGear.rightHand.data.special.value}}</label>
 
                 </div>
                 <div class="flexcol">
-                    <label>Weapon Class: {{data.secChar.wornGear.rightHand.data.class.value}}</label>
+                    <label>Damage Type: {{actor.wornGear.rightHand.data.damageType.value}}</label>
+
+                </div>
+                <div class="flexcol">
+                    <label>Weapon Class: {{actor.wornGear.rightHand.data.class.value}}</label>
 
 
                 </div>
                 <div class="flexcol">
-                    <label>Weapon Type: {{data.secChar.wornGear.rightHand.data.type.value}}</label>
+                    <label>Weapon Type: {{actor.wornGear.rightHand.data.type.value}}</label>
                 </div>
 
             </div>
             {{/if}}
+            {{/unless}}
             {{/unless}}
         </div>
         <div class="flexcol flex-group-center">
@@ -318,7 +322,7 @@
             </div>
             <div class="flexcol">
                 <label>FORCE FIELD</label>
-                <div class="flexrow">
+                <div class="flexcol flex-group-center">
                     <select class="foce-field" name="data.secChar.wornGear.forceField._id">
                         {{#select data.secChar.wornGear.forceField._id}}
                         <option value="">None</option>
@@ -328,9 +332,11 @@
                         {{/select}}
                     </select>
                     {{#unless (compareString data.secChar.wornGear.forceField._id)}}
-                    <label>Overload: {{actor.wornGear.forceField.data.overload}}</label>
-                    <label>Rating: </label> 
-                    <span class="forcefield rollable button" data-roll-type="forcefield" data-target="{{actor.wornGear.forceField.data.value}}" data-label="{{actor.wornGear.forceField.name}}" data-char="{{actor.wornGear.forceField.data.overload}}" >{{actor.wornGear.forceField.data.value}}</span>
+                    <div class="flexrow flex-group-center">
+                        <label>Overload: {{actor.wornGear.forceField.data.rating.overload}}</label>
+                        <label>Rating: </label> 
+                        <span class="forcefield rollable button" data-roll-type="forcefield" data-target="{{actor.wornGear.forceField.data.rating.value}}" data-label="{{actor.wornGear.forceField.name}}" data-char="{{actor.wornGear.forceField.data.rating.overload}}" >{{actor.wornGear.forceField.data.rating.value}}</span>
+                    </div>
                     {{/unless}}
                 </div>
             </div>
@@ -347,7 +353,7 @@
                 <div class="armor-wrap flexcol">
                     <div class="flexrow flex-group-center">
                         <div class="flexcol">
-                            
+
                             <label>Head</label>
                             <span title="Armor">{{data.characterHitLocations.head.armor}}</span>
                             <span title="Total Soak">{{data.characterHitLocations.head.value}}</span>

@@ -71,6 +71,8 @@ export class FortyKActorSheet extends ActorSheet {
         //handles combat tab resources
         html.find('.combat-resources').keydown(this._onCombatResourceEdit.bind(this));
         html.find('.combat-resources').focusout(this._onCombatResourceEdit.bind(this));
+        //handles swapping weapons
+        html.find('.hand-weapon').change(this._onWeaponChange.bind(this));
         //get item description
         html.find('.item-descr').click(this._onItemDescrGet.bind(this));
         //filters
@@ -296,6 +298,7 @@ export class FortyKActorSheet extends ActorSheet {
 
 
     }
+    //handles the duplicate inputs for wounds fatigue fate points etc on the combat tab
     async _onCombatResourceEdit(event){
         clearTimeout(event.currentTarget.timeout);
         var actor=this.actor;
@@ -304,10 +307,48 @@ export class FortyKActorSheet extends ActorSheet {
 
             let newValue=event.target.value;
             let target=event.target.attributes["data-target"].value;
-            
+
             let options={};
             options[target]=newValue;
             actor.actor.update(options);},200, event, this);
+    }
+    //handles when weapons are swapped and stuff
+    _onWeaponChange(event){
+        const data=this.actor.data.data;
+        const weapon=this.actor.getEmbeddedEntity("OwnedItem",event.currentTarget.value);
+        const weaponID=event.currentTarget.value;
+        const hand=event.currentTarget.dataset["hand"];
+        
+        
+        if(hand==="right"){
+            let oppWeapon=this.actor.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.leftHand._id);
+            if(oppWeapon!==null&&weaponID===""&&(oppWeapon.data.class.value==="Basic"||oppWeapon.data.class.value==="Heavy"||oppWeapon.data.class.value==="Melee Two-handed")){
+                this.actor.update({"data.secChar.wornGear.leftHand._id":""});
+                return
+            }
+            if(weaponID===""||oppWeapon===null){return}
+            if(weapon.data.class.value==="Pistol"||weapon.data.class.value==="Melee"||weapon.data.class.value==="Thrown"||weapon.data.class.value==="Shield"){
+                if(oppWeapon.data.class.value!=="Pistol"||oppWeapon.data.class.value!=="Melee"||oppWeapon.data.class.value!=="Thrown"||oppWeapon.data.class.value!=="Shield"){
+                    this.actor.update({"data.secChar.wornGear.leftHand._id":""});
+                }
+            }else{
+                this.actor.update({"data.secChar.wornGear.leftHand._id":weaponID});
+            }
+        }else if(hand==="left"){
+            let oppWeapon=this.actor.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.rightHand._id);
+            if(oppWeapon!==null&weaponID===""&&(oppWeapon.data.class.value==="Basic"||oppWeapon.data.class.value==="Heavy"||oppWeapon.data.class.value==="Melee Two-handed")){
+                this.actor.update({"data.secChar.wornGear.rightHand._id":""});
+                return
+            }
+            if(weaponID===""||oppWeapon===null){return}
+            if(weapon.data.class.value==="Pistol"||weapon.data.class.value==="Melee"||weapon.data.class.value==="Thrown"||weapon.data.class.value==="Shield"){
+                if(oppWeapon.data.class.value!=="Pistol"||oppWeapon.data.class.value!=="Melee"||oppWeapon.data.class.value!=="Thrown"||oppWeapon.data.class.value!=="Shield"){
+                    this.actor.update({"data.secChar.wornGear.rightHand._id":""});
+                }
+            }else{
+                this.actor.update({"data.secChar.wornGear.rightHand._id":weaponID});
+            }
+        }
     }
     /**
    * Handle clickable rolls.

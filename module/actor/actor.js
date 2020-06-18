@@ -49,6 +49,7 @@ export class FortyKActor extends Actor {
    */
     _prepareCharacterData(actorData) {
         const data = actorData.data;
+        data.secChar.movement.mod=1;
         //prepare characteristics data
         for (let [key, char] of Object.entries(data.characteristics)){
             if(key==="inf"){
@@ -67,6 +68,10 @@ export class FortyKActor extends Actor {
                 char.total=Math.ceil(char.total/2);
             }
         }
+        //initialise cybernetics
+        for (let [key, hitLoc] of Object.entries(data.characterHitLocations)){
+            hitLoc.cyber=false;
+        }
         //prepare psyker stuff
         data.psykana.pr.maxPush=parseInt(data.psykana.pr.value)+parseInt(FORTYK.psykerTypes[data.psykana.psykerType.value].push);
         //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
@@ -76,35 +81,89 @@ export class FortyKActor extends Actor {
         data.carry.value=0;
 
         for(let item of this.data.items){
-            
-            if(item.type==="skill"){
-               
-               
+
+            if(item.type==="cybernetic"){
+                data.characterHitLocations[item.data.location.value].cyber=true;
+
             }
             if(item.type==="mission"){
-
+                //adds up earned exp and influence
                 data.experience.earned=parseInt(data.experience.earned)+parseInt(item.data.exp.value);
                 data.characteristics["inf"].advance= parseInt(data.characteristics["inf"].advance)+parseInt(item.data.inf.value);
             }
             if(item.type==="advancement"){
+                //calculates spent exp
                 data.experience.spent=parseInt(data.experience.spent)+parseInt(item.data.cost.value);
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="wargear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
+                //total weight calcs
                 item.data.weight.total=parseInt(item.data.amount.value)*parseInt(item.data.weight.value);
 
                 data.carry.value=parseInt(data.carry.value)+parseInt(item.data.weight.total);
+                //logic for two handed weapons worn gear
+                if(data.secChar.wornGear.rightHand._id!==data.secChar.wornGear.leftHand._id){
+
+                    //if the right hand weapon is twohanded put its id into the left or vice versa
+                    if(data.secChar.wornGear.leftHand._id===item._id){
+
+
+                    }else if(data.secChar.wornGear.rightHand._id===item._id){
+
+
+                    }  
+                }
+
             }
-            
+
         }
+        //compile total exp and influence
         data.characteristics["inf"].total=data.characteristics["inf"].value+data.characteristics["inf"].advance;
         data.experience.value=parseInt(data.experience.starting)+parseInt(data.experience.earned)-parseInt(data.experience.spent);
-        data.carry.max=FORTYK.carry[(data.characteristics["s"].bonus+data.characteristics["t"].bonus)].carry;
-        data.secChar.movement.half=data.characteristics["agi"].bonus+data.secChar.size.movement;
+        //get max carry weight ensure it is not out of bounds
+        if((data.characteristics["s"].bonus+data.characteristics["t"].bonus)>19){
+            data.carry.max=FORTYK.carry[19].carry;
+        }else{
+            data.carry.max=FORTYK.carry[(data.characteristics["s"].bonus+data.characteristics["t"].bonus)].carry;
+        }
+
+        //movement
+        data.secChar.movement.half=data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod;
         data.secChar.movement.full=data.secChar.movement.half*2;
         data.secChar.movement.charge=data.secChar.movement.half*3;
         data.secChar.movement.run=data.secChar.movement.half*6;
+        
+        //add up all armor and stuff
+        var armor= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.armor._id);
+        var rightHandWeapon= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.rightHand._id);
+        var leftHandWeapon= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.leftHand._id);
+        //handle shields
+        data.characterHitLocations.body.shield= 0;
+        data.characterHitLocations.rArm.shield= 0;
+        data.characterHitLocations.lArm.shield= 0;
+        if(rightHandWeapon!==null){
 
+            data.characterHitLocations.rArm.shield= parseInt(rightHandWeapon.data.shield.value);
 
+            data.characterHitLocations.body.shield= Math.max(data.characterHitLocations.body.shield,parseInt(rightHandWeapon.data.shield.value));
+        }
+        if(leftHandWeapon!==null){
+            data.characterHitLocations.lArm.shield= parseInt(leftHandWeapon.data.shield.value);
+            data.characterHitLocations.body.shield= 0;
+            data.characterHitLocations.body.shield= Math.max(data.characterHitLocations.body.shield,parseInt(leftHandWeapon.data.shield.value));
+        }
+        //compute rest of armor and absorption
+        for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
+            
+            hitLoc.armor=0;
+            if(armor!==null){
+                hitLoc.armor=hitLoc.armor+parseInt(armor.data.ap[key].value);
+            }
+            hitLoc.armor=hitLoc.armor+hitLoc.shield;
+            if(hitLoc.cyber){
+                hitLoc.armor=hitLoc.armor+2;
+            }
+            hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
+        }
 
     }
     //this prepares all items into containers that can be easily accessed by the html sheets, also adds in logic for sorting and the like
@@ -127,10 +186,23 @@ export class FortyKActor extends Actor {
         const rangedWeapons=[];
         const armors=[];
         const ammunitions=[];
-        const worngear={};
+        const wornGear={"leftHand":"","rightHand":"","armor":"","forceField":""};
 
         //put all items in their respective containers
         for(let i of data.items){
+
+            if(i._id===data.data.secChar.wornGear.leftHand._id){
+                wornGear["leftHand"]=i;
+            }
+            if(i._id===data.data.secChar.wornGear.rightHand._id){
+                wornGear["rightHand"]=i;
+            }
+            if(i._id===data.data.secChar.wornGear.armor._id){
+                wornGear["armor"]=i;
+            }
+            if(i._id===data.data.secChar.wornGear.forceField._id){
+                wornGear["forceField"]=i;
+            }
             if(i.type=="skill"){
 
 
@@ -164,7 +236,7 @@ export class FortyKActor extends Actor {
                 wargear.push(i);
             }
             if(i.type==="psychicPower"){
-                i.data
+
                 psychicPowers.push(i);
             }
             if(i.type==="talentntrait"){
@@ -221,7 +293,8 @@ export class FortyKActor extends Actor {
                            meleeWeapons:meleeweapons,
                            rangedWeapons:rangedWeapons,
                            armors:armors,
-                           ammunitions:ammunitions};
+                           ammunitions:ammunitions,
+                           wornGear:wornGear};
         return preparedItems;
     }
     prepare(){

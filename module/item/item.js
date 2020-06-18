@@ -20,7 +20,7 @@ export class FortyKItem extends Item {
             //ensure that a weapon that is not a shield does not have an armor rating
                 if(data.class.value!=="Shield"&&data.shield.value!==0){
                     data.shield.value=0;
-                    console.log(this.update({'data.shield.value':0}));
+                    this.update({'data.shield.value':0});
                 }
             }
         //ensure this is an owned item
