@@ -25,56 +25,61 @@
     <a class="item-create button" data-type="psychicPower" title="Add a new Psychic Power">Add Psychic Power</a>
     <div class="psy-powers grid grid-2col">
         {{#each actor.psychicPowers as |power key|}}
-        <div class="flexcol">
+        <div class="list-item flexcol">
 
             <div class="grid grid-3col">
-                
-                    <a class="item-edit" title="Edit Power" data-item-id="{{power._id}}"></a>
-                    <a class="item-delete" title="Delete Power" data-item-id="{{power._id}}"></a>
-                
-
-                <label>Name: {{power.name}}</label>
 
 
 
-                <label>Action: {{power.data.action.value}}</label>
+
+                <label class="list-item">Name: {{power.name}}</label>
 
 
 
-                <label>Subtype: {{power.data.subtype.value}}</label>
-
-                <label>Discipline: {{power.data.discipline.value}}</label>
-
-                <label>Test Type: {{power.data.testChar.value}}</label>
+                <label class="list-item">Action: {{power.data.action.value}}</label>
 
 
-                <label>Modifier: {{power.data.mod.value}}</label>
 
-                <label>Sustain: {{power.data.sustain.value}}</label>
+                <label class="list-item">Subtype: {{power.data.subtype.value}}</label>
 
-                <label>Range: {{power.data.range.value}}</label>
+                <label class="list-item">Discipline: {{power.data.discipline.value}}</label>
 
-                <label>Damage: {{power.data.damageFormula.value}}</label>
+                <label class="list-item">Test Type: {{power.data.testChar.value}}</label>
 
-                <label>Penetration: {{power.data.pen.value}}</label>
 
-                <label>Special: {{power.data.special.value}}</label>
+                <label class="list-item">Modifier: {{power.data.mod.value}}</label>
 
-                <label>Damage Type: {{power.data.damageType.value}}</label>
+                <label class="list-item">Sustain: {{power.data.sustain.value}}</label>
 
-                <label>Power Type: {{power.data.class.value}}</label>
-                <div class="flexrow">
+                <label class="list-item">Range: {{power.data.range.value}}</label>
+
+                <label class="list-item">Damage: {{power.data.damageFormula.value}}</label>
+
+                <label class="list-item">Penetration: {{power.data.pen.value}}</label>
+
+                <label class="list-item">Special: {{power.data.special.value}}</label>
+
+                <label class="list-item">Damage Type: {{power.data.damageType.value}}</label>
+
+                <label class="list-item">Power Type: {{power.data.class.value}}</label>
+                <div class="list-item flexrow">
                     <label>PR: </label>
                     <input type="text" class="psy-pr" data-item-id="{{power._id}}" value="{{power.data.curPR.value}}">
                 </div>
-                <div class="flexrow">
+                <div class="list-item flexrow">
                     <label>Test Target: </label>
                     <span data-item-id="{{power._id}}" class="rollable powerItem button" data-roll-type="focuspower" data-target="{{power.data.target.value}}" data-label="{{power.name}}" data-char="{{power.data.testChar.type}}">{{power.data.target.value}}</span>
                 </div>
+                <div class="list-item flexrow">
+                    <a class="item-edit" title="Edit Power" data-item-id="{{power._id}}"></a>
+                    <a class="item-delete" title="Delete Power" data-item-id="{{power._id}}"></a>
+                </div>
+
             </div>
-            <div class="flexcol">
+            <div class="list-item flexcol">
                 <label>Description:</label>
-                <span>{{power.data.description.value}}</span>
+                
+                {{unescape power.data.description.value}}
             </div>
 
 

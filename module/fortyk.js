@@ -70,7 +70,7 @@ Hooks.once('init', async function() {
         }
     });
     Handlebars.registerHelper("contains", function(str1, str2) {
-       
+
         if(str2===""){
 
             return true;
@@ -81,6 +81,10 @@ Hooks.once('init', async function() {
     });
     Handlebars.registerHelper("greaterThan", function(num1,num2){
         return num1>num2;
+    });
+    Handlebars.registerHelper("unescape",function(text){
+        var doc = new DOMParser().parseFromString(text, "text/html");
+        return doc.documentElement.textContent;
     });
 
 

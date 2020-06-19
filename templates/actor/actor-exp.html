@@ -1,5 +1,5 @@
 <div class="exp flexcol">
-    <label class="exp-title">APTITUDES</label>
+    <label class="section-title">APTITUDES</label>
     <div class="grid grid-3col">
         
         <select class="apt1-select" name="data.aptitudes.0" data-dtype="String">
@@ -58,7 +58,7 @@
         </select>
         
     </div>
-    <label class="exp-title">EXPERIENCE</label>
+    <label class="section-title">EXPERIENCE</label>
     <div class="flexrow">
         <div class="flexcol">
             <label>Starting Exp:</label>
@@ -77,36 +77,45 @@
             <span class="exp-item">{{data.experience.value}}</span>
         </div>
     </div>
-    <label class="exp-title">ADVANCEMENTS</label>
+    <label class="section-title">ADVANCEMENTS</label>
     <a class="item-create button" data-type="advancement" title="Add a new Advancement">Add Advancement</a>
-    <ul>
+    <div class="list list4col grid grid-4col">
+        <span class="list-item">Name</span>
+        <span class="list-item">Cost</span>
+        <span class="list-button"></span>
+        <span class="list-button"></span>
         {{#each actor.advancements as |a key|}}
-        <div class="list-item flexrow">
-            <dt class="item-descr" data-name="{{a.name}}" data-item-descr="{{a.data.description.value}}">{{a.name}}</dt>
-            <label>Cost:{{a.data.cost.value}}</label>
+        
+            <a class="item-descr list-item" data-name="{{a.name}}" data-item-descr="{{a.data.description.value}}">{{a.name}}</a>
+            <label class="list-item">{{a.data.cost.value}}</label>
            
-            <a class="tntItem item-edit" title="Edit" data-item-id="{{a._id}}"></a>
-            <a class="tntItem item-delete" title="Delete" data-item-id="{{a._id}}"></a>
-        </div>
+            <a class="list-button item-edit" title="Edit" data-item-id="{{a._id}}"></a>
+            <a class="list-button item-delete" title="Delete" data-item-id="{{a._id}}"></a>
+       
 
         
         {{/each}}
 
-    </ul>
-    <label class="exp-title">MISSIONS</label>
+    </div>
+    <span class="section-title">MISSIONS</span>
     <a class="item-create button" data-type="mission" title="Add a new Mission">Add Mission</a>
-    <ul>
+    <div class="list list5col grid grid-5col">
+        <span class="list-item">Name</span>
+        <span class="list-item">Exp</span>
+        <span class="list-item">Inf</span>
+        <span class="list-button"></span>
+        <span class="list-button"></span>
         {{#each actor.missions as |m key|}}
-        <div class="list-item flexrow">
-            <dt class="item-descr" data-name="{{m.name}}" data-item-descr="{{m.data.description.value}}">{{m.name}}</dt>
-            <label>Exp:{{m.data.exp.value}}</label>
-            <label>Inf:{{m.data.inf.value}}</label>
-            <a class="tntItem item-edit" title="Edit" data-item-id="{{m._id}}"></a>
-            <a class="tntItem item-delete" title="Delete" data-item-id="{{m._id}}"></a>
-        </div>
+       
+            <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.data.description.value}}">{{m.name}}</a>
+            <span class="list-item">{{m.data.exp.value}}</span>
+            <span class="list-item">{{m.data.inf.value}}</span>
+            <a class="list-button item-edit" title="Edit" data-item-id="{{m._id}}"></a>
+            <a class="list-button item-delete" title="Delete" data-item-id="{{m._id}}"></a>
+       
 
         
         {{/each}}
 
-    </ul>
+    </div>
 </div>

@@ -82,6 +82,8 @@ export class FortyKActorSheet extends ActorSheet {
         html.find('.filter').keydown(this._onFilterChange.bind(this));
         // Rollable abilities.
         html.find('.rollable').click(this._onRoll.bind(this));
+        //Damage rolls
+        html.find('.damage-roll').click(this._onDamageRoll.bind(this));
     }
 
     /* -------------------------------------------- */
@@ -333,17 +335,19 @@ export class FortyKActorSheet extends ActorSheet {
         const weapon=this.actor.getEmbeddedEntity("OwnedItem",event.currentTarget.value);
         const weaponID=event.currentTarget.value;
         const hand=event.currentTarget.dataset["hand"];
-        
-        
+
+
         if(hand==="right"){
             let oppWeapon=this.actor.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.leftHand._id);
-            if(oppWeapon!==null&&weaponID===""&&(oppWeapon.data.class.value==="Basic"||oppWeapon.data.class.value==="Heavy"||oppWeapon.data.class.value==="Melee Two-handed")){
+            if(oppWeapon!==null&&weaponID===""&&(oppWeapon.data.twohanded.value)){
+                console.log(1);
                 this.actor.update({"data.secChar.wornGear.leftHand._id":""});
                 return
             }
             if(weaponID===""||oppWeapon===null){return}
-            if(weapon.data.class.value==="Pistol"||weapon.data.class.value==="Melee"||weapon.data.class.value==="Thrown"||weapon.data.class.value==="Shield"){
-                if(oppWeapon.data.class.value!=="Pistol"||oppWeapon.data.class.value!=="Melee"||oppWeapon.data.class.value!=="Thrown"||oppWeapon.data.class.value!=="Shield"){
+            if(!weapon.data.twohanded.value){
+                if(oppWeapon.data.twohanded.value){
+                    console.log(2);
                     this.actor.update({"data.secChar.wornGear.leftHand._id":""});
                 }
             }else{
@@ -351,13 +355,15 @@ export class FortyKActorSheet extends ActorSheet {
             }
         }else if(hand==="left"){
             let oppWeapon=this.actor.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.rightHand._id);
-            if(oppWeapon!==null&weaponID===""&&(oppWeapon.data.class.value==="Basic"||oppWeapon.data.class.value==="Heavy"||oppWeapon.data.class.value==="Melee Two-handed")){
+            if(oppWeapon!==null&weaponID===""&&(oppWeapon.data.twohanded.value)){
+                console.log(3);
                 this.actor.update({"data.secChar.wornGear.rightHand._id":""});
                 return
             }
             if(weaponID===""||oppWeapon===null){return}
-            if(weapon.data.class.value==="Pistol"||weapon.data.class.value==="Melee"||weapon.data.class.value==="Thrown"||weapon.data.class.value==="Shield"){
-                if(oppWeapon.data.class.value!=="Pistol"||oppWeapon.data.class.value!=="Melee"||oppWeapon.data.class.value!=="Thrown"||oppWeapon.data.class.value!=="Shield"){
+            if(!weapon.data.twohanded.value){
+                if(oppWeapon.data.twohanded.value){
+                    console.log(4);
                     this.actor.update({"data.secChar.wornGear.rightHand._id":""});
                 }
             }else{
@@ -405,6 +411,20 @@ export class FortyKActorSheet extends ActorSheet {
 
 
 
+    }
+    _onDamageRoll(event) {
+        event.preventDefault();
+        const element = event.currentTarget;
+        const dataset = element.dataset;
+        console.log(event);
+        if (dataset.formula) {
+            let roll = new Roll(dataset.formula, this.actor.data.data);
+            let label = dataset.label ? `Rolling ${dataset.label} damage.` : '';
+            roll.roll().toMessage({
+                speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+                flavor: label
+            });
+        }
     }
     _onFilterChange(event){
 

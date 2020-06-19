@@ -458,6 +458,10 @@
                 "type":{
                     "value":"",
                     "type":"String"
+                },
+                "twohanded":{
+                    "value":false,
+                    "type":"Boolean"
                 }
             },
             "description": {
@@ -477,7 +481,7 @@
                     "type": "String"
                 },
                 "amount": {
-                    "value": 0,
+                    "value": 1,
                     "type": "Number"
                 }
             },

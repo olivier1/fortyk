@@ -15,14 +15,28 @@ export class FortyKItem extends Item {
         const itemData = this.data;
         const data = itemData.data;
         itemData["FORTYK"]=FORTYK;
+        
         //logic for weapons
+        
          if(itemData.type==="meleeWeapon"){
+             if(itemData.data.class.value==="Melee Two-handed"){
+                 itemData.data.twohanded.value=true;
+             }else{
+                 itemData.data.twohanded.value=false;
+             }
             //ensure that a weapon that is not a shield does not have an armor rating
                 if(data.class.value!=="Shield"&&data.shield.value!==0){
                     data.shield.value=0;
                     this.update({'data.shield.value':0});
                 }
             }
+        if(itemData.type==="rangedWeapon"){
+            if(itemData.data.class.value==="Pistol"||itemData.data.class.value==="Thrown"){
+                 itemData.data.twohanded.value=false;
+            }else{
+                 itemData.data.twohanded.value=true;
+            }
+        }
         //ensure this is an owned item
         if(this.options.actor!==undefined){
             const actorData = this.actor ? this.actor.data : {};
@@ -36,7 +50,7 @@ export class FortyKItem extends Item {
             //prepare psychicpowers, calculates pushing and target numbers
             if(itemData.type==="psychicPower"){
                 let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.value)-parseInt(data.curPR.value));
-                console.log(derivedPR);
+                
 
                 let char=0;
                 if(data.testChar.value==="psy"){

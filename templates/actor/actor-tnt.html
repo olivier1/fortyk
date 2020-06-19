@@ -1,16 +1,19 @@
 <div class="tnt flexcol">
     <a class="item-create button" data-type="talentntrait" title="Add a new Talent or Trait">Add Talent or Trait</a>
-    <ul>
+    <div class="list list3col grid grid-3col">
+        <span class="list-item">Name</span>
+        <span class="list-button"></span>
+        <span class="list-button"></span>
         {{#each actor.talentsntraits as |t key|}}
-        <div class="list-item flexrow">
-            <dt class="item-descr" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}</dt>
-            <a class="tntItem item-edit" title="Edit" data-item-id="{{t._id}}"></a>
-            <a class="tntItem item-delete" title="Delete" data-item-id="{{t._id}}"></a>
-        </div>
+        
+            <a class="item-descr list-item" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}</a>
+            <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
+            <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
+        
 
         
         {{/each}}
 
-    </ul>
+    </div>
 
 </div>
