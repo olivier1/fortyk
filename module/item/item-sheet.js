@@ -35,11 +35,14 @@ export class FortyKItemSheet extends ItemSheet {
     /** @override */
     getData() {
         const data = super.getData();
-
+        const item=this.item;
         if(this.item.type==="skill"){
             //GET THE SKILLS WITH CHILDREN
 
-            data['skillgroups']=this.actor.items.filter(function(item){return item.data.data.hasChildren.value});
+            data['skillgroups']=this.actor.items.filter(function(item){
+                
+                if(item.type==="skill"){return item.data.data.hasChildren.value}else{return false;}}
+                );
 
         }
         return data;
@@ -72,13 +75,18 @@ export class FortyKItemSheet extends ItemSheet {
     }
     //when changing parents check to see if the skill is part of a group if it is change the value of children to false
     async _onParentChange(event){
-        event.preventDefault();
-        let value=event.currentTarget.value;
+        
+        /*let value=event.currentTarget.value;
         
         if(value!==""){
             let item=this.item;
+            console.log(item);
             if(item.data.data.hasChildren){
-                let children=this.actor.items.filter(item=>function(item){return item.data.data.parent.value===this.item.data.data.name.value});
+                let children=this.actor.items.filter(item=>function(item){
+                    console.log(this);
+                    console.log(item);
+                    return item.data.data.parent.value===this.item.data.data.name.value});
+                console.log(children);
                 for(let i of children){
                     await i.update({'data.parent.value':""});
                     
@@ -89,11 +97,11 @@ export class FortyKItemSheet extends ItemSheet {
             
 
 
-        }
+        }*/
 
     } 
     async _onChildrenClick(event){
-        event.preventDefault();
+        
         let value=event.currentTarget.checked;
         if(value){
             await this.item.update({'data.parent.value':""});

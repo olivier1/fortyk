@@ -1,4 +1,4 @@
-<form class="{{cssClass}} flexcol">
+<form class="{{cssClass}} item-sheet flexcol">
     <div class="grid grid-3col">
         <div class="flexcol">
             <label>Name:</label>
@@ -29,7 +29,7 @@
         </div>
         <div class="flexcol">
             <label>Modifier:</label>
-            <input type="text" value="{{data.mod.value}}" name="data.mod.value" data-dtype="Number">
+            <input type="text" value="{{data.testMod.value}}" name="data.testMod.value" data-dtype="Number">
         </div>
         <div class="flexcol">
             <label>Sustain:</label>
@@ -41,15 +41,15 @@
         </div>
         <div class="flexcol">
             <label>Range:</label>
-            <input type="text" value="{{data.range.value}}" name="data.range.value">
+            <input type="text" value="{{data.range.formula}}" name="data.range.formula">
         </div>
         <div class="flexcol">
             <label>Damage:</label>
-            <input type="text" value="{{data.damageFormula.value}}" name="data.damageFormula.value">
+            <input type="text" value="{{data.damageFormula.formula}}" name="data.damageFormula.formula">
         </div>
         <div class="flexcol">
             <label>Penetration:</label>
-            <input type="text" value="{{data.pen.value}}" name="data.pen.value" data-dtype="Number">
+            <input type="text" value="{{data.pen.formula}}" name="data.pen.formula" data-dtype="String">
         </div>
         <div class="flexcol">
             <label>Special:</label>
@@ -70,7 +70,7 @@
             <input type="text" value="{{data.class.value}}" name="data.class.value">
         </div>
     </div>
-    <div class="flexcol">
+    <div class="item-description">
         <label>Description:</label>
         {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
     </div>

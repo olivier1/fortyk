@@ -1,6 +1,6 @@
 <div class="exp flexcol">
     <label class="section-title">APTITUDES</label>
-    <div class="grid grid-3col">
+    <div class="grid grid-2col">
         
         <select class="apt1-select" name="data.aptitudes.0" data-dtype="String">
             {{#select data.aptitudes.[0]}}
@@ -49,6 +49,24 @@
         </select>
         <select class="apt1-select" name="data.aptitudes.5" data-dtype="String">
             {{#select data.aptitudes.[5]}}
+            <option value="">None</option>
+            {{#each aptitudes as |apt|}}
+
+            <option value="{{apt}}">{{apt}}</option>
+            {{/each}}
+            {{/select}}
+        </select>
+        <select class="apt1-select" name="data.aptitudes.6" data-dtype="String">
+            {{#select data.aptitudes.[6]}}
+            <option value="">None</option>
+            {{#each aptitudes as |apt|}}
+
+            <option value="{{apt}}">{{apt}}</option>
+            {{/each}}
+            {{/select}}
+        </select>
+        <select class="apt1-select" name="data.aptitudes.7" data-dtype="String">
+            {{#select data.aptitudes.[7]}}
             <option value="">None</option>
             {{#each aptitudes as |apt|}}
 

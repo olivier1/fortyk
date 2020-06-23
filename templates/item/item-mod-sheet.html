@@ -1,4 +1,4 @@
-<form class="{{cssClass}} flexcol">
+<form class="{{cssClass}} item-sheet flexcol">
     <div class="flexcol">
         <label>Name:</label>
         <input type="text" value="{{item.name}}" name="name">
@@ -31,7 +31,7 @@
         <label>Type:</label>
         <input type="text" value="{{data.type.value}}" name="data.type.value">
     </div>
-    <div class="flexcol">
+    <div class="item-description">
         <label>Description:</label>
         {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
     </div>

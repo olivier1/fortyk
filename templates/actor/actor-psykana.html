@@ -32,7 +32,7 @@
 
 
 
-                <label class="list-item">Name: {{power.name}}</label>
+                <label class="list-item psy-name">Name: {{power.name}}</label>
 
 
 
@@ -47,13 +47,13 @@
                 <label class="list-item">Test Type: {{power.data.testChar.value}}</label>
 
 
-                <label class="list-item">Modifier: {{power.data.mod.value}}</label>
+                <label class="list-item">Modifier: {{power.data.testMod.value}}</label>
 
                 <label class="list-item">Sustain: {{power.data.sustain.value}}</label>
 
                 <label class="list-item">Range: {{power.data.range.value}}</label>
 
-                <label class="list-item">Damage: {{power.data.damageFormula.value}}</label>
+                <label class="list-item">Damage: <a class="damage-roll button" data-label="{{power.name}}"data-formula="{{power.data.damageFormula.value}}">{{power.data.damageFormula.value}}</a></label>
 
                 <label class="list-item">Penetration: {{power.data.pen.value}}</label>
 
@@ -64,7 +64,7 @@
                 <label class="list-item">Power Type: {{power.data.class.value}}</label>
                 <div class="list-item flexrow">
                     <label>PR: </label>
-                    <input type="text" class="psy-pr" data-item-id="{{power._id}}" value="{{power.data.curPR.value}}">
+                    <input type="text" class="psy-pr" data-item-id="{{power._id}}" value="{{power.data.curPR.value}}" data-dtype="Number">
                 </div>
                 <div class="list-item flexrow">
                     <label>Test Target: </label>
@@ -74,13 +74,9 @@
                     <a class="item-edit" title="Edit Power" data-item-id="{{power._id}}"></a>
                     <a class="item-delete" title="Delete Power" data-item-id="{{power._id}}"></a>
                 </div>
-
+                <a class="item-descr list-item" data-name="{{power.name}}" data-item-descr="{{power.data.description.value}}">Description</a>
             </div>
-            <div class="list-item flexcol">
-                <label>Description:</label>
-                
-                {{unescape power.data.description.value}}
-            </div>
+            
 
 
         </div>

@@ -17,7 +17,7 @@ export class FortyKActor extends Actor {
 
         //initialise starting skills
         let startingSkills= await getSkills();
-        if (data.type !="npc"){
+        if (data.type !=="npc"){
             for(let s of startingSkills){
                 data.items.push(s);
             }
@@ -42,6 +42,7 @@ export class FortyKActor extends Actor {
         // Make separate methods for each Actor type (character, npc, etc.) to keep
         // things organized.
         if (actorData.type === 'dwPC') this._prepareCharacterData(actorData);
+        if (actorData.type === 'npc') this._prepareNPCData(actorData);
     }
 
     /**
@@ -63,6 +64,9 @@ export class FortyKActor extends Actor {
         data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
         //modify total characteristics depending on fatigue
         var fatigueMult=1;
+        if(actorData.type==="dwPC"){
+            fatigueMult=2;
+        }
         for (let [key,char] of Object.entries(data.characteristics)){
             if(char.bonus*fatigueMult<data.secChar.fatigue.value){
                 char.total=Math.ceil(char.total/2);
@@ -81,6 +85,9 @@ export class FortyKActor extends Actor {
         data.carry.value=0;
 
         for(let item of this.data.items){
+            if(item.type==="skill"){
+                item.data.total.value=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
+            }
 
             if(item.type==="cybernetic"){
                 data.characterHitLocations[item.data.location.value].cyber=true;
@@ -304,6 +311,40 @@ export class FortyKActor extends Actor {
         mergeObject(preparedData, this.prepareItems());
 
         return preparedData;
+    }
+    _prepareNPCData(actorData){
+        const data=actorData.data;
+        //calc char bonuses
+        for (let [key, char] of Object.entries(data.characteristics)){
+            if(key==="inf"){
+
+            }else{
+               
+                char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
+            }
+
+        }
+        data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
+        //modify total characteristics depending on fatigue
+        var fatigueMult=1;
+       
+        for (let [key,char] of Object.entries(data.characteristics)){
+            if(char.bonus*fatigueMult<data.secChar.fatigue.value){
+                char.total=Math.ceil(char.total/2);
+            }
+        }
+        //movement
+        data.secChar.movement.half=data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod;
+        data.secChar.movement.full=data.secChar.movement.half*2;
+        data.secChar.movement.charge=data.secChar.movement.half*3;
+        data.secChar.movement.run=data.secChar.movement.half*6;
+        //total soak
+        for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
+            
+            
+            hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
+        }
+        
     }
 
     //this function deletes items from an actor, certain items need more logic to process

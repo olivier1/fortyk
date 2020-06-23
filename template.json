@@ -1,10 +1,11 @@
 {
     "Actor": {
         "types": [
+            "npc",
             "dwPC",
             "owPC",
-            "dhPC",
-            "NPC"
+            "dhPC"
+
         ],
         "templates": {
             "description": {
@@ -388,6 +389,14 @@
             "talentsntraits": {
                 "value": "",
                 "type": "String"
+            },
+            "damage":{
+                "formula":"1d10",
+                "type":"String"
+            },
+            "description":{
+                "value" :"",
+                "type" :"String"
             }
         },
         "dhPC": {
@@ -635,6 +644,15 @@
                 "weapon",
                 "description"
             ],
+            "damageFormula": {
+                "formula":""
+            },
+            "range":{
+                "formula":""
+            },
+            "pen":{
+                "formula":""
+            },
             "action": {
                 "value": "",
                 "type": "String"

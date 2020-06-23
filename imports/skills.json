@@ -533,7 +533,7 @@
         "type": "String"
       },
       "hasChildren": {
-        "value": false,
+        "value": true,
         "type": "Boolean"
       },
       "value": -20,

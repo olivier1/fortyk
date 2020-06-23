@@ -473,3 +473,17 @@
 .fortyk .weapons{
     text-align: left;
 }
+.fortyk .item-sheet{
+    flex: 1;
+    
+}
+.fortyk .item-description{
+    flex-grow:10;
+    height: 300px;
+}
+.fortyk .editor{
+    height:100%;
+}
+.fortyk .psy-name{
+    grid-column: span 3;
+}

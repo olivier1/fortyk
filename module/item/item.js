@@ -37,12 +37,23 @@ export class FortyKItem extends Item {
                  itemData.data.twohanded.value=true;
             }
         }
+        if(itemData.type==="psychicPower"){
+            let pr=parseInt(data.curPR.value);
+            let range=data.range.formula.toLowerCase();
+            
+            data.range.value=eval(range);
+           
+            data.pen.value=eval(data.pen.formula.toLowerCase());
+            data.damageFormula.value=data.damageFormula.formula.replace(/pr/gmi,pr);
+            
+        }
         //ensure this is an owned item
         if(this.options.actor!==undefined){
             const actorData = this.actor ? this.actor.data : {};
             
             //prepare skill total value
             if(itemData.type==="skill"){
+               
                 data.total.value=parseInt(data.value)+parseInt(data.mod.value)+parseInt(actorData.data.characteristics[data.characteristic.value].total);
             }
             
@@ -60,7 +71,7 @@ export class FortyKItem extends Item {
                     char=parseInt(actorData.data.characteristics[data.testChar.value].total);
                     data.testChar.type=data.testChar.value;
                 }
-
+                
                 data.target.value=parseInt(char)+(derivedPR*10)+parseInt(data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
             }
         }

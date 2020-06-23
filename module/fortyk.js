@@ -5,6 +5,7 @@ import { FortyKItem } from "./item/item.js";
 import { FortyKItemSheet } from "./item/item-sheet.js";
 import { preloadHandlebarsTemplates} from "./utilities.js";
 import {FortykRolls} from "./FortykRolls.js";
+import { FortyKNPCSheet} from "./actor/actor-npc-sheet.js";
 
 Hooks.once('init', async function() {
 
@@ -29,7 +30,8 @@ Hooks.once('init', async function() {
 
     // Register sheet application classes
     Actors.unregisterSheet("core", ActorSheet);
-    Actors.registerSheet("fortyk", FortyKActorSheet, { makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKActorSheet, { types:["dwPC"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKNPCSheet, { types: ["npc"], makeDefault: true });
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });
 
