@@ -36,6 +36,8 @@ export class FortyKActor extends Actor {
         const actorData = this.data;
         const data = actorData.data;
         const flags = actorData.flags;
+        //set default flags
+        flags["truegrit"]=false;
         if(data.skillFilter===undefined){
             data.skillFilter="";
         }
@@ -90,6 +92,13 @@ export class FortyKActor extends Actor {
             if(item.type==="skill"){
                 item.data.total.value=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
             }
+            if(item.type==="talentntrait"){
+                
+                if(item.name==="True Grit"){
+                    actorData.flags["truegrit"]=true;
+                }
+                
+            }
 
             if(item.type==="cybernetic"){
                 data.characterHitLocations[item.data.location.value].cyber=true;
@@ -125,6 +134,7 @@ export class FortyKActor extends Actor {
             }
 
         }
+        
         //compile total exp and influence
         data.characteristics["inf"].total=data.characteristics["inf"].value+data.characteristics["inf"].advance;
         data.experience.value=parseInt(data.experience.starting)+parseInt(data.experience.earned)-parseInt(data.experience.spent);
@@ -326,6 +336,11 @@ export class FortyKActor extends Actor {
                 
             }
 
+        }
+        
+        if(data.talentsntraits.value.toLowerCase().includes("true grit")){
+            actorData.flags["truegrit"]=true;
+            console.log(actorData);
         }
         data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
         //modify total characteristics depending on fatigue

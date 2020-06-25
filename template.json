@@ -9,10 +9,6 @@
         ],
         "templates": {
             "description": {
-                "name": {
-                    "value": "",
-                    "type": "String"
-                },
                 "sex": {
                     "value": "",
                     "type": "String"
@@ -166,6 +162,7 @@
                     },
                     "lastHit":{
                         "value":"body",
+                        "label":"Body",
                         "type":"String"
                     }
                 },

@@ -103,6 +103,13 @@ FORTYK.carry=[{"carry":0.9,
              {"carry":2250,
               "lift":4500,
               "push":9000}]
+FORTYK.extraHits={ 
+    "head":[{"value":"head","label":"Head"},{"value":"head","label":"Head"},{"value":"rArm","label":"Right Arm"},{"value":"body","label":"Body"},"lArm",{"value":"body","label":"Body"}],
+    "rArm":[{"value":"rArm","label":"Right Arm"},{"value":"rArm","label":"Right Arm"},{"value":"body","label":"Body"},{"value":"head","label":"Head"},{"value":"body","label":"Body"},{"value":"lArm","label":"Left Arm"}],
+    "lArm":[{"value":"lArm","label":"Left Arm"},{"value":"lArm","label":"Left Arm"},{"value":"body","label":"Body"},{"value":"head","label":"Head"},{"value":"body","label":"Body"},{"value":"rArm","label":"Right Arm"}],
+    "body":[{"value":"body","label":"Body"}, {"value":"body","label":"Body"}, {"value":"lArm","label":"Left Arm"}, {"value":"head","label":"Head"}, {"value":"rArm","label":"Right Arm"},{"value":"body","label":"Body"}],
+    "lLeg":[{"value":"lLeg","label":"Left Leg"}, {"value":"lLeg","label":"Left Leg"}, {"value":"body","label":"Body"},{"value":"lArm","label":"Left Arm"}, {"value":"head","label":"Head"},{"value":"body","label":"Body"}],
+    "rLeg":[{"value":"rLeg","label":"Right Leg"}, {"value":"rLeg","label":"Right Leg"}, {"value":"body","label":"Body"},{"value":"rArm","label":"Right Arm"}, {"value":"head","label":"Head"}, {"value":"body","label":"Body"}]}
 FORTYK.damageTypes=["Explosive","Rending","Impact","Energy"]
 FORTYK.meleeWeaponTypes=["Chain", "Force", "Power", "Shock", "Low-tech", "Exotic"]
 FORTYK.rangedWeaponTypes=["Bolt", "Flame", "Las", "Launcher", "Low-tech", "Melta", "Plasma", "Solid projectile", "Exotic"]

@@ -1,6 +1,7 @@
 /* provides functions for doing tests or damage rolls, will eventually take into account talents and special qualities but not yet
 */
 import {FORTYKTABLES} from "./FortykTables.js"
+import {FORTYK} from "./FortykConfig.js"
 export class FortykRolls{
     /*The base test function, will roll against the target and return the success and degree of failure/success, the whole roll message is handled by the calling function.
 @char: a characteristic object that contains any unattural characteristic the object may have
@@ -88,83 +89,156 @@ returns the roll message*/
             let perils=false;
             //reverse roll to get hit location
             let firstDigit=Math.floor(testRoll/10);
-            
+
             let secondDigit=testRoll-firstDigit*10;
-           
+
             let inverted=parseInt(secondDigit*10+firstDigit);
-          
+
             let hitlocation=FORTYKTABLES.hitLocations[inverted];
             actor.data.data.secChar.lastHit.value=hitlocation.name;
+            actor.data.data.secChar.lastHit.label=hitlocation.label;
             let chatOp={user: game.user._id,
-                         speaker:{actor,alias:actor.name},
-                         content:`Location: ${hitlocation.label}`,
-                         classes:["fortyk"],
+                        speaker:{actor,alias:actor.name},
+                        content:`Location: ${hitlocation.label}`,
+                        classes:["fortyk"],
                         flavor:"Hit location",
-                         author:actor.name};
+                        author:actor.name};
             ChatMessage.create(chatOp,{});
             if(firstDigit===secondDigit&&type==="focuspower"){
-                
+
             }
         }
 
     }
+
+
     //handles damage rolls, will eventually hook into dealing the damage on a target
-    static async damageRoll(formula,actor,weapon=null,righteous=10){
-        
+    static async damageRoll(formula,actor,weapon=null,hits=1,righteous=10){
+
+        var lastHit=actor.data.data.secChar.lastHit;
+        let targets=game.users.current.targets;
+
+
         var form=formula.value;
         if(weapon !== null){
-            
-           
+
+
             if(weapon.type==="meleeWeapon"){
                 form+="+"+actor.data.data.characteristics.s.bonus
             }
         }
-        let roll=new Roll(form,actor.data.data);
-        let label = weapon.name ? `Rolling ${weapon.name} damage.` : 'damage';
+        var hitNmbr=0;
+        var curHit=FORTYK.extraHits[lastHit.value][0];
+        //loop
+        for(let h=0;h<(hits);h++){
+            if(hitNmbr>5){hitNmbr=0}
+            curHit=FORTYK.extraHits[lastHit.value][hitNmbr];
+            var roll=new Roll(form,actor.data.data);
+            let label = weapon.name ? `Rolling ${weapon.name} damage.` : 'damage';
 
-        roll.roll();
-        //check for righteous fury
-        var crit=false;
-        for ( let r of roll.dice[0].rolls ) {
-            
-            
-              
-                
+            roll.roll();
+            //check for righteous fury
+            var crit=false;
+            for ( let r of roll.dice[0].rolls ) {
+
+
+
+
                 if(r.roll>=righteous){
                     crit=true;
-                    
+
                 }
 
             }
-        
-        roll.toMessage({
-            speaker: ChatMessage.getSpeaker({ actor: actor }),
-            flavor: label
-        });
-        //if righteous fury roll the d5 and spew out the crit result
-        if(crit){
-            let rightRoll=new Roll("1d5",actor.data.data);
-            rightRoll.roll().toMessage({
-                speaker: ChatMessage.getSpeaker({ actor: actor }),
-                flavor: "Righteous Fury!"
-            });
-            let res=rightRoll.dice[0].rolls[0].roll-1;
-            
-           
-            let rightMes=FORTYKTABLES.crits[weapon.data.damageType.value][actor.data.data.secChar.lastHit.value][res];
-            console.log(rightMes);
-            
-         
-            var chatOptions={user: game.user._id,
-                             speaker:{actor,alias:actor.name},
-                             content:"hello",
-                             classes:["fortyk"],
-                             author:actor.name};
-            ChatMessage.create(chatOptions,{});
 
+            await roll.toMessage({
+                speaker: ChatMessage.getSpeaker({ actor: actor }),
+                flavor: label
+            });
+            //if righteous fury roll the d5 and spew out the crit result
+            if(crit){
+                let rightRoll=new Roll("1d5",actor.data.data);
+                await rightRoll.roll().toMessage({
+                    speaker: ChatMessage.getSpeaker({ actor: actor }),
+                    flavor: "Righteous Fury!"
+                });
+                let res=rightRoll.dice[0].rolls[0].roll-1;
+
+
+                let rightMes=FORTYKTABLES.crits[weapon.data.damageType.value][curHit.value][res];
+
+                let mesDmgType=weapon.data.damageType.value;
+                let mesRes=res+1;
+                let mesHitLoc=curHit.label;
+
+                var chatOptions={user: game.user._id,
+                                 speaker:{actor,alias:actor.name},
+                                 content:rightMes,
+                                 classes:["fortyk"],
+                                 flavor:`${mesHitLoc}: ${mesRes}, ${mesDmgType} Critical effect`,
+                                 author:actor.name};
+                await ChatMessage.create(chatOptions,{});
+
+            }
+            if(targets.size!==0){
+                for (let tar of targets){
+
+                    let data=tar.actor.data.data;
+                    let wounds=getProperty(data,"secChar.wounds");
+
+                    let armor=parseInt(data.characterHitLocations[curHit.value].armor);
+
+                    let pen=parseInt(weapon.data.pen.value);
+
+                    let maxPen=Math.min(armor,pen);
+
+                    let soak=parseInt(data.characterHitLocations[curHit.value].value);
+
+                    soak=soak-maxPen;
+
+                    let damage=roll._total-soak;
+
+                    console.log(tar.actor.data);
+                    if((wounds.value-damage)<0&&tar.actor.data.flags["truegrit"]){
+                        damage=Math.max(1,damage-data.characteristics.t.bonus);
+
+                        var chatOptions={user: game.user._id,
+                                         speaker:{actor,alias:tar.actor.name},
+                                         content:"True Grit reduces critical damage!",
+                                         classes:["fortyk"],
+                                         flavor:`Critical effect`,
+                                         author:tar.actor.name};
+                        await ChatMessage.create(chatOptions,{});
+                    }
+                    let newWounds=wounds.value-damage;
+                    newWounds=Math.max(wounds.min,newWounds);
+
+                    tar.actor.update({'data.secChar.wounds.value':newWounds});
+                    if(newWounds<0){
+                        let crit=Math.abs(newWounds)-1;
+                        let rightMes=FORTYKTABLES.crits[weapon.data.damageType.value][curHit.value][crit];
+
+                        let mesDmgType=weapon.data.damageType.value;
+                        let mesRes=crit+1;
+                        let mesHitLoc=curHit.label;
+
+                        var chatOptions={user: game.user._id,
+                                         speaker:{actor,alias:actor.name},
+                                         content:rightMes,
+                                         classes:["fortyk"],
+                                         flavor:`${mesHitLoc}: ${mesRes}, ${mesDmgType} Critical effect`,
+                                         author:actor.name};
+                        await ChatMessage.create(chatOptions,{});
+
+
+                    }
+                }
+            }else{
+
+            }
+            hitNmbr++;
         }
 
-        
     }
     //handles test rerolls
     static async _onReroll(event){

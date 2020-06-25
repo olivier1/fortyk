@@ -421,7 +421,26 @@ export class FortyKActorSheet extends ActorSheet {
             let weapon=this.actor.getEmbeddedEntity("OwnedItem",dataset.weapon);
             let actor=this.actor;
             let formula=weapon.data.damageFormula;
-            FortykRolls.damageRoll(formula,actor,weapon);
+            
+            new Dialog({
+            title: `Number of Hits`,
+            content: `<p><label>Number of Hits:</label> <input type="text" name="hits" value="1" data-dtype="Number" autofocus/></p>`,
+            buttons: {
+                submit: {
+                    label: 'OK',
+                    callback: (el) => {
+                        const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
+
+                        
+                        FortykRolls.damageRoll(formula,actor,weapon,hits);
+                    }
+                }
+            },
+            default: "submit",
+
+
+            width:100}
+                  ).render(true);
 
 
 
