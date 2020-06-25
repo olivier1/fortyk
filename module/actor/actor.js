@@ -14,7 +14,8 @@ export class FortyKActor extends Actor {
             return super.create(data, options);
         }
         data.items = [];
-
+        //give token the right attribute bars
+        console.log(data);
         //initialise starting skills
         let startingSkills= await getSkills();
         if (data.type !=="npc"){
@@ -41,6 +42,7 @@ export class FortyKActor extends Actor {
 
         // Make separate methods for each Actor type (character, npc, etc.) to keep
         // things organized.
+        
         if (actorData.type === 'dwPC') this._prepareCharacterData(actorData);
         if (actorData.type === 'npc') this._prepareNPCData(actorData);
     }
@@ -320,7 +322,8 @@ export class FortyKActor extends Actor {
 
             }else{
                
-                char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
+                char.bonus=Math.floor(char.total/10)+parseInt(char.uB); 
+                
             }
 
         }
@@ -333,6 +336,13 @@ export class FortyKActor extends Actor {
                 char.total=Math.ceil(char.total/2);
             }
         }
+        //size
+        let size=data.secChar.size.value;
+        
+        data.secChar.size.label=FORTYK.size[size].name;
+        data.secChar.size.mod=FORTYK.size[size].mod;
+        data.secChar.size.movement=FORTYK.size[size].movement;
+        data.secChar.size.stealth=FORTYK.size[size].stealth
         //movement
         data.secChar.movement.half=data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod;
         data.secChar.movement.full=data.secChar.movement.half*2;
@@ -342,7 +352,7 @@ export class FortyKActor extends Actor {
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
             
             
-            hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
+            hitLoc.value=parseInt(hitLoc.armor)+parseInt(data.characteristics.t.bonus);
         }
         
     }

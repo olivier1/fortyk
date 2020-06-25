@@ -120,8 +120,11 @@
                     <span>Range: {{actor.wornGear.leftHand.data.range.value}}</span>
                 </div>
                 <div class="list-item">
+                    <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{data.characteristics.bs.total}}" data-weapon="actor.wornGear.leftHand._id" data-label="Ranged Attack" data-char="bs">Attack Roll</span>
+                </div>
+                <div class="list-item">
                     <span>Damage: </span>
-                    <a class="damage-roll button" data-label="{{actor.wornGear.leftHand.name}}"data-formula="{{actor.wornGear.leftHand.data.damageFormula.value}}"> {{actor.wornGear.leftHand.data.damageFormula.value}}</a>
+                    <a class="damage-roll button" data-label="{{actor.wornGear.leftHand.name}}"data-formula="{{actor.wornGear.leftHand.data.damageFormula.value}}" data-weapon="{{actor.wornGear.leftHand._id}}"> {{actor.wornGear.leftHand.data.damageFormula.value}}</a>
 
                 </div>
                 <div class="list-item">
@@ -171,8 +174,11 @@
                     <span>Reach: {{actor.wornGear.leftHand.data.range.value}}</span>
                 </div>
                 <div class="list-item">
+                    <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{data.characteristics.ws.total}}" data-weapon="actor.wornGear.leftHand._id" data-label="Melee Attack" data-char="ws">Attack Roll</span>
+                </div>
+                <div class="list-item">
                     <span>Damage: </span>
-                    <a class="damage-roll button" data-label="{{actor.wornGear.leftHand.name}}"data-formula="{{actor.wornGear.leftHand.data.damageFormula.value}}+@characteristics.s.bonus"> {{actor.wornGear.leftHand.data.damageFormula.value}}+{{data.characteristics.s.bonus}}</a>
+                    <a class="damage-roll button" data-label="{{actor.wornGear.leftHand.name}}"data-formula="{{actor.wornGear.leftHand.data.damageFormula.value}}+@characteristics.s.bonus" data-weapon="{{actor.wornGear.leftHand._id}}"> {{actor.wornGear.leftHand.data.damageFormula.value}}+{{data.characteristics.s.bonus}}</a>
                 </div>
                 <div class="list-item">
                     <span>Penetration: {{actor.wornGear.leftHand.data.pen.value}}</span>
@@ -203,7 +209,7 @@
             {{/unless}}
 
             {{#unless (compareString data.secChar.wornGear.rightHand._id)}}
-            {{#unless (compareString data.secChar.worngear.rightHand._id data.secChar.worngear.leftHand._id)}}
+            {{#unless (compareString data.secChar.wornGear.rightHand._id data.secChar.wornGear.leftHand._id)}}
             {{#if (contains actor.wornGear.rightHand.type "ranged")}}
             <div class="weapons grid grid-2col">
                 <div class="list-item">
@@ -214,8 +220,11 @@
                     <span>Range: {{actor.wornGear.rightHand.data.range.value}}</span>
                 </div>
                 <div class="list-item">
+                    <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{data.characteristics.bs.total}}" data-weapon="actor.wornGear.rightHand._id" data-label="Ranged Attack" data-char="bs">Attack Roll</span>
+                </div>
+                <div class="list-item">
                     <span>Damage: </span> 
-                    <a class="damage-roll button" data-label="{{actor.wornGear.rightHand.name}}"data-formula="{{actor.wornGear.rightHand.data.damageFormula.value}}"> {{actor.wornGear.rightHand.data.damageFormula.value}}</a>
+                    <a class="damage-roll button" data-label="{{actor.wornGear.rightHand.name}}"data-formula="{{actor.wornGear.rightHand.data.damageFormula.value}}" data-weapon="{{actor.wornGear.rightHand._id}}"> {{actor.wornGear.rightHand.data.damageFormula.value}}</a>
 
                 </div>
                 <div class="list-item">
@@ -265,8 +274,11 @@
                     <span>Reach: {{actor.wornGear.rightHand.data.range.value}}</span>
                 </div>
                 <div class="list-item">
+                    <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{data.characteristics.ws.total}}" data-weapon="actor.wornGear.rightHand._id" data-label="Melee Attack" data-char="ws">Attack Roll</span>
+                </div>
+                <div class="list-item">
                     <span>Damage: </span>
-                    <a class="damage-roll button" data-label="{{actor.wornGear.rightHand.name}}"data-formula="{{actor.wornGear.rightHand.data.damageFormula.value}}+@characteristics.s.bonus"> {{actor.wornGear.rightHand.data.damageFormula.value}}+{{data.characteristics.s.bonus}}</a>
+                    <a class="damage-roll button" data-label="{{actor.wornGear.rightHand.name}}"data-formula="{{actor.wornGear.rightHand.data.damageFormula.value}}+@characteristics.s.bonus" data-weapon="{{actor.wornGear.rightHand._id}}"> {{actor.wornGear.rightHand.data.damageFormula.value}}+{{data.characteristics.s.bonus}}</a>
                 </div>
                 <div class="list-item">
                     <span>Penetration: {{actor.wornGear.rightHand.data.pen.value}}</span>

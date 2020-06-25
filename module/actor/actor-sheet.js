@@ -35,6 +35,7 @@ export class FortyKActorSheet extends ActorSheet {
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
         data.aptitudes=FORTYK.aptitudes;
+        data.size=FORTYK.size;
         return data;
     }
 
@@ -197,7 +198,7 @@ export class FortyKActorSheet extends ActorSheet {
         let item= duplicate(this.actor.getEmbeddedEntity("OwnedItem", dataItemId));
         item.data.location.value=newLoc;
 
-        
+
         await this.actor.updateEmbeddedEntity("OwnedItem",item);
 
 
@@ -205,23 +206,23 @@ export class FortyKActorSheet extends ActorSheet {
     //handles when a psychic power changes its pr value
     async _onPRedit(event){
         clearTimeout(event.currentTarget.timeout);
-        
+
         const newPR=event.currentTarget.value;
-        
-        
-            event.currentTarget.timeout=setTimeout(async function(event, actor){
-                const newPR=event.currentTarget.value;
 
 
-                let dataItemId=event.target.attributes["data-item-id"].value;
-                let item= duplicate(actor.actor.getEmbeddedEntity("OwnedItem", dataItemId));
-               
-                item.data.curPR.value=newPR;
-               
-                await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this); 
-        }
+        event.currentTarget.timeout=setTimeout(async function(event, actor){
+            const newPR=event.currentTarget.value;
 
-    
+
+            let dataItemId=event.target.attributes["data-item-id"].value;
+            let item= duplicate(actor.actor.getEmbeddedEntity("OwnedItem", dataItemId));
+
+            item.data.curPR.value=newPR;
+
+            await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this); 
+    }
+
+
     //Edits the item that was clicked
     _onItemEdit(event){
         event.preventDefault();
@@ -308,7 +309,7 @@ export class FortyKActorSheet extends ActorSheet {
         clearTimeout(event.currentTarget.timeout);
         var actor=this.actor;
         event.currentTarget.timeout=setTimeout(async function(event, actor){
-           
+
 
             let newValue=event.target.value;
             let target=event.target.attributes["data-target"].value;
@@ -340,14 +341,14 @@ export class FortyKActorSheet extends ActorSheet {
         if(hand==="right"){
             let oppWeapon=this.actor.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.leftHand._id);
             if(oppWeapon!==null&&weaponID===""&&(oppWeapon.data.twohanded.value)){
-                
+
                 this.actor.update({"data.secChar.wornGear.leftHand._id":""});
                 return
             }
             if(weaponID===""||oppWeapon===null){return}
             if(!weapon.data.twohanded.value){
                 if(oppWeapon.data.twohanded.value){
-                    
+
                     this.actor.update({"data.secChar.wornGear.leftHand._id":""});
                 }
             }else{
@@ -356,14 +357,14 @@ export class FortyKActorSheet extends ActorSheet {
         }else if(hand==="left"){
             let oppWeapon=this.actor.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.rightHand._id);
             if(oppWeapon!==null&weaponID===""&&(oppWeapon.data.twohanded.value)){
-                
+
                 this.actor.update({"data.secChar.wornGear.rightHand._id":""});
                 return
             }
             if(weaponID===""||oppWeapon===null){return}
             if(!weapon.data.twohanded.value){
                 if(oppWeapon.data.twohanded.value){
-                    
+
                     this.actor.update({"data.secChar.wornGear.rightHand._id":""});
                 }
             }else{
@@ -416,8 +417,15 @@ export class FortyKActorSheet extends ActorSheet {
         event.preventDefault();
         const element = event.currentTarget;
         const dataset = element.dataset;
-        
-        if (dataset.formula) {
+        if(dataset.weapon){
+            let weapon=this.actor.getEmbeddedEntity("OwnedItem",dataset.weapon);
+            let actor=this.actor;
+            let formula=weapon.data.damageFormula;
+            FortykRolls.damageRoll(formula,actor,weapon);
+
+
+
+        }else if(dataset.formula){
             let roll = new Roll(dataset.formula, this.actor.data.data);
             let label = dataset.label ? `Rolling ${dataset.label} damage.` : '';
             roll.roll().toMessage({

@@ -163,6 +163,10 @@
                         "stealth":0,
                         "movement":0,
                         "label":"Average"
+                    },
+                    "lastHit":{
+                        "value":"body",
+                        "type":"String"
                     }
                 },
                 "statuses": {
@@ -173,6 +177,10 @@
                     "shock": false,
                     "pinned": false,
                     "helpless": false
+                },
+                "globalMOD": {
+                    "value": 0,
+                    "type": "Number"
                 },
                 "characteristics": {
                     "ws": {
@@ -340,13 +348,6 @@
                         "value": 0,
                         "type": "Number"
                     }
-                },
-                "size":{
-                    "value":4,
-                    "label": "Average",
-                    "mod": 0,
-                    "movement": 0,
-                    "stealth": 0  
                 }
             },
             "player": {
@@ -356,10 +357,6 @@
                     "starting": 2000,
                     "earned": 0,
                     "value": 0
-                },
-                "globalMOD": {
-                    "value": 0,
-                    "type": "Number"
                 },
                 "carry":{
                     "value":0,
@@ -389,6 +386,10 @@
             "talentsntraits": {
                 "value": "",
                 "type": "String"
+            },
+            "equipment":{
+                "value":"",
+                "type":""
             },
             "damage":{
                 "formula":"1d10",

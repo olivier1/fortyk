@@ -8,10 +8,10 @@ export class FortykRolls{
 @target: the target number for the test
 @actor: the calling actor
 @label: what to name the test
-@rangedRoF: for ranged attacks the rof determines jam chance
-@rangedWeapon: certain ranged weapons will have properties that negate jams or deal damage instead of jamming
+@Weapon: the weapon is needed for attack rolls, this is where psy powers are put also
+@reroll: if the roll is a reroll or not
 returns the roll message*/
-    static async fortykTest(char, type, target, actor, label, reroll=false, weapon=null){
+    static async fortykTest(char, type, target, actor, label, weapon=null, reroll=false){
         //cap target at 100
         if(target>100){
             target=100;
@@ -27,6 +27,7 @@ returns the roll message*/
             target:"",
             pass:"",
             dos:"",
+            success:false,
             reroll:reroll
 
         }
@@ -43,8 +44,8 @@ returns the roll message*/
         }else{
             templateOptions["title"]="Rolling "+label+" test.";
         }
-        
-        
+
+
         const testRoll=roll.dice[0].rolls[0].roll;
 
         templateOptions["rollResult"]="Roll: "+testRoll.toString();
@@ -83,45 +84,124 @@ returns the roll message*/
                          author:actor.name};
         ChatMessage.create(chatOptions,{});
 
-        if(type==="focuspower"){
+        if(type==="focuspower"||type==="rangedAttack"||type==="meleeAttack"){
+            let perils=false;
+            //reverse roll to get hit location
+            let firstDigit=Math.floor(testRoll/10);
             
+            let secondDigit=testRoll-firstDigit*10;
+           
+            let inverted=parseInt(secondDigit*10+firstDigit);
+          
+            let hitlocation=FORTYKTABLES.hitLocations[inverted];
+            actor.data.data.secChar.lastHit.value=hitlocation.name;
+            let chatOp={user: game.user._id,
+                         speaker:{actor,alias:actor.name},
+                         content:`Location: ${hitlocation.label}`,
+                         classes:["fortyk"],
+                        flavor:"Hit location",
+                         author:actor.name};
+            ChatMessage.create(chatOp,{});
+            if(firstDigit===secondDigit&&type==="focuspower"){
+                
+            }
         }
 
     }
-    static chatListeners(html){
-        html.on("click",".reroll", this._onReroll.bind(this));
+    //handles damage rolls, will eventually hook into dealing the damage on a target
+    static async damageRoll(formula,actor,weapon=null,righteous=10){
+        
+        var form=formula.value;
+        if(weapon !== null){
+            
+           
+            if(weapon.type==="meleeWeapon"){
+                form+="+"+actor.data.data.characteristics.s.bonus
+            }
+        }
+        let roll=new Roll(form,actor.data.data);
+        let label = weapon.name ? `Rolling ${weapon.name} damage.` : 'damage';
+
+        roll.roll();
+        //check for righteous fury
+        var crit=false;
+        for ( let r of roll.dice[0].rolls ) {
+            
+            
+              
+                
+                if(r.roll>=righteous){
+                    crit=true;
+                    
+                }
+
+            }
+        
+        roll.toMessage({
+            speaker: ChatMessage.getSpeaker({ actor: actor }),
+            flavor: label
+        });
+        //if righteous fury roll the d5 and spew out the crit result
+        if(crit){
+            let rightRoll=new Roll("1d5",actor.data.data);
+            rightRoll.roll().toMessage({
+                speaker: ChatMessage.getSpeaker({ actor: actor }),
+                flavor: "Righteous Fury!"
+            });
+            let res=rightRoll.dice[0].rolls[0].roll-1;
+            
+           
+            let rightMes=FORTYKTABLES.crits[weapon.data.damageType.value][actor.data.data.secChar.lastHit.value][res];
+            console.log(rightMes);
+            
+         
+            var chatOptions={user: game.user._id,
+                             speaker:{actor,alias:actor.name},
+                             content:"hello",
+                             classes:["fortyk"],
+                             author:actor.name};
+            ChatMessage.create(chatOptions,{});
+
+        }
+
         
     }
+    //handles test rerolls
     static async _onReroll(event){
         event.preventDefault();
-        
+
         const dataset=event.currentTarget.dataset;
         const actor=game.actors.get(dataset["actor"]);
         const char=dataset["char"];
         const type=dataset["type"];
         var target=dataset["target"];
         const label=dataset["label"];
-        
-        
-        new Dialog({
-                title: `${label} Reroll`,
-                content: `<p><label>Modifier:</label> <input type="text" name="modifier" value="0" autofocus/></p>`,
-                buttons: {
-                    submit: {
-                        label: 'OK',
-                        callback: (el) => {
-                            let bonus = Number($(el).find('input[name="modifier"]').val());
-                            console.log(target)
-                            target=parseInt(target)+parseInt(bonus);
-                            FortykRolls.fortykTest(char, type, target, actor, label, true);
-                        }
-                    }
-                },
-                default: "submit",
-                
 
-                width:100}
-            ).render(true);
+
+        new Dialog({
+            title: `${label} Reroll`,
+            content: `<p><label>Modifier:</label> <input type="text" name="modifier" value="0" autofocus/></p>`,
+            buttons: {
+                submit: {
+                    label: 'OK',
+                    callback: (el) => {
+                        let bonus = Number($(el).find('input[name="modifier"]').val());
+                        console.log(target)
+                        target=parseInt(target)+parseInt(bonus);
+                        FortykRolls.fortykTest(char, type, target, actor, label,null , true);
+                    }
+                }
+            },
+            default: "submit",
+
+
+            width:100}
+                  ).render(true);
+    }
+    //activate chatlisteners
+    static chatListeners(html){
+        html.on("click",".reroll", this._onReroll.bind(this));
+
     }
 
 }

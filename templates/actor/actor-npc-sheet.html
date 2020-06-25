@@ -1,44 +1,52 @@
 <form class="{{cssClass}} flexcol" autocomplete="off">
     {{#if isGM}}
-    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
-    <div class="descrRow flexcol">
-        <span class="descrSpan">Name:</span>
-        <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
-    </div>
-    <div class="descrRow flexcol">
-        <span class="descrSpan">Race:</span>
-        <input name="data.race.value" type="text" value="{{data.race.value}}" placeholder="Astartes"/>
-    </div>
-    <div class="resource flex-group-center">
-        <label for="data.secChar.wounds.value" class="resource-label">Wounds</label>
-        <div class="resource-content flexrow flex-center flex-between">
-            <input type="text" name="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
-            <span> / </span>
-            <input type="text" name="data.secChar.wounds.max" value="{{data.secChar.wounds.max}}" data-dtype="Number"/>
+    <div class="flexrow">
+        <img class="npc-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
+        <div class="npcheader">
+            <div class="descrRow flexcol npcdescr">
+                <span class="descrSpan">Name:</span>
+                <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
+            </div>
+            <div class="descrRow flexcol npcdescr">
+                <span class="descrSpan">Race:</span>
+                <input name="data.race.value" type="text" value="{{data.race.value}}" placeholder="???"/>
+            </div>
+            <div class="resource flex-group-center">
+                <label for="data.secChar.wounds.value" class="resource-label">Wounds</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" name="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
+                    <span> / </span>
+                    <input type="text" name="data.secChar.wounds.max" value="{{data.secChar.wounds.max}}" data-dtype="Number"/>
+                </div>
+            </div>
+            <div class="resource flex-group-center">
+                <label for="data.secChar.fatigue.value" class="resource-label">Fatigue</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" name="data.secChar.fatigue.value" value="{{data.secChar.fatigue.value}}" data-dtype="Number"/>
+                    <span> / </span>
+                    <input type="text" name="data.secChar.fatigue.max" value="{{data.secChar.fatigue.max}}" data-dtype="Number" disabled/>
+                </div>
+            </div>
+            <div class="resource flex-group-center">
+                <label for="data.fatigue.value" class="resource-label">Global Modifier</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" name="data.globalMOD.value" value="{{data.globalMOD.value}}" data-dtype="Number"/>
+                </div>
+            </div>
+            <div class="resource flex-group-center">
+                <label for="data.fatigue.value" class="resource-label">Fate</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" name="data.secChar.fate.value" value="{{data.secChar.fate.value}}" data-dtype="Number"/>
+                    <span> / </span>
+                    <input type="text" name="data.secChar.fate.max" value="{{data.secChar.fate.max}}" data-dtype="Number"/>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="resource flex-group-center">
-        <label for="data.secChar.fatigue.value" class="resource-label">Fatigue</label>
-        <div class="resource-content flexrow flex-center flex-between">
-            <input type="text" name="data.secChar.fatigue.value" value="{{data.secChar.fatigue.value}}" data-dtype="Number"/>
-            <span> / </span>
-            <input type="text" name="data.secChar.fatigue.max" value="{{data.secChar.fatigue.max}}" data-dtype="Number" disabled/>
-        </div>
+    <div class="flexrow">
+
     </div>
-    <div class="resource flex-group-center">
-        <label for="data.fatigue.value" class="resource-label">Global Modifier</label>
-        <div class="resource-content flexrow flex-center flex-between">
-            <input type="text" name="data.globalMOD.value" value="{{data.globalMOD.value}}" data-dtype="Number"/>
-        </div>
-    </div>
-    <div class="resource flex-group-center">
-        <label for="data.fatigue.value" class="resource-label">Fate</label>
-        <div class="resource-content flexrow flex-center flex-between">
-            <input type="text" name="data.secChar.fate.value" value="{{data.secChar.fate.value}}" data-dtype="Number"/>
-            <span> / </span>
-            <input type="text" name="data.secChar.fate.max" value="{{data.secChar.fate.max}}" data-dtype="Number"/>
-        </div>
-    </div>
+
     <div class="characteristics grid grid-10col">
 
 
@@ -99,103 +107,133 @@
 
 
     </div>
-    <span>Talents & Traits</span>
-    <textarea name="data.talentntraits.value" value="{{data.talentsntraits.value}}"></textarea>
-    <span>Skills</span>
-    <textarea name="data.skills.value" value="{{data.skills.value}}"></textarea>
-    <input type="text" name="data.damage.formula" value="{{data.damage.formula}}">
-    <a class="damage-roll button" data-label="damage"data-formula="{{data.damage.formula}}">{{data.damage.formula}}</a> 
-    <div class="flexcol flex-group-center">
-        <span class="section-title">MOVEMENT</span>
-        <div class="flexrow movement">
-            <div class="resource flex-group-center">
-                <label for="data.fatigue.value" class="resource-label">Half Move</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <span>{{data.secChar.movement.half}}</span>
+    <div class="grid grid-2col">
+
+        <div class="flexcol">
+
+            <input type="text" name="data.damage.formula" value="{{data.damage.formula}}">
+            <a class="damage-roll button" data-label="damage"data-formula="{{data.damage.formula}}">{{data.damage.formula}}</a>
+            <span class="section-title">SIZE</span>
+            <select class="sizeSelect" name="data.secChar.size.value" data-dtype="Number">
+                {{#select data.secChar.size.value}}
+                
+                {{#each size}}
+                
+                <option value="{{@index}}">{{this.name}}</option>
+               
+                {{/each}}
+                {{/select}}
+            </select>
+            <div class="flexcol flex-group-center">
+                <span class="section-title">MOVEMENT</span>
+                <div class="flexrow movement">
+                    <div class="resource flex-group-center">
+                        <label for="data.fatigue.value" class="resource-label">Half Move</label>
+                        <div class="resource-content flexrow flex-center flex-between">
+                            <span>{{data.secChar.movement.half}}</span>
+                        </div>
+                    </div>
+                    <div class="resource flex-group-center">
+                        <label for="data.fatigue.value" class="resource-label">Full Move</label>
+                        <div class="resource-content flexrow flex-center flex-between">
+                            <span>{{data.secChar.movement.full}}</span>
+                        </div>
+                    </div>
+                    <div class="resource flex-group-center">
+                        <label for="data.fatigue.value" class="resource-label">Charge</label>
+                        <div class="resource-content flexrow flex-center flex-between">
+                            <span>{{data.secChar.movement.charge}}</span>
+                        </div>
+                    </div>
+                    <div class="resource flex-group-center">
+                        <label for="data.fatigue.value" class="resource-label">Run</label>
+                        <div class="resource-content flexrow flex-center flex-between">
+                            <span>{{data.secChar.movement.run}}</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="resource flex-group-center">
-                <label for="data.fatigue.value" class="resource-label">Full Move</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <span>{{data.secChar.movement.full}}</span>
-                </div>
-            </div>
-            <div class="resource flex-group-center">
-                <label for="data.fatigue.value" class="resource-label">Charge</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <span>{{data.secChar.movement.charge}}</span>
-                </div>
-            </div>
-            <div class="resource flex-group-center">
-                <label for="data.fatigue.value" class="resource-label">Run</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <span>{{data.secChar.movement.run}}</span>
+                <div class="forcefield flexcol">
+                    <span class="section-title">ARMOR & ABSORBTION</span>
+
+                    <div class="flexcol">
+                        <div class="flexrow flex-group-center">
+                            <div class="armor flexcol">
+
+                                <span>Head</span>
+                                <span>(1-10)</span>
+                                <input type="text" name="data.characterHitLocations.head.armor" value="{{data.characterHitLocations.head.armor}}" title="Armor">
+                                <span title="Total Soak">{{data.characterHitLocations.head.value}}</span>
+                            </div>
+
+                        </div>
+                        <div class="flexrow flex-group-center">
+                            <div class="armor flexcol">
+
+                                <span>Left Arm</span>
+                                <span>(21-30)</span>
+                                <input type="text" name="data.characterHitLocations.lArm.armor" value="{{data.characterHitLocations.lArm.armor}}" title="Armor">
+                                <span title="Total Soak">{{data.characterHitLocations.lArm.value}}</span>
+                            </div>
+                            <div class="armor flexcol">
+
+                                <span>Body</span>
+                                <span>(31-70)</span>
+                                <input type="text" name="data.characterHitLocations.body.armor" value="{{data.characterHitLocations.body.armor}}" title="Armor">
+                                <span title="Total Soak">{{data.characterHitLocations.body.value}}</span>
+                            </div>
+                            <div class="armor flexcol">
+
+                                <span>Right Arm</span>
+                                <span>(11-20)</span>
+                                <input type="text" name="data.characterHitLocations.rArm.armor" value="{{data.characterHitLocations.rArm.armor}}" title="Armor">
+                                <span title="Total Soak">{{data.characterHitLocations.rArm.value}}</span>
+                            </div>
+                        </div>
+                        <div class="flexrow flex-group-center">
+
+                            <div class="armor flexcol">
+
+                                <span>Left Leg</span>
+                                <span>(71-85)</span>
+                                <input type="text" name="data.characterHitLocations.lLeg.armor" value="{{data.characterHitLocations.lLeg.armor}}" title="Armor">
+                                <span title="Total Soak">{{data.characterHitLocations.lLeg.value}}</span>
+                            </div>
+                            <div class="armor flexcol">
+
+                                <span>Right Leg</span>
+                                <span>(86-100)</span>
+                                <input type="text" name="data.characterHitLocations.rLeg.armor" value="{{data.characterHitLocations.rLeg.armor}}" title="Armor">
+                                <span title="Total Soak">{{data.characterHitLocations.rLeg.value}}</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="forcefield flexcol">
-            <span class="section-title">ARMOR & ABSORBTION</span>
-
-            <div class="flexcol">
-                <div class="flexrow flex-group-center">
-                    <div class="armor flexcol">
-
-                        <span>Head</span>
-                        <span>(1-10)</span>
-                        <input type="text" name="data.characterHitLocations.head.armor" value="{{data.characterHitLocations.head.armor}}" title="Armor">
-                        <span title="Total Soak">{{data.characterHitLocations.head.value}}</span>
-                    </div>
-
-                </div>
-                <div class="flexrow flex-group-center">
-                    <div class="armor flexcol">
-
-                        <span>Left Arm</span>
-                        <span>(21-30)</span>
-                        <input type="text" name="data.characterHitLocations.lArm.armor" value="{{data.characterHitLocations.lArm.armor}}" title="Armor">
-                        <span title="Total Soak">{{data.characterHitLocations.lArm.value}}</span>
-                    </div>
-                    <div class="armor flexcol">
-
-                        <span>Body</span>
-                        <span>(31-70)</span>
-                        <input type="text" name="data.characterHitLocations.body.armor" value="{{data.characterHitLocations.body.armor}}" title="Armor">
-                        <span title="Total Soak">{{data.characterHitLocations.body.value}}</span>
-                    </div>
-                    <div class="armor flexcol">
-
-                        <span>Right Arm</span>
-                        <span>(11-20)</span>
-                        <input type="text" name="data.characterHitLocations.rArm.armor" value="{{data.characterHitLocations.rArm.armor}}" title="Armor">
-                        <span title="Total Soak">{{data.characterHitLocations.rArm.value}}</span>
-                    </div>
-                </div>
-                <div class="flexrow flex-group-center">
-
-                    <div class="armor flexcol">
-
-                        <span>Left Leg</span>
-                        <span>(71-85)</span>
-                        <input type="text" name="data.characterHitLocations.lLeg.armor" value="{{data.characterHitLocations.lLeg.armor}}" title="Armor">
-                        <span title="Total Soak">{{data.characterHitLocations.lLeg.value}}</span>
-                    </div>
-                    <div class="armor flexcol">
-
-                        <span>Right Leg</span>
-                        <span>(86-100)</span>
-                        <input type="text" name="data.characterHitLocations.rLeg.armor" value="{{data.characterHitLocations.rLeg.armor}}" title="Armor">
-                        <span title="Total Soak">{{data.characterHitLocations.rLeg.value}}</span>
-                    </div>
-                </div>
+        <div class="flexcol npcskillntraits">
+            <div>
+             <span class="section-title">Equipment</span>
+            {{editor content=data.equipment.value target="data.equipment.value" button=true owner=owner editable=editable}}
+           </div>
+            <div>
+            
+            <span class="section-title">Talents & Traits</span>
+            {{editor content=data.talentntraits.value target="data.talentntraits.value" button=true owner=owner editable=editable}}
+            </div>
+            <div>
+            <span class="section-title">Skills</span>
+            {{editor content=data.skills.value target="data.skills.value" button=true owner=owner editable=editable}}
             </div>
         </div>
     </div>
+
+
     <div class="item-description">
         {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
     </div>
-    
+
     {{else}}
-    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
-    <span>{{unescape data.description.value}}</span>
+    <img class="npc-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
+    {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=false}}
     {{/if}}
 </form>

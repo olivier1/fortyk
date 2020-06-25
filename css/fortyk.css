@@ -9,7 +9,7 @@
 @font-face {
     font-family: "CaslonAntique";
     src: url('../fonts/CaslonAntique-Bold.ttf');
-    font-style:bold;
+    font-weight:bold;
 }
 @font-face {
     font-family: "CaslonAntique";
@@ -19,8 +19,7 @@
 .fortyk{
     font-size:16px;
     font-family: "CaslonAntique";
-    font-weight:bold;
-    font-style:bold;
+   
     
 }
 
@@ -172,6 +171,7 @@
     -ms-flex: 0 0 100px;
     flex: 0 0 100px;
     height: 100px;
+    width:auto;
     margin-right: 10px;
 }
 .fortyk .sheet-main .header-fields {
@@ -453,6 +453,7 @@
     text-align: center;
     border-bottom: 2px solid #999;
     width:100%;
+    font-weight: bold;
 }
 .fortyk .gear{
     align-items: start;
@@ -486,4 +487,35 @@
 }
 .fortyk .psy-name{
     grid-column: span 3;
+}
+.fortyk .npcskillntraits{
+    height:100%;
+    width:100%;
+}
+.fortyk .npcstuff{
+    flex-grow: 10;
+    height:100%;
+    width:100%;
+}
+.fortyk .npc-img{
+    width:150px;
+    height: auto !important;
+}
+.fortyk .npcheader{
+    flex-grow: 2;
+    display:grid;
+    grid-template-columns: auto auto;
+}
+.fortyk .npcdescr{
+    grid-column: span 1;
+}
+.test-success{
+    background-color: green !important;
+    background-image: "" !important;
+    color: white !important;
+}
+.test-failure{
+    background-color: red !important;
+    background-image: "" !important;
+    color: white !important;
 }

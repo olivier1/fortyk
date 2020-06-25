@@ -32,6 +32,7 @@ export class FortyKNPCSheet extends ActorSheet {
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
         data.aptitudes=FORTYK.aptitudes;
+        data.size=FORTYK.size;
         return data;
     }
     activateListeners(html) {
