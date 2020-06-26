@@ -122,7 +122,7 @@ Hooks.on("preCreateActor", (createData) =>{
                 {"token.bar1" :{"attribute" : "secChar.wounds"},                 // Default Bar 1 to Wounds
                  "token.bar2" :{"attribute" : "secChar.fatigue"},               // Default Bar 2 to Fatigue
                  "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
-                 "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.NEVER,    // Default display bars to be always on
+                 "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be always on
                  "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
                  "token.name" : createData.name                                       // Set token name to actor name
                 })
