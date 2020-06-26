@@ -30,7 +30,7 @@
     "gridUnits": "m",
     "primaryTokenAttribute": "secChar.wounds",
     "secondaryTokenAttribute": "secChar.fatigue",
-    "socket":true,
+    "socket": true,
     "url": "",
     "manifest": "",
     "download": "",

@@ -58,13 +58,18 @@ returns the roll message*/
         if(testResult&&testRoll<96||testRoll===1){
 
             const testDos=Math.floor(Math.abs(roll._result)/10)+1+charObj.uB;
-            templateOptions["dos"]="with "+testDos.toString()+" degrees of success!";
+            templateOptions["dos"]="with "+testDos.toString()+" degree";
+            if(testDos===1){}else{templateOptions["dos"]+="s";}
+            templateOptions["dos"]+=" of success!";
             templateOptions["pass"]="Pass!";
             templateOptions["success"]=true;
         }else{
 
             const testDos=Math.floor(Math.abs(roll._result)/10)+1;
-            templateOptions["dos"]="with "+testDos.toString()+" degrees of failure!";
+            templateOptions["dos"]="with "+testDos.toString()+" degree";
+            if(testDos===1){}else{templateOptions["dos"]+="s";}
+            templateOptions["dos"]+=" of failure!";
+
             templateOptions["success"]=false;
             if(testRoll>=96){
                 templateOptions["pass"]="96+ is an automatic failure!"
@@ -198,7 +203,7 @@ returns the roll message*/
 
                     let damage=roll._total-soak;
 
-                    console.log(tar.actor.data);
+
                     if((wounds.value-damage)<0&&tar.actor.data.flags["truegrit"]){
                         damage=Math.max(1,damage-data.characteristics.t.bonus);
 
@@ -213,7 +218,17 @@ returns the roll message*/
                     let newWounds=wounds.value-damage;
                     newWounds=Math.max(wounds.min,newWounds);
 
-                    tar.actor.update({'data.secChar.wounds.value':newWounds});
+                  
+                    if(game.user.isGM){
+                        tar.actor.update({"data.secChar.wounds.value":newWounds});
+                    }else{
+                        let actorID=tar.actor._id;
+                        let socketOp={ID:actorID,wounds:newWounds,path:"data.secChar.wounds.value"}
+                       
+                        game.socket.emit("system.fortyk",socketOp);
+                    }
+
+
                     if(newWounds<0){
                         let crit=Math.abs(newWounds)-1;
                         let rightMes=FORTYKTABLES.crits[weapon.data.damageType.value][curHit.value][crit];
@@ -260,7 +275,7 @@ returns the roll message*/
                     label: 'OK',
                     callback: (el) => {
                         let bonus = Number($(el).find('input[name="modifier"]').val());
-                        console.log(target)
+
                         target=parseInt(target)+parseInt(bonus);
                         FortykRolls.fortykTest(char, type, target, actor, label,null , true);
                     }

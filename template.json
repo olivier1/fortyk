@@ -388,10 +388,6 @@
                 "value":"",
                 "type":""
             },
-            "damage":{
-                "formula":"1d10",
-                "type":"String"
-            },
             "description":{
                 "value" :"",
                 "type" :"String"

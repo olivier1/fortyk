@@ -15,7 +15,7 @@ export class FortyKActor extends Actor {
         }
         data.items = [];
         //give token the right attribute bars
-        console.log(data);
+        
         //initialise starting skills
         let startingSkills= await getSkills();
         if (data.type !=="npc"){
@@ -340,7 +340,7 @@ export class FortyKActor extends Actor {
         
         if(data.talentsntraits.value.toLowerCase().includes("true grit")){
             actorData.flags["truegrit"]=true;
-            console.log(actorData);
+          
         }
         data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
         //modify total characteristics depending on fatigue
