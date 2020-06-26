@@ -15,7 +15,7 @@ export class FortyKActor extends Actor {
         }
         data.items = [];
         //give token the right attribute bars
-        
+
         //initialise starting skills
         let startingSkills= await getSkills();
         if (data.type !=="npc"){
@@ -38,13 +38,17 @@ export class FortyKActor extends Actor {
         const flags = actorData.flags;
         //set default flags
         flags["truegrit"]=false;
+        flags["atsknf"]=false;
+        if(flags["unrelenting"]===undefined){flags["unrelenting"]=false};
+
         if(data.skillFilter===undefined){
             data.skillFilter="";
+
         }
 
         // Make separate methods for each Actor type (character, npc, etc.) to keep
         // things organized.
-        
+
         if (actorData.type === 'dwPC') this._prepareCharacterData(actorData);
         if (actorData.type === 'npc') this._prepareNPCData(actorData);
     }
@@ -68,7 +72,7 @@ export class FortyKActor extends Actor {
         data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
         //modify total characteristics depending on fatigue
         var fatigueMult=1;
-        if(actorData.type==="dwPC"){
+        if(actorData.flags["unrelenting"]){
             fatigueMult=2;
         }
         for (let [key,char] of Object.entries(data.characteristics)){
@@ -81,23 +85,29 @@ export class FortyKActor extends Actor {
             hitLoc.cyber=false;
         }
         //prepare psyker stuff
-        data.psykana.pr.maxPush=parseInt(data.psykana.pr.value)+parseInt(FORTYK.psykerTypes[data.psykana.psykerType.value].push);
+        data.psykana.pr.effective=parseInt(data.psykana.pr.value)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
+        data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(FORTYK.psykerTypes[data.psykana.psykerType.value].push);
         //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
         data.experience.earned=0;
         data.characteristics["inf"].advance=0;
         data.experience.spent=0;
         data.carry.value=0;
-
+        let unrelenting=false;
         for(let item of this.data.items){
             if(item.type==="skill"){
                 item.data.total.value=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
             }
             if(item.type==="talentntrait"){
-                
+
                 if(item.name==="True Grit"){
                     actorData.flags["truegrit"]=true;
+                }else if(item.name==="And They Shall Know No Fear"){
+                    actorData.flags["atsknf"]=true;
+                }else if(item.name==="Unrelenting"){
+                    actorData.flags["unrelenting"]=true;
+                    unrelenting=true;
                 }
-                
+
             }
 
             if(item.type==="cybernetic"){
@@ -112,6 +122,29 @@ export class FortyKActor extends Actor {
             if(item.type==="advancement"){
                 //calculates spent exp
                 data.experience.spent=parseInt(data.experience.spent)+parseInt(item.data.cost.value);
+            }
+            if(item.type==="psychicPower"){
+                let pr=parseInt(item.data.curPR.value);
+                let range=item.data.range.formula.toLowerCase();
+
+                item.data.range.value=eval(range);
+
+                item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
+                item.data.damageFormula.value=item.data.damageFormula.formula.replace(/pr/gmi,pr);
+                let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(item.data.curPR.value));
+
+
+                let char=0;
+                if(item.data.testChar.value==="psy"){
+                    char=getItem(this,"Psyniscience").data.total.value;
+                    data.testChar.type="per";
+                }else{
+                    char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
+                    item.data.testChar.type=item.data.testChar.value;
+                }
+
+                item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
+
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="wargear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
                 //total weight calcs
@@ -134,7 +167,9 @@ export class FortyKActor extends Actor {
             }
 
         }
-        
+        //check if actor has the unrelenting trait
+        if(!unrelenting){actorData.flags["unrelenting"]=false};
+
         //compile total exp and influence
         data.characteristics["inf"].total=data.characteristics["inf"].value+data.characteristics["inf"].advance;
         data.experience.value=parseInt(data.experience.starting)+parseInt(data.experience.earned)-parseInt(data.experience.spent);
@@ -150,7 +185,7 @@ export class FortyKActor extends Actor {
         data.secChar.movement.full=data.secChar.movement.half*2;
         data.secChar.movement.charge=data.secChar.movement.half*3;
         data.secChar.movement.run=data.secChar.movement.half*6;
-        
+
         //add up all armor and stuff
         var armor= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.armor._id);
         var rightHandWeapon= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.rightHand._id);
@@ -160,7 +195,7 @@ export class FortyKActor extends Actor {
         data.characterHitLocations.rArm.shield= 0;
         data.characterHitLocations.lArm.shield= 0;
         if(rightHandWeapon!==null&&rightHandWeapon.type!=="rangedWeapon"){
-            
+
             data.characterHitLocations.rArm.shield= parseInt(rightHandWeapon.data.shield.value);
 
             data.characterHitLocations.body.shield= Math.max(data.characterHitLocations.body.shield,parseInt(rightHandWeapon.data.shield.value));
@@ -172,7 +207,7 @@ export class FortyKActor extends Actor {
         }
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
-            
+
             hitLoc.armor=0;
             if(armor!==null){
                 hitLoc.armor=hitLoc.armor+parseInt(armor.data.ap[key].value);
@@ -331,21 +366,22 @@ export class FortyKActor extends Actor {
             if(key==="inf"){
 
             }else{
-               
+
                 char.bonus=Math.floor(char.total/10)+parseInt(char.uB); 
-                
+
             }
 
         }
-        
+
         if(data.talentsntraits.value.toLowerCase().includes("true grit")){
             actorData.flags["truegrit"]=true;
-          
+
         }
         data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
         //modify total characteristics depending on fatigue
         var fatigueMult=1;
-       
+
+
         for (let [key,char] of Object.entries(data.characteristics)){
             if(char.bonus*fatigueMult<data.secChar.fatigue.value){
                 char.total=Math.ceil(char.total/2);
@@ -353,7 +389,7 @@ export class FortyKActor extends Actor {
         }
         //size
         let size=data.secChar.size.value;
-        
+
         data.secChar.size.label=FORTYK.size[size].name;
         data.secChar.size.mod=FORTYK.size[size].mod;
         data.secChar.size.movement=FORTYK.size[size].movement;
@@ -365,11 +401,11 @@ export class FortyKActor extends Actor {
         data.secChar.movement.run=data.secChar.movement.half*6;
         //total soak
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
-            
-            
+
+
             hitLoc.value=parseInt(hitLoc.armor)+parseInt(data.characteristics.t.bonus);
         }
-        
+
     }
 
     //this function deletes items from an actor, certain items need more logic to process

@@ -163,6 +163,7 @@
                     "lastHit":{
                         "value":"body",
                         "label":"Body",
+                        "dos":1,
                         "type":"String"
                     }
                 },
@@ -335,6 +336,8 @@
                     "pr": {
                         "value": 0,
                         "maxPush":0,
+                        "sustain":0,
+                        "effective":0,
                         "type": "Number"
                     },
                     "psykerType":{

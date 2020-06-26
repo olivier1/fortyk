@@ -13,7 +13,7 @@ Hooks.once('init', async function() {
         FortyKActor,
         FortyKItem
     };
-    
+
     /**
    * Set an initiative formula for the system
    * @type {String}
@@ -93,19 +93,21 @@ Hooks.once('init', async function() {
 });
 //HOOKS
 Hooks.once('ready', async function() {
-    
+
     game.socket.on("system.fortyk", data => {
-       
+
         if(game.user.isGM){
-            let id=data.ID;
-            let newWounds=data.wounds;
-            let path=data.path;
-            let actor=game.actors.get(id);
-          
-            let options={}
-            options[path]=newWounds;
-            
-            actor.update(options);
+            if(data.type==="updateValue"){
+                let id=data.package.ID;
+                let value=data.package.value;
+                let path=data.package.path;
+                let actor=game.actors.get(id);
+
+                let options={}
+                options[path]=value;
+
+                actor.update(options);
+            }
         }
     })
 

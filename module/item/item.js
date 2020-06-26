@@ -62,7 +62,7 @@ export class FortyKItem extends Item {
 
             //prepare psychicpowers, calculates pushing and target numbers
             if(itemData.type==="psychicPower"){
-                let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.value)-parseInt(data.curPR.value));
+                let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(data.curPR.value));
 
 
                 let char=0;

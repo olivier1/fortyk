@@ -521,3 +521,9 @@
     background-image: "" !important;
     color: white !important;
 }
+.power-push{
+    border-color: red !important;
+}
+.power-safe{
+    border-color: green !important;
+}

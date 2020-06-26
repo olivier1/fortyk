@@ -54,10 +54,11 @@ returns the roll message*/
         const rollResult=target-testRoll;
         const testResult=rollResult>=0;
         const charObj=actor.data.data.characteristics[char];
+        var testDos=0;
         //calculate degrees of failure and success
         if(testResult&&testRoll<96||testRoll===1){
 
-            const testDos=Math.floor(Math.abs(roll._result)/10)+1+charObj.uB;
+            testDos=Math.floor(Math.abs(roll._result)/10)+1+charObj.uB;
             templateOptions["dos"]="with "+testDos.toString()+" degree";
             if(testDos===1){}else{templateOptions["dos"]+="s";}
             templateOptions["dos"]+=" of success!";
@@ -65,7 +66,7 @@ returns the roll message*/
             templateOptions["success"]=true;
         }else{
 
-            const testDos=Math.floor(Math.abs(roll._result)/10)+1;
+            testDos=Math.floor(Math.abs(roll._result)/10)+1;
             templateOptions["dos"]="with "+testDos.toString()+" degree";
             if(testDos===1){}else{templateOptions["dos"]+="s";}
             templateOptions["dos"]+=" of failure!";
@@ -89,9 +90,10 @@ returns the roll message*/
                          roll:roll,
                          author:actor.name};
         ChatMessage.create(chatOptions,{});
+        
 
         if(type==="focuspower"||type==="rangedAttack"||type==="meleeAttack"){
-            let perils=false;
+
             //reverse roll to get hit location
             let firstDigit=Math.floor(testRoll/10);
 
@@ -102,6 +104,7 @@ returns the roll message*/
             let hitlocation=FORTYKTABLES.hitLocations[inverted];
             actor.data.data.secChar.lastHit.value=hitlocation.name;
             actor.data.data.secChar.lastHit.label=hitlocation.label;
+            actor.data.data.secChar.lastHit.dos=testDos;
             let chatOp={user: game.user._id,
                         speaker:{actor,alias:actor.name},
                         content:`Location: ${hitlocation.label}`,
@@ -109,15 +112,132 @@ returns the roll message*/
                         flavor:"Hit location",
                         author:actor.name};
             ChatMessage.create(chatOp,{});
-            if(firstDigit===secondDigit&&type==="focuspower"){
 
+
+            if(type==="focuspower"){
+
+                let psykerType=actor.data.data.psykana.psykerType.value;
+                let basePR=actor.data.data.psykana.pr.effective;
+                let powerPR=weapon.data.curPR.value;
+                let push=false;
+                let phenom=false;
+                let perils=false;
+
+                if(powerPR>basePR){push=true}
+                console.log(firstDigit);
+                console.log(secondDigit);
+                if(!push&&(firstDigit===secondDigit)){
+                    phenom=true;
+                }else if(push&&(psykerType==="bound")&&(firstDigit!==secondDigit)){
+                    phenom=true;
+
+                }else if(push&&(psykerType!=="bound")){
+                    phenom=true;
+                }
+                if(phenom){
+                    let mod=0;
+                    let sustain=parseInt(actor.data.data.psykana.pr.sustain);
+                    if(sustain>1){
+                        mod=(sustain-1)*10;
+                    }
+                    if(psykerType!=="bound"&&push){
+                        let pushAmt=powerPR-basePR;
+                        if(psykerType==="unbound"){
+                            mod=mod+pushAmt*5;
+                        }
+                        if(psykerType==="daemon"){
+                            mod=mod+pushAmt*10;
+                        }
+                    }
+
+                    let psyRoll=new Roll("1d100+@mod",{mod:mod})
+                    psyRoll.roll();
+                    psyRoll.toMessage({
+                        speaker: ChatMessage.getSpeaker({ actor: actor }),
+                        flavor: "Psychic Phenomena!"
+                    });
+
+                    let phenomResult=parseInt(psyRoll._total);
+                    if(phenomResult>100){phenomResult=100};
+                    if(phenomResult>75){perils=true};
+
+                    let phenomMessage=FORTYKTABLES.psychicPhenomena[phenomResult];
+
+                    let chatPhenom={user: game.user._id,
+                                    speaker:{actor,alias:actor.name},
+                                    content:phenomMessage,
+                                    classes:["fortyk"],
+                                    flavor:"Psychic Phenomenom!",
+                                    author:actor.name};
+                    ChatMessage.create(chatPhenom,{});
+                }
+                if(perils){
+                    let mod=0;
+
+
+                    let perilsRoll=new Roll("1d100+@mod",{mod:mod});
+                    perilsRoll.roll();
+                    perilsRoll.toMessage({
+                        speaker: ChatMessage.getSpeaker({ actor: actor }),
+                        flavor: "Perils of the Warp!!"
+                    });
+                    let perilsResult=parseInt(perilsRoll._total);
+                    if(perilsResult>100){perilsResult=100};
+
+                    let perilsMessage=FORTYKTABLES.perils[perilsResult];
+                    let chatPhenom={user: game.user._id,
+                                    speaker:{actor,alias:actor.name},
+                                    content:perilsMessage,
+                                    classes:["fortyk"],
+                                    flavor:"Perils of the Warp!!",
+                                    author:actor.name};
+                    ChatMessage.create(chatPhenom,{});
+                }
+            } 
+
+        }else if(type==="fear"&&!templateOptions["success"]){
+            console.log("hello");
+            //generating insanity when degrees of failure are high enough
+            if(testDos>=3){
+                let insanityRoll=new Roll("1d5");
+                insanityRoll.roll();
+                insanityRoll.toMessage({
+                    speaker: ChatMessage.getSpeaker({ actor: actor }),
+                    flavor: "Rolling insanity for 3+ Degrees of failure"
+                });
             }
+            let fearRoll=new Roll("1d100 +@mod",{mod:testDos*10});
+            fearRoll.roll();
+            fearRoll.toMessage({
+                speaker: ChatMessage.getSpeaker({ actor: actor }),
+                flavor: "Fear Roll!"
+            });
+            let shockMes="";
+            let fearCap=0;
+
+            if(actor.data.flags["atsknf"]){
+
+                fearCap=Math.max(100,parseInt(fearRoll._total));
+                console.log(FORTYKTABLES.atsknf);
+                shockMes=FORTYKTABLES.atsknf[fearCap];
+            }else{
+                fearCap=Math.max(171,parseInt(fearRoll._total));
+                shockMes=FORTYKTABLES.fear[fearCap];
+            }
+            let chatShock={user: game.user._id,
+                           speaker:{actor,alias:actor.name},
+                           content:shockMes,
+                           classes:["fortyk"],
+                           flavor:"Shock effect",
+                           author:actor.name};
+            ChatMessage.create(chatShock,{});
         }
+
 
     }
 
 
-    //handles damage rolls, will eventually hook into dealing the damage on a target
+    //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
     static async damageRoll(formula,actor,weapon=null,hits=1,righteous=10){
 
         var lastHit=actor.data.data.secChar.lastHit;
@@ -186,6 +306,7 @@ returns the roll message*/
 
             }
             if(targets.size!==0){
+                //if there are targets apply damage tot all of them
                 for (let tar of targets){
 
                     let data=tar.actor.data.data;
@@ -218,17 +339,18 @@ returns the roll message*/
                     let newWounds=wounds.value-damage;
                     newWounds=Math.max(wounds.min,newWounds);
 
-                  
+                    //update wounds
                     if(game.user.isGM){
                         tar.actor.update({"data.secChar.wounds.value":newWounds});
                     }else{
+                        //if user isnt GM use socket to have gm update the actor
                         let actorID=tar.actor._id;
-                        let socketOp={ID:actorID,wounds:newWounds,path:"data.secChar.wounds.value"}
-                       
+                        let socketOp={type:"updateValue",package:{ID:actorID,value:newWounds,path:"data.secChar.wounds.value"}}
+
                         game.socket.emit("system.fortyk",socketOp);
                     }
 
-
+                    //handle critical effects
                     if(newWounds<0){
                         let crit=Math.abs(newWounds)-1;
                         let rightMes=FORTYKTABLES.crits[weapon.data.damageType.value][curHit.value][crit];
@@ -260,9 +382,11 @@ returns the roll message*/
         event.preventDefault();
 
         const dataset=event.currentTarget.dataset;
+        
         const actor=game.actors.get(dataset["actor"]);
         const char=dataset["char"];
-        const type=dataset["type"];
+        const type=dataset["rollType"];
+        
         var target=dataset["target"];
         const label=dataset["label"];
 

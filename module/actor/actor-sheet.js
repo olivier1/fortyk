@@ -388,7 +388,11 @@ export class FortyKActorSheet extends ActorSheet {
         var testLabel=dataset["label"];
 
         var testChar=dataset["char"];
-
+        var item=null;
+       
+        if(dataset["itemId"]){
+            
+            item=this.actor.getEmbeddedEntity("OwnedItem",dataset["itemId"]);}
 
         new Dialog({
             title: `${testLabel} Test`,
@@ -400,7 +404,7 @@ export class FortyKActorSheet extends ActorSheet {
                         const bonus = Number($(el).find('input[name="modifier"]').val());
 
                         testTarget+=parseInt(bonus);
-                        FortykRolls.fortykTest(testChar, testType, testTarget, this.actor, testLabel);
+                        FortykRolls.fortykTest(testChar, testType, testTarget, this.actor, testLabel, item);
                     }
                 }
             },

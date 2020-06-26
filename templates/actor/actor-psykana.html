@@ -6,6 +6,14 @@
             <input type="text" name="data.psykana.pr.value" value="{{data.psykana.pr.value}}">
         </div>
         <div class="flexcol">
+            <label>Sustained Powers:</label>
+            <input type="text" name="data.psykana.pr.sustain" value="{{data.psykana.pr.sustain}}">
+        </div>
+        <div class="flexcol">
+            <label>Effective PR:</label>
+            <input type="text" name="data.psykana.pr.effective" value="{{data.psykana.pr.effective}}" disabled>
+        </div>
+        <div class="flexcol">
             <label>Class:</label>
             <select class="psyType-select" name="data.psykana.psykerType.value" data-dtype="String">
                 {{#select data.psykana.psykerType.value}}
@@ -53,7 +61,7 @@
 
                 <label class="list-item">Range: {{power.data.range.value}}</label>
 
-                <label class="list-item">Damage: <a class="damage-roll button" data-label="{{power.name}}"data-formula="{{power.data.damageFormula.value}}">{{power.data.damageFormula.value}}</a></label>
+                <label class="list-item">Damage: <a class="damage-roll button" data-label="{{power.name}}"data-formula="{{power.data.damageFormula.value}}" data-weapon="{{power._id}}">{{power.data.damageFormula.value}}</a></label>
 
                 <label class="list-item">Penetration: {{power.data.pen.value}}</label>
 
@@ -68,7 +76,7 @@
                 </div>
                 <div class="list-item flexrow">
                     <label>Test Target: </label>
-                    <span data-item-id="{{power._id}}" class="rollable powerItem button" data-roll-type="focuspower" data-target="{{power.data.target.value}}" data-label="{{power.name}}" data-char="{{power.data.testChar.type}}">{{power.data.target.value}}</span>
+                    <span data-item-id="{{power._id}}" class="rollable powerItem button{{#if (greaterThan power.data.curPR.value ../data.psykana.pr.effective)}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-target="{{power.data.target.value}}" data-label="{{power.name}}" data-char="{{power.data.testChar.type}}">{{power.data.target.value}}</span>
                 </div>
                 <div class="list-item flexrow">
                     <a class="item-edit" title="Edit Power" data-item-id="{{power._id}}"></a>
