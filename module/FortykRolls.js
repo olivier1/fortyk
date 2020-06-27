@@ -361,7 +361,12 @@ returns the roll message*/
                     let newWounds=wounds.value;
 
                     if((wounds.value-damage)<0&&tar.actor.data.flags["truegrit"]){
-                        newWounds=0
+                        if(newWounds>0){
+                           
+                            damage=damage-newWounds;
+                            newWounds=0;
+                        }
+                        
                         damage=Math.max(1,damage-data.characteristics.t.bonus);
 
                         var chatOptions={user: game.user._id,
