@@ -98,18 +98,18 @@ Hooks.once('ready', async function() {
 
         if(game.user.isGM){
             if(data.type==="updateValue"){
-                console.log(game);
+                
                 let id=data.package.token;
                 let value=data.package.value;
                 let path=data.package.path;
                 let token=canvas.tokens.get(id);
                 let actor=token.actor;
-                console.log(actor);
+               
                 let options={}
                 options[path]=value;
 
                 actor.update(options);
-                console.log(actor);
+               
             }
         }
     })

@@ -13,9 +13,11 @@ export class FortykRolls{
 @reroll: if the roll is a reroll or not
 returns the roll message*/
     static async fortykTest(char, type, target, actor, label, weapon=null, reroll=false){
-        //cap target at 100
+        //cap target at 100 or floor at 1
         if(target>100){
             target=100;
+        }else if(target<1){
+            target=1;
         }
 
         let roll=new Roll("1d100ms<@tar",{tar:target});
@@ -124,8 +126,7 @@ returns the roll message*/
                 let perils=false;
 
                 if(powerPR>basePR){push=true}
-                console.log(firstDigit);
-                console.log(secondDigit);
+                
                 if(!push&&(firstDigit===secondDigit)){
                     phenom=true;
                 }else if(push&&(psykerType==="bound")&&(firstDigit!==secondDigit)){
@@ -196,7 +197,7 @@ returns the roll message*/
             } 
 
         }else if(type==="fear"&&!templateOptions["success"]){
-            console.log("hello");
+           
             //generating insanity when degrees of failure are high enough
             if(testDos>=3){
                 let insanityRoll=new Roll("1d5");
@@ -218,7 +219,7 @@ returns the roll message*/
             if(actor.data.flags["atsknf"]){
 
                 fearCap=Math.max(100,parseInt(fearRoll._total));
-                console.log(FORTYKTABLES.atsknf);
+                
                 shockMes=FORTYKTABLES.atsknf[fearCap];
             }else{
                 fearCap=Math.max(171,parseInt(fearRoll._total));
@@ -254,7 +255,7 @@ returns the roll message*/
         }
         var hitNmbr=0;
         var curHit=FORTYK.extraHits[lastHit.value][0];
-        //loop
+        //loop for the number of hits
         for(let h=0;h<(hits);h++){
             if(hitNmbr>5){hitNmbr=0}
             curHit=FORTYK.extraHits[lastHit.value][hitNmbr];
@@ -306,21 +307,22 @@ returns the roll message*/
 
             }
             if(targets.size!==0){
-                //if there are targets apply damage tot all of them
+                //if there are targets apply damage to all of them
                 for (let tar of targets){
-                    console.log(tar);
+                   
                     let data=tar.actor.data.data;
                     let wounds=getProperty(data,"secChar.wounds");
 
                     let armor=parseInt(data.characterHitLocations[curHit.value].armor);
-                    if(weapon.type==="rangedWeapon"||weapon.type==="psychicPower"){
-                        let cover=parseInt(data.characterHitLocations[curHit.value].cover);
+                    //handle cover
+                    if(data.characterHitLocations[curHit.value].cover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
+                        let cover=parseInt(data.secChar.cover.value);
                         armor=armor+cover;
                         //reduce cover if damage is greater than cover AP
                         if(roll._total>cover&&cover!==0){
                             cover=Math.max(0,(cover-1));
-                            if(cover!==data.characterHitLocations[curHit.value].cover){
-                                let path=`data.characterHitLocations.${curHit.value}.cover`
+                            if(cover!==data.secChar.cover.value){
+                                let path="data.secChar.cover.value"
                                 let pack={}
                                 pack[path]=cover;
                                 
@@ -340,7 +342,7 @@ returns the roll message*/
                                                  speaker:{actor,alias:actor.name},
                                                  content:"Cover is lowered by 1",
                                                  classes:["fortyk"],
-                                                 flavor:`${mesHitLoc}: damged cover`,
+                                                 flavor:`${mesHitLoc}: damaged cover`,
                                                  author:actor.name};
                                 await ChatMessage.create(chatOptions,{});
 
@@ -359,7 +361,7 @@ returns the roll message*/
                     let damage=roll._total-soak;
 
                     let newWounds=wounds.value;
-
+                    // true grit!@!!@
                     if((wounds.value-damage)<0&&tar.actor.data.flags["truegrit"]){
                         if(newWounds>0){
                            

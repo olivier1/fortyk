@@ -371,58 +371,60 @@
                     {{/select}}
                 </select>
                 <div class="flexcol">
+                    <span class="section-title">COVER</span>
+                    <input type="text" class="combat-resources" title="cover" name="data.secChar.cover.value" value="{{data.secChar.cover.value}}" data-dtype="Number"/>
                     <div class="flexrow flex-group-center">
-                        <div class="armor flexcol">
+                        <div class="armor flexcol flex-group-center">
 
                             <span>Head</span>
                             <span>(1-10)</span>
-                            <input type="text" class="combat-resources" title="cover" name="data.characterHitLocations.head.cover" value="{{data.characterHitLocations.head.cover}}" data-dtype="Number"/>
+                            <input type="checkbox" class="combat-resources" title="cover" name="data.characterHitLocations.head.cover" {{checked data.characterHitLocations.head.cover}}>
                             <span title="Armor">{{data.characterHitLocations.head.armor}}</span>
                             <span title="Total Soak">{{data.characterHitLocations.head.value}}</span>
                         </div>
 
                     </div>
                     <div class="flexrow flex-group-center">
-                        <div class="armor flexcol">
+                        <div class="armor flexcol flex-group-center">
 
                             <span>Left Arm</span>
                             <span>(21-30)</span>
-                            <input type="text" class="combat-resources" title="cover" name="data.characterHitLocations.lArm.cover" value="{{data.characterHitLocations.lArm.cover}}" data-dtype="Number"/>
+                            <input type="checkbox" class="combat-resources" title="cover" name="data.characterHitLocations.lArm.cover" {{checked data.characterHitLocations.lArm.cover}}>                           
                             <span title="Armor">{{data.characterHitLocations.lArm.armor}}</span>
                             <span title="Total Soak">{{data.characterHitLocations.lArm.value}}</span>
                         </div>
-                        <div class="armor flexcol">
+                        <div class="armor flexcol flex-group-center">
 
                             <span>Body</span>
                             <span>(31-70)</span>
-                            <input type="text" class="combat-resources" title="cover" name="data.characterHitLocations.body.cover" value="{{data.characterHitLocations.body.cover}}" data-dtype="Number"/>
+                            <input type="checkbox" class="combat-resources" title="cover" name="data.characterHitLocations.body.cover" {{checked data.characterHitLocations.body.cover}}>                            
                             <span title="Armor">{{data.characterHitLocations.body.armor}}</span>
                             <span title="Total Soak">{{data.characterHitLocations.body.value}}</span>
                         </div>
-                        <div class="armor flexcol">
+                        <div class="armor flexcol flex-group-center">
 
                             <span>Right Arm</span>
                             <span>(11-20)</span>
-                            <input type="text" class="combat-resources" title="cover" name="data.characterHitLocations.rArm.cover" value="{{data.characterHitLocations.rArm.cover}}" data-dtype="Number"/>
+                            <input type="checkbox" class="combat-resources" title="cover" name="data.characterHitLocations.rArm.cover" {{checked data.characterHitLocations.rArm.cover}}>                            
                             <span title="Armor">{{data.characterHitLocations.rArm.armor}}</span>
                             <span title="Total Soak">{{data.characterHitLocations.rArm.value}}</span>
                         </div>
                     </div>
                     <div class="flexrow flex-group-center">
 
-                        <div class="armor flexcol">
+                        <div class="armor flexcol flex-group-center">
 
                             <span>Left Leg</span>
                             <span>(71-85)</span>
-                            <input type="text" class="combat-resources" title="cover" name="data.characterHitLocations.lLeg.cover" value="{{data.characterHitLocations.lLeg.cover}}" data-dtype="Number"/>
+                            <input type="checkbox" class="combat-resources" title="cover" name="data.characterHitLocations.lLeg.cover" {{checked data.characterHitLocations.lLeg.cover}}>
                             <span title="Armor" >{{data.characterHitLocations.lLeg.armor}}</span>
                             <span title="Total Soak">{{data.characterHitLocations.lLeg.value}}</span>
                         </div>
-                        <div class="armor flexcol">
+                        <div class="armor flexcol flex-group-center">
 
                             <span>Right Leg</span>
                             <span>(86-100)</span>
-                            <input type="text" class="combat-resources" title="cover" name="data.characterHitLocations.rLeg.cover" value="{{data.characterHitLocations.rLeg.cover}}" data-dtype="Number"/>
+                            <input type="checkbox" class="combat-resources" title="cover" name="data.characterHitLocations.rLeg.cover" {{checked data.characterHitLocations.rLeg.cover}}>
                             <span title="Armor" >{{data.characterHitLocations.rLeg.armor}}</span>
                             <span title="Total Soak">{{data.characterHitLocations.rLeg.value}}</span>
                         </div>
