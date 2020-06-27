@@ -216,6 +216,7 @@ export class FortyKActor extends Actor {
             if(hitLoc.cyber){
                 hitLoc.armor=hitLoc.armor+2;
             }
+           
             hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
         }
 
@@ -401,7 +402,7 @@ export class FortyKActor extends Actor {
         data.secChar.movement.run=data.secChar.movement.half*6;
         //total soak
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
-
+           
 
             hitLoc.value=parseInt(hitLoc.armor)+parseInt(data.characteristics.t.bonus);
         }

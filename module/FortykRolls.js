@@ -90,7 +90,7 @@ returns the roll message*/
                          roll:roll,
                          author:actor.name};
         ChatMessage.create(chatOptions,{});
-        
+
 
         if(type==="focuspower"||type==="rangedAttack"||type==="meleeAttack"){
 
@@ -238,7 +238,7 @@ returns the roll message*/
 
 
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
-    static async damageRoll(formula,actor,weapon=null,hits=1,righteous=10){
+    static async damageRoll(formula,actor,weapon,hits=1,righteous=10){
 
         var lastHit=actor.data.data.secChar.lastHit;
         let targets=game.users.current.targets;
@@ -308,12 +308,46 @@ returns the roll message*/
             if(targets.size!==0){
                 //if there are targets apply damage tot all of them
                 for (let tar of targets){
-
+                    console.log(tar);
                     let data=tar.actor.data.data;
                     let wounds=getProperty(data,"secChar.wounds");
 
                     let armor=parseInt(data.characterHitLocations[curHit.value].armor);
+                    if(weapon.type==="rangedWeapon"||weapon.type==="psychicPower"){
+                        let cover=parseInt(data.characterHitLocations[curHit.value].cover);
+                        armor=armor+cover;
+                        //reduce cover if damage is greater than cover AP
+                        if(roll._total>cover&&cover!==0){
+                            cover=Math.max(0,(cover-1));
+                            if(cover!==data.characterHitLocations[curHit.value].cover){
+                                let path=`data.characterHitLocations.${curHit.value}.cover`
+                                let pack={}
+                                pack[path]=cover;
+                                
+                                
+                                if(game.user.isGM){
+                                    tar.actor.update(pack);
+                                }else{
+                                    //if user isnt GM use socket to have gm update the actor
+                                    
+                                    let tokenId=tar.data._id;
+                                    let socketOp={type:"updateValue",package:{token:tokenId,value:cover,path:path}}
 
+                                    game.socket.emit("system.fortyk",socketOp);
+                                }
+                                 let mesHitLoc=curHit.label;
+                                let chatOptions={user: game.user._id,
+                                                 speaker:{actor,alias:actor.name},
+                                                 content:"Cover is lowered by 1",
+                                                 classes:["fortyk"],
+                                                 flavor:`${mesHitLoc}: damged cover`,
+                                                 author:actor.name};
+                                await ChatMessage.create(chatOptions,{});
+
+                            }
+
+                        }
+                    }
                     let pen=parseInt(weapon.data.pen.value);
 
                     let maxPen=Math.min(armor,pen);
@@ -324,8 +358,10 @@ returns the roll message*/
 
                     let damage=roll._total-soak;
 
+                    let newWounds=wounds.value;
 
                     if((wounds.value-damage)<0&&tar.actor.data.flags["truegrit"]){
+                        newWounds=0
                         damage=Math.max(1,damage-data.characteristics.t.bonus);
 
                         var chatOptions={user: game.user._id,
@@ -336,7 +372,7 @@ returns the roll message*/
                                          author:tar.actor.name};
                         await ChatMessage.create(chatOptions,{});
                     }
-                    let newWounds=wounds.value-damage;
+                    newWounds=newWounds-damage;
                     newWounds=Math.max(wounds.min,newWounds);
 
                     //update wounds
@@ -344,8 +380,8 @@ returns the roll message*/
                         tar.actor.update({"data.secChar.wounds.value":newWounds});
                     }else{
                         //if user isnt GM use socket to have gm update the actor
-                        let actorID=tar.actor._id;
-                        let socketOp={type:"updateValue",package:{ID:actorID,value:newWounds,path:"data.secChar.wounds.value"}}
+                        let tokenId=tar.data._id;
+                        let socketOp={type:"updateValue",package:{token:tokenId,value:newWounds,path:"data.secChar.wounds.value"}}
 
                         game.socket.emit("system.fortyk",socketOp);
                     }
@@ -382,11 +418,11 @@ returns the roll message*/
         event.preventDefault();
 
         const dataset=event.currentTarget.dataset;
-        
+
         const actor=game.actors.get(dataset["actor"]);
         const char=dataset["char"];
         const type=dataset["rollType"];
-        
+
         var target=dataset["target"];
         const label=dataset["label"];
 
