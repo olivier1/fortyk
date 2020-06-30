@@ -59,6 +59,7 @@ export class FortyKActor extends Actor {
     _prepareCharacterData(actorData) {
         const data = actorData.data;
         data.secChar.movement.mod=1;
+         
         //prepare characteristics data
         for (let [key, char] of Object.entries(data.characteristics)){
             if(key==="inf"){
@@ -151,18 +152,8 @@ export class FortyKActor extends Actor {
                 item.data.weight.total=parseInt(item.data.amount.value)*parseInt(item.data.weight.value);
 
                 data.carry.value=parseInt(data.carry.value)+parseInt(item.data.weight.total);
-                //logic for two handed weapons worn gear
-                if(data.secChar.wornGear.rightHand._id!==data.secChar.wornGear.leftHand._id){
-
-                    //if the right hand weapon is twohanded put its id into the left or vice versa
-                    if(data.secChar.wornGear.leftHand._id===item._id){
-
-
-                    }else if(data.secChar.wornGear.rightHand._id===item._id){
-
-
-                    }  
-                }
+                
+                
 
             }
 
@@ -188,8 +179,8 @@ export class FortyKActor extends Actor {
 
         //add up all armor and stuff
         var armor= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.armor._id);
-        var rightHandWeapon= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.rightHand._id);
-        var leftHandWeapon= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.leftHand._id);
+        var rightHandWeapon= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[0]);
+        var leftHandWeapon= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[1]);
         //handle shields
         data.characterHitLocations.body.shield= 0;
         data.characterHitLocations.rArm.shield= 0;
@@ -228,7 +219,7 @@ export class FortyKActor extends Actor {
         const wargear=[];
         const cybernetics=[];
         const forceFields=[];
-        const mods={};
+        const mods=[];
         const consummables=[];
         const psychicPowers=[];
         const mutations=[];
@@ -241,17 +232,22 @@ export class FortyKActor extends Actor {
         const rangedWeapons=[];
         const armors=[];
         const ammunitions=[];
-        const wornGear={"leftHand":"","rightHand":"","armor":"","forceField":""};
-
+        const wornGear={weapons:[],"armor":"","forceField":""};
+       
+        if(!Array.isArray(data.data.secChar.wornGear.weapons)){
+                data.data.secChar.wornGear.weapons=Object.values(data.data.secChar.wornGear.weapons);
+            }
+        for( let w of data.data.secChar.wornGear.weapons){
+            wornGear.weapons.push(this.getEmbeddedEntity("OwnedItem",w));
+        }
+        
+        if (wornGear.weapons.length<2){wornGear.weapons.push("")};  
+        
         //put all items in their respective containers
         for(let i of data.items){
-
-            if(i._id===data.data.secChar.wornGear.leftHand._id){
-                wornGear["leftHand"]=i;
-            }
-            if(i._id===data.data.secChar.wornGear.rightHand._id){
-                wornGear["rightHand"]=i;
-            }
+            
+            
+            
             if(i._id===data.data.secChar.wornGear.armor._id){
                 wornGear["armor"]=i;
             }

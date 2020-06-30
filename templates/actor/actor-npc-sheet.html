@@ -112,110 +112,117 @@
         <a class="item-create button" data-type="meleeWeapon" title="Add a Melee Weapon">Add melee weapon</a>
     </div>
 
-    <div>
+    <div class="grid grid-2col">
         {{#each actor.meleeWeapons}}
-        <div class="weapons grid grid-4col">
-            <div class="list-item">
-                <span>Name: {{this.name}}</span>
-            </div>
+        <div>
+            <div class="weapons grid grid-4col">
+                <div class="list-item">
+                    <span>Name: {{this.name}}</span>
+                </div>
 
-            <div class="list-item">
-                <span>Reach: {{this.data.range.value}}</span>
-            </div>
-            <div class="list-item">
-                <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../data.characteristics.ws.total}}" data-weapon="this._id" data-label="Melee Attack" data-char="ws">Attack Roll</span>
-            </div>
-            <div class="list-item">
-                <span>Damage: </span>
-                <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}+@characteristics.s.bonus" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}+{{../data.characteristics.s.bonus}}</a>
-            </div>
-            <div class="list-item">
-                <span>Penetration: {{this.data.pen.value}}</span>
+                <div class="list-item">
+                    <span>Reach: {{this.data.range.value}}m</span>
+                </div>
+                <div class="list-item">
+                    <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../data.characteristics.ws.total}}" data-weapon="this._id" data-label="Melee Attack" data-char="ws">Attack Roll</span>
+                </div>
+                <div class="list-item">
+                    <span>Damage: </span>
+                    <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}+@characteristics.s.bonus" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}+{{../data.characteristics.s.bonus}}</a>
+                </div>
+                <div class="list-item">
+                    <span>Penetration: {{this.data.pen.value}}</span>
 
-            </div>
-            <div class="list-item">
-                <span>Special: {{this.data.special.value}}</span>
+                </div>
+                <div class="list-item">
+                    <span>Special: {{this.data.special.value}}</span>
 
-            </div>
-            <div class="list-item">
-                <span>Damage Type: {{this.data.damageType.value}}</span>
+                </div>
+                <div class="list-item">
+                    <span>Damage Type: {{this.data.damageType.value}}</span>
 
-            </div>
-            <div class="list-item">
-                <span>Weapon Class: {{this.data.class.value}}</span>
-
-
-            </div>
-            <div class="list-item">
-                <span>Weapon Type: {{this.data.type.value}}</span>
+                </div>
+                <div class="list-item">
+                    <span>Weapon Class: {{this.data.class.value}}</span>
 
 
-            </div>
-            <div class="list-item flexrow">
-                <a class="list-button item-edit" title="Edit" data-item-id="{{this._id}}"></a>
-                <a class="list-button item-delete" title="Delete" data-item-id="{{this._id}}"></a>
-            </div>
-        </div>
-
-        {{/each}}
-        {{#each actor.rangedWeapons}}
-        <div class="weapons grid grid-4col">
-            <div class="list-item">
-                <span>Name: {{this.name}}</span>
-            </div>
-
-            <div class="list-item">
-                <span>Range: {{this.data.range.value}}</span>
-            </div>
-            <div class="list-item">
-                <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../data.characteristics.bs.total}}" data-weapon="this._id" data-label="Ranged Attack" data-char="bs">Attack Roll</span>
-            </div>
-            <div class="list-item">
-                <span>Damage: </span>
-                <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
-
-            </div>
-            <div class="list-item">
-                <span>Penetration: {{this.data.pen.value}}</span>
-
-            </div>
-            <div class="list-item flexrow">
-                <span>Clip: </span>
-
-                <input class="clip-current" type="text" value="{{this.data.clip.value}}" name="this.data.clip.value" data-item-id="{{this._id}}" data-dtype="Number">
-                <span> / </span>
-                <span>{{this.data.clip.max}}</span>
-
-            </div>
-            <div class="list-item">
-                <span>Reload: {{this.data.reload.value}}</span>
-
-            </div>
-            <div class="list-item">
-                <span>Special: {{this.data.special.value}}</span>
-
-            </div>
-            <div class="list-item">
-                <span>Damage Type: {{this.data.damageType.value}}</span>
-
-            </div>
-            <div class="list-item">
-                <span>Weapon Class: {{this.data.class.value}}</span>
+                </div>
+                <div class="list-item">
+                    <span>Weapon Type: {{this.data.type.value}}</span>
 
 
-            </div>
-            <div class="list-item">
-                <span>Weapon Type: {{this.data.type.value}}</span>
-
-
-            </div>
-            <div class="list-item flexrow">
-                <span>
+                </div>
+                <div class="list-item flexrow">
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this._id}}"></a>
                     <a class="list-button item-delete" title="Delete" data-item-id="{{this._id}}"></a>
-                </span>
+                </div>
             </div>
+        </div>
+        {{/each}}
+        {{#each actor.rangedWeapons}}
+        <div>
 
+            <div class="weapons grid grid-4col">
+                <div class="list-item">
+                    <span>Name: {{this.name}}</span>
+                </div>
+
+                <div class="list-item">
+                    <span>Range: {{this.data.range.value}}m</span>
+                </div>
+                <div class="list-item">
+                    <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../data.characteristics.bs.total}}" data-weapon="this._id" data-label="Ranged Attack" data-char="bs">Attack Roll</span>
+                </div>
+                <div class="list-item">
+                    <span>Damage: </span>
+                    <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
+
+                </div>
+                <div class="list-item">
+                    <span>Penetration: {{this.data.pen.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <label>Rate of Fire: {{this.data.rof.[0].value}}/{{this.data.rof.[1].value}}/{{this.data.rof.[2].value}}</label>
+                </div>
+                <div class="list-item flexrow">
+                    <span>Clip: </span>
+
+                    <input class="clip-current" type="text" value="{{this.data.clip.value}}" name="this.data.clip.value" data-item-id="{{this._id}}" data-dtype="Number">
+                    <span> / </span>
+                    <span>{{this.data.clip.max}}</span>
+
+                </div>
+                <div class="list-item">
+                    <span>Reload: {{this.data.reload.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <span>Special: {{this.data.special.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <span>Damage Type: {{this.data.damageType.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <span>Weapon Class: {{this.data.class.value}}</span>
+
+
+                </div>
+                <div class="list-item">
+                    <span>Weapon Type: {{this.data.type.value}}</span>
+
+
+                </div>
+                <div class="list-item flexrow">
+                    <span>
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{this._id}}"></a>
+                        <a class="list-button item-delete" title="Delete" data-item-id="{{this._id}}"></a>
+                    </span>
+                </div>
+
+            </div>
         </div>
         {{/each}}
     </div>

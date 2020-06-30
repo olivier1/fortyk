@@ -19,7 +19,7 @@ Hooks.once('init', async function() {
    * @type {String}
    */
     CONFIG.Combat.initiative = {
-        formula: "1d10 + @characteristics.agi.bonus + (@characteristics.agi.value / 100)",
+        formula: "1d10 + @characteristics.agi.bonus + (@characteristics.agi.total / 100)",
         decimals: 2
     };
     //preload handlebars templates
@@ -72,7 +72,8 @@ Hooks.once('init', async function() {
         }
     });
     Handlebars.registerHelper("contains", function(str1, str2) {
-
+        if(str1===undefined){return false};
+        
         if(str2===""){
 
             return true;

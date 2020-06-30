@@ -22,6 +22,12 @@ returns the roll message*/
 
         let roll=new Roll("1d100ms<@tar",{tar:target});
         roll.roll();
+        let weaponid=""
+        if(weapon===null){
+
+        }else{
+            weaponid=weapon._id;
+        }
 
         let template='systems/fortyk/templates/chat/chat-test.html';
         var templateOptions={
@@ -31,7 +37,8 @@ returns the roll message*/
             pass:"",
             dos:"",
             success:false,
-            reroll:reroll
+            reroll:reroll,
+            weapon:weaponid
 
         }
         if(!reroll){
@@ -91,17 +98,17 @@ returns the roll message*/
                          classes:["fortyk"],
                          roll:roll,
                          author:actor.name};
-        ChatMessage.create(chatOptions,{});
+        await ChatMessage.create(chatOptions,{});
+        let firstDigit=Math.floor(testRoll/10);
 
+        let secondDigit=testRoll-firstDigit*10;
 
-        if(type==="focuspower"||type==="rangedAttack"||type==="meleeAttack"){
+        let inverted=parseInt(secondDigit*10+firstDigit);
+
+        //determine hitlocation if the attack is a success
+        if(templateOptions["success"]&&(type==="focuspower"||type==="rangedAttack"||type==="meleeAttack")){
 
             //reverse roll to get hit location
-            let firstDigit=Math.floor(testRoll/10);
-
-            let secondDigit=testRoll-firstDigit*10;
-
-            let inverted=parseInt(secondDigit*10+firstDigit);
 
             let hitlocation=FORTYKTABLES.hitLocations[inverted];
             actor.data.data.secChar.lastHit.value=hitlocation.name;
@@ -113,103 +120,107 @@ returns the roll message*/
                         classes:["fortyk"],
                         flavor:"Hit location",
                         author:actor.name};
-            ChatMessage.create(chatOp,{});
+            await ChatMessage.create(chatOp,{});
+        }
+        //logic for psychic phenomena and perils of the warp
+        if(type==="focuspower"){
 
+            let psykerType=actor.data.data.psykana.psykerType.value;
+            let basePR=actor.data.data.psykana.pr.effective;
+            let powerPR=weapon.data.curPR.value;
+            let push=false;
+            let phenom=false;
+            let perils=false;
 
-            if(type==="focuspower"){
+            if(powerPR>basePR){push=true}
 
-                let psykerType=actor.data.data.psykana.psykerType.value;
-                let basePR=actor.data.data.psykana.pr.effective;
-                let powerPR=weapon.data.curPR.value;
-                let push=false;
-                let phenom=false;
-                let perils=false;
+            if(!push&&(firstDigit===secondDigit)){
+                phenom=true;
+            }else if(push&&(psykerType==="bound")&&(firstDigit!==secondDigit)){
+                phenom=true;
 
-                if(powerPR>basePR){push=true}
-                
-                if(!push&&(firstDigit===secondDigit)){
-                    phenom=true;
-                }else if(push&&(psykerType==="bound")&&(firstDigit!==secondDigit)){
-                    phenom=true;
-
-                }else if(push&&(psykerType!=="bound")){
-                    phenom=true;
+            }else if(push&&(psykerType!=="bound")){
+                phenom=true;
+            }
+            if(phenom){
+                let mod=0;
+                let sustain=parseInt(actor.data.data.psykana.pr.sustain);
+                if(sustain>1){
+                    mod=(sustain-1)*10;
                 }
-                if(phenom){
-                    let mod=0;
-                    let sustain=parseInt(actor.data.data.psykana.pr.sustain);
-                    if(sustain>1){
-                        mod=(sustain-1)*10;
+                if(psykerType!=="bound"&&push){
+                    let pushAmt=powerPR-basePR;
+                    if(psykerType==="unbound"){
+                        mod=mod+pushAmt*5;
                     }
-                    if(psykerType!=="bound"&&push){
-                        let pushAmt=powerPR-basePR;
-                        if(psykerType==="unbound"){
-                            mod=mod+pushAmt*5;
-                        }
-                        if(psykerType==="daemon"){
-                            mod=mod+pushAmt*10;
-                        }
+                    if(psykerType==="daemon"){
+                        mod=mod+pushAmt*10;
                     }
-
-                    let psyRoll=new Roll("1d100+@mod",{mod:mod})
-                    psyRoll.roll();
-                    psyRoll.toMessage({
-                        speaker: ChatMessage.getSpeaker({ actor: actor }),
-                        flavor: "Psychic Phenomena!"
-                    });
-
-                    let phenomResult=parseInt(psyRoll._total);
-                    if(phenomResult>100){phenomResult=100};
-                    if(phenomResult>75){perils=true};
-
-                    let phenomMessage=FORTYKTABLES.psychicPhenomena[phenomResult];
-
-                    let chatPhenom={user: game.user._id,
-                                    speaker:{actor,alias:actor.name},
-                                    content:phenomMessage,
-                                    classes:["fortyk"],
-                                    flavor:"Psychic Phenomenom!",
-                                    author:actor.name};
-                    ChatMessage.create(chatPhenom,{});
                 }
-                if(perils){
-                    let mod=0;
+
+                let psyRoll=new Roll("1d100+@mod",{mod:mod})
+                psyRoll.roll();
+                await psyRoll.toMessage({
+                    speaker: ChatMessage.getSpeaker({ actor: actor }),
+                    flavor: "Psychic Phenomena!"
+                });
+
+                let phenomResult=parseInt(psyRoll._total);
+                if(phenomResult>100){phenomResult=100};
+                if(phenomResult>75){perils=true};
+
+                let phenomMessage=FORTYKTABLES.psychicPhenomena[phenomResult];
+
+                let chatPhenom={user: game.user._id,
+                                speaker:{actor,alias:actor.name},
+                                content:phenomMessage,
+                                classes:["fortyk"],
+                                flavor:"Psychic Phenomenom!",
+                                author:actor.name};
+                await ChatMessage.create(chatPhenom,{});
+            }
+            if(perils){
+                let mod=0;
 
 
-                    let perilsRoll=new Roll("1d100+@mod",{mod:mod});
-                    perilsRoll.roll();
-                    perilsRoll.toMessage({
-                        speaker: ChatMessage.getSpeaker({ actor: actor }),
-                        flavor: "Perils of the Warp!!"
-                    });
-                    let perilsResult=parseInt(perilsRoll._total);
-                    if(perilsResult>100){perilsResult=100};
+                let perilsRoll=new Roll("1d100+@mod",{mod:mod});
+                perilsRoll.roll();
+                await perilsRoll.toMessage({
+                    speaker: ChatMessage.getSpeaker({ actor: actor }),
+                    flavor: "Perils of the Warp!!",
+                    blind: true
+                });
+                let perilsResult=parseInt(perilsRoll._total);
+                if(perilsResult>100){perilsResult=100};
 
-                    let perilsMessage=FORTYKTABLES.perils[perilsResult];
-                    let chatPhenom={user: game.user._id,
-                                    speaker:{actor,alias:actor.name},
-                                    content:perilsMessage,
-                                    classes:["fortyk"],
-                                    flavor:"Perils of the Warp!!",
-                                    author:actor.name};
-                    ChatMessage.create(chatPhenom,{});
-                }
-            } 
+                let perilsMessage=FORTYKTABLES.perils[perilsResult];
+                let chatPhenom={user: game.user._id,
+                                speaker:{actor,alias:actor.name},
+                                content:perilsMessage,
+                                classes:["fortyk"],
+                                flavor:"Perils of the Warp!!",
+                                author:actor.name,
+                                whisper:ChatMessage.getWhisperRecipients("GM"),
+                                blind:true
+                               };
+                await ChatMessage.create(chatPhenom,{});
+            }
+        } 
 
-        }else if(type==="fear"&&!templateOptions["success"]){
-           
+        else if(type==="fear"&&!templateOptions["success"]){
+
             //generating insanity when degrees of failure are high enough
             if(testDos>=3){
                 let insanityRoll=new Roll("1d5");
                 insanityRoll.roll();
-                insanityRoll.toMessage({
+                await insanityRoll.toMessage({
                     speaker: ChatMessage.getSpeaker({ actor: actor }),
                     flavor: "Rolling insanity for 3+ Degrees of failure"
                 });
             }
             let fearRoll=new Roll("1d100 +@mod",{mod:testDos*10});
             fearRoll.roll();
-            fearRoll.toMessage({
+            await fearRoll.toMessage({
                 speaker: ChatMessage.getSpeaker({ actor: actor }),
                 flavor: "Fear Roll!"
             });
@@ -219,7 +230,7 @@ returns the roll message*/
             if(actor.data.flags["atsknf"]){
 
                 fearCap=Math.max(100,parseInt(fearRoll._total));
-                
+
                 shockMes=FORTYKTABLES.atsknf[fearCap];
             }else{
                 fearCap=Math.max(171,parseInt(fearRoll._total));
@@ -231,7 +242,7 @@ returns the roll message*/
                            classes:["fortyk"],
                            flavor:"Shock effect",
                            author:actor.name};
-            ChatMessage.create(chatShock,{});
+            await ChatMessage.create(chatShock,{});
         }
 
 
@@ -241,11 +252,11 @@ returns the roll message*/
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
     static async damageRoll(formula,actor,weapon,hits=1,righteous=10){
 
-        var lastHit=actor.data.data.secChar.lastHit;
+        let lastHit=actor.data.data.secChar.lastHit;
         let targets=game.users.current.targets;
 
 
-        var form=formula.value;
+        let form=formula.value;
         if(weapon !== null){
 
 
@@ -253,63 +264,23 @@ returns the roll message*/
                 form+="+"+actor.data.data.characteristics.s.bonus
             }
         }
-        var hitNmbr=0;
-        var curHit=FORTYK.extraHits[lastHit.value][0];
+        let hitNmbr=0;
+        let curHit=FORTYK.extraHits[lastHit.value][0];
         //loop for the number of hits
         for(let h=0;h<(hits);h++){
             if(hitNmbr>5){hitNmbr=0}
             curHit=FORTYK.extraHits[lastHit.value][hitNmbr];
-            var roll=new Roll(form,actor.data.data);
+            let roll=new Roll(form,actor.data.data);
             let label = weapon.name ? `Rolling ${weapon.name} damage.` : 'damage';
 
             roll.roll();
-            //check for righteous fury
-            var crit=false;
-            for ( let r of roll.dice[0].rolls ) {
 
 
-
-
-                if(r.roll>=righteous){
-                    crit=true;
-
-                }
-
-            }
-
-            await roll.toMessage({
-                speaker: ChatMessage.getSpeaker({ actor: actor }),
-                flavor: label
-            });
-            //if righteous fury roll the d5 and spew out the crit result
-            if(crit){
-                let rightRoll=new Roll("1d5",actor.data.data);
-                await rightRoll.roll().toMessage({
-                    speaker: ChatMessage.getSpeaker({ actor: actor }),
-                    flavor: "Righteous Fury!"
-                });
-                let res=rightRoll.dice[0].rolls[0].roll-1;
-
-
-                let rightMes=FORTYKTABLES.crits[weapon.data.damageType.value][curHit.value][res];
-
-                let mesDmgType=weapon.data.damageType.value;
-                let mesRes=res+1;
-                let mesHitLoc=curHit.label;
-
-                var chatOptions={user: game.user._id,
-                                 speaker:{actor,alias:actor.name},
-                                 content:rightMes,
-                                 classes:["fortyk"],
-                                 flavor:`${mesHitLoc}: ${mesRes}, ${mesDmgType} Critical effect`,
-                                 author:actor.name};
-                await ChatMessage.create(chatOptions,{});
-
-            }
             if(targets.size!==0){
+
                 //if there are targets apply damage to all of them
                 for (let tar of targets){
-                   
+
                     let data=tar.actor.data.data;
                     let wounds=getProperty(data,"secChar.wounds");
 
@@ -325,19 +296,19 @@ returns the roll message*/
                                 let path="data.secChar.cover.value"
                                 let pack={}
                                 pack[path]=cover;
-                                
-                                
+
+
                                 if(game.user.isGM){
                                     tar.actor.update(pack);
                                 }else{
                                     //if user isnt GM use socket to have gm update the actor
-                                    
+
                                     let tokenId=tar.data._id;
                                     let socketOp={type:"updateValue",package:{token:tokenId,value:cover,path:path}}
 
                                     game.socket.emit("system.fortyk",socketOp);
                                 }
-                                 let mesHitLoc=curHit.label;
+                                let mesHitLoc=curHit.label;
                                 let chatOptions={user: game.user._id,
                                                  speaker:{actor,alias:actor.name},
                                                  content:"Cover is lowered by 1",
@@ -359,19 +330,34 @@ returns the roll message*/
                     soak=soak-maxPen;
 
                     let damage=roll._total-soak;
+                    //check for righteous fury
+                    let crit=this.righteousFury(roll,righteous,actor,label,weapon,curHit,damage);
+                    console.log(crit);
+                    if(crit.promiseValue&&damage<=0){
+                        damage=1;
+                    }else if(damage<=0){
+                        damage=0;
+                        let chatOptions={user: game.user._id,
+                                         speaker:{actor,alias:actor.name},
+                                         content:"Damage is fully absorbed.",
+                                         classes:["fortyk"],
+                                         flavor:`No damage`,
+                                         author:actor.name};
+                        await ChatMessage.create(chatOptions,{});
+                    }
 
                     let newWounds=wounds.value;
                     // true grit!@!!@
-                    if((wounds.value-damage)<0&&tar.actor.data.flags["truegrit"]){
+                    if((damage>0)&&(wounds.value-damage)<0&&tar.actor.data.flags["truegrit"]){
                         if(newWounds>0){
-                           
+
                             damage=damage-newWounds;
                             newWounds=0;
                         }
-                        
+
                         damage=Math.max(1,damage-data.characteristics.t.bonus);
 
-                        var chatOptions={user: game.user._id,
+                        let chatOptions={user: game.user._id,
                                          speaker:{actor,alias:tar.actor.name},
                                          content:"True Grit reduces critical damage!",
                                          classes:["fortyk"],
@@ -379,6 +365,17 @@ returns the roll message*/
                                          author:tar.actor.name};
                         await ChatMessage.create(chatOptions,{});
                     }
+
+                    let damageOptions={user: game.user._id,
+                                       speaker:{actor,alias:actor.name},
+                                       content:`Attack did ${damage} damage.`,
+                                       classes:["fortyk"],
+                                       flavor:`No damage`,
+                                       author:actor.name,
+                                       whisper:ChatMessage.getWhisperRecipients("GM"),
+                                       blind:true};
+                    await ChatMessage.create(damageOptions,{});
+
                     newWounds=newWounds-damage;
                     newWounds=Math.max(wounds.min,newWounds);
 
@@ -394,7 +391,7 @@ returns the roll message*/
                     }
 
                     //handle critical effects
-                    if(newWounds<0){
+                    if(newWounds<0&&damage>0){
                         let crit=Math.abs(newWounds)-1;
                         let rightMes=FORTYKTABLES.crits[weapon.data.damageType.value][curHit.value][crit];
 
@@ -402,7 +399,7 @@ returns the roll message*/
                         let mesRes=crit+1;
                         let mesHitLoc=curHit.label;
 
-                        var chatOptions={user: game.user._id,
+                        let chatOptions={user: game.user._id,
                                          speaker:{actor,alias:actor.name},
                                          content:rightMes,
                                          classes:["fortyk"],
@@ -414,9 +411,63 @@ returns the roll message*/
                     }
                 }
             }else{
-
+                this.righteousFury(roll,righteous,actor,label,weapon,lastHit);
             }
             hitNmbr++;
+        }
+
+    }
+    static async righteousFury(roll,righteous,actor,label,weapon,curHit, damage=1){
+
+        var crit=false;
+        for ( let r of roll.dice[0].rolls ) {
+            if(r.roll>=righteous){
+                crit=true;
+
+            }
+
+        }
+
+        await roll.toMessage({
+            speaker: ChatMessage.getSpeaker({ actor: actor }),
+            flavor: label
+        });
+        //if righteous fury roll the d5 and spew out the crit result
+        if(crit&&damage>0){
+            let rightRoll=new Roll("1d5",actor.data.data);
+            await rightRoll.roll().toMessage({
+                speaker: ChatMessage.getSpeaker({ actor: actor }),
+                flavor: "Righteous Fury!"
+            });
+            let res=rightRoll.dice[0].rolls[0].roll-1;
+
+
+            let rightMes=FORTYKTABLES.crits[weapon.data.damageType.value][curHit.value][res];
+
+            let mesDmgType=weapon.data.damageType.value;
+            let mesRes=res+1;
+            let mesHitLoc=curHit.label;
+
+            let chatOptions={user: game.user._id,
+                             speaker:{actor,alias:actor.name},
+                             content:rightMes,
+                             classes:["fortyk"],
+                             flavor:`${mesHitLoc}: ${mesRes}, ${mesDmgType} Critical effect`,
+                             author:actor.name};
+            await ChatMessage.create(chatOptions,{});
+            return true;
+        }else if(crit){
+            let chatOptions={user: game.user._id,
+                             speaker:{actor,alias:actor.name},
+                             content:"Righteous Fury does 1 damage through the soak!",
+                             classes:["fortyk"],
+                             flavor:`Righteous Fury!`,
+                             author:actor.name};
+            await ChatMessage.create(chatOptions,{});
+            return true;
+
+        }else{
+            return false;
         }
 
     }
@@ -430,22 +481,45 @@ returns the roll message*/
         const char=dataset["char"];
         const type=dataset["rollType"];
 
-        var target=dataset["target"];
+        const target=dataset["target"];
         const label=dataset["label"];
 
+        const weapon=actor.getEmbeddedEntity("OwnedItem",dataset["weapon"]);
 
+        this.callRollDialog(char, type, target, actor, label, weapon , true);
+
+    }
+    //focuses the modifier input on rerolls
+    static _onModifierCall(event){
+        console.log('heyyy');
+        
+        setTimeout(function() {document.getElementById('modifier').select();}, 50);
+        
+    }
+    static async callRollDialog(testChar, testType, testTarget, actor, testLabel, item, reroll, title=""){
+
+        if(reroll){
+            title+=`${testLabel} `+"Reroll";
+        }else{
+            title+=`${testLabel} `+"Test";
+        }
         new Dialog({
-            title: `${label} Reroll`,
-            content: `<p><label>Modifier:</label> <input type="text" name="modifier" value="0" autofocus/></p>`,
+            title: title,
+            content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="0" autofocus/></p>`,
             buttons: {
                 submit: {
                     label: 'OK',
                     callback: (el) => {
-                        let bonus = Number($(el).find('input[name="modifier"]').val());
+                        const bonus = Number($(el).find('input[name="modifier"]').val());
+                        if(isNaN(bonus)){
+                            this.callRollDialog(testChar, testType, testTarget, actor, testLabel, item, reroll,"Invalid Number ");
+                        }else{
+                            testTarget=parseInt(testTarget)+parseInt(bonus);
 
-                        target=parseInt(target)+parseInt(bonus);
-                        FortykRolls.fortykTest(char, type, target, actor, label,null , true);
+                            FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, reroll);
+                        }
                     }
+
                 }
             },
             default: "submit",
@@ -453,11 +527,12 @@ returns the roll message*/
 
             width:100}
                   ).render(true);
+
     }
     //activate chatlisteners
     static chatListeners(html){
-        html.on("click",".reroll", this._onReroll.bind(this));
-
+        html.on("mouseup",".reroll", this._onReroll.bind(this));
+        html.on("click",".reroll", this._onModifierCall.bind(this));
     }
 
 }

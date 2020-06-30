@@ -30,6 +30,18 @@
             <input type="text" value="{{data.special.value}}" name="data.special.value">
         </div>
         <div class="flexcol">
+            <label>Rate of Fire:</label>
+            <div class="flexrow">
+                <input type="text" value="{{data.rof.[0].value}}" name="data.rof.0.value">
+                <span>/</span>
+                <input type="text" value="{{data.rof.[1].value}}" name="data.rof.1.value">
+                <span>/</span>
+                <input type="text" value="{{data.rof.[2].value}}" name="data.rof.2.value">
+            </div>
+
+
+        </div>
+        <div class="flexcol">
             <label>Damage Type:</label>
             <select class="damage-type" name="data.damageType.value">
                 {{#select data.damageType.value}}

@@ -133,6 +133,8 @@
     border-style:inset;
     border-color:dimgray;
     border-width: medium;
+    padding:5px;
+    display:grid;
 }
 
 .flex-between {

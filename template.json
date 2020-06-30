@@ -112,8 +112,8 @@
                     "fate": {
                         "type": "Number",
                         "min": 0,
-                        "value": 3,
-                        "max": 3
+                        "value": 0,
+                        "max": 0
                     },
                     "corruption": {
                         "value": 0,
@@ -129,14 +129,10 @@
                     },
                     "injuries": [],
                     "wornGear": {
-                        "rightHand": {
-                            "_id": "",
-                            "type": "String"
-                        },
-                        "leftHand": {
-                            "_id": "",
-                            "type": "String"
-                        },
+                        "weapons": [
+                            "",""
+                        ],
+
                         "armor":{
                             "_id": "",
                             "type": "String"
@@ -154,7 +150,7 @@
                         "mod":0
                     },
                     "size":{
-                        "value":4,
+                        "value":3,
                         "mod":0,
                         "stealth":0,
                         "movement":0,

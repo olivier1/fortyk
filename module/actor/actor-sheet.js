@@ -82,9 +82,11 @@ export class FortyKActorSheet extends ActorSheet {
         //filters
         html.find('.filter').keydown(this._onFilterChange.bind(this));
         // Rollable abilities.
-        html.find('.rollable').click(this._onRoll.bind(this));
+        html.find('.rollable').mouseup(this._onRoll.bind(this));
         //Damage rolls
         html.find('.damage-roll').click(this._onDamageRoll.bind(this));
+        //autofcus modifier input
+        html.find('.rollable').click(this._onModifierCall.bind(this));
     }
 
     /* -------------------------------------------- */
@@ -336,40 +338,50 @@ export class FortyKActorSheet extends ActorSheet {
         const weapon=this.actor.getEmbeddedEntity("OwnedItem",event.currentTarget.value);
         const weaponID=event.currentTarget.value;
         const hand=event.currentTarget.dataset["hand"];
-
-
+       console.log(data);
+        console.log(weapon);
+       
         if(hand==="right"){
-            let oppWeapon=this.actor.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.leftHand._id);
+            let oppWeapon=this.actor.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[0]);
             if(oppWeapon!==null&&weaponID===""&&(oppWeapon.data.twohanded.value)){
-
-                this.actor.update({"data.secChar.wornGear.leftHand._id":""});
+                
+                this.actor.update({"data.secChar.wornGear.weapons.0":''});
                 return
             }
-            if(weaponID===""||oppWeapon===null){return}
+           
+            if(weaponID===""){return};
             if(!weapon.data.twohanded.value){
+                if(oppWeapon===null){return}
                 if(oppWeapon.data.twohanded.value){
-
-                    this.actor.update({"data.secChar.wornGear.leftHand._id":""});
+                   
+                    this.actor.update({"data.secChar.wornGear.weapons.0":""});
                 }
             }else{
-                this.actor.update({"data.secChar.wornGear.leftHand._id":weaponID});
+                console.log("hey");
+                this.actor.update({"data.secChar.wornGear.weapons.0":weaponID});
             }
+            
         }else if(hand==="left"){
-            let oppWeapon=this.actor.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.rightHand._id);
+            let oppWeapon=this.actor.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[1]);
             if(oppWeapon!==null&weaponID===""&&(oppWeapon.data.twohanded.value)){
-
-                this.actor.update({"data.secChar.wornGear.rightHand._id":""});
+               
+                  this.actor.update({"data.secChar.wornGear.weapons.1":''});
                 return
             }
-            if(weaponID===""||oppWeapon===null){return}
+           
+            if(weaponID===""){return};
             if(!weapon.data.twohanded.value){
                 if(oppWeapon.data.twohanded.value){
-
-                    this.actor.update({"data.secChar.wornGear.rightHand._id":""});
+                    if(oppWeapon===null){return}
+                     
+                      this.actor.update({"data.secChar.wornGear.weapons.1":""});
                 }
             }else{
-                this.actor.update({"data.secChar.wornGear.rightHand._id":weaponID});
+             
+                this.actor.update({"data.secChar.wornGear.weapons.1":weaponID});
+                console.log(this.actor);
             }
+            
         }
     }
     /**
@@ -393,26 +405,8 @@ export class FortyKActorSheet extends ActorSheet {
         if(dataset["itemId"]){
             
             item=this.actor.getEmbeddedEntity("OwnedItem",dataset["itemId"]);}
-
-        new Dialog({
-            title: `${testLabel} Test`,
-            content: `<p><label>Modifier:</label> <input type="text" name="modifier" value="0" data-dtype="Number" autofocus/></p>`,
-            buttons: {
-                submit: {
-                    label: 'OK',
-                    callback: (el) => {
-                        const bonus = Number($(el).find('input[name="modifier"]').val());
-
-                        testTarget+=parseInt(bonus);
-                        FortykRolls.fortykTest(testChar, testType, testTarget, this.actor, testLabel, item);
-                    }
-                }
-            },
-            default: "submit",
-
-
-            width:100}
-                  ).render(true);
+        FortykRolls.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
+        
 
 
 
@@ -456,6 +450,13 @@ export class FortyKActorSheet extends ActorSheet {
                 flavor: label
             });
         }
+    }
+    //autofocuses the modifier input on a roll
+    _onModifierCall(event){
+        
+        
+        setTimeout(function() {document.getElementById('modifier').select();}, 50);
+        
     }
     _onFilterChange(event){
 

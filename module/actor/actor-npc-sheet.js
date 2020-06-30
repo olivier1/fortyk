@@ -40,8 +40,9 @@ export class FortyKNPCSheet extends ActorSheet {
 
         if (!this.options.editable) return;
 
-        html.find('.rollable').click(this._onRoll.bind(this));
-
+        html.find('.rollable').mouseup(this._onRoll.bind(this));
+        html.find('.rollable').click(this._onModifierCall.bind(this));
+        
         //Damage rolls
         html.find('.damage-roll').click(this._onDamageRoll.bind(this));
         //create item on actor
@@ -53,7 +54,7 @@ export class FortyKNPCSheet extends ActorSheet {
          //handles ranged weapon clips
         html.find('.clip-current').keydown(this._onClipEdit.bind(this));
         html.find('.clip-current').focusout(this._onClipEdit.bind(this));
-
+        
     } 
     /**
    * Handle clickable rolls.
@@ -75,7 +76,7 @@ export class FortyKNPCSheet extends ActorSheet {
 
         new Dialog({
             title: `${testLabel} Test`,
-            content: `<p><label>Modifier:</label> <input type="text" name="modifier" value="0" data-dtype="Number" autofocus/></p>`,
+            content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="0" data-dtype="Number" autofocus/></p>`,
             buttons: {
                 submit: {
                     label: 'OK',
@@ -135,6 +136,13 @@ export class FortyKNPCSheet extends ActorSheet {
                 flavor: label
             });
         }
+    }
+    //focuses the modifier input on rolls
+    _onModifierCall(event){
+        
+        
+        setTimeout(function() {document.getElementById('modifier').select();}, 50);
+        
     }
     //handles when a ranged weapons clip is editted
     _onClipEdit(event){

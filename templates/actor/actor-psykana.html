@@ -3,11 +3,11 @@
     <div class="psy-header flexrow">
         <div class="flexcol">
             <label>Psy Rating:</label>
-            <input type="text" name="data.psykana.pr.value" value="{{data.psykana.pr.value}}">
+            <input type="text" name="data.psykana.pr.value" value="{{data.psykana.pr.value}}" data-dtype="Number">
         </div>
         <div class="flexcol">
             <label>Sustained Powers:</label>
-            <input type="text" name="data.psykana.pr.sustain" value="{{data.psykana.pr.sustain}}">
+            <input type="text" name="data.psykana.pr.sustain" value="{{data.psykana.pr.sustain}}" data-dtype="Number">
         </div>
         <div class="flexcol">
             <label>Effective PR:</label>
@@ -59,7 +59,7 @@
 
                 <label class="list-item">Sustain: {{power.data.sustain.value}}</label>
 
-                <label class="list-item">Range: {{power.data.range.value}}</label>
+                <label class="list-item">Range: {{power.data.range.value}}m</label>
 
                 <label class="list-item">Damage: <a class="damage-roll button" data-label="{{power.name}}"data-formula="{{power.data.damageFormula.value}}" data-weapon="{{power._id}}">{{power.data.damageFormula.value}}</a></label>
 
