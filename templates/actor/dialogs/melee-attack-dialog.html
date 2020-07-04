@@ -1,0 +1,152 @@
+<div class="fortyk grid grid-2col">
+    <div class="flexcol dialog-column">
+        <div class="flexcol attack-section">
+            <label class="section-title">Attack Action</label>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="attack-type" value="{{modifiers.standard}}" label="Standard" checked><label>Standard: +{{modifiers.standard}}</label>
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="attack-type" value="{{modifiers.swift}}" label="Swift"><label>Swift Attack: +{{modifiers.swift}}</label>
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="attack-type" value="{{modifiers.lightning}}" label="Lightning"><label>Lightning Attack: {{modifiers.lightning}}</label>
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="attack-type" value="{{modifiers.charge}}" label="Charge"><label>Charge: +{{modifiers.charge}}</label>
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="attack-type" value="{{modifiers.allOut}}" label="All Out"><label>All Out Attack: +{{modifiers.allOut}}</label>
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="attack-type" value="{{modifiers.stun}}" label="Stun"><label>Stun: {{modifiers.stun}}</label>
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="attack-type" value="{{modifiers.called}}" label="Called Shot"><label>Called Shot: {{modifiers.called}}</label>
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="checkbox" name="guarded" value="{{modifiers.guarded}}" label="Guarded"><label>Guarded: {{modifiers.guarded}}</label>
+            </div>
+
+
+        </div>
+        <div class="flexcol attack-section">
+            <label class="section-title">Aiming</label>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="aim-type" value="0" checked><label>None: +0</label>
+
+            </div>
+            <div class="list-item flexrow">
+                <input type="radio" name="aim-type" value="{{modifiers.aim.half}}"><label>Half Aim: +{{modifiers.aim.half}}</label>
+            </div>
+            <div class="list-item flexrow">
+                <input type="radio" name="aim-type" value="{{modifiers.aim.full}}"><label>Full Aim: +{{modifiers.aim.full}}</label>
+            </div>
+        </div>
+        <div class="flexcol attack-section">
+            <label class="section-title">Outnumbering</label>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="outnumber" value="{{modifiers.gangup.[0]}}" checked><label>1 to 1: +{{modifiers.gangup.[0]}}</label>
+
+            </div>
+            <div class="list-item flexrow">
+                <input type="radio" name="outnumber" value="{{modifiers.gangup.[1]}}" ><label>2 to 1: +{{modifiers.gangup.[1]}}</label>
+            </div>
+            <div class="list-item flexrow">
+                <input type="radio" name="outnumber" value="{{modifiers.gangup.[2]}}" ><label>3 to 1: +{{modifiers.gangup.[2]}}</label>
+            </div>
+        </div>
+    </div>
+    <div class="flexcol dialog-column">
+
+        <div class="flexcol attack-section">
+            <label class="section-title">Terrain Type</label>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="terrain" value="0" checked><label>Normal: +0</label>
+
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="terrain" value="-10" ><label>Rough: -10</label>
+
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="terrain" value="-20" ><label>Tough: -20</label>
+
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="terrain" value="-30" ><label>Severe: -30</label>
+
+            </div>
+        </div>
+        <div class="flexcol attack-section">
+            <label class="section-title">Visibility</label>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="visibility" value="0" checked><label>Normal: +0</label>
+
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="visibility" value="-10" ><label>Fog/mist/shadow/smoke: -10</label>
+
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="visibility" value="-20" ><label>Darkness: -20</label>
+
+            </div>
+
+        </div>
+        <div class="flexcol attack-section">
+            <label class="section-title">Target is</label>
+            <div class="list-item flexrow">
+
+                <input type="checkbox" name="defensive" value="-20"><label>Defensive Stance: -20</label>
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="checkbox" name="prone" value="10"><label>Prone/Knocked Down/Lower Ground: +10</label>
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="checkbox" name="high" value="-10"><label>You are Prone/Knocked Down/Lower Ground: -10</label>
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="checkbox" name="surprised" value="30" ><label>Surprised/Unaware: +30</label>
+
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="checkbox" name="stunned" value="20" ><label>Stunned: +20</label>
+
+            </div>
+            <select class="size" name="size">
+                
+                {{#each size}}
+               
+                <option value="{{this.mod}}" {{#if (contains this.name "average")}}selected{{/if}}>{{this.name}}</option>
+                
+                {{/each}}
+            </select>
+
+
+        </div>
+    </div>
+
+</div>
+<label>Other Modifiers</label>
+<input type="text" id="modifier" name="other" value="0">

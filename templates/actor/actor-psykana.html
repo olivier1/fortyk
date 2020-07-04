@@ -65,7 +65,15 @@
 
                 <label class="list-item">Penetration: {{power.data.pen.value}}</label>
 
-                <label class="list-item">Special: {{power.data.special.value}}</label>
+                <div class="list-item">
+                    <span>Special: 
+                        {{#each this.flags.specials}}
+                        {{#if this.value}}
+                        <a class="item-descr" data-name="{{this.label}}" data-item-descr="{{this.description}}" >{{this.label}}{{#if (isdefined this.num)}}({{this.num}}){{/if}}</a>
+                        {{/if}}{{/each}}
+                    </span>
+
+                </div>
 
                 <label class="list-item">Damage Type: {{power.data.damageType.value}}</label>
 

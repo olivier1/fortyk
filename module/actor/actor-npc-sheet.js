@@ -42,19 +42,19 @@ export class FortyKNPCSheet extends ActorSheet {
 
         html.find('.rollable').mouseup(this._onRoll.bind(this));
         html.find('.rollable').click(this._onModifierCall.bind(this));
-        
+
         //Damage rolls
         html.find('.damage-roll').click(this._onDamageRoll.bind(this));
         //create item on actor
-         html.find('.item-create').click(this._onItemCreate.bind(this));
+        html.find('.item-create').click(this._onItemCreate.bind(this));
         //edit item on actor
         html.find('.item-edit').click(this._onItemEdit.bind(this));
         //delete item on actor
         html.find('.item-delete').click(this._onItemDelete.bind(this));
-         //handles ranged weapon clips
+        //handles ranged weapon clips
         html.find('.clip-current').keydown(this._onClipEdit.bind(this));
         html.find('.clip-current').focusout(this._onClipEdit.bind(this));
-        
+
     } 
     /**
    * Handle clickable rolls.
@@ -72,32 +72,25 @@ export class FortyKNPCSheet extends ActorSheet {
         var testLabel=dataset["label"];
 
         var testChar=dataset["char"];
+        var item=null;
+       
+        if(dataset["itemId"]){
 
-
-        new Dialog({
-            title: `${testLabel} Test`,
-            content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="0" data-dtype="Number" autofocus/></p>`,
-            buttons: {
-                submit: {
-                    label: 'OK',
-                    callback: (el) => {
-                        const bonus = Number($(el).find('input[name="modifier"]').val());
-
-                        testTarget+=parseInt(bonus);
-                        FortykRolls.fortykTest(testChar, testType, testTarget, this.actor, testLabel);
-                    }
-                }
-            },
-            default: "submit",
-
-
-            width:100}
-                  ).render(true);
+            item=this.actor.getEmbeddedEntity("OwnedItem",dataset["itemId"]);}
+        if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
+            FortykRolls.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
+        }else if(testType==="meleeAttack"){
+            FortykRolls.callMeleeAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item);
+        }else if(testType==="rangedAttack"){
+            FortykRolls.callRangedAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item);
+        }else if(testType==="focuspower"){
+            FortykRolls.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item);
+        }
 
 
 
     }
-     _onDamageRoll(event) {
+    _onDamageRoll(event) {
         event.preventDefault();
         const element = event.currentTarget;
         const dataset = element.dataset;
@@ -105,26 +98,26 @@ export class FortyKNPCSheet extends ActorSheet {
             let weapon=this.actor.getEmbeddedEntity("OwnedItem",dataset.weapon);
             let actor=this.actor;
             let formula=weapon.data.damageFormula;
-            
+
             new Dialog({
-            title: `Number of Hits`,
-            content: `<p><label>Number of Hits:</label> <input type="text" name="hits" value="1" data-dtype="Number" autofocus/></p>`,
-            buttons: {
-                submit: {
-                    label: 'OK',
-                    callback: (el) => {
-                        const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
+                title: `Number of Hits`,
+                content: `<p><label>Number of Hits:</label> <input type="text" name="hits" value="1" data-dtype="Number" autofocus/></p>`,
+                buttons: {
+                    submit: {
+                        label: 'OK',
+                        callback: (el) => {
+                            const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
 
-                        
-                        FortykRolls.damageRoll(formula,actor,weapon,hits);
+
+                            FortykRolls.damageRoll(formula,actor,weapon,hits);
+                        }
                     }
-                }
-            },
-            default: "submit",
+                },
+                default: "submit",
 
 
-            width:100}
-                  ).render(true);
+                width:100}
+                      ).render(true);
 
 
 
@@ -139,10 +132,10 @@ export class FortyKNPCSheet extends ActorSheet {
     }
     //focuses the modifier input on rolls
     _onModifierCall(event){
-        
-        
+
+
         setTimeout(function() {document.getElementById('modifier').select();}, 50);
-        
+
     }
     //handles when a ranged weapons clip is editted
     _onClipEdit(event){
@@ -156,7 +149,7 @@ export class FortyKNPCSheet extends ActorSheet {
             item.data.clip.value=newClip;
             await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this);
     }
-     //Handle creating a new item, will sort the item type before making the new item
+    //Handle creating a new item, will sort the item type before making the new item
 
     async _onItemCreate(event) {
         event.preventDefault();
@@ -167,14 +160,24 @@ export class FortyKNPCSheet extends ActorSheet {
             type: type
         };
         let item= await this.actor.createEmbeddedEntity("OwnedItem",itemData);
+
+
         const newItem = await this.actor.items.find(i => i.data._id == item._id);
+        if (newItem.data.type==="meleeWeapon"||newItem.data.type==="rangedWeapon"||newItem.data.type==="psychicPower"||newItem.data.type==="ammunition"){
+           
+            let flags= duplicate(FORTYK.itemFlags);
+            let newData=duplicate(newItem.data);
+            newData.flags.specials=flags;
+
+            this.actor.updateEmbeddedEntity("OwnedItem",newData);
+        }
         newItem.sheet.render(true);
 
 
 
 
     }
-     //Edits the item that was clicked
+    //Edits the item that was clicked
     _onItemEdit(event){
         event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;

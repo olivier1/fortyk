@@ -1,26 +1,27 @@
 export const preloadHandlebarsTemplates = async function() {
 
-  // Define template paths to load
-  const templatePaths = [
+    // Define template paths to load
+    const templatePaths = [
 
-    // Actor Sheet Partials
-      "systems/fortyk/templates/actor/actor-main.html",
-   "systems/fortyk/templates/actor/actor-skills.html",
-    "systems/fortyk/templates/actor/actor-tnt.html",
-    "systems/fortyk/templates/actor/actor-exp.html",
-    "systems/fortyk/templates/actor/actor-combat.html",
-      "systems/fortyk/templates/actor/actor-gear.html",
-      "systems/fortyk/templates/actor/actor-corruption.html",
-      "systems/fortyk/templates/actor/actor-psykana.html",
-      "system/fortyk/templates/item/item-header.html"
-      
+        // Actor Sheet Partials
+        "systems/fortyk/templates/actor/actor-main.html",
+        "systems/fortyk/templates/actor/actor-skills.html",
+        "systems/fortyk/templates/actor/actor-tnt.html",
+        "systems/fortyk/templates/actor/actor-exp.html",
+        "systems/fortyk/templates/actor/actor-combat.html",
+        "systems/fortyk/templates/actor/actor-gear.html",
+        "systems/fortyk/templates/actor/actor-corruption.html",
+        "systems/fortyk/templates/actor/actor-psykana.html",
+        "systems/fortyk/templates/item/item-header.html"
+        
 
-    // Item Sheet Partials
-   
-  ];
 
-  // Load the template parts
-  return loadTemplates(templatePaths);
+        // Item Sheet Partials
+
+    ];
+
+    // Load the template parts
+    return loadTemplates(templatePaths);
 };
 
 
@@ -49,17 +50,36 @@ export const getSkills= async function(){
 };
 
 export const makeRangeArray=function (upperBounds, values) {
-   var rangeArray = new Array(upperBounds[upperBounds.length-1]);
+    var rangeArray = new Array(upperBounds[upperBounds.length-1]);
 
-   var idx = 0;
-   for (var i=0; i < rangeArray.length; i++) {
-      if (i > upperBounds[idx]) {
-        idx++;
-      }
-      rangeArray[i] = values[idx];
-   }
-   return rangeArray;
+    var idx = 0;
+    for (var i=0; i < rangeArray.length; i++) {
+        if (i > upperBounds[idx]) {
+            idx++;
+        }
+        rangeArray[i] = values[idx];
+    }
+    return rangeArray;
 }
+export const isEmpty=function (obj) {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
+//for looping through items to give them flags
+/* 
+       
+       if (itemData.type==="meleeWeapon"||itemData.type==="rangedWeapon"||itemData.type==="psychicPower"){
+            
+            if(isEmpty(data.flags)){
+                let specials=duplicate(FORTYK.itemFlags);
+                console.log(specials);
+                this.update({"flags.specials":specials});
+            }
+        }*/
+
 //import data packs
 // Reference a Compendium pack by it's callection ID
 

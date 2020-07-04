@@ -75,8 +75,14 @@ export class FortyKActorSheet extends ActorSheet {
         //handles ranged weapon clips
         html.find('.clip-current').keydown(this._onClipEdit.bind(this));
         html.find('.clip-current').focusout(this._onClipEdit.bind(this));
+        //handles changing ammo type
+        html.find('.weapon-ammo').change(this._onAmmoChange.bind(this));
+        //handles reloading a ranged weapon
+        html.find('.weapon-reload').click(this._onWeaponReload.bind(this));
         //handles swapping weapons
         html.find('.hand-weapon').change(this._onWeaponChange.bind(this));
+        //handles maximal checkbox
+        html.find('.maximal').click(this._onMaximalClick.bind(this));
         //get item description
         html.find('.item-descr').click(this._onItemDescrGet.bind(this));
         //filters
@@ -130,7 +136,16 @@ export class FortyKActorSheet extends ActorSheet {
             type: type
         };
         let item= await this.actor.createEmbeddedEntity("OwnedItem",itemData);
+
         const newItem = await this.actor.items.find(i => i.data._id == item._id);
+        if (newItem.data.type==="meleeWeapon"||newItem.data.type==="rangedWeapon"||newItem.data.type==="psychicPower"||newItem.data.type==="ammunition"){
+            
+            let flags= duplicate(FORTYK.itemFlags);
+            let newData=duplicate(newItem.data);
+            newData.flags.specials=flags;
+
+            this.actor.updateEmbeddedEntity("OwnedItem",newData);
+        }
         newItem.sheet.render(true);
 
 
@@ -159,7 +174,17 @@ export class FortyKActorSheet extends ActorSheet {
                             };
 
                             let item=  await this.actor.createEmbeddedEntity("OwnedItem",itemData);
+
+
                             const newItem =  await this.actor.items.find(i => i.data._id == item._id);
+                            if (newItem.data.type==="meleeWeapon"||newItem.data.type==="rangedWeapon"||newItem.data.type==="psychicPower"||newItem.data.type==="ammunition"){
+                              
+                                let flags= duplicate(FORTYK.itemFlags);
+                                let newData=duplicate(newItem.data);
+                                newData.flags.specials=flags;
+
+                                this.actor.updateEmbeddedEntity("OwnedItem",newData);
+                            }
                             newItem.sheet.render(true);
                         }
                     },
@@ -332,57 +357,176 @@ export class FortyKActorSheet extends ActorSheet {
             item.data.clip.value=newClip;
             await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this);
     }
+    //handles when swapping ammo type in a ranged weapon
+    _onAmmoChange(event){
+
+        event.preventDefault;
+        const dataset=event.currentTarget.dataset;
+        const weapon=duplicate(this.actor.getEmbeddedEntity("OwnedItem",dataset["weapon"]));
+        const previousAmmo=duplicate(this.actor.getEmbeddedEntity("OwnedItem",dataset["previous"]));
+        const ammoID=event.currentTarget.value;
+        const ammo=this.actor.getEmbeddedEntity("OwnedItem",ammoID);
+        weapon.data.ammo._id=ammoID;
+
+        
+        if(previousAmmo!==null&&previousAmmo.data!==undefined){
+            previousAmmo.data.currentClip.value=weapon.data.clip.value;
+            this.actor.updateEmbeddedEntity("OwnedItem",previousAmmo);
+        }
+        if(ammo!==null){
+            weapon.data.clip.value=ammo.data.currentClip.value;
+        }else{
+            weapon.data.clip.value=0;
+        }
+
+        this.actor.updateEmbeddedEntity("OwnedItem",weapon);
+
+
+
+    }
+    //handles reloading a ranged weapon
+    async _onWeaponReload(event){
+        event.preventDefault;
+        const dataset=event.currentTarget.dataset;
+      
+        const weapon=duplicate(this.actor.getEmbeddedEntity("OwnedItem",dataset["weapon"]));
+        
+        let ooa=false;
+        //different logic for throwing weapons
+        if(weapon.data.class.value!=="Thrown"){
+            const ammo=duplicate(this.actor.getEmbeddedEntity("OwnedItem",weapon.data.ammo._id));
+           
+            if(ammo!==null){
+                let ammoAmt=parseInt(ammo.data.amount.value);
+
+                if(ammoAmt>0){
+                    weapon.data.clip.value=weapon.data.clip.max;
+                    ammo.data.amount.value=ammoAmt-1;
+
+                    await this.actor.updateEmbeddedEntity("OwnedItem",weapon);
+                    await this.actor.updateEmbeddedEntity("OwnedItem",ammo);
+
+                }else{
+                    ooa=true;
+                } 
+            }else{
+                return;
+            }
+
+        }else{
+            if(weapon.data.amount.value>0){
+                weapon.data.amount.value=parseInt(weapon.data.amount.value)-1;
+                weapon.data.clip.value=weapon.data.clip.max;
+                this.actor.updateEmbeddedEntity("OwnedItem",weapon);
+            }else{
+                ooa=true;
+            }
+
+        }
+        //check if out of ammo to reload
+        if(ooa){
+            new Dialog({
+                title: `Out of Ammunition!`,
+                content: `You are out of ammunition and cannot reload.`,
+                buttons: {
+                    submit: {
+                        label: 'OK',
+                        callback: null
+                    }
+                },
+                default: "submit",
+
+
+                width:100}
+                      ).render(true);
+        }
+
+
+
+    }
     //handles when weapons are swapped and stuff
     _onWeaponChange(event){
+        
         const data=this.actor.data.data;
         const weapon=this.actor.getEmbeddedEntity("OwnedItem",event.currentTarget.value);
         const weaponID=event.currentTarget.value;
         const hand=event.currentTarget.dataset["hand"];
-       console.log(data);
-        console.log(weapon);
-       
+        const leftHand=document.getElementById("left");
+        const rightHand=document.getElementById("right");
+
         if(hand==="right"){
+            rightHand.value=weaponID;
             let oppWeapon=this.actor.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[0]);
-            if(oppWeapon!==null&&weaponID===""&&(oppWeapon.data.twohanded.value)){
-                
+            if(weaponID===""&&data.secChar.wornGear.weapons[1]==="2hand"){
+
                 this.actor.update({"data.secChar.wornGear.weapons.0":''});
+                leftHand.value='';
                 return
             }
-           
+
             if(weaponID===""){return};
             if(!weapon.data.twohanded.value){
-                if(oppWeapon===null){return}
-                if(oppWeapon.data.twohanded.value){
-                   
+
+                if(data.secChar.wornGear.weapons[1]==="2hand"){
+
                     this.actor.update({"data.secChar.wornGear.weapons.0":""});
+                    leftHand.value='';
                 }
             }else{
-                console.log("hey");
-                this.actor.update({"data.secChar.wornGear.weapons.0":weaponID});
+
+                this.actor.update({"data.secChar.wornGear.weapons.0":"2hand"});
+                leftHand.value='2hand';
             }
-            
+
         }else if(hand==="left"){
+            leftHand.value=weaponID;
             let oppWeapon=this.actor.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[1]);
-            if(oppWeapon!==null&weaponID===""&&(oppWeapon.data.twohanded.value)){
-               
-                  this.actor.update({"data.secChar.wornGear.weapons.1":''});
+            if(weaponID===""&&data.secChar.wornGear.weapons[1]==="2hand"){
+
+                this.actor.update({"data.secChar.wornGear.weapons.1":''});
+                rightHand.value='';
                 return
             }
-           
+
             if(weaponID===""){return};
             if(!weapon.data.twohanded.value){
-                if(oppWeapon.data.twohanded.value){
-                    if(oppWeapon===null){return}
-                     
-                      this.actor.update({"data.secChar.wornGear.weapons.1":""});
+
+                if(data.secChar.wornGear.weapons[1]==="2hand"){
+
+
+                    this.actor.update({"data.secChar.wornGear.weapons.1":""});
+                    rightHand.value='';
                 }
             }else{
-             
-                this.actor.update({"data.secChar.wornGear.weapons.1":weaponID});
-                console.log(this.actor);
+
+                this.actor.update({"data.secChar.wornGear.weapons.1":"2hand"});
+                rightHand.value='2hand';
+
             }
-            
+
         }
+    }
+    //handles firing mode change for maximal weapons
+    async _onMaximalClick(event){
+        let dataset=event.currentTarget.dataset;
+        let weaponID=dataset["itemId"];
+        let weapon=duplicate(this.actor.getEmbeddedEntity("OwnedItem",weaponID));
+        if(weapon.flags.specials.maximal.maximal){
+            weapon.flags.specials.maximal.maximal=false;
+            weapon.flags.specials.recharge.value=false;
+            if(weapon.flags.specials.blast.value){
+                weapon.flags.specials.blast.num=parseInt(weapon.flags.specials.blast.num)-2;
+                
+            }
+        }else{
+            weapon.flags.specials.maximal.maximal=true;
+             weapon.flags.specials.recharge.value=true;
+            if(weapon.flags.specials.blast.value){
+                weapon.flags.specials.blast.num=parseInt(weapon.flags.specials.blast.num)+2;
+            }
+        }
+        this.actor.updateEmbeddedEntity("OwnedItem",weapon);
+        
     }
     /**
    * Handle clickable rolls.
@@ -401,12 +545,21 @@ export class FortyKActorSheet extends ActorSheet {
 
         var testChar=dataset["char"];
         var item=null;
-       
-        if(dataset["itemId"]){
-            
-            item=this.actor.getEmbeddedEntity("OwnedItem",dataset["itemId"]);}
-        FortykRolls.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
         
+        if(dataset["itemId"]){
+
+            item=this.actor.getEmbeddedEntity("OwnedItem",dataset["itemId"]);}
+        if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
+            FortykRolls.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
+        }else if(testType==="meleeAttack"){
+            FortykRolls.callMeleeAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item);
+        }else if(testType==="rangedAttack"){
+            FortykRolls.callRangedAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item);
+        }else if(testType==="focuspower"){
+            FortykRolls.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item);
+        }
+
+
 
 
 
@@ -419,26 +572,26 @@ export class FortyKActorSheet extends ActorSheet {
             let weapon=this.actor.getEmbeddedEntity("OwnedItem",dataset.weapon);
             let actor=this.actor;
             let formula=weapon.data.damageFormula;
-            
+
             new Dialog({
-            title: `Number of Hits`,
-            content: `<p><label>Number of Hits:</label> <input type="text" name="hits" value="1" data-dtype="Number" autofocus/></p>`,
-            buttons: {
-                submit: {
-                    label: 'OK',
-                    callback: (el) => {
-                        const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
+                title: `Number of Hits`,
+                content: `<p><label>Number of Hits:</label> <input type="text" name="hits" value="1" data-dtype="Number" autofocus/></p>`,
+                buttons: {
+                    submit: {
+                        label: 'OK',
+                        callback: (el) => {
+                            const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
 
-                        
-                        FortykRolls.damageRoll(formula,actor,weapon,hits);
+
+                            FortykRolls.damageRoll(formula,actor,weapon,hits);
+                        }
                     }
-                }
-            },
-            default: "submit",
+                },
+                default: "submit",
 
 
-            width:100}
-                  ).render(true);
+                width:100}
+                      ).render(true);
 
 
 
@@ -453,10 +606,10 @@ export class FortyKActorSheet extends ActorSheet {
     }
     //autofocuses the modifier input on a roll
     _onModifierCall(event){
-        
-        
+
+
         setTimeout(function() {document.getElementById('modifier').select();}, 50);
-        
+
     }
     _onFilterChange(event){
 

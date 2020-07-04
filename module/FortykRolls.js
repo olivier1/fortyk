@@ -12,7 +12,7 @@ export class FortykRolls{
 @Weapon: the weapon is needed for attack rolls, this is where psy powers are put also
 @reroll: if the roll is a reroll or not
 returns the roll message*/
-    static async fortykTest(char, type, target, actor, label, weapon=null, reroll=false){
+    static async fortykTest(char, type, target, actor, label, weapon=null, reroll=false, fireRate=""){
         //cap target at 100 or floor at 1
         if(target>100){
             target=100;
@@ -38,7 +38,8 @@ returns the roll message*/
             dos:"",
             success:false,
             reroll:reroll,
-            weapon:weaponid
+            weapon:weaponid,
+            fireRate:fireRate
 
         }
         if(!reroll){
@@ -57,6 +58,24 @@ returns the roll message*/
 
 
         const testRoll=roll.dice[0].rolls[0].roll;
+        //check for jams
+        let jam=false;
+        if(type==="rangedAttack"){
+            if(weapon.data.quality.value="best"){
+
+            }else if(((weapon.data.quality.value==="good"&&!weapon.flags.specials.unreliable.value)||weapon.flags.specials.reliable.value)&&testRoll===100){
+                jam=true;
+            }else if(testResult>=96){
+                jam=true;
+            }else if((fireRate==="full"||fireRate==="semi")&&testResult>=94){
+                jam=true;
+            }else if(weapon.flags.specials.unreliable.value&&weapon.data.quality.value==="good"&&testResult>=96){
+                jam=true;
+            }else if(((!weapon.data.quality.value==="good"&&weapon.flags.specials.unreliable.value)||weapon.flags.specials.overheats.value)&&testResult>=91){
+                jam=true;
+            }
+
+        }
 
         templateOptions["rollResult"]="Roll: "+testRoll.toString();
         templateOptions["target"]="Target: "+target.toString();
@@ -65,7 +84,7 @@ returns the roll message*/
         const charObj=actor.data.data.characteristics[char];
         var testDos=0;
         //calculate degrees of failure and success
-        if(testResult&&testRoll<96||testRoll===1){
+        if((testResult&&testRoll<96||testRoll===1)&&!jam){
 
             testDos=Math.floor(Math.abs(roll._result)/10)+1+charObj.uB;
             templateOptions["dos"]="with "+testDos.toString()+" degree";
@@ -82,8 +101,11 @@ returns the roll message*/
 
             templateOptions["success"]=false;
             if(testRoll>=96){
-                templateOptions["pass"]="96+ is an automatic failure!"
-            }else{
+                templateOptions["pass"]="96+ is an automatic failure!";
+            }else if(jam){
+                templateOptions["pass"]="Weapon jammed or overheated!";
+            }
+            else{
                 templateOptions["pass"]="Failure!"; 
             }
 
@@ -121,6 +143,41 @@ returns the roll message*/
                         flavor:"Hit location",
                         author:actor.name};
             await ChatMessage.create(chatOp,{});
+        }
+        //special traits
+        if((type==="focuspower"||type==="rangedAttack"||type==="meleeAttack")){
+            //blast
+            if(weapon.flags.specials.blast.value&&!testResult){
+                let chatScatter={user: game.user._id,
+                                 speaker:{actor,alias:actor.name},
+                                 content:`The shot goes wild! <img class="fortyk" src="../systems/fortyk/icons/scatter.png">`,
+                                 flavor:"Shot Scatters!",
+                                 author:actor.name};
+                await ChatMessage.create(chatScatter,{});
+                let distanceRoll=new Roll("1d5");
+                distanceRoll.roll();
+                await distanceRoll.toMessage({
+                    speaker: ChatMessage.getSpeaker({ actor: actor }),
+                    flavor: "Rolling for scatter distance."
+                });
+                let directionRoll=new Roll("1d10");
+                directionRoll.roll();
+                await directionRoll.toMessage({
+                    speaker: ChatMessage.getSpeaker({ actor: actor }),
+                    flavor: "Rolling for scatter direction."
+                });
+
+            }
+
+            //overheats
+            if(weapon.flags.specials.overheats.value&&jam){
+                let chatOverheat={user: game.user._id,
+                                  speaker:{actor,alias:actor.name},
+                                  content:`<div class="fortyk"><p>The weapon overheats!</p> <a class="button overheat" data-actor="${actor._id}"  data-weapon="${weaponid}">Take Damage</a></div>`,
+                                  flavor:"Weapon Overheat!",
+                                  author:actor.name};
+                await ChatMessage.create(chatOverheat,{});
+            }
         }
         //logic for psychic phenomena and perils of the warp
         if(type==="focuspower"){
@@ -250,22 +307,28 @@ returns the roll message*/
 
 
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
-    static async damageRoll(formula,actor,weapon,hits=1,righteous=10){
+    static async damageRoll(formula,actor,weapon,hits=1,righteous=10,curHit=FORTYK.extraHits[lastHit.value][0],self=false){
 
         let lastHit=actor.data.data.secChar.lastHit;
         let targets=game.users.current.targets;
 
 
         let form=formula.value;
-        if(weapon !== null){
+        //change formula for tearing weapons
+        if(weapon.flags.specials.tearing.value){
+            let dPos = form.indexOf('d');
+            let dieNum = form.substr(0,dPos);
+            let newNum=parseInt(dieNum)+1;
+            form=form.slice(dPos)
+            form=newNum+form;
+            let afterD=dPos+3;
+            let startstr=form.slice(0,afterD);
+            let endstr=form.slice(afterD);
+            form=startstr+"dl1"+endstr;
 
-
-            if(weapon.type==="meleeWeapon"){
-                form+="+"+actor.data.data.characteristics.s.bonus
-            }
         }
         let hitNmbr=0;
-        let curHit=FORTYK.extraHits[lastHit.value][0];
+
         //loop for the number of hits
         for(let h=0;h<(hits);h++){
             if(hitNmbr>5){hitNmbr=0}
@@ -280,13 +343,19 @@ returns the roll message*/
 
                 //if there are targets apply damage to all of them
                 for (let tar of targets){
-
                     let data=tar.actor.data.data;
+                    if(self){
+
+                        data=actor.data.data;
+                        tar=actor;
+
+                    }
+
                     let wounds=getProperty(data,"secChar.wounds");
 
                     let armor=parseInt(data.characterHitLocations[curHit.value].armor);
                     //handle cover
-                    if(data.characterHitLocations[curHit.value].cover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
+                    if(!weapon.flags.specials.spray.value&&data.characterHitLocations[curHit.value].cover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
                         let cover=parseInt(data.secChar.cover.value);
                         armor=armor+cover;
                         //reduce cover if damage is greater than cover AP
@@ -332,7 +401,7 @@ returns the roll message*/
                     let damage=roll._total-soak;
                     //check for righteous fury
                     let crit=this.righteousFury(roll,righteous,actor,label,weapon,curHit,damage);
-                    console.log(crit);
+
                     if(crit.promiseValue&&damage<=0){
                         damage=1;
                     }else if(damage<=0){
@@ -380,8 +449,13 @@ returns the roll message*/
                     newWounds=Math.max(wounds.min,newWounds);
 
                     //update wounds
-                    if(game.user.isGM){
-                        tar.actor.update({"data.secChar.wounds.value":newWounds});
+                    if(game.user.isGM||tar.owner){
+                        if(tar.isToken){
+                            tar.actor.update({"data.secChar.wounds.value":newWounds});
+                        }else{
+                            actor.update({"data.secChar.wounds.value":newWounds});
+                        }
+
                     }else{
                         //if user isnt GM use socket to have gm update the actor
                         let tokenId=tar.data._id;
@@ -417,6 +491,7 @@ returns the roll message*/
         }
 
     }
+    //handles righteous fury
     static async righteousFury(roll,righteous,actor,label,weapon,curHit, damage=1){
 
         var crit=false;
@@ -485,16 +560,34 @@ returns the roll message*/
         const label=dataset["label"];
 
         const weapon=actor.getEmbeddedEntity("OwnedItem",dataset["weapon"]);
+        const fireRate=dataset["fire"];
 
-        this.callRollDialog(char, type, target, actor, label, weapon , true);
+        this.callRollDialog(char, type, target, actor, label, weapon , true, fireRate);
 
     }
     //focuses the modifier input on rerolls
     static _onModifierCall(event){
-        console.log('heyyy');
-        
+
+
         setTimeout(function() {document.getElementById('modifier').select();}, 50);
-        
+
+    }
+    //handles dealing damage if the actor doesnt drop the weapon on overheat
+    static async _onOverheat(event){
+        event.preventDefault();
+        const dataset=event.currentTarget.dataset;
+
+        const actor=game.actors.get(dataset["actor"]);
+
+        const weapon=duplicate(actor.getEmbeddedEntity("OwnedItem",dataset["weapon"]));
+        const formula=weapon.data.damageFormula;
+        weapon.data.pen.value=0;
+        let arm=["rArm","lArm"];
+        let rng=Math.floor(Math.random() * 2);
+
+        await this.damageRoll(formula,actor,weapon,1,10,arm[rng],true);
+
+
     }
     static async callRollDialog(testChar, testType, testTarget, actor, testLabel, item, reroll, title=""){
 
@@ -509,8 +602,8 @@ returns the roll message*/
             buttons: {
                 submit: {
                     label: 'OK',
-                    callback: (el) => {
-                        const bonus = Number($(el).find('input[name="modifier"]').val());
+                    callback: (html) => {
+                        const bonus = Number($(html).find('input[name="modifier"]').val());
                         if(isNaN(bonus)){
                             this.callRollDialog(testChar, testType, testTarget, actor, testLabel, item, reroll,"Invalid Number ");
                         }else{
@@ -529,10 +622,270 @@ returns the roll message*/
                   ).render(true);
 
     }
+    //handles the melee attack dialog WHEW
+    static async callMeleeAttackDialog(testChar, testType, testTarget, actor, testLabel, item){
+
+        let template="systems/fortyk/templates/actor/dialogs/melee-attack-dialog.html"
+        let templateOptions={};
+
+        templateOptions["modifiers"]=actor.data.data.secChar.attacks;
+        templateOptions["size"]=FORTYK.size;
+
+        let renderedTemplate= await renderTemplate(template,templateOptions);
+
+        new Dialog({
+            title: `${item.name} Melee Attack Test.`,
+            classes:"fortky",
+            content: renderedTemplate,
+            buttons: {
+                submit: {
+                    label: 'OK',
+                    callback: (html) => {
+                        const attackTypeBonus = Number($(html).find('input[name="attack-type"]:checked').val());
+                        let guarded = Number($(html).find('input[name="guarded"]:checked').val());
+                        const aimBonus = Number($(html).find('input[name="aim-type"]:checked').val());
+                        const outnumberBonus = Number($(html).find('input[name="outnumber"]:checked').val());
+                        const terrainBonus = Number($(html).find('input[name="terrain"]:checked').val());
+                        const visibilityBonus = Number($(html).find('input[name="visibility"]:checked').val());
+                        let defensive = Number($(html).find('input[name="defensive"]:checked').val());
+                        let prone = Number($(html).find('input[name="prone"]:checked').val());
+                        let high = Number($(html).find('input[name="high"]:checked').val());
+                        let surprised = Number($(html).find('input[name="surprised"]:checked').val());
+                        let stunned = Number($(html).find('input[name="stunned"]:checked').val());
+                        const size = Number($(html).find('select[name="size"]').val());
+                        let other = Number($(html).find('input[name="other"]').val());
+                        let addLabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
+                        if(html.find('input[name="guarded"]').is(':checked')){
+                            addLabel=html.find('input[name="guarded"]')[0].attributes["label"].value+" "+addLabel;
+                        }
+                        testLabel=addLabel+" "+ testLabel;
+
+                        if(isNaN(guarded)){guarded=0}
+                        if(isNaN(defensive)){defensive=0}
+                        if(isNaN(prone)){prone=0}
+                        if(isNaN(high)){high=0}
+                        if(isNaN(surprised)){surprised=0}
+                        if(isNaN(stunned)){stunned=0}
+                        if(isNaN(other)){other=0}
+
+                        testTarget=parseInt(testTarget)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
+                        FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
+                    }
+
+                }
+            },
+            default: "submit",
+
+
+            width:400}
+                  ).render(true);
+    }
+    static async callRangedAttackDialog(testChar, testType, testTarget, actor, testLabel, item){
+        let template="systems/fortyk/templates/actor/dialogs/ranged-attack-dialog.html"
+        let templateOptions={};
+
+        templateOptions["modifiers"]=actor.data.data.secChar.attacks;
+        templateOptions["size"]=FORTYK.size;
+        templateOptions["modifiers"].standard=item.data.attackMods.single;
+        templateOptions["modifiers"].semi=item.data.attackMods.semi;
+        templateOptions["modifiers"].full=item.data.attackMods.full;
+        templateOptions["modifiers"].suppressive=item.data.attackMods.suppressive;
+
+
+        for (let [key, rng] of Object.entries(templateOptions.modifiers.range)){
+            let wepMod=item.data.attackMods.range[key];
+            templateOptions.modifiers.range[key]=Math.max(wepMod,rng);
+        }
+        //set flags for rate of fire
+        let curAmmo=parseInt(item.data.clip.value);
+        let consump=parseInt(item.data.clip.consumption);
+        let rofSingle=parseInt(item.data.rof[0].value);
+        let rofSemi=parseInt(item.data.rof[1].value);
+        if(isNaN(rofSingle)){
+            rofSingle=1;
+        }
+        let rofFull=parseInt(item.data.rof[2].value);
+        let canShoot=false;
+        if(parseInt(rofSingle)===0){
+            templateOptions["single"]=false;
+        }else{
+
+            if(rofSingle*consump>curAmmo){
+                templateOptions["single"]=false;
+            }else{
+                templateOptions["single"]=true;
+                canShoot=true;
+            }
+
+        }
+        if(parseInt(rofSemi)===0){
+            templateOptions["semi"]=false;
+        }else{
+            if(rofSemi*consump>curAmmo){
+                templateOptions["semi"]=false;
+            }else{
+                templateOptions["semi"]=true;
+                canShoot=true;
+            }
+
+        }
+        if(parseInt(rofFull)===0){
+            templateOptions["full"]=false;
+        }else{
+            if(rofFull*consump>curAmmo){
+                templateOptions["full"]=false;
+            }else{
+                templateOptions["full"]=true;
+                canShoot=true;
+            }
+        }
+        //if cant shoot return
+        if(!canShoot){
+            new Dialog({
+                title: `Not enough Ammo.`,
+                classes:"fortky",
+                content: "You are out of ammunition, reload!",
+                buttons: {
+                    submit: {
+                        label: 'OK',
+                        callback: null
+
+                    }
+                },
+                default: "submit",
+
+
+                width:400}
+                      ).render(true);
+            return;
+        }
+        let renderedTemplate= await renderTemplate(template,templateOptions);
+
+        new Dialog({
+            title: `${item.name} Ranged Attack Test.`,
+            classes:"fortky",
+            content: renderedTemplate,
+            buttons: {
+                submit: {
+                    label: 'OK',
+                    callback: (html) => {
+
+                        const attackTypeBonus = Number($(html).find('input[name="attack-type"]:checked').val());
+                        let guarded = Number($(html).find('input[name="guarded"]:checked').val());
+                        const aimBonus = Number($(html).find('input[name="aim-type"]:checked').val());
+                        const rangeBonus = Number($(html).find('input[name="distance"]:checked').val());
+
+                        const visibilityBonus = Number($(html).find('input[name="visibility"]:checked').val());
+                        let concealed = Number($(html).find('input[name="concealed"]:checked').val());
+                        let prone = Number($(html).find('input[name="prone"]:checked').val());
+                        let high = Number($(html).find('input[name="high"]:checked').val());
+                        let surprised = Number($(html).find('input[name="surprised"]:checked').val());
+                        let stunned = Number($(html).find('input[name="stunned"]:checked').val());
+                        const size = Number($(html).find('select[name="size"]').val());
+                        let other = Number($(html).find('input[name="other"]').val());
+                        //get attack type name for title
+                        let addLabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
+                        if(html.find('input[name="guarded"]').is(':checked')){
+                            addLabel=html.find('input[name="guarded"]')[0].attributes["label"].value+" "+addLabel;
+                        }
+                        testLabel=addLabel+" "+ testLabel;
+                        let attackType=html.find('input[name=attack-type]:checked')[0].attributes["type"].value;
+                        //spend ammo on gun
+                        let rofIndex=parseInt(html.find('input[name=attack-type]:checked')[0].attributes["index"].value);
+
+                        let rof=0;
+                        if(rofIndex===3){
+                            rof=Math.max(rofSemi,rofFull)*consump;
+                        }else if(rofIndex===2){
+                            rof=rofFull*consump;
+                        }else if(rofIndex===1){
+                            rof=rofSemi*consump;
+                        }else if(rofIndex===0){
+                            rof=rofSingle*consump;
+                        }
+
+                        let weapon=duplicate(item);
+                        weapon.data.clip.value=curAmmo-rof;
+                        actor.updateEmbeddedEntity("OwnedItem",weapon);
+                        //convert unchosen checkboxes into 0s
+                        if(isNaN(guarded)){guarded=0}
+                        if(isNaN(prone)){prone=0}
+                        if(isNaN(high)){high=0}
+                        if(isNaN(surprised)){surprised=0}
+                        if(isNaN(stunned)){stunned=0}
+                        if(isNaN(concealed)){concealed=0}
+                        if(isNaN(other)){other=0}
+
+                        testTarget=parseInt(testTarget)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus);
+                        FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType);
+                    }
+
+                }
+            },
+            default: "submit",
+
+
+            width:400}
+                  ).render(true);
+
+    }
+    static async callFocusPowerDialog(testChar, testType, testTarget, actor, testLabel, item){
+        let template="systems/fortyk/templates/actor/dialogs/psychic-power-attack-dialog.html"
+        let templateOptions={};
+
+        templateOptions["modifiers"]=actor.data.data.secChar.attacks;
+        templateOptions["size"]=FORTYK.size;
+
+        let renderedTemplate= await renderTemplate(template,templateOptions);
+
+        new Dialog({
+            title: `${item.name} Melee Attack Test.`,
+            classes:"fortky",
+            content: renderedTemplate,
+            buttons: {
+                submit: {
+                    label: 'OK',
+                    callback: (html) => {
+
+
+
+                        const rangeBonus = Number($(html).find('input[name="distance"]:checked').val());
+
+                        const visibilityBonus = Number($(html).find('input[name="visibility"]:checked').val());
+
+                        let prone = Number($(html).find('input[name="prone"]:checked').val());
+                        let high = Number($(html).find('input[name="high"]:checked').val());
+                        let surprised = Number($(html).find('input[name="surprised"]:checked').val());
+                        let stunned = Number($(html).find('input[name="stunned"]:checked').val());
+                        let melee = Number($(html).find('input[name="melee"]:checked').val());
+                        const size = Number($(html).find('select[name="size"]').val());
+                        let other = Number($(html).find('input[name="other"]').val());
+                        let concealed= Number($(html).find('input[name="concealed"]:checked').val());
+
+                        if(isNaN(melee)){melee=0}
+                        if(isNaN(concealed)){concealed=0}
+                        if(isNaN(prone)){prone=0}
+                        if(isNaN(high)){high=0}
+                        if(isNaN(surprised)){surprised=0}
+                        if(isNaN(stunned)){stunned=0}
+                        if(isNaN(other)){other=0}
+                        testTarget=parseInt(testTarget)+parseInt(melee)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
+                        FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
+                    }
+
+                }
+            },
+            default: "submit",
+
+
+            width:400}
+                  ).render(true);
+    }
     //activate chatlisteners
     static chatListeners(html){
         html.on("mouseup",".reroll", this._onReroll.bind(this));
         html.on("click",".reroll", this._onModifierCall.bind(this));
+        html.on("click",".overheat", this._onOverheat.bind(this));
     }
 
 }

@@ -40,9 +40,9 @@ export class FortyKItemSheet extends ItemSheet {
             //GET THE SKILLS WITH CHILDREN
 
             data['skillgroups']=this.actor.items.filter(function(item){
-                
+
                 if(item.type==="skill"){return item.data.data.hasChildren.value}else{return false;}}
-                );
+                                                       );
 
         }
         return data;
@@ -69,15 +69,64 @@ export class FortyKItemSheet extends ItemSheet {
         if (!this.options.editable) return;
         html.find('.skill-type').change(this._onParentChange.bind(this));
         html.find('.skill-children').click(this._onChildrenClick.bind(this));
+        html.find('.weapon-special').click(this._onSpecialClick.bind(this));
 
-        // Roll handlers, click handlers, etc. would go here.
 
+    }
+
+    async _onSpecialClick(event){
+
+        let specials=this.item.data.flags.specials;
+        let templateOptions={"specials":specials};
+
+        let renderedTemplate=renderTemplate('systems/fortyk/templates/item/dialogs/weapon-special-dialog.html', templateOptions);
+        
+
+        renderedTemplate.then(content => { 
+            new Dialog({
+                title: "Weapon Special Qualities",
+                content: content,
+                buttons:{
+                    submit:{
+                        label:"Yes",
+                        callback: async html => {
+                            for (let [key, spec] of Object.entries(specials)){
+                                let change=false;
+                                let value=html.find(`input[id=${key}]`).is(":checked");
+                                if(value!==spec.value){change=true}
+                                
+                                
+                                
+
+                                let pack={};
+                                pack[`flags.specials.${key}.value`]=value;
+                                
+                                if(spec.num!==undefined){
+                                    pack[`flags.specials.${key}.num`]=parseInt(html.find(`input[id=${key}num]`).val());
+                                    if(parseInt(html.find(`input[id=${key}num]`).val())!==parseInt(spec.num)){change=true};
+
+                                }
+                                
+                                if(change){
+                                    
+                                 this.item.update(pack);
+                                }
+                                
+                            }
+
+
+                        }
+                    }
+                },
+                default: "submit"
+            }).render(true)
+        });
     }
     //when changing parents check to see if the skill is part of a group if it is change the value of children to false
     async _onParentChange(event){
-        
+
         /*let value=event.currentTarget.value;
-        
+
         if(value!==""){
             let item=this.item;
             console.log(item);
@@ -89,19 +138,19 @@ export class FortyKItemSheet extends ItemSheet {
                 console.log(children);
                 for(let i of children){
                     await i.update({'data.parent.value':""});
-                    
+
                 }
                 await this.item.update({'data.hasChildren.value':false});
             }
 
-            
+
 
 
         }*/
 
     } 
     async _onChildrenClick(event){
-        
+
         let value=event.currentTarget.checked;
         if(value){
             await this.item.update({'data.parent.value':""});

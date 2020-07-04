@@ -7,19 +7,19 @@
 
         <div class="flexcol">
             <label>Reach:</label>
-            <input type="text" value="{{data.range.value}}" name="data.range.value">
+            <input type="text" value="{{data.range.formula}}" name="data.range.formula">
         </div>
         <div class="flexcol">
             <label>Damage:</label>
-            <input type="text" value="{{data.damageFormula.value}}" name="data.damageFormula.value">
+            <input type="text" value="{{data.damageFormula.formula}}" name="data.damageFormula.formula">
         </div>
         <div class="flexcol">
             <label>Penetration:</label>
-            <input type="text" value="{{data.pen.value}}" name="data.pen.value" data-dtype="String">
+            <input type="text" value="{{data.pen.formula}}" name="data.pen.formula" data-dtype="String">
         </div>
         <div class="flexcol">
-            <label>Special:</label>
-            <input type="text" value="{{data.special.value}}" name="data.special.value">
+            <a class="weapon-special button">Special</a>
+            
         </div>
         <div class="flexcol">
             <label>Damage Type:</label>
@@ -54,6 +54,17 @@
             <select class="weapon-type"  name="data.type.value">
                 {{#select data.type.value}}
                 {{#each item.FORTYK.meleeWeaponTypes}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+        </div>
+        <div class="flexcol">
+            <label>Item Quality:</label>
+
+            <select class="quality"  name="data.quality.value">
+                {{#select data.quality.value}}
+                {{#each item.FORTYK.itemQualities}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
                 {{/select}}

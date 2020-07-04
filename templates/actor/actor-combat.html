@@ -86,10 +86,11 @@
             <div class="flexrow">
                 <div class="flexcol">
                     <span>Left Hand</span>
-                    <select class="hand-weapon" data-hand="left" name="data.secChar.wornGear.weapons.0">
-                        
+                    <select class="hand-weapon" data-hand="left" name="data.secChar.wornGear.weapons.0" id="left">
+
                         {{#select data.secChar.wornGear.weapons.[0]}}
                         <option value="">None</option>
+                        <option value="2hand" hidden>Two handed</option>
                         {{#each actor.meleeWeapons}}
                         <option value="{{this._id}}">{{this.name}}</option>
                         {{/each}}
@@ -101,9 +102,10 @@
                 </div>
                 <div class="flexcol">
                     <span>Right Hand</span>
-                    <select class="hand-weapon" data-hand="right" name="data.secChar.wornGear.weapons.1">
+                    <select class="hand-weapon" data-hand="right" name="data.secChar.wornGear.weapons.1" id="right">
                         {{#select data.secChar.wornGear.weapons.[1]}}
                         <option value="">None</option>
+                        <option value="2hand" hidden>Two handed</option>
                         {{#each actor.meleeWeapons}}
                         <option value="{{this._id}}">{{this.name}}</option>
                         {{/each}}
@@ -115,210 +117,161 @@
                 </div>
 
             </div>
-            
-            {{#unless (compareString data.secChar.wornGear.weapons.[0])}}
-            {{#if (contains actor.wornGear.weapons.[0].type "ranged")}}
+
+            {{#each actor.wornGear.weapons}}
+
+            {{#if (contains this.type "ranged")}}
+
             <div class="weapons grid grid-2col">
                 <div class="list-item">
-                    <span>Name: {{actor.wornGear.weapons.[0].name}}</span>
+                    <span>Name: {{this.name}}</span>
                 </div>
 
                 <div class="list-item">
-                    <span>Range: {{actor.wornGear.weapons.[0].data.range.value}}m</span>
+                    <span>Range: {{this.data.range.value}}m</span>
                 </div>
                 <div class="list-item">
-                    <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{data.characteristics.bs.total}}" data-item-id="actor.wornGear.weapons.0._id" data-label="Ranged Attack" data-char="bs">Attack Roll</span>
-                </div>
-                
-                <div class="list-item">
-                    <span>Damage: </span>
-                    <a class="damage-roll button" data-label="{{actor.wornGear.weapons.[0].name}}"data-formula="{{actor.wornGear.weapons.[0].data.damageFormula.value}}" data-weapon="{{actor.wornGear.weapons.[0]._id}}"> {{actor.wornGear.weapons.[0].data.damageFormula.value}}</a>
-
-                </div>
-                <div class="list-item">
-                    <span>Penetration: {{actor.wornGear.weapons.[0].data.pen.value}}</span>
-
-                </div>
-                <div class="list-item">
-                    <label>Rate of Fire: {{actor.wornGear.weapons.[0].data.rof.[0].value}}/{{actor.wornGear.weapons.[0].data.rof.[1].value}}/{{actor.wornGear.weapons.[0].data.rof.[2].value}}</label>
-                </div>
-                <div class="list-item flexrow">
-                    <span>Clip: </span>
-
-                    <input class="clip-current" type="text" value="{{actor.wornGear.weapons.[0].data.clip.value}}" name="actor.wornGear.weapons.0.data.clip.value" data-item-id="{{actor.wornGear.weapons.[0]._id}}" data-dtype="Number">
-                    <span> / </span>
-                    <span>{{actor.wornGear.weapons.[0].data.clip.max}}</span>
-
-                </div>
-                <div class="list-item">
-                    <span>Reload: {{actor.wornGear.weapons.[0].data.reload.value}}</span>
-
-                </div>
-                <div class="list-item">
-                    <span>Special: {{actor.wornGear.weapons.[0].data.special.value}}</span>
-
-                </div>
-                <div class="list-item">
-                    <span>Damage Type: {{actor.wornGear.weapons.[0].data.damageType.value}}</span>
-
-                </div>
-                <div class="list-item">
-                    <span>Weapon Class: {{actor.wornGear.weapons.[0].data.class.value}}</span>
-
-
-                </div>
-                <div class="list-item">
-                    <span>Weapon Type: {{actor.wornGear.weapons.[0].data.type.value}}</span>
-
-
-                </div>
-
-            </div>
-
-            {{else}}
-            <div class="weapons grid grid-2col">
-                <div class="list-item">
-                    <span>Name: {{actor.wornGear.weapons.[0].name}}</span>
-                </div>
-
-                <div class="list-item">
-                    <span>Reach: {{actor.wornGear.weapons.[0].data.range.value}}m</span>
-                </div>
-                <div class="list-item">
-                    <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{data.characteristics.ws.total}}" data-item-id="actor.wornGear.weapons.0._id" data-label="Melee Attack" data-char="ws">Attack Roll</span>
-                </div>
-                <div class="list-item">
-                    <span>Damage: </span>
-                    <a class="damage-roll button" data-label="{{actor.wornGear.weapons.[0].name}}"data-formula="{{actor.wornGear.weapons.[0].data.damageFormula.value}}+@characteristics.s.bonus" data-weapon="{{actor.wornGear.weapons.[0]._id}}"> {{actor.wornGear.weapons.[0].data.damageFormula.value}}+{{data.characteristics.s.bonus}}</a>
-                </div>
-                <div class="list-item">
-                    <span>Penetration: {{actor.wornGear.weapons.[0].data.pen.value}}</span>
-
-                </div>
-                <div class="list-item">
-                    <span>Special: {{actor.wornGear.weapons.[0].data.special.value}}</span>
-
-                </div>
-                <div class="list-item">
-                    <span>Damage Type: {{actor.wornGear.weapons.[0].data.damageType.value}}</span>
-
-                </div>
-                <div class="list-item">
-                    <span>Weapon Class: {{actor.wornGear.weapons.[0].data.class.value}}</span>
-
-
-                </div>
-                <div class="list-item">
-                    <span>Weapon Type: {{actor.wornGear.weapons.[0].data.type.value}}</span>
-
-
-                </div>
-
-            </div>
-
-            {{/if}}
-            {{/unless}}
-
-            {{#unless (compareString data.secChar.wornGear.weapons.[1])}}
-            {{#unless (compareString data.secChar.wornGear.weapons.[1] data.secChar.wornGear.weapons.[0])}}
-            {{#if (contains actor.wornGear.weapons.[1].type "ranged")}}
-            <div class="weapons grid grid-2col">
-                <div class="list-item">
-                    <span>Name: {{actor.wornGear.weapons.[1].name}}</span>
-                </div>
-
-                <div class="list-item">
-                    <span>Range: {{actor.wornGear.weapons.[1].data.range.value}}m</span>
-                </div>
-                <div class="list-item">
-                    <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{data.characteristics.bs.total}}" data-item-id="actor.wornGear.weapons.[1]._id" data-label="Ranged Attack" data-char="bs">Attack Roll</span>
+                    <span>Attack: </span> 
+                    {{#if (greaterThan this.data.clip.value 0)}}
+                    <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../data.characteristics.bs.total}}" data-item-id="{{this._id}}" data-label="Ranged Attack" data-char="bs">Roll</span>
+                    {{else}}
+                    <span class="weapon-reload button" data-weapon="{{this._id}}" >Reload</span>
+                    {{/if}}
                 </div>
                 <div class="list-item">
                     <span>Damage: </span> 
-                    <a class="damage-roll button" data-label="{{actor.wornGear.weapons.[1].name}}"data-formula="{{actor.wornGear.weapons.[1].data.damageFormula.value}}" data-weapon="{{actor.wornGear.weapons.[1]._id}}"> {{actor.wornGear.weapons.[1].data.damageFormula.value}}</a>
+                    <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
 
                 </div>
                 <div class="list-item">
-                    <span>Penetration: {{actor.wornGear.weapons.[1].data.pen.value}}</span>
+                    <span>Penetration: {{this.data.pen.value}}</span>
 
                 </div>
+                {{#if this.flags.specials.maximal.value}}
                 <div class="list-item">
-                    <label>Rate of Fire: {{actor.wornGear.weapons.[1].data.rof.[0].value}}/{{actor.wornGear.weapons.[1].data.rof.[1].value}}/{{actor.wornGear.weapons.[1].data.rof.[2].value}}</label>
+                    <span>Maximal: <input type="checkbox" class="maximal" data-item-id="{{this._id}}"  {{checked this.flags.specials.maximal.maximal}}></span>
+                    
+
                 </div>
+                {{/if}}
+                <div class="list-item">
+                    <label>Rate of Fire: {{this.data.rof.[0].value}}/{{this.data.rof.[1].value}}/{{this.data.rof.[2].value}}</label>
+                </div>
+                {{#unless (contains this.data.class.value "thrown")}}
+                <div class="list-item">
+
+                    <label>Current Ammo:</label>
+                    <select class="weapon-ammo" data-weapon="{{this._id}}" data-previous="{{this.data.ammo._id}}">
+
+                        {{#select this.data.ammo._id}}
+                        <option value="">None</option>
+
+                        {{#each ../actor.equippableAmmo}}
+                        {{#if (compareString this.data.class.value ../this.data.class.value)}}
+                        {{#if (compareString this.data.type.value ../this.data.type.value)}}
+                        <option value="{{this._id}}">{{this.name}}:{{this.data.amount.value}}</option>
+                        {{/if}}
+                        {{/if}}
+                        {{/each}}
+
+                        {{/select}}
+                    </select>
+                </div>
+                {{else}}
+                <div class="list-item">
+                    <span>Amount: {{this.data.amount.value}}</span> 
+
+
+                </div>
+                {{/unless}}
                 <div class="list-item flexrow">
                     <span>Clip: </span>
 
-                    <input class="clip-current" type="text" value="{{actor.wornGear.weapons.[1].data.clip.value}}" name="actor.wornGear.weapons.1.data.clip.value" data-item-id="{{actor.wornGear.weapons.[1]._id}}" data-dtype="Number">
+                    <input class="clip-current" type="text" value="{{this.data.clip.value}}" data-item-id="{{this._id}}" data-dtype="Number">
                     <span> / </span>
-                    <span>{{actor.wornGear.weapons.[1].data.clip.max}}</span>
-
-                </div>
-                <div class="list-item">
-                    <span>Reload: {{actor.wornGear.weapons.[1].data.reload.value}}</span>
-
-                </div>
-                <div class="list-item">
-                    <span>Special: {{actor.wornGear.weapons.[1].data.special.value}}</span>
-
-                </div>
-                <div class="list-item">
-                    <span>Damage Type: {{actor.wornGear.weapons.[1].data.damageType.value}}</span>
-
-                </div>
-                <div class="list-item">
-                    <span>Weapon Class: {{actor.wornGear.weapons.[1].data.class.value}}</span>
+                    <span>{{this.data.clip.max}}</span>
 
 
                 </div>
+
                 <div class="list-item">
-                    <span>Weapon Type: {{actor.wornGear.weapons.[1].data.type.value}}</span>
+                    <span>Reload: {{this.data.reload.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <span>Special: 
+                        {{#each this.flags.specials}}
+                        {{#if this.value}}
+                        <a class="item-descr" data-name="{{this.label}}" data-item-descr="{{this.description}}" >{{this.label}}{{#if (isdefined this.num)}}({{this.num}}){{/if}}</a>
+                        {{/if}}{{/each}}
+                    </span>
+
+                </div>
+                <div class="list-item">
+                    <span>Damage Type: {{this.data.damageType.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <span>Weapon Class: {{this.data.class.value}}</span>
+
+
+                </div>
+                <div class="list-item">
+                    <span>Weapon Type: {{this.data.type.value}}</span>
 
 
                 </div>
 
             </div>
-
-            {{else}}
+            {{else if (contains this.type "melee")}}
             <div class="weapons grid grid-2col">
+
                 <div class="list-item">
-                    <span>Name: {{actor.wornGear.weapons.[1].name}}</span>
+                    <span>Name: {{this.name}}</span>
                 </div>
 
                 <div class="list-item">
-                    <span>Reach: {{actor.wornGear.weapons.[1].data.range.value}}m</span>
+                    <span>Reach: {{this.data.range.value}}m</span>
                 </div>
                 <div class="list-item">
-                    <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{data.characteristics.ws.total}}" data-item-id="actor.wornGear.weapons.[1]._id" data-label="Melee Attack" data-char="ws">Attack Roll</span>
+                    <span>Attack: </span> 
+                    <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../data.characteristics.ws.total}}" data-item-id="{{this._id}}" data-label="Melee Attack" data-char="ws">Roll</span>
                 </div>
                 <div class="list-item">
                     <span>Damage: </span>
-                    <a class="damage-roll button" data-label="{{actor.wornGear.weapons.[1].name}}"data-formula="{{actor.wornGear.weapons.[1].data.damageFormula.value}}+@characteristics.s.bonus" data-weapon="{{actor.wornGear.weapons.[1]._id}}"> {{actor.wornGear.weapons.[1].data.damageFormula.value}}+{{data.characteristics.s.bonus}}</a>
+                    <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
                 </div>
                 <div class="list-item">
-                    <span>Penetration: {{actor.wornGear.weapons.[1].data.pen.value}}</span>
+                    <span>Penetration: {{this.data.pen.value}}</span>
 
                 </div>
                 <div class="list-item">
-                    <span>Special: {{actor.wornGear.weapons.[1].data.special.value}}</span>
+                    <span>Special: 
+                        {{#each this.flags.specials}}
+                        {{#if this.value}}
+                        <a class="item-descr" data-name="{{this.label}}" data-item-descr="{{this.description}}" >{{this.label}}{{#if (isdefined this.num)}}({{this.num}}){{/if}}</a>
+                        {{/if}}{{/each}}
+                    </span>
 
                 </div>
                 <div class="list-item">
-                    <span>Damage Type: {{actor.wornGear.weapons.[1].data.damageType.value}}</span>
+                    <span>Damage Type: {{this.data.damageType.value}}</span>
 
                 </div>
                 <div class="list-item">
-                    <span>Weapon Class: {{actor.wornGear.weapons.[1].data.class.value}}</span>
+                    <span>Weapon Class: {{this.data.class.value}}</span>
 
 
                 </div>
                 <div class="list-item">
-                    <span>Weapon Type: {{actor.wornGear.weapons.[1].data.type.value}}</span>
+                    <span>Weapon Type: {{this.data.type.value}}</span>
                 </div>
 
             </div>
             {{/if}}
-            {{/unless}}
-            {{/unless}}
+
+            {{/each}}
+
         </div>
         <div class="flexcol flex-group-center">
             <span class="section-title">MOVEMENT</span>

@@ -118,7 +118,7 @@
                     "corruption": {
                         "value": 0,
                         "type": "Number",
-                        "chars":"",
+                        "chars": "",
                         "mod": 0
                     },
                     "insanity": {
@@ -130,41 +130,67 @@
                     "injuries": [],
                     "wornGear": {
                         "weapons": [
-                            "",""
+                            "", ""
                         ],
 
-                        "armor":{
+                        "armor": {
                             "_id": "",
                             "type": "String"
                         },
-                        "forceField":{
+                        "forceField": {
                             "_id": "",
                             "type": "String"
                         }
                     },
-                    "movement":{
-                        "half":0,
-                        "full":0,
-                        "charge":0,
-                        "run":0,
-                        "mod":0
+                    "movement": {
+                        "half": 0,
+                        "full": 0,
+                        "charge": 0,
+                        "run": 0,
+                        "mod": 0
                     },
-                    "size":{
-                        "value":3,
-                        "mod":0,
-                        "stealth":0,
-                        "movement":0,
-                        "label":"Average"
+                    "attacks": {
+                        "standard": 10,
+                        "charge": 20,
+                        "allOut": 30,
+                        "stun": -20,
+                        "guarded": -10,
+                        "aim": {
+                            "half": 10,
+                            "full": 10
+                        },
+                        "swift": 0,
+                        "lightning": -10,
+                        "called": -20,
+                        "gangup": {
+                            "0": 0,
+                            "1": 10,
+                            "2": 20
+                        },
+                        "range": {
+                            "pointblank": 30,
+                            "short": 10,
+                            "standard": 0,
+                            "long": -10,
+                            "extreme": -30
+                        }
                     },
-                    "lastHit":{
-                        "value":"body",
-                        "label":"Body",
-                        "dos":1,
-                        "type":"String"
+                    "size": {
+                        "value": 3,
+                        "mod": 0,
+                        "stealth": 0,
+                        "movement": 0,
+                        "label": "Average"
                     },
-                    "cover":{
-                        "value":0,
-                        "type":"String"
+                    "lastHit": {
+                        "value": "body",
+                        "label": "Body",
+                        "dos": 1,
+                        "type": "String"
+                    },
+                    "cover": {
+                        "value": 0,
+                        "type": "String"
                     }
                 },
                 "statuses": {
@@ -285,70 +311,70 @@
                     "head": {
                         "value": 0,
                         "armor": 0,
-                        "cover":false,
-                        "cyber":false,
-                        "shield":0,
+                        "cover": false,
+                        "cyber": false,
+                        "shield": 0,
                         "type": "Number",
-                        "label":"Head"
+                        "label": "Head"
                     },
                     "body": {
                         "value": 0,
                         "armor": 0,
-                        "cover":false,
-                        "cyber":false,
-                        "shield":0,
+                        "cover": false,
+                        "cyber": false,
+                        "shield": 0,
                         "type": "Number",
-                        "label":"Body"
+                        "label": "Body"
                     },
                     "rArm": {
                         "value": 0,
                         "armor": 0,
-                        "cover":false,
-                        "cyber":false,
-                        "shield":0,
+                        "cover": false,
+                        "cyber": false,
+                        "shield": 0,
                         "type": "Number",
-                        "label":"Right Arm"
+                        "label": "Right Arm"
                     },
                     "lArm": {
                         "value": 0,
                         "armor": 0,
-                        "cover":false,
-                        "cyber":false,
-                        "shield":0,
+                        "cover": false,
+                        "cyber": false,
+                        "shield": 0,
                         "type": "Number",
-                        "label":"Left Arm"
+                        "label": "Left Arm"
                     },
 
                     "rLeg": {
                         "value": 0,
                         "armor": 0,
-                        "cover":false,
-                        "cyber":false,
-                        "shield":0,
+                        "cover": false,
+                        "cyber": false,
+                        "shield": 0,
                         "type": "Number",
-                        "label":"Right Leg"
+                        "label": "Right Leg"
                     },
                     "lLeg": {
                         "value": 0,
                         "armor": 0,
-                        "cover":false,
-                        "cyber":false,
-                        "shield":0,
+                        "cover": false,
+                        "cyber": false,
+                        "shield": 0,
                         "type": "Number",
-                        "label":"Left Leg"
+                        "label": "Left Leg"
                     }
                 },
                 "psykana": {
                     "pr": {
                         "value": 0,
-                        "maxPush":0,
-                        "sustain":0,
-                        "effective":0,
+                        "maxPush": 0,
+                        "sustain": 0,
+                        "effective": 0,
                         "type": "Number"
                     },
-                    "psykerType":{
-                        "value":"bound",
-                        "type":"String"
+                    "psykerType": {
+                        "value": "bound",
+                        "type": "String"
                     },
                     "mod": {
                         "value": 0,
@@ -364,11 +390,11 @@
                     "earned": 0,
                     "value": 0
                 },
-                "carry":{
-                    "value":0,
-                    "max":0
+                "carry": {
+                    "value": 0,
+                    "max": 0
                 },
-                "aptitudes":[]
+                "aptitudes": []
             }
         },
         "dwPC": {
@@ -393,13 +419,13 @@
                 "value": "",
                 "type": "String"
             },
-            "equipment":{
-                "value":"",
-                "type":""
+            "equipment": {
+                "value": "",
+                "type": ""
             },
-            "description":{
-                "value" :"",
-                "type" :"String"
+            "description": {
+                "value": "",
+                "type": "String"
             }
         },
         "dhPC": {
@@ -445,18 +471,39 @@
             "weapon": {
                 "damageFormula": {
                     "value": "1d10",
+                    "formula": "1d10",
                     "type": "String"
                 },
                 "pen": {
                     "value": 0,
+                    "formula": "0",
                     "type": "String"
                 },
-                "special": {
-                    "type": "String",
-                    "value": ""
+                "attackMods": {
+                    "single": 10,
+                    "semi": 0,
+                    "full": -10,
+                    "suppressive":-20,
+                    "aim": {
+                        "half": 10,
+                        "full": 20
+                    },
+                    "range": {
+                        "pointblank": 30,
+                        "short": 10,
+                        "standard": 0,
+                        "long": -10,
+                        "extreme": -30
+                    }
                 },
+                "testMod": {
+                    "value": 0,
+                    "type": "Number"
+                },
+
                 "range": {
                     "value": 1,
+                    "formula": 1,
                     "type": "String"
                 },
                 "damageType": {
@@ -467,13 +514,13 @@
                     "value": "",
                     "type": "String"
                 },
-                "type":{
-                    "value":"",
-                    "type":"String"
+                "type": {
+                    "value": "",
+                    "type": "String"
                 },
-                "twohanded":{
-                    "value":false,
-                    "type":"Boolean"
+                "twohanded": {
+                    "value": false,
+                    "type": "Boolean"
                 }
             },
             "description": {
@@ -485,7 +532,7 @@
             "physicalProp": {
                 "weight": {
                     "value": 0,
-                    "total":0,
+                    "total": 0,
                     "type": "Number"
                 },
                 "rarity": {
@@ -495,6 +542,10 @@
                 "amount": {
                     "value": 1,
                     "type": "Number"
+                },
+                "quality": {
+                    "value": "common",
+                    "type": "String"
                 }
             },
             "tableEntry": {
@@ -515,9 +566,9 @@
                 "physicalProp"
             ],
             "mods": [],
-            "shield":{
-                "value":0,
-                "type":"Number"
+            "shield": {
+                "value": 0,
+                "type": "Number"
             }
         },
         "rangedWeapon": {
@@ -526,27 +577,32 @@
                 "description",
                 "physicalProp"
             ],
-            "rof": [
-                {
-                    "value": 0,
-                    "type": "Number"
-                },
-                {
-                    "value": 0,
-                    "type": "Number"
-                },
-                {
-                    "value": 0,
-                    "type": "Number"
-                }
-            ],
+            "rof": [{
+                "value": 0,
+                "type": "Number"
+            },
+                    {
+                        "value": 0,
+                        "type": "Number"
+                    },
+                    {
+                        "value": 0,
+                        "type": "Number"
+                    }
+                   ],
+
             "clip": {
                 "value": 0,
                 "max": 0,
+                "consumption": 1,
+                "formula": "",
                 "type": "Number"
             },
             "mods": [],
-            "ammo": {},
+            "ammo": {
+                "_id": ""
+                
+            },
             "reload": {
                 "value": "",
                 "type": "String"
@@ -558,8 +614,8 @@
                 "description",
                 "physicalProp"
             ],
-            "weapon": {
-                "_id": "",
+            "currentClip": {
+                "value": 0,
                 "type": "String"
             }
         },
@@ -589,15 +645,15 @@
                 "type": "Number"
             },
             "ap": {
-                "head":{
+                "head": {
                     "value": 0,
                     "type": "Number"
                 },
-                "body":{
+                "body": {
                     "value": 0,
                     "type": "Number"
                 },
-                "lArm":{
+                "lArm": {
                     "value": 0,
                     "type": "Number"
                 },
@@ -605,11 +661,11 @@
                     "value": 0,
                     "type": "Number"
                 },
-                "lLeg":{
+                "lLeg": {
                     "value": 0,
                     "type": "Number"
                 },
-                "rLeg":{
+                "rLeg": {
                     "value": 0,
                     "type": "Number"
                 }
@@ -624,6 +680,10 @@
                 "value": 0,
                 "overload": 0,
                 "type": "Number"
+            },
+            "broken": {
+                "value": false,
+                "type": "Boolean"
             }
         },
         "mod": {
@@ -647,15 +707,6 @@
                 "weapon",
                 "description"
             ],
-            "damageFormula": {
-                "formula":""
-            },
-            "range":{
-                "formula":""
-            },
-            "pen":{
-                "formula":""
-            },
             "action": {
                 "value": "",
                 "type": "String"
@@ -672,10 +723,6 @@
                 "value": "wp",
                 "type": "Characteristic"
             },
-            "testMod": {
-                "value": 0,
-                "type": "Number"
-            },
             "sustain": {
                 "value": "",
                 "type": "String"
@@ -688,9 +735,9 @@
                 "value": "",
                 "type": "String"
             },
-            "target":{
-                "value":0,
-                "type":"Number"
+            "target": {
+                "value": 0,
+                "type": "Number"
             }
         },
         "skill": {
