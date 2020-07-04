@@ -147,7 +147,27 @@ returns the roll message*/
         //special traits
         if((type==="focuspower"||type==="rangedAttack"||type==="meleeAttack")){
             //blast
-            if(weapon.flags.specials.blast.value&&!testResult){
+            if((weapon.data.type==="Launcher"||weapon.data.type==="Grenade")&&weapon.flags.specials.blast.value&&!testResult&&jam){
+               let fumbleRoll=new Roll("1d10");
+                fumbleRoll.roll();
+                await fumbleRoll.toMessage({
+                    speaker: ChatMessage.getSpeaker({ actor: actor }),
+                    flavor: "Rolling for fumble."
+                });
+                let content="";
+                let fumbleResult=fumbleRoll.dice[0].rolls[0].roll;
+                if(fumbleResult===10){
+                    content="The explosive detonates immediately on you! Launchers are destroyed by this result."
+                }else{
+                    content="The explosive is a dud."
+                }
+                let chatFumble={user: game.user._id,
+                                 speaker:{actor,alias:actor.name},
+                                 content:content,
+                                 flavor:"Fumble or Dud!",
+                                 author:actor.name};
+                await ChatMessage.create(chatFumble,{});
+            }else if(weapon.flags.specials.blast.value&&!testResult){
                 let chatScatter={user: game.user._id,
                                  speaker:{actor,alias:actor.name},
                                  content:`The shot goes wild! <img class="fortyk" src="../systems/fortyk/icons/scatter.png">`,
