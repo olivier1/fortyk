@@ -54,7 +54,7 @@ export class FortyKItem extends Item {
                 data.pen.value=data.pen.formula;
 
 
-                data.damageFormula.value=data.damageFormula.formula+"+"+actorData.data.characteristics.s.bonus;
+                
 
                 if(itemData.data.class.value==="Melee Two-handed"){
                     itemData.data.twohanded.value=true;

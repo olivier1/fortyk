@@ -22,6 +22,7 @@ returns the roll message*/
 
         let roll=new Roll("1d100ms<@tar",{tar:target});
         roll.roll();
+        
         let weaponid=""
         if(weapon===null){
 
@@ -60,18 +61,21 @@ returns the roll message*/
         const testRoll=roll.dice[0].rolls[0].roll;
         //check for jams
         let jam=false;
+        console.log(testRoll)
+        console.log(type);
         if(type==="rangedAttack"){
-            if(weapon.data.quality.value="best"){
+            console.log("hey");
+            if(weapon.data.quality.value==="Best"){
 
-            }else if(((weapon.data.quality.value==="good"&&!weapon.flags.specials.unreliable.value)||weapon.flags.specials.reliable.value)&&testRoll===100){
+            }else if(((weapon.data.quality.value==="Good"&&!weapon.flags.specials.unreliable.value)||weapon.flags.specials.reliable.value)&&testRoll===100){
                 jam=true;
-            }else if(testResult>=96){
+            }else if(testRoll>=96){
                 jam=true;
-            }else if((fireRate==="full"||fireRate==="semi")&&testResult>=94){
+            }else if((fireRate==="full"||fireRate==="semi")&&testRoll>=94){
                 jam=true;
-            }else if(weapon.flags.specials.unreliable.value&&weapon.data.quality.value==="good"&&testResult>=96){
+            }else if(weapon.flags.specials.unreliable.value&&weapon.data.quality.value==="Good"&&testRoll>=96){
                 jam=true;
-            }else if(((!weapon.data.quality.value==="good"&&weapon.flags.specials.unreliable.value)||weapon.flags.specials.overheats.value)&&testResult>=91){
+            }else if(((!weapon.data.quality.value==="Good"&&weapon.flags.specials.unreliable.value)||weapon.flags.specials.overheats.value)&&testRoll>=91){
                 jam=true;
             }
 
@@ -83,6 +87,7 @@ returns the roll message*/
         const testResult=rollResult>=0;
         const charObj=actor.data.data.characteristics[char];
         var testDos=0;
+        console.log(jam);
         //calculate degrees of failure and success
         if((testResult&&testRoll<96||testRoll===1)&&!jam){
 
@@ -100,10 +105,10 @@ returns the roll message*/
             templateOptions["dos"]+=" of failure!";
 
             templateOptions["success"]=false;
-            if(testRoll>=96){
-                templateOptions["pass"]="96+ is an automatic failure!";
-            }else if(jam){
+            if(jam){
                 templateOptions["pass"]="Weapon jammed or overheated!";
+            }else if(testRoll>=96){
+                templateOptions["pass"]="96+ is an automatic failure!";
             }
             else{
                 templateOptions["pass"]="Failure!"; 
@@ -327,7 +332,7 @@ returns the roll message*/
 
 
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
-    static async damageRoll(formula,actor,weapon,hits=1,righteous=10,curHit=FORTYK.extraHits[lastHit.value][0],self=false){
+    static async damageRoll(formula,actor,weapon,hits=1,righteous=10,curHit){
 
         let lastHit=actor.data.data.secChar.lastHit;
         let targets=game.users.current.targets;
@@ -364,12 +369,7 @@ returns the roll message*/
                 //if there are targets apply damage to all of them
                 for (let tar of targets){
                     let data=tar.actor.data.data;
-                    if(self){
-
-                        data=actor.data.data;
-                        tar=actor;
-
-                    }
+                   
 
                     let wounds=getProperty(data,"secChar.wounds");
 
@@ -454,7 +454,7 @@ returns the roll message*/
                                          author:tar.actor.name};
                         await ChatMessage.create(chatOptions,{});
                     }
-
+                    //report damage dealt to gm
                     let damageOptions={user: game.user._id,
                                        speaker:{actor,alias:actor.name},
                                        content:`Attack did ${damage} damage.`,
@@ -469,12 +469,12 @@ returns the roll message*/
                     newWounds=Math.max(wounds.min,newWounds);
 
                     //update wounds
-                    if(game.user.isGM||tar.owner){
-                        if(tar.isToken){
+                    if(game.user.isGM){
+                       
+                 
+                            
                             tar.actor.update({"data.secChar.wounds.value":newWounds});
-                        }else{
-                            actor.update({"data.secChar.wounds.value":newWounds});
-                        }
+                     
 
                     }else{
                         //if user isnt GM use socket to have gm update the actor
@@ -569,7 +569,7 @@ returns the roll message*/
     //handles test rerolls
     static async _onReroll(event){
         event.preventDefault();
-
+        event.currentTarget.style.display = "none";
         const dataset=event.currentTarget.dataset;
 
         const actor=game.actors.get(dataset["actor"]);
@@ -672,6 +672,7 @@ returns the roll message*/
                         let high = Number($(html).find('input[name="high"]:checked').val());
                         let surprised = Number($(html).find('input[name="surprised"]:checked').val());
                         let stunned = Number($(html).find('input[name="stunned"]:checked').val());
+                        let running= Number($(html).find('input[name="running"]:checked').val());
                         const size = Number($(html).find('select[name="size"]').val());
                         let other = Number($(html).find('input[name="other"]').val());
                         let addLabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
@@ -679,7 +680,7 @@ returns the roll message*/
                             addLabel=html.find('input[name="guarded"]')[0].attributes["label"].value+" "+addLabel;
                         }
                         testLabel=addLabel+" "+ testLabel;
-
+                        if(isNaN(running)){running=0}
                         if(isNaN(guarded)){guarded=0}
                         if(isNaN(defensive)){defensive=0}
                         if(isNaN(prone)){prone=0}
@@ -688,7 +689,7 @@ returns the roll message*/
                         if(isNaN(stunned)){stunned=0}
                         if(isNaN(other)){other=0}
 
-                        testTarget=parseInt(testTarget)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
+                        testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
                     }
 
@@ -800,6 +801,7 @@ returns the roll message*/
                         let prone = Number($(html).find('input[name="prone"]:checked').val());
                         let high = Number($(html).find('input[name="high"]:checked').val());
                         let surprised = Number($(html).find('input[name="surprised"]:checked').val());
+                        let running= Number($(html).find('input[name="running"]:checked').val());
                         let stunned = Number($(html).find('input[name="stunned"]:checked').val());
                         const size = Number($(html).find('select[name="size"]').val());
                         let other = Number($(html).find('input[name="other"]').val());
@@ -828,6 +830,7 @@ returns the roll message*/
                         weapon.data.clip.value=curAmmo-rof;
                         actor.updateEmbeddedEntity("OwnedItem",weapon);
                         //convert unchosen checkboxes into 0s
+                        if(isNaN(running)){running=0}
                         if(isNaN(guarded)){guarded=0}
                         if(isNaN(prone)){prone=0}
                         if(isNaN(high)){high=0}
@@ -836,7 +839,7 @@ returns the roll message*/
                         if(isNaN(concealed)){concealed=0}
                         if(isNaN(other)){other=0}
 
-                        testTarget=parseInt(testTarget)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus);
+                        testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus);
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType);
                     }
 
@@ -877,19 +880,21 @@ returns the roll message*/
                         let high = Number($(html).find('input[name="high"]:checked').val());
                         let surprised = Number($(html).find('input[name="surprised"]:checked').val());
                         let stunned = Number($(html).find('input[name="stunned"]:checked').val());
+                         let running= Number($(html).find('input[name="running"]:checked').val());
                         let melee = Number($(html).find('input[name="melee"]:checked').val());
                         const size = Number($(html).find('select[name="size"]').val());
                         let other = Number($(html).find('input[name="other"]').val());
                         let concealed= Number($(html).find('input[name="concealed"]:checked').val());
 
                         if(isNaN(melee)){melee=0}
+                        if(isNaN(running)){running=0}
                         if(isNaN(concealed)){concealed=0}
                         if(isNaN(prone)){prone=0}
                         if(isNaN(high)){high=0}
                         if(isNaN(surprised)){surprised=0}
                         if(isNaN(stunned)){stunned=0}
                         if(isNaN(other)){other=0}
-                        testTarget=parseInt(testTarget)+parseInt(melee)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
+                        testTarget=parseInt(testTarget)+parseInt(running)+parseInt(melee)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
                     }
 

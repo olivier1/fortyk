@@ -544,7 +544,7 @@
                     "type": "Number"
                 },
                 "quality": {
-                    "value": "common",
+                    "value": "Common",
                     "type": "String"
                 }
             },

@@ -56,6 +56,7 @@ export class FortyKActor extends Actor {
 
     /**
    * Prepare Character type specific data
+   * this only has light computation other more complex data that process items see prepare()
    */
     _prepareCharacterData(actorData) {
         const data = actorData.data;
@@ -89,412 +90,369 @@ export class FortyKActor extends Actor {
         //prepare psyker stuff
         data.psykana.pr.effective=parseInt(data.psykana.pr.value)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
         data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(FORTYK.psykerTypes[data.psykana.psykerType.value].push);
+
+        //movement
+        data.secChar.movement.half=data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod;
+        data.secChar.movement.full=data.secChar.movement.half*2;
+        data.secChar.movement.charge=data.secChar.movement.half*3;
+        data.secChar.movement.run=data.secChar.movement.half*6;
+
+        //add up all armor and stuff
+        var armor= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.armor._id);
+        var rightHandWeapon= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[0]);
+        var leftHandWeapon= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[1]);
+        //handle shields
+        data.characterHitLocations.body.shield= 0;
+        data.characterHitLocations.rArm.shield= 0;
+        data.characterHitLocations.lArm.shield= 0;
+        if(rightHandWeapon!==null&&rightHandWeapon.type!=="rangedWeapon"){
+
+            data.characterHitLocations.rArm.shield= parseInt(rightHandWeapon.data.shield.value);
+
+            data.characterHitLocations.body.shield= Math.max(data.characterHitLocations.body.shield,parseInt(rightHandWeapon.data.shield.value));
+        }
+        if(leftHandWeapon!==null&&leftHandWeapon.type!=="rangedWeapon"){
+            data.characterHitLocations.lArm.shield= parseInt(leftHandWeapon.data.shield.value);
+            data.characterHitLocations.body.shield= 0;
+            data.characterHitLocations.body.shield= Math.max(data.characterHitLocations.body.shield,parseInt(leftHandWeapon.data.shield.value));
+        }
+        //compute rest of armor and absorption
+        for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
+
+            hitLoc.armor=0;
+            if(armor!==null){
+                hitLoc.armor=hitLoc.armor+parseInt(armor.data.ap[key].value);
+            }
+            hitLoc.armor=hitLoc.armor+hitLoc.shield;
+            if(hitLoc.cyber){
+                hitLoc.armor=hitLoc.armor+2;
+            }
+
+            hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
+        }
+
+    }
+    //this prepares all items into containers that can be easily accessed by the html sheets, also adds in logic for sorting and all computing logic for items
+    prepareItems(actorData){
+        let data=actorData.data;
+        const skills=[];
+        const wargear=[];
+        const cybernetics=[];
+        const forceFields=[];
+        const mods=[];
+        const consummables=[];
+        const psychicPowers=[];
+        const mutations=[];
+        const malignancies=[];
+        const disorders=[];
+        const talentsntraits=[];
+        const missions=[];
+        const advancements=[];
+        const meleeweapons=[];
+        const rangedWeapons=[];
+        const armors=[];
+        const ammunitions=[];
+        const equippableAmmo=[];
+        const wornGear={weapons:[],"armor":"","forceField":""};
+
         //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
         data.experience.earned=0;
         data.characteristics["inf"].advance=0;
         data.experience.spent=0;
         data.carry.value=0;
         let unrelenting=false;
-        //apply logic to items that depends on actor data so that it updates readily wyhen the actor is updated
-        for(let item of this.data.items){
+        //apply logic to items that depends on actor data so that it updates readily when the actor is updated
 
-            /* if (item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="psychicPower"){
-                let updItem=duplicate(item)
-                if(updItem.flags.specials===undefined){
-                    updItem.flags.specials={};
-                }
-                let upd=false;
-                for (let [key, flag] of Object.entries(FORTYK.itemFlags)){
-                    if(updItem.flags.specials[key]===undefined){
-                        updItem.flags.specials[key]=flag;
-                        upd=true;
-
-
-                    }
-                }
-                if(upd){
-                    console.log(this.updateEmbeddedEntity("OwnedItem",updItem));
-                }
+        //put all items in their respective containers and do some item logic
+        for(let item of actorData.items){
 
 
 
-            }*/
-            //add strength to melee weapon
-            if(item.type==="meleeWeapon"){
-                item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
+            if(item._id===data.secChar.wornGear.armor._id){
+                wornGear["armor"]=item;
             }
+            if(item._id===data.secChar.wornGear.forceField._id){
+                wornGear["forceField"]=item;
+            }
+            if(item.type=="skill"){
 
-            //calculate range based on strength for thrown weapons
-            if(item.type==="rangedWeapon"&&item.data.class.value==="Thrown"){
-                try
-                {
-                    let sb=data.characteristics.s.bonus;
+                item.data.total.value=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
 
-                    let formula=item.data.range.formula.toLowerCase();
+                skills.push(item);
+            }
+            if(item.type==="malignancy"){
+                malignancies.push(item);
+            }
+            if(item.type==="mutation"){
+                mutations.push(item);
+            }
+            if(item.type==="disorder"){
+                disorders.push(item);
+            }
+            if(item.type==="wargear"){
+                wargear.push(item);
+            }
+            if(item.type==="cybernetic"){
+                data.characterHitLocations[item.data.location.value].cyber=true;
+                cybernetics.push(item);
+            }
+            if(item.type==="forceField"){
+                forceFields.push(item);
+                wargear.push(item);
+            }
+            if(item.type==="mod"){
+                mods.push(item);
+            }
+            if(item.type==="consummable"){
+                consummables.push(item);
+                wargear.push(item);
+            }
+            if(item.type==="psychicPower"){
+                try{
+                    let pr=parseInt(item.data.curPR.value);
+                    let range=item.data.range.formula.toLowerCase();
 
-                    item.data.range.value=eval(formula);
-                } 
-                catch{
+                    item.data.range.value=eval(range);
+
+                    item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
+                    item.data.damageFormula.value=item.data.damageFormula.formula.replace(/pr/gmi,pr);
+                }catch{
                     item.data.range.value="";
-            } 
-
+                    item.data.pen.value="";
+                    item.data.damageFormula.value=="";
             }
-                    //logic for weapon special qualities that rely on actor data
-                    if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
-                        try{
-                            if(item.flags.specials.force.value){
-                                let pr=parseInt(data.psykana.pr.value);
-                                item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
-                                item.data.damageFormula.value=item.data.damageFormula.formula.replace(/pr/gmi,pr);
 
-                            }
-                        }catch{
-                            item.data.pen.value="";
-                            item.data.damageFormula.value="";
-                    }
-                    }
-                            if(item.type==="skill"){
-                                item.data.total.value=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
-                            }
-
-                        if(item.type==="talentntrait"){
-
-                            if(item.name==="True Grit"){
-                                actorData.flags["truegrit"]=true;
-                            }else if(item.name==="And They Shall Know No Fear"){
-                                actorData.flags["atsknf"]=true;
-                            }else if(item.name==="Unrelenting"){
-                                actorData.flags["unrelenting"]=true;
-                                unrelenting=true;
-                            }
-
-                        }
-
-                        if(item.type==="cybernetic"){
-                            data.characterHitLocations[item.data.location.value].cyber=true;
-
-                        }
-                        if(item.type==="mission"){
-                            //adds up earned exp and influence
-                            data.experience.earned=parseInt(data.experience.earned)+parseInt(item.data.exp.value);
-                            data.characteristics["inf"].advance= parseInt(data.characteristics["inf"].advance)+parseInt(item.data.inf.value);
-                        }
-                        if(item.type==="advancement"){
-                            //calculates spent exp
-                            data.experience.spent=parseInt(data.experience.spent)+parseInt(item.data.cost.value);
-                        }
-                        if(item.type==="psychicPower"){
-                            try{
-                                let pr=parseInt(item.data.curPR.value);
-                                let range=item.data.range.formula.toLowerCase();
-
-                                item.data.range.value=eval(range);
-
-                                item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
-                                item.data.damageFormula.value=item.data.damageFormula.formula.replace(/pr/gmi,pr);
-                            }catch{
-                                item.data.range.value="";
-                                item.data.pen.value="";
-                                item.data.damageFormula.value=="";
-                        }
-
-                                let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(item.data.curPR.value));
+                    let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(item.data.curPR.value));
 
 
-                            let char=0;
-                            if(item.data.testChar.value==="psy"){
-                                char=getItem(this,"Psyniscience").data.total.value;
-                                data.testChar.type="per";
-                            }else{
-                                char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
-                                item.data.testChar.type=item.data.testChar.value;
-                            }
-
-                            item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
-
-                        }
-                        if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="wargear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
-                            //total weight calcs
-                            item.data.weight.total=parseInt(item.data.amount.value)*parseInt(item.data.weight.value);
-
-                            data.carry.value=parseInt(data.carry.value)+parseInt(item.data.weight.total);
-
-
-
-                        }
-
-                    }
-                //check if actor has the unrelenting trait
-                if(!unrelenting){actorData.flags["unrelenting"]=false};
-
-                //compile total exp and influence
-                data.characteristics["inf"].total=data.characteristics["inf"].value+data.characteristics["inf"].advance;
-                data.experience.value=parseInt(data.experience.starting)+parseInt(data.experience.earned)-parseInt(data.experience.spent);
-                //get max carry weight ensure it is not out of bounds
-                if((data.characteristics["s"].bonus+data.characteristics["t"].bonus)>19){
-                    data.carry.max=FORTYK.carry[19].carry;
+                let char=0;
+                if(item.data.testChar.value==="psy"){
+                    char=getItem(this,"Psyniscience").data.total.value;
+                    data.testChar.type="per";
                 }else{
-                    data.carry.max=FORTYK.carry[(data.characteristics["s"].bonus+data.characteristics["t"].bonus)].carry;
+                    char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
+                    item.data.testChar.type=item.data.testChar.value;
                 }
 
-                //movement
-                data.secChar.movement.half=data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod;
-                data.secChar.movement.full=data.secChar.movement.half*2;
-                data.secChar.movement.charge=data.secChar.movement.half*3;
-                data.secChar.movement.run=data.secChar.movement.half*6;
+                item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
 
-                //add up all armor and stuff
-                var armor= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.armor._id);
-                var rightHandWeapon= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[0]);
-                var leftHandWeapon= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[1]);
-                //handle shields
-                data.characterHitLocations.body.shield= 0;
-                data.characterHitLocations.rArm.shield= 0;
-                data.characterHitLocations.lArm.shield= 0;
-                if(rightHandWeapon!==null&&rightHandWeapon.type!=="rangedWeapon"){
-
-                    data.characterHitLocations.rArm.shield= parseInt(rightHandWeapon.data.shield.value);
-
-                    data.characterHitLocations.body.shield= Math.max(data.characterHitLocations.body.shield,parseInt(rightHandWeapon.data.shield.value));
-                }
-                if(leftHandWeapon!==null&&leftHandWeapon.type!=="rangedWeapon"){
-                    data.characterHitLocations.lArm.shield= parseInt(leftHandWeapon.data.shield.value);
-                    data.characterHitLocations.body.shield= 0;
-                    data.characterHitLocations.body.shield= Math.max(data.characterHitLocations.body.shield,parseInt(leftHandWeapon.data.shield.value));
-                }
-                //compute rest of armor and absorption
-                for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
-
-                    hitLoc.armor=0;
-                    if(armor!==null){
-                        hitLoc.armor=hitLoc.armor+parseInt(armor.data.ap[key].value);
-                    }
-                    hitLoc.armor=hitLoc.armor+hitLoc.shield;
-                    if(hitLoc.cyber){
-                        hitLoc.armor=hitLoc.armor+2;
-                    }
-
-                    hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
-                }
-
+                psychicPowers.push(item);
             }
-            //this prepares all items into containers that can be easily accessed by the html sheets, also adds in logic for sorting and the like
-            prepareItems(){
-                let actorData=duplicate(this.data)
-                let data=actorData.data;
-                const skills=[];
-                const wargear=[];
-                const cybernetics=[];
-                const forceFields=[];
-                const mods=[];
-                const consummables=[];
-                const psychicPowers=[];
-                const mutations=[];
-                const malignancies=[];
-                const disorders=[];
-                const talentsntraits=[];
-                const missions=[];
-                const advancements=[];
-                const meleeweapons=[];
-                const rangedWeapons=[];
-                const armors=[];
-                const ammunitions=[];
-                const equippableAmmo=[];
-                const wornGear={weapons:[],"armor":"","forceField":""};
-
-
-                if(!Array.isArray(data.secChar.wornGear.weapons)){
-                    data.secChar.wornGear.weapons=Object.values(data.secChar.wornGear.weapons);
+            if(item.type==="talentntrait"){
+                if(item.name==="True Grit"){
+                    actorData.flags["truegrit"]=true;
+                }else if(item.name==="And They Shall Know No Fear"){
+                    actorData.flags["atsknf"]=true;
+                }else if(item.name==="Unrelenting"){
+                    actorData.flags["unrelenting"]=true;
+                    unrelenting=true;
                 }
-                for( let w of data.secChar.wornGear.weapons){
-                    wornGear.weapons.push(this.getEmbeddedEntity("OwnedItem",w));
+                talentsntraits.push(item);
+            }
+            if(item.type==="mission"){
+                //adds up earned exp and influence
+                data.experience.earned=parseInt(data.experience.earned)+parseInt(item.data.exp.value);
+                data.characteristics["inf"].advance= parseInt(data.characteristics["inf"].advance)+parseInt(item.data.inf.value);
+                missions.push(item);
+            }
+            if(item.type==="advancement"){
+                //calculates spent exp
+                data.experience.spent=parseInt(data.experience.spent)+parseInt(item.data.cost.value);
+                advancements.push(item);
+            }
+             if(item.type==="meleeWeapon"){
+                   
+                   item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
+                    
+                    meleeweapons.push(item);
+                    wargear.push(item);
                 }
 
-                if (wornGear.weapons.length<2){wornGear.weapons.push("")};  
-
-                //put all items in their respective containers and do some item logic
-                for(let item of actorData.items){
-
-
-
-                    if(item._id===data.secChar.wornGear.armor._id){
-                        wornGear["armor"]=item;
+            if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
+                
+                 
+                try{
+                    if(item.flags.specials.force.value){
+                        
+                        let pr=parseInt(data.psykana.pr.value);
+                        item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
+                        
+                        item.data.damageFormula.value=item.data.damageFormula.value.replace(/pr/gmi,pr);
+                        
                     }
-                    if(item._id===data.secChar.wornGear.forceField._id){
-                        wornGear["forceField"]=item;
-                    }
-                    if(item.type=="skill"){
-
-
-
-                        skills.push(item);
-                    }
-                    if(item.type==="malignancy"){
-                        malignancies.push(item);
-                    }
-                    if(item.type==="mutation"){
-                        mutations.push(item);
-                    }
-                    if(item.type==="disorder"){
-                        disorders.push(item);
-                    }
-                    if(item.type==="wargear"){
-                        wargear.push(item);
-                    }
-                    if(item.type==="cybernetic"){
-                        cybernetics.push(item);
-                    }
-                    if(item.type==="forceField"){
-                        forceFields.push(item);
-                        wargear.push(item);
-                    }
-                    if(item.type==="mod"){
-                        mods.push(item);
-                    }
-                    if(item.type==="consummable"){
-                        consummables.push(item);
-                        wargear.push(item);
-                    }
-                    if(item.type==="psychicPower"){
-
-                        psychicPowers.push(item);
-                    }
-                    if(item.type==="talentntrait"){
-                        talentsntraits.push(item);
-                    }
-                    if(item.type==="mission"){
-                        missions.push(item);
-                    }
-                    if(item.type==="advancement"){
-                        advancements.push(item);
-                    }
-                    if(item.type==="meleeWeapon"){
-
-                        meleeweapons.push(item);
-                        wargear.push(item);
-                    }
-                    if(item.type==="rangedWeapon"){
-                        rangedWeapons.push(item);
-                        wargear.push(item);
-                    }
+                }catch{
+                    item.data.pen.value="";
+                    item.data.damageFormula.value="";
+            }
+            }
                     if(item.type==="armor"){
                         armors.push(item);
                         wargear.push(item);
                     }
-                    if(item.type==="ammunition"){
-                        ammunitions.push(item);
-                        wargear.push(item);
-                        if(item.data.amount.value>=0){
-                            equippableAmmo.push(item);
-                        }
+                if(item.type==="ammunition"){
+                    ammunitions.push(item);
+                    wargear.push(item);
+                    if(item.data.amount.value>=0){
+                        equippableAmmo.push(item);
                     }
                 }
+                if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="wargear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
+                    //total weight calcs
+                    item.data.weight.total=parseInt(item.data.amount.value)*parseInt(item.data.weight.value);
 
-                let sortedSkills=skills.sort(function compare(a, b) {
-                    if (a.name<b.name) {
-                        return -1;
-                    }
-                    if (a.name>b.name) {
-                        return 1;
-                    }
-                    // a must be equal to b
-                    return 0;
-                });
+                    data.carry.value=parseInt(data.carry.value)+parseInt(item.data.weight.total);
 
-                let preparedItems={skills:sortedSkills,
-                                   wargear:wargear,
-                                   cybernetics:cybernetics,
-                                   forceFields:forceFields,
-                                   mods:mods,
-                                   consummables:consummables,
-                                   psychicPowers:psychicPowers,
-                                   mutations:mutations,
-                                   malignancies:malignancies,
-                                   disorders:disorders,
-                                   talentsntraits:talentsntraits,
-                                   missions:missions,
-                                   advancements:advancements,
-                                   meleeWeapons:meleeweapons,
-                                   rangedWeapons:rangedWeapons,
-                                   armors:armors,
-                                   ammunitions:ammunitions,
-                                   equippableAmmo:equippableAmmo,
-                                   wornGear:wornGear};
-                return preparedItems;
+
+
+                }
+               
+                if(item.type==="rangedWeapon"){
+                    try
+                    {
+                        let sb=data.characteristics.s.bonus;
+
+                        let formula=item.data.range.formula.toLowerCase();
+
+                        item.data.range.value=eval(formula);
+                    } 
+                    catch{
+                        item.data.range.value="";
+                } 
+                        rangedWeapons.push(item);
+                    wargear.push(item);
+
+                }
             }
-            prepare(){
-                let preparedData = duplicate(this.data)
+            //check if actor has the unrelenting trait
+            if(!unrelenting){actorData.flags["unrelenting"]=false};
 
-                // Call prepareItems first to organize and process OwnedItems
-                mergeObject(preparedData, this.prepareItems());
+            //compile total exp and influence
+            data.characteristics["inf"].total=data.characteristics["inf"].value+data.characteristics["inf"].advance;
+            data.experience.value=parseInt(data.experience.starting)+parseInt(data.experience.earned)-parseInt(data.experience.spent);
+            //get max carry weight ensure it is not out of bounds
 
-                return preparedData;
-            }
-            _prepareNPCData(actorData){
-                const data=actorData.data;
-                //calc char bonuses
-                for (let [key, char] of Object.entries(data.characteristics)){
-                    if(key==="inf"){
+            if((data.characteristics["s"].bonus+data.characteristics["t"].bonus)>19){
+                data.carry.max=FORTYK.carry[19].carry;
 
-                    }else{
-
-                        char.bonus=Math.floor(char.total/10)+parseInt(char.uB); 
-
-                    }
-
-                }
-
-                if(data.talentsntraits.value.toLowerCase().includes("true grit")){
-                    actorData.flags["truegrit"]=true;
-
-                }
-                data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
-                //modify total characteristics depending on fatigue
-                var fatigueMult=1;
-
-
-                for (let [key,char] of Object.entries(data.characteristics)){
-                    if(char.bonus*fatigueMult<data.secChar.fatigue.value){
-                        char.total=Math.ceil(char.total/2);
-                    }
-                }
-                //size
-                let size=data.secChar.size.value;
-
-                data.secChar.size.label=FORTYK.size[size].name;
-                data.secChar.size.mod=FORTYK.size[size].mod;
-                data.secChar.size.movement=FORTYK.size[size].movement;
-                data.secChar.size.stealth=FORTYK.size[size].stealth
-                //movement
-                data.secChar.movement.half=data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod;
-                data.secChar.movement.full=data.secChar.movement.half*2;
-                data.secChar.movement.charge=data.secChar.movement.half*3;
-                data.secChar.movement.run=data.secChar.movement.half*6;
-                //total soak
-                for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
-
-
-                    hitLoc.value=parseInt(hitLoc.armor)+parseInt(data.characteristics.t.bonus);
-                }
+            }else{
+                data.carry.max=FORTYK.carry[(data.characteristics["s"].bonus+data.characteristics["t"].bonus)].carry;
 
             }
 
-            //this function deletes items from an actor, certain items need more logic to process
-            deleteItem(itemId){
 
-                let item=this.getEmbeddedEntity("OwnedItem",itemId);
-                //iterate through skills to delete all the children of a group skill
-                if(item.type==="skill"&&item.data.hasChildren){
-                    let skills=this.items.filter(function(item){return item.type==="skill"});
-                    for(let s of skills){                
-                        if(s.data.data.parent.value===item.name){
-                            this.deleteEmbeddedEntity("OwnedItem",s._id);
-                        }
-                    }
+            if(!Array.isArray(data.secChar.wornGear.weapons)){
+                data.secChar.wornGear.weapons=Object.values(data.secChar.wornGear.weapons);
+            }
+            for( let w of data.secChar.wornGear.weapons){
+                wornGear.weapons.push(this.getEmbeddedEntity("OwnedItem",w));
+            }
+
+            if (wornGear.weapons.length<2){wornGear.weapons.push("")};
+            let sortedSkills=skills.sort(function compare(a, b) {
+                if (a.name<b.name) {
+                    return -1;
                 }
-                this.deleteEmbeddedEntity("OwnedItem", itemId);
+                if (a.name>b.name) {
+                    return 1;
+                }
+                // a must be equal to b
+                return 0;
+            });
 
+            let preparedItems={skills:sortedSkills,
+                               wargear:wargear,
+                               cybernetics:cybernetics,
+                               forceFields:forceFields,
+                               mods:mods,
+                               consummables:consummables,
+                               psychicPowers:psychicPowers,
+                               mutations:mutations,
+                               malignancies:malignancies,
+                               disorders:disorders,
+                               talentsntraits:talentsntraits,
+                               missions:missions,
+                               advancements:advancements,
+                               meleeWeapons:meleeweapons,
+                               rangedWeapons:rangedWeapons,
+                               armors:armors,
+                               ammunitions:ammunitions,
+                               equippableAmmo:equippableAmmo,
+                               wornGear:wornGear};
+            return preparedItems;
+        }
+        prepare(){
+            let preparedData = this.data
+
+            // Call prepareItems first to organize and process OwnedItems
+            mergeObject(preparedData, this.prepareItems(preparedData));
+
+            return preparedData;
+        }
+        _prepareNPCData(actorData){
+            const data=actorData.data;
+            //calc char bonuses
+            for (let [key, char] of Object.entries(data.characteristics)){
+                if(key==="inf"){
+
+                }else{
+
+                    char.bonus=Math.floor(char.total/10)+parseInt(char.uB); 
+
+                }
+
+            }
+
+            if(data.talentsntraits.value.toLowerCase().includes("true grit")){
+                actorData.flags["truegrit"]=true;
+
+            }
+            data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
+            //modify total characteristics depending on fatigue
+            var fatigueMult=1;
+
+
+            for (let [key,char] of Object.entries(data.characteristics)){
+                if(char.bonus*fatigueMult<data.secChar.fatigue.value){
+                    char.total=Math.ceil(char.total/2);
+                }
+            }
+            //size
+            let size=data.secChar.size.value;
+
+            data.secChar.size.label=FORTYK.size[size].name;
+            data.secChar.size.mod=FORTYK.size[size].mod;
+            data.secChar.size.movement=FORTYK.size[size].movement;
+            data.secChar.size.stealth=FORTYK.size[size].stealth
+            //movement
+            data.secChar.movement.half=data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod;
+            data.secChar.movement.full=data.secChar.movement.half*2;
+            data.secChar.movement.charge=data.secChar.movement.half*3;
+            data.secChar.movement.run=data.secChar.movement.half*6;
+            //total soak
+            for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
+
+
+                hitLoc.value=parseInt(hitLoc.armor)+parseInt(data.characteristics.t.bonus);
             }
 
         }
+
+        //this function deletes items from an actor, certain items need more logic to process
+        deleteItem(itemId){
+
+            let item=this.getEmbeddedEntity("OwnedItem",itemId);
+            //iterate through skills to delete all the children of a group skill
+            if(item.type==="skill"&&item.data.hasChildren){
+                let skills=this.items.filter(function(item){return item.type==="skill"});
+                for(let s of skills){                
+                    if(s.data.data.parent.value===item.name){
+                        this.deleteEmbeddedEntity("OwnedItem",s._id);
+                    }
+                }
+            }
+            this.deleteEmbeddedEntity("OwnedItem", itemId);
+
+        }
+
+    }
 

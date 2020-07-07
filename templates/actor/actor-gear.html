@@ -47,7 +47,7 @@
 
 
             <a class="item-descr list-item" data-name="{{w.name}}" data-item-descr="{{w.data.description.value}}">{{w.name}}</a>
-            <input type="text" class="wargear-amount list-item" value="{{w.data.amount.value}}" data-item-id="{{w._id}}" data-dtype="Number">
+            <input type="text" class="item-text-input list-item" data-target="data.amount.value" value="{{w.data.amount.value}}" data-item-id="{{w._id}}" data-dtype="Number">
             <span class="list-item">{{w.data.weight.total}}kg</span>
 
             <a class="list-button item-edit" title="Edit" data-item-id="{{w._id}}"></a>

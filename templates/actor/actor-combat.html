@@ -81,10 +81,13 @@
     </div>
     <div class="combat-weaponsarmor grid grid-2col">
         <div class="flexcol flex-group-center">
-            <span class="section-title">WEAPONS</span>
-
+            <span class="section-title" title="This represents your wielded weapons, you can add additional wielded weapons if you have sub weapons or mechadentrites etc.">WEAPONS</span>
             <div class="flexrow">
-                <div class="flexcol">
+                <a class="worn-item-plus" title="Add extra weapon"></a>
+                <a class="worn-item-minus" title="Delete extra weapon"></a>
+                </div>
+            <div class="flexrow">
+                <div class="flexcol weapon-select">
                     <span>Left Hand</span>
                     <select class="hand-weapon" data-hand="left" name="data.secChar.wornGear.weapons.0" id="left">
 
@@ -100,7 +103,7 @@
                         {{/select}}
                     </select>
                 </div>
-                <div class="flexcol">
+                <div class="flexcol weapon-select">
                     <span>Right Hand</span>
                     <select class="hand-weapon" data-hand="right" name="data.secChar.wornGear.weapons.1" id="right">
                         {{#select data.secChar.wornGear.weapons.[1]}}
@@ -115,6 +118,26 @@
                         {{/select}}
                     </select>
                 </div>
+                {{#each data.secChar.wornGear.weapons}}
+                {{#if (greaterThan @index 1)}}
+                <div class="flexcol weapon-select">
+                    <label>Extra Weapon</label>
+                    <select class="extra-weapon" name="data.secChar.wornGear.weapons.{{@index}}" id="right">
+                        {{#select this}}
+                        <option value="">None</option>
+                        {{#each ../actor.meleeWeapons}}
+                        <option value="{{this._id}}">{{this.name}}</option>
+                        {{/each}}
+                        {{#each ../actor.rangedWeapons}}
+                        <option value="{{this._id}}">{{this.name}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
+                </div>
+                {{/if}}
+
+                {{/each}}
+
 
             </div>
 
@@ -123,13 +146,11 @@
             {{#if (contains this.type "ranged")}}
 
             <div class="weapons grid grid-2col">
-                <div class="list-item">
+                <div class="weapon-name">
                     <span>Name: {{this.name}}</span>
                 </div>
 
-                <div class="list-item">
-                    <span>Range: {{this.data.range.value}}m</span>
-                </div>
+                
                 <div class="list-item">
                     <span>Attack: </span> 
                     {{#if (greaterThan this.data.clip.value 0)}}
@@ -143,20 +164,15 @@
                     <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
 
                 </div>
-                <div class="list-item">
-                    <span>Penetration: {{this.data.pen.value}}</span>
-
-                </div>
+                
                 {{#if this.flags.specials.maximal.value}}
                 <div class="list-item">
                     <span>Maximal: <input type="checkbox" class="maximal" data-item-id="{{this._id}}"  {{checked this.flags.specials.maximal.maximal}}></span>
-                    
+
 
                 </div>
                 {{/if}}
-                <div class="list-item">
-                    <label>Rate of Fire: {{this.data.rof.[0].value}}/{{this.data.rof.[1].value}}/{{this.data.rof.[2].value}}</label>
-                </div>
+                
                 {{#unless (contains this.data.class.value "thrown")}}
                 <div class="list-item">
 
@@ -187,13 +203,22 @@
                 <div class="list-item flexrow">
                     <span>Clip: </span>
 
-                    <input class="clip-current" type="text" value="{{this.data.clip.value}}" data-item-id="{{this._id}}" data-dtype="Number">
+                    <input class="item-text-input" type="text" data-target="data.clip.value"  value="{{this.data.clip.value}}" data-item-id="{{this._id}}" data-dtype="Number">
                     <span> / </span>
                     <span>{{this.data.clip.max}}</span>
 
 
                 </div>
+                <div class="list-item">
+                    <span>Range: {{this.data.range.value}}m</span>
+                </div>
+                <div class="list-item">
+                    <span>Penetration: {{this.data.pen.value}}</span>
 
+                </div>
+                <div class="list-item">
+                    <label>Rate of Fire: {{this.data.rof.[0].value}}/{{this.data.rof.[1].value}}/{{this.data.rof.[2].value}}</label>
+                </div>
                 <div class="list-item">
                     <span>Reload: {{this.data.reload.value}}</span>
 
@@ -226,13 +251,11 @@
             {{else if (contains this.type "melee")}}
             <div class="weapons grid grid-2col">
 
-                <div class="list-item">
+                <div class="weapon-name">
                     <span>Name: {{this.name}}</span>
                 </div>
 
-                <div class="list-item">
-                    <span>Reach: {{this.data.range.value}}m</span>
-                </div>
+                
                 <div class="list-item">
                     <span>Attack: </span> 
                     <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../data.characteristics.ws.total}}" data-item-id="{{this._id}}" data-label="Melee Attack" data-char="ws">Roll</span>
@@ -240,6 +263,9 @@
                 <div class="list-item">
                     <span>Damage: </span>
                     <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
+                </div>
+                <div class="list-item">
+                    <span>Reach: {{this.data.range.value}}m</span>
                 </div>
                 <div class="list-item">
                     <span>Penetration: {{this.data.pen.value}}</span>

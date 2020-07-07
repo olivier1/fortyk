@@ -70,6 +70,10 @@ export class FortyKItemSheet extends ItemSheet {
         html.find('.skill-type').change(this._onParentChange.bind(this));
         html.find('.skill-children').click(this._onChildrenClick.bind(this));
         html.find('.weapon-special').click(this._onSpecialClick.bind(this));
+        // Autoselect entire text 
+        $("input[type=text]").focusin(function() {
+            $(this).select();
+        });
 
 
     }
@@ -80,7 +84,7 @@ export class FortyKItemSheet extends ItemSheet {
         let templateOptions={"specials":specials};
 
         let renderedTemplate=renderTemplate('systems/fortyk/templates/item/dialogs/weapon-special-dialog.html', templateOptions);
-        
+
 
         renderedTemplate.then(content => { 
             new Dialog({
@@ -94,24 +98,24 @@ export class FortyKItemSheet extends ItemSheet {
                                 let change=false;
                                 let value=html.find(`input[id=${key}]`).is(":checked");
                                 if(value!==spec.value){change=true}
-                                
-                                
-                                
+
+
+
 
                                 let pack={};
                                 pack[`flags.specials.${key}.value`]=value;
-                                
+
                                 if(spec.num!==undefined){
                                     pack[`flags.specials.${key}.num`]=parseInt(html.find(`input[id=${key}num]`).val());
                                     if(parseInt(html.find(`input[id=${key}num]`).val())!==parseInt(spec.num)){change=true};
 
                                 }
-                                
+
                                 if(change){
-                                    
-                                 this.item.update(pack);
+
+                                    this.item.update(pack);
                                 }
-                                
+
                             }
 
 

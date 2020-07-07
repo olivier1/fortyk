@@ -1,5 +1,7 @@
 import {FortykRolls} from "../FortykRolls.js";
 import {FORTYK} from "../FortykConfig.js";
+import {objectByString} from "../utilities.js";
+import {setNestedKey} from "../utilities.js";
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
@@ -55,26 +57,23 @@ export class FortyKActorSheet extends ActorSheet {
         html.find('.skill-char').change(this._onSkillCharEdit.bind(this));
         //change skill advancement
         html.find('.skill-adv').change(this._onSkillAdvEdit.bind(this));
-        //change modifier
+        //change item property via text input
 
-        html.find('.skill-mod').keydown(this._onSkillModEdit.bind(this));
-        html.find('.skill-mod').focusout(this._onSkillModEdit.bind(this));
+        html.find('.item-text-input').keydown(this._onItemTextInputEdit.bind(this));
+        html.find('.item-text-input').focusout(this._itemTextInputEdit.bind(this));
         //change cybernetic location
         html.find('.cyber-location-select').change(this._onCyberLocationEdit.bind(this));
         //create different types of wargear
         html.find('.wargear-create').click(this._onWargearCreate.bind(this));
-        //change the amount of a piece of equipment
-        html.find('.wargear-amount').keydown(this._onWargearAmountEdit.bind(this));
-        html.find('.wargear-amount').focusout(this._onWargearAmountEdit.bind(this));
-        //change active pr for psy power
-        html.find('.psy-pr').keydown(this._onPRedit.bind(this));
-        html.find('.psy-pr').focusout(this._onPRedit.bind(this));
+       
+       
         //handles combat tab resources
         html.find('.combat-resources').keydown(this._onCombatResourceEdit.bind(this));
-        html.find('.combat-resources').focusout(this._onCombatResourceEdit.bind(this));
-        //handles ranged weapon clips
-        html.find('.clip-current').keydown(this._onClipEdit.bind(this));
-        html.find('.clip-current').focusout(this._onClipEdit.bind(this));
+        html.find('.combat-resources').focusout(this._combatResourceEdit.bind(this));
+        //handles adding or removing worn weapon slots
+        html.find('.worn-item-plus').click(this._onAddExtraWeapon.bind(this));
+        html.find('.worn-item-minus').click(this._onRemoveExtraWeapon.bind(this));
+      
         //handles changing ammo type
         html.find('.weapon-ammo').change(this._onAmmoChange.bind(this));
         //handles reloading a ranged weapon
@@ -93,6 +92,10 @@ export class FortyKActorSheet extends ActorSheet {
         html.find('.damage-roll').click(this._onDamageRoll.bind(this));
         //autofcus modifier input
         html.find('.rollable').click(this._onModifierCall.bind(this));
+        // Autoselect entire text 
+        $("input[type=text]").focusin(function() {
+            $(this).select();
+        });
     }
 
     /* -------------------------------------------- */
@@ -139,7 +142,7 @@ export class FortyKActorSheet extends ActorSheet {
 
         const newItem = await this.actor.items.find(i => i.data._id == item._id);
         if (newItem.data.type==="meleeWeapon"||newItem.data.type==="rangedWeapon"||newItem.data.type==="psychicPower"||newItem.data.type==="ammunition"){
-            
+
             let flags= duplicate(FORTYK.itemFlags);
             let newData=duplicate(newItem.data);
             newData.flags.specials=flags;
@@ -178,7 +181,7 @@ export class FortyKActorSheet extends ActorSheet {
 
                             const newItem =  await this.actor.items.find(i => i.data._id == item._id);
                             if (newItem.data.type==="meleeWeapon"||newItem.data.type==="rangedWeapon"||newItem.data.type==="psychicPower"||newItem.data.type==="ammunition"){
-                              
+
                                 let flags= duplicate(FORTYK.itemFlags);
                                 let newData=duplicate(newItem.data);
                                 newData.flags.specials=flags;
@@ -200,17 +203,23 @@ export class FortyKActorSheet extends ActorSheet {
 
     }
     //handles when a wargear amount is changed
-    _onWargearAmountEdit(event){
+    async _onWargearAmountEdit(event){
 
         clearTimeout(event.currentTarget.timeout);
-        event.currentTarget.timeout=setTimeout(async function(event, actor){
-
-
-            let newAmt=event.target.value;
-            let dataItemId=event.target.attributes["data-item-id"].value;
-            let item= duplicate(actor.actor.getEmbeddedEntity("OwnedItem", dataItemId));
+        event.currentTarget.timeout=setTimeout(this._wargearAmountEdit,500, event, this.actor);
+    }
+    async _wargearAmountEdit(event,actor=null){
+       
+        if(actor===null){actor=this.actor}
+        clearTimeout(event.currentTarget.timeout);
+        let newAmt=event.target.value;
+        let dataItemId=event.target.attributes["data-item-id"].value;
+        let item= duplicate(actor.getEmbeddedEntity("OwnedItem", dataItemId));
+        if(item.data.amount.value!=newAmt){
             item.data.amount.value=newAmt;
-            await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this);
+            actor.updateEmbeddedEntity("OwnedItem",item);
+        }
+
     }
     /**
     *Handle select change for cybernetic location selector
@@ -230,25 +239,7 @@ export class FortyKActorSheet extends ActorSheet {
 
 
     }
-    //handles when a psychic power changes its pr value
-    async _onPRedit(event){
-        clearTimeout(event.currentTarget.timeout);
-
-        const newPR=event.currentTarget.value;
-
-
-        event.currentTarget.timeout=setTimeout(async function(event, actor){
-            const newPR=event.currentTarget.value;
-
-
-            let dataItemId=event.target.attributes["data-item-id"].value;
-            let item= duplicate(actor.actor.getEmbeddedEntity("OwnedItem", dataItemId));
-
-            item.data.curPR.value=newPR;
-
-            await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this); 
-    }
-
+   
 
     //Edits the item that was clicked
     _onItemEdit(event){
@@ -311,52 +302,79 @@ export class FortyKActorSheet extends ActorSheet {
 
     }
 
-    /**
-    *Handle input edits for skill modifier input
-    * @param {Event} event   The originating click event
-    * @private
-    */
-    async _onSkillModEdit(event){
-
+   
+   //handles editing text inputs that are linked to owned items 
+    async _onItemTextInputEdit(event){
         clearTimeout(event.currentTarget.timeout);
-        event.currentTarget.timeout=setTimeout(async function(event, actor){
-
-
-            let newMod=event.target.value;
-            let dataItemId=event.target.attributes["data-item-id"].value;
-            let item= duplicate(actor.actor.getEmbeddedEntity("OwnedItem", dataItemId));
-            item.data.mod.value=newMod;
-            await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this);
-
-
+        
+        event.currentTarget.timeout=setTimeout(this._itemTextInputEdit,500, event, this.actor);
+    }
+    async _itemTextInputEdit(event,actor=null){
+       
+        clearTimeout(event.currentTarget.timeout);
+        if(actor===null){actor=this.actor}
+        
+        let newAmt=event.target.value;
+        let dataItemId=event.target.attributes["data-item-id"].value;
+        let target=event.target.attributes["data-target"].value;
+        let item= duplicate(actor.getEmbeddedEntity("OwnedItem", dataItemId));
+        let oldValue=objectByString(item,target);
+        if(oldValue!=newAmt){
+          
+            let path=target.split(".");
+            
+            setNestedKey(item,path,newAmt);
+           
+            actor.updateEmbeddedEntity("OwnedItem",item);
+        }
 
     }
     //handles the duplicate inputs for wounds fatigue fate points etc on the combat tab
     async _onCombatResourceEdit(event){
         clearTimeout(event.currentTarget.timeout);
-        var actor=this.actor;
-        event.currentTarget.timeout=setTimeout(async function(event, actor){
-
-
-            let newValue=event.target.value;
-            let target=event.target.attributes["data-target"].value;
-
-            let options={};
-            options[target]=newValue;
-            actor.actor.update(options);},200, event, this);
+        
+        event.currentTarget.timeout=setTimeout(this._combatResourceEdit,500, event, this.actor);
+            
+            
     }
-    //handles when a ranged weapons clip is editted
-    _onClipEdit(event){
+    async _combatResourceEdit(event,actor=null){
         clearTimeout(event.currentTarget.timeout);
-        event.currentTarget.timeout=setTimeout(async function(event, actor){
+        
+        if(actor===null){actor=this.actor}
+        clearTimeout(event.currentTarget.timeout);
+        let target=event.target.attributes["data-target"].value;
+        let newAmt=event.target.value;
+       
+        let oldValue=objectByString(actor.data,target);
+        if(oldValue!=newAmt){
+            let options={};
+            options[target]=newAmt;
+           actor.update(options);
+        }
 
-
-            let newClip=event.target.value;
-            let dataItemId=event.target.attributes["data-item-id"].value;
-            let item= duplicate(actor.actor.getEmbeddedEntity("OwnedItem", dataItemId));
-            item.data.clip.value=newClip;
-            await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this);
     }
+    //handles adding extra worn weapon slots
+    _onAddExtraWeapon(event){
+        let actor=this.actor;
+        let data=duplicate(actor.data.data);
+        
+        let weapons=Object.values(data.secChar.wornGear.weapons);
+        weapons.push("");
+        actor.update({"data.secChar.wornGear.weapons":weapons});
+    }
+    //handles removing extra weapon slots
+    _onRemoveExtraWeapon(event){
+        let actor=this.actor;
+        let data=duplicate(actor.data.data);
+        let weapons=Object.values(data.secChar.wornGear.weapons);
+        if(weapons.length>2){
+
+            weapons.pop();
+            actor.update({"data.secChar.wornGear.weapons":weapons});
+        }
+
+    }
+   
     //handles when swapping ammo type in a ranged weapon
     _onAmmoChange(event){
 
@@ -368,7 +386,7 @@ export class FortyKActorSheet extends ActorSheet {
         const ammo=this.actor.getEmbeddedEntity("OwnedItem",ammoID);
         weapon.data.ammo._id=ammoID;
 
-        
+
         if(previousAmmo!==null&&previousAmmo.data!==undefined){
             previousAmmo.data.currentClip.value=weapon.data.clip.value;
             this.actor.updateEmbeddedEntity("OwnedItem",previousAmmo);
@@ -388,14 +406,14 @@ export class FortyKActorSheet extends ActorSheet {
     async _onWeaponReload(event){
         event.preventDefault;
         const dataset=event.currentTarget.dataset;
-      
+
         const weapon=duplicate(this.actor.getEmbeddedEntity("OwnedItem",dataset["weapon"]));
-        
+
         let ooa=false;
         //different logic for throwing weapons
         if(weapon.data.class.value!=="Thrown"){
             const ammo=duplicate(this.actor.getEmbeddedEntity("OwnedItem",weapon.data.ammo._id));
-           
+
             if(ammo!==null){
                 let ammoAmt=parseInt(ammo.data.amount.value);
 
@@ -446,7 +464,7 @@ export class FortyKActorSheet extends ActorSheet {
     }
     //handles when weapons are swapped and stuff
     _onWeaponChange(event){
-        
+
         const data=this.actor.data.data;
         const weapon=this.actor.getEmbeddedEntity("OwnedItem",event.currentTarget.value);
         const weaponID=event.currentTarget.value;
@@ -516,17 +534,17 @@ export class FortyKActorSheet extends ActorSheet {
             weapon.flags.specials.recharge.value=false;
             if(weapon.flags.specials.blast.value){
                 weapon.flags.specials.blast.num=parseInt(weapon.flags.specials.blast.num)-2;
-                
+
             }
         }else{
             weapon.flags.specials.maximal.maximal=true;
-             weapon.flags.specials.recharge.value=true;
+            weapon.flags.specials.recharge.value=true;
             if(weapon.flags.specials.blast.value){
                 weapon.flags.specials.blast.num=parseInt(weapon.flags.specials.blast.num)+2;
             }
         }
         this.actor.updateEmbeddedEntity("OwnedItem",weapon);
-        
+
     }
     /**
    * Handle clickable rolls.
@@ -545,7 +563,7 @@ export class FortyKActorSheet extends ActorSheet {
 
         var testChar=dataset["char"];
         var item=null;
-        
+
         if(dataset["itemId"]){
 
             item=this.actor.getEmbeddedEntity("OwnedItem",dataset["itemId"]);}

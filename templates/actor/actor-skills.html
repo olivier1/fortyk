@@ -66,7 +66,7 @@
             <option value="30">Veteran</option>
             {{/select}}
         </select>
-        <input data-item-id="{{spec._id}}" class="skillItem skill-mod" type="text" value="{{spec.data.mod.value}}" data-dtype="Number"/>
+        <input data-item-id="{{spec._id}}" class="skillItem item-text-input" type="text" data-target="data.mod.value" value="{{spec.data.mod.value}}" data-dtype="Number"/>
 
         <span data-item-id="{{spec._id}}" class="rollable skillItem button" data-roll-type="skill" data-target="{{spec.data.total.value}}" data-label="{{spec.name}}" data-char="{{spec.data.characteristic.value}}">{{spec.data.total.value}}</span>
         <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{spec._id}}"></a>
@@ -107,7 +107,7 @@
             <option value="30">Veteran</option>
             {{/select}}
         </select>
-        <input data-item-id="{{skill._id}}" class="skillItem skill-mod" type="text" value="{{skill.data.mod.value}}" data-dtype="Number"/>
+        <input data-item-id="{{skill._id}}" class="skillItem item-text-input" data-target="data.mod.value" type="text" value="{{skill.data.mod.value}}" data-dtype="Number"/>
 
         <span class="rollable skillItem button" data-roll-type="skill" data-target="{{skill.data.total.value}}" data-label="{{skill.name}}" data-char="{{skill.data.characteristic.value}}" >{{skill.data.total.value}}</span>
         <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{skill._id}}"></a>

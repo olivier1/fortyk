@@ -115,20 +115,22 @@
     <div class="grid grid-2col">
         {{#each actor.meleeWeapons}}
         <div>
-            <div class="weapons grid grid-4col">
-                <div class="list-item">
+            <div class="weapons grid grid-2col">
+                <div class="weapon-name">
                     <span>Name: {{this.name}}</span>
                 </div>
 
+               
                 <div class="list-item">
-                    <span>Reach: {{this.data.range.value}}m</span>
-                </div>
-                <div class="list-item">
-                    <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../data.characteristics.ws.total}}" data-item-id="{{this._id}}" data-label="Melee Attack" data-char="ws">Attack Roll</span>
+                    <span>Attack: </span>
+                    <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../data.characteristics.ws.total}}" data-item-id="{{this._id}}" data-label="Melee Attack" data-char="ws">Roll</span>
                 </div>
                 <div class="list-item">
                     <span>Damage: </span>
                     <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
+                </div>
+                 <div class="list-item">
+                    <span>Reach: {{this.data.range.value}}m</span>
                 </div>
                 <div class="list-item">
                     <span>Penetration: {{this.data.pen.value}}</span>
@@ -167,29 +169,23 @@
         {{#each actor.rangedWeapons}}
         <div>
 
-            <div class="weapons grid grid-4col">
-                <div class="list-item">
+            <div class="weapons grid grid-2col">
+                <div class="weapon-name">
                     <span>Name: {{this.name}}</span>
                 </div>
 
+               
                 <div class="list-item">
-                    <span>Range: {{this.data.range.value}}m</span>
-                </div>
-                <div class="list-item">
-                    <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../data.characteristics.bs.total}}" data-item-id="{{this._id}}" data-label="Ranged Attack" data-char="bs">Attack Roll</span>
+                    <span>Attack: </span>
+                    <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../data.characteristics.bs.total}}" data-item-id="{{this._id}}" data-label="Ranged Attack" data-char="bs">Roll</span>
                 </div>
                 <div class="list-item">
                     <span>Damage: </span>
                     <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
 
                 </div>
-                <div class="list-item">
-                    <span>Penetration: {{this.data.pen.value}}</span>
-
-                </div>
-                <div class="list-item">
-                    <label>Rate of Fire: {{this.data.rof.[0].value}}/{{this.data.rof.[1].value}}/{{this.data.rof.[2].value}}</label>
-                </div>
+                
+                
                 <div class="list-item flexrow">
                     <span>Clip: </span>
 
@@ -197,6 +193,16 @@
                     <span> / </span>
                     <span>{{this.data.clip.max}}</span>
 
+                </div>
+                 <div class="list-item">
+                    <span>Range: {{this.data.range.value}}m</span>
+                </div>
+                <div class="list-item">
+                    <span>Penetration: {{this.data.pen.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <label>Rate of Fire: {{this.data.rof.[0].value}}/{{this.data.rof.[1].value}}/{{this.data.rof.[2].value}}</label>
                 </div>
                 <div class="list-item">
                     <span>Reload: {{this.data.reload.value}}</span>
@@ -226,10 +232,10 @@
 
                 </div>
                 <div class="list-item flexrow">
-                    <span>
+                    
                         <a class="list-button item-edit" title="Edit" data-item-id="{{this._id}}"></a>
                         <a class="list-button item-delete" title="Delete" data-item-id="{{this._id}}"></a>
-                    </span>
+                    
                 </div>
 
             </div>
@@ -348,16 +354,16 @@
         </div>
         <div class="flexcol npcskillntraits">
 
-            <div>
+            <div class="npc-info">
                 <span class="section-title">Equipment</span>
                 {{editor content=data.equipment.value target="data.equipment.value" button=true owner=owner editable=editable}}
             </div>
-            <div>
+            <div class="npc-info">
 
                 <span class="section-title">Talents & Traits</span>
                 {{editor content=data.talentsntraits.value target="data.talentsntraits.value" button=true owner=owner editable=editable}}
             </div>
-            <div>
+            <div class="npc-info">
                 <span class="section-title">Skills</span>
                 {{editor content=data.skills.value target="data.skills.value" button=true owner=owner editable=editable}}
             </div>

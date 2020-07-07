@@ -51,11 +51,44 @@ export class FortyKNPCSheet extends ActorSheet {
         html.find('.item-edit').click(this._onItemEdit.bind(this));
         //delete item on actor
         html.find('.item-delete').click(this._onItemDelete.bind(this));
+        //get item description
+        html.find('.item-descr').click(this._onItemDescrGet.bind(this));
         //handles ranged weapon clips
         html.find('.clip-current').keydown(this._onClipEdit.bind(this));
         html.find('.clip-current').focusout(this._onClipEdit.bind(this));
+        // Autoselect entire text 
+        $("input[type=text]").focusin(function() {
+            $(this).select();
+        });
 
     } 
+    //Handle the popup when user clicks item name to show item description
+    _onItemDescrGet(event){
+        event.preventDefault();
+        let descr = event.target.attributes["data-item-descr"].value;
+        var options = {
+            width: 300,
+            height: 400
+        };
+        var name=event.currentTarget.dataset["name"];
+
+        let dlg = new Dialog({
+            title: `${name} Description`,
+            content: "<p>"+descr+"</p>",
+            buttons: {
+                submit: {
+
+                    label: "OK",
+                    callback: null
+                }
+            },
+            default: "submit",
+        }, options);
+
+        dlg.render(true);
+
+
+    }
     /**
    * Handle clickable rolls.
    * @param {Event} event   The originating click event
@@ -73,7 +106,7 @@ export class FortyKNPCSheet extends ActorSheet {
 
         var testChar=dataset["char"];
         var item=null;
-       
+
         if(dataset["itemId"]){
 
             item=this.actor.getEmbeddedEntity("OwnedItem",dataset["itemId"]);}
@@ -147,7 +180,7 @@ export class FortyKNPCSheet extends ActorSheet {
             let dataItemId=event.target.attributes["data-item-id"].value;
             let item= duplicate(actor.actor.getEmbeddedEntity("OwnedItem", dataItemId));
             item.data.clip.value=newClip;
-            await actor.actor.updateEmbeddedEntity("OwnedItem",item);},200, event, this);
+            await actor.actor.updateEmbeddedEntity("OwnedItem",item);},500, event, this);
     }
     //Handle creating a new item, will sort the item type before making the new item
 
@@ -164,7 +197,7 @@ export class FortyKNPCSheet extends ActorSheet {
 
         const newItem = await this.actor.items.find(i => i.data._id == item._id);
         if (newItem.data.type==="meleeWeapon"||newItem.data.type==="rangedWeapon"||newItem.data.type==="psychicPower"||newItem.data.type==="ammunition"){
-           
+
             let flags= duplicate(FORTYK.itemFlags);
             let newData=duplicate(newItem.data);
             newData.flags.specials=flags;

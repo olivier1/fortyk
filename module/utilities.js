@@ -48,7 +48,28 @@ export const getSkills= async function(){
     }
     return skillCollection;
 };
+export const objectByString = function(o, s) {
+    s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+    s = s.replace(/^\./, '');           // strip a leading dot
+    var a = s.split('.');
+    for (var i = 0, n = a.length; i < n; ++i) {
+        var k = a[i];
+        if (k in o) {
+            o = o[k];
+        } else {
+            return;
+        }
+    }
+    return o;
+}
 
+export const setNestedKey = (obj, path, value) => {
+  if (path.length === 1) {
+    obj[path] = value
+    return
+  }
+  return setNestedKey(obj[path[0]], path.slice(1), value)
+}
 export const makeRangeArray=function (upperBounds, values) {
     var rangeArray = new Array(upperBounds[upperBounds.length-1]);
 
