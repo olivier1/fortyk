@@ -13,7 +13,7 @@ export const preloadHandlebarsTemplates = async function() {
         "systems/fortyk/templates/actor/actor-corruption.html",
         "systems/fortyk/templates/actor/actor-psykana.html",
         "systems/fortyk/templates/item/item-header.html"
-        
+
 
 
         // Item Sheet Partials
@@ -24,8 +24,33 @@ export const preloadHandlebarsTemplates = async function() {
     return loadTemplates(templatePaths);
 };
 
+export const getActorToken=function(actor){
+    if(actor.token!==null){
+        return actor.token; 
+    }
+    const tokens=canvas.tokens.children[0].children;
+    let t=null;
+    for(let token of tokens){
+        if(token.actor.data._id===actor.data._id){
+            t=token;
+        }
+    }
+    return t;
+}
+export const tokenDistance=function(token1,token2){
+    let gridRatio=canvas.dimensions.distance/canvas.dimensions.size;
+    if(canvas.scene.data.gridType===0){
+        let distancePx=Math.sqrt((Math.pow(token1.data.x-token2.data.x),2)+Math.pow((token1.data.y-token2.data.y),2))
+        return distancePx*gridRatio
+    }
+    if(canvas.scene.data.gridType===1){
+        let xDistance=Math.abs(gridRatio*(token1.data.x-token2.data.x));
+        let yDistance=Math.abs(gridRatio*(token1.data.y-token2.data.y));
+       
+        return Math.max(xDistance,yDistance) 
+    }
 
-
+}
 export const getItem= function(actor, name){
     for(let item of actor.items){
         if(item.name===name){
@@ -64,11 +89,11 @@ export const objectByString = function(o, s) {
 }
 
 export const setNestedKey = (obj, path, value) => {
-  if (path.length === 1) {
-    obj[path] = value
-    return
-  }
-  return setNestedKey(obj[path[0]], path.slice(1), value)
+    if (path.length === 1) {
+        obj[path] = value
+        return
+    }
+    return setNestedKey(obj[path[0]], path.slice(1), value)
 }
 export const makeRangeArray=function (upperBounds, values) {
     var rangeArray = new Array(upperBounds[upperBounds.length-1]);
@@ -89,17 +114,41 @@ export const isEmpty=function (obj) {
     }
     return true;
 }
+//
 //for looping through items to give them flags
-/* 
-       
-       if (itemData.type==="meleeWeapon"||itemData.type==="rangedWeapon"||itemData.type==="psychicPower"){
-            
-            if(isEmpty(data.flags)){
-                let specials=duplicate(FORTYK.itemFlags);
-                console.log(specials);
-                this.update({"flags.specials":specials});
+/*
+console.log("starting item flag update")
+    let actors=game.actors;
+    
+    let weaponFlags=duplicate(FORTYK.itemFlags);
+    for(let actor of actors){
+        let items=actor.items;
+        for(let item of items){
+            if(item.type==="rangedWeapon"||item.type==="meleeWeapon"||item.type==="psychicPower"||item.type==="ammunition"){
+                let mod=duplicate(item);
+                if(mod.flags===undefined){
+                    mod=mod.data;
+                }   
+                let update=false;
+                console.log(mod);
+                if(mod.flags.specials===undefined){
+                    update=true;
+                    mod.flags.specials={}
+                }
+                for (let [key, spec] of Object.entries(weaponFlags)){
+                    if(mod.flags.specials[key]===undefined){
+                        update=true;
+                        mod.flags.specials[key]=spec;
+                    }
+                } 
+                if(update){
+                    console.log(await actor.updateEmbeddedEntity("OwnedItem",mod));
+                }
+                
             }
-        }*/
+
+        }
+    }
 
 //import data packs
 // Reference a Compendium pack by it's callection ID

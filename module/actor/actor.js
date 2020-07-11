@@ -32,8 +32,11 @@ export class FortyKActor extends Actor {
    * Augment the basic actor data with additional dynamic data.
    */
     prepareData() {
+        
+        
+        
         super.prepareData();
-
+     
         const actorData = this.data;
         const data = actorData.data;
         const flags = actorData.flags;
@@ -46,7 +49,7 @@ export class FortyKActor extends Actor {
             data.skillFilter="";
 
         }
-
+       
         // Make separate methods for each Actor type (character, npc, etc.) to keep
         // things organized.
 
@@ -59,6 +62,7 @@ export class FortyKActor extends Actor {
    * this only has light computation other more complex data that process items see prepare()
    */
     _prepareCharacterData(actorData) {
+        
         const data = actorData.data;
         data.secChar.movement.mod=1;
 
@@ -132,8 +136,9 @@ export class FortyKActor extends Actor {
         }
 
     }
+
     //this prepares all items into containers that can be easily accessed by the html sheets, also adds in logic for sorting and all computing logic for items
-    prepareItems(actorData){
+    preparePCItems(actorData){
         let data=actorData.data;
         const skills=[];
         const wargear=[];
@@ -239,8 +244,14 @@ export class FortyKActor extends Actor {
                 psychicPowers.push(item);
             }
             if(item.type==="talentntrait"){
+
                 if(item.name==="True Grit"){
-                    actorData.flags["truegrit"]=true;
+                    if(!this.getFlag("fortyk","truegrit")){
+                        this.setFlag("fortyk","truegrit",true);
+                    }
+
+
+
                 }else if(item.name==="And They Shall Know No Fear"){
                     actorData.flags["atsknf"]=true;
                 }else if(item.name==="Unrelenting"){
@@ -260,25 +271,25 @@ export class FortyKActor extends Actor {
                 data.experience.spent=parseInt(data.experience.spent)+parseInt(item.data.cost.value);
                 advancements.push(item);
             }
-             if(item.type==="meleeWeapon"){
-                   
-                   item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
-                    
-                    meleeweapons.push(item);
-                    wargear.push(item);
-                }
+            if(item.type==="meleeWeapon"){
+
+                item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
+
+                meleeweapons.push(item);
+                wargear.push(item);
+            }
 
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
-                
-                 
+
+
                 try{
                     if(item.flags.specials.force.value){
-                        
+
                         let pr=parseInt(data.psykana.pr.value);
                         item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
-                        
+
                         item.data.damageFormula.value=item.data.damageFormula.value.replace(/pr/gmi,pr);
-                        
+
                     }
                 }catch{
                     item.data.pen.value="";
@@ -305,7 +316,7 @@ export class FortyKActor extends Actor {
 
 
                 }
-               
+
                 if(item.type==="rangedWeapon"){
                     try
                     {
@@ -338,16 +349,16 @@ export class FortyKActor extends Actor {
                 data.carry.max=FORTYK.carry[(data.characteristics["s"].bonus+data.characteristics["t"].bonus)].carry;
 
             }
-
+            let wornWeapons=data.secChar.wornGear.weapons;
 
             if(!Array.isArray(data.secChar.wornGear.weapons)){
-                data.secChar.wornGear.weapons=Object.values(data.secChar.wornGear.weapons);
+                wornWeapons=Object.values(data.secChar.wornGear.weapons);
             }
-            for( let w of data.secChar.wornGear.weapons){
+            for( let w of wornWeapons){
                 wornGear.weapons.push(this.getEmbeddedEntity("OwnedItem",w));
             }
 
-            if (wornGear.weapons.length<2){wornGear.weapons.push("")};
+           
             let sortedSkills=skills.sort(function compare(a, b) {
                 if (a.name<b.name) {
                     return -1;
@@ -380,79 +391,202 @@ export class FortyKActor extends Actor {
                                wornGear:wornGear};
             return preparedItems;
         }
-        prepare(){
-            let preparedData = this.data
+        prepareNPCItems(actorData){
+            let data=actorData.data;           
+            const psychicPowers=[];
+            const meleeweapons=[];
+            const rangedWeapons=[];
 
-            // Call prepareItems first to organize and process OwnedItems
-            mergeObject(preparedData, this.prepareItems(preparedData));
+            if(!this.getFlag("fortyk","truegrit")&&data.talentsntraits.value.toLowerCase().includes("true grit")){
+                this.setFlag("fortyk","truegrit",true);
 
-            return preparedData;
-        }
-        _prepareNPCData(actorData){
-            const data=actorData.data;
-            //calc char bonuses
-            for (let [key, char] of Object.entries(data.characteristics)){
-                if(key==="inf"){
+            }
+            //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
 
-                }else{
 
-                    char.bonus=Math.floor(char.total/10)+parseInt(char.uB); 
+            //apply logic to items that depends on actor data so that it updates readily when the actor is updated
+
+            //put all items in their respective containers and do some item logic
+            for(let item of actorData.items){
+
+
+
+
+
+
+
+
+
+
+                if(item.type==="psychicPower"){
+                    try{
+                        let pr=parseInt(item.data.curPR.value);
+                        let range=item.data.range.formula.toLowerCase();
+
+                        item.data.range.value=eval(range);
+
+                        item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
+                        item.data.damageFormula.value=item.data.damageFormula.formula.replace(/pr/gmi,pr);
+                    }catch{
+                        item.data.range.value="";
+                        item.data.pen.value="";
+                        item.data.damageFormula.value=="";
+                }
+
+                        let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(item.data.curPR.value));
+
+
+                    let char=0;
+                    if(item.data.testChar.value==="psy"){
+                        char=getItem(this,"Psyniscience").data.total.value;
+                        data.testChar.type="per";
+                    }else{
+                        char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
+                        item.data.testChar.type=item.data.testChar.value;
+                    }
+
+                    item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
+
+                    psychicPowers.push(item);
+                }
+
+
+                if(item.type==="meleeWeapon"){
+
+                    item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
+
+                    meleeweapons.push(item);
 
                 }
 
-            }
-
-            if(data.talentsntraits.value.toLowerCase().includes("true grit")){
-                actorData.flags["truegrit"]=true;
-
-            }
-            data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
-            //modify total characteristics depending on fatigue
-            var fatigueMult=1;
+                if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
 
 
-            for (let [key,char] of Object.entries(data.characteristics)){
-                if(char.bonus*fatigueMult<data.secChar.fatigue.value){
-                    char.total=Math.ceil(char.total/2);
+                    try{
+                        if(item.flags.specials.force.value){
+
+                            let pr=parseInt(data.psykana.pr.value);
+                            item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
+
+                            item.data.damageFormula.value=item.data.damageFormula.value.replace(/pr/gmi,pr);
+
+                        }
+                    }catch{
+                        item.data.pen.value="";
+                        item.data.damageFormula.value="";
                 }
+                }
+
+
+
+                        if(item.type==="rangedWeapon"){
+                            try
+                            {
+                                let sb=data.characteristics.s.bonus;
+
+                                let formula=item.data.range.formula.toLowerCase();
+
+                                item.data.range.value=eval(formula);
+                            } 
+                            catch{
+                                item.data.range.value="";
+                        } 
+                                rangedWeapons.push(item);
+
+
+                        }
+                }
+
+
+
+
+
+
+
+
+                let preparedItems={
+                    psychicPowers:psychicPowers,
+                    meleeWeapons:meleeweapons,
+                    rangedWeapons:rangedWeapons
+                };
+                return preparedItems;
             }
-            //size
-            let size=data.secChar.size.value;
+            prepare(){
+                let preparedData = this.data
+               
+                // Call prepareItems first to organize and process OwnedItems
+                if(preparedData.type==='dwPC'){
+                    mergeObject(preparedData, this.preparePCItems(preparedData));
+                }
+                if(preparedData.type==='npc'){
+                    mergeObject(preparedData, this.prepareNPCItems(preparedData));
+                }
 
-            data.secChar.size.label=FORTYK.size[size].name;
-            data.secChar.size.mod=FORTYK.size[size].mod;
-            data.secChar.size.movement=FORTYK.size[size].movement;
-            data.secChar.size.stealth=FORTYK.size[size].stealth
-            //movement
-            data.secChar.movement.half=data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod;
-            data.secChar.movement.full=data.secChar.movement.half*2;
-            data.secChar.movement.charge=data.secChar.movement.half*3;
-            data.secChar.movement.run=data.secChar.movement.half*6;
-            //total soak
-            for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
-
-
-                hitLoc.value=parseInt(hitLoc.armor)+parseInt(data.characteristics.t.bonus);
+                return preparedData;
             }
+            _prepareNPCData(actorData){
+              
+                const data=actorData.data;
+                //calc char bonuses
+                for (let [key, char] of Object.entries(data.characteristics)){
+                    if(key==="inf"){
 
-        }
+                    }else{
 
-        //this function deletes items from an actor, certain items need more logic to process
-        deleteItem(itemId){
+                        char.bonus=Math.floor(char.total/10)+parseInt(char.uB); 
 
-            let item=this.getEmbeddedEntity("OwnedItem",itemId);
-            //iterate through skills to delete all the children of a group skill
-            if(item.type==="skill"&&item.data.hasChildren){
-                let skills=this.items.filter(function(item){return item.type==="skill"});
-                for(let s of skills){                
-                    if(s.data.data.parent.value===item.name){
-                        this.deleteEmbeddedEntity("OwnedItem",s._id);
+                    }
+
+                }
+
+
+                data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
+                //modify total characteristics depending on fatigue
+                var fatigueMult=1;
+
+
+                for (let [key,char] of Object.entries(data.characteristics)){
+                    if(char.bonus*fatigueMult<data.secChar.fatigue.value){
+                        char.total=Math.ceil(char.total/2);
                     }
                 }
+                //size
+                let size=data.secChar.size.value;
+
+                data.secChar.size.label=FORTYK.size[size].name;
+                data.secChar.size.mod=FORTYK.size[size].mod;
+                data.secChar.size.movement=FORTYK.size[size].movement;
+                data.secChar.size.stealth=FORTYK.size[size].stealth
+                //movement
+                data.secChar.movement.half=data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod;
+                data.secChar.movement.full=data.secChar.movement.half*2;
+                data.secChar.movement.charge=data.secChar.movement.half*3;
+                data.secChar.movement.run=data.secChar.movement.half*6;
+                //total soak
+                for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
+
+
+                    hitLoc.value=parseInt(hitLoc.armor)+parseInt(data.characteristics.t.bonus);
+                }
+
             }
-            this.deleteEmbeddedEntity("OwnedItem", itemId);
+
+            //this function deletes items from an actor, certain items need more logic to process
+            deleteItem(itemId){
+
+                let item=this.getEmbeddedEntity("OwnedItem",itemId);
+                //iterate through skills to delete all the children of a group skill
+                if(item.type==="skill"&&item.data.hasChildren){
+                    let skills=this.items.filter(function(item){return item.type==="skill"});
+                    for(let s of skills){                
+                        if(s.data.data.parent.value===item.name){
+                            this.deleteEmbeddedEntity("OwnedItem",s._id);
+                        }
+                    }
+                }
+                this.deleteEmbeddedEntity("OwnedItem", itemId);
+
+            }
 
         }
-
-    }
 

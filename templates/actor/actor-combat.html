@@ -91,31 +91,32 @@
                     <span>Left Hand</span>
                     <select class="hand-weapon" data-hand="left" name="data.secChar.wornGear.weapons.0" id="left">
 
-                        {{#select data.secChar.wornGear.weapons.[0]}}
-                        <option value="">None</option>
-                        <option value="2hand" hidden>Two handed</option>
+                       
+                        <option value="" {{#if (compareString data.secChar.wornGear.weapons.[0])}}selected{{/if}}>None</option>
+                        <option value="2hand" hidden {{#if (compareString data.secChar.wornGear.weapons.[0] "2hand")}}selected{{/if}}>Two handed</option>
                         {{#each actor.meleeWeapons}}
-                        <option value="{{this._id}}">{{this.name}}</option>
+                        <option value="{{this._id}}" {{#if (compareString ../data.secChar.wornGear.weapons.[0] this._id)}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                         {{#each actor.rangedWeapons}}
-                        <option value="{{this._id}}">{{this.name}}</option>
+                        
+                        <option value="{{this._id}}" {{#if (compareString ../data.secChar.wornGear.weapons.[0] this._id)}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
-                        {{/select}}
+                       
                     </select>
                 </div>
                 <div class="flexcol weapon-select">
                     <span>Right Hand</span>
                     <select class="hand-weapon" data-hand="right" name="data.secChar.wornGear.weapons.1" id="right">
-                        {{#select data.secChar.wornGear.weapons.[1]}}
-                        <option value="">None</option>
-                        <option value="2hand" hidden>Two handed</option>
+                      
+                        <option value="" {{#if (compareString data.secChar.wornGear.weapons.[1])}}selected{{/if}}>None</option>
+                        <option value="2hand" hidden {{#if (compareString data.secChar.wornGear.weapons.[1] "2hand")}}selected{{/if}}>Two handed</option>
                         {{#each actor.meleeWeapons}}
-                        <option value="{{this._id}}">{{this.name}}</option>
+                        <option value="{{this._id}}" {{#if (compareString ../data.secChar.wornGear.weapons.[1] this._id)}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                         {{#each actor.rangedWeapons}}
-                        <option value="{{this._id}}">{{this.name}}</option>
+                        <option value="{{this._id}}" {{#if (compareString ../data.secChar.wornGear.weapons.[1] this._id)}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
-                        {{/select}}
+                       
                     </select>
                 </div>
                 {{#each data.secChar.wornGear.weapons}}
@@ -164,7 +165,14 @@
                     <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
 
                 </div>
-                
+                {{#if this.flags.specials.force.value}}
+                <div class="list-item">
+                    
+                    <a class="force-roll button" data-label="Force"> Force</a>
+
+
+                </div>
+                {{/if}}
                 {{#if this.flags.specials.maximal.value}}
                 <div class="list-item">
                     <span>Maximal: <input type="checkbox" class="maximal" data-item-id="{{this._id}}"  {{checked this.flags.specials.maximal.maximal}}></span>
@@ -264,6 +272,14 @@
                     <span>Damage: </span>
                     <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
                 </div>
+                {{#if this.flags.specials.force.value}}
+                <div class="list-item">
+                    
+                    <a class="force-roll button" data-label="Force"> Force</a>
+
+
+                </div>
+                {{/if}}
                 <div class="list-item">
                     <span>Reach: {{this.data.range.value}}m</span>
                 </div>

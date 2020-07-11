@@ -1,8 +1,8 @@
 <div class="sheet-main flexcol">
-   
 
-        
-   
+
+
+
 
     <div class="header-fields">
         <div class="descr grid grid-3col">
@@ -71,21 +71,21 @@
 
         </div>
         <div class="resources flexrow">
-           
+
             <div class="resource flex-group-center">
                 <label for="data.secChar.wounds.value" class="resource-label">Wounds</label>
                 <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
                     <span> / </span>
-                    <input type="text" name="data.secChar.wounds.max" value="{{data.secChar.wounds.max}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="data.secChar.wounds.max" value="{{data.secChar.wounds.max}}" data-dtype="Number"/>
                 </div>
             </div>
             <div class="resource flex-group-center">
                 <label for="data.secChar.fatigue.value" class="resource-label">Fatigue</label>
                 <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.secChar.fatigue.value" value="{{data.secChar.fatigue.value}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="data.secChar.fatigue.value" value="{{data.secChar.fatigue.value}}" data-dtype="Number"/>
                     <span> / </span>
-                    <input type="text" name="data.secChar.fatigue.max" value="{{data.secChar.fatigue.max}}" data-dtype="Number" disabled/>
+                    <span type="text">{{data.secChar.fatigue.max}}</span>
                 </div>
             </div>
             <div class="resource flex-group-center">
@@ -99,15 +99,15 @@
             <div class="resource flex-group-center">
                 <label for="data.fatigue.value" class="resource-label">Global Modifier</label>
                 <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.globalMOD.value" value="{{data.globalMOD.value}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="data.globalMOD.value" value="{{data.globalMOD.value}}" data-dtype="Number"/>
                 </div>
             </div>
             <div class="resource flex-group-center">
                 <label for="data.fatigue.value" class="resource-label">Fate</label>
                 <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.secChar.fate.value" value="{{data.secChar.fate.value}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="data.secChar.fate.value" value="{{data.secChar.fate.value}}" data-dtype="Number"/>
                     <span> / </span>
-                    <input type="text" name="data.secChar.fate.max" value="{{data.secChar.fate.max}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="data.secChar.fate.max" value="{{data.secChar.fate.max}}" data-dtype="Number"/>
                 </div>
             </div>
         </div>

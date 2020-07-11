@@ -18,6 +18,7 @@ export class FortyKItem extends Item {
         data.flags={};
         data.flags.specials={};
 
+
         if (data.type==="meleeWeapon"||data.type==="rangedWeapon"||data.type==="psychicPower"||data.type==="ammunition"){
             data.flags.specials=flags;
 
@@ -44,7 +45,7 @@ export class FortyKItem extends Item {
 
             //prepare skill total value
             if(itemData.type==="skill"){
-
+               
                 data.total.value=parseInt(data.value)+parseInt(data.mod.value)+parseInt(actorData.data.characteristics[data.characteristic.value].total);
             }
             //logic for weapons
@@ -54,7 +55,7 @@ export class FortyKItem extends Item {
                 data.pen.value=data.pen.formula;
 
 
-                
+
 
                 if(itemData.data.class.value==="Melee Two-handed"){
                     itemData.data.twohanded.value=true;
@@ -64,7 +65,7 @@ export class FortyKItem extends Item {
                 //ensure that a weapon that is not a shield does not have an armor rating
                 if(data.class.value!=="Shield"&&data.shield.value!==0){
                     data.shield.value=0;
-                    this.update({'data.shield.value':0});
+
                 }
 
 
@@ -83,6 +84,7 @@ export class FortyKItem extends Item {
             //prepare psychicpowers, calculates pushing and target numbers
             if(itemData.type==="psychicPower"){
                 let pr=parseInt(data.curPR.value);
+                console.log(data.range.formula);
                 let range=data.range.formula.toLowerCase();
 
                 data.range.value=eval(range);

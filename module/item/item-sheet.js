@@ -113,7 +113,7 @@ export class FortyKItemSheet extends ItemSheet {
 
                                 if(change){
 
-                                    this.item.update(pack);
+                                    await this.item.update(pack);
                                 }
 
                             }
