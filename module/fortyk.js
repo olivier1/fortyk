@@ -55,7 +55,7 @@ Hooks.once('init', async function() {
         return value !== undefined;
     });
     Handlebars.registerHelper('compareString', function (str1, str2="") {
-       
+
         if(typeof str2!=="string"){
             str2="";
         }
@@ -95,7 +95,7 @@ Hooks.once('init', async function() {
 
 });
 Hooks.once("setup", function() {
-    
+
 
 
 
@@ -105,6 +105,7 @@ Hooks.once("setup", function() {
 //HOOKS
 Hooks.once('ready', async function() {
     
+
     //SOCKET used to update tokens via the damage scripts
     game.socket.on("system.fortyk",async(data) => {
 
@@ -114,8 +115,7 @@ Hooks.once('ready', async function() {
                 let token=canvas.tokens.get(id);
                 let effect=data.package.effect;
                 await token.toggleEffect(effect);
-            }
-            if(data.type==="updateValue"){
+            }else if(data.type==="updateValue"){
 
                 let id=data.package.token;
                 let value=data.package.value;
@@ -128,6 +128,19 @@ Hooks.once('ready', async function() {
 
                 await actor.update(options);
 
+            }else if(data.type==="applyDead"){
+
+                let id=data.package.token;
+                let token=canvas.tokens.get(id);
+                let effect="icons/svg/skull.svg";
+                await token.toggleOverlay(effect);
+                let combatant = await game.combat.getCombatantByToken(id);
+
+                let combatid=combatant._id;
+                await game.combat.updateCombatant({
+                    '_id':combatid,
+                    'defeated':true
+                }) 
             }
         }
     })
@@ -135,38 +148,51 @@ Hooks.once('ready', async function() {
 });
 //round management effects, when a token's turn starts
 Hooks.on("updateCombat", async (combat) => {
-    let token=canvas.tokens.get(combat.current.tokenId);
-    let actor=token.actor;
-    //check for fire
-    if(token.data.effects.includes("icons/svg/fire.svg")){
-        let onFireOptions={user: game.user._id,
-                           speaker:{actor,alias:actor.name},
-                           content:"On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
-                           classes:["fortyk"],
-                           flavor:`On Fire!`,
-                           author:actor.name};
-        await ChatMessage.create(onFireOptions,{});
-        await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "On Fire! Panic");
-        let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
-        await actor.update({"data.secChar.fatigue.value":fatigue});
-        let flags= duplicate(FORTYK.itemFlags);
-        let fireData={name:"Fire",type:"rangedWeapon"}
-        let fire=await Item.create(fireData, {temporary: true});
-       
-        fire.data.flags.specials=flags;
+    if(game.user.isGM){
+        let token=canvas.tokens.get(combat.current.tokenId);
+        let actor=token.actor;
+        //check for fire
+        if(token.data.effects.includes("icons/svg/fire.svg")){
+            let onFireOptions={user: game.user._id,
+                               speaker:{actor,alias:actor.name},
+                               content:"On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
+                               classes:["fortyk"],
+                               flavor:`On Fire!`,
+                               author:actor.name};
+            await ChatMessage.create(onFireOptions,{});
+            await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "On Fire! Panic");
+            let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
+            await actor.update({"data.secChar.fatigue.value":fatigue});
+            let flags= duplicate(FORTYK.itemFlags);
+            let fireData={name:"Fire",type:"rangedWeapon"}
+            let fire=await Item.create(fireData, {temporary: true});
 
-        fire.data.data.damageType.value="Energy";
-        fire.data.data.pen.value=99999;
-        await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire.data,1, true);
+            fire.data.flags.specials=flags;
+
+            fire.data.data.damageType.value="Energy";
+            fire.data.data.pen.value=99999;
+            await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire.data,1, true);
+        }
     }
 
 })
 Hooks.on("preUpdateActor", (data, updatedData) =>{
-  
+
 })
 //add listeners to the chatlog for dice rolls
 Hooks.on('renderChatLog', (log, html, data) => FortykRolls.chatListeners(html));
+//set flags for new weapons and items
+Hooks.on('preCreateOwnedItem', (actor, data,options) =>{
+    if (data.type==="meleeWeapon"||data.type==="rangedWeapon"||data.type==="psychicPower"||data.type==="ammunition"){
 
+        let flags= duplicate(FORTYK.itemFlags);
+        data.flags={};
+
+        data.flags.specials=flags;
+
+
+    }
+})
 /**
  * Set default values for new actors' tokens
  */

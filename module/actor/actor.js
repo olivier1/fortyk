@@ -32,11 +32,11 @@ export class FortyKActor extends Actor {
    * Augment the basic actor data with additional dynamic data.
    */
     prepareData() {
-        
-        
-        
+
+
+
         super.prepareData();
-     
+
         const actorData = this.data;
         const data = actorData.data;
         const flags = actorData.flags;
@@ -49,7 +49,7 @@ export class FortyKActor extends Actor {
             data.skillFilter="";
 
         }
-       
+
         // Make separate methods for each Actor type (character, npc, etc.) to keep
         // things organized.
 
@@ -62,7 +62,7 @@ export class FortyKActor extends Actor {
    * this only has light computation other more complex data that process items see prepare()
    */
     _prepareCharacterData(actorData) {
-        
+
         const data = actorData.data;
         data.secChar.movement.mod=1;
 
@@ -273,7 +273,12 @@ export class FortyKActor extends Actor {
             }
             if(item.type==="meleeWeapon"){
 
-                item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
+                if(item.flags.specials.crushing.value){
+
+                    item.data.damageFormula.value=item.data.damageFormula.formula+"+"+2*data.characteristics.s.bonus;
+                }else{
+                    item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
+                }
 
                 meleeweapons.push(item);
                 wargear.push(item);
@@ -318,6 +323,7 @@ export class FortyKActor extends Actor {
                 }
 
                 if(item.type==="rangedWeapon"){
+                   
                     try
                     {
                         let sb=data.characteristics.s.bonus;
@@ -329,6 +335,7 @@ export class FortyKActor extends Actor {
                     catch{
                         item.data.range.value="";
                 } 
+                        
                         rangedWeapons.push(item);
                     wargear.push(item);
 
@@ -358,7 +365,7 @@ export class FortyKActor extends Actor {
                 wornGear.weapons.push(this.getEmbeddedEntity("OwnedItem",w));
             }
 
-           
+
             let sortedSkills=skills.sort(function compare(a, b) {
                 if (a.name<b.name) {
                     return -1;
@@ -397,10 +404,7 @@ export class FortyKActor extends Actor {
             const meleeweapons=[];
             const rangedWeapons=[];
 
-            if(!this.getFlag("fortyk","truegrit")&&data.talentsntraits.value.toLowerCase().includes("true grit")){
-                this.setFlag("fortyk","truegrit",true);
 
-            }
             //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
 
 
@@ -453,7 +457,13 @@ export class FortyKActor extends Actor {
 
                 if(item.type==="meleeWeapon"){
 
-                    item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
+                    if(item.flags.specials.crushing.value){
+
+                        item.data.damageFormula.value=item.data.damageFormula.formula+"+"+2*data.characteristics.s.bonus;
+                    }else{
+                        item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
+                    }
+
 
                     meleeweapons.push(item);
 
@@ -513,7 +523,7 @@ export class FortyKActor extends Actor {
             }
             prepare(){
                 let preparedData = this.data
-               
+
                 // Call prepareItems first to organize and process OwnedItems
                 if(preparedData.type==='dwPC'){
                     mergeObject(preparedData, this.preparePCItems(preparedData));
@@ -525,7 +535,7 @@ export class FortyKActor extends Actor {
                 return preparedData;
             }
             _prepareNPCData(actorData){
-              
+
                 const data=actorData.data;
                 //calc char bonuses
                 for (let [key, char] of Object.entries(data.characteristics)){

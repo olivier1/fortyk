@@ -45,7 +45,7 @@ export class FortyKItem extends Item {
 
             //prepare skill total value
             if(itemData.type==="skill"){
-               
+
                 data.total.value=parseInt(data.value)+parseInt(data.mod.value)+parseInt(actorData.data.characteristics[data.characteristic.value].total);
             }
             //logic for weapons
@@ -71,9 +71,28 @@ export class FortyKItem extends Item {
 
             }
             if(itemData.type==="rangedWeapon"){
-                data.range.value=data.range.formula;
-                data.pen.value=data.pen.formula;
-                data.damageFormula.value=data.damageFormula.formula;
+                if(data.damTyp===undefined){data.damTyp=data.damageType.value}
+                if(data.flags===undefined){data.flags=itemData.flags}
+                let ammo=this.actor.getEmbeddedEntity("OwnedItem",data.ammo._id);
+                if(ammo!==null&&!ammo.data.default.value){
+                    data.damageType.value=ammo.data.damageType;
+                    data.range.value=ammo.data.range.formula;
+                    data.pen.value=ammo.data.pen.formula;
+                    data.damageFormula.value=ammo.data.damageFormula.formula;
+                    itemData.flags=ammo.flags;
+                }else{
+                    if(!data.damTyp===""){
+                         data.damageType.value=data.damTyp;
+                    }else{
+                        data.damTyp=data.damageType.value;
+                    }
+                   
+                    data.range.value=data.range.formula;
+                    data.pen.value=data.pen.formula;
+                    data.damageFormula.value=data.damageFormula.formula;
+                    itemData.flags=data.flags;
+                }
+
                 data.clip.max=data.clip.formula;
                 if(itemData.data.class.value==="Pistol"||itemData.data.class.value==="Thrown"){
                     itemData.data.twohanded.value=false;
@@ -84,7 +103,7 @@ export class FortyKItem extends Item {
             //prepare psychicpowers, calculates pushing and target numbers
             if(itemData.type==="psychicPower"){
                 let pr=parseInt(data.curPR.value);
-                console.log(data.range.formula);
+                
                 let range=data.range.formula.toLowerCase();
 
                 data.range.value=eval(range);

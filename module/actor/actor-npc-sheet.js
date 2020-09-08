@@ -42,15 +42,26 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
 
         if (!this.options.editable) return;
 
-        
-        
-        
-        
+        html.find('.parse-tnt').click(this._onTntParse.bind(this));
+
+
+
 
     } 
-   
-   
-   
-   
-    
+
+    async _onTntParse(event){
+        console.log(this);
+        let actor=this.actor;
+        let data=actor.data.data;
+        if(data.talentsntraits.value.toLowerCase().includes("true grit")){
+            actor.setFlag("fortyk","truegrit",true);
+
+        }else{
+            actor.setFlag("fortyk","truegrit",false);
+        }
+       
+    }
+
+
+
 }

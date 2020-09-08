@@ -92,19 +92,11 @@ export class FortyKActorSheet extends FortyKBaseActorSheet {
                                 type: type
                             };
 
-                            let item=  await this.actor.createEmbeddedEntity("OwnedItem",itemData);
+                            let item=  await this.actor.createEmbeddedEntity("OwnedItem",itemData,{renderSheet:true});
 
 
                             const newItem =  await this.actor.items.find(i => i.data._id == item._id);
-                            if (newItem.data.type==="meleeWeapon"||newItem.data.type==="rangedWeapon"||newItem.data.type==="psychicPower"||newItem.data.type==="ammunition"){
 
-                                let flags= duplicate(FORTYK.itemFlags);
-                                let newData=duplicate(newItem.data);
-                                newData.flags.specials=flags;
-
-                                await this.actor.updateEmbeddedEntity("OwnedItem",newData);
-                            }
-                            newItem.sheet.render(true);
                         }
                     },
                     cancel:{
@@ -224,19 +216,19 @@ export class FortyKActorSheet extends FortyKBaseActorSheet {
         const ammoID=event.currentTarget.value;
         const ammo=this.actor.getEmbeddedEntity("OwnedItem",ammoID);
         weapon.data.ammo._id=ammoID;
-
+        let update={};
 
         if(previousAmmo!==null&&previousAmmo.data!==undefined){
             previousAmmo.data.currentClip.value=weapon.data.clip.value;
-            await this.actor.updateEmbeddedEntity("OwnedItem",previousAmmo);
+            jQuery.extend(update,previousAmmo);
         }
         if(ammo!==null){
             weapon.data.clip.value=ammo.data.currentClip.value;
         }else{
             weapon.data.clip.value=0;
         }
-
-        await this.actor.updateEmbeddedEntity("OwnedItem",weapon);
+        jQuery.extend(update,weapon);
+        await this.actor.updateEmbeddedEntity("OwnedItem",update);
 
 
 
@@ -311,19 +303,19 @@ export class FortyKActorSheet extends FortyKBaseActorSheet {
         const leftHand=document.getElementById("left");
         const rightHand=document.getElementById("right");
         var update={};
-        
-        
+
+
         if(hand==="right"){
             if(weaponID===data.secChar.wornGear.weapons[1]){return}
             rightHand.value=weaponID;
-            
+
             update["data.secChar.wornGear.weapons.1"]=weaponID;
             let oppWeapon=this.actor.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[0]);
             if(weaponID===""&&data.secChar.wornGear.weapons[1]==="2hand"){
                 update["data.secChar.wornGear.weapons.0"]="";
-                
 
-               
+
+
             }
 
             if(weaponID===""){}
@@ -332,12 +324,12 @@ export class FortyKActorSheet extends FortyKBaseActorSheet {
                 if(data.secChar.wornGear.weapons[1]==="2hand"){
 
                     update["data.secChar.wornGear.weapons.0"]="";
-                  
+
 
                 }
             }else{
                 update["data.secChar.wornGear.weapons.0"]="2hand";
-               
+
 
             }
 
@@ -349,8 +341,8 @@ export class FortyKActorSheet extends FortyKBaseActorSheet {
             if(weaponID===""&&data.secChar.wornGear.weapons[1]==="2hand"){
 
                 update["data.secChar.wornGear.weapons.1"]="";
-               
-               
+
+
             }
 
             if(weaponID===""){}
@@ -360,12 +352,12 @@ export class FortyKActorSheet extends FortyKBaseActorSheet {
 
 
                     update["data.secChar.wornGear.weapons.1"]="";
-                  
+
                 }
             }else{
 
                 update["data.secChar.wornGear.weapons.1"]="2hand";
-                
+
 
             }
 

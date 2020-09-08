@@ -29,13 +29,19 @@
                 {{/select}}
             </select>
         </div>
+        {{debug data}}
+        <div class="flexrow">
+            <label>Default:</label>
+            <input type="checkbox" name="data.default.value" {{checked data.default.value}}>
+        </div>
+        {{#unless data.default.value}}
         <div class="flexcol">
             <label>Damage:</label>
-            <input type="text" value="{{data.damage.value}}" name="data.damage.value">
+            <input type="text" value="{{data.damageFormula.formula}}" name="data.damageFormula.formula">
         </div>
         <div class="flexcol">
             <label>Penetration:</label>
-            <input type="text" value="{{data.pen.value}}" name="data.pen.value">
+            <input type="text" value="{{data.pen.formula}}" name="data.pen.formula">
         </div>
         <div class="flexcol">
             <a class="weapon-special button">Special</a>
@@ -44,6 +50,7 @@
             <label>Damage Type:</label>
             <input type="text" value="{{data.damageType.value}}" name="data.damageType.value">
         </div>
+        {{/unless}}
         <div class="flexcol">
             <label>Weapon Class:</label>
 

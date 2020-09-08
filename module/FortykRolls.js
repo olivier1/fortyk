@@ -88,7 +88,7 @@ returns the roll message*/
         const testResult=rollResult>=0;
         const charObj=actor.data.data.characteristics[char];
         var testDos=0;
-        
+
         //calculate degrees of failure and success
         if((testResult&&testRoll<96||testRoll===1)&&!jam){
 
@@ -327,7 +327,7 @@ returns the roll message*/
                            author:actor.name};
             await ChatMessage.create(chatShock,{});
         }
-        
+
         return templateOptions["success"];
 
     }
@@ -336,9 +336,14 @@ returns the roll message*/
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
     static async damageRoll(formula,actor,weapon,hits=1, self=false, overheat=false){
         let righteous=10;
+        if(weapon.flags.specials.vengeful.value){
+            righteous=weapon.flags.specials.vengeful.num;
+        }
+
         let lastHit=actor.data.data.secChar.lastHit;
         let targets=[];
         let curHit={};
+
         if(self){
             if(overheat){
                 let arm=["rArm","lArm"];
@@ -364,13 +369,23 @@ returns the roll message*/
             let dPos = form.indexOf('d');
             let dieNum = form.substr(0,dPos);
             let newNum=parseInt(dieNum)+1;
-            form=form.slice(dPos)
+            form=form.slice(dPos);
             form=newNum+form;
             let afterD=dPos+3;
             let startstr=form.slice(0,afterD);
             let endstr=form.slice(afterD);
             form=startstr+"dl1"+endstr;
 
+        }
+        //calculate horde bonus damage
+        console.log(actor);
+        if(actor.data.data.horde.value){
+            let hordeDmgBonus=Math.max(2,Math.floor(actor.data.data.secChar.wounds.value/10));
+            let dPos = form.indexOf('d');
+            let dieNum = form.substr(0,dPos);
+            let newNum=parseInt(dieNum)+hordeDmgBonus;
+            form=form.slice(dPos);
+            form=newNum+form;
         }
         let hitNmbr=0;
 
@@ -411,10 +426,10 @@ returns the roll message*/
 
                 //if there are targets apply damage to all of them
                 for (let tar of targets){
-                   
+
                     let data={};
                     let tarActor={};
-                   
+
                     if(self){
                         data=tar.data.data;
                         tarActor=tar;
@@ -422,7 +437,7 @@ returns the roll message*/
                         data=tar.actor.data.data; 
                         tarActor=tar.actor;
                     }
-                  
+
                     let wounds=getProperty(data,"secChar.wounds");
                     let soak=0;
                     //check fi weapon ignores soak
@@ -492,25 +507,31 @@ returns the roll message*/
                     }
                     let damage=roll._total-soak;
                     //check for righteous fury
-                    let crit=this.righteousFury(roll,righteous,actor,label,weapon,curHit,damage);
+                    if(!data.horde.value){
+                        let crit=this.righteousFury(roll,righteous,actor,label,weapon,curHit,damage);
 
-                    if(crit.promiseValue&&damage<=0){
-                        damage=1;
-                    }else if(damage<=0){
-                        damage=0;
-                        let chatOptions={user: game.user._id,
-                                         speaker:{actor,alias:actor.name},
-                                         content:"Damage is fully absorbed.",
-                                         classes:["fortyk"],
-                                         flavor:`No damage`,
-                                         author:actor.name};
-                        await ChatMessage.create(chatOptions,{});
+                        if(crit.promiseValue&&damage<=0){
+                            damage=1;
+                        }else if(damage<=0){
+                            damage=0;
+                            let chatOptions={user: game.user._id,
+                                             speaker:{actor,alias:actor.name},
+                                             content:"Damage is fully absorbed.",
+                                             classes:["fortyk"],
+                                             flavor:`No damage`,
+                                             author:actor.name};
+                            await ChatMessage.create(chatOptions,{});
+                        }
+
                     }
 
                     let newWounds=wounds.value;
+                    //handle hordes
+
+
+                    console.log(tarActor);
                     // true grit!@!!@
-                   
-                    if((damage>0)&&(wounds.value-damage)<0&&tarActor.data.flags.fortyk["truegrit"]){
+                    if(!data.horde.value&&(damage>0)&&(wounds.value-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
                         if(newWounds>0){
 
                             damage=damage-newWounds;
@@ -526,6 +547,9 @@ returns the roll message*/
                                          flavor:`Critical effect`,
                                          author:tarActor.name};
                         await ChatMessage.create(chatOptions,{});
+                    }
+                    if(data.horde.value&&damage>0){
+                        damage=1;
                     }
                     //report damage dealt to gm
                     let damageOptions={user: game.user._id,
@@ -562,14 +586,36 @@ returns the roll message*/
                     }
 
                     //handle critical effects
-                    if(newWounds<0&&damage>0){
+                    if(data.horde.value&&newWounds<=0){
+                        let msg="The horde is dismantled!";
+                        let chatOptions={user: game.user._id,
+                                         speaker:{actor,alias:actor.name},
+                                         content:msg,
+                                         classes:["fortyk"],
+                                         flavor:`Horde is killed`,
+                                         author:actor.name};
+                        await ChatMessage.create(chatOptions,{});
+                        this.applyDead(tar);
+
+                    }else if(data.suddenDeath.value&&newWounds<=0){
+                        let msg=tarActor.name+" is killed!";
+                        let chatOptions={user: game.user._id,
+                                         speaker:{actor,alias:actor.name},
+                                         content:msg,
+                                         classes:["fortyk"],
+                                         flavor:`Death Report`,
+                                         author:actor.name};
+                        await ChatMessage.create(chatOptions,{});
+                        this.applyDead(tar);
+                    }else if(newWounds<0&&damage>0){
                         let crit=Math.abs(newWounds)-1;
+                        console.log(weapon);
                         let rightMes=FORTYKTABLES.crits[weapon.data.damageType.value][curHit.value][crit];
 
                         let mesDmgType=weapon.data.damageType.value;
                         let mesRes=crit+1;
                         let mesHitLoc=curHit.label;
-
+                        this.critEffects(tar,crit,mesHitLoc,mesDmgType);
                         let chatOptions={user: game.user._id,
                                          speaker:{actor,alias:actor.name},
                                          content:rightMes,
@@ -605,7 +651,9 @@ returns the roll message*/
                                 game.socket.emit("system.fortyk",socketOp);
                             }
                         }
-                    }
+                    } 
+
+
                 }
             }else{
                 this.righteousFury(roll,righteous,actor,label,weapon,lastHit);
@@ -667,6 +715,10 @@ returns the roll message*/
         }else{
             return false;
         }
+
+    }
+    //applies critical results to token/actor
+    static async critEffects(tar,num,hitLoc,type){
 
     }
     //handles test rerolls
@@ -1007,6 +1059,35 @@ returns the roll message*/
 
             width:400}
                   ).render(true);
+    }
+    static async applyDead(target){
+        if(!target.data.effects.includes("icons/svg/skull.svg")){
+            if(game.user.isGM||target.owner){
+
+                let id=target.data._id;
+
+                let effect="icons/svg/skull.svg";
+                await target.toggleOverlay(effect);
+                let combatant = await game.combat.getCombatantByToken(id);
+
+                let combatid=combatant._id;
+                await game.combat.updateCombatant({
+                    '_id':combatid,
+                    'defeated':true
+                }) 
+
+
+            }else{
+                let tokenId=target.data._id;
+                let socketOp={type:"applyDead",package:{token:tokenId}}
+
+                game.socket.emit("system.fortyk",socketOp);
+
+            }
+        }
+
+
+
     }
     //activate chatlisteners
     static chatListeners(html){

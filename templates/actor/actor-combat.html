@@ -89,7 +89,7 @@
             <div class="flexrow">
                 <div class="flexcol weapon-select">
                     <span>Left Hand</span>
-                    <select class="hand-weapon" data-hand="left" name="data.secChar.wornGear.weapons.0" id="left">
+                    <select class="hand-weapon" data-hand="left" id="left">
 
                        
                         <option value="" {{#if (compareString data.secChar.wornGear.weapons.[0])}}selected{{/if}}>None</option>
@@ -106,7 +106,7 @@
                 </div>
                 <div class="flexcol weapon-select">
                     <span>Right Hand</span>
-                    <select class="hand-weapon" data-hand="right" name="data.secChar.wornGear.weapons.1" id="right">
+                    <select class="hand-weapon" data-hand="right"  id="right">
                       
                         <option value="" {{#if (compareString data.secChar.wornGear.weapons.[1])}}selected{{/if}}>None</option>
                         <option value="2hand" hidden {{#if (compareString data.secChar.wornGear.weapons.[1] "2hand")}}selected{{/if}}>Two handed</option>
@@ -375,6 +375,7 @@
                 </select>
                 <div class="flexcol">
                     <span class="section-title">COVER</span>
+                    <span class="cover-reset button">Reset Cover</span>
                     <input type="text" class="combat-resources" title="cover" name="data.secChar.cover.value" value="{{data.secChar.cover.value}}" data-dtype="Number"/>
                     <div class="flexrow flex-group-center">
                         <div class="armor flexcol flex-group-center">

@@ -536,9 +536,12 @@
     height: auto !important;
 }
 .fortyk .npcheader{
-    flex-grow: 2;
+    
     display:grid;
     grid-template-columns: auto auto;
+}
+.fortyk .npcresources{
+    flex-grow: 2;
 }
 .fortyk .npcdescr{
     grid-column: span 1;

@@ -380,6 +380,14 @@
                         "value": 0,
                         "type": "Number"
                     }
+                },
+                "suddenDeath": {
+                    "value": false,
+                    "type": "Boolean"
+                },
+                "horde":{
+                    "value": false,
+                    "type": "Boolean"
                 }
             },
             "player": {
@@ -601,7 +609,7 @@
             "mods": [],
             "ammo": {
                 "_id": ""
-                
+
             },
             "reload": {
                 "value": "",
@@ -617,6 +625,10 @@
             "currentClip": {
                 "value": 0,
                 "type": "String"
+            },
+            "default":{
+                "value": true,
+                "type": "Boolean"
             }
         },
         "wargear": {

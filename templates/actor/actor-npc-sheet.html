@@ -2,43 +2,59 @@
     {{#if isGM}}
     <div class="flexrow">
         <img class="npc-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
-        <div class="npcheader">
-            <div class="descrRow flexcol npcdescr">
-                <span class="descrSpan">Name:</span>
-                <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
-            </div>
-            <div class="descrRow flexcol npcdescr">
-                <span class="descrSpan">Race:</span>
-                <input name="data.race.value" type="text" value="{{data.race.value}}" placeholder="???"/>
-            </div>
-            <div class="resource flex-group-center">
-                <label for="data.secChar.wounds.value" class="resource-label">Wounds</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
-                    <span> / </span>
-                    <input type="text" name="data.secChar.wounds.max" value="{{data.secChar.wounds.max}}" data-dtype="Number"/>
+        <div class="npcresources">
+            <div class="npcheader">
+                <div class="descrRow flexcol npcdescr">
+                    <span class="descrSpan">Name:</span>
+                    <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
+                </div>
+                <div class="descrRow flexcol npcdescr">
+                    <span class="descrSpan">Race:</span>
+                    <input name="data.race.value" type="text" value="{{data.race.value}}" placeholder="???"/>
                 </div>
             </div>
-            <div class="resource flex-group-center">
-                <label for="data.secChar.fatigue.value" class="resource-label">Fatigue</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.secChar.fatigue.value" value="{{data.secChar.fatigue.value}}" data-dtype="Number"/>
-                    <span> / </span>
-                    <input type="text" name="data.secChar.fatigue.max" value="{{data.secChar.fatigue.max}}" data-dtype="Number" disabled/>
+            <div class="grid grid-3col">
+                <div class="resource flex-group-center">
+                    <label for="data.secChar.wounds.value" class="resource-label">Wounds</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" name="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
+                        <span> / </span>
+                        <input type="text" name="data.secChar.wounds.max" value="{{data.secChar.wounds.max}}" data-dtype="Number"/>
+                    </div>
                 </div>
-            </div>
-            <div class="resource flex-group-center">
-                <label for="data.fatigue.value" class="resource-label">Global Modifier</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.globalMOD.value" value="{{data.globalMOD.value}}" data-dtype="Number"/>
+                <div class="resource flex-group-center">
+                    <label for="data.secChar.fatigue.value" class="resource-label">Fatigue</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" name="data.secChar.fatigue.value" value="{{data.secChar.fatigue.value}}" data-dtype="Number"/>
+                        <span> / </span>
+                        <input type="text" name="data.secChar.fatigue.max" value="{{data.secChar.fatigue.max}}" data-dtype="Number" disabled/>
+                    </div>
                 </div>
-            </div>
-            <div class="resource flex-group-center">
-                <label for="data.fatigue.value" class="resource-label">Fate</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" name="data.secChar.fate.value" value="{{data.secChar.fate.value}}" data-dtype="Number"/>
-                    <span> / </span>
-                    <input type="text" name="data.secChar.fate.max" value="{{data.secChar.fate.max}}" data-dtype="Number"/>
+                <div class="resource flex-group-center">
+                    <label class="resource-label">Global Modifier</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" name="data.globalMOD.value" value="{{data.globalMOD.value}}" data-dtype="Number"/>
+                    </div>
+                </div>
+                <div class="resource flex-group-center">
+                    <label class="resource-label">Fate</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" name="data.secChar.fate.value" value="{{data.secChar.fate.value}}" data-dtype="Number"/>
+                        <span> / </span>
+                        <input type="text" name="data.secChar.fate.max" value="{{data.secChar.fate.max}}" data-dtype="Number"/>
+                    </div>
+                </div>
+                <div class="resource flex-group-center">
+                    <label  class="resource-label">Horde</label>
+                    <div class="resource-content flex-group-center">
+                        <input type="checkbox" name="data.horde.value" {{checked data.horde.value}}>
+                    </div>
+                </div>
+                <div class="resource flex-group-center">
+                    <label  class="resource-label">Sudden Death</label>
+                    <div class="resource-content flex-group-center">
+                        <input type="checkbox" name="data.suddenDeath.value" {{checked data.suddenDeath.value}}>
+                    </div>
                 </div>
             </div>
         </div>
@@ -107,11 +123,13 @@
 
 
     </div>
+
+    {{#unless actor.isToken}}
     <div class="flexrow">
         <a class="item-create button" data-type="rangedWeapon" title="Add a Ranged Weapon">Add ranged weapon</a>
         <a class="item-create button" data-type="meleeWeapon" title="Add a Melee Weapon">Add melee weapon</a>
     </div>
-
+    {{/unless}}
     <div class="grid grid-2col">
         {{#each actor.meleeWeapons}}
         <div>
@@ -120,7 +138,7 @@
                     <span>Name: {{this.name}}</span>
                 </div>
 
-               
+
                 <div class="list-item">
                     <span>Attack: </span>
                     <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../data.characteristics.ws.total}}" data-item-id="{{this._id}}" data-label="Melee Attack" data-char="ws">Roll</span>
@@ -131,13 +149,13 @@
                 </div>
                 {{#if this.flags.specials.force.value}}
                 <div class="list-item">
-                    
+
                     <a class="force-roll button" data-label="Force"> Force</a>
 
 
                 </div>
                 {{/if}}
-                 <div class="list-item">
+                <div class="list-item">
                     <span>Reach: {{this.data.range.value}}m</span>
                 </div>
                 <div class="list-item">
@@ -145,7 +163,7 @@
 
                 </div>
                 <div class="list-item">
-                   <span>Special: 
+                    <span>Special: 
                         {{#each this.flags.specials}}
                         {{#if this.value}}
                         <a class="item-descr" data-name="{{this.label}}" data-item-descr="{{this.description}}" >{{this.label}}{{#if (isdefined this.num)}}({{this.num}}){{/if}}</a>
@@ -182,7 +200,7 @@
                     <span>Name: {{this.name}}</span>
                 </div>
 
-               
+
                 <div class="list-item">
                     <span>Attack: </span>
                     <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../data.characteristics.bs.total}}" data-item-id="{{this._id}}" data-label="Ranged Attack" data-char="bs">Roll</span>
@@ -192,10 +210,10 @@
                     <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
 
                 </div>
-                
+
                 {{#if this.flags.specials.force.value}}
                 <div class="list-item">
-                    
+
                     <a class="force-roll button" data-label="Force"> Force</a>
 
 
@@ -216,7 +234,7 @@
                     <span>{{this.data.clip.max}}</span>
 
                 </div>
-                 <div class="list-item">
+                <div class="list-item">
                     <span>Range: {{this.data.range.value}}m</span>
                 </div>
                 <div class="list-item">
@@ -231,7 +249,7 @@
 
                 </div>
                 <div class="list-item">
-                   <span>Special: 
+                    <span>Special: 
                         {{#each this.flags.specials}}
                         {{#if this.value}}
                         <a class="item-descr" data-name="{{this.label}}" data-item-descr="{{this.description}}" >{{this.label}}{{#if (isdefined this.num)}}({{this.num}}){{/if}}</a>
@@ -254,10 +272,10 @@
 
                 </div>
                 <div class="list-item flexrow">
-                    
-                        <a class="list-button item-edit" title="Edit" data-item-id="{{this._id}}"></a>
-                        <a class="list-button item-delete" title="Delete" data-item-id="{{this._id}}"></a>
-                    
+
+                    <a class="list-button item-edit" title="Edit" data-item-id="{{this._id}}"></a>
+                    <a class="list-button item-delete" title="Delete" data-item-id="{{this._id}}"></a>
+
                 </div>
 
             </div>
@@ -313,6 +331,7 @@
 
                     <div class="flexcol">
                         <span class="section-title">COVER</span>
+                        <span class="cover-reset button">Reset Cover</span>
                         <input type="text" class="combat-resources" title="cover" name="data.secChar.cover.value" value="{{data.secChar.cover.value}}" data-dtype="Number"/>
                         <div class="flexrow flex-group-center">
                             <div class="armor flexcol flex-group-center">
@@ -382,7 +401,8 @@
             </div>
             <div class="npc-info">
 
-                <span class="section-title">Talents & Traits</span>
+                <a class="section-title parse-tnt">Talents & Traits</a>
+
                 {{editor content=data.talentsntraits.value target="data.talentsntraits.value" button=true owner=owner editable=editable}}
             </div>
             <div class="npc-info">
