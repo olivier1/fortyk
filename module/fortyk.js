@@ -104,7 +104,7 @@ Hooks.once("setup", function() {
 });
 //HOOKS
 Hooks.once('ready', async function() {
-    
+
 
     //SOCKET used to update tokens via the damage scripts
     game.socket.on("system.fortyk",async(data) => {
@@ -134,87 +134,94 @@ Hooks.once('ready', async function() {
                 let token=canvas.tokens.get(id);
                 let effect="icons/svg/skull.svg";
                 await token.toggleOverlay(effect);
-                let combatant = await game.combat.getCombatantByToken(id);
+                try{
+                    let combatant = await game.combat.getCombatantByToken(id);
 
-                let combatid=combatant._id;
-                await game.combat.updateCombatant({
-                    '_id':combatid,
-                    'defeated':true
-                }) 
+                    let combatid=combatant._id;
+                    await game.combat.updateCombatant({
+                        '_id':combatid,
+                        'defeated':true
+                    }) 
+                }catch{}
+
             }
-        }
-    })
+            }
+            })
 
-});
-//round management effects, when a token's turn starts
-Hooks.on("updateCombat", async (combat) => {
-    if(game.user.isGM){
-        let token=canvas.tokens.get(combat.current.tokenId);
-        let actor=token.actor;
-        //check for fire
-        if(token.data.effects.includes("icons/svg/fire.svg")){
-            let onFireOptions={user: game.user._id,
-                               speaker:{actor,alias:actor.name},
-                               content:"On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
-                               classes:["fortyk"],
-                               flavor:`On Fire!`,
-                               author:actor.name};
-            await ChatMessage.create(onFireOptions,{});
-            await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "On Fire! Panic");
-            let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
-            await actor.update({"data.secChar.fatigue.value":fatigue});
-            let flags= duplicate(FORTYK.itemFlags);
-            let fireData={name:"Fire",type:"rangedWeapon"}
-            let fire=await Item.create(fireData, {temporary: true});
+            });
+                    //round management effects, when a token's turn starts
+                    Hooks.on("updateCombat", async (combat) => {
+                        if(game.user.isGM){
+                            let token=canvas.tokens.get(combat.current.tokenId);
+                            let actor=token.actor;
+                            //check for fire
+                            if(token.data.effects.includes("icons/svg/fire.svg")){
+                                let onFireOptions={user: game.user._id,
+                                                   speaker:{actor,alias:actor.name},
+                                                   content:"On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
+                                                   classes:["fortyk"],
+                                                   flavor:`On Fire!`,
+                                                   author:actor.name};
+                                await ChatMessage.create(onFireOptions,{});
+                                await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "On Fire! Panic");
+                                let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
+                                await actor.update({"data.secChar.fatigue.value":fatigue});
+                                let flags= duplicate(FORTYK.itemFlags);
+                                let fireData={name:"Fire",type:"rangedWeapon"}
+                                let fire=await Item.create(fireData, {temporary: true});
 
-            fire.data.flags.specials=flags;
+                                fire.data.flags.specials=flags;
 
-            fire.data.data.damageType.value="Energy";
-            fire.data.data.pen.value=99999;
-            await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire.data,1, true);
-        }
-    }
+                                fire.data.data.damageType.value="Energy";
+                                fire.data.data.pen.value=99999;
+                                await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire.data,1, true);
+                            }
+                        }
 
-})
-Hooks.on("preUpdateActor", (data, updatedData) =>{
+                    })
+                    Hooks.on("preUpdateActor", (data, updatedData) =>{
 
-})
-//add listeners to the chatlog for dice rolls
-Hooks.on('renderChatLog', (log, html, data) => FortykRolls.chatListeners(html));
-//set flags for new weapons and items
-Hooks.on('preCreateOwnedItem', (actor, data,options) =>{
-    if (data.type==="meleeWeapon"||data.type==="rangedWeapon"||data.type==="psychicPower"||data.type==="ammunition"){
+                    })
+                //add listeners to the chatlog for dice rolls
+                Hooks.on('renderChatLog', (log, html, data) => FortykRolls.chatListeners(html));
+                //set flags for new weapons and items
+                Hooks.on('preCreateOwnedItem', (actor, data,options) =>{
+                    if (data.type==="meleeWeapon"||data.type==="rangedWeapon"||data.type==="psychicPower"||data.type==="ammunition"){
 
-        let flags= duplicate(FORTYK.itemFlags);
-        data.flags={};
+                        let flags= duplicate(FORTYK.itemFlags);
+                        data.flags={};
 
-        data.flags.specials=flags;
+                        data.flags.specials=flags;
 
 
-    }
-})
-/**
+                    }
+                })
+                /**
  * Set default values for new actors' tokens
  */
-Hooks.on("preCreateActor", (createData) =>{
+                Hooks.on("preCreateActor", (createData) =>{
 
-    // Set wounds, fatigue, and display name visibility
-    mergeObject(createData,
-                {"token.bar1" :{"attribute" : "secChar.wounds"},                 // Default Bar 1 to Wounds
-                 "token.bar2" :{"attribute" : "secChar.fatigue"},               // Default Bar 2 to Fatigue
-                 "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
-                 "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be always on
-                 "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
-                 "token.name" : createData.name                                       // Set token name to actor name
+                    // Set wounds, fatigue, and display name visibility
+                    mergeObject(createData,
+                                {"token.bar1" :{"attribute" : "secChar.wounds"},                 // Default Bar 1 to Wounds
+                                 "token.bar2" :{"attribute" : "secChar.fatigue"},               // Default Bar 2 to Fatigue
+                                 "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
+                                 "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be always on
+                                 "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
+                                 "token.name" : createData.name                                       // Set token name to actor name
+                                })
+
+
+
+
+                    // Default characters to HasVision = true and Link Data = true
+                    if (createData.type !== "npc")
+                    {
+                        createData.token.vision = true;
+                        createData.token.actorLink = true;
+                    }
                 })
-
-
-
-
-    // Default characters to HasVision = true and Link Data = true
-    if (createData.type !== "npc")
-    {
-        createData.token.vision = true;
-        createData.token.actorLink = true;
-    }
-})
+                Hooks.on("preCreateToken", (createData) =>{
+                    
+                    
+                })

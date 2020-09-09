@@ -400,6 +400,7 @@ returns the roll message*/
             let label = weapon.name ? `Rolling ${weapon.name} damage.` : 'damage';
 
             roll.roll();
+            //handle spray weapon jams
             if(weapon.flags.specials.spray.value){
                 let jam=false;
                 for ( let r of roll.dice[0].rolls ) {
@@ -413,14 +414,14 @@ returns the roll message*/
                 if(jam){
                     let jamOptions={user: game.user._id,
                                     speaker:{actor,alias:actor.name},
-                                    content:"Spray weapon jammed on a roll on 9",
+                                    content:"Spray weapon jammed on a roll of 9",
                                     classes:["fortyk"],
                                     flavor:`Weapon Jam`,
                                     author:actor.name};
                     await ChatMessage.create(jamOptions,{});
                 }
             }
-
+            //check to see if attack is targetted or just rolling damage with no targets
             if(targets.size!==0||self){
 
 
@@ -483,6 +484,7 @@ returns the roll message*/
                             }
                         }
                         let pen=parseInt(weapon.data.pen.value);
+                        //handle melta weapons
                         if(weapon.flags.specials.melta.value){
                             let attackerToken=getActorToken(actor);
 
@@ -507,29 +509,29 @@ returns the roll message*/
                     }
                     let damage=roll._total-soak;
                     //check for righteous fury
-                    if(!data.horde.value){
-                        let crit=this.righteousFury(roll,righteous,actor,label,weapon,curHit,damage);
 
-                        if(crit.promiseValue&&damage<=0){
-                            damage=1;
-                        }else if(damage<=0){
-                            damage=0;
-                            let chatOptions={user: game.user._id,
-                                             speaker:{actor,alias:actor.name},
-                                             content:"Damage is fully absorbed.",
-                                             classes:["fortyk"],
-                                             flavor:`No damage`,
-                                             author:actor.name};
-                            await ChatMessage.create(chatOptions,{});
-                        }
 
+                    let crit=this.righteousFury(roll,righteous,actor,label,weapon,curHit,damage,data);
+
+                    if(crit.promiseValue&&damage<=0){
+                        damage=1;
+                    }else if(damage<=0){
+                        damage=0;
+                        let chatOptions={user: game.user._id,
+                                         speaker:{actor,alias:actor.name},
+                                         content:"Damage is fully absorbed.",
+                                         classes:["fortyk"],
+                                         flavor:`No damage`,
+                                         author:actor.name};
+                        await ChatMessage.create(chatOptions,{});
                     }
 
+
                     let newWounds=wounds.value;
-                    //handle hordes
 
 
-                    console.log(tarActor);
+
+
                     // true grit!@!!@
                     if(!data.horde.value&&(damage>0)&&(wounds.value-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
                         if(newWounds>0){
@@ -548,8 +550,32 @@ returns the roll message*/
                                          author:tarActor.name};
                         await ChatMessage.create(chatOptions,{});
                     }
+                    //
+                    //
+                    //process horde damage for different weapon qualities
                     if(data.horde.value&&damage>0){
                         damage=1;
+                        if(weapon.data.damageType.value==="Explosive"){
+                            damage+=1;
+                        }
+                        if(weapon.flags.specials.powerfield.value){
+                            damage+=1;
+                        }
+                        if(weapon.flags.specials.blast.value){
+                            damage+=weapon.flags.specials.blast.num;
+                        }
+                        if(weapon.flags.specials.spray.value){
+                            let additionalHits=parseInt(weapon.data.range.value);
+                            additionalHits=Math.ceil(additionalHits/4);
+                            let addHits=new Roll("1d5");
+                            addHits.roll();
+                            await addHits.toMessage({
+                                speaker: ChatMessage.getSpeaker({ actor: actor }),
+                                flavor: "Rolling additional hits for spray weapon."
+                            });
+                            additionalHits+=addHits.total;
+                            damage+=additionalHits;
+                        }
                     }
                     //report damage dealt to gm
                     let damageOptions={user: game.user._id,
@@ -626,7 +652,7 @@ returns the roll message*/
 
 
                     }
-                    if(weapon.flags.specials.flame.value){
+                    if(weapon.flags.specials.flame.value&&!data.horde.value){
                         let fire=this.fortykTest("agi", "char", tarActor.data.data.characteristics.agi.total,tarActor, "Resist Fire");
 
                         if(!fire.value&&!tar.data.effects.includes("icons/svg/fire.svg")){
@@ -663,7 +689,7 @@ returns the roll message*/
 
     }
     //handles righteous fury
-    static async righteousFury(roll,righteous,actor,label,weapon,curHit, damage=1){
+    static async righteousFury(roll,righteous,actor,label,weapon,curHit, damage=1, tarData=null){
 
         var crit=false;
         for ( let r of roll.dice[0].rolls ) {
@@ -673,7 +699,7 @@ returns the roll message*/
             }
 
         }
-
+        if(tarData!==null&&tarData.horde.value){crit=false}
         await roll.toMessage({
             speaker: ChatMessage.getSpeaker({ actor: actor }),
             flavor: label
@@ -1068,20 +1094,23 @@ returns the roll message*/
 
                 let effect="icons/svg/skull.svg";
                 await target.toggleOverlay(effect);
-                let combatant = await game.combat.getCombatantByToken(id);
+                try{
+                    let combatant = await game.combat.getCombatantByToken(id);
 
-                let combatid=combatant._id;
-                await game.combat.updateCombatant({
-                    '_id':combatid,
-                    'defeated':true
-                }) 
+                    let combatid=combatant._id;
+                    await game.combat.updateCombatant({
+                        '_id':combatid,
+                        'defeated':true
+                    }) 
+                }catch{}
+
 
 
             }else{
-                let tokenId=target.data._id;
-                let socketOp={type:"applyDead",package:{token:tokenId}}
+                    let tokenId=target.data._id;
+                    let socketOp={type:"applyDead",package:{token:tokenId}}
 
-                game.socket.emit("system.fortyk",socketOp);
+                    game.socket.emit("system.fortyk",socketOp);
 
             }
         }

@@ -2,6 +2,7 @@
 import {getSkills} from "../utilities.js";
 import {FORTYK} from "../FortykConfig.js";
 import {isEmpty} from "../utilities.js";
+import {FORTYKTABLES} from "../FortykTables.js";
 /**
  * Extend the base Actor entity by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
@@ -27,6 +28,40 @@ export class FortyKActor extends Actor {
 
         //resume actor creation
         super.create(data, options);
+    }
+    //@Override the update function to modify token size for hordes and larger entities
+    async update(data, options={}) {
+
+        // Apply changes in Actor size to Token width/height
+        
+        let newSize= 0;
+        if(this.data.data.horde.value){
+            newSize= data["data.secChar.wounds.value"];
+            
+            if(newSize<0){newSize=0}
+        }else{
+            newSize= data["data.secChar.size.value"];
+        }
+       
+            if ( (!this.data.data.horde.value&&newSize && (newSize !== this.data.data.secChar.size.value))||(this.data.data.horde.value&&newSize!==undefined && (newSize !== this.data.data.secChar.wounds.value)) ) {
+                
+                let size= 0;
+                if(this.data.data.horde.value){
+                    size= FORTYKTABLES.hordeSizes[newSize];
+                }else{
+                    size= FORTYK.size[newSize].size;
+                }
+                
+                if ( this.isToken ) this.token.update({height: size, width: size});
+                else if ( !data["token.width"] && !hasProperty(data, "token.width") ) {
+                    data["token.height"] = size;
+                    data["token.width"] = size;
+                }
+            }
+
+        
+
+        return super.update(data, options);
     }
     /**
    * Augment the basic actor data with additional dynamic data.
@@ -323,7 +358,7 @@ export class FortyKActor extends Actor {
                 }
 
                 if(item.type==="rangedWeapon"){
-                   
+
                     try
                     {
                         let sb=data.characteristics.s.bonus;
@@ -335,7 +370,7 @@ export class FortyKActor extends Actor {
                     catch{
                         item.data.range.value="";
                 } 
-                        
+
                         rangedWeapons.push(item);
                     wargear.push(item);
 

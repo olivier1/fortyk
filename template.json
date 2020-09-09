@@ -180,7 +180,8 @@
                         "mod": 0,
                         "stealth": 0,
                         "movement": 0,
-                        "label": "Average"
+                        "label": "Average",
+                        "size":1
                     },
                     "lastHit": {
                         "value": "body",
