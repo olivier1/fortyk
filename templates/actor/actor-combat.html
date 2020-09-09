@@ -85,29 +85,29 @@
             <div class="flexrow">
                 <a class="worn-item-plus" title="Add extra weapon"></a>
                 <a class="worn-item-minus" title="Delete extra weapon"></a>
-                </div>
+            </div>
             <div class="flexrow">
                 <div class="flexcol weapon-select">
                     <span>Left Hand</span>
                     <select class="hand-weapon" data-hand="left" id="left">
 
-                       
+
                         <option value="" {{#if (compareString data.secChar.wornGear.weapons.[0])}}selected{{/if}}>None</option>
                         <option value="2hand" hidden {{#if (compareString data.secChar.wornGear.weapons.[0] "2hand")}}selected{{/if}}>Two handed</option>
                         {{#each actor.meleeWeapons}}
                         <option value="{{this._id}}" {{#if (compareString ../data.secChar.wornGear.weapons.[0] this._id)}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                         {{#each actor.rangedWeapons}}
-                        
+
                         <option value="{{this._id}}" {{#if (compareString ../data.secChar.wornGear.weapons.[0] this._id)}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
-                       
+
                     </select>
                 </div>
                 <div class="flexcol weapon-select">
                     <span>Right Hand</span>
                     <select class="hand-weapon" data-hand="right"  id="right">
-                      
+
                         <option value="" {{#if (compareString data.secChar.wornGear.weapons.[1])}}selected{{/if}}>None</option>
                         <option value="2hand" hidden {{#if (compareString data.secChar.wornGear.weapons.[1] "2hand")}}selected{{/if}}>Two handed</option>
                         {{#each actor.meleeWeapons}}
@@ -116,7 +116,7 @@
                         {{#each actor.rangedWeapons}}
                         <option value="{{this._id}}" {{#if (compareString ../data.secChar.wornGear.weapons.[1] this._id)}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
-                       
+
                     </select>
                 </div>
                 {{#each data.secChar.wornGear.weapons}}
@@ -151,7 +151,7 @@
                     <span>Name: {{this.name}}</span>
                 </div>
 
-                
+
                 <div class="list-item">
                     <span>Attack: </span> 
                     {{#if (greaterThan this.data.clip.value 0)}}
@@ -167,7 +167,7 @@
                 </div>
                 {{#if this.flags.specials.force.value}}
                 <div class="list-item">
-                    
+
                     <a class="force-roll button" data-label="Force"> Force</a>
 
 
@@ -180,7 +180,7 @@
 
                 </div>
                 {{/if}}
-                
+
                 {{#unless (contains this.data.class.value "thrown")}}
                 <div class="list-item">
 
@@ -263,7 +263,7 @@
                     <span>Name: {{this.name}}</span>
                 </div>
 
-                
+
                 <div class="list-item">
                     <span>Attack: </span> 
                     <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../data.characteristics.ws.total}}" data-item-id="{{this._id}}" data-label="Melee Attack" data-char="ws">Roll</span>
@@ -274,7 +274,7 @@
                 </div>
                 {{#if this.flags.specials.force.value}}
                 <div class="list-item">
-                    
+
                     <a class="force-roll button" data-label="Force"> Force</a>
 
 
@@ -316,6 +316,17 @@
 
         </div>
         <div class="flexcol flex-group-center">
+            <span class="section-title">SIZE</span>
+            <select class="sizeSelect" name="data.secChar.size.value" data-dtype="Number">
+                {{#select data.secChar.size.value}}
+
+                {{#each size}}
+
+                <option value="{{@index}}">{{this.name}}</option>
+
+                {{/each}}
+                {{/select}}
+            </select>
             <span class="section-title">MOVEMENT</span>
             <div class="flexrow movement">
                 <div class="resource flex-group-center">
@@ -344,6 +355,7 @@
                 </div>
             </div>
             <div class="forcefield flexcol">
+
                 <span class="section-title">FORCE FIELD</span>
                 <div class="flexcol flex-group-center">
                     <select class="force-field" name="data.secChar.wornGear.forceField._id">

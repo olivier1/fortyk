@@ -86,13 +86,14 @@ returns the roll message*/
         templateOptions["target"]="Target: "+target.toString();
         const rollResult=target-testRoll;
         const testResult=rollResult>=0;
-        const charObj=actor.data.data.characteristics[char];
+        var charObj=actor.data.data.characteristics[char];
+        if(charObj===undefined){charObj={"uB":0}}
         var testDos=0;
 
         //calculate degrees of failure and success
         if((testResult&&testRoll<96||testRoll===1)&&!jam){
 
-            testDos=Math.floor(Math.abs(roll._result)/10)+1+charObj.uB;
+            testDos=Math.floor(Math.abs(roll._result)/10)+1+Math.ceil(charObj.uB/2);
             templateOptions["dos"]="with "+testDos.toString()+" degree";
             if(testDos===1){}else{templateOptions["dos"]+="s";}
             templateOptions["dos"]+=" of success!";
@@ -326,6 +327,14 @@ returns the roll message*/
                            flavor:"Shock effect",
                            author:actor.name};
             await ChatMessage.create(chatShock,{});
+        }else if(type==="forcefield"&&testRoll<=char){
+            let chatOverload={user: game.user._id,
+                           speaker:{actor,alias:actor.name},
+                           content:"The forcefield overloads and needs to be repaired!",
+                           classes:["fortyk"],
+                           flavor:"Gear malfunction",
+                           author:actor.name};
+            await ChatMessage.create(chatOverload,{});
         }
 
         return templateOptions["success"];
