@@ -75,7 +75,7 @@ export class FortyKItem extends Item {
                 if(data.flags===undefined){data.flags=itemData.flags}
                 let ammo=this.actor.getEmbeddedEntity("OwnedItem",data.ammo._id);
                 if(ammo!==null&&!ammo.data.default.value){
-                    data.damageType.value=ammo.data.damageType;
+                    data.damageType.value=ammo.data.damageType.value;
                     data.range.value=ammo.data.range.formula;
                     data.pen.value=ammo.data.pen.formula;
                     data.damageFormula.value=ammo.data.damageFormula.formula;
