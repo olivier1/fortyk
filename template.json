@@ -127,7 +127,6 @@
                         "shock": "",
                         "mod": 0
                     },
-                    "injuries": [],
                     "wornGear": {
                         "weapons": [
                             "", ""
@@ -187,7 +186,8 @@
                         "value": "body",
                         "label": "Body",
                         "dos": 1,
-                        "type": "String"
+                        "type": "String",
+                        "aim":false
                     },
                     "cover": {
                         "value": 0,
@@ -472,6 +472,7 @@
             "mutation",
             "malignancy",
             "disorder",
+            "injury",
             "talentntrait",
             "advancement",
             "mission"
@@ -805,6 +806,15 @@
                 "description",
                 "tableEntry"
             ]
+        },
+        "injury": {
+            "templates": [
+                "description"
+            ],
+            "bodyPart":{
+                "value":"",
+                "type":"String"
+            }
         },
         "talentntrait": {
             "templates": [

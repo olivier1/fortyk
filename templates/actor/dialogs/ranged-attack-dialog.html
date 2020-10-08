@@ -12,7 +12,7 @@
             </div>
             <div class="list-item flexrow" {{#unless full}} hidden{{/unless}}>
 
-                <input type="radio" name="attack-type" value="{{modifiers.full}}" index='2'type="full"label="Full-Auto"><label>Full-Auto: {{modifiers.full}}</label>
+                <input type="radio" name="attack-type" value="{{modifiers.full}}" index='2'type="full"label="Full-Auto"{{#unless single}}checked{{/unless}}><label>Full-Auto: {{modifiers.full}}</label>
             </div>
             <div class="list-item flexrow">
 

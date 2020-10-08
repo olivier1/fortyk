@@ -101,7 +101,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             type: type
         };
         let item= await this.actor.createEmbeddedEntity("OwnedItem",itemData,{renderSheet:true});
-        console.log(this.actor);
+        
         let newItem=null;
         if(this.actor.isToken){
             newItem = await this.actor.items.find(i => i.data._id == item.data._id);
@@ -109,7 +109,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             newItem = await this.actor.items.find(i => i.data._id == item._id);
         }
 
-        console.log(item,newItem);
+  
 
 
 
@@ -278,7 +278,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     async _onCoverReset(event){
         let actor=this.actor;
         let data=duplicate(actor.data);
-        await console.log(data);
+        
         data.data.secChar.cover.value=0;
         data.data.characterHitLocations.head.cover=false;
         data.data.characterHitLocations.body.cover=false;
@@ -286,9 +286,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.data.characterHitLocations.lArm.cover=false;
         data.data.characterHitLocations.rLeg.cover=false;
         data.data.characterHitLocations.lLeg.cover=false;
-        console.log(data);
+      
         actor.update(data);
-        console.log(actor);
+     
         
     }
     //handles force weapon special damage rolls
@@ -311,7 +311,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
                         let force=await this.actor.createEmbeddedEntity("OwnedItem",forceData, {temporary: true});
                         
-                        console.log(force);
+                     
                        
                         force.flags.specials=flags;
                         force.flags.specials.ignoreSoak.value=true;

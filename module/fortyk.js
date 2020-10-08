@@ -154,6 +154,20 @@ Hooks.once('ready', async function() {
                         if(game.user.isGM){
                             let token=canvas.tokens.get(combat.current.tokenId);
                             let actor=token.actor;
+                            //check for regeneration
+
+                            if(actor.getFlag("fortyk","regeneration")){
+                                let regen=await FortykRolls.fortykTest("t", "char", actor.data.data.characteristics.t.total,actor, "Regeneration Test");
+                                if(regen.value){
+
+                                    let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
+                                    let maxWounds=actor.data.data.secChar.wounds.max;
+                                    let currWounds=actor.data.data.secChar.wounds.value;
+                                    currWounds=Math.min(maxWounds,currWounds+regenAmt);
+                                    await actor.update({"data.secChar.wounds.value":currWounds});
+                                }
+
+                            }
                             //check for fire
                             if(token.data.effects.includes("icons/svg/fire.svg")){
                                 let onFireOptions={user: game.user._id,
@@ -175,6 +189,36 @@ Hooks.once('ready', async function() {
                                 fire.data.data.damageType.value="Energy";
                                 fire.data.data.pen.value=99999;
                                 await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire.data,1, true);
+                            }
+                            //check for bleeding
+                            if(token.data.effects.includes("icons/svg/blood.svg")){
+                                let bleed=true;
+                               
+                                if(actor.getFlag("fortyk","diehard")){
+                                    let diehrd= await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "Die Hard");
+                                    if(diehrd.value){
+                                        bleed=false;
+                                        let dieHardOptions={user: game.user._id,
+                                                             speaker:{actor,alias:actor.name},
+                                                             content:"Resisted bleeding fatigue.",
+                                                             classes:["fortyk"],
+                                                             flavor:`Bleeding`,
+                                                             author:actor.name};
+                                        await ChatMessage.create(dieHardOptions,{});
+                                    }
+                                }
+                                if(bleed){
+                                     let bleedingOptions={user: game.user._id,
+                                                     speaker:{actor,alias:actor.name},
+                                                     content:"On round start gain 1 fatigue per stack of bleeding",
+                                                     classes:["fortyk"],
+                                                     flavor:`Bleeding`,
+                                                     author:actor.name};
+                                await ChatMessage.create(bleedingOptions,{});
+                                     let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
+                                    await actor.update({"data.secChar.fatigue.value":fatigue});
+                                }
+                               
                             }
                         }
 
@@ -222,6 +266,6 @@ Hooks.once('ready', async function() {
                     }
                 })
                 Hooks.on("preCreateToken", (createData) =>{
-                    
-                    
+
+
                 })

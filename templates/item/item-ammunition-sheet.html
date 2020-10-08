@@ -29,7 +29,7 @@
                 {{/select}}
             </select>
         </div>
-        {{debug data}}
+       
         <div class="flexrow">
             <label>Default:</label>
             <input type="checkbox" name="data.default.value" {{checked data.default.value}}>
@@ -52,7 +52,7 @@
                 {{#select data.damageType.value}}
                
                 {{#each item.FORTYK.damageTypes}}
-                {{debug this}}
+              
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
                 {{/select}}

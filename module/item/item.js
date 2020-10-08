@@ -71,6 +71,10 @@ export class FortyKItem extends Item {
 
             }
             if(itemData.type==="rangedWeapon"){
+                if(itemData.flags.specials.accurate.value){
+                    data.attackMods.aim.half=20;
+                    data.attackMods.aim.full=30;
+                }
                 if(data.damTyp===undefined){data.damTyp=data.damageType.value}
                 if(data.flags===undefined){data.flags=itemData.flags}
                 let ammo=this.actor.getEmbeddedEntity("OwnedItem",data.ammo._id);
@@ -99,6 +103,22 @@ export class FortyKItem extends Item {
                 }else{
                     itemData.data.twohanded.value=true;
                 }
+                if(itemData.flags.specials.maximal.maximal){
+                    
+                        
+                        itemData.data.range.value=parseInt(itemData.data.range.formula)+10;
+                        let form=itemData.data.damageFormula.formula;
+                        let dPos = form.indexOf('d');
+                        let dieNum = form.substr(0,dPos);
+                        let newNum=parseInt(dieNum)+1;
+                        itemData.data.damageFormula.value=form.slice(dPos)
+                        itemData.data.damageFormula.value=newNum+itemData.data.damageFormula.value;
+                        itemData.data.pen.value=parseInt(itemData.data.pen.formula)+2;
+                        itemData.data.clip.consumption=3;
+                    }else{
+                   
+                        itemData.data.clip.consumption=1;
+                    }
             }
             //prepare psychicpowers, calculates pushing and target numbers
             if(itemData.type==="psychicPower"){
@@ -128,24 +148,9 @@ export class FortyKItem extends Item {
             if(itemData.type==="meleeWeapon"||itemData.type==="rangedWeapon"||itemData.type==="psychicPower"){
 
 
-                try{
-                    if(itemData.flags.specials.maximal.maximal){
-                        itemData.data.range.value=parseInt(itemData.data.range.formula)+10;
-                        let form=itemData.data.damageFormula.formula;
-                        let dPos = form.indexOf('d');
-                        let dieNum = form.substr(0,dPos);
-                        let newNum=parseInt(dieNum)+1;
-                        itemData.data.damageFormula.value=form.slice(dPos)
-                        itemData.data.damageFormula.value=newNum+itemData.data.damageFormula.value;
-                        itemData.data.pen.value=parseInt(itemData.data.pen.formula)+2;
-                        itemData.data.clip.consumption=3;
-                    }else{
-                        itemData.data.clip.consumption=1;
-                    }
-                }catch{
-
-
-            }
+                
+                    
+                
 
 
 

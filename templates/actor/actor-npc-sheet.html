@@ -86,7 +86,7 @@
         {{#each data.characteristics as |char key|}}
         {{#unless (compareString key "inf")}}
         <div>
-            <input type="text" name="data.characteristics.{{key}}.total" value="{{char.total}}" data-dtype="Number"/>
+            <input type="text" name="data.characteristics.{{key}}.value" value="{{char.value}}" data-dtype="Number"/>
 
         </div>
         {{/unless}}
@@ -124,12 +124,13 @@
 
     </div>
 
-    {{#unless actor.isToken}}
+   
     <div class="flexrow">
         <a class="item-create button" data-type="rangedWeapon" title="Add a Ranged Weapon">Add ranged weapon</a>
         <a class="item-create button" data-type="meleeWeapon" title="Add a Melee Weapon">Add melee weapon</a>
     </div>
-    {{/unless}}
+    
+    
     <div class="grid grid-2col">
         {{#each actor.meleeWeapons}}
         <div>
@@ -412,10 +413,112 @@
         </div>
     </div>
 
+    <div class="psy flexcol">
 
+    <div class="psy-header flexrow">
+        <div class="flexcol">
+            <label>Psy Rating:</label>
+            <input type="text" name="data.psykana.pr.value" value="{{data.psykana.pr.value}}" data-dtype="Number">
+        </div>
+        <div class="flexcol">
+            <label>Sustained Powers:</label>
+            <input type="text" name="data.psykana.pr.sustain" value="{{data.psykana.pr.sustain}}" data-dtype="Number">
+        </div>
+        <div class="flexcol">
+            <label>Effective PR:</label>
+            <input type="text" name="data.psykana.pr.effective" value="{{data.psykana.pr.effective}}" disabled>
+        </div>
+        <div class="flexcol">
+            <label>Class:</label>
+            <select class="psyType-select" name="data.psykana.psykerType.value" data-dtype="String">
+                {{#select data.psykana.psykerType.value}}
+                <option value="bound">Bound</option>
+                <option value="unbound">Unbound</option>
+                <option value="daemon">Daemon</option>
+
+                {{/select}}
+            </select>
+        </div>
+        <div class="flexcol">
+            <label>Psy Modifier:</label>
+            <input type="text" name="data.psykana.mod.value" value="{{data.psykana.mod.value}}">
+        </div>
+    </div>
+    {{#if (greaterThan data.psykana.pr.value 0)}}
+    <a class="item-create button" data-type="psychicPower" title="Add a new Psychic Power">Add Psychic Power</a>
+    <div class="psy-powers grid grid-2col">
+        {{#each actor.psychicPowers as |power key|}}
+        <div class="list-item flexcol">
+
+            <div class="grid grid-3col">
+
+
+
+
+                <label class="list-item psy-name">Name: {{power.name}}</label>
+
+
+
+                <label class="list-item">Action: {{power.data.action.value}}</label>
+
+
+
+                <label class="list-item">Subtype: {{power.data.subtype.value}}</label>
+
+                <label class="list-item">Discipline: {{power.data.discipline.value}}</label>
+
+                <label class="list-item">Test Type: {{power.data.testChar.value}}</label>
+
+
+                <label class="list-item">Modifier: {{power.data.testMod.value}}</label>
+
+                <label class="list-item">Sustain: {{power.data.sustain.value}}</label>
+
+                <label class="list-item">Range: {{power.data.range.value}}m</label>
+
+                <label class="list-item">Damage: <a class="damage-roll button" data-label="{{power.name}}"data-formula="{{power.data.damageFormula.value}}" data-weapon="{{power._id}}">{{power.data.damageFormula.value}}</a></label>
+
+                <label class="list-item">Penetration: {{power.data.pen.value}}</label>
+
+                <div class="list-item">
+                    <span>Special: 
+                        {{#each this.flags.specials}}
+                        {{#if this.value}}
+                        <a class="item-descr" data-name="{{this.label}}" data-item-descr="{{this.description}}" >{{this.label}}{{#if (isdefined this.num)}}({{this.num}}){{/if}}</a>
+                        {{/if}}{{/each}}
+                    </span>
+
+                </div>
+
+                <label class="list-item">Damage Type: {{power.data.damageType.value}}</label>
+
+                <label class="list-item">Power Type: {{power.data.class.value}}</label>
+                <div class="list-item flexrow">
+                    <label>PR: </label>
+                    <input type="text" class="item-text-input" data-target="data.curPR.value" data-item-id="{{power._id}}" value="{{power.data.curPR.value}}" data-dtype="Number">
+                </div>
+                <div class="list-item flexrow">
+                    <label>Test Target: </label>
+                    <span data-item-id="{{power._id}}" class="rollable powerItem button{{#if (greaterThan power.data.curPR.value ../data.psykana.pr.effective)}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-target="{{power.data.target.value}}" data-label="{{power.name}}" data-char="{{power.data.testChar.type}}">{{power.data.target.value}}</span>
+                </div>
+                <div class="list-item flexrow">
+                    <a class="item-edit" title="Edit Power" data-item-id="{{power._id}}"></a>
+                    <a class="item-delete" title="Delete Power" data-item-id="{{power._id}}"></a>
+                </div>
+                <a class="item-descr list-item" data-name="{{power.name}}" data-item-descr="{{power.data.description.value}}">Description</a>
+            </div>
+            
+
+
+        </div>
+        {{/each}}
+    </div>
+    {{/if}}
+</div>
     <div class="item-description">
         {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
     </div>
+
 
     {{else}}
     <img class="npc-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>

@@ -50,14 +50,32 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
     } 
 
     async _onTntParse(event){
-        console.log(this);
+      
         let actor=this.actor;
         let data=actor.data.data;
-        if(data.talentsntraits.value.toLowerCase().includes("true grit")){
+        let tnt=data.talentsntraits.value.toLowerCase();
+        if(tnt.includes("true grit")){
             actor.setFlag("fortyk","truegrit",true);
 
         }else{
             actor.setFlag("fortyk","truegrit",false);
+        }
+        if(tnt.includes("overwhelming")){
+            actor.setFlag("fortyk","overwhelming",true);
+
+        }else{
+            actor.setFlag("fortyk","overwhelming",false);
+        }
+        if(tnt.includes("regeneration")){
+            let regex=/.*?regeneration\((\d+)\).*$/;
+           
+            let found=tnt.match(regex);
+            
+            
+            actor.setFlag("fortyk","regeneration",found[1]);
+
+        }else{
+            actor.setFlag("fortyk","regeneration",false);
         }
        
     }

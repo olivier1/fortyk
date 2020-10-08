@@ -33,33 +33,33 @@ export class FortyKActor extends Actor {
     async update(data, options={}) {
 
         // Apply changes in Actor size to Token width/height
-        
+
         let newSize= 0;
         if(this.data.data.horde.value){
             newSize= data["data.secChar.wounds.value"];
-            
+
             if(newSize<0){newSize=0}
         }else{
             newSize= data["data.secChar.size.value"];
         }
-       
-            if ( (!this.data.data.horde.value&&newSize && (newSize !== this.data.data.secChar.size.value))||(this.data.data.horde.value&&newSize!==undefined && (newSize !== this.data.data.secChar.wounds.value)) ) {
-                
-                let size= 0;
-                if(this.data.data.horde.value){
-                    size= FORTYKTABLES.hordeSizes[newSize];
-                }else{
-                    size= FORTYK.size[newSize].size;
-                }
-                
-                if ( this.isToken ) this.token.update({height: size, width: size});
-                else if ( !data["token.width"] && !hasProperty(data, "token.width") ) {
-                    data["token.height"] = size;
-                    data["token.width"] = size;
-                }
+
+        if ( (!this.data.data.horde.value&&newSize && (newSize !== this.data.data.secChar.size.value))||(this.data.data.horde.value&&newSize!==undefined && (newSize !== this.data.data.secChar.wounds.value)) ) {
+
+            let size= 0;
+            if(this.data.data.horde.value){
+                size= FORTYKTABLES.hordeSizes[newSize];
+            }else{
+                size= FORTYK.size[newSize].size;
             }
 
-        
+            if ( this.isToken ) this.token.update({height: size, width: size});
+            else if ( !data["token.width"] && !hasProperty(data, "token.width") ) {
+                data["token.height"] = size;
+                data["token.width"] = size;
+            }
+        }
+
+
 
         return super.update(data, options);
     }
@@ -78,6 +78,7 @@ export class FortyKActor extends Actor {
         //set default flags
         flags["truegrit"]=false;
         flags["atsknf"]=false;
+        flags["diehard"]=false;
         if(flags["unrelenting"]===undefined){flags["unrelenting"]=false};
 
         if(data.skillFilter===undefined){
@@ -99,7 +100,7 @@ export class FortyKActor extends Actor {
     _prepareCharacterData(actorData) {
 
         const data = actorData.data;
-        data.secChar.movement.mod=1;
+
 
         //prepare characteristics data
         for (let [key, char] of Object.entries(data.characteristics)){
@@ -131,6 +132,17 @@ export class FortyKActor extends Actor {
         data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(FORTYK.psykerTypes[data.psykana.psykerType.value].push);
 
         //movement
+
+        let size=data.secChar.size.value;
+        data.secChar.size.label=FORTYK.size[size].name;
+        data.secChar.size.mod=FORTYK.size[size].mod;
+        data.secChar.size.movement=FORTYK.size[size].movement;
+        data.secChar.size.stealth=FORTYK.size[size].stealth
+        //movement
+        data.secChar.movement.half=data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod;
+        data.secChar.movement.full=data.secChar.movement.half*2;
+        data.secChar.movement.charge=data.secChar.movement.half*3;
+        data.secChar.movement.run=data.secChar.movement.half*6;
         data.secChar.movement.half=data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod;
         data.secChar.movement.full=data.secChar.movement.half*2;
         data.secChar.movement.charge=data.secChar.movement.half*3;
@@ -183,6 +195,7 @@ export class FortyKActor extends Actor {
         const consummables=[];
         const psychicPowers=[];
         const mutations=[];
+        const injuries=[];
         const malignancies=[];
         const disorders=[];
         const talentsntraits=[];
@@ -222,6 +235,9 @@ export class FortyKActor extends Actor {
             }
             if(item.type==="malignancy"){
                 malignancies.push(item);
+            }
+            if(item.type==="injury"){
+                injuries.push(item);
             }
             if(item.type==="mutation"){
                 mutations.push(item);
@@ -292,6 +308,9 @@ export class FortyKActor extends Actor {
                 }else if(item.name==="Unrelenting"){
                     actorData.flags["unrelenting"]=true;
                     unrelenting=true;
+                }else if(item.name==="Die Hard"){
+                    actorData.flags["diehard"]=true;
+                    this.setFlag("fortyk","diehard",true);
                 }
                 talentsntraits.push(item);
             }
@@ -388,6 +407,7 @@ export class FortyKActor extends Actor {
                 data.carry.max=FORTYK.carry[19].carry;
 
             }else{
+
                 data.carry.max=FORTYK.carry[(data.characteristics["s"].bonus+data.characteristics["t"].bonus)].carry;
 
             }
@@ -421,6 +441,7 @@ export class FortyKActor extends Actor {
                                psychicPowers:psychicPowers,
                                mutations:mutations,
                                malignancies:malignancies,
+                               injuries:injuries,
                                disorders:disorders,
                                talentsntraits:talentsntraits,
                                missions:missions,
@@ -504,42 +525,44 @@ export class FortyKActor extends Actor {
 
                 }
 
+
+
+
+
+                if(item.type==="rangedWeapon"){
+                    try
+                    {
+                        let sb=data.characteristics.s.bonus;
+
+                        let formula=item.data.range.formula.toLowerCase();
+
+                        item.data.range.value=eval(formula);
+                    } 
+                    catch{
+                        item.data.range.value="";
+                } 
+                        rangedWeapons.push(item);
+
+
+                }
                 if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
 
 
                     try{
                         if(item.flags.specials.force.value){
-
+                            
                             let pr=parseInt(data.psykana.pr.value);
+                           
                             item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
 
                             item.data.damageFormula.value=item.data.damageFormula.value.replace(/pr/gmi,pr);
-
+                          
                         }
                     }catch{
                         item.data.pen.value="";
                         item.data.damageFormula.value="";
                 }
                 }
-
-
-
-                        if(item.type==="rangedWeapon"){
-                            try
-                            {
-                                let sb=data.characteristics.s.bonus;
-
-                                let formula=item.data.range.formula.toLowerCase();
-
-                                item.data.range.value=eval(formula);
-                            } 
-                            catch{
-                                item.data.range.value="";
-                        } 
-                                rangedWeapons.push(item);
-
-
-                        }
                 }
 
 
@@ -549,89 +572,91 @@ export class FortyKActor extends Actor {
 
 
 
-                let preparedItems={
-                    psychicPowers:psychicPowers,
-                    meleeWeapons:meleeweapons,
-                    rangedWeapons:rangedWeapons
+                        let preparedItems={
+                        psychicPowers:psychicPowers,
+                        meleeWeapons:meleeweapons,
+                        rangedWeapons:rangedWeapons
                 };
-                return preparedItems;
-            }
-            prepare(){
-                let preparedData = this.data
-
-                // Call prepareItems first to organize and process OwnedItems
-                if(preparedData.type==='dwPC'){
-                    mergeObject(preparedData, this.preparePCItems(preparedData));
+                        return preparedItems;
                 }
-                if(preparedData.type==='npc'){
-                    mergeObject(preparedData, this.prepareNPCItems(preparedData));
-                }
+                        prepare(){
+                            let preparedData = this.data
 
-                return preparedData;
-            }
-            _prepareNPCData(actorData){
+                            // Call prepareItems first to organize and process OwnedItems
+                            if(preparedData.type==='dwPC'){
+                                mergeObject(preparedData, this.preparePCItems(preparedData));
+                            }
+                            if(preparedData.type==='npc'){
+                                mergeObject(preparedData, this.prepareNPCItems(preparedData));
+                            }
 
-                const data=actorData.data;
-                //calc char bonuses
-                for (let [key, char] of Object.entries(data.characteristics)){
-                    if(key==="inf"){
-
-                    }else{
-
-                        char.bonus=Math.floor(char.total/10)+parseInt(char.uB); 
-
-                    }
-
-                }
-
-
-                data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
-                //modify total characteristics depending on fatigue
-                var fatigueMult=1;
-
-
-                for (let [key,char] of Object.entries(data.characteristics)){
-                    if(char.bonus*fatigueMult<data.secChar.fatigue.value){
-                        char.total=Math.ceil(char.total/2);
-                    }
-                }
-                //size
-                let size=data.secChar.size.value;
-
-                data.secChar.size.label=FORTYK.size[size].name;
-                data.secChar.size.mod=FORTYK.size[size].mod;
-                data.secChar.size.movement=FORTYK.size[size].movement;
-                data.secChar.size.stealth=FORTYK.size[size].stealth
-                //movement
-                data.secChar.movement.half=data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod;
-                data.secChar.movement.full=data.secChar.movement.half*2;
-                data.secChar.movement.charge=data.secChar.movement.half*3;
-                data.secChar.movement.run=data.secChar.movement.half*6;
-                //total soak
-                for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
-
-
-                    hitLoc.value=parseInt(hitLoc.armor)+parseInt(data.characteristics.t.bonus);
-                }
-
-            }
-
-            //this function deletes items from an actor, certain items need more logic to process
-            deleteItem(itemId){
-
-                let item=this.getEmbeddedEntity("OwnedItem",itemId);
-                //iterate through skills to delete all the children of a group skill
-                if(item.type==="skill"&&item.data.hasChildren){
-                    let skills=this.items.filter(function(item){return item.type==="skill"});
-                    for(let s of skills){                
-                        if(s.data.data.parent.value===item.name){
-                            this.deleteEmbeddedEntity("OwnedItem",s._id);
+                            return preparedData;
                         }
+                    _prepareNPCData(actorData){
+
+                        const data=actorData.data;
+                        //calc char bonuses
+                        for (let [key, char] of Object.entries(data.characteristics)){
+                            if(key==="inf"){
+
+                            }else{
+
+                                char.bonus=Math.floor(char.total/10)+parseInt(char.uB); 
+
+                            }
+
+                        }
+
+
+                        data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
+                        //modify total characteristics depending on fatigue
+                        var fatigueMult=1;
+
+
+                        for (let [key,char] of Object.entries(data.characteristics)){
+                            if(char.bonus*fatigueMult<data.secChar.fatigue.value){
+                                char.total=Math.ceil(char.value/2);
+                            }else{
+                                char.total=char.value;
+                            }
+                        }
+                        //size
+                        let size=data.secChar.size.value;
+
+                        data.secChar.size.label=FORTYK.size[size].name;
+                        data.secChar.size.mod=FORTYK.size[size].mod;
+                        data.secChar.size.movement=FORTYK.size[size].movement;
+                        data.secChar.size.stealth=FORTYK.size[size].stealth
+                        //movement
+                        data.secChar.movement.half=data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod;
+                        data.secChar.movement.full=data.secChar.movement.half*2;
+                        data.secChar.movement.charge=data.secChar.movement.half*3;
+                        data.secChar.movement.run=data.secChar.movement.half*6;
+                        //total soak
+                        for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
+
+
+                            hitLoc.value=parseInt(hitLoc.armor)+parseInt(data.characteristics.t.bonus);
+                        }
+
                     }
+
+                    //this function deletes items from an actor, certain items need more logic to process
+                    deleteItem(itemId){
+
+                        let item=this.getEmbeddedEntity("OwnedItem",itemId);
+                        //iterate through skills to delete all the children of a group skill
+                        if(item.type==="skill"&&item.data.hasChildren){
+                            let skills=this.items.filter(function(item){return item.type==="skill"});
+                            for(let s of skills){                
+                                if(s.data.data.parent.value===item.name){
+                                    this.deleteEmbeddedEntity("OwnedItem",s._id);
+                                }
+                            }
+                        }
+                        this.deleteEmbeddedEntity("OwnedItem", itemId);
+
+                    }
+
                 }
-                this.deleteEmbeddedEntity("OwnedItem", itemId);
-
-            }
-
-        }
 

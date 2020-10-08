@@ -20,7 +20,7 @@ export class FortyKActorSheet extends FortyKBaseActorSheet {
         return mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/actor-sheet.html",
-            width: 600,
+            width: 666,
             height: 660,
             tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }],
             default:null
