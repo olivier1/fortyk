@@ -33,6 +33,6 @@
     "socket": true,
     "url": "https://github.com/olivier1/fortyk",
     "manifest": "https://raw.githubusercontent.com/olivier1/fortyk/master/system.json",
-    "download": "https://github.com/olivier1/fortyk/archive/master.zip",
+    "download": "https://github.com/olivier1/fortyk/archive/0.1.22.zip",
     "license": "LICENSE.txt"
 }
