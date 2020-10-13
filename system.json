@@ -31,8 +31,8 @@
     "primaryTokenAttribute": "secChar.wounds",
     "secondaryTokenAttribute": "secChar.fatigue",
     "socket": true,
-    "url": "",
-    "manifest": "",
-    "download": "",
+    "url": "https://github.com/olivier1/fortyk",
+    "manifest": "https://raw.githubusercontent.com/olivier1/fortyk/master/system.json",
+    "download": "https://github.com/olivier1/fortyk/archive/master.zip",
     "license": "LICENSE.txt"
 }
