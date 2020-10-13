@@ -406,10 +406,12 @@ export class FortyKActor extends Actor {
             if((data.characteristics["s"].bonus+data.characteristics["t"].bonus)>19){
                 data.carry.max=FORTYK.carry[19].carry;
 
-            }else{
+            }else if((data.characteristics["s"].bonus+data.characteristics["t"].bonus)<=19){
 
                 data.carry.max=FORTYK.carry[(data.characteristics["s"].bonus+data.characteristics["t"].bonus)].carry;
 
+            }else{
+             data.carry.max=FORTYK.carry[1].carry;
             }
             let wornWeapons=data.secChar.wornGear.weapons;
 

@@ -7,7 +7,7 @@ import FortyKBaseActorSheet from "./base-sheet.js";
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class FortyKActorSheet extends FortyKBaseActorSheet {
+export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
     static async create(data, options) {
         data.skillFilter="";
@@ -16,7 +16,7 @@ export class FortyKActorSheet extends FortyKBaseActorSheet {
     /** @override */
 
     static get defaultOptions() {
-
+        console.log(this);
         return mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/actor-sheet.html",

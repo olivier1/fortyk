@@ -575,6 +575,61 @@ returns the roll message*/
                     damage=damage-soak;
                     let chatDamage=damage;
                     if(chatDamage<0){chatDamage=0}
+                    //corrosive weapon logic
+                    if(weapon.flags.specials.corrosive.value){
+                        let corrosiveAmt=new Roll("1d10",{});
+                        corrosiveAmt.roll();
+                        await corrosiveAmt.toMessage({
+                            speaker: ChatMessage.getSpeaker({ actor: actor }),
+                            flavor: "Rolling Corrosive Weapon armor damage. Excess corrosion is transferred to damage."
+                        });
+                        let corrosiveDamage=0;
+                        console.log(tarActor);
+                        if(tarActor.data.type==="npc"){
+                            let newArmor=Math.max(0,(armor-corrosiveAmt._total));
+                            corrosiveDamage=Math.abs(Math.min(0,(armor-corrosiveAmt._total)));
+
+                            let path=`data.characterHitLocations.${curHit.value}.armor`
+                            let pack={}
+                            pack[path]=newArmor;
+
+
+                            if(game.user.isGM){
+
+                                await tarActor.update(pack); 
+
+
+                            }else{
+                                //if user isnt GM use socket to have gm update the actor
+
+                                let tokenId=tar.data._id;
+                                let socketOp={type:"updateValue",package:{token:tokenId,value:newArmor,path:path}}
+
+                                game.socket.emit("system.fortyk",socketOp);
+                            }
+                           
+                        }else{
+                            let wornArmorId=tarActor.data.data.secChar.wornGear.armor._id;
+                            let wornArmor=duplicate(tarActor.getEmbeddedEntity("OwnedItem",wornArmorId));
+                           
+                            let armorValue=wornArmor.data.ap[curHit.value].value;
+                           
+                            let newArmor=Math.max(0,(armorValue-corrosiveAmt._total));
+                            corrosiveDamage=Math.abs(Math.min(0,(armorValue-corrosiveAmt._total)));
+                            wornArmor.data.ap[curHit.value].value=newArmor;
+                            tarActor.updateEmbeddedEntity("OwnedItem",wornArmor);
+                        }
+                        if(damage<=0){
+                            damage=corrosiveDamage;
+                            chatDamage=corrosiveDamage;
+                        }else{
+                            damage+=corrosiveDamage;
+                            chatDamage+=corrosiveDamage;
+                        }
+
+
+
+                    }
                     //toxic weapon logic
                     if(damage>0&&weapon.flags.specials.toxic.value){
                         let toxicMod=weapon.flags.specials.toxic.num*10;
@@ -769,12 +824,12 @@ returns the roll message*/
                         let stun=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total-stunMod),tarActor, "Resist Stun");
                         if(!stun.value){
                             let chatStun={user: game.user._id,
-                                         speaker:{actor,alias:actor.name},
-                                         content:`${tar.name} is stunned.`,
-                                         classes:["fortyk"],
-                                         flavor:`Concussive Stun`,
-                                         author:actor.name};
-                        await ChatMessage.create(chatStun,{});
+                                          speaker:{actor,alias:actor.name},
+                                          content:`${tar.name} is stunned.`,
+                                          classes:["fortyk"],
+                                          flavor:`Concussive Stun`,
+                                          author:actor.name};
+                            await ChatMessage.create(chatStun,{});
 
                             if(game.user.isGM||tar.owner){
                                 if(self){
@@ -806,11 +861,11 @@ returns the roll message*/
                                     game.socket.emit("system.fortyk",socketOp);
                                 }
                                 let chatKnockdown={user: game.user._id,
-                                                 speaker:{actor,alias:actor.name},
-                                                 content:`${tar.name} is knocked down.`,
-                                                 classes:["fortyk"],
-                                                 flavor:`Concussive Knockdown`,
-                                                 author:actor.name};
+                                                   speaker:{actor,alias:actor.name},
+                                                   content:`${tar.name} is knocked down.`,
+                                                   classes:["fortyk"],
+                                                   flavor:`Concussive Knockdown`,
+                                                   author:actor.name};
                                 await ChatMessage.create(chatKnockdown,{});
                             }
                         }

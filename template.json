@@ -64,6 +64,10 @@
                 "role": {
                     "value": "",
                     "type": "String"
+                },
+                "divination": {
+                    "value": "",
+                    "type": "String"
                 }
             },
             "creationOptionsDW": {

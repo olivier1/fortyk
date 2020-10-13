@@ -1,12 +1,13 @@
 // Import Modules
 import { FortyKActor } from "./actor/actor.js";
-import { FortyKActorSheet } from "./actor/actor-sheet.js";
+import FortyKDWActorSheet from "./actor/actorDW-sheet.js";
+import { FortyKDHActorSheet } from "./actor/actorDH-sheet.js";
 import { FortyKItem } from "./item/item.js";
 import { FortyKItemSheet } from "./item/item-sheet.js";
-import { preloadHandlebarsTemplates} from "./utilities.js";
-import {FortykRolls} from "./FortykRolls.js";
+import { preloadHandlebarsTemplates } from "./utilities.js";
+import { FortykRolls } from "./FortykRolls.js";
 import { FortyKNPCSheet} from "./actor/actor-npc-sheet.js";
-import {FORTYK} from "./FortykConfig.js";
+import { FORTYK } from "./FortykConfig.js";
 
 Hooks.once('init', async function() {
 
@@ -31,7 +32,8 @@ Hooks.once('init', async function() {
 
     // Register sheet application classes
     Actors.unregisterSheet("core", ActorSheet);
-    Actors.registerSheet("fortyk", FortyKActorSheet, { types:["dwPC"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKDWActorSheet, { types:["dwPC"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKDHActorSheet, { types:["dhPC"], makeDefault: true });
     Actors.registerSheet("fortyk", FortyKNPCSheet, { types: ["npc"], makeDefault: true });
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });
