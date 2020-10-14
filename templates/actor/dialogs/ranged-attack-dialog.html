@@ -30,6 +30,7 @@
 
 
         </div>
+        {{#unless modifiers.inaccurate}}
         <div class="flexcol attack-section">
             <label class="section-title">Aiming</label>
             <div class="list-item flexrow">
@@ -44,6 +45,7 @@
                 <input type="radio" name="aim-type" value="{{modifiers.aim.full}}"><label>Full Aim: +{{modifiers.aim.full}}</label>
             </div>
         </div>
+        {{/unless}}
         <div class="flexcol attack-section">
             <label class="section-title">Distance</label>
             <div class="list-item flexrow">
@@ -137,4 +139,4 @@
 
 </div>
 <label class="section-title">Other Modifiers</label>
-<input type="text" id="modifier" name="other" value="0">
+<input type="text" id="modifier" name="other" value="{{modifiers.testMod}}">

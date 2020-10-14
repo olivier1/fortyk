@@ -75,6 +75,16 @@ export class FortyKItem extends Item {
                     data.attackMods.aim.half=20;
                     data.attackMods.aim.full=30;
                 }
+                if(itemData.flags.specials.scatter.value){
+                    data.attackMods.range.pointblank=40;
+                    data.attackMods.range.short=20;
+                    
+                }
+                if(itemData.flags.specials.twinlinked.value){
+                    console.log(data);
+                    data.testMod.value=20;
+                    data.clip.consumption=2;
+                }
                 if(data.damTyp===undefined){data.damTyp=data.damageType.value}
                 if(data.flags===undefined){data.flags=itemData.flags}
                 let ammo=this.actor.getEmbeddedEntity("OwnedItem",data.ammo._id);
@@ -86,11 +96,11 @@ export class FortyKItem extends Item {
                     itemData.flags=ammo.flags;
                 }else{
                     if(!data.damTyp===""){
-                         data.damageType.value=data.damTyp;
+                        data.damageType.value=data.damTyp;
                     }else{
                         data.damTyp=data.damageType.value;
                     }
-                   
+
                     data.range.value=data.range.formula;
                     data.pen.value=data.pen.formula;
                     data.damageFormula.value=data.damageFormula.formula;
@@ -104,26 +114,26 @@ export class FortyKItem extends Item {
                     itemData.data.twohanded.value=true;
                 }
                 if(itemData.flags.specials.maximal.maximal){
-                    
-                        
-                        itemData.data.range.value=parseInt(itemData.data.range.formula)+10;
-                        let form=itemData.data.damageFormula.formula;
-                        let dPos = form.indexOf('d');
-                        let dieNum = form.substr(0,dPos);
-                        let newNum=parseInt(dieNum)+1;
-                        itemData.data.damageFormula.value=form.slice(dPos)
-                        itemData.data.damageFormula.value=newNum+itemData.data.damageFormula.value;
-                        itemData.data.pen.value=parseInt(itemData.data.pen.formula)+2;
-                        itemData.data.clip.consumption=3;
-                    }else{
-                   
-                        itemData.data.clip.consumption=1;
-                    }
+
+
+                    itemData.data.range.value=parseInt(itemData.data.range.formula)+10;
+                    let form=itemData.data.damageFormula.formula;
+                    let dPos = form.indexOf('d');
+                    let dieNum = form.substr(0,dPos);
+                    let newNum=parseInt(dieNum)+1;
+                    itemData.data.damageFormula.value=form.slice(dPos)
+                    itemData.data.damageFormula.value=newNum+itemData.data.damageFormula.value;
+                    itemData.data.pen.value=parseInt(itemData.data.pen.formula)+2;
+                    itemData.data.clip.consumption=3;
+                }else{
+
+                    itemData.data.clip.consumption=1;
+                }
             }
             //prepare psychicpowers, calculates pushing and target numbers
             if(itemData.type==="psychicPower"){
                 let pr=parseInt(data.curPR.value);
-                
+
                 let range=data.range.formula.toLowerCase();
 
                 data.range.value=eval(range);
@@ -148,16 +158,16 @@ export class FortyKItem extends Item {
             if(itemData.type==="meleeWeapon"||itemData.type==="rangedWeapon"||itemData.type==="psychicPower"){
 
 
-                
-                    
-                
+
+
+
 
 
 
             }
 
-            }
+        }
 
-            }
-            }
+    }
+}
 

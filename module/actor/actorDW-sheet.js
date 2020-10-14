@@ -16,7 +16,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     /** @override */
 
     static get defaultOptions() {
-        console.log(this);
+        
         return mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/actor-sheet.html",

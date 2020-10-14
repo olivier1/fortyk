@@ -154,6 +154,7 @@ Hooks.once('ready', async function() {
                     //round management effects, when a token's turn starts
                     Hooks.on("updateCombat", async (combat) => {
                         if(game.user.isGM){
+                           
                             let token=canvas.tokens.get(combat.current.tokenId);
                             let actor=token.actor;
                             //check for regeneration
