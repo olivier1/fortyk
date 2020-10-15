@@ -371,6 +371,20 @@ returns the roll message*/
             curHit=actor.data.data.secChar.lastHit;
 
         }
+        if(actor.getFlag("fortyk","deathwatchtraining")){
+            if(!self&&targets.size!==0){
+                let target=targets.values().next().value;
+                console.log(target);
+                let targetRace=target.actor.data.data.race.value;
+                let forRaces=actor.data.flags.deathwatchtraining;
+                console.log(forRaces,targetRace);
+                if(forRaces.includes(targetRace)){
+                    console.log("hey");
+                    righteous-=1;
+                }
+            }
+
+        }
         //spray and blast weapons always hit the body hit location
         if(weapon.flags.specials.blast.value||weapon.flags.specials.spray.value){
             curHit=FORTYK.extraHits["body"][0];
@@ -441,16 +455,16 @@ returns the roll message*/
                 let hayRoll=new Roll("1d5",{});
 
                 hayRoll.roll();
-                
-               
+
+
                 let hayText=FORTYKTABLES.haywire[hayRoll._total-1];
                 let hayOptions={user: game.user._id,
-                                    speaker:{actor,alias:actor.name},
-                                    content:hayText,
-                                    classes:["fortyk"],
-                                    flavor:`Haywire Effect ${weapon.flags.specials.haywire.num}m radius`,
-                                    author:actor.name};
-                    await ChatMessage.create(hayOptions,{});
+                                speaker:{actor,alias:actor.name},
+                                content:hayText,
+                                classes:["fortyk"],
+                                flavor:`Haywire Effect ${weapon.flags.specials.haywire.num}m radius`,
+                                author:actor.name};
+                await ChatMessage.create(hayOptions,{});
             }
             //handle spray weapon jams
 
@@ -666,7 +680,7 @@ returns the roll message*/
                             flavor: "Rolling Corrosive Weapon armor damage. Excess corrosion is transferred to damage."
                         });
                         let corrosiveDamage=0;
-                       
+
                         if(tarActor.data.type==="npc"){
                             let newArmor=Math.max(0,(armor-corrosiveAmt._total));
                             corrosiveDamage=Math.abs(Math.min(0,(armor-corrosiveAmt._total)));
@@ -1190,7 +1204,7 @@ returns the roll message*/
         templateOptions["modifiers"].suppressive=item.data.attackMods.suppressive;
         templateOptions["modifiers"].aim=item.data.attackMods.aim;
         templateOptions["modifiers"].testMod=item.data.testMod.value;
-      
+
         templateOptions["modifiers"].inaccurate=item.flags.specials.innacurate.value;
 
 

@@ -23,6 +23,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
+        data.races=FORTYK.races;
         data.aptitudes=FORTYK.aptitudes;
         data.size=FORTYK.size;
         data.skillChars=FORTYK.skillChars;

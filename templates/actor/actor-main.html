@@ -18,7 +18,17 @@
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Race:</span>
-                <input name="data.race.value" type="text" value="{{data.race.value}}" placeholder="Astartes"/>
+                <select class="raceSelect" name="data.race.value" data-dtype="String">
+                    {{#select data.race.value}}
+
+                    {{#each races}}
+
+                    <option value="{{this}}">{{this}}</option>
+
+                    {{/each}}
+                    {{/select}}
+                </select>
+               
             </div>
 
             <div class="descrRow flexcol">
@@ -112,7 +122,7 @@
             </div>
         </div>
 
-    
+
         <div class="characteristics grid grid-10col">
 
 

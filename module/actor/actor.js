@@ -79,6 +79,7 @@ export class FortyKActor extends Actor {
         flags["truegrit"]=false;
         flags["atsknf"]=false;
         flags["diehard"]=false;
+        flags["deathwatchtraining"]=false;
         if(flags["unrelenting"]===undefined){flags["unrelenting"]=false};
 
         if(data.skillFilter===undefined){
@@ -214,6 +215,8 @@ export class FortyKActor extends Actor {
         data.experience.spent=0;
         data.carry.value=0;
         let unrelenting=false;
+        let forRaces=[];
+
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
 
         //put all items in their respective containers and do some item logic
@@ -229,7 +232,14 @@ export class FortyKActor extends Actor {
             }
             if(item.type=="skill"){
 
-                item.data.total.value=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
+
+                if(item.data.parent.value==="Forbidden Lore"){
+
+                    if(FORTYK.races.includes(item.name)){
+
+                        forRaces.push(item.name);
+                    }
+                } item.data.total.value=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
 
                 skills.push(item);
             }
@@ -311,6 +321,9 @@ export class FortyKActor extends Actor {
                 }else if(item.name==="Die Hard"){
                     actorData.flags["diehard"]=true;
                     this.setFlag("fortyk","diehard",true);
+                }else if(item.name==="Deathwatch Training"){
+                    this.setFlag("fortyk","deathwatchtraining",true);
+                    
                 }
                 talentsntraits.push(item);
             }
@@ -397,6 +410,14 @@ export class FortyKActor extends Actor {
             }
             //check if actor has the unrelenting trait
             if(!unrelenting){actorData.flags["unrelenting"]=false};
+            //store known xenos for deathwatchtraining
+            console.log(this.getFlag("fortyk","deathwatchtraining"));
+            if(this.getFlag("fortyk","deathwatchtraining")){
+                
+                actorData.flags["deathwatchtraining"]=forRaces;
+            }
+            console.log(this);
+
 
             //compile total exp and influence
             data.characteristics["inf"].total=data.characteristics["inf"].value+data.characteristics["inf"].advance;
@@ -411,7 +432,7 @@ export class FortyKActor extends Actor {
                 data.carry.max=FORTYK.carry[(data.characteristics["s"].bonus+data.characteristics["t"].bonus)].carry;
 
             }else{
-             data.carry.max=FORTYK.carry[1].carry;
+                data.carry.max=FORTYK.carry[1].carry;
             }
             let wornWeapons=data.secChar.wornGear.weapons;
 
@@ -552,13 +573,13 @@ export class FortyKActor extends Actor {
 
                     try{
                         if(item.flags.specials.force.value){
-                            
+
                             let pr=parseInt(data.psykana.pr.value);
-                           
+
                             item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
 
                             item.data.damageFormula.value=item.data.damageFormula.value.replace(/pr/gmi,pr);
-                          
+
                         }
                     }catch{
                         item.data.pen.value="";

@@ -19,8 +19,8 @@
 .fortyk{
     font-size:16px;
     font-family: "CaslonAntique";
-   
-    
+
+
 }
 
 .button:hover, .button:focus {
@@ -206,6 +206,13 @@
     margin-top:0px;
     margin-bottom:2px;
 }
+.fortyk .sheet-main .header-fields .descr .raceSelect{
+    flex:auto;
+}
+.fortyk .sheet-main .header-fields .descr input[type="text"]{
+    height: 25px !important;
+    flex: auto;
+}
 .fortyk .sheet-main .header-fields .creationOps .creationRow{
     padding-left: 10px;
 }
@@ -298,7 +305,7 @@
     height:50px;
     width:100%;
     border: 1px solid #999;
-    
+
     padding-top:12px;
 
 }
@@ -314,15 +321,15 @@
     align-items: stretch;
 }
 .fortyk .list3col{
-    
+
     grid-template-columns: auto 30px 30px;
 }
 .fortyk .list4col{
-    
+
     grid-template-columns: auto auto 30px 30px;
 }
 .fortyk .list5col{
-    
+
     grid-template-columns: 50% auto auto 30px 30px;
 }
 .fortyk .list-item{
@@ -493,7 +500,7 @@
     align-items: start;
 }
 .fortyk .cyber{
-    
+
     margin-right: 3px;
 }
 .fortyk .combat-weaponsarmor{
@@ -510,7 +517,7 @@
 }
 .fortyk .item-sheet{
     flex: 1;
-    
+
 }
 .fortyk .item-description{
     flex-grow:10;
@@ -536,7 +543,7 @@
     height: auto !important;
 }
 .fortyk .npcheader{
-    
+
     display:grid;
     grid-template-columns: auto auto;
 }

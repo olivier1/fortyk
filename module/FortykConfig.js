@@ -1,5 +1,16 @@
 export const FORTYK={};
-
+FORTYK.races=["Human",
+              "Astartes",
+              "Eldar",
+              "Genestealer",
+              "Tyranid",
+              "Necron",
+              "Ork",
+              "Kroot",
+              "Tau",
+              "Daemon",
+              "Laek",
+              "Other"]
 FORTYK.size=[{"name":"Miniscule",
               "mod":-30,
               "stealth":30,
