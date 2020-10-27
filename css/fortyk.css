@@ -149,10 +149,11 @@
     font-family: "Roboto", sans-serif;
 }
 
-.fortyk .sheet-header {
+.fortyk header.sheet-header {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 0px;
     flex: 0 0 0px;
+    flex-wrap:nowrap;
     overflow: visible;
     display: -webkit-box;
     display: -ms-flexbox;
@@ -162,7 +163,6 @@
     -ms-flex-direction: row;
     flex-direction: row;
     -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
     -webkit-box-pack: start;
     -ms-flex-pack: start;
     justify-content: flex-start;
@@ -258,12 +258,13 @@
     height:100%;
 }
 
-.fortyk .sheet-tabs {
+.fortyk nav.sheet-tabs {
     -webkit-box-flex: 1;
     margin-top: 0px;
     height: 100px;
     font-weight:bold;
     font-style:bold;
+    flex:auto;
 
 }
 

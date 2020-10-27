@@ -1,7 +1,8 @@
 
 /*abstract class that is not used, sets most of the functions that are common to all sheets of the system*/
+
+import {FortykRollDialogs} from "../FortykRollDialogs.js";
 import {FortykRolls} from "../FortykRolls.js";
-import {FORTYK} from "../FortykConfig.js";
 import {objectByString} from "../utilities.js";
 import {setNestedKey} from "../utilities.js";
 export default class FortyKBaseActorSheet extends ActorSheet {
@@ -14,20 +15,20 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
     /** @override */
     getData() {
-
+      
 
 
         const data = super.getData();
 
         mergeObject(data.actor,this.actor.prepare());
-
+       
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
-        data.races=FORTYK.races;
-        data.aptitudes=FORTYK.aptitudes;
-        data.size=FORTYK.size;
-        data.skillChars=FORTYK.skillChars;
-        data.skillTraining=FORTYK.skillTraining;
+        data.races=game.fortyk.FORTYK.races;
+        data.aptitudes=game.fortyk.FORTYK.aptitudes;
+        data.size=game.fortyk.FORTYK.size;
+        data.skillChars=game.fortyk.FORTYK.skillChars;
+        data.skillTraining=game.fortyk.FORTYK.skillTraining;
         return data;
     }
     /** @override */
@@ -216,13 +217,13 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
             item=this.actor.getEmbeddedEntity("OwnedItem",dataset["itemId"]);}
         if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
-            FortykRolls.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
+            FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
         }else if(testType==="meleeAttack"){
-            FortykRolls.callMeleeAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item);
+            FortykRollDialogs.callMeleeAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item);
         }else if(testType==="rangedAttack"){
-            FortykRolls.callRangedAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item);
+            FortykRollDialogs.callRangedAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item);
         }else if(testType==="focuspower"){
-            FortykRolls.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item);
+            FortykRollDialogs.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item);
         }
 
         //autofocus the input after it is rendered.
@@ -238,8 +239,20 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const element = event.currentTarget;
         const dataset = element.dataset;
         if(dataset.weapon){
-            let weapon=this.actor.getEmbeddedEntity("OwnedItem",dataset.weapon);
+            let weapon=null;
+            
             let actor=this.actor;
+           
+            
+            for(let w of actor.items){
+              
+                if(w._id===dataset.weapon){
+                    weapon=w.data;
+                    break;
+                }
+                
+            }
+         
             let formula=weapon.data.damageFormula;
 
             new Dialog({
@@ -307,7 +320,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     label: 'OK',
                     callback: async (el) =>  {
                         const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
-                        let flags= duplicate(FORTYK.itemFlags);
+                        let flags= duplicate(game.fortyk.FORTYK.itemFlags);
                         let forceData={name:"Force",type:"rangedWeapon"}
 
                         let force=await this.actor.createEmbeddedEntity("OwnedItem",forceData, {temporary: true});

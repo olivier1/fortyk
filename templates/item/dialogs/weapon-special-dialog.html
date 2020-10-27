@@ -6,7 +6,7 @@
         <label title="{{this.description}}">{{this.label}}</label>
         <input type="checkbox" class="weapon-special" id="{{@key}}" {{checked this.value}}>
         {{#if (isdefined this.num)}}
-        <input type="number" class="weapon-special-number" id="{{@key}}num" value="{{this.num}}">
+        <input type="text" class="weapon-special-number" id="{{@key}}num" value="{{this.num}}">
         {{/if}}
     </div>
     

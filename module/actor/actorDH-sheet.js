@@ -1,5 +1,4 @@
 import {FortykRolls} from "../FortykRolls.js";
-import {FORTYK} from "../FortykConfig.js";
 import {objectByString} from "../utilities.js";
 import {setNestedKey} from "../utilities.js";
 import FortyKDWActorSheet from "./actorDW-sheet.js";

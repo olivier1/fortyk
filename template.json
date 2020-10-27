@@ -198,15 +198,6 @@
                         "type": "String"
                     }
                 },
-                "statuses": {
-                    "fire": false,
-                    "prone": false,
-                    "stunned": 0,
-                    "bleeding": 0,
-                    "shock": false,
-                    "pinned": false,
-                    "helpless": false
-                },
                 "globalMOD": {
                     "value": 0,
                     "type": "Number"

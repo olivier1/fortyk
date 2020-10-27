@@ -4,7 +4,6 @@
  */
 import {getItem} from "../utilities.js";
 import {isEmpty} from "../utilities.js";
-import {FORTYK} from "../FortykConfig.js";
 
 export class FortyKItem extends Item {
     //override the create function to add the flags to the various items
@@ -13,7 +12,7 @@ export class FortyKItem extends Item {
 
 
         //initialise starting flags
-        let flags= duplicate(FORTYK.itemFlags);
+        let flags= duplicate(game.fortyk.FORTYK.itemFlags);
 
         data.flags={};
         data.flags.specials={};
@@ -37,7 +36,7 @@ export class FortyKItem extends Item {
         // Get the Item's data
         const itemData = this.data;
         const data = itemData.data;
-        itemData["FORTYK"]=FORTYK;
+        itemData["FORTYK"]=game.fortyk.FORTYK;
 
         //ensure this is an owned item
         if(this.options.actor!==undefined){
@@ -71,6 +70,7 @@ export class FortyKItem extends Item {
 
             }
             if(itemData.type==="rangedWeapon"){
+               
                 if(itemData.flags.specials.accurate.value){
                     data.attackMods.aim.half=20;
                     data.attackMods.aim.full=30;
@@ -78,10 +78,10 @@ export class FortyKItem extends Item {
                 if(itemData.flags.specials.scatter.value){
                     data.attackMods.range.pointblank=40;
                     data.attackMods.range.short=20;
-                    
+
                 }
                 if(itemData.flags.specials.twinlinked.value){
-                    console.log(data);
+
                     data.testMod.value=20;
                     data.clip.consumption=2;
                 }
@@ -133,16 +133,42 @@ export class FortyKItem extends Item {
             //prepare psychicpowers, calculates pushing and target numbers
             if(itemData.type==="psychicPower"){
                 let pr=parseInt(data.curPR.value);
-
+                
+               
                 let range=data.range.formula.toLowerCase();
 
                 data.range.value=eval(range);
 
                 data.pen.value=eval(data.pen.formula.toLowerCase());
-                data.damageFormula.value=data.damageFormula.formula.replace(/pr/gmi,pr);
+                
+                
 
                 let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(data.curPR.value));
-
+              
+                let specials=itemData.flags.specials;
+                for(const spec in specials){
+                   
+                    if(specials[spec].value&&specials[spec].num!==undefined){
+                       
+                       
+                        if(isNaN(specials[spec].num)&&specials[spec].form!==undefined&&specials[spec].num!==specials[spec].form){
+                            
+                            specials[spec].form=specials[spec].num;
+                          
+                        }else if(isNaN(specials[spec].num)&&specials[spec].form===undefined){
+                            
+                            specials[spec].form=specials[spec].num;
+                           
+                        } 
+                      
+                       
+                      
+                        
+                        if(specials[spec].form!==undefined){
+                            specials[spec].num=eval(specials[spec].form);
+                        }
+                    }
+                }
 
                 let char=0;
                 if(data.testChar.value==="psy"){

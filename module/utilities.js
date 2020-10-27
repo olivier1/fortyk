@@ -29,7 +29,11 @@ export const getActorToken=function(actor){
     if(actor.token!==null){
         return actor.token; 
     }
-    const tokens=canvas.tokens.children[0].children;
+    let tokens=[];
+    if(canvas.tokens.children.length>0){
+        tokens=canvas.tokens.children[0].children;
+    }
+    
     let t=null;
     for(let token of tokens){
         if(token.actor.data._id===actor.data._id){
@@ -121,7 +125,7 @@ export const isEmpty=function (obj) {
 console.log("starting item flag update")
     let actors=game.actors;
     
-    let weaponFlags=duplicate(FORTYK.itemFlags);
+    let weaponFlags=duplicate(game.fortyk.FORTYK.itemFlags);
     for(let actor of actors){
         let items=actor.items;
         for(let item of items){

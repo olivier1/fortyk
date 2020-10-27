@@ -15,52 +15,52 @@ FORTYK.size=[{"name":"Miniscule",
               "mod":-30,
               "stealth":30,
               "movement":-3,
-             "size":1},
+              "size":1},
              {"name":"Puny",
               "mod":-20,
               "stealth":20,
               "movement":-2,
-             "size":1},
+              "size":1},
              {"name":"Scrawny",
               "mod":-10,
               "stealth":10,
               "movement":-1,
-             "size":1},
+              "size":1},
              {"name":"Average",
               "mod":0,
               "stealth":0,
               "movement":0,
-             "size":1},
+              "size":1},
              {"name":"Hulking",
               "mod":10,
               "stealth":-10,
               "movement":1,
-             "size":1.2},
+              "size":1.2},
              {"name":"Enormous",
               "mod":20,
               "stealth":-20,
               "movement":2,
-             "size":2},
+              "size":2},
              {"name":"Massive",
               "mod":30,
               "stealth":-30,
               "movement":3,
-             "size":3},
+              "size":3},
              {"name":"Immense",
               "mod":40,
               "stealth":-40,
               "movement":4,
-             "size":4},
+              "size":4},
              {"name":"Monumental",
               "mod":50,
               "stealth":-50,
               "movement":5,
-             "size":5},
+              "size":5},
              {"name":"Titanic",
               "mod":60,
               "stealth":-60,
               "movement":6,
-             "size":6}]
+              "size":6}]
 FORTYK.carry=[{"carry":0.9,
                "lift":2.25,
                "push":4.5},
@@ -409,3 +409,178 @@ FORTYK.itemFlags={
 FORTYK.itemQualities=["Poor","Common","Good","Best"]
 FORTYK.skillChars={"ws":{"name":"ws","caps":"WS"},"bs":{"name":"bs","caps":"BS"},"s":{"name":"s","caps":"S"},"t":{"name":"t","caps":"T"},"agi":{"name":"agi","caps":"AGI"},"int":{"name":"int","caps":"INT"},"per":{"name":"per","caps":"PER"},"wp":{"name":"wp","caps":"WP"},"fel":{"name":"fel","caps":"FEL"}}
 FORTYK.skillTraining={"0":{"name":"Untrained","value":-20},"1":{"name":"Known","value":0},"2":{"name":"Trained","value":10},"3":{"name":"Experienced","value":20},"4":{"name":"Veteran","value":30}}
+FORTYK.ACTIVE_EFFECT_MODES = {
+    CUSTOM: 0,
+    MULTIPLY: 1,
+    ADD: 2,
+    DOWNGRADE: 3,
+    UPGRADE: 4,
+    OVERRIDE: 5
+};
+FORTYK.StatusEffects = [
+    {
+        id: "dead",
+        label: "Dead",
+        icon: "icons/svg/skull.svg"
+    },
+    {
+        id: "unconscious",
+        label: "Unconscious",
+        icon: "icons/svg/unconscious.svg",
+        flags: { core: { statusId: "unconscious" } }
+
+    },
+    {
+        id: "sleep",
+        label: "Asleep",
+        icon: "icons/svg/sleep.svg",
+        flags: { core: { statusId: "sleep" } }
+    },
+    {
+        id: "stunned",
+        label: "Stunned",
+        icon: "icons/svg/daze.svg",
+        flags: { core: { statusId: "stunned" } }
+    },
+    {
+        id: "prone",
+        label: "Prone",
+        icon: "icons/svg/falling.svg",
+        flags: { core: { statusId: "prone" } }
+    },
+    {
+        id: "snare",
+        label: "Snare",
+        icon: "icons/svg/net.svg",
+        flags: { core: { statusId: "snare" } }
+    },
+    {
+        id: "blind",
+        label: "Blind",
+        icon: "icons/svg/blind.svg",
+        flags: { core: { statusId: "blind" } }
+    },
+    {
+        id: "shock",
+        label: "Shocked",
+        icon: "icons/svg/terror.svg",
+        flags: { core: { statusId: "shock" } }
+    },
+    {
+        id: "fire",
+        label: "Fire",
+        icon: "icons/svg/fire.svg",
+        flags: { core: { statusId: "fire" } }
+    },
+    {
+        id: "corrode",
+        label: "Corroded",
+        icon: "icons/svg/acid.svg",
+        flags: { core: { statusId: "corrode" } }
+    },
+    {
+        id: "bleeding",
+        label: "Bleeding",
+        icon: "icons/svg/blood.svg",
+        flags: { core: { statusId: "bleeding" } }
+    },
+    {
+        id: "toxic",
+        label: "Toxic",
+        icon: "icons/svg/poison.svg",
+        flags: { core: { statusId: "toxic" } }
+    },
+    {
+        id: "rad",
+        label: "Radiation",
+        icon: "icons/svg/radiation.svg",
+        flags: { core: { statusId: "rad" } }
+    },
+    {
+        id: "frenzy",
+        label: "Frenzy",
+        icon: "systems/fortyk/icons/frenzy.png",
+        flags: { core: { statusId: "frenzy" } },
+        changes:[
+            {key: "data.characteristics.s.total", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.s.bonus", value: 1, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.t.total", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.t.bonus", value: 1, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.wp.total", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.wp.bonus", value: 1, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.ws.total", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.ws.bonus", value: 1, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.bs.total", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.bs.bonus", value: -2, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.int.total", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.int.bonus", value: -2, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.fel.total", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.fel.bonus", value: -2, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}
+
+
+        ]
+    },
+    {
+        id: "buff",
+        label: "Buff",
+        icon: "icons/svg/upgrade.svg",
+        flags: { core: { statusId: "buff" } }
+    },
+
+    {
+        id: "weakened",
+        label: "Weakened",
+        icon: "icons/svg/downgrade.svg",
+        flags: { core: { statusId: "weakened" } }
+    },
+    {
+        id: "target",
+        label: "Target",
+        icon: "icons/svg/target.svg",
+        flags: { core: { statusId: "target" } }
+    },
+    {
+        id: "marked",
+        label: "Marked",
+        icon: "icons/svg/eye.svg",
+        flags: { core: { statusId: "marked" } }
+    },
+    {
+        id: "crippled",
+        label: "Crippled",
+        icon: "icons/svg/sun.svg",
+        flags: { core: { statusId: "crippled" } }
+    },
+    {
+        id: "blessed",
+        label: "Blessed",
+        icon: "icons/svg/angel.svg",
+        flags: { core: { statusId: "blessed" } }
+    },
+    {
+        id: "fireShield",
+        label: "FireShield",
+        icon: "icons/svg/fire-shield.svg",
+        flags: { core: { statusId: "fireShield" } }
+    },
+    {
+        id: "coldShield",
+        label: "IceShield",
+        icon: "icons/svg/ice-shield.svg",
+        flags: { core: { statusId: "coldShield" } }
+    },
+    {
+        id: "magicShield",
+        label: "MagicShield",
+        icon: "icons/svg/mage-shield.svg",
+        flags: { core: { statusId: "magicShield" } }
+    },
+    {
+        id: "holyShield",
+        label: "HolyShield",
+        icon: "icons/svg/holy-shield.svg",
+        flags: { core: { statusId: "holyShield" } }
+    }
+];
+
+

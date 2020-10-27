@@ -1,14 +1,14 @@
 import {FortykRolls} from "../FortykRolls.js";
-import {FORTYK} from "../FortykConfig.js";
 import {objectByString} from "../utilities.js";
 import {setNestedKey} from "../utilities.js";
 import FortyKBaseActorSheet from "./base-sheet.js";
 export class FortyKNPCSheet extends FortyKBaseActorSheet {
-
+    
     static async create(data, options) {
         data.skillFilter="";
         super.create(data,options);
     }
+    
     /** @override */
 
     static get defaultOptions() {
@@ -25,7 +25,7 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
     /* -------------------------------------------- */
 
     /** @override */
-    getData() {
+   /* getData() {
 
 
 
@@ -36,48 +36,74 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
         data.aptitudes=FORTYK.aptitudes;
         data.size=FORTYK.size;
         return data;
-    }
+    }*/
     activateListeners(html) {
         super.activateListeners(html);
 
         if (!this.options.editable) return;
 
         html.find('.parse-tnt').click(this._onTntParse.bind(this));
-
+        html.find('.textinput').focusout(this._onUpdate.bind(this));
 
 
 
     } 
-
+    async _onUpdate(event){
+    
+        this.getData();
+    }
     async _onTntParse(event){
-      
+
         let actor=this.actor;
         let data=actor.data.data;
         let tnt=data.talentsntraits.value.toLowerCase();
+        let message="Trait changes on "+actor.name+":";
         if(tnt.includes("true grit")){
-            actor.setFlag("fortyk","truegrit",true);
+            await actor.setFlag("fortyk","truegrit",true);
+
 
         }else{
-            actor.setFlag("fortyk","truegrit",false);
+            await actor.setFlag("fortyk","truegrit",false);
+
         }
         if(tnt.includes("overwhelming")){
-            actor.setFlag("fortyk","overwhelming",true);
+            await actor.setFlag("fortyk","overwhelming",true);
 
         }else{
-            actor.setFlag("fortyk","overwhelming",false);
+            await actor.setFlag("fortyk","overwhelming",false);
+
         }
         if(tnt.includes("regeneration")){
             let regex=/.*?regeneration\((\d+)\).*$/;
-           
+
             let found=tnt.match(regex);
-            
-            
-            actor.setFlag("fortyk","regeneration",found[1]);
+            let amt=found[1];
+
+            await actor.setFlag("fortyk","regeneration",found[1]);
+
 
         }else{
-            actor.setFlag("fortyk","regeneration",false);
+            await actor.setFlag("fortyk","regeneration",false);
+
         }
-       
+        if(tnt.includes("swarm")){
+            await actor.setFlag("fortyk","swarm",true);
+
+        }else{
+            await actor.setFlag("fortyk","swarm",false);
+        }
+        message+=`</br>True Grit:${actor.getFlag("fortyk","truegrit")}`;
+        message+=`</br>Overwhelming:${actor.getFlag("fortyk","overwhelming")}`;
+        message+=`</br>Regeneration:${actor.getFlag("fortyk","regeneration")}`;
+        message+=`</br>Swarm:${actor.getFlag("fortyk","swarm")}`;
+
+        let chatData = {
+            user: game.user._id,
+            speaker: ChatMessage.getSpeaker(),
+            content: message,
+            type: CONST.CHAT_MESSAGE_TYPES.OTHER
+        };
+        ChatMessage.create(chatData);
     }
 
 

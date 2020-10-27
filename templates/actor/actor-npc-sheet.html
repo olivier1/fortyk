@@ -1,12 +1,13 @@
 <form class="{{cssClass}} flexcol" autocomplete="off">
-    {{#if isGM}}
+    
+    {{#if owner}}
     <div class="flexrow">
         <img class="npc-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
         <div class="npcresources">
             <div class="npcheader">
                 <div class="descrRow flexcol npcdescr">
                     <span class="descrSpan">Name:</span>
-                    <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
+                    <input name="name" type="text" value="{{actor.name}}" placeholder="Name" data-dtype="String"/>
                 </div>
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Race:</span>

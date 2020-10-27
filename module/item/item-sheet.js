@@ -106,7 +106,7 @@ export class FortyKItemSheet extends ItemSheet {
                                 pack[`flags.specials.${key}.value`]=value;
 
                                 if(spec.num!==undefined){
-                                    pack[`flags.specials.${key}.num`]=parseInt(html.find(`input[id=${key}num]`).val());
+                                    pack[`flags.specials.${key}.num`]=html.find(`input[id=${key}num]`).val();
                                     if(parseInt(html.find(`input[id=${key}num]`).val())!==parseInt(spec.num)){change=true};
 
                                 }

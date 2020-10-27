@@ -1,5 +1,4 @@
 import {FortykRolls} from "../FortykRolls.js";
-import {FORTYK} from "../FortykConfig.js";
 import {objectByString} from "../utilities.js";
 import {setNestedKey} from "../utilities.js";
 import FortyKBaseActorSheet from "./base-sheet.js";
@@ -237,21 +236,30 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     async _onWeaponReload(event){
         event.preventDefault;
         const dataset=event.currentTarget.dataset;
-
-        const weapon=duplicate(this.actor.getEmbeddedEntity("OwnedItem",dataset["weapon"]));
-
+        let weapon=null;
+            
+            let actor=this.actor;
+          
+            for(let w of actor.data.wornGear.weapons){
+                
+                if(w._id===dataset.weapon){
+                    weapon=w;
+                }
+            }
+        
+        
         let ooa=false;
         //different logic for throwing weapons
         if(weapon.data.class.value!=="Thrown"){
             const ammo=duplicate(this.actor.getEmbeddedEntity("OwnedItem",weapon.data.ammo._id));
-
+           
             if(ammo!==null){
                 let ammoAmt=parseInt(ammo.data.amount.value);
 
                 if(ammoAmt>0){
                     weapon.data.clip.value=weapon.data.clip.max;
                     ammo.data.amount.value=ammoAmt-1;
-
+                    
                     await this.actor.updateEmbeddedEntity("OwnedItem",weapon);
                     await this.actor.updateEmbeddedEntity("OwnedItem",ammo);
 
