@@ -428,7 +428,6 @@ FORTYK.StatusEffects = [
         label: "Unconscious",
         icon: "icons/svg/unconscious.svg",
         flags: { core: { statusId: "unconscious" } }
-
     },
     {
         id: "sleep",
@@ -461,6 +460,12 @@ FORTYK.StatusEffects = [
         flags: { core: { statusId: "blind" } }
     },
     {
+        id: "deaf",
+        label: "Deaf",
+        icon: "icons/svg/deaf.svg",
+        flags: { core: { statusId: "deaf" } }
+    },
+    {
         id: "shock",
         label: "Shocked",
         icon: "icons/svg/terror.svg",
@@ -482,6 +487,7 @@ FORTYK.StatusEffects = [
         id: "bleeding",
         label: "Bleeding",
         icon: "icons/svg/blood.svg",
+        tint:"#8a0303",
         flags: { core: { statusId: "bleeding" } }
     },
     {
@@ -502,22 +508,13 @@ FORTYK.StatusEffects = [
         icon: "systems/fortyk/icons/frenzy.png",
         flags: { core: { statusId: "frenzy" } },
         changes:[
-            {key: "data.characteristics.s.total", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.s.bonus", value: 1, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.t.total", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.t.bonus", value: 1, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.wp.total", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.wp.bonus", value: 1, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.ws.total", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.ws.bonus", value: 1, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.bs.total", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.bs.bonus", value: -2, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.int.total", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.int.bonus", value: -2, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.fel.total", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.fel.bonus", value: -2, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}
-
-
+            {key: "data.characteristics.s.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.t.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.wp.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.ws.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.bs.value", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.int.value", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "data.characteristics.fel.value", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}
         ]
     },
     {
@@ -526,7 +523,6 @@ FORTYK.StatusEffects = [
         icon: "icons/svg/upgrade.svg",
         flags: { core: { statusId: "buff" } }
     },
-
     {
         id: "weakened",
         label: "Weakened",
@@ -580,7 +576,71 @@ FORTYK.StatusEffects = [
         label: "HolyShield",
         icon: "icons/svg/holy-shield.svg",
         flags: { core: { statusId: "holyShield" } }
+    },
+    {
+        id: "ws",
+        label: "Weapon Skill Damage",
+        icon: "systems/fortyk/icons/ws.png",
+        flags: { core: { statusId: "ws" } }
+    },
+    {
+        id: "bs",
+        label: "Ballistic Skill Damage",
+        icon: "systems/fortyk/icons/bs.png",
+        flags: { core: { statusId: "bs" } }
+    },
+    {
+        id: "s",
+        label: "Strength Damage",
+        icon: "systems/fortyk/icons/s.png",
+        flags: { core: { statusId: "s" } }
+    },
+    {
+        id: "t",
+        label: "Toughness Damage",
+        icon: "systems/fortyk/icons/t.png",
+        flags: { core: { statusId: "t" } }
+    },
+    {
+        id: "agi",
+        label: "Agility Damage",
+        icon: "systems/fortyk/icons/agi.png",
+        flags: { core: { statusId: "agi" } }
+    },
+    {
+        id: "int",
+        label: "Intelligence Damage",
+        icon: "systems/fortyk/icons/int.png",
+        flags: { core: { statusId: "int" } }
+    },
+    {
+        id: "per",
+        label: "Perception Damage",
+        icon: "systems/fortyk/icons/per.png",
+        flags: { core: { statusId: "per" } }
+    },
+    {
+        id: "wp",
+        label: "Willpower Damage",
+        icon: "systems/fortyk/icons/wp.png",
+        flags: { core: { statusId: "wp" } }
+    },
+    {
+        id: "fel",
+        label: "Fellowship Damage",
+        icon: "systems/fortyk/icons/fel.png",
+        flags: { core: { statusId: "fel" } }
+    },
+    {
+        id: "arm",
+        label: "Arm Injury",
+        icon: "systems/fortyk/icons/arm.png",
+        flags: { core: { statusId: "arm" } }
+    },
+    {
+        id: "leg",
+        label: "Leg Injury",
+        icon: "systems/fortyk/icons/leg.png",
+        flags: { core: { statusId: "leg" } }
     }
 ];
-
-

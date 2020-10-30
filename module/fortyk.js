@@ -11,16 +11,13 @@ import { FortykRolls } from "./FortykRolls.js";
 import { FortykRollDialogs } from "./FortykRollDialogs.js";
 import { FortyKNPCSheet} from "./actor/actor-npc-sheet.js";
 import { FORTYK } from "./FortykConfig.js";
-
 Hooks.once('init', async function() {
-
     game.fortyk = {
         FortyKActor,
         FortyKItem,
         FortykRolls,
         FORTYK
     };
-
     /**
    * Set an initiative formula for the system
    * @type {String}
@@ -39,9 +36,7 @@ Hooks.once('init', async function() {
     // Define custom Entity classes
     CONFIG.Actor.entityClass = FortyKActor;
     CONFIG.Item.entityClass = FortyKItem;
-
     //CONFIG.ActiveEffect.entityClass = FortyKActiveEffect;
-
     // Register sheet application classes
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet("fortyk", FortyKDWActorSheet, { types:["dwPC"], makeDefault: true });
@@ -49,8 +44,6 @@ Hooks.once('init', async function() {
     Actors.registerSheet("fortyk", FortyKNPCSheet, { types: ["npc"], makeDefault: true });
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });
-
-
     // Handlebars helpers
     Handlebars.registerHelper('concat', function() {
         var outStr = '';
@@ -61,7 +54,6 @@ Hooks.once('init', async function() {
         }
         return outStr;
     });
-
     Handlebars.registerHelper('toLowerCase', function(str) {
         return str.toLowerCase();
     });
@@ -69,7 +61,6 @@ Hooks.once('init', async function() {
         return value !== undefined;
     });
     Handlebars.registerHelper('compareString', function (str1, str2="") {
-
         if(typeof str2!=="string"){
             str2="";
         }
@@ -79,7 +70,6 @@ Hooks.once('init', async function() {
         console.log("Current Context");
         console.log("====================");
         console.log(this);
-
         if (optionalValue) {
             console.log("Value");
             console.log("====================");
@@ -87,14 +77,11 @@ Hooks.once('init', async function() {
         }
     });
     Handlebars.registerHelper("contains", function(str1, str2) {
-
         if(str1===undefined){return false};
         if(str1===null){return false};
         if(str2===""){
-
             return true;
         }else{
-
             return str1.toLowerCase().includes(str2.toLowerCase());
         }
     });
@@ -105,75 +92,68 @@ Hooks.once('init', async function() {
         var doc = new DOMParser().parseFromString(text, "text/html");
         return doc.documentElement.textContent;
     });
-
-
 });
 Hooks.once("setup", function() {
-
-
-
-
-
-
 });
 //HOOKS
 Hooks.once('ready', async function() {
-
-
     //SOCKET used to update actors via the damage scripts
     game.socket.on("system.fortyk",async(data) => {
-
         if(game.user.isGM){
-            if(data.type==="applyActiveEffect"){
-                let id=data.package.actor;
-                let actor=game.actors.get(id);
-                let effect=data.package.effect;
-                FortykRolls.applyActiveEffect(actor,effect);
-            }else if(data.type==="updateValue"){
-
-                let id=data.package.token;
-                let value=data.package.value;
-                let path=data.package.path;
-                let token=canvas.tokens.get(id);
-                let actor=token.actor;
-
-                let options={}
-                options[path]=value;
-
-                await actor.update(options);
-
-            }else if(data.type==="applyDead"){
-
-                let id=data.package.token;
-                let token=canvas.tokens.get(id);
-                let effect="icons/svg/skull.svg";
-                await token.toggleOverlay(effect);
-                try{
-                    let combatant = await game.combat.getCombatantByToken(id);
-
-                    let combatid=combatant._id;
-                    await game.combat.updateCombatant({
-                        '_id':combatid,
-                        'defeated':true
-                    }) 
-                }catch(err){}
-
+            let id="";
+            let actor=null;
+            let token=null;
+            let value=0;
+            switch(data.type){
+                case "applyActiveEffect":
+                    console.log("hey")
+                    id=data.package.actor;
+                    actor=game.actors.get(id);
+                    let aeffect=data.package.effect;
+                    FortykRolls.applyActiveEffect(actor,aeffect);
+                    break;
+                case "updateValue":
+                    id=data.package.token;
+                    value=data.package.value;
+                    let path=data.package.path;
+                    console.log(id);
+                    token=canvas.tokens.get(id);
+                    actor=token.actor;
+                    let options={}
+                    options[path]=value;
+                    await actor.update(options);
+                    break;
+                case "critEffect":
+                    id=data.package.actor;
+                    actor=game.Actors.get(id);
+                    FortykRolls.critEffects(actor,data.package.num,data.package.hitLoc,data.package.type);
+                    break;
+                case "applyDead":
+                    id=data.package.token;
+                    token=canvas.tokens.get(id);
+                    let effect="icons/svg/skull.svg";
+                    await token.toggleOverlay(effect);
+                    try{
+                        let combatant = await game.combat.getCombatantByToken(id);
+                        let combatid=combatant._id;
+                        await game.combat.updateCombatant({
+                            '_id':combatid,
+                            'defeated':true
+                        }) 
+                    }catch(err){}
+                    break;
             }
         }
     })
-
 });
 //round management effects, when a token's turn starts
 Hooks.on("updateCombat", async (combat) => {
     if(game.user.isGM){
-
         let token=canvas.tokens.get(combat.current.tokenId);
         if(token===undefined){return}
         let actor=token.actor;
         //PAN CAMERA TO ACTIVE TOKEN
         canvas.animatePan({x:token.x,y:token.y});
-
-        console.log(actor);
         for(let activeEffect of actor.effects){
             if(activeEffect.duration.type!=="none"){
                 let remaining=Math.ceil(activeEffect.duration.remaining);
@@ -190,7 +170,6 @@ Hooks.on("updateCombat", async (combat) => {
                 }
             }
             //check for fire
-            console.log(activeEffect);
             if(activeEffect.data.flags.core.statusId==="fire"){
                 let onFireOptions={user: game.user._id,
                                    speaker:{actor,alias:actor.name},
@@ -205,18 +184,14 @@ Hooks.on("updateCombat", async (combat) => {
                 let flags= duplicate(game.fortyk.FORTYK.itemFlags);
                 let fireData={name:"Fire",type:"rangedWeapon"}
                 let fire=await Item.create(fireData, {temporary: true});
-
                 fire.data.flags.specials=flags;
-
                 fire.data.data.damageType.value="Energy";
                 fire.data.data.pen.value=99999;
-                console.log(actor);
                 await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire.data,1, true);
             }
             //check for bleeding
             if(activeEffect.data.flags.core.statusId==="bleeding"){
                 let bleed=true;
-
                 if(actor.getFlag("fortyk","diehard")){
                     let diehrd= await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "Die Hard");
                     if(diehrd.value){
@@ -241,63 +216,47 @@ Hooks.on("updateCombat", async (combat) => {
                     let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
                     await actor.update({"data.secChar.fatigue.value":fatigue});
                 }
-
             }
-
         }
-
-  
-    //check for regeneration
-    if(actor.getFlag("fortyk","regeneration")){
-        let regen=await FortykRolls.fortykTest("t", "char", actor.data.data.characteristics.t.total,actor, "Regeneration Test");
-        if(regen.value){
-
-            let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
-            let maxWounds=actor.data.data.secChar.wounds.max;
-            let currWounds=actor.data.data.secChar.wounds.value;
-            currWounds=Math.min(maxWounds,currWounds+regenAmt);
-            await actor.update({"data.secChar.wounds.value":currWounds});
+        //check for regeneration
+        if(actor.getFlag("fortyk","regeneration")){
+            let regen=await FortykRolls.fortykTest("t", "char", actor.data.data.characteristics.t.total,actor, "Regeneration Test");
+            if(regen.value){
+                let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
+                let maxWounds=actor.data.data.secChar.wounds.max;
+                let currWounds=actor.data.data.secChar.wounds.value;
+                currWounds=Math.min(maxWounds,currWounds+regenAmt);
+                await actor.update({"data.secChar.wounds.value":currWounds});
+            }
         }
-
     }
-
-}
-
-         })
+})
 Hooks.on("preDeleteCombat", async (combat,options,id) =>{
-
     for(let index = 0; index < combat.combatants.length; index++){
-
         let actor=combat.combatants[index].actor;
         for(let activeEffect of actor.effects){
-            console.log(activeEffect);
-
-            await activeEffect.delete({});
+            if(activeEffect.duration.type!=="none"){
+                await activeEffect.delete({});
+            }
         }
     }
 })
 Hooks.on("preUpdateActor", (data, updatedData) =>{
-
 })
 //add listeners to the chatlog for dice rolls
 Hooks.on('renderChatLog', (log, html, data) => FortykRollDialogs.chatListeners(html));
 //set flags for new weapons and items
 Hooks.on('preCreateOwnedItem', (actor, data,options) =>{
     if (data.type==="meleeWeapon"||data.type==="rangedWeapon"||data.type==="psychicPower"||data.type==="ammunition"){
-
         let flags= duplicate(game.fortyk.FORTYK.itemFlags);
         data.flags={};
-
         data.flags.specials=flags;
-
-
     }
 })
 /**
  * Set default values for new actors' tokens
  */
 Hooks.on("preCreateActor", (createData) =>{
-
     // Set wounds, fatigue, and display name visibility
     mergeObject(createData,
                 {"token.bar1" :{"attribute" : "secChar.wounds"},                 // Default Bar 1 to Wounds
@@ -307,10 +266,6 @@ Hooks.on("preCreateActor", (createData) =>{
                  "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
                  "token.name" : createData.name                                       // Set token name to actor name
                 })
-
-
-
-
     // Default characters to HasVision = true and Link Data = true
     if (createData.type !== "npc")
     {
@@ -319,6 +274,4 @@ Hooks.on("preCreateActor", (createData) =>{
     }
 })
 Hooks.on("preCreateToken", (createData) =>{
-
-
 })

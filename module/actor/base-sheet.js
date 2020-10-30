@@ -1,27 +1,18 @@
-
 /*abstract class that is not used, sets most of the functions that are common to all sheets of the system*/
-
 import {FortykRollDialogs} from "../FortykRollDialogs.js";
 import {FortykRolls} from "../FortykRolls.js";
 import {objectByString} from "../utilities.js";
 import {setNestedKey} from "../utilities.js";
 export default class FortyKBaseActorSheet extends ActorSheet {
-
     static async create(data, options) {
         data.skillFilter="";
         super.create(data,options);
     }
     /* -------------------------------------------- */
-
     /** @override */
     getData() {
-      
-
-
         const data = super.getData();
-
         mergeObject(data.actor,this.actor.prepare());
-       
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
         data.races=game.fortyk.FORTYK.races;
@@ -33,7 +24,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     }
     /** @override */
     activateListeners(html) {
-
         super.activateListeners(html);
         // Everything below here is only needed if the sheet is editable
         if (!this.options.editable) return;
@@ -44,8 +34,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         //delete item on actor
         html.find('.item-delete').click(this._onItemDelete.bind(this));
         //change item property via text input
-
-
         html.find('.item-text-input').focusout(this._itemTextInputEdit.bind(this));
         //get item description
         html.find('.item-descr').click(this._onItemDescrGet.bind(this));
@@ -63,7 +51,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         $("input[type=text]").focusin(function() {
             $(this).select();
         });
-
     }
     //Handle the popup when user clicks item name to show item description
     async _onItemDescrGet(event){
@@ -74,26 +61,20 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             height: 400
         };
         var name=event.currentTarget.dataset["name"];
-
         let dlg = new Dialog({
             title: `${name} Description`,
             content: "<p>"+descr+"</p>",
             buttons: {
                 submit: {
-
                     label: "OK",
                     callback: null
                 }
             },
             default: "submit",
         }, options);
-
         dlg.render(true);
-
-
     }
     //Handle creating a new item, will sort the item type before making the new item
-
     async _onItemCreate(event) {
         event.preventDefault();
         const header = event.currentTarget;
@@ -103,20 +84,12 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             type: type
         };
         let item= await this.actor.createEmbeddedEntity("OwnedItem",itemData,{renderSheet:true});
-        
         let newItem=null;
         if(this.actor.isToken){
             newItem = await this.actor.items.find(i => i.data._id == item.data._id);
         }else{
             newItem = await this.actor.items.find(i => i.data._id == item._id);
         }
-
-  
-
-
-
-
-
     }
     //Edits the item that was clicked
     async _onItemEdit(event){
@@ -150,27 +123,17 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     }
     //handles editing text inputs that are linked to owned items 
     async _itemTextInputEdit(event){
-
-
         let actor= this.actor;
-
         let newAmt=event.target.value;
         let dataItemId=event.target.attributes["data-item-id"].value;
         let target=event.target.attributes["data-target"].value;
-
         let item= duplicate(actor.getEmbeddedEntity("OwnedItem", dataItemId));
-
         let oldValue=objectByString(item,target);
         if(oldValue!=newAmt){
-
             let path=target.split(".");
-
             setNestedKey(item,path,newAmt);
-
             await this.actor.updateEmbeddedEntity("OwnedItem",item);
-
         }
-
     }
     //handles firing mode change for maximal weapons
     async _onMaximalClick(event){
@@ -182,7 +145,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             weapon.flags.specials.recharge.value=false;
             if(weapon.flags.specials.blast.value){
                 weapon.flags.specials.blast.num=parseInt(weapon.flags.specials.blast.num)-2;
-
             }
         }else{
             weapon.flags.specials.maximal.maximal=true;
@@ -192,7 +154,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
         }
         await this.actor.updateEmbeddedEntity("OwnedItem",weapon);
-
     }
     /**
    * Handle clickable rolls.
@@ -200,21 +161,15 @@ export default class FortyKBaseActorSheet extends ActorSheet {
    * @private
    */
     async _onRoll(event) {
-
         event.preventDefault();
         const element = event.currentTarget;
         const dataset = element.dataset;
-
         let testType=dataset["rollType"];
-
         var testTarget=parseInt(dataset["target"]);
         var testLabel=dataset["label"];
-
         var testChar=dataset["char"];
         var item=null;
-
         if(dataset["itemId"]){
-
             item=this.actor.getEmbeddedEntity("OwnedItem",dataset["itemId"]);}
         if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
             FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
@@ -225,13 +180,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }else if(testType==="focuspower"){
             FortykRollDialogs.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item);
         }
-
         //autofocus the input after it is rendered.
         setTimeout(function() {document.getElementById('modifier').select();}, 50);
-
-
-
-
     }
     //handles weapon damage rolls
     async _onDamageRoll(event) {
@@ -240,21 +190,14 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const dataset = element.dataset;
         if(dataset.weapon){
             let weapon=null;
-            
             let actor=this.actor;
-           
-            
             for(let w of actor.items){
-              
                 if(w._id===dataset.weapon){
                     weapon=w.data;
                     break;
                 }
-                
             }
-         
             let formula=weapon.data.damageFormula;
-
             new Dialog({
                 title: `Number of Hits`,
                 content: `<p><label>Number of Hits:</label> <input type="text" id="modifier" name="hits" value="1" data-dtype="Number" autofocus/></p>`,
@@ -263,36 +206,27 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         label: 'OK',
                         callback: (el) => {
                             const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
-
-
                             FortykRolls.damageRoll(formula,actor,weapon,hits);
                         }
                     }
                 },
                 default: "submit",
-
-
                 width:100}
                       ).render(true);
-
             setTimeout(function() {document.getElementById('modifier').select();}, 50);
-
         }else if(dataset.formula){
-
             let roll = new Roll(dataset.formula, this.actor.data.data);
             let label = dataset.label ? `Rolling ${dataset.label} damage.` : '';
             roll.roll().toMessage({
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 flavor: label
             });
-
         }
     }
     //handles resetting cover values to zero
     async _onCoverReset(event){
         let actor=this.actor;
         let data=duplicate(actor.data);
-        
         data.data.secChar.cover.value=0;
         data.data.characterHitLocations.head.cover=false;
         data.data.characterHitLocations.body.cover=false;
@@ -300,10 +234,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.data.characterHitLocations.lArm.cover=false;
         data.data.characterHitLocations.rLeg.cover=false;
         data.data.characterHitLocations.lLeg.cover=false;
-      
         actor.update(data);
-     
-        
     }
     //handles force weapon special damage rolls
     async _onForceRoll(event){
@@ -311,7 +242,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const element = event.currentTarget;
         const dataset = element.dataset;
         let actor=this.actor;
-
         new Dialog({
             title: `Force Attack`,
             content: `<p><label>Number of Dice:</label> <input type="text" id="modifier" name="hits" value="1" data-dtype="Number" autofocus/></p>`,
@@ -322,29 +252,18 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
                         let flags= duplicate(game.fortyk.FORTYK.itemFlags);
                         let forceData={name:"Force",type:"rangedWeapon"}
-
                         let force=await this.actor.createEmbeddedEntity("OwnedItem",forceData, {temporary: true});
-                        
-                     
-                       
                         force.flags.specials=flags;
                         force.flags.specials.ignoreSoak.value=true;
                         force.data.damageFormula.value=`${hits}d10`;
                         force.data.damageType.value="Energy";
-
                         FortykRolls.damageRoll(force.data.damageFormula,actor,force,1);
-                        
-                        
                     }
                 }
             },
             default: "submit",
-
-
             width:100}
                   ).render(true);
-
         setTimeout(function() {document.getElementById('modifier').select();}, 50);
     }
-
 }
