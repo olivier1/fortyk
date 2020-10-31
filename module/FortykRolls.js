@@ -2677,7 +2677,7 @@ returns the roll message*/
                     critActiveEffect[0].changes=[{key:`data.secChar.movement.multiply`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[3]));
-                    await d10Roll.roll();.toMessage({flavor:"Stun duration."})
+                    await d10Roll.roll().toMessage({flavor:"Stun duration."})
                     critActiveEffect[0].duration={
                         combat:game.combats.active.data._id,
                         rounds:d10Roll._total,
