@@ -938,7 +938,6 @@ returns the roll message*/
                 };
                 critActiveEffect1[0].changes=[]
                 for(let char in game.fortyk.FORTYK.skillChars){
-                    console.log(char);
                     if(char!=="t"){
                         critActiveEffect1[0].changes.push({key:`data.characteristics.${char}.total`,value:-10,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}); 
                     }
@@ -1069,7 +1068,6 @@ returns the roll message*/
             case 3:
                 this._addFatigue(actor,2);
                 await d5Roll.roll().toMessage({flavor:"Toughness damage."});
-                console.log(d5Roll);
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[28]));
                 critActiveEffect[0].changes=[{key:`data.characteristics.t.value`,value:-1*d5Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                 this.applyActiveEffect(actor,critActiveEffect);
@@ -1261,9 +1259,7 @@ returns the roll message*/
                 await d10Roll.roll().toMessage({flavor:"Fatigue amount."});
                 this._addFatigue(actor,d10Roll._total);
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist stun");
-                console.log(tTest);
                 if(!tTest.value){
-                    console.log("hey");
                     await d5Roll.roll().toMessage({flavor:"Stun duration."});
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[3]));
                     critActiveEffect[0].duration={
@@ -1279,7 +1275,6 @@ returns the roll message*/
             case 9:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist death");
                 if(!tTest.value){
-                    console.log(actor);
                     if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
                     return;
                 }else{
@@ -2701,7 +2696,6 @@ returns the roll message*/
                     let dupp=false;
                     for(let ae of actor.effects){
                         if(ae.data.flags.core.statusId===effect[index].flags.core.statusId){
-                            console.log(effect,ae);
                             dupp=true;
                             let change=false;
                             let upg=false;
@@ -2772,7 +2766,6 @@ returns the roll message*/
             let tokenId=null;
             //if user isnt GM use socket to have gm update the actor
             if(actor.token===null){
-                console.log(getActorToken(actor));
                 tokenId=getActorToken(actor).id;
             }else{
                 tokenId=actor.token.data._id;

@@ -54,7 +54,6 @@ export class FortyKActor extends Actor {
    */
     prepareData(){
         this.data = duplicate(this._data);
-        console.log(this.data.img);
         if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
         if ( !this.data.name ) this.data.name = "New " + this.entity;
         this.prepareBaseData();
@@ -123,7 +122,6 @@ export class FortyKActor extends Actor {
         data.secChar.size.movement=game.fortyk.FORTYK.size[size].movement;
         data.secChar.size.stealth=game.fortyk.FORTYK.size[size].stealth
         //movement
-        console.log(data.secChar.movement);
         data.secChar.movement.half=(data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseInt(data.secChar.movement.multi);
         data.secChar.movement.full=data.secChar.movement.half*2;
         data.secChar.movement.charge=data.secChar.movement.half*3;
@@ -185,7 +183,6 @@ export class FortyKActor extends Actor {
         data.secChar.size.movement=game.fortyk.FORTYK.size[size].movement;
         data.secChar.size.stealth=game.fortyk.FORTYK.size[size].stealth
         //movement
-        console.log(data.secChar.movement.multi);
         data.secChar.movement.half=(data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseInt(data.secChar.movement.multi);
         data.secChar.movement.full=data.secChar.movement.half*2;
         data.secChar.movement.charge=data.secChar.movement.half*3;

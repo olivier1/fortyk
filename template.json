@@ -51,7 +51,7 @@
                     "type": "String"
                 }
             },
-            "creationOptionsDH2": {
+            "creationOptionsDH": {
                 "homeWorld": {
                     "value": "",
                     "type": "String"
