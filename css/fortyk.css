@@ -148,7 +148,9 @@
 .fortyk .item-form {
     font-family: "Roboto", sans-serif;
 }
-
+.fortyk .charSheet{
+    overflow:auto;
+}
 .fortyk header.sheet-header {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 0px;

@@ -393,8 +393,8 @@ export class FortyKActor extends Actor {
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="wargear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
                 //total weight calcs
-                item.data.weight.total=parseInt(item.data.amount.value)*parseInt(item.data.weight.value);
-                data.carry.value=parseInt(data.carry.value)+parseInt(item.data.weight.total);
+                item.data.weight.total=(parseInt(item.data.amount.value)*parseFloat(item.data.weight.value)).toFixed(2);
+                data.carry.value=(parseFloat(data.carry.value)+parseFloat(item.data.weight.total)).toFixed(2);
             }
         }
         //check if actor has the unrelenting trait
