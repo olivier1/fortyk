@@ -5,7 +5,7 @@
 
 
     <div class="header-fields">
-        <div class="descr grid grid-3col">
+        <div class="descr grid grid-4col">
             <div class="descrRow flexcol">
                 <span class="descrSpan">Name:</span>
                 <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
@@ -15,7 +15,10 @@
                 <span class="descrSpan">Age:</span>
                 <input name="data.age.value" type="text" value="{{data.age.value}}" placeholder="??"/>
             </div>
-
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Sex:</span>
+                <input name="data.sex.value" type="text" value="{{data.sex.value}}" placeholder="M/F"/>
+            </div>
             <div class="descrRow flexcol">
                 <span class="descrSpan">Race:</span>
                 <select class="raceSelect" name="data.race.value" data-dtype="String">
@@ -30,7 +33,8 @@
                 </select>
                
             </div>
-
+        </div>
+        <div class="descr grid grid-3col">
             <div class="descrRow flexcol">
                 <span class="descrSpan">Build:</span>
                 <input name="data.build.value" type="text" value="{{data.build.value}}" placeholder="??"/>

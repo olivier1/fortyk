@@ -208,6 +208,7 @@
 }
 .fortyk .sheet-main .header-fields .descr .raceSelect{
     flex:auto;
+    height: 25px;
 }
 .fortyk .sheet-main .header-fields .descr input[type="text"]{
     height: 25px !important;
