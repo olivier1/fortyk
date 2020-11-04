@@ -10,15 +10,107 @@
     "esmodules": ["module/fortyk.js"],
     "styles": ["css/fortyk.css"],
     "scripts": [],
-    "packs": [ {
-        "name": "skills",
-        "label": "Skills",
-        "system": "fortyk",
-        "module": "fortyk",
-        "path": "./packs/skills.db",
-        "entity": "Item",
-        "tag" : "skill"
-    }],
+    "packs": [ 
+        {
+            "name": "skills",
+            "label": "Skills",
+            "system": "fortyk",
+            "module": "fortyk",
+            "path": "./packs/skills.db",
+            "entity": "Item",
+            "tag" : "skill"
+        },
+        {
+            "name": "talent-core-dh2",
+            "label": "Talent (Core DH2)",
+            "system": "fortyk",
+            "module": "fortyk",
+            "path": "./packs/talent-core-dh2.db",
+            "entity": "Item",
+            "tag" : "talentdh2core"
+        },
+        {
+            "label": "Traits (Core DH2)",
+            "entity": "Item",
+            "name": "traits-core-dh2",
+            "path": "./packs/traits-core-dh2.db",
+            "system": "fortyk",
+            "module": "fortyk",
+            "tag" : "traitdh2core"  
+        },
+        {
+            "label": "Role, Homeworld & Background Bonus(Core DH2)",
+            "entity": "Item",
+            "name": "role-homeworld-and-background-bonuscore-dh2",
+            "path": "./packs/role-homeworld-and-background-bonuscore-dh2.db",
+            "system": "fortyk",
+            "module": "fortyk",
+            "tag" : "bonusdh2core"
+        },
+        {
+            "label": "Talents (Enemies Within)",
+            "entity": "Item",
+            "name": "talents-enemies-within",
+            "path": "./packs/talents-enemies-within.db",
+            "system": "fortyk",
+            "module": "fortyk",
+            "tag" : "talentenemywithin"
+        },
+        {
+            "label": "Role, Homeworld & Background Bonus(Enemies Within)",
+            "entity": "Item",
+            "name": "role-homeworld-and-background-bonusenemies-within",
+            "path": "./packs/role-homeworld-and-background-bonusenemies-within.db",
+            "system": "fortyk",
+            "module": "fortyk",
+            "tag" : "bonusenemywithin"
+        },
+        {
+            "label": "Role, Homeworld & Background Bonus(Enemies Without)",
+            "entity": "Item",
+            "name": "role-homeworld-and-background-bonusenemies-without",
+            "path": "./packs/role-homeworld-and-background-bonusenemies-without.db",
+            "system": "fortyk",
+            "module": "fortyk",
+            "tag" : "bonusenemywithout"
+        },
+        {
+            "label": "Talents (Enemies Without)",
+            "entity": "Item",
+            "name": "talents-enemies-without",
+            "path": "./packs/talents-enemies-without.db",
+            "system": "fortyk",
+            "module": "fortyk",
+            "tag" : "talentenemywithout"
+        },
+        {
+            "label": "Talents (Enemies Beyond)",
+            "entity": "Item",
+            "name": "talents-enemies-beyond",
+            "path": "./packs/talents-enemies-beyond.db",
+            "system": "fortyk",
+            "module": "fortyk",
+            "tag" : "talentenemybeyond"
+        },
+        {
+            "label": "Role, Homeworld & Background Bonus(Enemies Beyond)",
+            "entity": "Item",
+            "name": "role-homeworld-and-background-bonusenemies-beyond",
+            "path": "./packs/role-homeworld-and-background-bonusenemies-beyond.db",
+            "system": "fortyk",
+            "module": "fortyk",
+            "tag" : "bonusenemybeyond"
+        },
+        {
+            "label": "Deathwatch Bonus and Drawbacks",
+            "entity": "Item",
+            "name": "deathwatch-bonus-and-drawbacks",
+            "path": "./packs/deathwatch-bonus-and-drawbacks.db",
+            "system": "fortyk",
+            "module": "fortyk",
+            "tag" : "deathwatchbonusdrawbacks"
+        }
+    ],
     "languages": [
         {
             "lang": "en",

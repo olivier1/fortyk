@@ -122,7 +122,7 @@ export class FortyKActor extends Actor {
         data.secChar.size.movement=game.fortyk.FORTYK.size[size].movement;
         data.secChar.size.stealth=game.fortyk.FORTYK.size[size].stealth
         //movement
-        data.secChar.movement.half=(data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseInt(data.secChar.movement.multi);
+        data.secChar.movement.half=Math.max(Math.ceil((data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseInt(data.secChar.movement.multi)),1);
         data.secChar.movement.full=data.secChar.movement.half*2;
         data.secChar.movement.charge=data.secChar.movement.half*3;
         data.secChar.movement.run=data.secChar.movement.half*6;
@@ -183,7 +183,7 @@ export class FortyKActor extends Actor {
         data.secChar.size.movement=game.fortyk.FORTYK.size[size].movement;
         data.secChar.size.stealth=game.fortyk.FORTYK.size[size].stealth
         //movement
-        data.secChar.movement.half=(data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseInt(data.secChar.movement.multi);
+        data.secChar.movement.half=Math.max(Math.ceil((data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseInt(data.secChar.movement.multi)),1);
         data.secChar.movement.full=data.secChar.movement.half*2;
         data.secChar.movement.charge=data.secChar.movement.half*3;
         data.secChar.movement.run=data.secChar.movement.half*6;
@@ -342,6 +342,11 @@ export class FortyKActor extends Actor {
                 advancements.push(item);
             }
             if(item.type==="meleeWeapon"){
+                if(item.data.class.value==="Melee Two-handed"){
+                    item.data.twohanded.value=true;
+                }else{
+                    item.data.twohanded.value=false;
+                }
                 if(item.flags.specials.crushing.value){
                     item.data.damageFormula.value=item.data.damageFormula.formula+"+"+2*data.characteristics.s.bonus;
                 }else{
@@ -360,6 +365,14 @@ export class FortyKActor extends Actor {
                 catch(err){
                     item.data.range.value="";
                 } 
+                console.log(item);
+                if(item.data.class.value==="Pistol"||item.data.class.value==="Thrown"){
+
+                    item.data.twohanded.value=false;
+
+                }else{
+                    item.data.twohanded.value=true;
+                }
                 rangedWeapons.push(item);
                 wargear.push(item);
             }

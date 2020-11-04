@@ -106,7 +106,6 @@ Hooks.once('ready', async function() {
             let value=0;
             switch(data.type){
                 case "applyActiveEffect":
-                    console.log("hey")
                     id=data.package.actor;
                     actor=game.actors.get(id);
                     let aeffect=data.package.effect;
@@ -116,7 +115,6 @@ Hooks.once('ready', async function() {
                     id=data.package.token;
                     value=data.package.value;
                     let path=data.package.path;
-                    console.log(id);
                     token=canvas.tokens.get(id);
                     actor=token.actor;
                     let options={}

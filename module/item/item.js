@@ -56,11 +56,7 @@ export class FortyKItem extends Item {
 
 
 
-                if(itemData.data.class.value==="Melee Two-handed"){
-                    itemData.data.twohanded.value=true;
-                }else{
-                    itemData.data.twohanded.value=false;
-                }
+                
                 //ensure that a weapon that is not a shield does not have an armor rating
                 if(data.class.value!=="Shield"&&data.shield.value!==0){
                     data.shield.value=0;
@@ -108,11 +104,7 @@ export class FortyKItem extends Item {
                 }
 
                 data.clip.max=data.clip.formula;
-                if(itemData.data.class.value==="Pistol"||itemData.data.class.value==="Thrown"){
-                    itemData.data.twohanded.value=false;
-                }else{
-                    itemData.data.twohanded.value=true;
-                }
+               
                 if(itemData.flags.specials.maximal.maximal){
 
 

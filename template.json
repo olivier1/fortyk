@@ -810,9 +810,29 @@
             "templates": [
                 "description"
             ],
+            "tier": {
+                "value": 1,
+                "type": "Number"
+            },
+            "prereqs": {
+                "value": "",
+                "type": "String"
+            },
             "aptitudes": {
                 "value": "",
                 "type": "String"
+            },
+            "specialisation":{
+                "value":"N/A",
+                "type":"String"
+            },
+            "flagId":{
+                "value":"",
+                "type":"String"
+            },
+            "tags":{
+                "value":"",
+                "type":"String"
             }
         },
         "advancement": {

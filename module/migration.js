@@ -13,7 +13,7 @@ let upd=async ()=>{
             }
             if ( !isObjectEmpty(updateData) ) {
                 console.log(`Migrating Actor entity ${a.name}`);
-                await a.update(updateData, {insertKeys:true,inserValues:true,recursive:true,overwrite:false,enforceTypes: false});
+                await a.update(updateData, {insertKeys:true,inserValues:false,recursive:true,overwrite:false,enforceTypes: false});
             }
         } catch(err) {
             console.error(err);

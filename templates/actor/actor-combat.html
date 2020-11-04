@@ -123,7 +123,7 @@
                 {{#if (greaterThan @index 1)}}
                 <div class="flexcol weapon-select">
                     <label>Extra Weapon</label>
-                    <select class="extra-weapon" name="data.secChar.wornGear.weapons.{{@index}}" id="right">
+                    <select class="extra-weapon" name="data.secChar.wornGear.weapons.{{@index}}" >
                         {{#select this}}
                         <option value="">None</option>
                         {{#each ../actor.meleeWeapons}}

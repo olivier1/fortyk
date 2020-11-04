@@ -15,7 +15,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     /** @override */
 
     static get defaultOptions() {
-        
+
         return mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/actor-sheet.html",
@@ -186,11 +186,14 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     //handles adding extra worn weapon slots
     async _onAddExtraWeapon(event){
         let actor=this.actor;
-        let data=duplicate(actor.data.data);
+        let data=duplicate(actor.data);
+        console.log(data);
 
-        let weapons=Object.values(data.secChar.wornGear.weapons);
+        let weapons=Object.values(data.data.secChar.wornGear.weapons);
         weapons.push("");
-        await actor.update({"data.secChar.wornGear.weapons":weapons});
+        let weaponsObj=Object.assign({},weapons);
+        await actor.update({"data.secChar.wornGear.weapons":weaponsObj});
+
     }
     //handles removing extra weapon slots
     async _onRemoveExtraWeapon(event){
@@ -200,7 +203,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         if(weapons.length>2){
 
             weapons.pop();
-            await actor.update({"data.secChar.wornGear.weapons":weapons});
+            let weaponsObj=Object.assign({},weapons);
+            await actor.update({"data.secChar.wornGear.weapons":weaponsObj});
         }
 
     }
@@ -237,29 +241,29 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         event.preventDefault;
         const dataset=event.currentTarget.dataset;
         let weapon=null;
-            
-            let actor=this.actor;
-          
-            for(let w of actor.data.wornGear.weapons){
-                
-                if(w._id===dataset.weapon){
-                    weapon=w;
-                }
+
+        let actor=this.actor;
+
+        for(let w of actor.data.wornGear.weapons){
+
+            if(w._id===dataset.weapon){
+                weapon=w;
             }
-        
-        
+        }
+
+
         let ooa=false;
         //different logic for throwing weapons
         if(weapon.data.class.value!=="Thrown"){
             const ammo=duplicate(this.actor.getEmbeddedEntity("OwnedItem",weapon.data.ammo._id));
-           
+
             if(ammo!==null){
                 let ammoAmt=parseInt(ammo.data.amount.value);
 
                 if(ammoAmt>0){
                     weapon.data.clip.value=weapon.data.clip.max;
                     ammo.data.amount.value=ammoAmt-1;
-                    
+
                     await this.actor.updateEmbeddedEntity("OwnedItem",weapon);
                     await this.actor.updateEmbeddedEntity("OwnedItem",ammo);
 
@@ -305,14 +309,20 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     _onWeaponChange(event){
 
         const data=this.actor.data.data;
-        const weapon=this.actor.getEmbeddedEntity("OwnedItem",event.currentTarget.value);
+
+        let weapon=null;
+        let actor=this.actor;
+        for(let w of actor.items){
+            if(w._id===event.currentTarget.value){
+                weapon=w.data;
+                break;
+            }
+        }
         const weaponID=event.currentTarget.value;
         const hand=event.currentTarget.dataset["hand"];
         const leftHand=document.getElementById("left");
         const rightHand=document.getElementById("right");
         var update={};
-
-
         if(hand==="right"){
             if(weaponID===data.secChar.wornGear.weapons[1]){return}
             rightHand.value=weaponID;
