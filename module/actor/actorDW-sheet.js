@@ -385,6 +385,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     _onFilterChange(event){
         
         let skills=document.getElementsByName("skill");
+        let skillHeads=document.getElementsByName("skillheads");
+        
         let filterInput=document.getElementById("skillfilter");
         let filter=filterInput.value.toLowerCase();
         for(let i=0;i<skills.length;i++){
@@ -392,10 +394,18 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             let elements=skill.getElementsByTagName("a");
             let nameElement=elements[0];
             let skillName=nameElement.attributes["data-name"].value.toLowerCase();
+            console.log(nameElement.attributes);
             if(skillName.indexOf(filter)>-1){
                 skill.style.display="";
             }else{
                 skill.style.display="none";
+            }
+        }
+        for(let index=0;index<skillHeads.length;index++){
+            if(filter===""){
+                skillHeads[index].style.display="";
+            }else{
+                skillHeads[index].style.display="none";
             }
         }
     }

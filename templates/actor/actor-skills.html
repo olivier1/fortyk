@@ -4,7 +4,7 @@
 <div class="skills flexcol">
    
     <div class="flexrow">
-        <input type="text"  id="skillfilter" class="filter" placeholder="Filter">
+        <input type="text"  id="skillfilter" class="filter" placeholder="Search...">
         <a class="item-create button" data-type="skill" title="Add new skill">New Skill</a>
     </div>
 
@@ -24,7 +24,7 @@
     
     {{#if skill.data.hasChildren.value}}
 
-    <div class="skills-header grid grid-7col">
+    <div class="skills-header grid grid-7col" name="skillheads">
         <a class="skillItem skill-group item-descr" data-name="{{skill.name}}" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{skill.name}}</a>
         <span class="skillItem" ></span>
         <span class="skillItem" ></span>
@@ -34,7 +34,7 @@
         <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{skill._id}}"></a>
 
     </div>
-    <div class="skills-header flexrow">
+    <div class="skills-header flexrow" name="skillheads">
         <span class="skillItem gap"></span>
 
 
@@ -43,8 +43,9 @@
     
 
     {{#if (compareString skill.name spec.data.parent.value)}}
+    
     <div class="skills-header grid grid-7col" name="skill">
-        <a class="skillSubItem item-descr" name="name"data-name="{{skill.name}}" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{spec.name}}</a>
+        <a class="skillSubItem item-descr" name="name"data-name="{{spec.name}}" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{spec.name}}</a>
         <select data-item-id="{{spec._id}}" class="skillItem skill-char">
             {{#select spec.data.characteristic.value}}
             {{#each ../../skillChars}}
@@ -71,7 +72,7 @@
     {{/if}}
     {{/each}}
 
-    <div class="skills-header flexrow">
+    <div class="skills-header flexrow" name="skillheads">
         <span class="skillItem gap"></span>
 
 
