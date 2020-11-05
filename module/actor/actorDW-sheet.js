@@ -9,7 +9,6 @@ import FortyKBaseActorSheet from "./base-sheet.js";
 export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
     static async create(data, options) {
-        data.skillFilter="";
         super.create(data,options);
     }
     /** @override */
@@ -61,7 +60,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         html.find('.hand-weapon').change(this._onWeaponChange.bind(this));
 
         //filters
-        html.find('.filter').keydown(this._onFilterChange.bind(this));
+        html.find('.filter').keyup(this._onFilterChange.bind(this));
 
     }
 
@@ -187,7 +186,6 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     async _onAddExtraWeapon(event){
         let actor=this.actor;
         let data=duplicate(actor.data);
-        console.log(data);
 
         let weapons=Object.values(data.data.secChar.wornGear.weapons);
         weapons.push("");
@@ -385,8 +383,21 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
 
     _onFilterChange(event){
-
-
+        
+        let skills=document.getElementsByName("skill");
+        let filterInput=document.getElementById("skillfilter");
+        let filter=filterInput.value.toLowerCase();
+        for(let i=0;i<skills.length;i++){
+            let skill=skills[i];
+            let elements=skill.getElementsByTagName("a");
+            let nameElement=elements[0];
+            let skillName=nameElement.attributes["data-name"].value.toLowerCase();
+            if(skillName.indexOf(filter)>-1){
+                skill.style.display="";
+            }else{
+                skill.style.display="none";
+            }
+        }
     }
 
 }

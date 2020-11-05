@@ -4,7 +4,7 @@
 <div class="skills flexcol">
    
     <div class="flexrow">
-        <input type="text"  placeholder="Filter" value="{{data.skillFilter}}" name="data.skillFilter">
+        <input type="text"  id="skillfilter" class="filter" placeholder="Filter">
         <a class="item-create button" data-type="skill" title="Add new skill">New Skill</a>
     </div>
 
@@ -21,7 +21,7 @@
 
     {{#each actor.skills as |skill key|}}
 
-    {{#if (contains skill.name ../data.skillFilter)}}
+    
     {{#if skill.data.hasChildren.value}}
 
     <div class="skills-header grid grid-7col">
@@ -43,8 +43,8 @@
     
 
     {{#if (compareString skill.name spec.data.parent.value)}}
-    <div class="skills-header grid grid-7col">
-        <a class="skillSubItem item-descr" data-name="{{skill.name}}" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{spec.name}}</a>
+    <div class="skills-header grid grid-7col" name="skill">
+        <a class="skillSubItem item-descr" name="name"data-name="{{skill.name}}" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{spec.name}}</a>
         <select data-item-id="{{spec._id}}" class="skillItem skill-char">
             {{#select spec.data.characteristic.value}}
             {{#each ../../skillChars}}
@@ -77,9 +77,9 @@
 
     </div>
     {{else if (compareString skill.data.parent.value)}}
-    <div class="skills-header grid grid-7col">
+    <div class="skills-header grid grid-7col" name="skill">
         
-        <a class="skillItem item-descr" data-name="{{skill.name}}" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{skill.name}}</a>
+        <a class="skillItem item-descr" name="name" data-name="{{skill.name}}" data-item-descr="{{skill.data.description.value}}" title="Skill Use: {{skill.data.skillUse.value}}">{{skill.name}}</a>
         <select  data-item-id="{{skill._id}}" class="skillItem skill-char">
             {{#select skill.data.characteristic.value}}
            {{#each ../skillChars}}
@@ -104,6 +104,6 @@
 
     </div>
     {{/if}}
-    {{/if}}
+    
     {{/each}}
 </div>
