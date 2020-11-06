@@ -128,20 +128,19 @@ export class FortyKActor extends Actor {
         data.secChar.movement.run=data.secChar.movement.half*6;
         //add up all armor and stuff
         var armor= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.armor._id);
-        var rightHandWeapon= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[0]);
-        var leftHandWeapon= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[1]);
+        var rightHandWeapon= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[1]);
+        var leftHandWeapon= this.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[0]);
         //handle shields
         data.characterHitLocations.body.shield= 0;
         data.characterHitLocations.rArm.shield= 0;
         data.characterHitLocations.lArm.shield= 0;
         if(rightHandWeapon!==null&&rightHandWeapon.type!=="rangedWeapon"){
             data.characterHitLocations.rArm.shield= parseInt(rightHandWeapon.data.shield.value);
-            data.characterHitLocations.body.shield= Math.max(data.characterHitLocations.body.shield,parseInt(rightHandWeapon.data.shield.value));
+            data.characterHitLocations.body.shield= parseInt(rightHandWeapon.data.shield.value);
         }
         if(leftHandWeapon!==null&&leftHandWeapon.type!=="rangedWeapon"){
             data.characterHitLocations.lArm.shield= parseInt(leftHandWeapon.data.shield.value);
-            data.characterHitLocations.body.shield= 0;
-            data.characterHitLocations.body.shield= Math.max(data.characterHitLocations.body.shield,parseInt(leftHandWeapon.data.shield.value));
+            data.characterHitLocations.body.shield= parseInt(leftHandWeapon.data.shield.value);
         }
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
@@ -421,19 +420,13 @@ export class FortyKActor extends Actor {
         data.experience.value=parseInt(data.experience.starting)+parseInt(data.experience.earned)-parseInt(data.experience.spent);
         //get max carry weight ensure it is not out of bounds
         if((data.characteristics["s"].bonus+data.characteristics["t"].bonus)>19){
-            data.carry.max=game.fortyk.FORTYK.carry[19].carry;
+            data.carry.max=game.fortyk.FORTYK.carry[19].carry+data.carry.mod;
         }else if((data.characteristics["s"].bonus+data.characteristics["t"].bonus)<=19){
-            data.carry.max=game.fortyk.FORTYK.carry[(data.characteristics["s"].bonus+data.characteristics["t"].bonus)].carry;
+            data.carry.max=game.fortyk.FORTYK.carry[(data.characteristics["s"].bonus+data.characteristics["t"].bonus)].carry+data.carry.mod;
         }else{
-            data.carry.max=game.fortyk.FORTYK.carry[1].carry;
+            data.carry.max=game.fortyk.FORTYK.carry[1].carry+data.carry.mod;
         }
-        /*let wornWeapons=data.secChar.wornGear.weapons;
-            if(!Array.isArray(data.secChar.wornGear.weapons)){
-                wornWeapons=Object.values(data.secChar.wornGear.weapons);
-            }
-            for( let w of wornWeapons){
-                wornGear.weapons.push(this.getEmbeddedEntity("OwnedItem",w));
-            }*/
+       
         let sortedSkills=skills.sort(function compare(a, b) {
             if (a.name<b.name) {
                 return -1;

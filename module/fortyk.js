@@ -123,7 +123,7 @@ Hooks.once('ready', async function() {
                     break;
                 case "critEffect":
                     id=data.package.actor;
-                    actor=game.Actors.get(id);
+                    actor=game.actors.get(id);
                     FortykRolls.critEffects(actor,data.package.num,data.package.hitLoc,data.package.type);
                     break;
                 case "applyDead":

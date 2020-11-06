@@ -891,7 +891,7 @@ returns the roll message*/
     //applies critical results to token/actor
     static async critEffects(actor,num,hitLoc,type){
         console.log(actor,num,hitLoc,type);
-        if(game.user.isGM||token.owner){
+        if(game.user.isGM||actor.owner){
             switch(type){
                 case "Energy":
                     await this.energyCrits(actor,num,hitLoc);
