@@ -1,0 +1,12 @@
+<input type="text"  id="tntfilter" class="tntfilter" placeholder="Search...">
+<select id="tntselect" size=30 multiple>
+
+    {{#each tnts}}
+
+    <option name="tntEntry" value="{{this._id}}" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}" data-compendium="{{this.options.compendium.metadata.name}}" title="
+    {{this.data.data.description.value}}">
+        {{this.name}}
+    </option>
+
+    {{/each}}
+</select>

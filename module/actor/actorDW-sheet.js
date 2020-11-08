@@ -60,7 +60,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         html.find('.hand-weapon').change(this._onWeaponChange.bind(this));
 
         //filters
-        html.find('.filter').keyup(this._onFilterChange.bind(this));
+        html.find('.skillfilter').keyup(this._onFilterChange.bind(this));
 
     }
 

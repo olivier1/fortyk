@@ -68,16 +68,7 @@ export class FortyKActor extends Actor {
         // super.prepareBaseData();
         const actorData = this.data;
         const data = actorData.data;
-        const flags = actorData.flags;
-        //set default flags
-        flags["truegrit"]=false;
-        flags["atsknf"]=false;
-        flags["diehard"]=false;
-        flags["deathwatchtraining"]=false;
-        if(flags["unrelenting"]===undefined){flags["unrelenting"]=false};
-        if(data.skillFilter===undefined){
-            data.skillFilter="";
-        }
+        
         // Make separate methods for each Actor type (character, npc, etc.) to keep
         // things organized.
         if (actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC') {this._prepareCharacterData(actorData)};
@@ -100,7 +91,7 @@ export class FortyKActor extends Actor {
         data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
         //modify total characteristics depending on fatigue
         var fatigueMult=1;
-        if(actorData.flags["unrelenting"]){
+        if(actorData.getFlag("fortyk","unrelenting")){
             fatigueMult=2;
         }
         for (let [key,char] of Object.entries(data.characteristics)){
@@ -312,21 +303,7 @@ export class FortyKActor extends Actor {
                 psychicPowers.push(item);
             }
             if(item.type==="talentntrait"){
-                if(item.name==="True Grit"){
-                    if(!this.getFlag("fortyk","truegrit")){
-                        this.setFlag("fortyk","truegrit",true);
-                    }
-                }else if(item.name==="And They Shall Know No Fear"){
-                    actorData.flags["atsknf"]=true;
-                }else if(item.name==="Unrelenting"){
-                    actorData.flags["unrelenting"]=true;
-                    unrelenting=true;
-                }else if(item.name==="Die Hard"){
-                    actorData.flags["diehard"]=true;
-                    this.setFlag("fortyk","diehard",true);
-                }else if(item.name==="Deathwatch Training"){
-                    this.setFlag("fortyk","deathwatchtraining",true);
-                }
+                
                 talentsntraits.push(item);
             }
             if(item.type==="mission"){
@@ -409,11 +386,10 @@ export class FortyKActor extends Actor {
                 data.carry.value=(parseFloat(data.carry.value)+parseFloat(item.data.weight.total)).toFixed(2);
             }
         }
-        //check if actor has the unrelenting trait
-        if(!unrelenting){actorData.flags["unrelenting"]=false};
+       
         //store known xenos for deathwatchtraining
         if(this.getFlag("fortyk","deathwatchtraining")){
-            actorData.flags["deathwatchtraining"]=forRaces;
+            actorData.flags.fortyk.deathwatchtraining=forRaces;
         }
         //compile total exp and influence
         data.characteristics["inf"].total=data.characteristics["inf"].value+data.characteristics["inf"].advance;

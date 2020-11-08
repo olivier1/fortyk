@@ -47,6 +47,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.rollable').click(this._onRoll.bind(this));
         //force damage roll
         html.find('.force-roll').click(this._onForceRoll.bind(this));
+        html.find('.tnt-create').click(this._onTntCreate.bind(this));
+
         // Autoselect entire text 
         $("input[type=text]").focusin(function() {
             $(this).select();
@@ -91,6 +93,143 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             newItem = await this.actor.items.find(i => i.data._id == item._id);
         }
     }
+    //provides an interface to add new talents and apply the corresponding flags
+    async _onTntCreate(event){
+        event.preventDefault();
+        var actor=this.actor;
+        const dh2Talents=await game.packs.get("fortyk.talent-core-dh2");
+        let tnts=await dh2Talents.getContent();
+        console.log(tnts);
+        const dh2Traits=await game.packs.get("fortyk.traits-core-dh2");
+        tnts=tnts.concat(await dh2Traits.getContent());
+        const dh2EnemyWithinTalents=await game.packs.get("fortyk.talents-enemies-within");
+        tnts=tnts.concat(await dh2EnemyWithinTalents.getContent());
+        const dh2EnemyWithoutTalents=await game.packs.get("fortyk.talents-enemies-without");
+        tnts=tnts.concat(await dh2EnemyWithoutTalents.getContent());
+        const dh2EnemyBeyondTalents=await game.packs.get("fortyk.talents-enemies-beyond");
+        tnts=tnts.concat(await dh2EnemyBeyondTalents.getContent());
+        if(actor.data.type==="dhPC"){
+            const dh2CoreBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonuscore-dh2");
+            tnts=tnts.concat(await dh2CoreBonus.getContent());
+            const dh2EnemiesWithinBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-within");
+            tnts=tnts.concat(await dh2EnemiesWithinBonus.getContent());
+            const dh2EnemiesWithoutBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-without");
+            tnts=tnts.concat(await dh2EnemiesWithoutBonus.getContent());
+            const dh2EnemiesBeyondBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-beyond");
+            tnts=tnts.concat(await dh2EnemiesBeyondBonus.getContent());
+        }else if(actor.data.type==="dwPC"){
+            const dwBonus=await game.packs.get("fortyk.deathwatch-bonus-and-drawbacks");
+            tnts=tnts.concat(await dwBonus.getContent());
+        }
+        tnts=tnts.sort(function compare(a, b) {
+            if (a.name<b.name) {
+                return -1;
+            }
+            if (a.name>b.name) {
+                return 1;
+            }
+            // a must be equal to b
+            return 0;
+        });
+        let templateOptions={"tnts":tnts};
+
+        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/tnt-dialog.html', templateOptions);
+        var options = {
+            width: 250,
+            height: 600,
+            classes:["systems/fortyk/css/fortyk.css"]
+        };
+
+        renderedTemplate.then(content => { 
+            new Dialog({
+                title: "Talents, Traits and Bonus",
+                content: content,
+                buttons:{
+                    submit:{
+                        label:"Add selected to Actor",
+                        callback: async html => {
+
+                            let selectedIds=$(html).find('#tntselect').val();
+                            let $selectedCompendiums= $('option:selected',html).map(function(){
+                                return this.getAttribute('data-compendium');
+                            }).get();
+                            console.log(selectedIds,$selectedCompendiums);
+                            for(let i=0;i<selectedIds.length;i++){
+                                let tnt=null;
+                                switch($selectedCompendiums[i]){
+                                    case"talent-core-dh2":
+                                        tnt=await dh2Talents.getEntity(selectedIds[i]);
+                                        break;
+                                    case "traits-core-dh2":
+                                        tnt=await dh2Traits.getEntity(selectedIds[i]);
+                                        break;
+                                    case "talents-enemies-within":
+                                        tnt=await dh2EnemyWithinTalents.getEntity(selectedIds[i]);
+                                        break;
+                                    case "talents-enemies-without":
+                                        tnt=await dh2EnemyWithoutTalents.getEntity(selectedIds[i]);
+                                        break;
+                                    case "talents-enemies-beyond":
+                                        tnt=await dh2EnemyBeyondTalents.getEntity(selectedIds[i]);
+                                        break;
+                                    case "role-homeworld-and-background-bonuscore-dh2":
+                                        tnt=await dh2CoreBonus.getEntity(selectedIds[i]);
+                                        break;
+                                    case "role-homeworld-and-background-bonusenemies-without":
+                                        tnt=await dh2EnemiesWithinBonus.getEntity(selectedIds[i]);
+                                        break;
+                                    case "role-homeworld-and-background-bonusenemies-beyond":
+                                        tnt=await dh2EnemiesWithinBonus.getEntity(selectedIds[i]);
+                                        break;
+                                    case "role-homeworld-and-background-bonusenemies-within":
+                                        tnt=await dh2EnemiesBeyondBonus.getEntity(selectedIds[i]);
+                                        break;
+                                    case "deathwatch-bonus-and-drawbacks":
+                                        tnt=await dwBonus.getEntity(selectedIds[i]);
+                                        break;
+                                }
+                                console.log(tnt);
+                                let itemData=tnt.data;
+                                let tntData=itemData.data;
+                                let spec=tntData.specialisation.value;
+                                let flag=tntData.flagId.value;
+                                if(!actor.getFlag("fortyk",flag)){
+                                    
+                                    if(spec==="N/A"){
+                                        await actor.createEmbeddedEntity("OwnedItem",itemData);
+                                        await actor.setFlag("fortyk",flag,true);
+                                    }else{
+                                        await new Dialog({
+                                            title: "Choose specialisation",
+                                            content: `<p><label>Specialisation:</label> <input id="modifier" type="text" name="modifier" value="${tntData.specialisation.value}" autofocus/></p>`,
+                                            buttons: {
+                                                submit: {
+                                                    label: 'OK',
+                                                    callback: async(html) => {
+                                                        const chosenSpec = $(html).find('input[name="modifier"]').val();
+                                                        await actor.setFlag("fortyk",flag,chosenSpec);
+                                                    }
+
+                                                }
+                                            },
+                                            default: "submit",
+
+
+                                            width:100}
+                                                        ).render(true);
+                                    }  
+                                }
+
+
+                            }
+                        }
+                    }
+                },
+                default: "submit"
+            },options).render(true)
+        });
+        setTimeout(function() {document.getElementById('tntfilter').select();}, 50);
+    }
     //Edits the item that was clicked
     async _onItemEdit(event){
         event.preventDefault();
@@ -102,6 +241,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     async _onItemDelete(event){
         event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;
+        let item=await this.actor.getEmbeddedEntity("OwnedItem",itemId);
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
         renderedTemplate.then(content => {
             new Dialog({
@@ -110,7 +250,13 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 buttons:{
                     submit:{
                         label:"Yes",
-                        callback: dlg => { this.actor.deleteItem(itemId);}
+                        callback: async dlg => { 
+                            console.log(item);
+                            if(item.type==="talentntrait"){
+                                await this.actor.setFlag("fortyk",item.data.flagId.value,false);
+                            }
+                            this.actor.deleteItem(itemId);
+                        }
                     },
                     cancel:{
                         label: "No",
@@ -266,4 +412,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                   ).render(true);
         setTimeout(function() {document.getElementById('modifier').select();}, 50);
     }
+
+
 }

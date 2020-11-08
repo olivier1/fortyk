@@ -1,5 +1,6 @@
 // Import Modules
 import { FortyKActor } from "./actor/actor.js";
+import { ActorDialogs } from "./actor/actor-dialogs.js";
 import FortyKDWActorSheet from "./actor/actorDW-sheet.js";
 import { FortyKDHActorSheet } from "./actor/actorDH-sheet.js";
 import { FortyKItem } from "./item/item.js";
@@ -243,6 +244,8 @@ Hooks.on("preUpdateActor", (data, updatedData) =>{
 })
 //add listeners to the chatlog for dice rolls
 Hooks.on('renderChatLog', (log, html, data) => FortykRollDialogs.chatListeners(html));
+//add listeners to dialogs to allow searching and the like
+Hooks.on('renderDialog', (dialog, html, data) => ActorDialogs.chatListeners(html));
 //set flags for new weapons and items
 Hooks.on('preCreateOwnedItem', (actor, data,options) =>{
     if (data.type==="meleeWeapon"||data.type==="rangedWeapon"||data.type==="psychicPower"||data.type==="ammunition"){
