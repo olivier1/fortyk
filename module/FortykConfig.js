@@ -264,6 +264,11 @@ FORTYK.itemFlags={
         "label": "Melta",
         "description": "These weapons rely on intense heat to negate protective armour, turning even the thickest to steaming liquid. This weapon doubles its penetration when firing at Short range or closer."
     },
+    "niditus": {
+        "value": false,
+        "label": "Niditus",
+        "description": "When a psyker suffers damage from this weapon, he must make a Difficult (–10) Willpower test or be Stunned for a number of rounds equal to his degrees of failure. When a target with the Warp Instability trait suffers damage from this weapon, it must immediately test for Instability with a –10 penalty."
+    },
     "overheats": {
         "value": false,
         "label": "Overheats",

@@ -301,11 +301,11 @@ returns the roll message*/
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
     static async damageRoll(formula,actor,weapon,hits=1, self=false, overheat=false){
         weapon=duplicate(weapon);
-        
+
         let righteous=10;
         if(weapon.flags.specials.vengeful.value){
             righteous=weapon.flags.specials.vengeful.num;
-            
+
         }
         let lastHit=actor.data.data.secChar.lastHit;
         let attackerToken=getActorToken(actor);
@@ -315,7 +315,7 @@ returns the roll message*/
             weapon.flags.specials.concussive.value=true;
             weapon.flags.specials.concussive.num+=2;
             weapon.data.pen.value=parseInt(weapon.data.pen.value)+Math.ceil(actor.data.data.characteristics.s.bonus/2);
-            
+
         }
         if(self){
             if(overheat){
@@ -634,7 +634,7 @@ returns the roll message*/
                         await ChatMessage.create(swarmOptions,{});
                     }
                     damage=damage-soak;
-                    
+
                     //corrosive weapon logic
                     if(weapon.flags.specials.corrosive.value){
                         let corrosiveAmt=new Roll("1d10",{});
@@ -656,7 +656,7 @@ returns the roll message*/
                             damage=corrosiveDamage;
                         }else{
                             damage+=corrosiveDamage;
-                            
+
                         }
                     }
                     //toxic weapon logic
@@ -710,6 +710,7 @@ returns the roll message*/
                                             author:actor.name};
                         await ChatMessage.create(crippleOptions,{});
                     }
+
                     //generate roll message
                     await roll.toMessage({
                         speaker: ChatMessage.getSpeaker({ actor: actor }),
@@ -721,7 +722,7 @@ returns the roll message*/
                         damage=1;
                     }else if(damage<=0){
                         damage=0;
-                        
+
                         let chatOptions={user: game.user._id,
                                          speaker:{actor,alias:actor.name},
                                          content:"Damage is fully absorbed.",
@@ -731,17 +732,62 @@ returns the roll message*/
                         await ChatMessage.create(chatOptions,{});
                     }
                     let newWounds=wounds.value;
+                    //NIDITUS WEAPON
+                    if((weapon.flags.specials.niditus.value&&damage)>0){
+                        if(tarActor.data.data.psykana.pr.value>0){
+                            let stun=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total),tarActor, "Resist niditus stun");
+                            if(!stun.value){
+                                let stunActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[3]);
+                                stunActiveEffect.transfer=false;
+                                stunActiveEffect.duration={
+                                    combat:game.combats.active.data._id,
+                                    rounds:stun.dos,
+                                    startRound:game.combats.active.current.round
+                                };
+                                activeEffects.push(stunActiveEffect);
+                                let shockingOptions={user: game.user._id,
+                                                     speaker:{tarActor,alias:tarActor.name},
+                                                     content:`${tarActor.name} is stunned for ${stun.dos} rounds!`,
+                                                     classes:["fortyk"],
+                                                     flavor:`Niditus`,
+                                                     author:actor.name};
+                                await ChatMessage.create(shockingOptions,{});
+                            }
+
+                        }
+                        if(tarActor.getFlag("fortyk","warpinstability")&&damage>newWounds){
+                            let warpinst=await this.fortykTest("wp", "char", (tarActor.data.data.characteristics.wp.total-10),tarActor, "Warp instability niditus");
+                            if(!warpinst.value){
+                                let warpdmg=warpinst.dos;
+                                if(warpdmg>newWounds){
+                                    let banishOptions={user: game.user._id,
+                                                       speaker:{actor,alias:actor.name},
+                                                       content:`${actor.name} is banished to the warp!`,
+                                                       classes:["fortyk"],
+                                                       flavor:`Banishment`,
+                                                       author:actor.name};
+                                    await ChatMessage.create(banishOptions,{});
+                                    await this.applyDead(tar,actor);
+                                    return;
+                                    
+                                }else{
+                                    damage+=warpdmg;
+                                }
+                            }
+                        }
+                    }
                     //deathdealer
                     if(damage>newWounds&&actor.getFlag("fortyk","deathdealer")&&(weapon.type.toLowerCase().includes(actor.getFlag("fortyk","deathdealer")))){
                         damage+=actor.data.data.characteristics.per.bonus;
                         let deathDealerOptions={user: game.user._id,
-                                           speaker:{actor,alias:actor.name},
-                                           content:`Deathdealer increases criritcal damage by ${actor.data.data.characteristics.per.bonus}.`,
-                                           classes:["fortyk"],
-                                           flavor:`Deathdealer`,
-                                           author:actor.name};
+                                                speaker:{actor,alias:actor.name},
+                                                content:`Deathdealer increases criritcal damage by ${actor.data.data.characteristics.per.bonus}.`,
+                                                classes:["fortyk"],
+                                                flavor:`Deathdealer`,
+                                                author:actor.name};
                         await ChatMessage.create(deathDealerOptions,{});
                     }
+
                     let chatDamage=damage;
                     // true grit!@!!@
                     if(!data.suddenDeath.value&&!data.horde.value&&(damage>0)&&(wounds.value-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
@@ -761,7 +807,7 @@ returns the roll message*/
                                          author:tarActor.name};
                         await ChatMessage.create(chatOptions,{});
                     }
-                    
+
                     //process horde damage for different weapon qualities
                     if(data.horde.value&&damage>0){
                         damage=1;
@@ -2776,7 +2822,7 @@ returns the roll message*/
                 for(let index=0; index <effect.length;index++){
                     let dupp=false;
                     for(let ae of actor.effects){
-                        
+
                         if(ae.data.flags.core.statusId===effect[index].flags.core.statusId){
                             dupp=true;
                             let change=false;
