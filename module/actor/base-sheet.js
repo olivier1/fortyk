@@ -99,26 +99,25 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         var actor=this.actor;
         const dh2Talents=await game.packs.get("fortyk.talent-core-dh2");
         let tnts=await dh2Talents.getContent();
-        console.log(tnts);
-        const dh2Traits=await game.packs.get("fortyk.traits-core-dh2");
+        var dh2Traits=await game.packs.get("fortyk.traits-core-dh2");
         tnts=tnts.concat(await dh2Traits.getContent());
-        const dh2EnemyWithinTalents=await game.packs.get("fortyk.talents-enemies-within");
+        var dh2EnemyWithinTalents=await game.packs.get("fortyk.talents-enemies-within");
         tnts=tnts.concat(await dh2EnemyWithinTalents.getContent());
-        const dh2EnemyWithoutTalents=await game.packs.get("fortyk.talents-enemies-without");
+        var dh2EnemyWithoutTalents=await game.packs.get("fortyk.talents-enemies-without");
         tnts=tnts.concat(await dh2EnemyWithoutTalents.getContent());
-        const dh2EnemyBeyondTalents=await game.packs.get("fortyk.talents-enemies-beyond");
+        var dh2EnemyBeyondTalents=await game.packs.get("fortyk.talents-enemies-beyond");
         tnts=tnts.concat(await dh2EnemyBeyondTalents.getContent());
         if(actor.data.type==="dhPC"){
-            const dh2CoreBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonuscore-dh2");
+            var dh2CoreBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonuscore-dh2");
             tnts=tnts.concat(await dh2CoreBonus.getContent());
-            const dh2EnemiesWithinBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-within");
+            var dh2EnemiesWithinBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-within");
             tnts=tnts.concat(await dh2EnemiesWithinBonus.getContent());
-            const dh2EnemiesWithoutBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-without");
+            var dh2EnemiesWithoutBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-without");
             tnts=tnts.concat(await dh2EnemiesWithoutBonus.getContent());
-            const dh2EnemiesBeyondBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-beyond");
+            var dh2EnemiesBeyondBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-beyond");
             tnts=tnts.concat(await dh2EnemiesBeyondBonus.getContent());
         }else if(actor.data.type==="dwPC"){
-            const dwBonus=await game.packs.get("fortyk.deathwatch-bonus-and-drawbacks");
+            var dwBonus=await game.packs.get("fortyk.deathwatch-bonus-and-drawbacks");
             tnts=tnts.concat(await dwBonus.getContent());
         }
         tnts=tnts.sort(function compare(a, b) {
@@ -154,6 +153,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                 return this.getAttribute('data-compendium');
                             }).get();
                             console.log(selectedIds,$selectedCompendiums);
+                            let talentsNTraits=[];
                             for(let i=0;i<selectedIds.length;i++){
                                 let tnt=null;
                                 switch($selectedCompendiums[i]){
@@ -178,10 +178,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                     case "role-homeworld-and-background-bonusenemies-without":
                                         tnt=await dh2EnemiesWithinBonus.getEntity(selectedIds[i]);
                                         break;
-                                    case "role-homeworld-and-background-bonusenemies-beyond":
+                                    case "role-homeworld-and-background-bonusenemies-within":
                                         tnt=await dh2EnemiesWithinBonus.getEntity(selectedIds[i]);
                                         break;
-                                    case "role-homeworld-and-background-bonusenemies-within":
+                                    case "role-homeworld-and-background-bonusenemies-beyond":
                                         tnt=await dh2EnemiesBeyondBonus.getEntity(selectedIds[i]);
                                         break;
                                     case "deathwatch-bonus-and-drawbacks":
@@ -196,32 +196,37 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                 if(!actor.getFlag("fortyk",flag)){
                                     
                                     if(spec==="N/A"){
-                                        await actor.createEmbeddedEntity("OwnedItem",itemData);
+
                                         await actor.setFlag("fortyk",flag,true);
                                     }else{
-                                        await new Dialog({
+                                        let chosenSpec= Dialog.prompt({
                                             title: "Choose specialisation",
-                                            content: `<p><label>Specialisation:</label> <input id="modifier" type="text" name="modifier" value="${tntData.specialisation.value}" autofocus/></p>`,
-                                            buttons: {
-                                                submit: {
-                                                    label: 'OK',
-                                                    callback: async(html) => {
-                                                        const chosenSpec = $(html).find('input[name="modifier"]').val();
-                                                        await actor.setFlag("fortyk",flag,chosenSpec);
-                                                    }
+                                            content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${tntData.specialisation.value}" autofocus/></p>`,
 
-                                                }
+
+
+                                            callback: async(html) => {
+                                                const choosenSpec = $(html).find('input[name="spec"]').val();
+                                                await actor.setFlag("fortyk",flag,choosenSpec);
+                                                return choosenSpec;
                                             },
-                                            default: "submit",
+
+
+
+
 
 
                                             width:100}
-                                                        ).render(true);
-                                    }  
+                                                                    );
+                                        setTimeout(function() {document.getElementById('specInput').select();}, 50);
+                                        tntData.specialisation.value=await chosenSpec;
+                                    }
+                                    talentsNTraits.push(itemData);
                                 }
 
 
                             }
+                            await actor.createEmbeddedEntity("OwnedItem",talentsNTraits);
                         }
                     }
                 },

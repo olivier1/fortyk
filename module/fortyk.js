@@ -12,6 +12,7 @@ import { FortykRolls } from "./FortykRolls.js";
 import { FortykRollDialogs } from "./FortykRollDialogs.js";
 import { FortyKNPCSheet} from "./actor/actor-npc-sheet.js";
 import { FORTYK } from "./FortykConfig.js";
+import { _getInitiativeFormula } from "./combat.js";
 Hooks.once('init', async function() {
     game.fortyk = {
         FortyKActor,
@@ -27,6 +28,7 @@ Hooks.once('init', async function() {
         formula: "1d10 + @characteristics.agi.bonus + (@characteristics.agi.total / 100)",
         decimals: 2
     };
+    Combat.prototype._getInitiativeFormula = _getInitiativeFormula;
     //set custom system status effects
     CONFIG.statusEffects=FORTYK.StatusEffects;
     //set default font

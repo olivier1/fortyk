@@ -300,14 +300,23 @@ returns the roll message*/
     }
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
     static async damageRoll(formula,actor,weapon,hits=1, self=false, overheat=false){
+        weapon=duplicate(weapon);
+        
         let righteous=10;
         if(weapon.flags.specials.vengeful.value){
             righteous=weapon.flags.specials.vengeful.num;
+            
         }
         let lastHit=actor.data.data.secChar.lastHit;
         let attackerToken=getActorToken(actor);
         let targets=[];
         let curHit={};
+        if(actor.getFlag("fortyk","hammerblow")&&lastHit.attackType==="All Out"){
+            weapon.flags.specials.concussive.value=true;
+            weapon.flags.specials.concussive.num+=2;
+            weapon.data.pen.value=parseInt(weapon.data.pen.value)+Math.ceil(actor.data.data.characteristics.s.bonus/2);
+            
+        }
         if(self){
             if(overheat){
                 let arm=["rArm","lArm"];
@@ -347,6 +356,18 @@ returns the roll message*/
             let startstr=form.slice(0,afterD);
             let endstr=form.slice(afterD);
             form=startstr+"dl1"+endstr;
+        }
+        //change formula for cleanse with fire for flame weapons
+        if(actor.getFlag("fortyk","cleansewithfire")&&weapon.flags.specials.flame.value){
+            let wpb=actor.data.data.characteristics.wp.bonus;
+            let dPos = form.indexOf('d');
+
+
+
+            let afterD=dPos+3;
+            let startstr=form.slice(0,afterD);
+            let endstr=form.slice(afterD);
+            form=startstr+`r<${wpb}`+endstr;
         }
         //calculate horde bonus damage
         if(actor.data.data.horde.value){
@@ -478,6 +499,20 @@ returns the roll message*/
                         }else{
                             pen=parseInt(weapon.data.pen.value); 
                         }
+                        //smite the unholy
+
+                        if(actor.getFlag("fortyk","smitetheunholy")&&tarActor.getFlag("fortyk","fear")&&weapon.type==="meleeWeapon"){
+                            if(!isNaN(tarActor.getFlag("fortyk","fear"))){
+                                pen+=parseInt(tarActor.getFlag("fortyk","fear"));
+                                let smiteOptions={user: game.user._id,
+                                                  speaker:{actor,alias:actor.name},
+                                                  content:`Smite the unholy increases damage and penetration by ${tarActor.getFlag("fortyk","fear")} against the target.`,
+                                                  classes:["fortyk"],
+                                                  flavor:"Smite the unholy",
+                                                  author:actor.name};
+                                await ChatMessage.create(smiteOptions,{});
+                            }
+                        }
                         if(weapon.flags.specials.razorsharp.value&&actor.data.data.secChar.lastHit.dos>=3){
                             pen=pen*2;
                             let razorOptions={user: game.user._id,
@@ -518,8 +553,30 @@ returns the roll message*/
                             soak-=fel;
                         }
                         soak=soak-maxPen;
+                        //sanctified logic
+                        let daemonic=tarActor.getFlag("fortyk","daemonic");
+                        if((weapon.flags.specials.sanctified.value||weapon.flags.specials.daemonbane.value)&&daemonic){
+                            if(!isNaN(daemonic)){
+                                soak-=parseInt(daemonic);
+                                let sanctifiedOptions={user: game.user._id,
+                                                       speaker:{actor,alias:actor.name},
+                                                       content:`Sanctified ignores ${daemonic} soak from the daemonic trait.`,
+                                                       classes:["fortyk"],
+                                                       flavor:"Sanctified",
+                                                       author:actor.name};
+                                await ChatMessage.create(sanctifiedOptions,{});
+                            }
+
+                        }
                     }
                     let damage=roll._total;
+                    //damage part of smite the unholy
+                    if(actor.getFlag("fortyk","smitetheunholy")&&tarActor.getFlag("fortyk","fear")&&weapon.type==="meleeWeapon"){
+                        if(!isNaN(tarActor.getFlag("fortyk","fear"))){
+                            damage+=parseInt(tarActor.getFlag("fortyk","fear"));
+
+                        }
+                    }
                     //volkite logic
                     if(weapon.flags.specials.volkite.value&&tens>0){
                         let volkRoll=new Roll(tens+"d10",{});
@@ -577,8 +634,7 @@ returns the roll message*/
                         await ChatMessage.create(swarmOptions,{});
                     }
                     damage=damage-soak;
-                    let chatDamage=damage;
-                    if(chatDamage<0){chatDamage=0}
+                    
                     //corrosive weapon logic
                     if(weapon.flags.specials.corrosive.value){
                         let corrosiveAmt=new Roll("1d10",{});
@@ -598,10 +654,9 @@ returns the roll message*/
                         activeEffects.push(corrodeActiveEffect);
                         if(damage<=0){
                             damage=corrosiveDamage;
-                            chatDamage=corrosiveDamage;
                         }else{
                             damage+=corrosiveDamage;
-                            chatDamage+=corrosiveDamage;
+                            
                         }
                     }
                     //toxic weapon logic
@@ -664,10 +719,9 @@ returns the roll message*/
                     let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tarActor);
                     if(crit&&damage<=0){
                         damage=1;
-                        chatDamage=1;
                     }else if(damage<=0){
                         damage=0;
-                        chatDamage=0;
+                        
                         let chatOptions={user: game.user._id,
                                          speaker:{actor,alias:actor.name},
                                          content:"Damage is fully absorbed.",
@@ -677,6 +731,18 @@ returns the roll message*/
                         await ChatMessage.create(chatOptions,{});
                     }
                     let newWounds=wounds.value;
+                    //deathdealer
+                    if(damage>newWounds&&actor.getFlag("fortyk","deathdealer")&&(weapon.type.toLowerCase().includes(actor.getFlag("fortyk","deathdealer")))){
+                        damage+=actor.data.data.characteristics.per.bonus;
+                        let deathDealerOptions={user: game.user._id,
+                                           speaker:{actor,alias:actor.name},
+                                           content:`Deathdealer increases criritcal damage by ${actor.data.data.characteristics.per.bonus}.`,
+                                           classes:["fortyk"],
+                                           flavor:`Deathdealer`,
+                                           author:actor.name};
+                        await ChatMessage.create(deathDealerOptions,{});
+                    }
+                    let chatDamage=damage;
                     // true grit!@!!@
                     if(!data.suddenDeath.value&&!data.horde.value&&(damage>0)&&(wounds.value-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
                         if(newWounds>=0){
@@ -695,8 +761,7 @@ returns the roll message*/
                                          author:tarActor.name};
                         await ChatMessage.create(chatOptions,{});
                     }
-                    //
-                    //
+                    
                     //process horde damage for different weapon qualities
                     if(data.horde.value&&damage>0){
                         damage=1;
@@ -774,7 +839,7 @@ returns the roll message*/
                                          flavor:`${mesHitLoc}: ${mesRes}, ${mesDmgType} Critical effect`,
                                          author:actor.name};
                         await ChatMessage.create(chatOptions,{});
-                        
+
                         await this.critEffects(tarActor,mesRes,curHit.value,mesDmgType);
                     }
                     //flame weapon
@@ -873,7 +938,7 @@ returns the roll message*/
             if(tar!==null){
                 await this.critEffects(tar,mesRes,curHit.value,weapon.data.damageType.value);
             }
-            
+
             return true;
         }else if(crit&&damage<1){
             let chatOptions={user: game.user._id,
@@ -1507,7 +1572,7 @@ returns the roll message*/
             case 5:
                 await d5Roll.roll().toMessage({flavor:"Fellowship damage."});
                 await d10Roll.roll().toMessage({flavor:"Stun duration."});
-                
+
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[3]));
                 critActiveEffect[0].duration={
                     combat:game.combats.active.data._id,
@@ -2246,7 +2311,7 @@ returns the roll message*/
                 await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Useless "+leg+" leg"});
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[35]));
                 critActiveEffect[2].changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
-                 this.applyActiveEffect(actor,critActiveEffect);
+                this.applyActiveEffect(actor,critActiveEffect);
                 break;
             case 8:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist death");
@@ -2711,6 +2776,7 @@ returns the roll message*/
                 for(let index=0; index <effect.length;index++){
                     let dupp=false;
                     for(let ae of actor.effects){
+                        
                         if(ae.data.flags.core.statusId===effect[index].flags.core.statusId){
                             dupp=true;
                             let change=false;
@@ -2733,7 +2799,11 @@ returns the roll message*/
 
                         }
                     }
-                    if(!dupp){
+                    let ironJaw=false;
+                    if(effect[index].id==="stunned"&&actor.getFlag("fortyk","ironjaw")){
+                        ironJaw=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Iron Jaw");
+                    }
+                    if(!dupp&&!ironJaw){
                         await actor.createEmbeddedEntity("ActiveEffect",effect[index]);
                     }
                 }

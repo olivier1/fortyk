@@ -17,7 +17,7 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
             template: "systems/fortyk/templates/actor/actor-npc-sheet.html",
             width: 600,
             height: 660,
-            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }],
+            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "weapons" }],
             default:null
         });
     }

@@ -95,6 +95,7 @@ export class FortykRollDialogs{
                     label: 'OK',
                     callback: (html) => {
                         const attackTypeBonus = Number($(html).find('input[name="attack-type"]:checked').val());
+                       
                         let guarded = Number($(html).find('input[name="guarded"]:checked').val());
                         const aimBonus = Number($(html).find('input[name="aim-type"]:checked').val());
                         const outnumberBonus = Number($(html).find('input[name="outnumber"]:checked').val());
@@ -109,6 +110,7 @@ export class FortykRollDialogs{
                         const size = Number($(html).find('select[name="size"]').val());
                         let other = Number($(html).find('input[name="other"]').val());
                         let addLabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
+                        actor.data.data.secChar.lastHit.attackType=addLabel;
                         if(html.find('input[name="guarded"]').is(':checked')){
                             addLabel=html.find('input[name="guarded"]')[0].attributes["label"].value+" "+addLabel;
                         }
@@ -229,6 +231,8 @@ export class FortykRollDialogs{
                     callback: async (html) => {
 
                         const attackTypeBonus = Number($(html).find('input[name="attack-type"]:checked').val());
+                        
+                        
                         let guarded = Number($(html).find('input[name="guarded"]:checked').val());
                         let aimBonus = Number($(html).find('input[name="aim-type"]:checked').val());
                         const rangeBonus = Number($(html).find('input[name="distance"]:checked').val());
@@ -257,6 +261,7 @@ export class FortykRollDialogs{
                         }
                         testLabel=addLabel+" "+ testLabel;
                         let attackType=html.find('input[name=attack-type]:checked')[0].attributes["type"].value;
+                        actor.data.data.secChar.lastHit.attackType=attackType;
                         //spend ammo on gun
                         let rofIndex=parseInt(html.find('input[name=attack-type]:checked')[0].attributes["index"].value);
 

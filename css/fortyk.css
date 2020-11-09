@@ -296,6 +296,15 @@
     flex:auto;
 
 }
+.fortyk nav.sheet-tabs.npc {
+    -webkit-box-flex: 1;
+    margin-top: 0px;
+    height: auto;
+    font-weight:bold;
+    font-style:bold;
+    flex:none;
+
+}
 
 .fortyk .sheet-body,
 .fortyk .sheet-body .tab,
@@ -303,10 +312,18 @@
     height: 100%;
     overflow: auto;
 }
+.fortyk .sheet-body.npc .tab {
+    overflow: visible;
+}
 .fortyk .sheet-body{
     flex: 1;
     overflow:scroll;
 }
+.fortyk .sheet-body.npc{
+    flex: 10;
+    overflow:visible;
+}
+
 
 .fortyk .tox .tox-editor-container {
     background: #fff;
@@ -571,7 +588,7 @@
 }
 .fortyk .npc-img{
     width:150px;
-    height: auto !important;
+    height: 210px !important;
 }
 .fortyk .npcheader{
 
@@ -585,7 +602,8 @@
     grid-column: span 1;
 }
 .fortyk .npc-info{
-    overflow: scroll;
+    overflow: visible;
+    height:50%;
 }
 .test-success{
     background-color: green !important;

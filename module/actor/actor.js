@@ -89,9 +89,12 @@ export class FortyKActor extends Actor {
             }
         }
         data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
+        if(this.getFlag("fortyk","neverquit")){
+            data.secChar.fatigue.max+=2;
+        }
         //modify total characteristics depending on fatigue
         var fatigueMult=1;
-        if(actorData.getFlag("fortyk","unrelenting")){
+        if(this.getFlag("fortyk","unrelenting")){
             fatigueMult=2;
         }
         for (let [key,char] of Object.entries(data.characteristics)){
@@ -144,6 +147,12 @@ export class FortyKActor extends Actor {
                 hitLoc.armor=hitLoc.armor+2;
             }
             hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
+            let daemonic=this.getFlag("fortyk","daemonic");
+            if(daemonic){
+                if(!isNaN(daemonic)){
+                    hitLoc.value+=parseInt(daemonic);
+                }
+            }
         }
     }
     _prepareNPCData(actorData){
@@ -180,6 +189,12 @@ export class FortyKActor extends Actor {
         //total soak
         for(const hitLoc in data.characterHitLocations){
             data.characterHitLocations[hitLoc].value=parseInt(data.characterHitLocations[hitLoc].armor)+parseInt(data.characteristics.t.bonus);
+            let daemonic=this.getFlag("fortyk","daemonic");
+            if(daemonic){
+                if(!isNaN(daemonic)){
+                    data.characterHitLocations[hitLoc].value+=parseInt(daemonic);
+                }
+            }
         }
     }
     prepare(){
@@ -328,6 +343,9 @@ export class FortyKActor extends Actor {
                 }else{
                     item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
                 }
+                if(this.getFlag("fortyk","crushingblow")){
+                    item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
+                }
                 meleeweapons.push(item);
                 wargear.push(item);
             }
@@ -348,6 +366,9 @@ export class FortyKActor extends Actor {
 
                 }else{
                     item.data.twohanded.value=true;
+                }
+                if(this.getFlag("fortyk","mightyshot")){
+                    item.data.damageFormula.value+="+"+Mathe.ceil(data.characteristics.bs.bonus/2);
                 }
                 rangedWeapons.push(item);
                 wargear.push(item);
@@ -440,10 +461,15 @@ export class FortyKActor extends Actor {
         const psychicPowers=[];
         const meleeweapons=[];
         const rangedWeapons=[];
+        const talentsntraits=[];
         //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
         for(let item of actorData.items){
+            if(item.type==="talentntrait"){
+                
+                talentsntraits.push(item);
+            }
             if(item.type==="psychicPower"){
                 try{
                     let pr=parseInt(item.data.curPR.value);
@@ -460,7 +486,7 @@ export class FortyKActor extends Actor {
                 let char=0;
                 if(item.data.testChar.value==="psy"){
                     char=getItem(this,"Psyniscience").data.total.value;
-                    data.testChar.type="per";
+                    item.data.testChar.type="per";
                 }else{
                     char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
                     item.data.testChar.type=item.data.testChar.value;
@@ -474,6 +500,9 @@ export class FortyKActor extends Actor {
                 }else{
                     item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
                 }
+                if(this.getFlag("fortyk","crushingblow")){
+                    item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
+                }
                 meleeweapons.push(item);
             }
             if(item.type==="rangedWeapon"){
@@ -486,6 +515,9 @@ export class FortyKActor extends Actor {
                 catch(err){
                     item.data.range.value="";
                 } 
+                if(this.getFlag("fortyk","mightyshot")){
+                    item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.bs.bonus/2);
+                }
                 rangedWeapons.push(item);
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
@@ -504,7 +536,8 @@ export class FortyKActor extends Actor {
         let preparedItems={
             psychicPowers:psychicPowers,
             meleeWeapons:meleeweapons,
-            rangedWeapons:rangedWeapons
+            rangedWeapons:rangedWeapons,
+            talentsntraits:talentsntraits
         };
         return preparedItems;
     }
