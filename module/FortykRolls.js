@@ -755,7 +755,7 @@ returns the roll message*/
                             }
 
                         }
-                        if(tarActor.getFlag("fortyk","warpinstability")&&damage>newWounds){
+                        if(tarActor.getFlag("fortyk","warpinstability")){
                             let warpinst=await this.fortykTest("wp", "char", (tarActor.data.data.characteristics.wp.total-10),tarActor, "Warp instability niditus");
                             if(!warpinst.value){
                                 let warpdmg=warpinst.dos;
@@ -2847,8 +2847,9 @@ returns the roll message*/
                     }
                     let ironJaw=false;
                     if(effect[index].id==="stunned"&&actor.getFlag("fortyk","ironjaw")){
-                        ironJaw=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Iron Jaw");
+                        ironJaw=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Iron Jaw").value;
                     }
+                    console.log(ironJaw);
                     if(!dupp&&!ironJaw){
                         await actor.createEmbeddedEntity("ActiveEffect",effect[index]);
                     }
