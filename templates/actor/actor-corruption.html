@@ -1,4 +1,6 @@
 <div class="corruption-insanity flexrow">
+    
+    {{#unless actor.flags.fortyk.incorruptibledevotion}}
     <div class="corruption flexcol">
         <div class="corr-item flexrow">
             <label>Corruption:</label>
@@ -45,6 +47,7 @@
 
         </div>
     </div>
+    {{/unless}}
     <div class="corruption flexcol">
         <div class="corruption flexcol">
             <div class="corr-item flexrow">
