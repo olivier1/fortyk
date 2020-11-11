@@ -14,7 +14,7 @@
 
                 <input type="radio" name="attack-type" value="{{modifiers.full}}" index='2'type="full"label="Full-Auto"{{#unless single}}checked{{/unless}}><label>Full-Auto: {{modifiers.full}}</label>
             </div>
-            <div class="list-item flexrow">
+            <div class="list-item flexrow" {{#unless supp}} hidden{{/unless}}>
 
                 <input type="radio" name="attack-type" value="{{modifiers.suppressive}}" index='3' type="full"label="Suppressing Fire"><label>Suppressing Fire: {{modifiers.suppressive}}</label>
             </div>
@@ -49,21 +49,21 @@
         <div class="flexcol attack-section">
             <label class="section-title">Distance</label>
             <div class="list-item flexrow">
-                <input type="radio" name="distance" value="{{modifiers.range.standard}}" checked><label>Standard: +{{modifiers.range.standard}}</label>
+                <input type="radio" name="distance" value="{{modifiers.range.standard}}" {{#if options.normal}} checked{{/if}}><label>Standard: +{{modifiers.range.standard}}</label>
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="distance" value="{{modifiers.range.pointblank}}"><label>Point blank: +{{modifiers.range.pointblank}}</label>
+                <input type="radio" name="distance" value="{{modifiers.range.pointblank}}"{{#if options.pointblank}} checked{{/if}}><label>Point blank: +{{modifiers.range.pointblank}}</label>
 
             </div>
             <div class="list-item flexrow">
-                <input type="radio" name="distance" value="{{modifiers.range.short}}" ><label>Short: +{{modifiers.range.short}}</label>
+                <input type="radio" name="distance" value="{{modifiers.range.short}}" {{#if options.short}} checked{{/if}}><label>Short: +{{modifiers.range.short}}</label>
             </div>
             <div class="list-item flexrow">
-                <input type="radio" name="distance" value="{{modifiers.range.long}}" ><label>Long: {{modifiers.range.long}}</label>
+                <input type="radio" name="distance" value="{{modifiers.range.long}}" {{#if options.long}} checked{{/if}}><label>Long: {{modifiers.range.long}}</label>
             </div>
             <div class="list-item flexrow">
-                <input type="radio" name="distance" value="{{modifiers.range.extreme}}" ><label>Extreme: {{modifiers.range.extreme}}</label>
+                <input type="radio" name="distance" value="{{modifiers.range.extreme}}" {{#if options.extreme}} checked{{/if}}><label>Extreme: {{modifiers.range.extreme}}</label>
             </div>
         </div>
     </div>
@@ -94,7 +94,7 @@
 
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="prone" value="-10"><label>Prone/Knocked Down/Higher Ground: -10</label>
+                <input type="checkbox" name="prone" value="-10"{{#if options.prone}} checked{{/if}}><label>Prone/Knocked Down/Higher Ground: -10</label>
             </div>
             <div class="list-item flexrow">
 
@@ -102,7 +102,7 @@
             </div>
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="surprised" value="30" ><label>Surprised/Unaware: +30</label>
+                <input type="checkbox" name="surprised" value="30" {{#if options.helpless}} checked{{/if}}><label>Surprised/Unaware: +30</label>
 
             </div>
             <div class="list-item flexrow">
@@ -112,7 +112,7 @@
             </div>
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="stunned" value="20" ><label>Stunned: +20</label>
+                <input type="checkbox" name="stunned" value="20" {{#if options.stunned}} checked{{/if}}><label>Stunned: +20</label>
 
             </div>
             <div class="list-item flexrow">
@@ -122,16 +122,22 @@
             </div>
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="melee" value="-20" ><label>In meelee: -20</label>
+                <input type="checkbox" name="melee" value="-20" ><label>In melee: -20</label>
 
             </div>
             <select class="size" name="size">
-                
+                {{debug this}}
+                {{#if options.size}}
                 {{#each size}}
-
-                <option value="{{this.mod}}" {{#if (contains this.name "average")}}selected{{/if}}>{{this.name}}</option>
-
+                <option value="{{this.mod}}" {{#if (equals @index ../options.size)}}selected{{/if}}>{{this.name}}</option>
+              
                 {{/each}}
+                {{else}}
+                {{#each size}}
+                <option value="{{this.mod}}" {{#if (contains this.name "average")}}selected{{/if}}>{{this.name}}</option>
+               
+                {{/each}}
+                {{/if}}
             </select>
 
         </div>

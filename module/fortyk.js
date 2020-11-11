@@ -91,6 +91,9 @@ Hooks.once('init', async function() {
     Handlebars.registerHelper("greaterThan", function(num1,num2){
         return num1>num2;
     });
+    Handlebars.registerHelper("equals", function(num1,num2){
+        return num1==num2;
+    });
     Handlebars.registerHelper("unescape",function(text){
         var doc = new DOMParser().parseFromString(text, "text/html");
         return doc.documentElement.textContent;
@@ -255,7 +258,24 @@ Hooks.on('preCreateOwnedItem', (actor, data,options) =>{
         data.flags={};
         data.flags.specials=flags;
     }
-})
+});
+//set flags on the actor when adding an active effect if it should activate a flag
+Hooks.on('createActiveEffect',async (actor,ae,options,id)=>{
+    console.log("hey");
+    let flag=ae.flags.core.statusId;
+    if(flag){
+        await actor.setFlag("core",flag,true);
+    }
+
+});
+//unset flags on the actor when removing an active effect if it had a flag
+Hooks.on('deleteActiveEffect',async (actor,ae,options,id)=>{
+    let flag=ae.flags.core.statusId;
+    if(flag){
+        await actor.setFlag("core",flag,false);
+    }
+
+});
 /**
  * Set default values for new actors' tokens
  */
@@ -277,4 +297,26 @@ Hooks.on("preCreateActor", (createData) =>{
     }
 })
 Hooks.on("preCreateToken", (createData) =>{
-})
+});
+Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
+    console.log(changes);
+    if(changes.actorData!==undefined){
+        if(changes.actorData.effects){
+            let flags={core:duplicate(game.fortyk.FORTYK.StatusFlags)};
+            changes.actorData.effects.forEach((effect)=>{
+                flags.core[`${effect.flags.core.statusId}`]=true;
+            });
+            changes.actorData.flags=flags;
+        }
+    }else{
+        if(changes.effects){
+            let flags={core:duplicate(game.fortyk.FORTYK.StatusFlags)};
+            changes.effects.forEach((effect)=>{
+                flags.core[`${effect.flags.core.statusId}`]=true;
+            });
+            changes.flags=flags;
+        }
+    }
+
+
+});

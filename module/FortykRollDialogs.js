@@ -76,12 +76,24 @@ export class FortykRollDialogs{
 
     }
     //handles the melee attack dialog WHEW
-    static async callMeleeAttackDialog(testChar, testType, testTarget, actor, testLabel, item){
+    static async callMeleeAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
 
         let template="systems/fortyk/templates/actor/dialogs/melee-attack-dialog.html"
         let templateOptions={};
 
         templateOptions["modifiers"]=actor.data.data.secChar.attacks;
+        templateOptions["options"]={}
+        templateOptions["options"].swift=actor.getFlag("fortyk","swiftattack");
+        templateOptions["options"].lightning=actor.getFlag("fortyk","lightningattack");
+        templateOptions["options"].prone=modifiers.prone;
+        templateOptions["options"].selfProne=modifiers.selfProne;
+        templateOptions["options"].stunned=modifiers.stunned;
+        templateOptions["options"].helpless=modifiers.helpless;
+        templateOptions["options"].size=modifiers.size;
+        templateOptions["options"].blindfight=actor.getFlag("fortyk","blindfight");
+        if(!templateOptions["options"].blindfight){
+            templateOptions["options"].selfBlind=modifiers.selfBlind;
+        }
         templateOptions["size"]=game.fortyk.FORTYK.size;
 
         let renderedTemplate= await renderTemplate(template,templateOptions);
@@ -95,7 +107,7 @@ export class FortykRollDialogs{
                     label: 'OK',
                     callback: (html) => {
                         const attackTypeBonus = Number($(html).find('input[name="attack-type"]:checked').val());
-                       
+
                         let guarded = Number($(html).find('input[name="guarded"]:checked').val());
                         const aimBonus = Number($(html).find('input[name="aim-type"]:checked').val());
                         const outnumberBonus = Number($(html).find('input[name="outnumber"]:checked').val());
@@ -136,7 +148,7 @@ export class FortykRollDialogs{
             width:400}
                   ).render(true);
     }
-    static async callRangedAttackDialog(testChar, testType, testTarget, actor, testLabel, item){
+    static async callRangedAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
         let template="systems/fortyk/templates/actor/dialogs/ranged-attack-dialog.html"
         let templateOptions={};
 
@@ -145,6 +157,11 @@ export class FortykRollDialogs{
         templateOptions["modifiers"].standard=item.data.attackMods.single;
         templateOptions["modifiers"].semi=item.data.attackMods.semi;
         templateOptions["modifiers"].full=item.data.attackMods.full;
+        if(templateOptions["modifiers"].semi||templateOptions["modifiers"].full){
+            templateOptions["modifiers"].supp=true;
+        }else{
+            templateOptions["modifiers"].supp=false;
+        }
         templateOptions["modifiers"].suppressive=item.data.attackMods.suppressive;
         templateOptions["modifiers"].aim=item.data.attackMods.aim;
         templateOptions["modifiers"].testMod=item.data.testMod.value;
@@ -199,6 +216,7 @@ export class FortykRollDialogs{
                 canShoot=true;
             }
         }
+        console.log(modifiers);
         //if cant shoot return
         if(!canShoot){
             new Dialog({
@@ -218,7 +236,104 @@ export class FortykRollDialogs{
                 width:400}
                       ).render(true);
             return;
+        }else if(actor.getFlag("core","blind")){
+            new Dialog({
+                title: `Blind`,
+                classes:"fortky",
+                content: "You are blind and can't shoot!",
+                buttons: {
+                    submit: {
+                        label: 'OK',
+                        callback: null
+
+                    }
+                },
+                default: "submit",
+
+
+                width:400}
+                      ).render(true);
+            return;
         }
+        templateOptions["options"]={}
+        templateOptions["options"].prone=modifiers.prone;
+        templateOptions["options"].stunned=modifiers.stunned;
+        templateOptions["options"].helpless=modifiers.helpless;
+        templateOptions["options"].size=modifiers.size;
+        templateOptions["options"].normal=true;
+        
+        //distance shenanigans
+       
+        if(modifiers.distance){
+            let distance=modifiers.distance;
+            let pointblank=false;
+            let short=false;
+            let normal=false;
+            let long=false;
+            let extreme=false;
+            let range=item.data.range.value;
+            console.log(item);
+            console.log(distance);
+            if((distance<=1||distance<=canvas.dimensions.distance)){
+                if(item.data.class.value==="Pistol"){
+                    normal=true;
+                }else{
+                    new Dialog({
+                        title: `Melee`,
+                        classes:"fortky",
+                        content: "You cannot shoot while engaged in melee!",
+                        buttons: {
+                            submit: {
+                                label: 'OK',
+                                callback: null
+
+                            }
+                        },
+                        default: "submit",
+
+
+                        width:400}
+                              ).render(true);
+                    return;
+                }
+
+            }else if(distance<=2||distance<=2*canvas.dimensions.distance){
+                pointblank=true;
+            }else if(distance<=parseInt(range)/2){
+                short=true;
+            }else if(distance<=range){
+                normal=true;
+            }else if(distance<=2*range){
+                long=true;
+            }else if(distance<=3*range){
+                extreme=true;
+            }else{
+                new Dialog({
+                        title: `Out of range`,
+                        classes:"fortky",
+                        content: "You are out of range!",
+                        buttons: {
+                            submit: {
+                                label: 'OK',
+                                callback: null
+
+                            }
+                        },
+                        default: "submit",
+
+
+                        width:400}
+                              ).render(true);
+                    return;
+            }
+            templateOptions["options"].pointblank=pointblank;
+            templateOptions["options"].short=short;
+            templateOptions["options"].normal=normal;
+            templateOptions["options"].long=long;
+            templateOptions["options"].extreme=extreme;
+        }
+        templateOptions["size"]=game.fortyk.FORTYK.size;
+
         let renderedTemplate= await renderTemplate(template,templateOptions);
 
         new Dialog({
@@ -231,8 +346,8 @@ export class FortykRollDialogs{
                     callback: async (html) => {
 
                         const attackTypeBonus = Number($(html).find('input[name="attack-type"]:checked').val());
-                        
-                        
+
+
                         let guarded = Number($(html).find('input[name="guarded"]:checked').val());
                         let aimBonus = Number($(html).find('input[name="aim-type"]:checked').val());
                         const rangeBonus = Number($(html).find('input[name="distance"]:checked').val());
@@ -302,17 +417,71 @@ export class FortykRollDialogs{
                   ).render(true);
 
     }
-    static async callFocusPowerDialog(testChar, testType, testTarget, actor, testLabel, item){
+    static async callFocusPowerDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
         let template="systems/fortyk/templates/actor/dialogs/psychic-power-attack-dialog.html"
         let templateOptions={};
 
         templateOptions["modifiers"]=actor.data.data.secChar.attacks;
+        templateOptions["options"]={}
+        templateOptions["options"].prone=modifiers.prone;
+        templateOptions["options"].stunned=modifiers.stunned;
+        templateOptions["options"].helpless=modifiers.helpless;
+        templateOptions["options"].size=modifiers.size;
+        templateOptions["options"].normal=true;
+        
+        //distance shenanigans
+       
+        if(modifiers.distance){
+            let distance=modifiers.distance;
+            let pointblank=false;
+            let short=false;
+            let normal=false;
+            let long=false;
+            let extreme=false;
+            let range=item.data.range.value;
+            console.log(item);
+            console.log(distance);
+            if(distance<=2||distance<=2*canvas.dimensions.distance){
+                pointblank=true;
+            }else if(distance<=parseInt(range)/2){
+                short=true;
+            }else if(distance<=range){
+                normal=true;
+            }else if(distance<=2*range){
+                long=true;
+            }else if(distance<=3*range){
+                extreme=true;
+            }else{
+                new Dialog({
+                        title: `Out of range`,
+                        classes:"fortky",
+                        content: "You are out of range!",
+                        buttons: {
+                            submit: {
+                                label: 'OK',
+                                callback: null
+
+                            }
+                        },
+                        default: "submit",
+
+
+                        width:400}
+                              ).render(true);
+                    return;
+            }
+            templateOptions["options"].pointblank=pointblank;
+            templateOptions["options"].short=short;
+            templateOptions["options"].normal=normal;
+            templateOptions["options"].long=long;
+            templateOptions["options"].extreme=extreme;
+        }
         templateOptions["size"]=game.fortyk.FORTYK.size;
 
         let renderedTemplate= await renderTemplate(template,templateOptions);
 
         new Dialog({
-            title: `${item.name} Melee Attack Test.`,
+            title: `${item.name} Psychic Attack Test.`,
             classes:"fortky",
             content: renderedTemplate,
             buttons: {
@@ -356,7 +525,7 @@ export class FortykRollDialogs{
             width:400}
                   ).render(true);
     }
- //activate chatlisteners
+    //activate chatlisteners
     static chatListeners(html){
         html.on("mouseup",".reroll", this._onReroll.bind(this));
         html.on("click",".reroll", this._onModifierCall.bind(this));

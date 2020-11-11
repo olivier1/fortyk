@@ -301,11 +301,9 @@ returns the roll message*/
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
     static async damageRoll(formula,actor,weapon,hits=1, self=false, overheat=false){
         weapon=duplicate(weapon);
-
         let righteous=10;
         if(weapon.flags.specials.vengeful.value){
             righteous=weapon.flags.specials.vengeful.num;
-
         }
         let lastHit=actor.data.data.secChar.lastHit;
         let attackerToken=getActorToken(actor);
@@ -315,7 +313,6 @@ returns the roll message*/
             weapon.flags.specials.concussive.value=true;
             weapon.flags.specials.concussive.num+=2;
             weapon.data.pen.value=parseInt(weapon.data.pen.value)+Math.ceil(actor.data.data.characteristics.s.bonus/2);
-
         }
         if(self){
             if(overheat){
@@ -361,9 +358,6 @@ returns the roll message*/
         if(actor.getFlag("fortyk","cleansewithfire")&&weapon.flags.specials.flame.value){
             let wpb=actor.data.data.characteristics.wp.bonus;
             let dPos = form.indexOf('d');
-
-
-
             let afterD=dPos+3;
             let startstr=form.slice(0,afterD);
             let endstr=form.slice(afterD);
@@ -401,7 +395,6 @@ returns the roll message*/
             }
             let tens=0;
             for ( let r of roll.dice[0].results ) {
-
                 if(r.active){
                     if(r.result>=righteous){
                         tens+=1;
@@ -500,7 +493,6 @@ returns the roll message*/
                             pen=parseInt(weapon.data.pen.value); 
                         }
                         //smite the unholy
-
                         if(actor.getFlag("fortyk","smitetheunholy")&&tarActor.getFlag("fortyk","fear")&&weapon.type==="meleeWeapon"){
                             if(!isNaN(tarActor.getFlag("fortyk","fear"))){
                                 pen+=parseInt(tarActor.getFlag("fortyk","fear"));
@@ -566,7 +558,6 @@ returns the roll message*/
                                                        author:actor.name};
                                 await ChatMessage.create(sanctifiedOptions,{});
                             }
-
                         }
                     }
                     let damage=roll._total;
@@ -574,7 +565,6 @@ returns the roll message*/
                     if(actor.getFlag("fortyk","smitetheunholy")&&tarActor.getFlag("fortyk","fear")&&weapon.type==="meleeWeapon"){
                         if(!isNaN(tarActor.getFlag("fortyk","fear"))){
                             damage+=parseInt(tarActor.getFlag("fortyk","fear"));
-
                         }
                     }
                     //volkite logic
@@ -618,7 +608,7 @@ returns the roll message*/
                         let distance=tokenDistance(attackerToken,tar);
                         if(distance<=2||distance<=2*canvas.dimensions.distance){
                             damage+=3;
-                        }else if(distance>parseInt(weapon.data.range.value)/2){
+                        }else if(distance<=parseInt(weapon.data.range.value)/2){
                             damage-=3
                         }
                     }
@@ -634,7 +624,6 @@ returns the roll message*/
                         await ChatMessage.create(swarmOptions,{});
                     }
                     damage=damage-soak;
-
                     //corrosive weapon logic
                     if(weapon.flags.specials.corrosive.value){
                         let corrosiveAmt=new Roll("1d10",{});
@@ -656,7 +645,6 @@ returns the roll message*/
                             damage=corrosiveDamage;
                         }else{
                             damage+=corrosiveDamage;
-
                         }
                     }
                     //toxic weapon logic
@@ -710,7 +698,6 @@ returns the roll message*/
                                             author:actor.name};
                         await ChatMessage.create(crippleOptions,{});
                     }
-
                     //generate roll message
                     await roll.toMessage({
                         speaker: ChatMessage.getSpeaker({ actor: actor }),
@@ -722,7 +709,6 @@ returns the roll message*/
                         damage=1;
                     }else if(damage<=0){
                         damage=0;
-
                         let chatOptions={user: game.user._id,
                                          speaker:{actor,alias:actor.name},
                                          content:"Damage is fully absorbed.",
@@ -753,7 +739,6 @@ returns the roll message*/
                                                      author:actor.name};
                                 await ChatMessage.create(shockingOptions,{});
                             }
-
                         }
                         if(tarActor.getFlag("fortyk","warpinstability")){
                             let warpinst=await this.fortykTest("wp", "char", (tarActor.data.data.characteristics.wp.total-10),tarActor, "Warp instability niditus");
@@ -769,7 +754,6 @@ returns the roll message*/
                                     await ChatMessage.create(banishOptions,{});
                                     await this.applyDead(tar,actor);
                                     return;
-                                    
                                 }else{
                                     damage+=warpdmg;
                                 }
@@ -787,7 +771,6 @@ returns the roll message*/
                                                 author:actor.name};
                         await ChatMessage.create(deathDealerOptions,{});
                     }
-
                     let chatDamage=damage;
                     // true grit!@!!@
                     if(!data.suddenDeath.value&&!data.horde.value&&(damage>0)&&(wounds.value-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
@@ -807,7 +790,6 @@ returns the roll message*/
                                          author:tarActor.name};
                         await ChatMessage.create(chatOptions,{});
                     }
-
                     //process horde damage for different weapon qualities
                     if(data.horde.value&&damage>0){
                         damage=1;
@@ -885,7 +867,6 @@ returns the roll message*/
                                          flavor:`${mesHitLoc}: ${mesRes}, ${mesDmgType} Critical effect`,
                                          author:actor.name};
                         await ChatMessage.create(chatOptions,{});
-
                         await this.critEffects(tarActor,mesRes,curHit.value,mesDmgType);
                     }
                     //flame weapon
@@ -984,7 +965,6 @@ returns the roll message*/
             if(tar!==null){
                 await this.critEffects(tar,mesRes,curHit.value,weapon.data.damageType.value);
             }
-
             return true;
         }else if(crit&&damage<1){
             let chatOptions={user: game.user._id,
@@ -1001,7 +981,6 @@ returns the roll message*/
     }
     //applies critical results to token/actor
     static async critEffects(actor,num,hitLoc,type){
-        console.log(actor,num,hitLoc,type);
         if(game.user.isGM||actor.owner){
             switch(type){
                 case "Energy":
@@ -1238,18 +1217,19 @@ returns the roll message*/
                 break;
             case 7:
                 await d10Roll.roll().toMessage({flavor:"Toughness damage."});
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[28]));
-                critActiveEffect[0].changes=[{key:`data.characteristics.t.value`,value:-1*d10Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[28]);
+                injury.changes=[{key:`data.characteristics.t.value`,value:-1*d10Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                 let d10Roll2=new Roll("2d10");
                 await d10Roll2.roll().toMessage({flavor:"Stun duration."});
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[3]));
-                critActiveEffect[1].duration={
+                critActiveEffect[0].duration={
                     combat:game.combats.active.data._id,
                     rounds:d10Roll2._total,
                     startRound:game.combats.active.current.round
                 };
                 this.applyActiveEffect(actor,critActiveEffect);
-                await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Third degree chest burns."});
+               
+                await this._createInjury(actor,"Third degree chest burns.",injury);
                 break;
             case 8:
                 d10Roll.alter(2,0);
@@ -1290,6 +1270,7 @@ returns the roll message*/
         let d5Roll=new Roll('1d5');
         let d10Roll=new Roll('1d10');
         let actorToken=actor.token;
+        let injury=null;
         switch(num){
             case 1:
                 await d5Roll.roll().toMessage({flavor:"Penalty duration."});
@@ -1347,9 +1328,9 @@ returns the roll message*/
                     rounds:1,
                     startRound:game.combats.active.current.round
                 };
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[34]));
                 this.applyActiveEffect(actor,critActiveEffect);
-                actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Useless "+arm+" arm"});
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                await this._createInjury(actor,"Useless "+arm+" arm",injury);
                 break;
             case 6:
                 await d5Roll.roll().toMessage({flavor:"Fatigue amount."});
@@ -1360,7 +1341,8 @@ returns the roll message*/
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[26]));
                 critActiveEffect[1].changes=[{key:`data.characteristics.bs.value`,value:-1*d5Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                 this.applyActiveEffect(actor,critActiveEffect);
-                actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+arm+" Hand"});
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                await this._createInjury(actor,"Lost "+arm+" hand",injury);
                 break;
             case 7:
                 await d5Roll.roll().toMessage({flavor:"Fatigue amount."});
@@ -1371,9 +1353,9 @@ returns the roll message*/
                     rounds:1,
                     startRound:game.combats.active.current.round
                 };
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[34]));
                 await this.applyActiveEffect(actor,critActiveEffect);
-                actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Useless "+arm+" arm"});
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                await this._createInjury(actor,"Useless "+arm+" arm",injury);
                 break;
             case 8:
                 await d10Roll.roll().toMessage({flavor:"Fatigue amount."});
@@ -1388,9 +1370,9 @@ returns the roll message*/
                         startRound:game.combats.active.current.round
                     };
                 }
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[34]));
                 await this.applyActiveEffect(actor,critActiveEffect);
-                actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+arm+" arm"});
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                await this._createInjury(actor,"Lost "+arm+" arm",injury);
                 break;
             case 9:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist death");
@@ -1406,9 +1388,9 @@ returns the roll message*/
                         rounds:1,
                         startRound:game.combats.active.current.round
                     };
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[34]));
                     await this.applyActiveEffect(actor,critActiveEffect);
-                    actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+arm+" arm"});
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                    await this._createInjury(actor,"Lost "+arm+" arm",injury);
                 }
                 break;
             case 10:
@@ -1422,6 +1404,7 @@ returns the roll message*/
         let tTest=false;
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
+        let injury=null;
         switch(num){
             case 1:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[35]));
@@ -1473,20 +1456,37 @@ returns the roll message*/
             case 6:
                 this._addFatigue(actor,2);
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist lost foot");
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[35]));
-                critActiveEffect[0].changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[35]);
+                injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                 if(tTest.value){
+                    critActiveEffect.push(injury);
+                    await this.applyActiveEffect(actor,critActiveEffect);
                 }else{
-                    actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+leg+" foot"});
+                    await this._createInjury(actor,"Broken "+leg+" foot",injury);
                 }
-                await this.applyActiveEffect(actor,critActiveEffect);
                 break;
             case 7:
                 await d5Roll.roll().toMessage({flavor:"Fatigue amount."});
                 this._addFatigue(actor,d5Roll._total);
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[35]));
-                critActiveEffect[0].changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist stun");
+                if(!tTest.value){
+                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[3]));
+                    critActiveEffect[0].duration={
+                        combat:game.combats.active.data._id,
+                        rounds:1,
+                        startRound:game.combats.active.current.round
+                    };
+                    await this.applyActiveEffect(actor,critActiveEffect);
+                }
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[35]);
+                injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                await this._createInjury(actor,"Broken "+leg+" leg",injury);
+                break;
+            case 8:
+                await d10Roll.roll().toMessage({flavor:"Fatigue amount."});
+                this._addFatigue(actor,d10Roll._total);
+                tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist stun");
+                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
                 if(!tTest.value){
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[3]));
                     critActiveEffect[1].duration={
@@ -1496,35 +1496,18 @@ returns the roll message*/
                     };
                 }
                 await this.applyActiveEffect(actor,critActiveEffect);
-                actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Broken "+leg+" leg"});
-                break;
-            case 8:
-                await d10Roll.roll().toMessage({flavor:"Fatigue amount."});
-                this._addFatigue(actor,d10Roll._total);
-                tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist stun");
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[35]));
-                critActiveEffect[1].changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
-                if(!tTest.value){
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[3]));
-                    critActiveEffect[2].duration={
-                        combat:game.combats.active.data._id,
-                        rounds:1,
-                        startRound:game.combats.active.current.round
-                    };
-                }
-                await this.applyActiveEffect(actor,critActiveEffect);
-                actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+leg+" leg"});
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[35]);
+                injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                await this._createInjury(actor,"Lost "+leg+" leg",injury);
                 break;
             case 9:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist stun");
                 if(!tTest.value){
                     if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
                 }else{
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[35]));
-                    critActiveEffect[0].changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
-                    await this.applyActiveEffect(actor,critActiveEffect);
-                    actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+leg+" leg"});
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[35]);
+                    injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                    await this._createInjury(actor,"Lost "+leg+" leg",injury);
                 }
                 break;
             case 10:
@@ -1560,6 +1543,7 @@ returns the roll message*/
         let tTest=false;
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
+        let injury=null;
         switch(num){
             case 1:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[16]));
@@ -1590,11 +1574,10 @@ returns the roll message*/
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist characteristic damage");
                 if(!tTest.value){
                     await d10Roll.roll().toMessage({flavor:"Characteristic damage."});
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Facial scar"});
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[31]));
-                    critActiveEffect[0].changes=[{key:`data.characteristics.per.value`,value:-1*d10Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[33]));
-                    critActiveEffect[1].changes=[{key:`data.characteristics.fel.value`,value:-1*d10Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[31]);
+                    injury.changes=[{key:`data.characteristics.per.value`,value:-1*d10Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
+                    injury.changes.push({key:`data.characteristics.fel.value`,value:-1*d10Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD});
+                    await this._createInjury(actor,"Facial scar",injury);
                     this.applyActiveEffect(actor,critActiveEffect);
                 }
                 break;
@@ -1618,19 +1601,17 @@ returns the roll message*/
             case 5:
                 await d5Roll.roll().toMessage({flavor:"Fellowship damage."});
                 await d10Roll.roll().toMessage({flavor:"Stun duration."});
-
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[3]));
                 critActiveEffect[0].duration={
                     combat:game.combats.active.data._id,
                     rounds:d10Roll._total,
                     startRound:game.combats.active.current.round
                 };
-
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[33]));
-                critActiveEffect[1].changes=[{key:`data.characteristics.fel.value`,value:-1*d5Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[7]));
-                await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Severe facial scarring"}); 
-                await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Deaf"});
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[33]);
+                injury.changes=[{key:`data.characteristics.fel.value`,value:-1*d5Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
+                await this._createInjury(actor,"Severe facial scarring",injury);
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[7]);
+                await this._createInjury(actor,"Deaf",injury);
                 this.applyActiveEffect(actor,critActiveEffect);
                 break;
             case 6:
@@ -1750,6 +1731,7 @@ returns the roll message*/
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
         let tTest=false;
+        let injury=null;
         switch(num){
             case 1:
                 this._addFatigue(actor,1);
@@ -1788,8 +1770,8 @@ returns the roll message*/
                 if(!tTest.value){
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
                 }
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[34]));
-                await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Useless "+arm+" arm"}); 
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                await this._createInjury(actor,"Useless "+arm+" arm",injury);
                 this.applyActiveEffect(actor,critActiveEffect);
                 break;
             case 5:
@@ -1801,8 +1783,8 @@ returns the roll message*/
                     critActiveEffect[1].changes=[{key:`data.characteristics.bs.value`,value:-1,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                     await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Scarred "+arm+" hand"}); 
                 }else{
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+arm+" hand"}); 
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[34]));
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                    await this._createInjury(actor,"Lost "+arm+" hand",injury);
                 }
                 this.applyActiveEffect(actor,critActiveEffect);
                 break;
@@ -1810,8 +1792,8 @@ returns the roll message*/
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
                 await d5Roll.roll().toMessage({flavor:"Fatigue amount."});
                 await this._addFatigue(actor,d5Roll._total);
-                await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Useless "+arm+" arm"}); 
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[34]));
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                await this._createInjury(actor,"Useless "+arm+" arm",injury);
                 this.applyActiveEffect(actor,critActiveEffect);
                 break;
             case 7:
@@ -1829,8 +1811,8 @@ returns the roll message*/
                         startRound:game.combats.active.current.round
                     };
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[34]));
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+arm+" arm"}); 
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                    await this._createInjury(actor,"Lost "+arm+" arm",injury);
                     this.applyActiveEffect(actor,critActiveEffect);
                 }
                 break;
@@ -1851,6 +1833,7 @@ returns the roll message*/
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
         let tTest=false;
+        let injury=null;
         switch(num){
             case 1:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total+10),actor, "Resist prone");
@@ -1922,15 +1905,14 @@ returns the roll message*/
             case 6:
                 await d10Roll.roll().toMessage({flavor:"Fatigue amount."});
                 this._addFatigue(actor,d10Roll._total);
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[35]));
-                critActiveEffect[0].changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[35]);
+                injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist lost foot");
                 if(!tTest.value){
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+leg+" foot"});
+                    await this._createInjury(actor,"Lost "+leg+" foot",injury);
                 }else{
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Useless "+leg+" leg"});
+                    await this._createInjury(actor,"Useless "+leg+" leg",injury);
                 }
-                this.applyActiveEffect(actor,critActiveEffect);
                 break;
             case 7:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist death");
@@ -1947,9 +1929,9 @@ returns the roll message*/
                         startRound:game.combats.active.current.round
                     };
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[35]));
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+leg+" leg"});
-                    critActiveEffect[2].changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[35]);
+                    injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                    await this._createInjury(actor,"Lost "+leg+" leg",injury);
                     this.applyActiveEffect(actor,critActiveEffect);
                 }
                 break;
@@ -2201,6 +2183,7 @@ returns the roll message*/
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
         let tTest=false;
+        let injury=null;
         switch(num){
             case 1:
                 break;
@@ -2247,8 +2230,8 @@ returns the roll message*/
                 break;
             case 7:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[34]));
-                await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Useless "+arm+" arm"});
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                await this._createInjury(actor,"Useless "+arm+" arm",injury);
                 this.applyActiveEffect(actor,critActiveEffect);
                 break;
             case 8:
@@ -2266,8 +2249,9 @@ returns the roll message*/
                         startRound:game.combats.active.current.round
                     };
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[34]));
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Useless "+arm+" arm"});
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                    await this._createInjury(actor,"Useless "+arm+" arm",injury);
+                    this.applyActiveEffect(actor,critActiveEffect);
                 }
                 break;
             case 9:
@@ -2284,11 +2268,13 @@ returns the roll message*/
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
         let tTest=false;
+        let injury=null;
         switch(num){
             case 1:
                 this._addFatigue(actor,1);
                 break;
             case 2:
+                await d10Roll.roll().toMessage({flavor:"Movement speed duration."});
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[35]));
                 critActiveEffect[0].duration={
                     combat:game.combats.active.data._id,
@@ -2338,13 +2324,15 @@ returns the roll message*/
                 break;
             case 6:
                 this._addFatigue(actor,2);
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[35]));
-                critActiveEffect[0].changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[35]);
+                injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist lost foot");
                 if(!tTest.value){
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+leg+" foot"});
+                    await this._createInjury(actor,"Lost "+leg+" foot",injury);
+                }else{
+                    critActiveEffect.push(injury);
+                    this.applyActiveEffect(actor,critActiveEffect);
                 }
-                this.applyActiveEffect(actor,critActiveEffect);
                 break;
             case 7:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[4]));
@@ -2354,9 +2342,9 @@ returns the roll message*/
                     rounds:2,
                     startRound:game.combats.active.current.round
                 }; 
-                await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Useless "+leg+" leg"});
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[35]));
-                critActiveEffect[2].changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[35]);
+                injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                await this._createInjury(actor,"Useless "+leg+" leg",injury);
                 this.applyActiveEffect(actor,critActiveEffect);
                 break;
             case 8:
@@ -2365,12 +2353,12 @@ returns the roll message*/
                     if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
                 }else{
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+leg+" leg"});
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[35]));
-                    critActiveEffect[1].changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[35]);
+                    injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                    await this._createInjury(actor,"Lost "+leg+" leg",injury);
                     await d5Roll.roll().toMessage({flavor:"Agility damage."});
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[29]));
-                    critActiveEffect[2].changes=[{key:`data.characteristics.agi.value`,value:-1*d5Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
+                    critActiveEffect[1].changes=[{key:`data.characteristics.agi.value`,value:-1*d5Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                     this.applyActiveEffect(actor,critActiveEffect);
                 }
                 break;
@@ -2383,7 +2371,6 @@ returns the roll message*/
         }
     }
     static async rendingCrits(actor,num,hitLoc){
-        console.log(hitLoc);
         switch(hitLoc){
             case "head":
                 await this.rendingHeadCrits(actor,num);
@@ -2411,12 +2398,12 @@ returns the roll message*/
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
         let tTest=false;
+        let injury=null;
         switch(num){
             case 1:
                 if(parseInt(actor.data.data.characterHitLocations.head.armor)===0){
                     this._addFatigue(actor,1);
                 }
-
                 break;
             case 2:
                 await d10Roll.roll().toMessage({flavor:"Characteristic damage duration."});
@@ -2458,8 +2445,8 @@ returns the roll message*/
                 critActiveEffect[0].changes=[                                       {key:`data.characteristics.per.value`,value:-1*d10Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total+20),actor, "Resist lost eye");
                 if(!tTest.value){
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[6]));
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost eye"});
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[6]);
+                    await this._createInjury(actor,"Lost eye",injury);
                 }
                 this.applyActiveEffect(actor,critActiveEffect);
                 break;
@@ -2491,22 +2478,23 @@ returns the roll message*/
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
                 await d10Roll.roll().toMessage({flavor:"Part lost."});
                 if(d10Roll._total<=3){
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[6]));
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost eye"});
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[6]);
+                    await this._createInjury(actor,"Lost eye",injury);
                 }else if(d10Roll._total<=7){
                     await d10Roll.reroll().toMessage({flavor:"Fellowship damage."});
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost nose"});
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[33]));
-                    critActiveEffect[0].changes=[                                       {key:`data.characteristics.fel.value`,value:-1*d10Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[33]);
+                    injury.changes=[                                       {key:`data.characteristics.fel.value`,value:-1*d10Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
+                    await this._createInjury(actor,"Lost nose",injury);
                 }else if(d10Roll._total<=10){
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost ear"});
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[7]));
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[7]);
+                    await this._createInjury(actor,"Lost ear",injury);
                 }
                 this.applyActiveEffect(actor,critActiveEffect);
                 break;
             case 7:
                 await d10Roll.roll().toMessage({flavor:"Fellowship damage."});
-                await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Permanent blindness"});
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[6]);
+                await this._createInjury(actor,"Permanent blindness",injury);
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[33]));
                 critActiveEffect[0].changes=[                                       {key:`data.characteristics.fel.value`,value:-1*d10Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
@@ -2537,11 +2525,9 @@ returns the roll message*/
         let tTest=false;
         switch(num){
             case 1:
-                console.log(actor);
                 if(parseInt(actor.data.data.characterHitLocations.body.armor)===0){
                     this._addFatigue(actor,1);
                 }
-
                 break;
             case 2:
                 this._addFatigue(actor,1);
@@ -2566,7 +2552,6 @@ returns the roll message*/
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist bleeding");
                 if(!tTest.value){
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
-
                 }
                 this.applyActiveEffect(actor,critActiveEffect);
                 break;
@@ -2586,8 +2571,6 @@ returns the roll message*/
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[28]));
                 critActiveEffect[1].changes=[{key:`data.characteristics.t.value`,value:-1*d10Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                 this.applyActiveEffect(actor,critActiveEffect);
-
-
                 break;
             case 6:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
@@ -2622,7 +2605,6 @@ returns the roll message*/
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
                     this.applyActiveEffect(actor,critActiveEffect);
                 }
-
                 break;
             case 9:
                 if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
@@ -2631,16 +2613,16 @@ returns the roll message*/
                 if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
                 break;
         }
-    }
+    };
     static async rendingArmCrits(actor,num,arm){
         let actorToken=actor.token;
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
         let tTest=false;
+        let injury=null;
         switch(num){
             case 1:
-
                 break;
             case 2:
                 this._addFatigue(actor,1);
@@ -2666,8 +2648,8 @@ returns the roll message*/
                 break;
             case 5:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[34]));
-                await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Useless "+arm+" arm"});
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                await this._createInjury(actor,"Useless "+arm+" arm",injury);
                 this.applyActiveEffect(actor,critActiveEffect);
                 break;
             case 6:
@@ -2679,23 +2661,22 @@ returns the roll message*/
                     startRound:game.combats.active.current.round
                 };
                 if(!tTest.value){
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[34]));
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+arm+" hand"});
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                    await this._createInjury(actor,"Lost "+arm+" hand",injury);
                 }else{
                     d5Roll.roll().toMessage({flavor:"Number of fingers lost."});
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[34]));
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:arm+` hand maimed, lost ${d5Roll._total} fingers`});
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                    await this._createInjury(actor,arm+` hand maimed, lost ${d5Roll._total} fingers`,injury);
                 }
                 this.applyActiveEffect(actor,critActiveEffect);
-
                 break;
             case 7:
                 d10Roll.roll().toMessage({flavor:"Strength damage."});
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[27]));
                 critActiveEffect[0].changes=[{key:`data.characteristics.s.value`,value:-1*d10Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[34]));
-                await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Useless "+arm+" arm"});
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                await this._createInjury(actor,"Useless "+arm+" arm",injury);
                 this.applyActiveEffect(actor,critActiveEffect);
                 break;
             case 8:
@@ -2711,8 +2692,8 @@ returns the roll message*/
                         startRound:game.combats.active.current.round
                     };
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[34]));
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+arm+" arm"});
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[34]);
+                    await this._createInjury(actor,"Lost "+arm+" arm",injury);
                     this.applyActiveEffect(actor,critActiveEffect);
                 }
                 break;
@@ -2723,7 +2704,7 @@ returns the roll message*/
                 if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
                 break;
         }
-    }
+    };
     static async rendingLegCrits(actor,num,leg){
         let actorToken=actor.token;
         let critActiveEffect=[];
@@ -2731,6 +2712,7 @@ returns the roll message*/
         let d10Roll=new Roll("1d10");
         let tTest=false;
         let agiTest=false;
+        let injury=null;
         switch(num){
             case 1:
                 this._addFatigue(actor,1);
@@ -2770,11 +2752,13 @@ returns the roll message*/
                 break;
             case 6:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[35]));
-                critActiveEffect[1].changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                injury=duplicate(game.fortyk.FORTYK.StatusEffects[35]);
+                injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist lost foot");
                 if(!tTest.value){
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+leg+" foot"});
+                    await this._createInjury(actor,"Lost "+leg+" foot",injury);
+                }else{
+                    critActiveEffect.push(injury);
                 }
                 this.applyActiveEffect(actor,critActiveEffect);
                 break;
@@ -2794,13 +2778,13 @@ returns the roll message*/
                 if(!tTest.value){
                     if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
                 }else{
-                    await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Lost "+leg+" leg"});
-                    critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[35]));
-                    critActiveEffect[0].changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                    injury=duplicate(game.fortyk.FORTYK.StatusEffects[35]);
+                    injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                    await this._createInjury(actor,"Lost "+leg+" leg",injury);
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[11]));
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[3]));
                     await d10Roll.roll().toMessage({flavor:"Stun duration."})
-                    critActiveEffect[0].duration={
+                    critActiveEffect[1].duration={
                         combat:game.combats.active.data._id,
                         rounds:d10Roll._total,
                         startRound:game.combats.active.current.round
@@ -2815,14 +2799,13 @@ returns the roll message*/
                 if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
                 break;
         }
-    }
+    };
     static async applyActiveEffect(actor,effect){
         if(effect.length>0){
             if(game.user.isGM||actor.owner){
                 for(let index=0; index <effect.length;index++){
                     let dupp=false;
                     for(let ae of actor.effects){
-
                         if(ae.data.flags.core.statusId===effect[index].flags.core.statusId){
                             dupp=true;
                             let change=false;
@@ -2834,7 +2817,6 @@ returns the roll message*/
                                     change=true;
                                 }
                             }
-
                             if(effect[index].duration&&(effect[index].duration.rounds>ae.duration.remaining)){
                                 ae.data.duration.rounds=effect[index].duration.rounds;
                                 ae.data.duration.startRound=effect[index].duration.startRound;
@@ -2842,14 +2824,12 @@ returns the roll message*/
                             }
                             if(effect[index].changes!==undefined&&!upg){ae.data.changes.push(effect[index].changes[0])}
                             if(change){ae.update(ae.data);}
-
                         }
                     }
                     let ironJaw=false;
                     if(effect[index].id==="stunned"&&actor.getFlag("fortyk","ironjaw")){
                         ironJaw=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Iron Jaw").value;
                     }
-                    console.log(ironJaw);
                     if(!dupp&&!ironJaw){
                         await actor.createEmbeddedEntity("ActiveEffect",effect[index]);
                     }
@@ -2861,7 +2841,7 @@ returns the roll message*/
                 game.socket.emit("system.fortyk",socketOp);
             }
         }
-    }
+    };
     static async applyDead(target,actor){
         if(target.data.overlayEffect===undefined||target.data.overlayEffect===null||!target.data.overlayEffect.includes("icons/svg/skull.svg")){
             let msg=target.name+" is killed!";
@@ -2890,7 +2870,7 @@ returns the roll message*/
                 game.socket.emit("system.fortyk",socketOp);
             }
         }
-    }
+    };
     static async _addFatigue(actor,newfatigue){
         newfatigue=newfatigue+actor.data.data.secChar.fatigue.value;
         if(game.user.isGM||actor.owner){
@@ -2903,9 +2883,14 @@ returns the roll message*/
             }else{
                 tokenId=actor.token.data._id;
             }
-
             let socketOp={type:"updateValue",package:{token:tokenId,value:newfatigue,path:"data.secChar.fatigue.value"}}
             game.socket.emit("system.fortyk",socketOp);
         }
     }
+    static async _createInjury(actor,injury,injuryAeData){
+        let injuryItem=await Item.create({type:"injury",name:injury});
+        injuryAeData.transfer=true;
+        await injuryItem.createEmbeddedEntity("ActiveEffect",injuryAeData);
+        await actor.createEmbeddedEntity("OwnedItem",injuryItem.data);
+    };
 }

@@ -308,14 +308,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         const data=this.actor.data.data;
 
-        let weapon=null;
+        
         let actor=this.actor;
-        for(let w of actor.items){
-            if(w._id===event.currentTarget.value){
-                weapon=w.data;
-                break;
-            }
-        }
+        let weapon=actor.getOwnedItem(event.currentTarget.value).data;
+        
         const weaponID=event.currentTarget.value;
         const hand=event.currentTarget.dataset["hand"];
         const leftHand=document.getElementById("left");
@@ -394,7 +390,6 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             let elements=skill.getElementsByTagName("a");
             let nameElement=elements[0];
             let skillName=nameElement.attributes["data-name"].value.toLowerCase();
-            console.log(nameElement.attributes);
             if(skillName.indexOf(filter)>-1){
                 skill.style.display="";
             }else{

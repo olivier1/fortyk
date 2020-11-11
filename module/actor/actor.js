@@ -26,6 +26,39 @@ export class FortyKActor extends Actor {
     }
     //@Override the update function to modify token size for hordes and larger entities
     async update(data, options={}) {
+        let actor=this;
+        console.log(data);
+        //check for fatigue unconsciousness/death
+        let newFatigue=data["data.secChar.fatigue.value"];
+        if(newFatigue){
+            if(newFatigue>=this.data.data.secChar.fatigue.max*2){
+                let token=null;
+                if(this.isToken){
+                    token=this.token;
+                }else{
+                    token=this.getActiveTokens()[0]
+                }
+                let chatDead={user: game.user._id,
+                              speaker:{actor,alias:actor.name},
+                              content:`${actor.name} dies from fatigue!`,
+                              classes:["fortyk"],
+                              flavor:`Fatigue death`,
+                              author:actor.name};
+                await ChatMessage.create(chatDead,{});
+                await game.fortyk.FortykRolls.applyDead(token,this);
+            }else if(!this.getFlag("core","frenzy")&&!this.getFlag("core","unconscious")&&newFatigue>=this.data.data.secChar.fatigue.max){
+                let effect=[];
+                effect.push(duplicate(game.fortyk.FORTYK.StatusEffects[1]));
+                let chatUnconscious={user: game.user._id,
+                                     speaker:{actor,alias:actor.name},
+                                     content:`${actor.name} falls unconscious from fatigue!`,
+                                     classes:["fortyk"],
+                                     flavor:`Fatigue pass out`,
+                                     author:actor.name};
+                await ChatMessage.create(chatUnconscious,{});
+                await game.fortyk.FortykRolls.applyActiveEffect(actor,effect);
+            }
+        }
         // Apply changes in Actor size to Token width/height
         let newSize= 0;
         if(this.data.data.horde.value){
@@ -63,12 +96,16 @@ export class FortyKActor extends Actor {
     }
     prepareBaseData(){
         const data = this.data.data;
+        if(this.getFlag("fortyk","marksman")){
+            data.secChar.attacks.range.long=0;
+            data.secChar.attacks.range.extreme=0;
+        }
     }
     prepareDerivedData() {
         // super.prepareBaseData();
         const actorData = this.data;
         const data = actorData.data;
-        
+
         // Make separate methods for each Actor type (character, npc, etc.) to keep
         // things organized.
         if (actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC') {this._prepareCharacterData(actorData)};
@@ -97,11 +134,14 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","unrelenting")){
             fatigueMult=2;
         }
-        for (let [key,char] of Object.entries(data.characteristics)){
-            if(char.bonus*fatigueMult<data.secChar.fatigue.value){
-                char.total=Math.ceil(char.total/2);
-            }
+        if(!this.getFlag("core","frenzy")){
+            for (let [key,char] of Object.entries(data.characteristics)){
+                if(char.bonus*fatigueMult<data.secChar.fatigue.value){
+                    char.total=Math.ceil(char.total/2);
+                }
+            }  
         }
+
         //initialise cybernetics
         for (let [key, hitLoc] of Object.entries(data.characterHitLocations)){
             hitLoc.cyber=false;
@@ -169,7 +209,7 @@ export class FortyKActor extends Actor {
         //modify total characteristics depending on fatigue
         var fatigueMult=1;
         for (let [key,char] of Object.entries(data.characteristics)){
-            if(char.bonus*fatigueMult<data.secChar.fatigue.value){
+            if(!this.getFlag("core","frenzy")&&char.bonus*fatigueMult<data.secChar.fatigue.value){
                 char.total=Math.ceil(char.value/2);
             }else{
                 char.total=char.value;
@@ -318,7 +358,7 @@ export class FortyKActor extends Actor {
                 psychicPowers.push(item);
             }
             if(item.type==="talentntrait"){
-                
+
                 talentsntraits.push(item);
             }
             if(item.type==="mission"){
@@ -359,7 +399,6 @@ export class FortyKActor extends Actor {
                 catch(err){
                     item.data.range.value="";
                 } 
-                console.log(item);
                 if(item.data.class.value==="Pistol"||item.data.class.value==="Thrown"){
 
                     item.data.twohanded.value=false;
@@ -407,7 +446,7 @@ export class FortyKActor extends Actor {
                 data.carry.value=(parseFloat(data.carry.value)+parseFloat(item.data.weight.total)).toFixed(2);
             }
         }
-       
+
         //store known xenos for deathwatchtraining
         if(this.getFlag("fortyk","deathwatchtraining")){
             actorData.flags.fortyk.deathwatchtraining=forRaces;
@@ -423,7 +462,7 @@ export class FortyKActor extends Actor {
         }else{
             data.carry.max=game.fortyk.FORTYK.carry[1].carry+data.carry.mod;
         }
-       
+
         let sortedSkills=skills.sort(function compare(a, b) {
             if (a.name<b.name) {
                 return -1;
@@ -467,7 +506,7 @@ export class FortyKActor extends Actor {
         //put all items in their respective containers and do some item logic
         for(let item of actorData.items){
             if(item.type==="talentntrait"){
-                
+
                 talentsntraits.push(item);
             }
             if(item.type==="psychicPower"){

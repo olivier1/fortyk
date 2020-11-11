@@ -3,6 +3,7 @@ import {FortykRollDialogs} from "../FortykRollDialogs.js";
 import {FortykRolls} from "../FortykRolls.js";
 import {objectByString} from "../utilities.js";
 import {setNestedKey} from "../utilities.js";
+import {tokenDistance} from "../utilities.js";
 export default class FortyKBaseActorSheet extends ActorSheet {
     static async create(data, options) {
         data.skillFilter="";
@@ -152,7 +153,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                             let $selectedCompendiums= $('option:selected',html).map(function(){
                                 return this.getAttribute('data-compendium');
                             }).get();
-                            console.log(selectedIds,$selectedCompendiums);
                             let talentsNTraits=[];
                             for(let i=0;i<selectedIds.length;i++){
                                 let tnt=null;
@@ -188,7 +188,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                         tnt=await dwBonus.getEntity(selectedIds[i]);
                                         break;
                                 }
-                                console.log(tnt);
                                 let itemData=tnt.data;
                                 let tntData=itemData.data;
                                 let spec=tntData.specialisation.value;
@@ -256,7 +255,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     submit:{
                         label:"Yes",
                         callback: async dlg => { 
-                            console.log(item);
                             if(item.type==="talentntrait"){
                                 await this.actor.setFlag("fortyk",item.data.flagId.value,false);
                             }
@@ -320,16 +318,42 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         var testLabel=dataset["label"];
         var testChar=dataset["char"];
         var item=null;
+        let attackOptions={
+        }
+        let targets=game.user.targets;
+        console.log(targets);
+        if(targets.size>0){
+            let targetIt=targets.values();
+            let target=targetIt.next().value;
+            let attacker=this.actor.getActiveTokens()[0];
+            let targetActor=target.actor;
+            
+           
+            attackOptions.prone=targetActor.getFlag("core","prone");
+            attackOptions.stunned=targetActor.getFlag("core","stunned");
+            attackOptions.size=targetActor.data.data.secChar.size.value;
+            attackOptions.selfProne=this.actor.getFlag("core","prone");
+            if(targetActor.getFlag("core","unconscious")||targetActor.getFlag("core","snare")||targetActor.getFlag("core","sleep")){
+                attackOptions.helpless=true;
+            }else{
+                 attackOptions.helpless=false;
+            }
+            attackOptions.selfBlind=this.actor.getFlag("core","blind");
+            attackOptions.distance=tokenDistance(target, attacker);
+            
+        }
         if(dataset["itemId"]){
-            item=this.actor.getEmbeddedEntity("OwnedItem",dataset["itemId"]);}
+            item=this.actor.getOwnedItem(dataset["itemId"]).data;
+            console.log(item);
+        }
         if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
             FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
         }else if(testType==="meleeAttack"){
-            FortykRollDialogs.callMeleeAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item);
+            FortykRollDialogs.callMeleeAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
         }else if(testType==="rangedAttack"){
-            FortykRollDialogs.callRangedAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item);
+            FortykRollDialogs.callRangedAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
         }else if(testType==="focuspower"){
-            FortykRollDialogs.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item);
+            FortykRollDialogs.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
         }
         //autofocus the input after it is rendered.
         setTimeout(function() {document.getElementById('modifier').select();}, 50);
@@ -340,14 +364,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const element = event.currentTarget;
         const dataset = element.dataset;
         if(dataset.weapon){
-            let weapon=null;
+            
             let actor=this.actor;
-            for(let w of actor.items){
-                if(w._id===dataset.weapon){
-                    weapon=w.data;
-                    break;
-                }
-            }
+            let weapon=actor.getOwnedItem(dataset.weapon).data;
+            
             let formula=weapon.data.damageFormula;
             new Dialog({
                 title: `Number of Hits`,

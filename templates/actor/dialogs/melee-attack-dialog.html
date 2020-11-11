@@ -6,11 +6,11 @@
 
                 <input type="radio" name="attack-type" value="{{modifiers.standard}}" label="Standard" checked><label>Standard: +{{modifiers.standard}}</label>
             </div>
-            <div class="list-item flexrow">
+            <div class="list-item flexrow"{{#unless options.swift}} hidden{{/unless}}>
 
                 <input type="radio" name="attack-type" value="{{modifiers.swift}}" label="Swift"><label>Swift Attack: +{{modifiers.swift}}</label>
             </div>
-            <div class="list-item flexrow">
+            <div class="list-item flexrow"{{#unless options.lightning}} hidden{{/unless}}>
 
                 <input type="radio" name="attack-type" value="{{modifiers.lightning}}" label="Lightning"><label>Lightning Attack: {{modifiers.lightning}}</label>
             </div>
@@ -91,11 +91,11 @@
 
             </div>
         </div>
-        <div class="flexcol attack-section">
+        <div class="flexcol attack-section"{{#if options.blindfight}} hidden{{/if}}>
             <label class="section-title">Visibility</label>
             <div class="list-item flexrow">
 
-                <input type="radio" name="visibility" value="0" checked><label>Normal: +0</label>
+                <input type="radio" name="visibility" value="0" {{#unless options.selfBlind}} checked{{/unless}}><label>Normal: +0</label>
 
             </div>
             <div class="list-item flexrow">
@@ -105,7 +105,7 @@
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="visibility" value="-20" ><label>Darkness: -20</label>
+                <input type="radio" name="visibility" value="-20" {{#if options.selfBlind}} checked{{/if}}><label>Darkness: -20</label>
 
             </div>
 
@@ -118,15 +118,15 @@
             </div>
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="prone" value="10"><label>Prone/Knocked Down/Lower Ground: +10</label>
+                <input type="checkbox" name="prone" value="10" {{#if options.prone}} checked{{/if}}><label>Prone/Knocked Down/Lower Ground: +10</label>
             </div>
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="high" value="-10"><label>You are Prone/Knocked Down/Lower Ground: -10</label>
+                <input type="checkbox" name="high" value="-10"{{#if options.selfProne}} checked{{/if}}><label>You are Prone/Knocked Down/Lower Ground: -10</label>
             </div>
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="surprised" value="30" ><label>Surprised/Unaware: +30</label>
+                <input type="checkbox" name="surprised" value="30" {{#if options.helpless}} checked{{/if}}><label>Surprised/Unaware: +30</label>
 
             </div>
             <div class="list-item flexrow">
@@ -136,16 +136,22 @@
             </div>
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="stunned" value="20" ><label>Stunned: +20</label>
+                <input type="checkbox" name="stunned" value="20" {{#if options.stunned}} checked{{/if}}><label>Stunned: +20</label>
 
             </div>
             <select class="size" name="size">
-                
+                {{debug this}}
+                {{#if options.size}}
                 {{#each size}}
-               
-                <option value="{{this.mod}}" {{#if (contains this.name "average")}}selected{{/if}}>{{this.name}}</option>
-                
+                <option value="{{this.mod}}" {{#if (equals @index ../options.size)}}selected{{/if}}>{{this.name}}</option>
+              
                 {{/each}}
+                {{else}}
+                {{#each size}}
+                <option value="{{this.mod}}" {{#if (contains this.name "average")}}selected{{/if}}>{{this.name}}</option>
+               
+                {{/each}}
+                {{/if}}
             </select>
 
 
