@@ -649,4 +649,5 @@ FORTYK.StatusEffects = [
         flags: { core: { statusId: "leg" } }
     }
 ];
+
 FORTYK.StatusFlags={dead:false,unconscious:false,sleep:false,stunned:false,prone:false,snare:false,blind:false,deaf:false,shock:false,fire:false,corrode:false,bleeding:false,toxic:false,rad:false,frenzy:false,buff:false,weakened:false,target:false,marked:false,crippled:false,blessed:false,fireShield:false,coldShield:false,magicShield:false,holyShield:false,ws:false,bs:false,s:false,t:false,agi:false,int:false,per:false,wp:false,fel:false,arm:false,leg:false}

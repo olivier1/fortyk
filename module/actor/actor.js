@@ -47,7 +47,7 @@ export class FortyKActor extends Actor {
                 await game.fortyk.FortykRolls.applyDead(token,this);
             }else if(!this.getFlag("core","frenzy")&&!this.getFlag("core","unconscious")&&newFatigue>=this.data.data.secChar.fatigue.max){
                 let effect=[];
-                effect.push(duplicate(game.fortyk.FORTYK.StatusEffects[1]));
+                effect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("unconscious")]));
                 let chatUnconscious={user: game.user._id,
                                      speaker:{actor,alias:actor.name},
                                      content:`${actor.name} falls unconscious from fatigue!`,

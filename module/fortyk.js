@@ -20,6 +20,16 @@ Hooks.once('init', async function() {
         FortykRolls,
         FORTYK
     };
+    //make a map with the indexes of the various status effects
+    game.fortyk.FORTYK.StatusEffectsIndex=(function(){
+        
+        let statusMap= new Map(); 
+        for(let i=0;i<FORTYK.StatusEffects.length;i++){
+            
+            statusMap.set(game.fortyk.FORTYK.StatusEffects[i].id,i)
+        }
+        return statusMap;
+    })();
     /**
    * Set an initiative formula for the system
    * @type {String}
