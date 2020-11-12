@@ -330,9 +330,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
            
             attackOptions.prone=targetActor.getFlag("core","prone");
             attackOptions.stunned=targetActor.getFlag("core","stunned");
+            attackOptions.running=targetActor.getFlag("core","totalDef");
+            attackOptions.running=targetActor.getFlag("core","running");
             attackOptions.size=targetActor.data.data.secChar.size.value;
             attackOptions.selfProne=this.actor.getFlag("core","prone");
-            if(targetActor.getFlag("core","unconscious")||targetActor.getFlag("core","snare")||targetActor.getFlag("core","sleep")){
+            if(targetActor.getFlag("core","unconscious")||targetActor.getFlag("core","snare")){
                 attackOptions.helpless=true;
             }else{
                  attackOptions.helpless=false;

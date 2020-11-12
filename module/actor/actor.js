@@ -99,6 +99,9 @@ export class FortyKActor extends Actor {
             data.secChar.attacks.range.long=0;
             data.secChar.attacks.range.extreme=0;
         }
+        if(this.getFlag("fortyk","precisionkiller")){
+            data.secChar.attacks.called=0
+        }
     }
     prepareDerivedData() {
         // super.prepareBaseData();

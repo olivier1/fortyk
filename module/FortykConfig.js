@@ -435,10 +435,24 @@ FORTYK.StatusEffects = [
         flags: { core: { statusId: "unconscious" } }
     },
     {
-        id: "sleep",
-        label: "Asleep",
-        icon: "icons/svg/sleep.svg",
-        flags: { core: { statusId: "sleep" } }
+        id: "running",
+        label: "Running",
+        icon: "systems/fortyk/icons/running.png",
+        flags: { core: { statusId: "running" } },
+        duration:{
+            
+            rounds:1
+        }
+    },
+    {
+        id: "totalDef",
+        label: "Total Defense",
+        icon: "systems/fortyk/icons/defense.png",
+        flags: { core: { statusId: "fireShield" } },
+        duration:{
+            
+            rounds:1
+        }
     },
     {
         id: "stunned",
@@ -649,5 +663,4 @@ FORTYK.StatusEffects = [
         flags: { core: { statusId: "leg" } }
     }
 ];
-
 FORTYK.StatusFlags={dead:false,unconscious:false,sleep:false,stunned:false,prone:false,snare:false,blind:false,deaf:false,shock:false,fire:false,corrode:false,bleeding:false,toxic:false,rad:false,frenzy:false,buff:false,weakened:false,target:false,marked:false,crippled:false,blessed:false,fireShield:false,coldShield:false,magicShield:false,holyShield:false,ws:false,bs:false,s:false,t:false,agi:false,int:false,per:false,wp:false,fel:false,arm:false,leg:false}

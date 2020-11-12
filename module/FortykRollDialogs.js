@@ -91,6 +91,8 @@ export class FortykRollDialogs{
         templateOptions["options"].helpless=modifiers.helpless;
         templateOptions["options"].size=modifiers.size;
         templateOptions["options"].blindfight=actor.getFlag("fortyk","blindfight");
+        templateOptions["options"].running=modifiers.running;
+        templateOptions["options"].totalDef=modifiers.totalDef;
         if(!templateOptions["options"].blindfight){
             templateOptions["options"].selfBlind=modifiers.selfBlind;
         }
@@ -216,7 +218,6 @@ export class FortykRollDialogs{
                 canShoot=true;
             }
         }
-        console.log(modifiers);
         //if cant shoot return
         if(!canShoot){
             new Dialog({
@@ -260,10 +261,11 @@ export class FortykRollDialogs{
         templateOptions["options"].stunned=modifiers.stunned;
         templateOptions["options"].helpless=modifiers.helpless;
         templateOptions["options"].size=modifiers.size;
+        templateOptions["options"].running=modifiers.running;
         templateOptions["options"].normal=true;
-        
+
         //distance shenanigans
-       
+
         if(modifiers.distance){
             let distance=modifiers.distance;
             let pointblank=false;
@@ -272,8 +274,6 @@ export class FortykRollDialogs{
             let long=false;
             let extreme=false;
             let range=item.data.range.value;
-            console.log(item);
-            console.log(distance);
             if((distance<=1||distance<=canvas.dimensions.distance)){
                 if(item.data.class.value==="Pistol"){
                     normal=true;
@@ -309,22 +309,22 @@ export class FortykRollDialogs{
                 extreme=true;
             }else{
                 new Dialog({
-                        title: `Out of range`,
-                        classes:"fortky",
-                        content: "You are out of range!",
-                        buttons: {
-                            submit: {
-                                label: 'OK',
-                                callback: null
+                    title: `Out of range`,
+                    classes:"fortky",
+                    content: "You are out of range!",
+                    buttons: {
+                        submit: {
+                            label: 'OK',
+                            callback: null
 
-                            }
-                        },
-                        default: "submit",
+                        }
+                    },
+                    default: "submit",
 
 
-                        width:400}
-                              ).render(true);
-                    return;
+                    width:400}
+                          ).render(true);
+                return;
             }
             templateOptions["options"].pointblank=pointblank;
             templateOptions["options"].short=short;
@@ -354,11 +354,7 @@ export class FortykRollDialogs{
                         if(isNaN(aimBonus)){
                             aimBonus=0;
                         }
-                        if(aimBonus>0){
-                            actor.data.data.secChar.lastHit.aim=true;
-                        }else{
-                            actor.data.data.secChar.lastHit.aim=false;
-                        }
+
                         const visibilityBonus = Number($(html).find('input[name="visibility"]:checked').val());
                         let concealed = Number($(html).find('input[name="concealed"]:checked').val());
                         let prone = Number($(html).find('input[name="prone"]:checked').val());
@@ -405,7 +401,13 @@ export class FortykRollDialogs{
                         if(isNaN(other)){other=0}
 
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus);
-                        FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType);
+                        await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType);
+                        if(aimBonus>0){
+                            
+                            actor.data.data.secChar.lastHit.aim=true;
+                        }else{
+                            actor.data.data.secChar.lastHit.aim=false;
+                        }
                     }
 
                 }
@@ -427,10 +429,11 @@ export class FortykRollDialogs{
         templateOptions["options"].stunned=modifiers.stunned;
         templateOptions["options"].helpless=modifiers.helpless;
         templateOptions["options"].size=modifiers.size;
+        templateOptions["options"].running=modifiers.running;
         templateOptions["options"].normal=true;
-        
+
         //distance shenanigans
-       
+
         if(modifiers.distance){
             let distance=modifiers.distance;
             let pointblank=false;
@@ -439,8 +442,6 @@ export class FortykRollDialogs{
             let long=false;
             let extreme=false;
             let range=item.data.range.value;
-            console.log(item);
-            console.log(distance);
             if(distance<=2||distance<=2*canvas.dimensions.distance){
                 pointblank=true;
             }else if(distance<=parseInt(range)/2){
@@ -453,22 +454,22 @@ export class FortykRollDialogs{
                 extreme=true;
             }else{
                 new Dialog({
-                        title: `Out of range`,
-                        classes:"fortky",
-                        content: "You are out of range!",
-                        buttons: {
-                            submit: {
-                                label: 'OK',
-                                callback: null
+                    title: `Out of range`,
+                    classes:"fortky",
+                    content: "You are out of range!",
+                    buttons: {
+                        submit: {
+                            label: 'OK',
+                            callback: null
 
-                            }
-                        },
-                        default: "submit",
+                        }
+                    },
+                    default: "submit",
 
 
-                        width:400}
-                              ).render(true);
-                    return;
+                    width:400}
+                          ).render(true);
+                return;
             }
             templateOptions["options"].pointblank=pointblank;
             templateOptions["options"].short=short;

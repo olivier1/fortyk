@@ -107,7 +107,7 @@
             </div>
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="running" value="-20" ><label>Running: -20</label>
+                <input type="checkbox" name="running" value="-20" {{#if options.running}} checked{{/if}}><label>Running: -20</label>
 
             </div>
             <div class="list-item flexrow">
@@ -126,7 +126,7 @@
 
             </div>
             <select class="size" name="size">
-                {{debug this}}
+              
                 {{#if options.size}}
                 {{#each size}}
                 <option value="{{this.mod}}" {{#if (equals @index ../options.size)}}selected{{/if}}>{{this.name}}</option>
