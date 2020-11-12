@@ -321,7 +321,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let attackOptions={
         }
         let targets=game.user.targets;
-        console.log(targets);
         if(targets.size>0){
             let targetIt=targets.values();
             let target=targetIt.next().value;
@@ -344,7 +343,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
         if(dataset["itemId"]){
             item=this.actor.getOwnedItem(dataset["itemId"]).data;
-            console.log(item);
         }
         if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
             FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);

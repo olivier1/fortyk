@@ -27,7 +27,6 @@ export class FortyKActor extends Actor {
     //@Override the update function to modify token size for hordes and larger entities
     async update(data, options={}) {
         let actor=this;
-        console.log(data);
         //check for fatigue unconsciousness/death
         let newFatigue=data["data.secChar.fatigue.value"];
         if(newFatigue){
