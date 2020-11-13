@@ -253,6 +253,12 @@ FORTYK.itemFlags={
         "label": "Lance",
         "description": "Lance weapons focus devastating energy, piercing armour with ease. Weapons with this quality have a variable penetration value that is dependent on the accuracy of each shot. When a target is hit by a weapon with the Lance quality, increase the weapon’s penetration value by its base value once for each degree of success the attacker achieves. For example, if a Lance weapon had a base penetration value of 5 and hit with three degrees of success (adding 3x5=15), the total penetration for the attack would be 20."
     },
+    "lasModal": {
+        "value": false,
+        "label": "Las Modal",
+        "mode":0,
+        "description": "The standard las weapon has a variable setting option, allowing it to fire higher-powered bursts. It may be set to overcharge mode, dealing +1 damage, but using two shots worth of ammunition per shot fired. Further, the weapon may be set to overload mode, dealing +2 damage and gaining +2 penetration. In this case, it uses four shots of ammunition per shot fired, loses Reliable, and gains Unreliable."
+    },
     "maximal": {
         "value": false,
         "maximal": false,
@@ -411,6 +417,7 @@ FORTYK.itemFlags={
         "description": "Creatures with this trait have weapons that are partially insubstantial, able to ignore such mundane things as armour or cover. Natural weapons and attacks made by a creature with this trait ignore physical armour, unless the armour is created from psychoactive materials or is somehow warded against the Warp. Force fields still work against these attacks normally."
     }
 }
+FORTYK.lasModes=["normal","overcharge","overload"]
 FORTYK.itemQualities=["Poor","Common","Good","Best"]
 FORTYK.skillChars={"ws":{"name":"ws","caps":"WS"},"bs":{"name":"bs","caps":"BS"},"s":{"name":"s","caps":"S"},"t":{"name":"t","caps":"T"},"agi":{"name":"agi","caps":"AGI"},"int":{"name":"int","caps":"INT"},"per":{"name":"per","caps":"PER"},"wp":{"name":"wp","caps":"WP"},"fel":{"name":"fel","caps":"FEL"}}
 FORTYK.skillTraining={"0":{"name":"Untrained","value":-20},"1":{"name":"Known","value":0},"2":{"name":"Trained","value":10},"3":{"name":"Experienced","value":20},"4":{"name":"Veteran","value":30}}
@@ -663,4 +670,3 @@ FORTYK.StatusEffects = [
         flags: { core: { statusId: "leg" } }
     }
 ];
-FORTYK.StatusFlags={dead:false,unconscious:false,sleep:false,stunned:false,prone:false,snare:false,blind:false,deaf:false,shock:false,fire:false,corrode:false,bleeding:false,toxic:false,rad:false,frenzy:false,buff:false,weakened:false,target:false,marked:false,crippled:false,blessed:false,fireShield:false,coldShield:false,magicShield:false,holyShield:false,ws:false,bs:false,s:false,t:false,agi:false,int:false,per:false,wp:false,fel:false,arm:false,leg:false}

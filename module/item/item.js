@@ -56,7 +56,7 @@ export class FortyKItem extends Item {
 
 
 
-                
+
                 //ensure that a weapon that is not a shield does not have an armor rating
                 if(data.class.value!=="Shield"&&data.shield.value!==0){
                     data.shield.value=0;
@@ -66,11 +66,12 @@ export class FortyKItem extends Item {
 
             }
             if(itemData.type==="rangedWeapon"){
-               
+
                 if(itemData.flags.specials.accurate.value){
                     data.attackMods.aim.half=20;
                     data.attackMods.aim.full=30;
                 }
+                
                 if(itemData.flags.specials.scatter.value){
                     data.attackMods.range.pointblank=40;
                     data.attackMods.range.short=20;
@@ -104,7 +105,20 @@ export class FortyKItem extends Item {
                 }
 
                 data.clip.max=data.clip.formula;
-               
+                if(itemData.flags.specials.lasModal.value){
+                    if(itemData.flags.specials.lasModal.mode===0){
+
+                    }else if(itemData.flags.specials.lasModal.mode===1){
+                        data.clip.consumption=2;
+                        data.damageFormula.value+="+1"
+                    }else if(itemData.flags.specials.lasModal.mode===2){
+                        data.clip.consumption=4;
+                        data.damageFormula.value+="+2"
+                        data.pen.value=parseInt(itemData.data.pen.formula)+2;
+                        itemData.flags.specials.reliable.value=false;
+                        itemData.flags.specials.unreliable.value=true;
+                    }
+                }
                 if(itemData.flags.specials.maximal.maximal){
 
 
@@ -125,37 +139,37 @@ export class FortyKItem extends Item {
             //prepare psychicpowers, calculates pushing and target numbers
             if(itemData.type==="psychicPower"){
                 let pr=parseInt(data.curPR.value);
-                
-               
+
+
                 let range=data.range.formula.toLowerCase();
 
                 data.range.value=eval(range);
 
                 data.pen.value=eval(data.pen.formula.toLowerCase());
-                
-                
+
+
 
                 let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(data.curPR.value));
-              
+
                 let specials=itemData.flags.specials;
                 for(const spec in specials){
-                   
+
                     if(specials[spec].value&&specials[spec].num!==undefined){
-                       
-                       
+
+
                         if(isNaN(specials[spec].num)&&specials[spec].form!==undefined&&specials[spec].num!==specials[spec].form){
-                            
+
                             specials[spec].form=specials[spec].num;
-                          
+
                         }else if(isNaN(specials[spec].num)&&specials[spec].form===undefined){
-                            
+
                             specials[spec].form=specials[spec].num;
-                           
+
                         } 
-                      
-                       
-                      
-                        
+
+
+
+
                         if(specials[spec].form!==undefined){
                             specials[spec].num=eval(specials[spec].form);
                         }

@@ -71,7 +71,7 @@
         </div>
     </div>
 
-    
+
 
     <nav class="sheet-tabs npc tabs grid grid-5col" data-group="primary">
 
@@ -89,61 +89,61 @@
 
 
 
-        <span class="characteristicsSpan"></span>
+                <span class="characteristicsSpan"></span>
 
-        {{#each data.characteristics as |char key|}}
-        {{#unless (compareString key "inf")}}
-        <div class="charCross flexcol flex-group-center">
-            <label for="data.characteristics.{{key}}.value" class="resource-label">{{key}}</label>
-        </div>
-        {{/unless}}
-        {{/each}}
-
-
-        <div class="charCross flexcol flex-group-center">
-            <span class="characteristicsSpan">Base
-            </span>
-        </div>
-        {{#each data.characteristics as |char key|}}
-        {{#unless (compareString key "inf")}}
-        <div>
-            <input type="text" name="data.characteristics.{{key}}.value" value="{{char.value}}" data-dtype="Number"/>
-
-        </div>
-        {{/unless}}
-        {{/each}}
-
-        <div class="charCross flexcol flex-group-center">
-            <span class="characteristicsSpan">Unnat</span>
-        </div>
-        {{#each data.characteristics as |char key|}}
-        {{#unless (compareString key "inf")}}
-        <div>
-
-            <input class="ub" type="text" name="data.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number"/>
-        </div>
-        {{/unless}}
-        {{/each}}
+                {{#each data.characteristics as |char key|}}
+                {{#unless (compareString key "inf")}}
+                <div class="charCross flexcol flex-group-center">
+                    <label for="data.characteristics.{{key}}.value" class="resource-label">{{key}}</label>
+                </div>
+                {{/unless}}
+                {{/each}}
 
 
+                <div class="charCross flexcol flex-group-center">
+                    <span class="characteristicsSpan">Base
+                    </span>
+                </div>
+                {{#each data.characteristics as |char key|}}
+                {{#unless (compareString key "inf")}}
+                <div>
+                    <input type="text" name="data.characteristics.{{key}}.value" value="{{char.value}}" data-dtype="Number"/>
+
+                </div>
+                {{/unless}}
+                {{/each}}
+
+                <div class="charCross flexcol flex-group-center">
+                    <span class="characteristicsSpan">Unnat</span>
+                </div>
+                {{#each data.characteristics as |char key|}}
+                {{#unless (compareString key "inf")}}
+                <div>
+
+                    <input class="ub" type="text" name="data.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number"/>
+                </div>
+                {{/unless}}
+                {{/each}}
 
 
 
 
-        <div class="charCross flexcol flex-group-center">
-            <span class="characteristicsSpan">Total</span>
-        </div>
-        {{#each data.characteristics as |char key|}}
-        {{#unless (compareString key "inf")}}
-        <div class="charCross flexcol flex-group-center">
-            <span class="char-total rollable button" data-roll-type="char" data-target="{{char.total}}" data-label="{{char.label}}" data-char="{{key}}" title="Bonus: {{char.bonus}}">{{char.total}}</span>
-        </div>
-        {{/unless}}
-        {{/each}}
+
+
+                <div class="charCross flexcol flex-group-center">
+                    <span class="characteristicsSpan">Total</span>
+                </div>
+                {{#each data.characteristics as |char key|}}
+                {{#unless (compareString key "inf")}}
+                <div class="charCross flexcol flex-group-center">
+                    <span class="char-total rollable button" data-roll-type="char" data-target="{{char.total}}" data-label="{{char.label}}" data-char="{{key}}" title="Bonus: {{char.bonus}}">{{char.total}}</span>
+                </div>
+                {{/unless}}
+                {{/each}}
 
 
 
-    </div>
+            </div>
             <div class="flexrow">
                 <a class="item-create button" data-type="rangedWeapon" title="Add a Ranged Weapon">Add ranged weapon</a>
                 <a class="item-create button" data-type="meleeWeapon" title="Add a Melee Weapon">Add melee weapon</a>
@@ -240,6 +240,23 @@
                         {{#if this.flags.specials.maximal.value}}
                         <div class="list-item">
                             <span>Maximal: <input type="checkbox" class="maximal" data-item-id="{{this._id}}"  {{checked this.flags.specials.maximal.maximal}}></span>
+
+
+                        </div>
+                        {{/if}}
+                        {{#if this.flags.specials.lasModal.value}}
+                        <div class="list-item">
+                            <span>Las Fire Mode: 
+                                <select class="lasMode"  data-item-id="{{this._id}}" data-dtype="Number">
+                                    {{#select this.flags.specials.lasModal.mode}}
+
+                                    {{#each this.FORTYK.lasModes}}
+
+                                    <option value="{{@index}}">{{this}}</option>
+                                    {{/each}}
+                                    {{/select}}
+                                </select>
+                            </span>
 
 
                         </div>
@@ -425,13 +442,13 @@
         </div>
         <div class="tab tnt" data-group="primary" data-tab="tnt">
             <!--
-            Stays commented until the parse script works
-            <div class="npc-info">
+Stays commented until the parse script works
+<div class="npc-info">
 
-                <a class="section-title parse-tnt">Talents & Traits</a>
+<a class="section-title parse-tnt">Talents & Traits</a>
 
-                {{editor content=data.talentsntraits.value target="data.talentsntraits.value" button=true owner=owner editable=editable}}
-            </div>-->
+{{editor content=data.talentsntraits.value target="data.talentsntraits.value" button=true owner=owner editable=editable}}
+</div>-->
             <div class="tnt flexcol">
                 <a class="tnt-create button" data-type="talentntrait" title="Add a new Talent or Trait">Add Talent or Trait</a>
                 <div class="list list3col grid grid-3col">

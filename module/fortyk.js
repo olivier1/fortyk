@@ -30,6 +30,16 @@ Hooks.once('init', async function() {
         }
         return statusMap;
     })();
+    //make an object that is used to reset status flags on tokens, this wouldnt need to be done if adding active effects to a token would trigger createAtiveEffect
+    game.fortyk.FORTYK.StatusFlags=(function(){
+
+        let statusFlags={}; 
+        for(let i=0;i<FORTYK.StatusEffects.length;i++){
+
+            statusFlags[FORTYK.StatusEffects[i].id]=false;
+        }
+        return statusFlags;
+    })();
     /**
    * Set an initiative formula for the system
    * @type {String}
@@ -122,10 +132,11 @@ Hooks.once('ready', async function() {
             let value=0;
             switch(data.type){
                 case "applyActiveEffect":
-                    id=data.package.actor;
-                    actor=game.actors.get(id);
+                    id=data.package.token;
+                    token=canvas.tokens.get(id);
+                    
                     let aeffect=data.package.effect;
-                    FortykRolls.applyActiveEffect(actor,aeffect);
+                    FortykRolls.applyActiveEffect(token,aeffect);
                     break;
                 case "updateValue":
                     id=data.package.token;
@@ -138,9 +149,9 @@ Hooks.once('ready', async function() {
                     await actor.update(options);
                     break;
                 case "critEffect":
-                    id=data.package.actor;
-                    actor=game.actors.get(id);
-                    FortykRolls.critEffects(actor,data.package.num,data.package.hitLoc,data.package.type);
+                    id=data.package.token;
+                    token=canvas.tokens.get(id);
+                    FortykRolls.critEffects(token,data.package.num,data.package.hitLoc,data.package.type);
                     break;
                 case "applyDead":
                     id=data.package.token;
@@ -271,22 +282,22 @@ Hooks.on('preCreateOwnedItem', (actor, data,options) =>{
 });
 //set flags on the actor when adding an active effect if it should activate a flag
 Hooks.on('createActiveEffect',async (actor,ae,options,id)=>{
-    console.log("hey");
-    if(game.user.isGM){
+     if(game.user.isGM){
         let flag=ae.flags.core.statusId;
         if(flag){
             await actor.setFlag("core",flag,true);
         }
-    }
+     }
 
 });
 //unset flags on the actor when removing an active effect if it had a flag
 Hooks.on('deleteActiveEffect',async (actor,ae,options,id)=>{
-    let flag=ae.flags.core.statusId;
-    if(flag){
-        await actor.setFlag("core",flag,false);
+    if(game.user.isGM){
+        let flag=ae.flags.core.statusId;
+        if(flag){
+            await actor.setFlag("core",flag,false);
+        }
     }
-
 });
 /**
  * Set default values for new actors' tokens
@@ -311,7 +322,8 @@ Hooks.on("preCreateActor", (createData) =>{
 Hooks.on("preCreateToken", (createData) =>{
 });
 Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
-    console.log(changes);
+    
+    
     if(changes.actorData!==undefined){
         if(changes.actorData.effects){
             let flags={core:duplicate(game.fortyk.FORTYK.StatusFlags)};

@@ -2,9 +2,9 @@
     "name": "fortyk",
     "title": "fortyk",
     "description": "The fortyk system for FoundryVTT!",
-    "version": "0.3.2",
+    "version": "0.3.5",
     "minimumCoreVersion": "0.6.6",
-    "compatibleCoreVersion": "0.7.6",
+    "compatibleCoreVersion": "0.7.7",
     "templateVersion": 6,
     "author": "Olivier Bouchard Vanasse",
     "esmodules": ["module/fortyk.js"],
@@ -125,6 +125,6 @@
     "socket": true,
     "url": "https://github.com/olivier1/fortyk",
     "manifest": "https://raw.githubusercontent.com/olivier1/fortyk/master/system.json",
-    "download": "https://github.com/olivier1/fortyk/archive/0.3.2.zip",
+    "download": "https://github.com/olivier1/fortyk/archive/0.3.5.zip",
     "license": "LICENSE.txt"
 }

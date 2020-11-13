@@ -190,7 +190,6 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let weapons=Object.values(data.data.secChar.wornGear.weapons);
         weapons.push("");
         let weaponsObj=Object.assign({},weapons);
-        console.log(weaponsObj);
         await actor.update({"data.secChar.wornGear.weapons":weaponsObj});
 
     }
@@ -199,7 +198,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let actor=this.actor;
         let data=duplicate(actor.data.data);
         let weapons=Object.values(data.secChar.wornGear.weapons);
-        console.log(weapons);
+       
         if(weapons.length>2){
 
             weapons.pop();
@@ -312,8 +311,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         
         let actor=this.actor;
-        let weapon=actor.getOwnedItem(event.currentTarget.value).data;
         
+        let weapon=actor.getOwnedItem(event.currentTarget.value);
+        if(weapon){
+            weapon=weapon.data;
+        }
         const weaponID=event.currentTarget.value;
         const hand=event.currentTarget.dataset["hand"];
         const leftHand=document.getElementById("left");

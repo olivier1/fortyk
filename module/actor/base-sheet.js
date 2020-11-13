@@ -40,6 +40,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.item-descr').click(this._onItemDescrGet.bind(this));
         //handles maximal checkbox
         html.find('.maximal').click(this._onMaximalClick.bind(this));
+        //handles lasmode select
+        html.find('.lasMode').change(this._onLasModeChange.bind(this));
         //reset cover fields
         html.find('.cover-reset').click(this._onCoverReset.bind(this));
         //Damage rolls
@@ -303,6 +305,20 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
         }
         await this.actor.updateEmbeddedEntity("OwnedItem",weapon);
+    }
+    //handles firing mode change for las weapons
+    async _onLasModeChange(event){
+        event.preventDefault;
+        const data=this.actor.data.data;
+        let dataset=event.currentTarget.dataset;
+        
+        let actor=this.actor;
+        let weaponID=dataset["itemId"];
+        let fireMode=parseInt(event.currentTarget.value);
+        let weapon=actor.getOwnedItem(weaponID);
+        await weapon.update({"flags.specials.lasModal.mode":fireMode});
+       
+        
     }
     /**
    * Handle clickable rolls.

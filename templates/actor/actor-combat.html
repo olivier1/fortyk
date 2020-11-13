@@ -180,6 +180,24 @@
 
                 </div>
                 {{/if}}
+                
+                {{#if this.flags.specials.lasModal.value}}
+                <div class="list-item">
+                    <span>Las Fire Mode: 
+                        <select class="lasMode"  data-item-id="{{this._id}}" data-dtype="Number">
+                        {{#select this.flags.specials.lasModal.mode}}
+                       
+                        {{#each this.FORTYK.lasModes}}
+                        
+                        <option value="{{@index}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
+                    </span>
+
+
+                </div>
+                {{/if}}
 
                 {{#unless (contains this.data.class.value "thrown")}}
                 <div class="list-item">
