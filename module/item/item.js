@@ -105,7 +105,7 @@ export class FortyKItem extends Item {
                 }
 
                 data.clip.max=data.clip.formula;
-                if(this.getFlag("specials","lasModal")&&this.getFlag("specials","lasModal").value){
+                if(itemData.flags.specials.lasModal.value){
                     if(itemData.flags.specials.lasModal.mode===0){
 
                     }else if(itemData.flags.specials.lasModal.mode===1){
