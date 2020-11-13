@@ -26,6 +26,7 @@ export class FortyKActor extends Actor {
     }
     //@Override the update function to modify token size for hordes and larger entities
     async update(data, options={}) {
+        console.log("hey");
         let actor=this;
         //check for fatigue unconsciousness/death
         let newFatigue=data["data.secChar.fatigue.value"];
@@ -55,7 +56,7 @@ export class FortyKActor extends Actor {
                                      flavor:`Fatigue pass out`,
                                      author:actor.name};
                 await ChatMessage.create(chatUnconscious,{});
-                await game.fortyk.FortykRolls.applyActiveEffect(actor,effect);
+                await game.fortyk.FortykRolls.applyActiveEffect(token,effect);
             }
         }
         // Apply changes in Actor size to Token width/height

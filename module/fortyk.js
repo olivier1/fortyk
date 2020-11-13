@@ -134,7 +134,7 @@ Hooks.once('ready', async function() {
                 case "applyActiveEffect":
                     id=data.package.token;
                     token=canvas.tokens.get(id);
-                    
+
                     let aeffect=data.package.effect;
                     FortykRolls.applyActiveEffect(token,aeffect);
                     break;
@@ -282,12 +282,12 @@ Hooks.on('preCreateOwnedItem', (actor, data,options) =>{
 });
 //set flags on the actor when adding an active effect if it should activate a flag
 Hooks.on('createActiveEffect',async (actor,ae,options,id)=>{
-     if(game.user.isGM){
+    if(game.user.isGM){
         let flag=ae.flags.core.statusId;
         if(flag){
             await actor.setFlag("core",flag,true);
         }
-     }
+    }
 
 });
 //unset flags on the actor when removing an active effect if it had a flag
@@ -322,25 +322,55 @@ Hooks.on("preCreateActor", (createData) =>{
 Hooks.on("preCreateToken", (createData) =>{
 });
 Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
-    
-    
+
+    let effects=null;
+    let data=null;
     if(changes.actorData!==undefined){
-        if(changes.actorData.effects){
-            let flags={core:duplicate(game.fortyk.FORTYK.StatusFlags)};
-            changes.actorData.effects.forEach((effect)=>{
-                flags.core[`${effect.flags.core.statusId}`]=true;
-            });
-            changes.actorData.flags=flags;
-        }
+        effects=changes.actorData.effects;
+        data=changes.actorData;
     }else{
-        if(changes.effects){
-            let flags={core:duplicate(game.fortyk.FORTYK.StatusFlags)};
-            changes.effects.forEach((effect)=>{
-                flags.core[`${effect.flags.core.statusId}`]=true;
-            });
-            changes.flags=flags;
-        }
+        effects=changes.effects;
+        data=changes;
     }
 
+    if(effects){
+        let flags={core:duplicate(game.fortyk.FORTYK.StatusFlags)};
+        effects.forEach((effect)=>{
+            flags.core[`${effect.flags.core.statusId}`]=true;
+        });
+        data.flags=flags;
+    }
+
+    
+   
+    try{
+        let newFatigue=data.data.secChar.fatigue.value;
+        let fullToken=await canvas.tokens.get(token._id);
+        let tokenActor=fullToken.actor;
+        if(newFatigue>=tokenActor.data.data.secChar.fatigue.max*2){
+            
+            
+            let chatDead={user: game.user._id,
+                          speaker:{tokenActor,alias:tokenActor.name},
+                          content:`${tokenActor.name} dies from fatigue!`,
+                          classes:["fortyk"],
+                          flavor:`Fatigue death`,
+                          author:tokenActor.name};
+            await ChatMessage.create(chatDead,{});
+            await game.fortyk.FortykRolls.applyDead(fullToken,tokenActor);
+        }else if(!tokenActor.getFlag("core","frenzy")&&!tokenActor.getFlag("core","unconscious")&&newFatigue>=tokenActor.data.data.secChar.fatigue.max){
+            let effect=[];
+            effect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("unconscious")]));
+            let chatUnconscious={user: game.user._id,
+                                 speaker:{tokenActor,alias:tokenActor.name},
+                                 content:`${tokenActor.name} falls unconscious from fatigue!`,
+                                 classes:["fortyk"],
+                                 flavor:`Fatigue pass out`,
+                                 author:tokenActor.name};
+            await ChatMessage.create(chatUnconscious,{});
+            await game.fortyk.FortykRolls.applyActiveEffect(fullToken,effect);
+        }
+    }catch(err){}
+    
 
 });
