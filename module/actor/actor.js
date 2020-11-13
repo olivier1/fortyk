@@ -409,7 +409,7 @@ export class FortyKActor extends Actor {
                     item.data.twohanded.value=true;
                 }
                 if(this.getFlag("fortyk","mightyshot")){
-                    item.data.damageFormula.value+="+"+Mathe.ceil(data.characteristics.bs.bonus/2);
+                    item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.bs.bonus/2);
                 }
                 rangedWeapons.push(item);
                 wargear.push(item);

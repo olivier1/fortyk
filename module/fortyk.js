@@ -22,10 +22,10 @@ Hooks.once('init', async function() {
     };
     //make a map with the indexes of the various status effects
     game.fortyk.FORTYK.StatusEffectsIndex=(function(){
-        
+
         let statusMap= new Map(); 
         for(let i=0;i<FORTYK.StatusEffects.length;i++){
-            
+
             statusMap.set(game.fortyk.FORTYK.StatusEffects[i].id,i)
         }
         return statusMap;
@@ -272,9 +272,11 @@ Hooks.on('preCreateOwnedItem', (actor, data,options) =>{
 //set flags on the actor when adding an active effect if it should activate a flag
 Hooks.on('createActiveEffect',async (actor,ae,options,id)=>{
     console.log("hey");
-    let flag=ae.flags.core.statusId;
-    if(flag){
-        await actor.setFlag("core",flag,true);
+    if(game.user.isGM){
+        let flag=ae.flags.core.statusId;
+        if(flag){
+            await actor.setFlag("core",flag,true);
+        }
     }
 
 });
