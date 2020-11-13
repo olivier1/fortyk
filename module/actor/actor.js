@@ -26,7 +26,6 @@ export class FortyKActor extends Actor {
     }
     //@Override the update function to modify token size for hordes and larger entities
     async update(data, options={}) {
-        console.log("hey");
         let actor=this;
         //check for fatigue unconsciousness/death
         let newFatigue=data["data.secChar.fatigue.value"];
@@ -104,6 +103,17 @@ export class FortyKActor extends Actor {
             data.secChar.attacks.called=0
         }
     }
+    prepareEmbeddedEntities(){
+        super.prepareEmbeddedEntities();
+        let items=this.data.items;
+        for(let item of items){
+            if(item.type==="cybernetic"){
+                this.data.data.characterHitLocations[item.data.location.value].cyber=true;
+                
+            }
+        }
+    }
+
     prepareDerivedData() {
         // super.prepareBaseData();
         const actorData = this.data;
@@ -145,10 +155,7 @@ export class FortyKActor extends Actor {
             }  
         }
 
-        //initialise cybernetics
-        for (let [key, hitLoc] of Object.entries(data.characterHitLocations)){
-            hitLoc.cyber=false;
-        }
+       
         //prepare psyker stuff
         data.psykana.pr.effective=parseInt(data.psykana.pr.value)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
         data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
@@ -286,6 +293,7 @@ export class FortyKActor extends Actor {
         if(!Array.isArray(data.secChar.wornGear.weapons)){
             wornWeapons=Object.values(data.secChar.wornGear.weapons);
         }
+        
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
         for(let item of actorData.items){
@@ -319,7 +327,7 @@ export class FortyKActor extends Actor {
                 wargear.push(item);
             }
             if(item.type==="cybernetic"){
-                data.characterHitLocations[item.data.location.value].cyber=true;
+               
                 cybernetics.push(item);
             }
             if(item.type==="forceField"){
