@@ -20,6 +20,7 @@ Hooks.once('init', async function() {
         FortykRolls,
         FORTYK
     };
+
     //make a map with the indexes of the various status effects
     game.fortyk.FORTYK.StatusEffectsIndex=(function(){
 
@@ -123,6 +124,7 @@ Hooks.once("setup", function() {
 });
 //HOOKS
 Hooks.once('ready', async function() {
+    
     //SOCKET used to update actors via the damage scripts
     game.socket.on("system.fortyk",async(data) => {
         if(game.user.isGM){
@@ -341,15 +343,15 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
         data.flags=flags;
     }
 
-    
-   
+
+
     try{
         let newFatigue=data.data.secChar.fatigue.value;
         let fullToken=await canvas.tokens.get(token._id);
         let tokenActor=fullToken.actor;
         if(newFatigue>=tokenActor.data.data.secChar.fatigue.max*2){
-            
-            
+
+
             let chatDead={user: game.user._id,
                           speaker:{tokenActor,alias:tokenActor.name},
                           content:`${tokenActor.name} dies from fatigue!`,
@@ -371,6 +373,6 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
             await game.fortyk.FortykRolls.applyActiveEffect(fullToken,effect);
         }
     }catch(err){}
-    
+
 
 });

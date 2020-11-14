@@ -6,26 +6,7 @@ import {getItem} from "../utilities.js";
 import {isEmpty} from "../utilities.js";
 
 export class FortyKItem extends Item {
-    //override the create function to add the flags to the various items
-    static async create(data, options) {
-
-
-
-        //initialise starting flags
-        let flags= duplicate(game.fortyk.FORTYK.itemFlags);
-
-        data.flags={};
-        data.flags.specials={};
-
-
-        if (data.type==="meleeWeapon"||data.type==="rangedWeapon"||data.type==="psychicPower"||data.type==="ammunition"){
-            data.flags.specials=flags;
-
-        }
-
-        //resume item creation
-        super.create(data, options);
-    }
+    
 
     /**
    * Augment the basic Item data model with additional dynamic data.
@@ -71,7 +52,7 @@ export class FortyKItem extends Item {
                     data.attackMods.aim.half=20;
                     data.attackMods.aim.full=30;
                 }
-                
+
                 if(itemData.flags.specials.scatter.value){
                     data.attackMods.range.pointblank=40;
                     data.attackMods.range.short=20;
@@ -105,6 +86,7 @@ export class FortyKItem extends Item {
                 }
 
                 data.clip.max=data.clip.formula;
+
                 if(itemData.flags.specials.lasModal.value){
                     if(itemData.flags.specials.lasModal.mode===0){
 
@@ -119,6 +101,8 @@ export class FortyKItem extends Item {
                         itemData.flags.specials.unreliable.value=true;
                     }
                 }
+
+
                 if(itemData.flags.specials.maximal.maximal){
 
 
