@@ -9,6 +9,21 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.skillFilter="";
         super.create(data,options);
     }
+    /** @override */
+    static get defaultOptions() {
+        return mergeObject(super.defaultOptions, {
+            scrollY: [
+                ".main",
+                ".skills",
+                ".tnt",
+                ".exp",
+                ".combat",
+                ".gear",
+                ".psykana"
+            ]
+
+        });
+    }
     /* -------------------------------------------- */
     /** @override */
     getData() {
@@ -195,7 +210,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                 let spec=tntData.specialisation.value;
                                 let flag=tntData.flagId.value;
                                 if(!actor.getFlag("fortyk",flag)){
-                                    
+
                                     if(spec==="N/A"){
 
                                         await actor.setFlag("fortyk",flag,true);
@@ -218,7 +233,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
 
                                             width:100}
-                                                                    );
+                                                                     );
                                         setTimeout(function() {document.getElementById('specInput').select();}, 50);
                                         tntData.specialisation.value=await chosenSpec;
                                     }
@@ -290,35 +305,38 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     async _onMaximalClick(event){
         let dataset=event.currentTarget.dataset;
         let weaponID=dataset["itemId"];
-        let weapon=duplicate(this.actor.getEmbeddedEntity("OwnedItem",weaponID));
-        if(weapon.flags.specials.maximal.maximal){
-            weapon.flags.specials.maximal.maximal=false;
-            weapon.flags.specials.recharge.value=false;
-            if(weapon.flags.specials.blast.value){
-                weapon.flags.specials.blast.num=parseInt(weapon.flags.specials.blast.num)-2;
+        let fortykWeapon=this.actor.getOwnedItem(weaponID);
+        console.log(fortykWeapon.getFlag("fortyk","maxmimalMode"),fortykWeapon);
+
+        if(fortykWeapon.getFlag("fortyk","maximalMode")){
+            await fortykWeapon.setFlag("fortyk","maximalMode",false);
+            await fortykWeapon.setFlag("fortyk","recharge",false);
+
+            if(fortykWeapon.getFlag("fortyk","blast")){
+                await fortykWeapon.setFlag("fortyk","blast",parseInt(fortykWeapon.getFlag("fortyk","blast"))-2);
+
             }
         }else{
-            weapon.flags.specials.maximal.maximal=true;
-            weapon.flags.specials.recharge.value=true;
-            if(weapon.flags.specials.blast.value){
-                weapon.flags.specials.blast.num=parseInt(weapon.flags.specials.blast.num)+2;
+            await fortykWeapon.setFlag("fortyk","maximalMode",true);
+            await fortykWeapon.setFlag("fortyk","recharge",true);
+            if(fortykWeapon.getFlag("fortyk","blast")){
+                await fortykWeapon.setFlag("fortyk","blast",parseInt(fortykWeapon.getFlag("fortyk","blast"))+2);
             }
         }
-        await this.actor.updateEmbeddedEntity("OwnedItem",weapon);
     }
     //handles firing mode change for las weapons
     async _onLasModeChange(event){
         event.preventDefault;
         const data=this.actor.data.data;
         let dataset=event.currentTarget.dataset;
-        
+
         let actor=this.actor;
         let weaponID=dataset["itemId"];
         let fireMode=parseInt(event.currentTarget.value);
         let weapon=actor.getOwnedItem(weaponID);
-        await weapon.update({"flags.specials.lasModal.mode":fireMode});
-       
-        
+        await weapon.update({"flags.fortyk.lasMode":fireMode});
+
+
     }
     /**
    * Handle clickable rolls.
@@ -342,8 +360,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let target=targetIt.next().value;
             let attacker=this.actor.getActiveTokens()[0];
             let targetActor=target.actor;
-            
-           
+
+
             attackOptions.prone=targetActor.getFlag("core","prone");
             attackOptions.stunned=targetActor.getFlag("core","stunned");
             attackOptions.running=targetActor.getFlag("core","totalDef");
@@ -353,14 +371,14 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             if(targetActor.getFlag("core","unconscious")||targetActor.getFlag("core","snare")){
                 attackOptions.helpless=true;
             }else{
-                 attackOptions.helpless=false;
+                attackOptions.helpless=false;
             }
             attackOptions.selfBlind=this.actor.getFlag("core","blind");
             attackOptions.distance=tokenDistance(target, attacker);
-            
+
         }
         if(dataset["itemId"]){
-            item=this.actor.getOwnedItem(dataset["itemId"]).data;
+            item=this.actor.getOwnedItem(dataset["itemId"]);
         }
         if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
             FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
@@ -380,10 +398,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const element = event.currentTarget;
         const dataset = element.dataset;
         if(dataset.weapon){
-            
+
             let actor=this.actor;
-            let weapon=actor.getOwnedItem(dataset.weapon).data;
-            
+            let fortykWeapon=actor.getOwnedItem(dataset.weapon)
+            let weapon=fortykWeapon.data;
+
             let formula=weapon.data.damageFormula;
             new Dialog({
                 title: `Number of Hits`,
@@ -393,7 +412,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         label: 'OK',
                         callback: (el) => {
                             const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
-                            FortykRolls.damageRoll(formula,actor,weapon,hits);
+                            FortykRolls.damageRoll(formula,actor,fortykWeapon,hits);
                         }
                     }
                 },
@@ -437,14 +456,15 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     label: 'OK',
                     callback: async (el) =>  {
                         const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
-                        let flags= duplicate(game.fortyk.FORTYK.itemFlags);
+
                         let forceData={name:"Force",type:"rangedWeapon"}
-                        let force=await this.actor.createEmbeddedEntity("OwnedItem",forceData, {temporary: true});
-                        force.flags.specials=flags;
-                        force.flags.specials.ignoreSoak.value=true;
-                        force.data.damageFormula.value=`${hits}d10`;
-                        force.data.damageType.value="Energy";
-                        FortykRolls.damageRoll(force.data.damageFormula,actor,force,1);
+                        let force=await Item.create(forceData, {temporary: true});
+                        console.log(force);
+                        force.data.flags.fortyk={};
+                        force.data.flags.fortyk.ignoreSoak=true;
+                        force.data.data.damageFormula.value=`${hits}d10`;
+                        force.data.data.damageType.value="Energy";
+                        FortykRolls.damageRoll(force.data.data.damageFormula,actor,force,1);
                     }
                 }
             },

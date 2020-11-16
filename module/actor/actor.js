@@ -296,7 +296,8 @@ export class FortyKActor extends Actor {
         
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
-        for(let item of actorData.items){
+        this.items.forEach((fortykItem,id,items)=>{
+            let item=fortykItem.data;
             if(item._id===data.secChar.wornGear.armor._id){
                 wornGear["armor"]=item;
             }
@@ -389,7 +390,7 @@ export class FortyKActor extends Actor {
                 }else{
                     item.data.twohanded.value=false;
                 }
-                if(item.flags.specials.crushing.value){
+                if(fortykItem.getFlag("fortyk","crushing")){
                     item.data.damageFormula.value=item.data.damageFormula.formula+"+"+2*data.characteristics.s.bonus;
                 }else{
                     item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
@@ -430,7 +431,7 @@ export class FortyKActor extends Actor {
                     }
                 }
                 try{
-                    if(item.flags.specials.force.value){
+                    if(fortykItem.getFlag("fortyk","force")){
                         let pr=parseInt(data.psykana.pr.value);
                         item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
                         item.data.damageFormula.value=item.data.damageFormula.value.replace(/pr/gmi,pr);
@@ -456,7 +457,7 @@ export class FortyKActor extends Actor {
                 item.data.weight.total=(parseInt(item.data.amount.value)*parseFloat(item.data.weight.value)).toFixed(2);
                 data.carry.value=(parseFloat(data.carry.value)+parseFloat(item.data.weight.total)).toFixed(2);
             }
-        }
+        })
 
         //store known xenos for deathwatchtraining
         if(this.getFlag("fortyk","deathwatchtraining")){
@@ -515,7 +516,8 @@ export class FortyKActor extends Actor {
         //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
-        for(let item of actorData.items){
+        this.items.forEach((fortykItem,id,items)=>{
+            let item=fortykItem.data;
             if(item.type==="talentntrait"){
 
                 talentsntraits.push(item);
@@ -545,7 +547,7 @@ export class FortyKActor extends Actor {
                 psychicPowers.push(item);
             }
             if(item.type==="meleeWeapon"){
-                if(item.flags.specials.crushing.value){
+                if(fortykItem.getFlag("fortyk","crushing")){
                     item.data.damageFormula.value=item.data.damageFormula.formula+"+"+2*data.characteristics.s.bonus;
                 }else{
                     item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
@@ -572,7 +574,7 @@ export class FortyKActor extends Actor {
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
                 try{
-                    if(item.flags.specials.force.value){
+                    if(fortykItem.getFlag("fortyk","force")){
                         let pr=parseInt(data.psykana.pr.value);
                         item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
                         item.data.damageFormula.value=item.data.damageFormula.value.replace(/pr/gmi,pr);
@@ -582,7 +584,7 @@ export class FortyKActor extends Actor {
                     item.data.damageFormula.value="";
                 }
             }
-        }
+        })
         let preparedItems={
             psychicPowers:psychicPowers,
             meleeWeapons:meleeweapons,

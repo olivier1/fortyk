@@ -6,7 +6,20 @@ import {getItem} from "../utilities.js";
 import {isEmpty} from "../utilities.js";
 
 export class FortyKItem extends Item {
-    
+    /** 
+    ** @override talents and traits should update their flags on the owning actor if the specialisation field is changed
+    **/
+   async update(data, options={}){
+        if(this.data.type==="talentntrait"){
+            if(this.options.actor!==undefined){
+                console.log(data);
+                if(this.data.data.specialisation.value!==data.specialisation.value){
+                    await this.options.actor.setFlag("fortyk",this.data.data.flagId.value,data.specialisation.value)
+                }
+            }
+        }
+        super.update(data,options);
+    }
 
     /**
    * Augment the basic Item data model with additional dynamic data.
@@ -48,17 +61,17 @@ export class FortyKItem extends Item {
             }
             if(itemData.type==="rangedWeapon"){
 
-                if(itemData.flags.specials.accurate.value){
+                if(this.getFlag("fortyk","accurate")){
                     data.attackMods.aim.half=20;
                     data.attackMods.aim.full=30;
                 }
 
-                if(itemData.flags.specials.scatter.value){
+                if(this.getFlag("fortyk","scatter")){
                     data.attackMods.range.pointblank=40;
                     data.attackMods.range.short=20;
 
                 }
-                if(itemData.flags.specials.twinlinked.value){
+                if(this.getFlag("fortyk","twinlinked")){
 
                     data.testMod.value=20;
                     data.clip.consumption=2;
@@ -87,23 +100,23 @@ export class FortyKItem extends Item {
 
                 data.clip.max=data.clip.formula;
 
-                if(itemData.flags.specials.lasModal.value){
-                    if(itemData.flags.specials.lasModal.mode===0){
+                if(this.getFlag("fortyk","lasModal")){
+                    if(this.getFlag("fortyk","lasMode")===0){
 
-                    }else if(itemData.flags.specials.lasModal.mode===1){
+                    }else if(this.getFlag("fortyk","lasMode")===1){
                         data.clip.consumption=2;
                         data.damageFormula.value+="+1"
-                    }else if(itemData.flags.specials.lasModal.mode===2){
+                    }else if(this.getFlag("fortyk","lasMode")===2){
                         data.clip.consumption=4;
                         data.damageFormula.value+="+2"
                         data.pen.value=parseInt(itemData.data.pen.formula)+2;
-                        itemData.flags.specials.reliable.value=false;
-                        itemData.flags.specials.unreliable.value=true;
+                        itemData.flags.fortyk.reliable=false;
+                        itemData.flags.fortyk.unreliable=true;
                     }
                 }
 
 
-                if(itemData.flags.specials.maximal.maximal){
+                if(this.getFlag("fortyk","maximalMode")){
 
 
                     itemData.data.range.value=parseInt(itemData.data.range.formula)+10;
@@ -115,9 +128,6 @@ export class FortyKItem extends Item {
                     itemData.data.damageFormula.value=newNum+itemData.data.damageFormula.value;
                     itemData.data.pen.value=parseInt(itemData.data.pen.formula)+2;
                     itemData.data.clip.consumption=3;
-                }else{
-
-                    itemData.data.clip.consumption=1;
                 }
             }
             //prepare psychicpowers, calculates pushing and target numbers

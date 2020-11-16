@@ -80,9 +80,21 @@ export class FortyKItemSheet extends ItemSheet {
 
     async _onSpecialClick(event){
 
-        let specials=this.item.data.flags.specials;
+        let specials=duplicate(game.fortyk.FORTYK.itemFlags);
+        
+        let flags=this.item.data.flags.fortyk;
+        console.log(flags);
+        for(const flag in flags){
+            console.log(flag);
+            if(specials[flag]){
+                if(specials[flag].num===undefined){
+                    specials[flag].value=flags[flag];
+                }else{
+                    specials[flag].num=flags[flag];
+                }
+            }
+        }
         let templateOptions={"specials":specials};
-
         let renderedTemplate=renderTemplate('systems/fortyk/templates/item/dialogs/weapon-special-dialog.html', templateOptions);
 
 
@@ -95,25 +107,27 @@ export class FortyKItemSheet extends ItemSheet {
                         label:"Yes",
                         callback: async html => {
                             for (let [key, spec] of Object.entries(specials)){
-                                let change=false;
+                                
+                                let bool=false;
                                 let value=html.find(`input[id=${key}]`).is(":checked");
-                                if(value!==spec.value){change=true}
-
-
-
-
-                                let pack={};
-                                pack[`flags.specials.${key}.value`]=value;
-
-                                if(spec.num!==undefined){
-                                    pack[`flags.specials.${key}.num`]=html.find(`input[id=${key}num]`).val();
-                                    if(parseInt(html.find(`input[id=${key}num]`).val())!==parseInt(spec.num)){change=true};
-
+                                if(value!==spec.value){bool=true}
+                                
+                                if(bool){
+                                    console.log("bool")
+                                    await this.item.setFlag("fortyk",key,value);
                                 }
 
-                                if(change){
+                                let num=false;
+                                let number
+                                if(spec.num!==undefined){
+                                    number=parseInt(html.find(`input[id=${key}num]`).val());
+                                    if(number!==parseInt(spec.num)){num=true};
 
-                                    await this.item.update(pack);
+                                }
+                                //console.log(value,bool,num,number,key,spec);
+                                if(num){
+                                    console.log("number")
+                                    await this.item.setFlag("fortyk",key,number);
                                 }
 
                             }
@@ -124,7 +138,9 @@ export class FortyKItemSheet extends ItemSheet {
                 },
                 default: "submit"
             }).render(true)
+            
         });
+        console.log(this.item);
     }
     //when changing parents check to see if the skill is part of a group if it is change the value of children to false
     async _onParentChange(event){

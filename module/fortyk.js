@@ -84,6 +84,10 @@ Hooks.once('init', async function() {
     Handlebars.registerHelper('isdefined', function (value) {
         return value !== undefined;
     });
+     Handlebars.registerHelper('isnumber', function (value) {
+        
+        return parseInt(value);
+    });
     Handlebars.registerHelper('compareString', function (str1, str2="") {
         if(typeof str2!=="string"){
             str2="";
@@ -276,11 +280,7 @@ Hooks.on('renderChatLog', (log, html, data) => FortykRollDialogs.chatListeners(h
 Hooks.on('renderDialog', (dialog, html, data) => ActorDialogs.chatListeners(html));
 //set flags for new weapons and items
 Hooks.on('preCreateOwnedItem', (actor, data,options) =>{
-    if (data.type==="meleeWeapon"||data.type==="rangedWeapon"||data.type==="psychicPower"||data.type==="ammunition"){
-        let flags= duplicate(game.fortyk.FORTYK.itemFlags);
-        data.flags={};
-        data.flags.specials=flags;
-    }
+    
 });
 //set flags on the actor when adding an active effect if it should activate a flag
 Hooks.on('createActiveEffect',async (actor,ae,options,id)=>{

@@ -306,18 +306,22 @@
 
 }
 
-.fortyk .sheet-body,
-.fortyk .sheet-body .tab,
-.fortyk .sheet-body .tab .editor {
+.fortyk .sheet-content,
+.fortyk .sheet-content .tab,
+
+.fortyk .sheet-content .tab .editor {
     height: 100%;
     overflow: auto;
+}
+.fortyk .sheet-content .tab{
+    overflow:scroll;
 }
 .fortyk .sheet-body.npc .tab {
     overflow: visible;
 }
 .fortyk .sheet-body{
     flex: 1;
-    overflow:scroll;
+    overflow:auto;
 }
 .fortyk .sheet-body.npc{
     flex: 10;
@@ -525,7 +529,7 @@
 .fortyk .new-skill{
     font-weight: 14px;
 }
-.fortyk .corruption-insanity{
+.fortyk .sheet-corruption-insanity{
     height:100%;
 }
 .fortyk .corruption{
@@ -544,7 +548,7 @@
     width:100%;
     font-weight: bold;
 }
-.fortyk .gear{
+.fortyk .sheet-gear{
     align-items: start;
 }
 .fortyk .cyber{

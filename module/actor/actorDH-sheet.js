@@ -21,7 +21,7 @@ export class FortyKDHActorSheet extends FortyKDWActorSheet {
             template: "systems/fortyk/templates/actor/actorDH-sheet.html",
             width: 666,
             height: 660,
-            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }],
+            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "description" }],
             default:null
         });
     }

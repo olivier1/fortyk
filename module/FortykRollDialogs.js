@@ -34,11 +34,12 @@ export class FortykRollDialogs{
         const actor=game.actors.get(dataset["actor"]);
 
         const weapon=duplicate(actor.getEmbeddedEntity("OwnedItem",dataset["weapon"]));
+        let newWeapon=await Item.create(weapon,{temporary:true});
         const formula=weapon.data.damageFormula;
-        weapon.data.pen.value=0;
+        newWeapon.data.data.pen.value=0;
 
 
-        await FortykRolls.damageRoll(formula,actor,weapon,1,true,true);
+        await FortykRolls.damageRoll(formula,actor,newWeapon,1,true,true);
 
 
     }
@@ -153,37 +154,38 @@ export class FortykRollDialogs{
     static async callRangedAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
         let template="systems/fortyk/templates/actor/dialogs/ranged-attack-dialog.html"
         let templateOptions={};
-
+        let itemData=item.data;
+        
         templateOptions["modifiers"]=actor.data.data.secChar.attacks;
         templateOptions["size"]=game.fortyk.FORTYK.size;
-        templateOptions["modifiers"].standard=item.data.attackMods.single;
-        templateOptions["modifiers"].semi=item.data.attackMods.semi;
-        templateOptions["modifiers"].full=item.data.attackMods.full;
+        templateOptions["modifiers"].standard=itemData.data.attackMods.single;
+        templateOptions["modifiers"].semi=itemData.data.attackMods.semi;
+        templateOptions["modifiers"].full=itemData.data.attackMods.full;
         if(templateOptions["modifiers"].semi||templateOptions["modifiers"].full){
             templateOptions["modifiers"].supp=true;
         }else{
             templateOptions["modifiers"].supp=false;
         }
-        templateOptions["modifiers"].suppressive=item.data.attackMods.suppressive;
-        templateOptions["modifiers"].aim=item.data.attackMods.aim;
-        templateOptions["modifiers"].testMod=item.data.testMod.value;
+        templateOptions["modifiers"].suppressive=itemData.data.attackMods.suppressive;
+        templateOptions["modifiers"].aim=itemData.data.attackMods.aim;
+        templateOptions["modifiers"].testMod=itemData.data.testMod.value;
 
-        templateOptions["modifiers"].inaccurate=item.flags.specials.innacurate.value;
+        templateOptions["modifiers"].inaccurate=item.getFlag("fortyk","innacurate");
 
 
         for (let [key, rng] of Object.entries(templateOptions.modifiers.range)){
-            let wepMod=item.data.attackMods.range[key];
+            let wepMod=itemData.data.attackMods.range[key];
             templateOptions.modifiers.range[key]=Math.max(wepMod,rng);
         }
         //set flags for rate of fire
-        let curAmmo=parseInt(item.data.clip.value);
-        let consump=parseInt(item.data.clip.consumption);
-        let rofSingle=parseInt(item.data.rof[0].value);
-        let rofSemi=parseInt(item.data.rof[1].value);
+        let curAmmo=parseInt(itemData.data.clip.value);
+        let consump=parseInt(itemData.data.clip.consumption);
+        let rofSingle=parseInt(itemData.data.rof[0].value);
+        let rofSemi=parseInt(itemData.data.rof[1].value);
         if(isNaN(rofSingle)){
             rofSingle=1;
         }
-        let rofFull=parseInt(item.data.rof[2].value);
+        let rofFull=parseInt(itemData.data.rof[2].value);
         let canShoot=false;
         if(parseInt(rofSingle)===0){
             templateOptions["single"]=false;
@@ -273,9 +275,9 @@ export class FortykRollDialogs{
             let normal=false;
             let long=false;
             let extreme=false;
-            let range=item.data.range.value;
+            let range=itemData.data.range.value;
             if((distance<=1||distance<=canvas.dimensions.distance)){
-                if(item.data.class.value==="Pistol"){
+                if(itemData.data.class.value==="Pistol"){
                     normal=true;
                 }else{
                     new Dialog({
@@ -387,9 +389,8 @@ export class FortykRollDialogs{
                             rof=rofSingle*consump;
                         }
 
-                        let weapon=duplicate(item);
-                        weapon.data.clip.value=curAmmo-rof;
-                        await actor.updateEmbeddedEntity("OwnedItem",weapon);
+                        
+                        await item.update({"data.clip.value":curAmmo-rof});
                         //convert unchosen checkboxes into 0s
                         if(isNaN(running)){running=0}
                         if(isNaN(guarded)){guarded=0}
@@ -441,7 +442,7 @@ export class FortykRollDialogs{
             let normal=false;
             let long=false;
             let extreme=false;
-            let range=item.data.range.value;
+            let range=item.data.data.range.value;
             if(distance<=2||distance<=2*canvas.dimensions.distance){
                 pointblank=true;
             }else if(distance<=parseInt(range)/2){

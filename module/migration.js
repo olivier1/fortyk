@@ -8,12 +8,7 @@ let upd=async ()=>{
             try {
                 
 
-              let updateData={_id:i.data._id,"flags.specials.lasModal": {
-                    value: false,
-                    label: "Las Modal",
-                    mode:0,
-                    description: "The standard las weapon has a variable setting option, allowing it to fire higher-powered bursts. It may be set to overcharge mode, dealing +1 damage, but using two shots worth of ammunition per shot fired. Further, the weapon may be set to overload mode, dealing +2 damage and gaining +2 penetration. In this case, it uses four shots of ammunition per shot fired, loses Reliable, and gains Unreliable."
-                }};
+              let updateData={};
                
                 console.log(i);
 

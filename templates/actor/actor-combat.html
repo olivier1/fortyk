@@ -1,4 +1,4 @@
-<div class="combat flexcol">
+<div class="sheet-combat flexcol">
 
     <div class="characteristics grid grid-10col">
         <span class="characteristicsSpan"></span>
@@ -141,9 +141,9 @@
 
 
             </div>
-          
+
             {{#each actor.wornGear.weapons}}
-          
+
             {{#if (contains this.type "ranged")}}
 
             <div class="weapons grid grid-2col">
@@ -165,7 +165,7 @@
                     <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
 
                 </div>
-                {{#if this.flags.specials.force.value}}
+                {{#if this.flags.fortyk.force}}
                 <div class="list-item">
 
                     <a class="force-roll button" data-label="Force"> Force</a>
@@ -173,26 +173,25 @@
 
                 </div>
                 {{/if}}
-                {{#if this.flags.specials.maximal.value}}
+                {{#if this.flags.fortyk.maximal}}
                 <div class="list-item">
-                    <span>Maximal: <input type="checkbox" class="maximal" data-item-id="{{this._id}}"  {{checked this.flags.specials.maximal.maximal}}></span>
+                    <span>Maximal: <input type="checkbox" class="maximal" data-item-id="{{this._id}}"  {{checked this.flags.fortyk.maximalMode}}></span>
 
 
                 </div>
                 {{/if}}
-                
-                {{#if this.flags.specials.lasModal.value}}
+                {{#if this.flags.fortyk.lasModal}}
                 <div class="list-item">
                     <span>Las Fire Mode: 
                         <select class="lasMode"  data-item-id="{{this._id}}" data-dtype="Number">
-                        {{#select this.flags.specials.lasModal.mode}}
-                       
-                        {{#each this.FORTYK.lasModes}}
-                        
-                        <option value="{{@index}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
-                    </select>
+                            {{#select this.flags.fortyk.lasMode}}
+
+                            {{#each this.FORTYK.lasModes}}
+
+                            <option value="{{@index}}">{{this}}</option>
+                            {{/each}}
+                            {{/select}}
+                        </select>
                     </span>
 
 
@@ -251,9 +250,15 @@
                 </div>
                 <div class="list-item">
                     <span>Special: 
-                        {{#each this.flags.specials}}
-                        {{#if this.value}}
-                        <a class="item-descr" data-name="{{this.label}}" data-item-descr="{{this.description}}" >{{this.label}}{{#if (isdefined this.num)}}({{this.num}}){{/if}}</a>
+
+                        {{#each this.flags.fortyk as |flag key|}}
+
+                        {{#if this}}
+
+                        {{#with (lookup ../FORTYK.itemFlags [key])~}}
+                        <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                            {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
                         {{/if}}{{/each}}
                     </span>
 
@@ -276,7 +281,7 @@
             </div>
             {{else if (contains this.type "melee")}}
             <div class="weapons grid grid-2col">
-                
+
                 <div class="weapon-name">
                     <span>Name: {{this.name}}</span>
                 </div>
@@ -290,7 +295,7 @@
                     <span>Damage: </span>
                     <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
                 </div>
-                {{#if this.flags.specials.force.value}}
+                {{#if this.flags.fortyk.force}}
                 <div class="list-item">
 
                     <a class="force-roll button" data-label="Force"> Force</a>
@@ -307,9 +312,15 @@
                 </div>
                 <div class="list-item">
                     <span>Special: 
-                        {{#each this.flags.specials}}
-                        {{#if this.value}}
-                        <a class="item-descr" data-name="{{this.label}}" data-item-descr="{{this.description}}" >{{this.label}}{{#if (isdefined this.num)}}({{this.num}}){{/if}}</a>
+
+                        {{#each this.flags.fortyk as |flag key|}}
+
+                        {{#if this}}
+
+                        {{#with (lookup ../FORTYK.itemFlags [key])~}}
+                        <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                            {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
                         {{/if}}{{/each}}
                     </span>
 
