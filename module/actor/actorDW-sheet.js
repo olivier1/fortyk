@@ -8,9 +8,7 @@ import FortyKBaseActorSheet from "./base-sheet.js";
  */
 export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
-    static async create(data, options) {
-        super.create(data,options);
-    }
+    
     /** @override */
 
     static get defaultOptions() {

@@ -3,8 +3,10 @@
         "types": [
             "npc",
             "dwPC",
+            "dhPC",
             "owPC",
-            "dhPC"
+            "owComrade",
+            "owRegiment"
         ],
         "templates": {
             "description": {
@@ -84,12 +86,17 @@
                 }
             },
             "creationOptionsOW": {
-                "homeWorld/Regiment": {
+                "homeWorld": {
+                    "value": "",
+                    "type": "String"
+                },
+                "regiment": {
                     "value": "",
                     "type": "String"
                 },
                 "specialty": {
                     "value": "",
+                    "path":"",
                     "type": "String"
                 }
             },
@@ -106,11 +113,6 @@
                         "min": 0,
                         "value": 0,
                         "max": 6
-                    },
-                    "initiative": {
-                        "roll": "1d10",
-                        "bonus": 0,
-                        "char": "agi"
                     },
                     "fate": {
                         "type": "Number",
@@ -438,7 +440,40 @@
                 "creationOptions",
                 "creationOptionsDH",
                 "player"
-            ]
+            ],
+            "characteristics": {
+                "ws": {
+                    "value": 25
+                },
+                "bs": {
+                    "value": 25
+                },
+                "s": {
+                    "value": 25
+                },
+                "t": {
+                    "value": 25
+                },
+                "agi": {
+                    "value": 25
+                },
+                "int": {
+                    "value": 25
+                },
+                "per": {
+                    "value": 25
+                },
+                "wp": {
+                    "value": 25
+                },
+                "fel": {
+                    "value": 25
+                },
+                "inf": {
+                    "value": 25
+                }
+            }
+
         },
         "owPC": {
             "templates": [
@@ -447,7 +482,122 @@
                 "creationOptions",
                 "creationOptionsOW",
                 "player"
-            ]
+            ],
+            "characteristics": {
+                "ws": {
+                    "value": 20
+                },
+                "bs": {
+                    "value": 20
+                },
+                "s": {
+                    "value": 20
+                },
+                "t": {
+                    "value": 20
+                },
+                "agi": {
+                    "value": 20
+                },
+                "int": {
+                    "value": 20
+                },
+                "per": {
+                    "value": 20
+                },
+                "wp": {
+                    "value": 20
+                },
+                "fel": {
+                    "value": 20
+                }
+            }
+        },
+        "owComrade": {
+            "templates": [
+                "description"                
+            ],
+            "secChar":{
+                "wounds":{
+                    "value":2,
+                    "min":0,
+                    "max":2,
+                    "type":"Number"
+                }
+            },
+            "demeanour":{
+                "value":"",
+                "type":"String"
+            },
+            "veterancy":{
+                "value":"green",
+                "type":"String"
+            }
+
+        },
+        "owRegiment":{
+            "name":{
+                "value":"",
+                "type":"String"
+            },
+            "homeworld":{
+                "value":"",
+                "culture":"",
+                "planetType":"",
+                "type":"String"
+            },
+            "officer":{
+                "name":"",
+                "personality":"",
+                "type":"String"
+            },
+            "regimentType":{
+                "value":"",
+                "type":"String"
+            },
+            "doctrines":[
+                {"value":"",
+                 "type":"String"},
+                {"value":"",
+                 "type":"String"},
+                {"value":"",
+                 "type":"String"},
+                {"value":"",
+                 "type":"String"},
+                {"value":"",
+                 "type":"String"}
+            ],
+            "drawback":{
+                "value":"None",
+                "type":"String"
+            },
+            "srgk":{
+                "value":"• One uniform</br>• One set of poor weather gear</br>• One laspistol (Main Weapon),and two charge packs</br>• One knife</br>• One flak vest</br>• One rucksack or sling bag</br>• One set of basic tools</br>• One mess kit and one water canteen</br>• One blanket and one sleep bag</br>• One rechargeable lamp pack</br>• One grooming kit</br>• One set of cognomen tags or equivalent identification</br>• One primer or instructional handbook</br>• Combat sustenance rations, twoweeks’ supply",
+                "type":"String"
+            },
+            "personnel":{
+                "strength":0,
+                "squad":[],
+                "squadName":"",
+                "platoonName":""
+            },
+            "characteristics":{
+                "inf":{
+                    "value":10,
+                    "not":0,
+                    "time":0,
+                    "frontActive":0,
+                    "war":0,
+                    "mod":0,
+                    "total":0,
+                    "bonus": 0,
+                    "uB": 0,
+                    "label":"Logistics"
+                }
+
+            }
+
+
         }
     },
     "Item": {

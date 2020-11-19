@@ -5,10 +5,7 @@ import {objectByString} from "../utilities.js";
 import {setNestedKey} from "../utilities.js";
 import {tokenDistance} from "../utilities.js";
 export default class FortyKBaseActorSheet extends ActorSheet {
-    static async create(data, options) {
-        data.skillFilter="";
-        super.create(data,options);
-    }
+    
     /** @override */
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {

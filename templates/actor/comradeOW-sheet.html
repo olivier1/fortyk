@@ -1,0 +1,77 @@
+<form class="{{cssClass}} charSheet flexcol" autocomplete="off">
+
+    {{!-- Sheet Header --}}
+    <header class="sheet-header flexrow">
+        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+        <div class="descr grid grid-4col">
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Name:</span>
+                <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
+            </div>
+
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Age:</span>
+                <input name="data.age.value" type="text" value="{{data.age.value}}" placeholder="??"/>
+            </div>
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Sex:</span>
+                <input name="data.sex.value" type="text" value="{{data.sex.value}}" placeholder="M/F"/>
+            </div>
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Race:</span>
+                <select class="raceSelect" name="data.race.value" data-dtype="String">
+                    {{#select data.race.value}}
+
+                    {{#each races}}
+
+                    <option value="{{this}}">{{this}}</option>
+
+                    {{/each}}
+                    {{/select}}
+                </select>
+               
+            </div>
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Build:</span>
+                <input name="data.build.value" type="text" value="{{data.build.value}}" placeholder="??"/>
+            </div>
+
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Hair:</span>
+                <input name="data.hair.value" type="text" value="{{data.hair.value}}" placeholder="??"/>
+            </div>
+
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Eye:</span>
+                <input name="data.eye.value" type="text" value="{{data.eye.value}}" placeholder="??"/>
+            </div>
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Quirks:</span>
+                <input name="data.quirks.value" type="text" value="{{data.quirks.value}}" placeholder="??"/>
+            </div>
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Veterancy:</span>
+                <select class="raceSelect" name="data.veterancy.value" data-dtype="String">
+                    {{#select data.veterancy.value}}
+
+                    {{#each ranks}}
+
+                    <option value="{{this}}">{{this}}</option>
+
+                    {{/each}}
+                    {{/select}}
+                </select>
+               
+            </div>
+            <div class="descrRow flexcol">
+                <label for="data.secChar.wounds.value" class="resource-label">Wounds</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" class="combat-resources" data-target="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
+                    <span> / </span>
+                    <input type="text" class="combat-resources" data-target="data.secChar.wounds.max" value="{{data.secChar.wounds.max}}" data-dtype="Number"/>
+                </div>
+            </div>
+        </div>
+        
+    </header>
+</form> 

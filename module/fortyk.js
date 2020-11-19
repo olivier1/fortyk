@@ -1,8 +1,11 @@
 // Import Modules
 import { FortyKActor } from "./actor/actor.js";
 import { ActorDialogs } from "./actor/actor-dialogs.js";
-import FortyKDWActorSheet from "./actor/actorDW-sheet.js";
+import  FortyKDWActorSheet from "./actor/actorDW-sheet.js";
 import { FortyKDHActorSheet } from "./actor/actorDH-sheet.js";
+import { FortyKOWActorSheet } from "./actor/actorOW-sheet.js";
+import { FortyKOWComradeSheet } from "./actor/comradeOW-sheet.js";
+import { FortyKOWRegimentSheet } from "./actor/regimentOW-sheet.js";
 import { FortyKItem } from "./item/item.js";
 import { FortyKItemSheet } from "./item/item-sheet.js";
 import { FortyKActiveEffect } from "./activeEffect/activeEffect.js";
@@ -65,6 +68,9 @@ Hooks.once('init', async function() {
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet("fortyk", FortyKDWActorSheet, { types:["dwPC"], makeDefault: true });
     Actors.registerSheet("fortyk", FortyKDHActorSheet, { types:["dhPC"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKOWActorSheet, { types:["owPC"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKOWComradeSheet, { types:["owComrade"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKOWRegimentSheet, { types:["owRegiment"], makeDefault: true });
     Actors.registerSheet("fortyk", FortyKNPCSheet, { types: ["npc"], makeDefault: true });
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });

@@ -6,7 +6,7 @@ import FortyKDWActorSheet from "./actorDW-sheet.js";
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class FortyKDHActorSheet extends FortyKDWActorSheet {
+export class FortyKOWActorSheet extends FortyKDWActorSheet {
 
     
     /** @override */
@@ -15,7 +15,7 @@ export class FortyKDHActorSheet extends FortyKDWActorSheet {
        
         return mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
-            template: "systems/fortyk/templates/actor/actorDH-sheet.html",
+            template: "systems/fortyk/templates/actor/actorOW-sheet.html",
             width: 666,
             height: 660,
             tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "main" }],

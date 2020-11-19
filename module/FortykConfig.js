@@ -1,5 +1,7 @@
 export const FORTYK={};
 FORTYK.races=["Human",
+              "Ogryn",
+              "Ratling",
               "Astartes",
               "Eldar",
               "Genestealer",
@@ -10,6 +12,7 @@ FORTYK.races=["Human",
               "Tau",
               "Daemon",
               "Laek",
+              "Servitor",
               "Other"]
 FORTYK.size=[{"name":"Miniscule",
               "mod":-30,
@@ -670,3 +673,4 @@ FORTYK.StatusEffects = [
         flags: { core: { statusId: "leg" } }
     }
 ];
+FORTYK.comradeRanks=["Green","Guardsman","Veteran"]
