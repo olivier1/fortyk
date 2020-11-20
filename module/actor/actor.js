@@ -200,6 +200,9 @@ export class FortyKActor extends Actor {
             leftHandWeaponData=leftHandWeapon.data;
         }
         let parry=false;
+        if((rightHandWeapon!==null&&rightHandWeapon.getFlag("fortyk","unbalanced"))||(leftHandWeapon!==null&&leftHandWeapon.getFlag("fortyk","unbalanced"))){
+            parry=-10;
+        }
         if((rightHandWeapon!==null&&rightHandWeapon.getFlag("fortyk","balanced"))||(leftHandWeapon!==null&&leftHandWeapon.getFlag("fortyk","balanced"))){
             parry=10;
         }
@@ -525,8 +528,28 @@ export class FortyKActor extends Actor {
             // a must be equal to b
             return 0;
         });
+        let sortedTnt=talentsntraits.sort(function compare(a, b) {
+            if (a.sort<b.sort) {
+                return -1;
+            }
+            if (a.sort>b.sort) {
+                return 1;
+            }
+            // a must be equal to b
+            return 0;
+        });
+        let sortedGear=wargear.sort(function compare(a, b) {
+            if (a.sort<b.sort) {
+                return -1;
+            }
+            if (a.sort>b.sort) {
+                return 1;
+            }
+            // a must be equal to b
+            return 0;
+        });
         let preparedItems={skills:sortedSkills,
-                           wargear:wargear,
+                           wargear:sortedGear,
                            cybernetics:cybernetics,
                            forceFields:forceFields,
                            mods:mods,
@@ -536,7 +559,7 @@ export class FortyKActor extends Actor {
                            malignancies:malignancies,
                            injuries:injuries,
                            disorders:disorders,
-                           talentsntraits:talentsntraits,
+                           talentsntraits:sortedTnt,
                            missions:missions,
                            advancements:advancements,
                            meleeWeapons:meleeweapons,

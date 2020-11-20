@@ -12,9 +12,9 @@ export class FortyKItem extends Item {
    async update(data, options={}){
         if(this.data.type==="talentntrait"){
             if(this.options.actor!==undefined){
-                console.log(data);
-                if(this.data.data.specialisation.value!==data.specialisation.value){
-                    await this.options.actor.setFlag("fortyk",this.data.data.flagId.value,data.specialisation.value)
+                console.log(this,data);
+                if(this.data.data.specialisation.value!==data["data.specialisation.value"]){
+                    await this.options.actor.setFlag("fortyk",this.data.data.flagId.value,data["data.specialisation.value"])
                 }
             }
         }
@@ -33,7 +33,7 @@ export class FortyKItem extends Item {
         itemData["FORTYK"]=game.fortyk.FORTYK;
 
         //ensure this is an owned item
-        console.log(this,this.actor!==null);
+       
         if(this.actor!==null){
             const actorData = this.actor ? this.actor.data : {};
 

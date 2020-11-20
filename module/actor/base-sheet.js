@@ -62,12 +62,57 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.rollable').click(this._onRoll.bind(this));
         //force damage roll
         html.find('.force-roll').click(this._onForceRoll.bind(this));
+        //creating a tnt
         html.find('.tnt-create').click(this._onTntCreate.bind(this));
+
+        html.find('.drag').each((i, li) => {
+            li.setAttribute("draggable", true);
+            li.addEventListener("dragstart", this._onDragListItem, false);
+            li.addEventListener("dragover", this._onDragOverListItem, false);
+            li.addEventListener("drop", this._onDropListItem.bind(this), false);
+        });
 
         // Autoselect entire text 
         $("input[type=text]").focusin(function() {
             $(this).select();
         });
+    }
+    _onDragListItem(event){
+
+        event.dataTransfer.setData("text", event.target.dataset["id"]);
+
+
+    }
+    _onDragOverListItem(event){
+
+        event.preventDefault();
+
+    }
+    async _onDropListItem(event){
+
+        let draggedId=event.dataTransfer.getData("text");
+        let targetId=event.target.dataset["id"];
+        if(draggedId!==targetId){
+            let draggedItem=await this.actor.getOwnedItem(draggedId);
+
+            let targetItem=await this.actor.getOwnedItem(targetId);
+            console.log(draggedId,targetId);
+            let sortDrag=draggedItem.data.sort;
+            let sortTarget=targetItem.data.sort;
+            if(sortTarget>sortDrag){
+
+                sortDrag=sortTarget;
+                sortTarget-=1;
+            }else{
+                sortDrag=sortTarget;
+                sortTarget+=1;
+            }
+            await this.actor.updateOwnedItem([{"_id":draggedId,"sort":sortDrag},{"_id":targetId,"sort":sortTarget}]);
+
+        }
+
+
+
     }
     //Handle the popup when user clicks item name to show item description
     async _onItemDescrGet(event){
@@ -188,6 +233,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                             let talentsNTraits=[];
                             for(let i=0;i<selectedIds.length;i++){
                                 let tnt=null;
+
                                 switch($selectedCompendiums[i]){
                                     case"talent-core-dh2":
                                         tnt=await dh2Talents.getEntity(selectedIds[i]);
@@ -219,38 +265,31 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                     case "deathwatch-bonus-and-drawbacks":
                                         tnt=await dwBonus.getEntity(selectedIds[i]);
                                         break;
-                                    case "fortyk.talents-ow-core":
+                                    case "talents-ow-core":
                                         tnt=await owCoreTalents.getEntity(selectedIds[i]);
                                         break;
-                                    case "fortyk.talents-hammer-of-the-emperor":
+                                    case "talents-hammer-of-the-emperor":
                                         tnt=await owHOTETalents.getEntity(selectedIds[i]);
+
                                         break;
-                                    case "fortyk.talents-shield-of-humanity":
+                                    case "talents-shield-of-humanity":
                                         tnt=await owShieldOfHumanityTalents.getEntity(selectedIds[i]);
                                         break;
-                                    case "fortyk.homeworld-and-specialty-abilities-core-ow":
+                                    case "homeworld-and-specialty-abilities-core-ow":
                                         tnt=await owCoreAbilities.getEntity(selectedIds[i]);
                                         break;
-                                    case "fortyk.homeworld-and-specialty-abilities-hammer-of-the-emperor":
+                                    case "homeworld-and-specialty-abilities-hammer-of-the-emperor":
                                         tnt=await owHOTEAbilities.getEntity(selectedIds[i]);
                                         break;
-                                    case "fortyk.orders-hammer-of-the-emperor":
+                                    case "orders-hammer-of-the-emperor":
                                         tnt=await owHOTEOrders.getEntity(selectedIds[i]);
                                         break;
-                                    case "fortyk.homeworld-and-specialty-abilities-shield-of-humanity":
+                                    case "homeworld-and-specialty-abilities-shield-of-humanity":
                                         tnt=await owShieldOfHumanityAbilities.getEntity(selectedIds[i]);
                                         break;
-                                    case "fortyk.orders-shield-of-humanity":
+                                    case "orders-shield-of-humanity":
                                         tnt=await owShieldOfHumanityOrders.getEntity(selectedIds[i]);
                                         break;
-
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
                                 }
                                 let itemData=tnt.data;
                                 let tntData=itemData.data;
