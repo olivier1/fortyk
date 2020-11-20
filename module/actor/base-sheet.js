@@ -128,6 +128,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         tnts=tnts.concat(await owHOTETalents.getContent());
         var owShieldOfHumanityTalents=await game.packs.get("fortyk.talents-shield-of-humanity");
         tnts=tnts.concat(await owShieldOfHumanityTalents.getContent());
+        //load different packs depending on actor type
         if(actor.data.type==="dhPC"){
             var dh2CoreBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonuscore-dh2");
             tnts=tnts.concat(await dh2CoreBonus.getContent());

@@ -38,11 +38,15 @@ export class FortyKItemSheet extends ItemSheet {
         const item=this.item;
         if(this.item.type==="skill"){
             //GET THE SKILLS WITH CHILDREN
+            if(this.actor!==null){
+                data['skillgroups']=this.actor.items.filter(function(item){
 
-            data['skillgroups']=this.actor.items.filter(function(item){
+                    if(item.type==="skill"){return item.data.data.hasChildren.value}else{return false;}})
+            }else{
+                
+            }
 
-                if(item.type==="skill"){return item.data.data.hasChildren.value}else{return false;}}
-                                                       );
+
 
         }
         return data;
@@ -81,7 +85,7 @@ export class FortyKItemSheet extends ItemSheet {
     async _onSpecialClick(event){
 
         let specials=duplicate(game.fortyk.FORTYK.itemFlags);
-        
+
         let flags=this.item.data.flags.fortyk;
         console.log(flags);
         for(const flag in flags){
@@ -107,11 +111,11 @@ export class FortyKItemSheet extends ItemSheet {
                         label:"Yes",
                         callback: async html => {
                             for (let [key, spec] of Object.entries(specials)){
-                                
+
                                 let bool=false;
                                 let value=html.find(`input[id=${key}]`).is(":checked");
                                 if(value!==spec.value){bool=true}
-                                
+
                                 if(bool){
                                     console.log("bool")
                                     await this.item.setFlag("fortyk",key,value);
@@ -138,7 +142,7 @@ export class FortyKItemSheet extends ItemSheet {
                 },
                 default: "submit"
             }).render(true)
-            
+
         });
         console.log(this.item);
     }

@@ -33,7 +33,8 @@ export class FortyKItem extends Item {
         itemData["FORTYK"]=game.fortyk.FORTYK;
 
         //ensure this is an owned item
-        if(this.options.actor!==undefined){
+        console.log(this,this.actor!==null);
+        if(this.actor!==null){
             const actorData = this.actor ? this.actor.data : {};
 
             //prepare skill total value
