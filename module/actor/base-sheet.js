@@ -5,7 +5,7 @@ import {objectByString} from "../utilities.js";
 import {setNestedKey} from "../utilities.js";
 import {tokenDistance} from "../utilities.js";
 export default class FortyKBaseActorSheet extends ActorSheet {
-    
+
     /** @override */
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
@@ -122,6 +122,12 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         tnts=tnts.concat(await dh2EnemyWithoutTalents.getContent());
         var dh2EnemyBeyondTalents=await game.packs.get("fortyk.talents-enemies-beyond");
         tnts=tnts.concat(await dh2EnemyBeyondTalents.getContent());
+        var owCoreTalents=await game.packs.get("fortyk.talents-ow-core");
+        tnts=tnts.concat(await owCoreTalents.getContent());
+        var owHOTETalents=await game.packs.get("fortyk.talents-hammer-of-the-emperor");
+        tnts=tnts.concat(await owHOTETalents.getContent());
+        var owShieldOfHumanityTalents=await game.packs.get("fortyk.talents-shield-of-humanity");
+        tnts=tnts.concat(await owShieldOfHumanityTalents.getContent());
         if(actor.data.type==="dhPC"){
             var dh2CoreBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonuscore-dh2");
             tnts=tnts.concat(await dh2CoreBonus.getContent());
@@ -134,6 +140,17 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }else if(actor.data.type==="dwPC"){
             var dwBonus=await game.packs.get("fortyk.deathwatch-bonus-and-drawbacks");
             tnts=tnts.concat(await dwBonus.getContent());
+        }else if(actor.data.type==="owPC"){
+            var owCoreAbilities=await game.packs.get("fortyk.homeworld-and-specialty-abilities-core-ow");
+            tnts=tnts.concat(await owCoreAbilities.getContent());
+            var owHOTEAbilities=await game.packs.get("fortyk.homeworld-and-specialty-abilities-hammer-of-the-emperor");
+            tnts=tnts.concat(await owHOTEAbilities.getContent());
+            var owHOTEOrders=await game.packs.get("fortyk.orders-hammer-of-the-emperor");
+            tnts=tnts.concat(await owHOTEOrders.getContent());
+            var owShieldOfHumanityAbilities=await game.packs.get("fortyk.homeworld-and-specialty-abilities-shield-of-humanity");
+            tnts=tnts.concat(await owShieldOfHumanityAbilities.getContent());
+            var owShieldOfHumanityOrders=await game.packs.get("fortyk.orders-shield-of-humanity");
+            tnts=tnts.concat(await owShieldOfHumanityOrders.getContent());
         }
         tnts=tnts.sort(function compare(a, b) {
             if (a.name<b.name) {
@@ -201,6 +218,38 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                     case "deathwatch-bonus-and-drawbacks":
                                         tnt=await dwBonus.getEntity(selectedIds[i]);
                                         break;
+                                    case "fortyk.talents-ow-core":
+                                        tnt=await owCoreTalents.getEntity(selectedIds[i]);
+                                        break;
+                                    case "fortyk.talents-hammer-of-the-emperor":
+                                        tnt=await owHOTETalents.getEntity(selectedIds[i]);
+                                        break;
+                                    case "fortyk.talents-shield-of-humanity":
+                                        tnt=await owShieldOfHumanityTalents.getEntity(selectedIds[i]);
+                                        break;
+                                    case "fortyk.homeworld-and-specialty-abilities-core-ow":
+                                        tnt=await owCoreAbilities.getEntity(selectedIds[i]);
+                                        break;
+                                    case "fortyk.homeworld-and-specialty-abilities-hammer-of-the-emperor":
+                                        tnt=await owHOTEAbilities.getEntity(selectedIds[i]);
+                                        break;
+                                    case "fortyk.orders-hammer-of-the-emperor":
+                                        tnt=await owHOTEOrders.getEntity(selectedIds[i]);
+                                        break;
+                                    case "fortyk.homeworld-and-specialty-abilities-shield-of-humanity":
+                                        tnt=await owShieldOfHumanityAbilities.getEntity(selectedIds[i]);
+                                        break;
+                                    case "fortyk.orders-shield-of-humanity":
+                                        tnt=await owShieldOfHumanityOrders.getEntity(selectedIds[i]);
+                                        break;
+
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
                                 }
                                 let itemData=tnt.data;
                                 let tntData=itemData.data;
