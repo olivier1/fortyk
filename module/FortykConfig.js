@@ -353,7 +353,7 @@ FORTYK.itemFlags={
     },
     "snare": {
         "value": false,
-        "num": 0,
+        "num": -1,
         "label": "Snare",
         "description": "These ensnaring devices use masses of fibrous webbing, adhesive fluids, and other entangling materials to bring an enemy down. When a target is struck by a weapon with this quality, it must make an Agility test with a penalty equal ten times the number in parentheses (X) or be Immobilised. For example, a weapon with Snare (1) would impose a –10 penalty on this test. An Immobilised target can attempt no actions other than trying to escape the bonds. As a Full Action, he can make a Challenging (+0) Strength or Agility test, with a penalty equal to ten times the number in parentheses (X). If he succeeds, he bursts free or wriggles out. The target is considered Helpless (see page 229) until he escapes."
     },
