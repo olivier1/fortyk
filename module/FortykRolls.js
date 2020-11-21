@@ -316,7 +316,7 @@ returns the roll message*/
         let curHit={};
         var hammer=false;
         if(actor.getFlag("fortyk","hammerblow")&&lastHit.attackType==="All Out"){
-            
+
             if(!fortykWeapon.getFlag("fortyk","concussive")>=0){
                 hammer=true;
                 await fortykWeapon.setFlag("fortyk","concussive",2);
@@ -1050,6 +1050,7 @@ returns the roll message*/
     }
     static async energyHeadCrits(actor,num){
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         switch(num){
             case 1:
                 let critActiveEffect1=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")])];
@@ -1156,10 +1157,10 @@ returns the roll message*/
                 this.applyDead(actorToken,actor);
                 break;
             case 9:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     }
@@ -1170,6 +1171,7 @@ returns the roll message*/
         let d5Roll=new Roll('1d5');
         let d10Roll=new Roll('1d10');
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         switch(num){
             case 1:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")]));
@@ -1280,10 +1282,10 @@ returns the roll message*/
                 this.applyActiveEffect(actorToken,critActiveEffect);
                 break;
             case 9:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     }
@@ -1293,6 +1295,7 @@ returns the roll message*/
         let d5Roll=new Roll('1d5');
         let d10Roll=new Roll('1d10');
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let injury=null;
         switch(num){
             case 1:
@@ -1400,7 +1403,7 @@ returns the roll message*/
             case 9:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist death");
                 if(!tTest.value){
-                    if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                    this.applyDead(actorToken,actor);
                     return;
                 }else{
                     await d10Roll.roll().toMessage({flavor:"Fatigue amount."});
@@ -1417,12 +1420,13 @@ returns the roll message*/
                 }
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     }
     static async energyLegCrits(actor,num,leg){
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
         let tTest=false;
         let d5Roll=new Roll("1d5");
@@ -1526,7 +1530,7 @@ returns the roll message*/
             case 9:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist stun");
                 if(!tTest.value){
-                    if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                    this.applyDead(actorToken,actor);
                 }else{
                     injury=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
                     injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
@@ -1534,7 +1538,7 @@ returns the roll message*/
                 }
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     }
@@ -1562,6 +1566,7 @@ returns the roll message*/
     }
     static async explosiveHeadCrits(actor,num){
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
         let tTest=false;
         let d5Roll=new Roll("1d5");
@@ -1638,24 +1643,25 @@ returns the roll message*/
                 this.applyActiveEffect(actorToken,critActiveEffect);
                 break;
             case 6:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 7:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 8:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 9:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     }
     static async explosiveBodyCrits(actor,num){
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -1738,18 +1744,19 @@ returns the roll message*/
                 this.applyActiveEffect(actorToken,critActiveEffect);
                 break;
             case 8:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 9:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     }
     static async explosiveArmCrits(actor,num,arm){
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -1822,7 +1829,7 @@ returns the roll message*/
             case 7:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total+10),actor, "Resist death");
                 if(tTest.value){
-                    if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                    this.applyDead(actorToken,actor);
                 }else{
                     await d10Roll.roll().toMessage({flavor:"Fatigue amount."});
                     await this._addFatigue(actor,d10Roll._total);
@@ -1840,18 +1847,19 @@ returns the roll message*/
                 }
                 break;
             case 8:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 9:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     }
     static async explosiveLegCrits(actor,num,leg){
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -1940,7 +1948,7 @@ returns the roll message*/
             case 7:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist death");
                 if(!tTest.value){
-                    if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                    this.applyDead(actorToken,actor);
                 }else{
                     await d10Roll.roll().toMessage({flavor:"Fatigue amount."});
                     this._addFatigue(actor,d10Roll._total);
@@ -1959,13 +1967,13 @@ returns the roll message*/
                 }
                 break;
             case 8:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 9:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     }
@@ -1994,6 +2002,7 @@ returns the roll message*/
     }
     static async impactHeadCrits(actor,num){
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2097,18 +2106,19 @@ returns the roll message*/
                 this.applyActiveEffect(actorToken,critActiveEffect);
                 break;
             case 8:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 9:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     }
     static async impactBodyCrits(actor,num){
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2193,15 +2203,16 @@ returns the roll message*/
                 this.applyActiveEffect(actorToken,critActiveEffect);
                 break;
             case 9:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     }
     static async impactArmCrits(actor,num,arm){
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2260,7 +2271,7 @@ returns the roll message*/
             case 8:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist death");
                 if(!tTest.value){
-                    if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                    this.applyDead(actorToken,actor);
                 }else{
                     await d5Roll.roll().toMessage({flavor:"Fatigue amount."});
                     this._addFatigue(actor,d5Roll._total);;
@@ -2278,15 +2289,16 @@ returns the roll message*/
                 }
                 break;
             case 9:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     }
     static async impactLegCrits(actor,num,leg){
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2373,7 +2385,7 @@ returns the roll message*/
             case 8:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist death");
                 if(!tTest.value){
-                    if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                    this.applyDead(actorToken,actor);
                 }else{
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("bleeding")]));
                     injury=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
@@ -2386,10 +2398,10 @@ returns the roll message*/
                 }
                 break;
             case 9:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     }
@@ -2417,6 +2429,7 @@ returns the roll message*/
     }
     static async rendingHeadCrits(actor,num){
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2530,18 +2543,19 @@ returns the roll message*/
                 this.applyActiveEffect(actorToken,critActiveEffect);
                 break;
             case 8:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 9:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     }
     static async rendingBodyCrits(actor,num){
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2614,7 +2628,7 @@ returns the roll message*/
             case 8:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist death");
                 if(!tTest.value){
-                    if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                    this.applyDead(actorToken,actor);
                 }else{
                     d10Roll.roll().toMessage({flavor:"Toughness damage."});
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("t")]));
@@ -2630,15 +2644,16 @@ returns the roll message*/
                 }
                 break;
             case 9:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     };
     static async rendingArmCrits(actor,num,arm){
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2705,7 +2720,7 @@ returns the roll message*/
             case 8:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist death");
                 if(!tTest.value){
-                    if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                    this.applyDead(actorToken,actor);
                 }else{
                     d10Roll.roll().toMessage({flavor:"Stun duration."});
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]));
@@ -2721,15 +2736,16 @@ returns the roll message*/
                 }
                 break;
             case 9:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     };
     static async rendingLegCrits(actor,num,leg){
         let actorToken=actor.token;
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2799,7 +2815,7 @@ returns the roll message*/
             case 8:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist death");
                 if(!tTest.value){
-                    if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                    this.applyDead(actorToken,actor);
                 }else{
                     injury=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
                     injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
@@ -2816,10 +2832,10 @@ returns the roll message*/
                 }
                 break;
             case 9:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
             case 10:
-                if(!actor.isToken){                    actorToken=getActorToken(actor);                 }                 this.applyDead(actorToken,actor);
+                this.applyDead(actorToken,actor);
                 break;
         }
     };
