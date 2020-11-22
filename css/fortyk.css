@@ -635,4 +635,7 @@
 .attack-section label{
     flex:4;
 }
+.tntselect{
+    width:100%;
+}
 [hidden] { display: none !important; }

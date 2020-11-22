@@ -489,15 +489,22 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let fortykWeapon=actor.getOwnedItem(dataset.weapon)
             let weapon=fortykWeapon.data;
 
-            let formula=weapon.data.damageFormula;
+            let formula=duplicate(weapon.data.damageFormula);
             new Dialog({
-                title: `Number of Hits`,
-                content: `<p><label>Number of Hits:</label> <input type="text" id="modifier" name="hits" value="1" data-dtype="Number" autofocus/></p>`,
+                title: `Number of Hits & Bonus Damage`,
+                content: `<div class="flexcol">
+<div class="flexrow"><label>Number of Hits:</label> <input type="text" id="modifier" name="hits" value="1" data-dtype="Number" autofocus/></div>
+<div class="flexrow"><label>Bonus Damage:</label> <input type="text" id="dmg" name="dmg" value="0" data-dtype="Number" /></div>
+</div>`,
                 buttons: {
                     submit: {
                         label: 'OK',
                         callback: (el) => {
                             const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
+                            const dmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
+                            if(dmg>0){
+                                formula.value+=`+${dmg}`
+                            }
                             FortykRolls.damageRoll(formula,actor,fortykWeapon,hits);
                         }
                     }

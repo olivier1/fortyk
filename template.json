@@ -161,7 +161,7 @@
                         "guarded": -10,
                         "aim": {
                             "half": 10,
-                            "full": 10
+                            "full": 20
                         },
                         "swift": 0,
                         "lightning": -10,

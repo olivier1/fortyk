@@ -1151,9 +1151,7 @@ returns the roll message*/
                 await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Tremendous facial scarring"});
                 break;
             case 8:
-                if(!actor.isToken){
-                    actorToken=getActorToken(actor);
-                }
+                
                 this.applyDead(actorToken,actor);
                 break;
             case 9:
