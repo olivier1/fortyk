@@ -25,7 +25,9 @@ export const preloadHandlebarsTemplates = async function() {
     // Load the template parts
     return loadTemplates(templatePaths);
 };
-
+export const sleep=function(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 export const getActorToken=function(actor){
     if(actor.token!==null){
         return actor.token; 

@@ -3,6 +3,7 @@
 import {FORTYKTABLES} from "./FortykTables.js";
 import {getActorToken} from "./utilities.js";
 import {tokenDistance} from "./utilities.js";
+import {sleep} from "./utilities.js";
 import {FortykRollDialogs} from "./FortykRollDialogs.js"
 export class FortykRolls{
     /*The base test function, will roll against the target and return the success and degree of failure/success, the whole roll message is handled by the calling function.
@@ -387,6 +388,12 @@ returns the roll message*/
             form=form.slice(dPos);
             form=newNum+form;
         }
+        //make an array to store the wounds of all targets so that they can all be updated together once done
+        var newWounds=[]
+        for(let i=0;i<targets.size;i++){
+            newWounds.push(false);
+        }
+
         let hitNmbr=0;
         //loop for the number of hits
         for(let h=0;h<(hits);h++){
@@ -448,6 +455,7 @@ returns the roll message*/
             }
             //check to see if attack is targetted or just rolling damage with no targets
             if(targets.size!==0||self){
+                let tarNumbr=0;
                 //if there are targets apply damage to all of them
                 for (let tar of targets){
                     let activeEffects=[];
@@ -456,6 +464,10 @@ returns the roll message*/
                     data=tar.actor.data.data; 
                     tarActor=tar.actor;
                     let wounds=getProperty(data,"secChar.wounds");
+                    if(newWounds[tarNumbr]===false){
+                        newWounds[tarNumbr]=getProperty(data,"secChar.wounds").value;
+                    }
+                    
                     let soak=0;
                     let armor=parseInt(data.characterHitLocations[curHit.value].armor);
                     //check if weapon ignores soak
@@ -729,7 +741,7 @@ returns the roll message*/
                                          author:actor.name};
                         await ChatMessage.create(chatOptions,{});
                     }
-                    let newWounds=wounds.value;
+
                     //NIDITUS WEAPON
                     if((fortykWeapon.getFlag("fortyk","niditus")&&damage)>0){
                         if(tarActor.data.data.psykana.pr.value>0){
@@ -773,7 +785,7 @@ returns the roll message*/
                         }
                     }
                     //deathdealer
-                    if(damage>newWounds&&actor.getFlag("fortyk","deathdealer")&&(weapon.type.toLowerCase().includes(actor.getFlag("fortyk","deathdealer")))){
+                    if(damage>newWounds[tarNumbr]&&actor.getFlag("fortyk","deathdealer")&&(weapon.type.toLowerCase().includes(actor.getFlag("fortyk","deathdealer")))){
                         damage+=actor.data.data.characteristics.per.bonus;
                         let deathDealerOptions={user: game.user._id,
                                                 speaker:{actor,alias:actor.name},
@@ -785,11 +797,11 @@ returns the roll message*/
                     }
                     let chatDamage=damage;
                     // true grit!@!!@
-                    if(!data.suddenDeath.value&&!data.horde.value&&(damage>0)&&(wounds.value-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
-                        if(newWounds>=0){
-                            chatDamage=newWounds+Math.max(1,chatDamage-data.characteristics.t.bonus);
-                            damage=damage-newWounds;
-                            newWounds=0;
+                    if(!data.suddenDeath.value&&!data.horde.value&&(damage>0)&&(newWounds[tarNumbr]-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
+                        if(newWounds[tarNumbr]>=0){
+                            chatDamage=newWounds[tarNumbr]+Math.max(1,(chatDamage-newWounds[tarNumbr])-data.characteristics.t.bonus);
+                            damage=damage-newWounds[tarNumbr];
+                            newWounds[tarNumbr]=0;
                         }else{
                             chatDamage=Math.max(1,chatDamage-data.characteristics.t.bonus); 
                         }
@@ -832,6 +844,9 @@ returns the roll message*/
                             cahatDamage+=additionalHits;
                         }
                     }
+
+                    newWounds[tarNumbr]=newWounds[tarNumbr]-damage;
+                    newWounds[tarNumbr]=Math.max(wounds.min,newWounds[tarNumbr]);
                     //report damage dealt to gm and the target's owner
                     let user_ids = Object.entries(tarActor.data.permission).filter(p=> p[0] !== `default` && p[1] === 3).map(p=>p[0]);
                     for(let user of user_ids)
@@ -839,35 +854,21 @@ returns the roll message*/
                         let recipient=[user];
                         let damageOptions={user: game.users.get(user),
                                            speaker:{actor,alias:actor.name},
-                                           content:`Attack did ${chatDamage} damage.`,
+                                           content:`Attack did ${chatDamage} damage. </br>`,
                                            classes:["fortyk"],
                                            flavor:`Damage done`,
                                            author:actor.name,
                                            whisper:recipient};
                         await ChatMessage.create(damageOptions,{});
                     }
-                    newWounds=newWounds-damage;
-                    newWounds=Math.max(wounds.min,newWounds);
-                    //update wounds
-                    if(game.user.isGM||tar.owner){
-                        if(self){
-                            await tar.update({"data.secChar.wounds.value":newWounds});
-                        }else{
-                            await tarActor.update({"data.secChar.wounds.value":newWounds});
-                        }
-                    }else{
-                        //if user isnt GM use socket to have gm update the actor
-                        let tokenId=tar.data._id;
-                        let socketOp={type:"updateValue",package:{token:tokenId,value:newWounds,path:"data.secChar.wounds.value"}}
-                        await game.socket.emit("system.fortyk",socketOp);
-                    }
+
                     //handle critical effects
-                    if(data.horde.value&&newWounds<=0){
+                    if(data.horde.value&&newWounds[tarNumbr]<=0){
                         this.applyDead(tar,actor);
-                    }else if(data.suddenDeath.value&&newWounds<=0){
+                    }else if(data.suddenDeath.value&&newWounds[tarNumbr]<=0){
                         this.applyDead(tar,actor);
-                    }else if(newWounds<0&&damage>0){
-                        let crit=Math.abs(newWounds)-1;
+                    }else if(newWounds[tarNumbr]<0&&damage>0){
+                        let crit=Math.abs(newWounds[tarNumbr])-1;
                         let rightMes=FORTYKTABLES.crits[weapon.data.damageType.value][curHit.value][crit];
                         let mesDmgType=weapon.data.damageType.value;
                         let mesRes=crit+1;
@@ -937,7 +938,26 @@ returns the roll message*/
                             }
                         }
                     }
-                    this.applyActiveEffect(tar,activeEffects);
+                    
+                    await this.applyActiveEffect(tar,activeEffects);
+                    
+                    if(h===hits-1){
+                       
+                        //update wounds
+                        if(game.user.isGM||tar.owner){
+                            if(self){
+                                await tar.update({"data.secChar.wounds.value":newWounds[tarNumbr]});
+                            }else{
+                                await tarActor.update({"data.secChar.wounds.value":newWounds[tarNumbr]});
+                            }
+                        }else{
+                            //if user isnt GM use socket to have gm update the actor
+                            let tokenId=tar.data._id;
+                            let socketOp={type:"updateValue",package:{token:tokenId,value:newWounds[tarNumbr],path:"data.secChar.wounds.value"}}
+                            await game.socket.emit("system.fortyk",socketOp);
+                        }
+                    }
+                    tarNumbr++;
                 }
             }else{
                 await roll.toMessage({
@@ -946,8 +966,10 @@ returns the roll message*/
                 });
                 this._righteousFury(actor,label,weapon,lastHit,tens);
             }
+
             hitNmbr++;
         }
+
         if(actor.getFlag("fortyk","hammerblow")&&lastHit.attackType==="All Out"){
             if(hammer){
                 await fortykWeapon.setFlag("fortyk","concussive",false);
@@ -1151,7 +1173,7 @@ returns the roll message*/
                 await actor.createEmbeddedEntity("OwnedItem",{type:"injury",name:"Tremendous facial scarring"});
                 break;
             case 8:
-                
+
                 this.applyDead(actorToken,actor);
                 break;
             case 9:

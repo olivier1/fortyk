@@ -149,7 +149,7 @@ Hooks.once('ready', async function() {
 
                     let aeffect=data.package.effect;
                     await FortykRolls.applyActiveEffect(token,aeffect);
-                    return true;
+                    
                     break;
                 case "updateValue":
                     id=data.package.token;
@@ -160,13 +160,13 @@ Hooks.once('ready', async function() {
                     let options={}
                     options[path]=value;
                     await actor.update(options);
-                    return true;
+                    
                     break;
                 case "critEffect":
                     id=data.package.token;
                     token=canvas.tokens.get(id);
                     await FortykRolls.critEffects(token,data.package.num,data.package.hitLoc,data.package.type);
-                    return true;
+                    
                     break;
                 case "applyDead":
                     id=data.package.token;
@@ -181,9 +181,10 @@ Hooks.once('ready', async function() {
                             'defeated':true
                         }) 
                     }catch(err){}
-                    return true;
+                    
                     break;
             }
+            
         }
     })
 });
