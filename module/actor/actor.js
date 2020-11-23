@@ -32,13 +32,14 @@ export class FortyKActor extends Actor {
             //check for fatigue unconsciousness/death
             let newFatigue=data["data.secChar.fatigue.value"];
             if(newFatigue){
+                let token=null;
+                if(this.isToken){
+                    token=this.token;
+                }else{
+                    token=this.getActiveTokens()[0]
+                }
                 if(newFatigue>=this.data.data.secChar.fatigue.max*2){
-                    let token=null;
-                    if(this.isToken){
-                        token=this.token;
-                    }else{
-                        token=this.getActiveTokens()[0]
-                    }
+
                     let chatDead={user: game.user._id,
                                   speaker:{actor,alias:actor.name},
                                   content:`${actor.name} dies from fatigue!`,
@@ -346,11 +347,11 @@ export class FortyKActor extends Actor {
                 wornGear["forceField"]=item;
             }
             if(item.type=="skill"){
-                
-                    if(this.getFlag("fortyk",item.name.toLowerCase())){
-                        item.data.mod.value=parseInt(item.data.mod.value)+this.getFlag("fortyk",item.name.toLowerCase());
-                    }
-                
+
+                if(this.getFlag("fortyk",item.name.toLowerCase())){
+                    item.data.mod.value=parseInt(item.data.mod.value)+this.getFlag("fortyk",item.name.toLowerCase());
+                }
+
                 if(item.data.parent.value==="Forbidden Lore"){
                     if(game.fortyk.FORTYK.races.includes(item.name)){
                         forRaces.push(item.name);

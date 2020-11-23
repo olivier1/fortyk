@@ -2950,7 +2950,7 @@ returns the roll message*/
         }
     }
     static async _createInjury(actor,injury,injuryAeData){
-        let injuryItem=await Item.create({type:"injury",name:injury});
+        let injuryItem=await Item.create({type:"injury",name:injury, temporary:true});
         injuryAeData.transfer=true;
         await injuryItem.createEmbeddedEntity("ActiveEffect",injuryAeData);
         await actor.createEmbeddedEntity("OwnedItem",injuryItem.data);
