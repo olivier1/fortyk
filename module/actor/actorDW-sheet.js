@@ -216,19 +216,27 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         const ammoID=event.currentTarget.value;
         const ammo=this.actor.getEmbeddedEntity("OwnedItem",ammoID);
         weapon.data.ammo._id=ammoID;
-        let update={};
+        
+        let updateWep={};
+        let updateAmmo={};
+        
+        
 
         if(previousAmmo!==null&&previousAmmo.data!==undefined){
+           
             previousAmmo.data.currentClip.value=weapon.data.clip.value;
-            jQuery.extend(update,previousAmmo);
+            jQuery.extend(updateAmmo,previousAmmo);
         }
         if(ammo!==null){
             weapon.data.clip.value=ammo.data.currentClip.value;
         }else{
             weapon.data.clip.value=0;
         }
-        jQuery.extend(update,weapon);
-        await this.actor.updateEmbeddedEntity("OwnedItem",update);
+        jQuery.extend(updateWep,weapon);
+        let items=[];
+        items.push(updateAmmo);
+        items.push(updateWep);
+        await this.actor.updateEmbeddedEntity("OwnedItem",items);
 
 
 

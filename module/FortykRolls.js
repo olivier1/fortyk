@@ -355,6 +355,9 @@ returns the roll message*/
             curHit=game.fortyk.FORTYK.extraHits["body"][0];
         }
         let form=formula.value.toLowerCase();
+        //change formula for d5 weapons
+        form=form.replace("d5","d10/2");
+       
         //change formula for tearing weapons
         if(fortykWeapon.getFlag("fortyk","tearing")){
             let dPos = form.indexOf('d');
@@ -413,15 +416,22 @@ returns the roll message*/
                 min=fortykWeapon.getFlag("fortyk","proven");
             }
             let tens=0;
-            for ( let r of roll.dice[0].results ) {
-                if(r.active){
-                    if(r.result>=righteous){
-                        tens+=1;
+            try{
+                for ( let r of roll.dice[0].results ) {
+                    if(r.active){
+                        if(r.result>=righteous){
+                            tens+=1;
+                        }
                     }
-                }
-                r.result=Math.min(max,r.result);
-                r.result=Math.max(min,r.result);
+                    r.result=Math.min(max,r.result);
+                    r.result=Math.max(min,r.result);
+                } 
+            }catch(err){
+                
             }
+            //round up the total in case of d5 weapons
+            roll._total=Math.ceil(roll._total);
+
             //HAYWIRE TABLE ROLL
             if(fortykWeapon.getFlag("fortyk","haywire")){
                 let hayRoll=new Roll("1d5",{});
@@ -467,7 +477,7 @@ returns the roll message*/
                     if(newWounds[tarNumbr]===false){
                         newWounds[tarNumbr]=getProperty(data,"secChar.wounds").value;
                     }
-                    
+
                     let soak=0;
                     let armor=parseInt(data.characterHitLocations[curHit.value].armor);
                     //check if weapon ignores soak
@@ -938,11 +948,11 @@ returns the roll message*/
                             }
                         }
                     }
-                    
+
                     await this.applyActiveEffect(tar,activeEffects);
-                    
+
                     if(h===hits-1){
-                       
+
                         //update wounds
                         if(game.user.isGM||tar.owner){
                             if(self){

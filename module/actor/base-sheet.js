@@ -96,7 +96,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let draggedItem=await this.actor.getOwnedItem(draggedId);
 
             let targetItem=await this.actor.getOwnedItem(targetId);
-            console.log(draggedId,targetId);
+            
             let sortDrag=draggedItem.data.sort;
             let sortTarget=targetItem.data.sort;
             if(sortTarget>sortDrag){
@@ -392,7 +392,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let dataset=event.currentTarget.dataset;
         let weaponID=dataset["itemId"];
         let fortykWeapon=this.actor.getOwnedItem(weaponID);
-        console.log(fortykWeapon.getFlag("fortyk","maxmimalMode"),fortykWeapon);
+        
 
         if(fortykWeapon.getFlag("fortyk","maximalMode")){
             await fortykWeapon.setFlag("fortyk","maximalMode",false);
@@ -552,7 +552,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
                         let forceData={name:"Force",type:"rangedWeapon"}
                         let force=await Item.create(forceData, {temporary: true});
-                        console.log(force);
+                       
                         force.data.flags.fortyk={};
                         force.data.flags.fortyk.ignoreSoak=true;
                         force.data.data.damageFormula.value=`${hits}d10`;

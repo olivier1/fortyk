@@ -87,9 +87,9 @@ export class FortyKItemSheet extends ItemSheet {
         let specials=duplicate(game.fortyk.FORTYK.itemFlags);
 
         let flags=this.item.data.flags.fortyk;
-        console.log(flags);
+       
         for(const flag in flags){
-            console.log(flag);
+           
             if(specials[flag]){
                 if(specials[flag].num===undefined){
                     specials[flag].value=flags[flag];
@@ -117,7 +117,7 @@ export class FortyKItemSheet extends ItemSheet {
                                 if(value!==spec.value){bool=true}
 
                                 if(bool){
-                                    console.log("bool")
+                                   
                                     await this.item.setFlag("fortyk",key,value);
                                 }
 
@@ -128,9 +128,9 @@ export class FortyKItemSheet extends ItemSheet {
                                     if(number!==parseInt(spec.num)){num=true};
 
                                 }
-                                //console.log(value,bool,num,number,key,spec);
+                               
                                 if(num){
-                                    console.log("number")
+                                    
                                     await this.item.setFlag("fortyk",key,number);
                                 }
 
@@ -144,7 +144,7 @@ export class FortyKItemSheet extends ItemSheet {
             }).render(true)
 
         });
-        console.log(this.item);
+       
     }
     //when changing parents check to see if the skill is part of a group if it is change the value of children to false
     async _onParentChange(event){
