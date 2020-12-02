@@ -190,6 +190,6 @@
     "socket": true,
     "url": "https://github.com/olivier1/fortyk",
     "manifest": "https://raw.githubusercontent.com/olivier1/fortyk/master/system.json",
-    "download": "https://github.com/olivier1/fortyk/archive/0.3.9.zip",
+    "download": "https://github.com/olivier1/fortyk/archive/0.4.0.zip",
     "license": "LICENSE.txt"
 }
