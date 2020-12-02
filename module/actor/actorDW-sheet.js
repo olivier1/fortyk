@@ -8,7 +8,7 @@ import FortyKBaseActorSheet from "./base-sheet.js";
  */
 export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
-    
+
     /** @override */
 
     static get defaultOptions() {
@@ -196,11 +196,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let actor=this.actor;
         let data=duplicate(actor.data.data);
         let weapons=Object.values(data.secChar.wornGear.weapons);
-       
+
         if(weapons.length>2){
 
             weapons.pop();
-            
+
             await actor.update({"data.secChar.wornGear.weapons":weapons});
         }
 
@@ -216,16 +216,17 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         const ammoID=event.currentTarget.value;
         const ammo=this.actor.getEmbeddedEntity("OwnedItem",ammoID);
         weapon.data.ammo._id=ammoID;
-        
+
         let updateWep={};
         let updateAmmo={};
-        
-        
+        let items=[];
+
 
         if(previousAmmo!==null&&previousAmmo.data!==undefined){
-           
+
             previousAmmo.data.currentClip.value=weapon.data.clip.value;
             jQuery.extend(updateAmmo,previousAmmo);
+            items.push(updateAmmo);
         }
         if(ammo!==null){
             weapon.data.clip.value=ammo.data.currentClip.value;
@@ -233,8 +234,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             weapon.data.clip.value=0;
         }
         jQuery.extend(updateWep,weapon);
-        let items=[];
-        items.push(updateAmmo);
+
+
         items.push(updateWep);
         await this.actor.updateEmbeddedEntity("OwnedItem",items);
 
@@ -315,9 +316,9 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         const data=this.actor.data.data;
 
-        
+
         let actor=this.actor;
-        
+
         let weapon=actor.getOwnedItem(event.currentTarget.value);
         if(weapon){
             weapon=weapon.data;
@@ -389,10 +390,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
 
     _onFilterChange(event){
-        
+
         let skills=document.getElementsByName("skill");
         let skillHeads=document.getElementsByName("skillheads");
-        
+
         let filterInput=document.getElementById("skillfilter");
         let filter=filterInput.value.toLowerCase();
         for(let i=0;i<skills.length;i++){
