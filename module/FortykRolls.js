@@ -264,31 +264,46 @@ returns the roll message*/
                 insanityRoll.roll();
                 await insanityRoll.toMessage({
                     speaker: ChatMessage.getSpeaker({ actor: actor }),
-                    flavor: "Rolling insanity for 3+ Degrees of failure"
+                    flavor: "Rolling insanity for 3+ Degrees of failure (Add to sheet)"
                 });
             }
-            let fearRoll=new Roll("1d100 +@mod",{mod:testDos*10});
-            fearRoll.roll();
-            await fearRoll.toMessage({
-                speaker: ChatMessage.getSpeaker({ actor: actor }),
-                flavor: "Shock Roll!"
-            });
-            let shockMes="";
-            let fearCap=0;
-            if(actor.data.flags["atsknf"]){
-                fearCap=Math.min(80,parseInt(fearRoll._total)-1);
-                shockMes=FORTYKTABLES.atsknf[fearCap];
+            if(game.combats.size>0){
+                let fearRoll=new Roll("1d100 +@mod",{mod:testDos*10});
+                fearRoll.roll();
+                await fearRoll.toMessage({
+                    speaker: ChatMessage.getSpeaker({ actor: actor }),
+                    flavor: "Shock Roll!"
+                });
+                let shockMes="";
+                let fearCap=0;
+                if(actor.data.flags["atsknf"]){
+                    fearCap=Math.min(80,parseInt(fearRoll._total)-1);
+                    shockMes=FORTYKTABLES.atsknf[fearCap];
+                }else{
+                    fearCap=Math.min(170,parseInt(fearRoll._total)-1);
+                    shockMes=FORTYKTABLES.fear[fearCap];
+                }
+                let chatShock={user: game.user._id,
+                               speaker:{actor,alias:actor.name},
+                               content:shockMes,
+                               classes:["fortyk"],
+                               flavor:"Shock effect",
+                               author:actor.name};
+                await ChatMessage.create(chatShock,{}); 
             }else{
-                fearCap=Math.min(170,parseInt(fearRoll._total)-1);
-                shockMes=FORTYKTABLES.fear[fearCap];
+                let chatShock={user: game.user._id,
+                               speaker:{actor,alias:actor.name},
+                               content:"Fear imposes a -10 penalty until the end of the scene!",
+                               classes:["fortyk"],
+                               flavor:"Shock effect",
+                               author:actor.name};
+                await ChatMessage.create(chatShock,{}); 
+                let shockEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("shock")]);
+                let ae=[];
+                ae.push(shockEffect);
+                this.applyActiveEffect(actor.getActiveTokens()[0],ae);
             }
-            let chatShock={user: game.user._id,
-                           speaker:{actor,alias:actor.name},
-                           content:shockMes,
-                           classes:["fortyk"],
-                           flavor:"Shock effect",
-                           author:actor.name};
-            await ChatMessage.create(chatShock,{});
+
         }else if(type==="forcefield"&&testRoll<=char){
             let chatOverload={user: game.user._id,
                               speaker:{actor,alias:actor.name},
@@ -357,7 +372,7 @@ returns the roll message*/
         let form=formula.value.toLowerCase();
         //change formula for d5 weapons
         form=form.replace("d5","d10/2");
-       
+
         //change formula for tearing weapons
         if(fortykWeapon.getFlag("fortyk","tearing")){
             let dPos = form.indexOf('d');
@@ -427,7 +442,7 @@ returns the roll message*/
                     r.result=Math.max(min,r.result);
                 } 
             }catch(err){
-                
+
             }
             //round up the total in case of d5 weapons
             roll._total=Math.ceil(roll._total);
@@ -625,7 +640,7 @@ returns the roll message*/
                     //accurate weapon logic
                     if(fortykWeapon.getFlag("fortyk","accurate")&&actor.data.data.secChar.lastHit.aim){
                         let distance=tokenDistance(attackerToken,tar);
-                        if(distance>parseInt(weapon.data.range.value)/8){
+                        if(distance>20){
                             let accDice=Math.min(fortykWeapon.getFlag("fortyk","accurate"),Math.ceil((actor.data.data.secChar.lastHit.dos-1)/2));
                             let accForm=accDice+"d10"
                             let accRoll=new Roll(accForm,{});
@@ -2897,11 +2912,19 @@ returns the roll message*/
                             if(change){ae.update(ae.data);}
                         }
                     }
-                    let ironJaw=false;
+
+                    let skip=false;
+
                     if(effect[index].id==="stunned"&&actor.getFlag("fortyk","ironjaw")){
-                        ironJaw=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Iron Jaw").value;
+                        skip=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Iron Jaw").value;
                     }
-                    if(!dupp&&!ironJaw){
+                    if(effect[index].id==="stunned"&&actor.getFlag("fortyk","frenzy")){
+                        skip=true;
+                    }
+                    if((effect[index].id==="stunned"||effect[index].id==="bleeding")&&actor.getFlag("fortyk","stuffoffnightmares")){
+                        skip=true;
+                    }
+                    if(!dupp&&!skip){
                         await actor.createEmbeddedEntity("ActiveEffect",effect[index]);
                     }
                 }
