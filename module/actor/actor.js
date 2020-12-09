@@ -203,18 +203,7 @@ export class FortyKActor extends Actor {
         if(leftHandWeapon){
             leftHandWeaponData=leftHandWeapon.data;
         }
-        let parry=false;
-        if((rightHandWeapon!==null&&rightHandWeapon.getFlag("fortyk","unbalanced"))||(leftHandWeapon!==null&&leftHandWeapon.getFlag("fortyk","unbalanced"))){
-            parry=-10;
-        }
-        if((rightHandWeapon!==null&&rightHandWeapon.getFlag("fortyk","balanced"))||(leftHandWeapon!==null&&leftHandWeapon.getFlag("fortyk","balanced"))){
-            parry=10;
-        }
-        if((rightHandWeapon!==null&&rightHandWeapon.getFlag("fortyk","defensive"))||(leftHandWeapon!==null&&leftHandWeapon.getFlag("fortyk","defensive"))){
-            parry=15;
-        }
-
-        actorData.flags.fortyk.parry=parry;
+        
 
         //handle shields
         data.characterHitLocations.body.shield= 0;
@@ -335,7 +324,22 @@ export class FortyKActor extends Actor {
         if(!Array.isArray(data.secChar.wornGear.weapons)){
             wornWeapons=Object.values(data.secChar.wornGear.weapons);
         }
+        var rightHandWeapon= this.getOwnedItem(data.secChar.wornGear.weapons[1]);
+        
+        var leftHandWeapon= this.getOwnedItem(data.secChar.wornGear.weapons[0]);
+        
+        let parry=false;
+        if((rightHandWeapon!==null&&rightHandWeapon.getFlag("fortyk","unbalanced"))||(leftHandWeapon!==null&&leftHandWeapon.getFlag("fortyk","unbalanced"))){
+            parry=-10;
+        }
+        if((rightHandWeapon!==null&&rightHandWeapon.getFlag("fortyk","balanced"))||(leftHandWeapon!==null&&leftHandWeapon.getFlag("fortyk","balanced"))){
+            parry=10;
+        }
+        if((rightHandWeapon!==null&&rightHandWeapon.getFlag("fortyk","defensive"))||(leftHandWeapon!==null&&leftHandWeapon.getFlag("fortyk","defensive"))){
+            parry=15;
+        }
 
+        actorData.flags.fortyk.parry=parry;
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
         this.items.forEach((fortykItem,id,items)=>{
@@ -347,7 +351,12 @@ export class FortyKActor extends Actor {
                 wornGear["forceField"]=item;
             }
             if(item.type=="skill"){
-
+                
+                if(item.name==="Parry"){
+                   if(parry){
+                       item.data.total.value+=parry;
+                   } 
+                }
                 if(this.getFlag("fortyk",item.name.toLowerCase())){
                     item.data.mod.value=parseInt(item.data.mod.value)+this.getFlag("fortyk",item.name.toLowerCase());
                 }

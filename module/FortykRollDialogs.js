@@ -13,7 +13,7 @@ export class FortykRollDialogs{
         const target=dataset["target"];
         const label=dataset["label"];
 
-        const weapon=actor.getEmbeddedEntity("OwnedItem",dataset["weapon"]);
+        const weapon=actor.getOwnedItem(dataset["weapon"]);
         const fireRate=dataset["fire"];
 
         this.callRollDialog(char, type, target, actor, label, weapon , true, fireRate);
@@ -404,10 +404,10 @@ export class FortykRollDialogs{
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus);
                         await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType);
                         if(aimBonus>0){
-                            
+                            await actor.update({"data.secChar.lastHit.aim":true});
                             actor.data.data.secChar.lastHit.aim=true;
                         }else{
-                            actor.data.data.secChar.lastHit.aim=false;
+                            await actor.update({"data.secChar.lastHit.aim":false});
                         }
                     }
 

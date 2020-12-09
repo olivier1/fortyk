@@ -113,16 +113,17 @@ returns the roll message*/
                          roll:roll,
                          author:actor.name};
         await ChatMessage.create(chatOptions,{});
+        //get first and second digits for hit locations and perils
         let firstDigit=Math.floor(testRoll/10);
         let secondDigit=testRoll-firstDigit*10;
-        let inverted=parseInt(secondDigit*10+firstDigit);
+
         //determine hitlocation if the attack is a success
         if(templateOptions["success"]&&(type==="focuspower"||type==="rangedAttack"||type==="meleeAttack")){
             //reverse roll to get hit location
+            let inverted=parseInt(secondDigit*10+firstDigit);
             let hitlocation=FORTYKTABLES.hitLocations[inverted];
-            actor.data.data.secChar.lastHit.value=hitlocation.name;
-            actor.data.data.secChar.lastHit.label=hitlocation.label;
-            actor.data.data.secChar.lastHit.dos=testDos;
+           
+            await actor.update({"data.secChar.lastHit.value":hitlocation.name,"data.secChar.lastHit.label":hitlocation.label,"data.secChar.lastHit.dos":testDos});
             let chatOp={user: game.user._id,
                         speaker:{actor,alias:actor.name},
                         content:`Location: ${hitlocation.label}`,

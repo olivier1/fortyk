@@ -200,9 +200,15 @@ Hooks.on("updateCombat", async (combat) => {
             if(activeEffect.duration.type!=="none"){
                 let remaining=Math.ceil(activeEffect.duration.remaining);
                 if(remaining<0){remaining=0}
+                let content="";
+                if(remaining===0){
+                    content=`${activeEffect.data.label} expires.`;
+                }else{
+                    content=`${activeEffect.data.label} has ${remaining} turns remaining.`;
+                }
                 let activeEffectOptions={user: game.user._id,
                                          speaker:{actor,alias:actor.name},
-                                         content:`${activeEffect.data.label} has ${remaining} turns remaining.`,
+                                         content:content,
                                          classes:["fortyk"],
                                          flavor:`${activeEffect.data.label} duration.`,
                                          author:actor.name};
@@ -229,7 +235,7 @@ Hooks.on("updateCombat", async (combat) => {
                 fire.data.flags.specials=flags;
                 fire.data.data.damageType.value="Energy";
                 fire.data.data.pen.value=99999;
-                await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire.data,1, true);
+                await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire,1, true);
             }
             //check for bleeding
             if(activeEffect.data.flags.core.statusId==="bleeding"){
