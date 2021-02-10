@@ -592,6 +592,16 @@
 .fortyk .cod{
     flex:6;
 }
+.fortyk .movementbox{
+    align-items:center;
+}
+.fortyk .movementbox .movementlabel{
+    height:75%;
+}
+.fortyk .movementbox .movementnumber{
+    height:25%;
+    border-top: 1px solid #999;
+}
 .test-success{
     background-color: green !important;
     background-image: "" !important;

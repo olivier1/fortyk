@@ -30,7 +30,14 @@ export class FortyKActor extends Actor {
         let actorData=actor.data;
         if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC' || actorData.type === 'npc'){
             //check for fatigue unconsciousness/death
-            let newFatigue=data["data.secChar.fatigue.value"];
+            
+            let newFatigue=false;
+            try{
+                newFatigue=data["data.secChar.fatigue.value"];
+            }catch(err){
+                newFatigue=false;
+            }
+            
             if(newFatigue){
                 let token=null;
                 if(this.isToken){
@@ -61,25 +68,47 @@ export class FortyKActor extends Actor {
                     await game.fortyk.FortykRolls.applyActiveEffect(token,effect);
                 }
             }
+            
             // Apply changes in Actor size to Token width/height
             let newSize= 0;
-            if(this.data.data.horde.value){
-                newSize= data["data.secChar.wounds.value"];
-                if(newSize<0){newSize=0}
-            }else{
-                newSize= data["data.secChar.size.value"];
+            
+            let wounds=false;
+            try{
+                wounds=data.data.secChar.wounds.value;
+            }catch(err){
+                wounds=false;
             }
-            if ( (!this.data.data.horde.value&&newSize && (newSize !== this.data.data.secChar.size.value))||(this.data.data.horde.value&&newSize!==undefined && (newSize !== this.data.data.secChar.wounds.value)) ) {
-                let size= 0;
+             let size=false;
+            try{
+               size=data.data.secChar.size.value; 
+            }catch(err){
+                size=false;
+            }
+           
+           
+            if(wounds&&this.data.data.horde.value||size){
+                
+
                 if(this.data.data.horde.value){
-                    size= FORTYKTABLES.hordeSizes[newSize];
+                    newSize= data.data.secChar.wounds.value;
+                    if(newSize<0){newSize=0}
                 }else{
-                    size= game.fortyk.FORTYK.size[newSize].size;
+                    newSize= data.data.secChar.size.value;
                 }
-                if ( this.isToken ) this.token.update({height: size, width: size});
-                else if ( !data["token.width"] && !hasProperty(data, "token.width") ) {
-                    data["token.height"] = size;
-                    data["token.width"] = size;
+                
+                if ( (!this.data.data.horde.value&&newSize && (newSize !== this.data.data.secChar.size.value))||(this.data.data.horde.value&&newSize!==undefined && (newSize !== this.data.data.secChar.wounds.value)) ) {
+                    
+                    let size= 0;
+                    if(this.data.data.horde.value){
+                        size= FORTYKTABLES.hordeSizes[newSize];
+                    }else{
+                        size= game.fortyk.FORTYK.size[newSize].size;
+                    }
+                    if ( this.isToken ) this.token.update({height: size, width: size});
+                    else if ( !data["token.width"] && !hasProperty(data, "token.width") ) {
+                        data["token.height"] = size;
+                        data["token.width"] = size;
+                    }
                 }
             }
         }
@@ -133,7 +162,7 @@ export class FortyKActor extends Actor {
 
         const actorData = this.data;
         const data = actorData.data;
-
+        
         // Make separate methods for each Actor type (character, npc, etc.) to keep
         // things organized.
         if (actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC') {this._prepareCharacterData(actorData)};
@@ -178,9 +207,13 @@ export class FortyKActor extends Actor {
 
 
         //prepare psyker stuff
-        data.psykana.pr.effective=parseInt(data.psykana.pr.value)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
+        data.psykana.pr.effective=parseInt(data .psykana.pr.value)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
         data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
         //movement
+        if(this.getFlag("fortyk","quadruped")){
+            
+           data.secChar.movement.multi=parseInt(data.secChar.movement.multi)*2; 
+        }
         let size=data.secChar.size.value;
         data.secChar.size.label=game.fortyk.FORTYK.size[size].name;
         data.secChar.size.mod=game.fortyk.FORTYK.size[size].mod;
@@ -203,7 +236,7 @@ export class FortyKActor extends Actor {
         if(leftHandWeapon){
             leftHandWeaponData=leftHandWeapon.data;
         }
-        
+
 
         //handle shields
         data.characterHitLocations.body.shield= 0;
@@ -237,13 +270,17 @@ export class FortyKActor extends Actor {
         }
     }
     _prepareNPCData(actorData){
+        
         const data=actorData.data;
         //calc char bonuses
         for (let [key, char] of Object.entries(data.characteristics)){
             if(key==="inf"){
             }else{
-                char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod)+parseInt(data.globalMOD.value);
+                char.total=parseInt(char.value);
+                
                 char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
+                char.total+=parseInt(data.globalMOD.value);
+                
             }
         }
         data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
@@ -252,11 +289,14 @@ export class FortyKActor extends Actor {
         for (let [key,char] of Object.entries(data.characteristics)){
             if(!this.getFlag("core","frenzy")&&char.bonus*fatigueMult<data.secChar.fatigue.value){
                 char.total=Math.ceil(char.value/2);
-            }else{
-                char.total=char.value;
             }
         }
         //movement
+        
+        if(this.getFlag("fortyk","quadruped")){
+            
+           data.secChar.movement.multi=parseInt(data.secChar.movement.multi)*2; 
+        }
         let size=data.secChar.size.value;
         data.secChar.size.label=game.fortyk.FORTYK.size[size].name;
         data.secChar.size.mod=game.fortyk.FORTYK.size[size].mod;
@@ -325,9 +365,9 @@ export class FortyKActor extends Actor {
             wornWeapons=Object.values(data.secChar.wornGear.weapons);
         }
         var rightHandWeapon= this.getOwnedItem(data.secChar.wornGear.weapons[1]);
-        
+
         var leftHandWeapon= this.getOwnedItem(data.secChar.wornGear.weapons[0]);
-        
+
         let parry=false;
         if((rightHandWeapon!==null&&rightHandWeapon.getFlag("fortyk","unbalanced"))||(leftHandWeapon!==null&&leftHandWeapon.getFlag("fortyk","unbalanced"))){
             parry=-10;
@@ -339,7 +379,7 @@ export class FortyKActor extends Actor {
             parry=15;
         }
 
-        actorData.flags.fortyk.parry=parry;
+        
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
         this.items.forEach((fortykItem,id,items)=>{
@@ -351,21 +391,18 @@ export class FortyKActor extends Actor {
                 wornGear["forceField"]=item;
             }
             if(item.type=="skill"){
-                
+               item.data.total.value=0
                 if(item.name==="Parry"){
-                   if(parry){
-                       item.data.total.value+=parry;
-                   } 
+                    if(parry){
+                        item.data.total.value+=parry;
+                    } 
                 }
-                if(this.getFlag("fortyk",item.name.toLowerCase())){
-                    item.data.mod.value=parseInt(item.data.mod.value)+this.getFlag("fortyk",item.name.toLowerCase());
-                }
-
+               
                 if(item.data.parent.value==="Forbidden Lore"){
                     if(game.fortyk.FORTYK.races.includes(item.name)){
                         forRaces.push(item.name);
                     }
-                } item.data.total.value=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
+                } item.data.total.value+=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
                 skills.push(item);
             }
             if(item.type==="malignancy"){

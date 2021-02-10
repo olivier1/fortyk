@@ -16,6 +16,7 @@ import { FortykRollDialogs } from "./FortykRollDialogs.js";
 import { FortyKNPCSheet} from "./actor/actor-npc-sheet.js";
 import { FORTYK } from "./FortykConfig.js";
 import { _getInitiativeFormula } from "./combat.js";
+import {FORTYKTABLES} from "./FortykTables.js";
 Hooks.once('init', async function() {
     game.fortyk = {
         FortyKActor,
@@ -90,8 +91,8 @@ Hooks.once('init', async function() {
     Handlebars.registerHelper('isdefined', function (value) {
         return value !== undefined;
     });
-     Handlebars.registerHelper('isnumber', function (value) {
-        
+    Handlebars.registerHelper('isnumber', function (value) {
+
         return parseInt(value);
     });
     Handlebars.registerHelper('compareString', function (str1, str2="") {
@@ -134,7 +135,7 @@ Hooks.once("setup", function() {
 });
 //HOOKS
 Hooks.once('ready', async function() {
-    
+
     //SOCKET used to update actors via the damage scripts
     game.socket.on("system.fortyk",async(data) => {
         if(game.user.isGM){
@@ -149,7 +150,7 @@ Hooks.once('ready', async function() {
 
                     let aeffect=data.package.effect;
                     await FortykRolls.applyActiveEffect(token,aeffect);
-                    
+
                     break;
                 case "updateValue":
                     id=data.package.token;
@@ -160,13 +161,13 @@ Hooks.once('ready', async function() {
                     let options={}
                     options[path]=value;
                     await actor.update(options);
-                    
+
                     break;
                 case "critEffect":
                     id=data.package.token;
                     token=canvas.tokens.get(id);
                     await FortykRolls.critEffects(token,data.package.num,data.package.hitLoc,data.package.type);
-                    
+
                     break;
                 case "applyDead":
                     id=data.package.token;
@@ -181,10 +182,10 @@ Hooks.once('ready', async function() {
                             'defeated':true
                         }) 
                     }catch(err){}
-                    
+
                     break;
             }
-            
+
         }
     })
 });
@@ -232,9 +233,10 @@ Hooks.on("updateCombat", async (combat) => {
                 let flags= duplicate(game.fortyk.FORTYK.itemFlags);
                 let fireData={name:"Fire",type:"rangedWeapon"}
                 let fire=await Item.create(fireData, {temporary: true});
-                fire.data.flags.specials=flags;
-                fire.data.data.damageType.value="Energy";
-                fire.data.data.pen.value=99999;
+
+                fire._data.flags.specials=flags;
+                fire._data.data.damageType.value="Energy";
+                fire._data.data.pen.value=99999;
                 await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire,1, true);
             }
             //check for bleeding
@@ -297,7 +299,7 @@ Hooks.on('renderChatLog', (log, html, data) => FortykRollDialogs.chatListeners(h
 Hooks.on('renderDialog', (dialog, html, data) => ActorDialogs.chatListeners(html));
 //set flags for new weapons and items
 Hooks.on('preCreateOwnedItem', (actor, data,options) =>{
-    
+
 });
 //set flags on the actor when adding an active effect if it should activate a flag
 Hooks.on('createActiveEffect',async (actor,ae,options,id)=>{
@@ -360,12 +362,12 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
         data.flags=flags;
     }
 
-
+    let fullToken=await canvas.tokens.get(token._id);
+    let tokenActor=fullToken.actor;
 
     try{
         let newFatigue=data.data.secChar.fatigue.value;
-        let fullToken=await canvas.tokens.get(token._id);
-        let tokenActor=fullToken.actor;
+
         if(newFatigue>=tokenActor.data.data.secChar.fatigue.max*2){
 
 
@@ -391,5 +393,46 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
         }
     }catch(err){}
 
+    // Apply changes in Actor size to Token width/height
+    let newSize= 0;
 
+    let wounds=false;
+    try{
+        wounds=data.data.secChar.wounds.value;
+    }catch(err){
+        wounds=false;
+    }
+    let size=false;
+    try{
+        size=data.data.secChar.size.value; 
+    }catch(err){
+        size=false;
+    }
+
+
+    if(wounds&&tokenActor.data.data.horde.value||size){
+
+
+        if(tokenActor.data.data.horde.value){
+            newSize= data.data.secChar.wounds.value;
+            if(newSize<0){newSize=0}
+        }else{
+            newSize= data.data.secChar.size.value;
+        }
+
+        if ( (!tokenActor.data.data.horde.value&&newSize && (newSize !== tokenActor.data.data.secChar.size.value))||(tokenActor.data.data.horde.value&&newSize!==undefined && (newSize !== tokenActor.data.data.secChar.wounds.value)) ) {
+
+            let size= 0;
+            if(tokenActor.data.data.horde.value){
+                size= FORTYKTABLES.hordeSizes[newSize];
+            }else{
+                size= game.fortyk.FORTYK.size[newSize].size;
+            }
+            if ( tokenActor.isToken ) tokenActor.token.update({height: size, width: size});
+            else if ( !data["token.width"] && !hasProperty(data, "token.width") ) {
+                data["token.height"] = size;
+                data["token.width"] = size;
+            }
+        }
+    }
 });

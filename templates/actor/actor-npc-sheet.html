@@ -1,6 +1,7 @@
 <form class="{{cssClass}} flexcol" autocomplete="off">
 
     {{#if owner}}
+
     <div class="flexrow">
         <img class="npc-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
         <div class="npcresources">
@@ -182,9 +183,15 @@
                         </div>
                         <div class="list-item">
                             <span>Special: 
-                                {{#each this.flags.specials}}
-                                {{#if this.value}}
-                                <a class="item-descr" data-name="{{this.label}}" data-item-descr="{{this.description}}" >{{this.label}}{{#if (isdefined this.num)}}({{this.num}}){{/if}}</a>
+
+                                {{#each this.flags.fortyk as |flag key|}}
+
+                                {{#if this}}
+
+                                {{#with (lookup ../FORTYK.itemFlags [key])~}}
+                                <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                                    {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
                                 {{/if}}{{/each}}
                             </span>
 
