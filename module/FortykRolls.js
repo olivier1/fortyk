@@ -323,8 +323,9 @@ returns the roll message*/
     }
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
     static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false){
-
-        let weapon=duplicate(fortykWeapon);
+        console.log(fortykWeapon);
+        let weapon=duplicate(fortykWeapon.data);
+        console.log(weapon);
         let righteous=10;
         if(fortykWeapon.getFlag("fortyk","vengeful")){
             righteous=fortykWeapon.getFlag("fortyk","vengeful");
@@ -544,7 +545,7 @@ returns the roll message*/
                                 }
                             }
                             let pen=0;
-
+                            console.log(weapon);
                             //random pen logic
                             if(isNaN(weapon.data.pen.value)){
                                 let randomPen=new Roll(weapon.data.pen.value,{});
