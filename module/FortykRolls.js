@@ -1537,12 +1537,12 @@ returns the roll message*/
                 d10Roll.alter(2,0);
                 await d10Roll.roll().toMessage({flavor:"Leg injury duration."});
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]));
-                critActiveEffect[0].duration={
+                critActiveEffect[1].duration={
                     combat:game.combats.active.data._id,
                     rounds:d10Roll._total,
                     startRound:game.combats.active.current.round
                 };
-                critActiveEffect[0].changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                critActiveEffect[1].changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                 await this.applyActiveEffect(actorToken,critActiveEffect);
                 break;
             case 6:
