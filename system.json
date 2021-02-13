@@ -2,7 +2,7 @@
     "name": "fortyk",
     "title": "fortyk",
     "description": "The fortyk system for FoundryVTT!",
-    "version": "0.4.2",
+    "version": "0.4.3",
     "minimumCoreVersion": "0.6.6",
     "compatibleCoreVersion": "0.7.9",
     "templateVersion": 6,
