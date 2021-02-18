@@ -383,12 +383,36 @@ returns the roll message*/
             let dPos = form.indexOf('d');
             let dieNum = form.substr(0,dPos);
             let newNum=parseInt(dieNum)+1;
+            if(actor.getFlag("fortyk","chainweaponexpertise")&&weapon.data.type.value==="Chain"){
+                newNum=parseInt(dieNum)+1;
+            }
             form=form.slice(dPos);
             form=newNum+form;
             let afterD=dPos+3;
             let startstr=form.slice(0,afterD);
             let endstr=form.slice(afterD);
-            form=startstr+"dl1"+endstr;
+            if(actor.getFlag("fortyk","chainweaponexpertise")&&weapon.data.type.value==="Chain"){
+                form=startstr+"dl2"+endstr;
+            }else{
+               form=startstr+"dl1"+endstr; 
+            }
+            
+        }
+        //change formula for primitive and proven weapons
+        if(fortykWeapon.getFlag("fortyk","primitive")||fortykWeapon.getFlag("fortyk","proven")){
+            let dPos = form.indexOf('d');
+            let dieNum = parseInt(form.substr(0,dPos));
+            let afterD=dPos+3;
+            let startstr=form.slice(0,afterD);
+            let endstr=form.slice(afterD);
+           
+           if(fortykWeapon.getFlag("fortyk","primitive")){
+               form=`{`+startstr+`,${dieNum*fortykWeapon.getFlag("fortyk","primitive")}}kl1`+endstr; 
+           }else if(fortykWeapon.getFlag("fortyk","proven")){
+               form=`{`+startstr+`,${dieNum*fortykWeapon.getFlag("fortyk","proven")}}kh1`+endstr; 
+           }
+               
+            
         }
         //change formula for cleanse with fire for flame weapons
         if(actor.getFlag("fortyk","cleansewithfire")&&fortykWeapon.getFlag("fortyk","flame")){
@@ -427,16 +451,9 @@ returns the roll message*/
             let roll=new Roll(form,actor.data.data);
             let label = weapon.name ? `Rolling ${weapon.name} damage.` : 'damage';
             roll.roll();
-            let min=1;
-            let max=10;
-            if(fortykWeapon.getFlag("fortyk","primitive")){
-                max=fortykWeapon.getFlag("fortyk","primitive");
-            }
-            if(fortykWeapon.getFlag("fortyk","proven")){
-                min=fortykWeapon.getFlag("fortyk","proven");
-            }
+            
             let tens=0;
-            let diceTotal=0;
+            
             try{
                 for ( let r of roll.dice[0].results ) {
                     if(r.active){
@@ -444,18 +461,16 @@ returns the roll message*/
                             tens+=1;
                         }
                     }
-                    r.result=Math.min(max,r.result);
-                    r.result=Math.max(min,r.result);
-                    diceTotal+=r.result;
+                    
                 } 
             }catch(err){
 
             }
 
             
-            let results=roll.results;
-            results[0]=diceTotal;
-            roll._total=eval(results.join(""));
+           
+            
+            
             //round up the total in case of d5 weapons
             roll._total=Math.ceil(roll._total);
 
@@ -842,7 +857,7 @@ returns the roll message*/
                         // true grit!@!!@
                         if(!data.suddenDeath.value&&!data.horde.value&&(damage>0)&&(newWounds[tarNumbr]-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
                             if(newWounds[tarNumbr]>=0){
-                                chatDamage=newWounds[tarNumbr]+Math.max(1,(chatDamage-newWounds[tarNumbr])-data.characteristics.t.bonus);
+                                chatDamage=parseInt(newWounds[tarNumbr])+parseInt(Math.max(1,(chatDamage-newWounds[tarNumbr])-data.characteristics.t.bonus));
                                 damage=damage-newWounds[tarNumbr];
                                 newWounds[tarNumbr]=0;
                             }else{
@@ -2990,7 +3005,7 @@ returns the roll message*/
         }
     };
     static async _addFatigue(actor,newfatigue){
-        newfatigue=newfatigue+actor.data.data.secChar.fatigue.value;
+        newfatigue=newfatigue+parseInt(actor.data.data.secChar.fatigue.value);
         if(game.user.isGM||actor.owner){
             await actor.update({"data.secChar.fatigue.value":newfatigue});
         }else{
