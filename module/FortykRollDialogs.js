@@ -108,7 +108,7 @@ export class FortykRollDialogs{
             buttons: {
                 submit: {
                     label: 'OK',
-                    callback: (html) => {
+                    callback: async (html) => {
                         const attackTypeBonus = Number($(html).find('input[name="attack-type"]:checked').val());
 
                         let guarded = Number($(html).find('input[name="guarded"]:checked').val());
