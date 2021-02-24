@@ -125,10 +125,20 @@ export class FortykRollDialogs{
                         const size = Number($(html).find('select[name="size"]').val());
                         let other = Number($(html).find('input[name="other"]').val());
                         let addLabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
-                        actor.data.data.secChar.lastHit.attackType=addLabel;
+                      
+                        let attackType=html.find('input[name=attack-type]:checked')[0].attributes["attacktype"].value;
+                        let update={};
+                        update["data.secChar.lastHit.attackType"]=attackType;
+                        if(attackType==="called"){
+                            
+                            update["data.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
+                            
+                        }
+                        await actor.update(update);
                         if(html.find('input[name="guarded"]').is(':checked')){
                             addLabel=html.find('input[name="guarded"]')[0].attributes["label"].value+" "+addLabel;
                         }
+                        console.log(html.find('input[name="attack-type"]:checked'))
                         testLabel=addLabel+" "+ testLabel;
                         if(isNaN(running)){running=0}
                         if(isNaN(guarded)){guarded=0}
@@ -367,14 +377,22 @@ export class FortykRollDialogs{
                         const size = Number($(html).find('select[name="size"]').val());
                         let other = Number($(html).find('input[name="other"]').val());
                         //get attack type name for title
-
+                        
                         let addLabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
                         if(html.find('input[name="guarded"]').is(':checked')){
                             addLabel=html.find('input[name="guarded"]')[0].attributes["label"].value+" "+addLabel;
                         }
                         testLabel=addLabel+" "+ testLabel;
-                        let attackType=html.find('input[name=attack-type]:checked')[0].attributes["type"].value;
-                        actor.data.data.secChar.lastHit.attackType=attackType;
+                        
+                        let attackType=html.find('input[name=attack-type]:checked')[0].attributes["attacktype"].value;
+                        let update={};
+                        update["data.secChar.lastHit.attackType"]=attackType;
+                        if(attackType==="called"){
+                            
+                            update["data.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
+                            
+                        }
+                        await actor.update(update);
                         //spend ammo on gun
                         let rofIndex=parseInt(html.find('input[name=attack-type]:checked')[0].attributes["index"].value);
 

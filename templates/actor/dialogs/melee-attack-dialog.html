@@ -4,31 +4,39 @@
             <label class="section-title">Attack Action</label>
             <div class="list-item flexrow">
 
-                <input type="radio" name="attack-type" value="{{modifiers.standard}}" label="Standard" checked><label>Standard: +{{modifiers.standard}}</label>
+                <input type="radio" name="attack-type" value="{{modifiers.standard}}" label="Standard"attacktype="standard" checked><label>Standard: +{{modifiers.standard}}</label>
             </div>
             <div class="list-item flexrow"{{#unless options.swift}} hidden{{/unless}}>
 
-                <input type="radio" name="attack-type" value="{{modifiers.swift}}" label="Swift"><label>Swift Attack: +{{modifiers.swift}}</label>
+                <input type="radio" name="attack-type" value="{{modifiers.swift}}" label="Swift"attacktype="swift"><label>Swift Attack: +{{modifiers.swift}}</label>
             </div>
             <div class="list-item flexrow"{{#unless options.lightning}} hidden{{/unless}}>
 
-                <input type="radio" name="attack-type" value="{{modifiers.lightning}}" label="Lightning"><label>Lightning Attack: {{modifiers.lightning}}</label>
+                <input type="radio" name="attack-type" value="{{modifiers.lightning}}" label="Lightning"attacktype="lightning"><label>Lightning Attack: {{modifiers.lightning}}</label>
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="attack-type" value="{{modifiers.charge}}" label="Charge"><label>Charge: +{{modifiers.charge}}</label>
+                <input type="radio" name="attack-type" value="{{modifiers.charge}}" label="Charge"attacktype="charge"><label>Charge: +{{modifiers.charge}}</label>
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="attack-type" value="{{modifiers.allOut}}" label="All Out"><label>All Out Attack: +{{modifiers.allOut}}</label>
+                <input type="radio" name="attack-type" value="{{modifiers.allOut}}" label="All Out"attacktype="allout"><label>All Out Attack: +{{modifiers.allOut}}</label>
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="attack-type" value="{{modifiers.stun}}" label="Stun"><label>Stun: {{modifiers.stun}}</label>
+                <input type="radio" name="attack-type" value="{{modifiers.stun}}" label="Stun"attacktype="stun"><label>Stun: {{modifiers.stun}}</label>
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="attack-type" value="{{modifiers.called}}" label="Called Shot"><label>Called Shot: {{modifiers.called}}</label>
+                <input type="radio" name="attack-type" value="{{modifiers.called}}" label="Called Shot" attacktype="called"><label>Called Shot: {{modifiers.called}}</label>
+                <select name="calledLoc">
+                    <option value="9">Head</option>
+                    <option value="69">Body</option>
+                    <option value="29">Left Arm</option>
+                    <option value="19">Right Arm</option>
+                    <option value="84">Left Leg</option>
+                    <option value="99">Right Leg</option>
+                </select>
             </div>
             <div class="list-item flexrow">
 

@@ -122,7 +122,9 @@ returns the roll message*/
             //reverse roll to get hit location
             let inverted=parseInt(secondDigit*10+firstDigit);
             let hitlocation=FORTYKTABLES.hitLocations[inverted];
-
+            if(actor.data.data.secChar.lastHit.attackType==="called"){
+                hitlocation=FORTYKTABLES.hitLocations[actor.data.data.secChar.lastHit.called];
+            }
             await actor.update({"data.secChar.lastHit.value":hitlocation.name,"data.secChar.lastHit.label":hitlocation.label,"data.secChar.lastHit.dos":testDos});
             let chatOp={user: game.user._id,
                         speaker:{actor,alias:actor.name},
@@ -336,7 +338,7 @@ returns the roll message*/
         let targets=[];
         let curHit={};
         var hammer=false;
-        if(actor.getFlag("fortyk","hammerblow")&&lastHit.attackType==="All Out"){
+        if(actor.getFlag("fortyk","hammerblow")&&lastHit.attackType==="allout"){
 
             if(!fortykWeapon.getFlag("fortyk","concussive")>=0){
                 hammer=true;
