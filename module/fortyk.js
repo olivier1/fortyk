@@ -166,22 +166,15 @@ Hooks.once('ready', async function() {
                 case "critEffect":
                     id=data.package.token;
                     token=canvas.tokens.get(id);
-                    await FortykRolls.critEffects(token,data.package.num,data.package.hitLoc,data.package.type);
+                    await FortykRolls.critEffects(token,data.package.num,data.package.hitLoc,data.package.type,data.package.ignoreSON);
 
                     break;
                 case "applyDead":
                     id=data.package.token;
                     token=canvas.tokens.get(id);
-                    let effect="icons/svg/skull.svg";
-                    await token.toggleOverlay(effect);
-                    try{
-                        let combatant = await game.combat.getCombatantByToken(id);
-                        let combatid=combatant._id;
-                        await game.combat.updateCombatant({
-                            '_id':combatid,
-                            'defeated':true
-                        }) 
-                    }catch(err){}
+                    actor=data.package.actor;
+                    FortykRolls.applyDead(token,actor);
+                    
 
                     break;
             }

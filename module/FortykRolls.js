@@ -332,6 +332,8 @@ returns the roll message*/
         if(fortykWeapon.getFlag("fortyk","vengeful")){
             righteous=fortykWeapon.getFlag("fortyk","vengeful");
         }
+        let ignoreSON=(fortykWeapon.type==="psychicPower"||fortykWeapon.getFlag("fortyk","force")||fortykWeapon.getFlag("fortyk","sanctified")||fortykWeapon.getFlag("fortyk","daemonbane")||fortykWeapon.getFlag("fortyk","warp"));
+
         let lastHit=actor.data.data.secChar.lastHit;
 
         let attackerToken=actor.getActiveTokens()[0];
@@ -372,6 +374,16 @@ returns the roll message*/
                 }
             }
         }
+        if(fortykWeapon.getFlag("fortyk","daemonbane")){
+            if(!self&&targets.size!==0){
+                let target=targets.values().next().value;
+                let targetRace=target.actor.data.data.race.value;
+
+                if(targetRace==="Daemon"){
+                    righteous-=1;
+                }
+            }
+        }
         //spray and blast weapons always hit the body hit location
         if(fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","spray")){
             curHit=game.fortyk.FORTYK.extraHits["body"][0];
@@ -380,13 +392,13 @@ returns the roll message*/
         //change formula for d5 weapons
         form=form.replace("d5","d10/2");
 
-        //change formula for tearing weapons
+        //change formula for tearing weapons 
         if(fortykWeapon.getFlag("fortyk","tearing")){
             let dPos = form.indexOf('d');
             let dieNum = form.substr(0,dPos);
             let newNum=parseInt(dieNum)+1;
             if(actor.getFlag("fortyk","chainweaponexpertise")&&weapon.data.type.value==="Chain"){
-                newNum=parseInt(dieNum)+1;
+                newNum++;
             }
             form=form.slice(dPos);
             form=newNum+form;
@@ -396,9 +408,9 @@ returns the roll message*/
             if(actor.getFlag("fortyk","chainweaponexpertise")&&weapon.data.type.value==="Chain"){
                 form=startstr+"dl2"+endstr;
             }else{
-               form=startstr+"dl1"+endstr; 
+                form=startstr+"dl1"+endstr; 
             }
-            
+
         }
         //change formula for primitive and proven weapons
         if(fortykWeapon.getFlag("fortyk","primitive")||fortykWeapon.getFlag("fortyk","proven")){
@@ -407,14 +419,14 @@ returns the roll message*/
             let afterD=dPos+3;
             let startstr=form.slice(0,afterD);
             let endstr=form.slice(afterD);
-           
-           if(fortykWeapon.getFlag("fortyk","primitive")){
-               form=`{`+startstr+`,${dieNum*fortykWeapon.getFlag("fortyk","primitive")}}kl1`+endstr; 
-           }else if(fortykWeapon.getFlag("fortyk","proven")){
-               form=`{`+startstr+`,${dieNum*fortykWeapon.getFlag("fortyk","proven")}}kh1`+endstr; 
-           }
-               
-            
+
+            if(fortykWeapon.getFlag("fortyk","primitive")){
+                form=`{`+startstr+`,${dieNum*fortykWeapon.getFlag("fortyk","primitive")}}kl1`+endstr; 
+            }else if(fortykWeapon.getFlag("fortyk","proven")){
+                form=`{`+startstr+`,${dieNum*fortykWeapon.getFlag("fortyk","proven")}}kh1`+endstr; 
+            }
+
+
         }
         //change formula for cleanse with fire for flame weapons
         if(actor.getFlag("fortyk","cleansewithfire")&&fortykWeapon.getFlag("fortyk","flame")){
@@ -453,9 +465,9 @@ returns the roll message*/
             let roll=new Roll(form,actor.data.data);
             let label = weapon.name ? `Rolling ${weapon.name} damage.` : 'damage';
             roll.roll();
-            
+
             let tens=0;
-            
+
             try{
                 for ( let r of roll.dice[0].results ) {
                     if(r.active){
@@ -463,16 +475,16 @@ returns the roll message*/
                             tens+=1;
                         }
                     }
-                    
+
                 } 
             }catch(err){
 
             }
 
-            
-           
-            
-            
+
+
+
+
             //round up the total in case of d5 weapons
             roll._total=Math.ceil(roll._total);
 
@@ -517,7 +529,7 @@ returns the roll message*/
                     let tarActor={};
                     data=tar.actor.data.data; 
                     tarActor=tar.actor;
-                    
+
                     if(!tarActor.getFlag("core","dead")){
 
 
@@ -645,6 +657,11 @@ returns the roll message*/
                             }
                         }
                         let damage=roll._total;
+                        //generate roll message
+                        await roll.toMessage({
+                            speaker: ChatMessage.getSpeaker({ actor: actor }),
+                            flavor: label
+                        });
                         //damage part of smite the unholy
                         if(actor.getFlag("fortyk","smitetheunholy")&&tarActor.getFlag("fortyk","fear")&&weapon.type==="meleeWeapon"){
                             if(!isNaN(tarActor.getFlag("fortyk","fear"))){
@@ -782,13 +799,9 @@ returns the roll message*/
                                                 author:actor.name};
                             await ChatMessage.create(crippleOptions,{});
                         }
-                        //generate roll message
-                        await roll.toMessage({
-                            speaker: ChatMessage.getSpeaker({ actor: actor }),
-                            flavor: label
-                        });
+
                         //check for righteous fury
-                        let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar);
+                        let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar,ignoreSON);
                         if(crit&&damage<=0){
                             damage=1;
                         }else if(damage<=0){
@@ -845,7 +858,8 @@ returns the roll message*/
                             }
                         }
                         //deathdealer
-                        if(damage>newWounds[tarNumbr]&&actor.getFlag("fortyk","deathdealer")&&(weapon.type.toLowerCase().includes(actor.getFlag("fortyk","deathdealer")))){
+                       
+                        if(damage>newWounds[tarNumbr]&&actor.getFlag("fortyk","deathdealer")&&(weapon.type.toLowerCase().includes(actor.getFlag("fortyk","deathdealer").toLowerCase()))){
                             damage+=actor.data.data.characteristics.per.bonus;
                             let deathDealerOptions={user: game.user._id,
                                                     speaker:{actor,alias:actor.name},
@@ -929,18 +943,8 @@ returns the roll message*/
                             await this.applyDead(tar,actor);
                         }else if(newWounds[tarNumbr]<0&&damage>0){
                             let crit=Math.abs(newWounds[tarNumbr])-1;
-                            let rightMes=FORTYKTABLES.crits[weapon.data.damageType.value][curHit.value][crit];
-                            let mesDmgType=weapon.data.damageType.value;
-                            let mesRes=crit+1;
-                            let mesHitLoc=curHit.label;
-                            let chatOptions={user: game.user._id,
-                                             speaker:{actor,alias:actor.name},
-                                             content:rightMes,
-                                             classes:["fortyk"],
-                                             flavor:`${mesHitLoc}: ${mesRes}, ${mesDmgType} Critical effect`,
-                                             author:actor.name};
-                            await ChatMessage.create(chatOptions,{});
-                            await this.critEffects(tar,mesRes,curHit.value,mesDmgType);
+                           
+                            await this.critEffects(tar,crit+1,curHit.value,weapon.data.damageType.value,ignoreSON);
                         }
                         //flame weapon
                         if(fortykWeapon.getFlag("fortyk","flame")&&!data.horde.value){
@@ -999,8 +1003,8 @@ returns the roll message*/
                             }
                         }
 
-                        await this.applyActiveEffect(tar,activeEffects);
-                        
+                        await this.applyActiveEffect(tar,activeEffects,ignoreSON);
+
                     }
                     if(h===hits-1){
 
@@ -1043,7 +1047,8 @@ returns the roll message*/
         }
     }
     //handles righteous fury
-    static async _righteousFury(actor,label,weapon,curHit,tens, damage=1, tar=null){
+    static async _righteousFury(actor,label,weapon,curHit,tens, damage=1, tar=null, ignoreSON=false){
+
         var crit=false;
         if(tens>0){
             crit=true;
@@ -1057,19 +1062,8 @@ returns the roll message*/
                 flavor: "Righteous Fury!"
             });
             let res=rightRoll._total-1;
-            let rightMes=FORTYKTABLES.crits[weapon.data.damageType.value][curHit.value][res];
-            let mesDmgType=weapon.data.damageType.value;
-            let mesRes=res+1;
-            let mesHitLoc=curHit.label;
-            let chatOptions={user: game.user._id,
-                             speaker:{actor,alias:actor.name},
-                             content:rightMes,
-                             classes:["fortyk"],
-                             flavor:`${mesHitLoc}: ${mesRes}, ${mesDmgType} Critical effect`,
-                             author:actor.name};
-            await ChatMessage.create(chatOptions,{});
             if(tar!==null){
-                await this.critEffects(tar,mesRes,curHit.value,weapon.data.damageType.value);
+                await this.critEffects(tar,res,curHit.value,weapon.data.damageType.value,ignoreSON);
             }
             return true;
         }else if(crit&&damage<1){
@@ -1085,56 +1079,82 @@ returns the roll message*/
             return false;
         }
     }
+    //crit messages
+    static async _critMsg(hitLoc,mesHitLoc, mesRes, mesDmgType,actor){
+        let rightMes=FORTYKTABLES.crits[mesDmgType][hitLoc][mesRes-1];
+        let chatOptions={user: game.user._id,
+                             speaker:{actor,alias:actor.name},
+                             content:rightMes,
+                             classes:["fortyk"],
+                             flavor:`${mesHitLoc}: ${mesRes}, ${mesDmgType} Critical effect`,
+                             author:actor.name};
+            await ChatMessage.create(chatOptions,{});
+    }
+    //text blurp for the stuff of nightmares talent
+    static async _sON(actor){
+        let chatOptions={user: game.user._id,
+                         speaker:{actor,alias:actor.name},
+                         content:"Stuff of nightmares ignores stuns, bleeds and cirtical effects!",
+                         classes:["fortyk"],
+                         flavor:`Stuff of Nightmares!`,
+                         author:actor.name};
+        await ChatMessage.create(chatOptions,{});
+    }
     //applies critical results to token/actor
-    static async critEffects(token,num,hitLoc,type){
+    static async critEffects(token,num,hitLoc,type,ignoreSON){
         if(game.user.isGM||token.owner){
             let actor=token.actor;
             switch(type){
                 case "Energy":
-                    await this.energyCrits(actor,num,hitLoc);
+                    await this.energyCrits(actor,num,hitLoc,ignoreSON);
                     break;
                 case "Explosive":
-                    await this.explosiveCrits(actor,num,hitLoc);
+                    await this.explosiveCrits(actor,num,hitLoc,ignoreSON);
                     break;
                 case "Impact":
-                    await this.impactCrits(actor,num,hitLoc);
+                    await this.impactCrits(actor,num,hitLoc,ignoreSON);
                     break;
                 case "Rending":
-                    await this.rendingCrits(actor,num,hitLoc);
+                    await this.rendingCrits(actor,num,hitLoc,ignoreSON);
                     break;
             }
         }else{
             //if user isnt GM use socket to have gm update the actor
             let tokenId=token.data._id;
-            let socketOp={type:"critEffect",package:{token:tokenId,num:num,hitLoc:hitLoc,type:type}}
+            let socketOp={type:"critEffect",package:{token:tokenId,num:num,hitLoc:hitLoc,type:type,ignoreSON:ignoreSON}}
             await game.socket.emit("system.fortyk",socketOp);
         }
     }
-    static async energyCrits(actor,num,hitLoc){
+    static async energyCrits(actor,num,hitLoc,ignoreSON){
         switch(hitLoc){
             case "head":
-                await this.energyHeadCrits(actor,num);
+                await this.energyHeadCrits(actor,num,ignoreSON);
                 break;
             case "body":
-                await this.energyBodyCrits(actor,num);
+                await this.energyBodyCrits(actor,num,ignoreSON);
                 break;
             case "lArm":
-                await this.energyArmCrits(actor,num,"left");
+                await this.energyArmCrits(actor,num,"left",ignoreSON);
                 break;
             case "rArm":
-                await this.energyArmCrits(actor,num,"right");
+                await this.energyArmCrits(actor,num,"right",ignoreSON);
                 break;
             case "lLeg":
-                await this.energyLegCrits(actor,num,"left");
+                await this.energyLegCrits(actor,num,"left",ignoreSON);
                 break;
             case "rLeg":
-                await this.energyLegCrits(actor,num,"right");
+                await this.energyLegCrits(actor,num,"right",ignoreSON);
                 break;
         }
     }
-    static async energyHeadCrits(actor,num){
+    static async energyHeadCrits(actor,num,ignoreSON){
         let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
+        if(!actor.isToken){actorToken=getActorToken(actor);}
+        if(num<8&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return
+        }
+        await this._critMsg("head","Head", num, "Energy",actor);
         switch(num){
             case 1:
                 let critActiveEffect1=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")])];
@@ -1246,14 +1266,19 @@ returns the roll message*/
                 break;
         }
     }
-    static async energyBodyCrits(actor,num){
+    static async energyBodyCrits(actor,num,ignoreSON){
         let critActiveEffect=[];
         let tTest=false;
         let agiTest=false;
         let d5Roll=new Roll('1d5');
         let d10Roll=new Roll('1d10');
         let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
+        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }
+        if(num<9&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return
+        }
+        await this._critMsg("body","Body", num, "Energy",actor);
         switch(num){
             case 1:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")]));
@@ -1371,7 +1396,7 @@ returns the roll message*/
                 break;
         }
     }
-    static async energyArmCrits(actor,num,arm){
+    static async energyArmCrits(actor,num,arm,ignoreSON){
         let critActiveEffect=[];
         let tTest=false;
         let d5Roll=new Roll('1d5');
@@ -1379,6 +1404,11 @@ returns the roll message*/
         let actorToken=actor.token;
         if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let injury=null;
+        if(num<9&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return;
+        }
+        await this._critMsg("lArm",arm+" arm", num, "Energy",actor);
         switch(num){
             case 1:
                 await d5Roll.roll().toMessage({flavor:"Penalty duration."});
@@ -1485,9 +1515,14 @@ returns the roll message*/
             case 9:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist death");
                 if(!tTest.value){
+
                     await this.applyDead(actorToken,actor);
                     return;
                 }else{
+                    if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+                        await this._sON(actor);
+                        return
+                    }
                     await d10Roll.roll().toMessage({flavor:"Fatigue amount."});
                     this._addFatigue(actor,d10Roll._total);
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]));
@@ -1506,7 +1541,7 @@ returns the roll message*/
                 break;
         }
     }
-    static async energyLegCrits(actor,num,leg){
+    static async energyLegCrits(actor,num,leg,ignoreSON){
         let actorToken=actor.token;
         if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
@@ -1514,6 +1549,11 @@ returns the roll message*/
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
         let injury=null;
+        if(num<10&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return
+        }
+        await this._critMsg("lLeg",leg+" Leg", num, "Energy",actor);
         switch(num){
             case 1:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]));
@@ -1612,8 +1652,13 @@ returns the roll message*/
             case 9:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist stun");
                 if(!tTest.value){
+
                     await this.applyDead(actorToken,actor);
                 }else{
+                    if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+                        await this._sON(actor);
+                        return
+                    }
                     injury=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
                     injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                     await this._createInjury(actor,"Lost "+leg+" leg",injury);
@@ -1624,29 +1669,29 @@ returns the roll message*/
                 break;
         }
     }
-    static async explosiveCrits(actor,num,hitLoc){
+    static async explosiveCrits(actor,num,hitLoc,ignoreSON){
         switch(hitLoc){
             case "head":
-                await this.explosiveHeadCrits(actor,num);
+                await this.explosiveHeadCrits(actor,num,ignoreSON);
                 break;
             case "body":
-                await this.explosiveBodyCrits(actor,num);
+                await this.explosiveBodyCrits(actor,num,ignoreSON);
                 break;
             case "lArm":
-                await this.explosiveArmCrits(actor,num,"left");
+                await this.explosiveArmCrits(actor,num,"left",ignoreSON);
                 break;
             case "rArm":
-                await this.explosiveArmCrits(actor,num,"right");
+                await this.explosiveArmCrits(actor,num,"right",ignoreSON);
                 break;
             case "lLeg":
-                await this.explosiveLegCrits(actor,num,"left");
+                await this.explosiveLegCrits(actor,num,"left",ignoreSON);
                 break;
             case "rLeg":
-                await this.explosiveLegCrits(actor,num,"right");
+                await this.explosiveLegCrits(actor,num,"right",ignoreSON);
                 break;
         }
     }
-    static async explosiveHeadCrits(actor,num){
+    static async explosiveHeadCrits(actor,num,ignoreSON){
         let actorToken=actor.token;
         if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
@@ -1654,6 +1699,11 @@ returns the roll message*/
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
         let injury=null;
+        if(num<6&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return
+        }
+        await this._critMsg("head","Head", num, "Explosive",actor);
         switch(num){
             case 1:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")]));
@@ -1741,13 +1791,18 @@ returns the roll message*/
                 break;
         }
     }
-    static async explosiveBodyCrits(actor,num){
+    static async explosiveBodyCrits(actor,num,ignoreSON){
         let actorToken=actor.token;
         if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
         let tTest=false;
+        if(num<8&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return
+        }
+        await this._critMsg("body","Body", num, "Explosive",actor);
         switch(num){
             case 1:
                 await d5Roll.roll().toMessage({flavor:"Knockback distance."});
@@ -1800,7 +1855,7 @@ returns the roll message*/
             case 6:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("bleeding")]));
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]));
-                critActiveEffect[0].duration={
+                critActiveEffect[1].duration={
                     combat:game.combats.active.data._id,
                     rounds:1,
                     startRound:game.combats.active.current.round
@@ -1836,7 +1891,7 @@ returns the roll message*/
                 break;
         }
     }
-    static async explosiveArmCrits(actor,num,arm){
+    static async explosiveArmCrits(actor,num,arm,ignoreSON){
         let actorToken=actor.token;
         if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
@@ -1844,6 +1899,11 @@ returns the roll message*/
         let d10Roll=new Roll("1d10");
         let tTest=false;
         let injury=null;
+        if(num<8&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return
+        }
+         await this._critMsg("lArm",arm+" arm", num, "Explosive",actor);
         switch(num){
             case 1:
                 this._addFatigue(actor,1);
@@ -1913,6 +1973,10 @@ returns the roll message*/
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor);
                 }else{
+                    if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+                        await this._sON(actor);
+                        return
+                    }
                     await d10Roll.roll().toMessage({flavor:"Fatigue amount."});
                     await this._addFatigue(actor,d10Roll._total);
                     await d10Roll.reroll().toMessage({flavor:"Stun duration."});
@@ -1939,7 +2003,7 @@ returns the roll message*/
                 break;
         }
     }
-    static async explosiveLegCrits(actor,num,leg){
+    static async explosiveLegCrits(actor,num,leg,ignoreSON){
         let actorToken=actor.token;
         if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
@@ -1947,6 +2011,11 @@ returns the roll message*/
         let d10Roll=new Roll("1d10");
         let tTest=false;
         let injury=null;
+        if(num<8&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return
+        }
+        await this._critMsg("lLeg",leg+" Leg", num, "Explosive",actor);
         switch(num){
             case 1:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total+10),actor, "Resist prone");
@@ -2032,6 +2101,10 @@ returns the roll message*/
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor);
                 }else{
+                    if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+                        await this._sON(actor);
+                        return
+                    }
                     await d10Roll.roll().toMessage({flavor:"Fatigue amount."});
                     this._addFatigue(actor,d10Roll._total);
                     await d10Roll.reroll().toMessage({flavor:"Stun duration."});
@@ -2059,30 +2132,30 @@ returns the roll message*/
                 break;
         }
     }
-    static async impactCrits(actor,num,hitLoc){
+    static async impactCrits(actor,num,hitLoc,ignoreSON){
         let actorToken=actor.token;
         switch(hitLoc){
             case "head":
-                await this.impactHeadCrits(actor,num);
+                await this.impactHeadCrits(actor,num,ignoreSON);
                 break;
             case "body":
-                await this.impactBodyCrits(actor,num);
+                await this.impactBodyCrits(actor,num,ignoreSON);
                 break;
             case "lArm":
-                await this.impactArmCrits(actor,num,"left");
+                await this.impactArmCrits(actor,num,"left",ignoreSON);
                 break;
             case "rArm":
-                await this.impactArmCrits(actor,num,"right");
+                await this.impactArmCrits(actor,num,"right",ignoreSON);
                 break;
             case "lLeg":
-                await this.impactLegCrits(actor,num,"left");
+                await this.impactLegCrits(actor,num,"left",ignoreSON);
                 break;
             case "rLeg":
-                await this.impactLegCrits(actor,num,"right");
+                await this.impactLegCrits(actor,num,"right",ignoreSON);
                 break;
         }
     }
-    static async impactHeadCrits(actor,num){
+    static async impactHeadCrits(actor,num,ignoreSON){
         let actorToken=actor.token;
         if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
@@ -2090,6 +2163,11 @@ returns the roll message*/
         let d10Roll=new Roll("1d10");
         let tTest=false;
         let agiTest=false;
+        if(num<8&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return
+        }
+        await this._critMsg("head","Head", num, "Impact",actor);
         switch(num){
             case 1:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist fatigue");
@@ -2198,7 +2276,7 @@ returns the roll message*/
                 break;
         }
     }
-    static async impactBodyCrits(actor,num){
+    static async impactBodyCrits(actor,num,ignoreSON){
         let actorToken=actor.token;
         if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
@@ -2206,6 +2284,11 @@ returns the roll message*/
         let d10Roll=new Roll("1d10");
         let tTest=false;
         let agiTest=false;
+        if(num<9&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return
+        }
+        await this._critMsg("body","Body", num, "Impact",actor);
         switch(num){
             case 1:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")]));
@@ -2292,7 +2375,7 @@ returns the roll message*/
                 break;
         }
     }
-    static async impactArmCrits(actor,num,arm){
+    static async impactArmCrits(actor,num,arm,ignoreSON){
         let actorToken=actor.token;
         if(!actor.isToken){                    actorToken=getActorToken(actor);                 }
         let critActiveEffect=[];
@@ -2300,6 +2383,11 @@ returns the roll message*/
         let d10Roll=new Roll("1d10");
         let tTest=false;
         let injury=null;
+        if(num<9&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return
+        }
+         await this._critMsg("lArm",arm+" arm", num, "Impact",actor);
         switch(num){
             case 1:
                 break;
@@ -2355,6 +2443,10 @@ returns the roll message*/
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor);
                 }else{
+                    if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+                        await this._sON(actor);
+                        return
+                    }
                     await d5Roll.roll().toMessage({flavor:"Fatigue amount."});
                     this._addFatigue(actor,d5Roll._total);;
                     await d10Roll.roll().toMessage({flavor:"Stun duration."});
@@ -2378,7 +2470,7 @@ returns the roll message*/
                 break;
         }
     }
-    static async impactLegCrits(actor,num,leg){
+    static async impactLegCrits(actor,num,leg,ignoreSON){
         let actorToken=actor.token;
         if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
@@ -2386,6 +2478,11 @@ returns the roll message*/
         let d10Roll=new Roll("1d10");
         let tTest=false;
         let injury=null;
+        if(num<9&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return
+        }
+        await this._critMsg("lLeg",leg+" Leg", num, "Impact",actor);
         switch(num){
             case 1:
                 this._addFatigue(actor,1);
@@ -2469,6 +2566,10 @@ returns the roll message*/
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor);
                 }else{
+                    if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+                        await this._sON(actor);
+                        return
+                    }
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("bleeding")]));
                     injury=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
                     injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
@@ -2487,29 +2588,29 @@ returns the roll message*/
                 break;
         }
     }
-    static async rendingCrits(actor,num,hitLoc){
+    static async rendingCrits(actor,num,hitLoc,ignoreSON){
         switch(hitLoc){
             case "head":
-                await this.rendingHeadCrits(actor,num);
+                await this.rendingHeadCrits(actor,num,ignoreSON);
                 break;
             case "body":
-                await this.rendingBodyCrits(actor,num);
+                await this.rendingBodyCrits(actor,num,ignoreSON);
                 break;
             case "lArm":
-                await this.rendingArmCrits(actor,num,"left");
+                await this.rendingArmCrits(actor,num,"left",ignoreSON);
                 break;
             case "rArm":
-                await this.rendingArmCrits(actor,num,"right");
+                await this.rendingArmCrits(actor,num,"right",ignoreSON);
                 break;
             case "lLeg":
-                await this.rendingLegCrits(actor,num,"left");
+                await this.rendingLegCrits(actor,num,"left",ignoreSON);
                 break;
             case "rLeg":
-                await this.rendingLegCrits(actor,num,"right");
+                await this.rendingLegCrits(actor,num,"right",ignoreSON);
                 break;
         }
     }
-    static async rendingHeadCrits(actor,num){
+    static async rendingHeadCrits(actor,num,ignoreSON){
         let actorToken=actor.token;
         if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
@@ -2517,6 +2618,11 @@ returns the roll message*/
         let d10Roll=new Roll("1d10");
         let tTest=false;
         let injury=null;
+        if(num<8&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return
+        }
+        await this._critMsg("head","Head", num, "Rending",actor);
         switch(num){
             case 1:
                 if(parseInt(actor.data.data.characterHitLocations.head.armor)===0){
@@ -2635,13 +2741,18 @@ returns the roll message*/
                 break;
         }
     }
-    static async rendingBodyCrits(actor,num){
+    static async rendingBodyCrits(actor,num,ignoreSON){
         let actorToken=actor.token;
         if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
         let tTest=false;
+        if(num<9&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return
+        }
+        await this._critMsg("body","Body", num, "Rending",actor);
         switch(num){
             case 1:
                 if(parseInt(actor.data.data.characterHitLocations.body.armor)===0){
@@ -2712,6 +2823,10 @@ returns the roll message*/
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor);
                 }else{
+                    if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+                        await this._sON(actor);
+                        return
+                    }
                     d10Roll.roll().toMessage({flavor:"Toughness damage."});
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("t")]));
                     critActiveEffect[0].changes=[{key:`data.characteristics.t.value`,value:-1*d10Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}]; 
@@ -2733,7 +2848,7 @@ returns the roll message*/
                 break;
         }
     };
-    static async rendingArmCrits(actor,num,arm){
+    static async rendingArmCrits(actor,num,arm,ignoreSON){
         let actorToken=actor.token;
         if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
         let critActiveEffect=[];
@@ -2741,6 +2856,11 @@ returns the roll message*/
         let d10Roll=new Roll("1d10");
         let tTest=false;
         let injury=null;
+        if(num<9&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return
+        }
+         await this._critMsg("lArm",arm+" arm", num, "Rending",actor);
         switch(num){
             case 1:
                 break;
@@ -2804,6 +2924,10 @@ returns the roll message*/
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor);
                 }else{
+                    if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+                        await this._sON(actor);
+                        return
+                    }
                     d10Roll.roll().toMessage({flavor:"Stun duration."});
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]));
                     critActiveEffect[0].duration={
@@ -2825,7 +2949,7 @@ returns the roll message*/
                 break;
         }
     };
-    static async rendingLegCrits(actor,num,leg){
+    static async rendingLegCrits(actor,num,leg,ignoreSON){
         let actorToken=actor.token;
         if(!actor.isToken){                    actorToken=getActorToken(actor);                 }
         let critActiveEffect=[];
@@ -2834,6 +2958,11 @@ returns the roll message*/
         let tTest=false;
         let agiTest=false;
         let injury=null;
+        if(num<9&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+            await this._sON(actor);
+            return
+        }
+        await this._critMsg("lLeg",leg+" Leg", num, "Rending",actor);
         switch(num){
             case 1:
                 this._addFatigue(actor,1);
@@ -2899,6 +3028,10 @@ returns the roll message*/
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor);
                 }else{
+                    if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
+                        await this._sON(actor);
+                        return
+                    }
                     injury=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
                     injury.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                     await this._createInjury(actor,"Lost "+leg+" leg",injury);
@@ -2921,7 +3054,7 @@ returns the roll message*/
                 break;
         }
     };
-    static async applyActiveEffect(token,effect){
+    static async applyActiveEffect(token,effect,ignoreSON=false){
         if(effect.length>0){
 
             if(game.user.isGM||token.owner){
@@ -2951,15 +3084,15 @@ returns the roll message*/
                     }
 
                     let skip=false;
-
                     if(effect[index].id==="stunned"&&actor.getFlag("fortyk","ironjaw")){
                         skip=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Iron Jaw").value;
                     }
                     if(effect[index].id==="stunned"&&actor.getFlag("fortyk","frenzy")){
                         skip=true;
                     }
-                    if((effect[index].id==="stunned"||effect[index].id==="bleeding")&&actor.getFlag("fortyk","stuffoffnightmares")){
+                    if(!ignoreSON&&(effect[index].id==="stunned"||effect[index].id==="bleeding")&&actor.getFlag("fortyk","stuffoffnightmares")){
                         skip=true;
+                        this._sON(actor);
                     }
                     if(!dupp&&!skip){
                         await actor.createEmbeddedEntity("ActiveEffect",effect[index]);
@@ -2975,17 +3108,18 @@ returns the roll message*/
         }
     };
     static async applyDead(target,actor){
-        
+
         if(target.data.overlayEffect===undefined||target.data.overlayEffect===null||!target.data.overlayEffect.includes("icons/svg/skull.svg")){
-            let msg=target.name+" is killed!";
-            let chatOptions={user: game.user._id,
-                             speaker:{actor,alias:actor.name},
-                             content:msg,
-                             classes:["fortyk"],
-                             flavor:`Death Report`,
-                             author:actor.name};
-            await ChatMessage.create(chatOptions,{});
+
             if(game.user.isGM||target.owner){
+                let msg=target.name+" is killed!";
+                let chatOptions={user: game.user._id,
+                                 speaker:{actor,alias:actor.name},
+                                 content:msg,
+                                 classes:["fortyk"],
+                                 flavor:`Death Report`,
+                                 author:actor.name};
+                await ChatMessage.create(chatOptions,{});
                 let id=target.data._id;
                 let effect="icons/svg/skull.svg";
                 let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
@@ -3001,7 +3135,7 @@ returns the roll message*/
                 }catch(err){}
             }else{
                 let tokenId=target.data._id;
-                let socketOp={type:"applyDead",package:{token:tokenId}}
+                let socketOp={type:"applyDead",package:{token:tokenId,actor:actor}}
                 await game.socket.emit("system.fortyk",socketOp);
             }
         }

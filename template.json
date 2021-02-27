@@ -731,8 +731,8 @@
                 "physicalProp"
             ],
             "rof": [{
-                "value": 0,
-                "type": "Number"
+                "value": "s",
+                "type": "String"
             },
                     {
                         "value": 0,
