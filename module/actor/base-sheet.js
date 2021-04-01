@@ -233,7 +233,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                             let talentsNTraits=[];
                             for(let i=0;i<selectedIds.length;i++){
                                 let tnt=null;
-
+                                console.log($selectedCompendiums[i]);
                                 switch($selectedCompendiums[i]){
                                     case"talent-core-dh2":
                                         tnt=await dh2Talents.getEntity(selectedIds[i]);
@@ -254,7 +254,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                         tnt=await dh2CoreBonus.getEntity(selectedIds[i]);
                                         break;
                                     case "role-homeworld-and-background-bonusenemies-without":
-                                        tnt=await dh2EnemiesWithinBonus.getEntity(selectedIds[i]);
+                                        tnt=await dh2EnemiesWithoutBonus.getEntity(selectedIds[i]);
                                         break;
                                     case "role-homeworld-and-background-bonusenemies-within":
                                         tnt=await dh2EnemiesWithinBonus.getEntity(selectedIds[i]);
