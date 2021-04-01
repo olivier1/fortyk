@@ -24,7 +24,7 @@ export class FortyKItem extends Item {
     /**
    * Augment the basic Item data model with additional dynamic data.
    */
-    prepareData() {
+    async prepareData() {
         super.prepareData();
 
         // Get the Item's data
@@ -173,8 +173,7 @@ export class FortyKItem extends Item {
 
                 let char=0;
                 if(data.testChar.value==="psy"){
-                    char=getItem(this.actor,"Psyniscience").data.total.value;
-                    data.testChar.type="per";
+                    
                 }else{
                     char=parseInt(actorData.data.characteristics[data.testChar.value].total);
                     data.testChar.type=data.testChar.value;

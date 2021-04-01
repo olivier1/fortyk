@@ -378,7 +378,7 @@ export class FortyKActor extends Actor {
         if((rightHandWeapon!==null&&rightHandWeapon.getFlag("fortyk","defensive"))||(leftHandWeapon!==null&&leftHandWeapon.getFlag("fortyk","defensive"))){
             parry=15;
         }
-
+        let psyniscience=0;
         
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
@@ -403,6 +403,9 @@ export class FortyKActor extends Actor {
                         forRaces.push(item.name);
                     }
                 } item.data.total.value+=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
+                if(item.name==="Psyniscience"){
+                   psyniscience=item.data.total.value;
+               }
                 skills.push(item);
             }
             if(item.type==="malignancy"){
@@ -453,8 +456,8 @@ export class FortyKActor extends Actor {
                 let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(item.data.curPR.value));
                 let char=0;
                 if(item.data.testChar.value==="psy"){
-                    char=getItem(this,"Psyniscience").data.total.value;
-                    data.testChar.type="per";
+                    char=psyniscience;
+                    item.data.testChar.type="per";
                 }else{
                     char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
                     item.data.testChar.type=item.data.testChar.value;
