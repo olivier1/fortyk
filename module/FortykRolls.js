@@ -863,7 +863,7 @@ returns the roll message*/
                             damage+=actor.data.data.characteristics.per.bonus;
                             let deathDealerOptions={user: game.user._id,
                                                     speaker:{actor,alias:actor.name},
-                                                    content:`Deathdealer increases criritcal damage by ${actor.data.data.characteristics.per.bonus}.`,
+                                                    content:`Deathdealer increases critical damage by ${actor.data.data.characteristics.per.bonus}.`,
                                                     classes:["fortyk"],
                                                     flavor:`Deathdealer`,
                                                     author:actor.name};
