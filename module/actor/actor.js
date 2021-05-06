@@ -204,7 +204,7 @@ export class FortyKActor extends Actor {
                 }
             }  
         }
-
+        
 
         //prepare psyker stuff
         data.psykana.pr.effective=parseInt(data .psykana.pr.value)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
@@ -562,6 +562,12 @@ export class FortyKActor extends Actor {
         //compile total exp and influence
         data.characteristics["inf"].total=data.characteristics["inf"].value+data.characteristics["inf"].advance;
         data.experience.value=parseInt(data.experience.starting)+parseInt(data.experience.earned)-parseInt(data.experience.spent);
+        //get income based on influence
+        let inf=data.characteristics["inf"].total;
+        if(this.getFlag("fortyk","breedingcounts")){
+            inf+=10;
+        }
+        data.currency.income=FORTYKTABLES.income[inf];
         //get max carry weight ensure it is not out of bounds
         if((data.characteristics["s"].bonus+data.characteristics["t"].bonus)>19){
             data.carry.max=game.fortyk.FORTYK.carry[19].carry+data.carry.mod;

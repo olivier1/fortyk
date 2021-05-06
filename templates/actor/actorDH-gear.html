@@ -1,0 +1,67 @@
+<div class="sheet-gear flexrow">
+    <div class="cyber flexcol">
+        <span class="section-title">CURRENCY</span>
+        <span>Credits: <input type="text" name="data.currency.value" value="{{data.currency.value}}" data-dtype="Number"></span>
+         <span>Base Monthly Income: {{data.currency.income}} Credits</span>
+        
+        <span class="section-title">CYBERNETICS</span>
+        <a class="item-create button" data-type="cybernetic" title="Add a new Cybernetic">Add Cybernetic</a>
+        <div class="list list4col grid grid-4col">
+            <span class="list-item">Name</span>
+            <span class="list-item">Location</span>
+            <span class="list-button"></span>
+            <span class="list-button"></span>
+            {{#each actor.cybernetics as |c key|}}
+
+            <a class="item-descr list-item" data-name="{{c.name}}" data-item-descr="{{c.data.description.value}}">{{c.name}}</a>
+            <select data-item-id="{{c._id}}" class="cyber-location-select list-item" data-dtype="String">
+                {{#select c.data.location.value}}
+
+                {{#each ../data.characterHitLocations as |l key|}}
+
+                <option value="{{key}}">{{l.label}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+            <a class="cyberItem item-edit" title="Edit" data-item-id="{{c._id}}"></a>
+            <a class="cyberItem item-delete" title="Delete" data-item-id="{{c._id}}"></a>
+
+
+
+            {{/each}}
+
+        </div>
+    </div>
+    <div class="cyber flexcol">
+        <span class="section-title">CARRY</span>
+        <div class="carry flexcol">
+            <span>Mod: <input type="text" name="data.carry.mod" value="{{data.carry.mod}}" data-dtype="Number"></span>
+            <span>Total Weight: {{data.carry.value}}kg</span>
+            <span>Max Weight: {{data.carry.max}}kg</span>
+        </div>
+        <span class="section-title">WARGEAR</span>
+        <a class="wargear-create button" title="Add a new Wargear">Add Wargear</a>
+
+        <div class="list list5col grid grid-5col">
+            <span class="list-item">Name</span>
+            <span class="list-item">Amount</span>
+            <span class="list-item">Weight</span>
+            <span class="list-button"></span>
+            <span class="list-button"></span>
+            {{#each actor.wargear as |w key|}}
+
+
+            <a class="item-descr list-item drag" data-name="{{w.name}}" data-item-descr="{{w.data.description.value}}">{{w.name}}</a>
+            <input type="text" class="item-text-input list-item" data-target="data.amount.value" value="{{w.data.amount.value}}" data-item-id="{{w._id}}" data-dtype="Number">
+            <span class="list-item">{{w.data.weight.total}}kg</span>
+
+            <a class="list-button item-edit" title="Edit" data-item-id="{{w._id}}"></a>
+            <a class="list-button item-delete" title="Delete" data-item-id="{{w._id}}"></a>
+
+
+
+            {{/each}}
+
+        </div>
+    </div>
+</div>
