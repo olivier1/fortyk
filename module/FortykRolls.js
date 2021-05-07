@@ -1061,7 +1061,7 @@ returns the roll message*/
                 speaker: ChatMessage.getSpeaker({ actor: actor }),
                 flavor: "Righteous Fury!"
             });
-            let res=rightRoll._total-1;
+            let res=rightRoll._total;
             if(tar!==null){
                 await this.critEffects(tar,res,curHit.value,weapon.data.damageType.value,ignoreSON);
             }
