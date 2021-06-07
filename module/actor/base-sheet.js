@@ -146,7 +146,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             name: `new ${type}`,
             type: type
         };
-        let item= await this.actor.createEmbeddedEntity("Item",itemData,{renderSheet:true});
+        let item= await this.actor.createEmbeddedDocument("Item",itemData,{renderSheet:true});
         let newItem=null;
         if(this.actor.isToken){
             newItem = await this.actor.items.find(i => i.data._id == item.data._id);
@@ -331,7 +331,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
 
                             }
-                            await actor.createEmbeddedEntity("Item",talentsNTraits);
+                            await actor.createEmbeddedDocument("Item",talentsNTraits);
                         }
                     }
                 },

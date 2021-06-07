@@ -88,7 +88,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                                 type: type
                             };
 
-                            let item=  await this.actor.createEmbeddedEntity("Item",itemData,{renderSheet:true});
+                            let item=  await this.actor.createEmbeddedDocument("Item",itemData,{renderSheet:true});
 
 
                             const newItem =  await this.actor.items.find(i => i.data._id == item._id);
