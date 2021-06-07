@@ -30,16 +30,16 @@ export class FortyKItem extends Item {
         // Get the Item's data
         const itemData = this.data;
         const data = itemData.data;
+        
         itemData["FORTYK"]=game.fortyk.FORTYK;
 
         //ensure this is an owned item
        
-        if(this.actor!==null){
-            const actorData = this.actor ? this.actor.data : {};
-
+        if(this.actor!==null&&this.actor.data!==undefined){
+            const actorData = this.actor.data;
+          
             //prepare skill total value
             if(itemData.type==="skill"){
-
                 data.total.value=parseInt(data.value)+parseInt(data.mod.value)+parseInt(actorData.data.characteristics[data.characteristic.value].total);
             }
             //logic for weapons
@@ -79,7 +79,7 @@ export class FortyKItem extends Item {
                 }
                 if(data.damTyp===undefined){data.damTyp=data.damageType.value}
                 if(data.flags===undefined){data.flags=itemData.flags}
-                let ammo=this.actor.getEmbeddedEntity("OwnedItem",data.ammo._id);
+                let ammo=this.actor.getEmbeddedDocument("Item",data.ammo._id);
                 if(ammo!==null&&!ammo.data.default.value){
                     data.damageType.value=ammo.data.damageType.value;
                     data.range.value=ammo.data.range.formula;

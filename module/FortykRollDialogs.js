@@ -13,7 +13,7 @@ export class FortykRollDialogs{
         const target=dataset["target"];
         const label=dataset["label"];
 
-        const weapon=actor.getOwnedItem(dataset["weapon"]);
+        const weapon=actor.items.get(dataset["weapon"]);
         const fireRate=dataset["fire"];
 
         this.callRollDialog(char, type, target, actor, label, weapon , true, fireRate);
@@ -33,7 +33,7 @@ export class FortykRollDialogs{
 
         const actor=game.actors.get(dataset["actor"]);
 
-        const weapon=duplicate(actor.getEmbeddedEntity("OwnedItem",dataset["weapon"]));
+        const weapon=duplicate(actor.getEmbeddedDocument("Item",dataset["weapon"]));
         let newWeapon=await Item.create(weapon,{temporary:true});
         const formula=weapon.data.damageFormula;
         newWeapon.data.data.pen.value=0;

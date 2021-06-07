@@ -13,14 +13,14 @@ let upd=async ()=>{
                 console.log(i);
 
                 console.log(`Migrating Item entity ${i.name}`);
-              await a.updateEmbeddedEntity("OwnedItem",updateData);
+              await a.updateEmbeddedDocuments("Item",updateData);
                 //weps.push(i);
 
             } catch(err) {
                 console.error(err);
             } 
         }
-        //console.log(await a.updateEmbeddedEntity("OwnedItem",weps));
+        //console.log(await a.updateEmbeddedDocuments("Item",weps));
     }
 }
 

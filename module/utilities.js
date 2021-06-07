@@ -151,7 +151,7 @@ console.log("starting item flag update")
                     }
                 } 
                 if(update){
-                    console.log(await actor.updateEmbeddedEntity("OwnedItem",mod));
+                    console.log(await actor.updateEmbeddedDocuments("Item",mod));
                 }
                 
             }

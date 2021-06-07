@@ -88,7 +88,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                                 type: type
                             };
 
-                            let item=  await this.actor.createEmbeddedEntity("OwnedItem",itemData,{renderSheet:true});
+                            let item=  await this.actor.createEmbeddedEntity("Item",itemData,{renderSheet:true});
 
 
                             const newItem =  await this.actor.items.find(i => i.data._id == item._id);
@@ -117,11 +117,9 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         let newLoc=event.target.value;
         let dataItemId=event.target.attributes["data-item-id"].value;
-        let item= duplicate(this.actor.getEmbeddedEntity("OwnedItem", dataItemId));
+        let item= duplicate(this.actor.getEmbeddedDocument("Item", dataItemId));
         item.data.location.value=newLoc;
-
-
-        await this.actor.updateEmbeddedEntity("OwnedItem",item);
+        item.update({"data.location.value":newLoc});
 
 
     }
@@ -139,9 +137,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         event.preventDefault();
         let newChar=event.target.value;
         let dataItemId=event.target.attributes["data-item-id"].value;
-        let item= duplicate(this.actor.getEmbeddedEntity("OwnedItem", dataItemId));
-        item.data.characteristic.value=newChar;
-        await this.actor.updateEmbeddedEntity("OwnedItem",item);
+        let item= duplicate(this.actor.getEmbeddedDocument("Item", dataItemId));
+        item.update({"data.characteristic.value":newChar});
 
     }
     /**
@@ -153,9 +150,9 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         event.preventDefault();
         let newAdv=event.target.value;
         let dataItemId=event.target.attributes["data-item-id"].value;
-        let item= duplicate(this.actor.getEmbeddedEntity("OwnedItem", dataItemId));
-        item.data.value=newAdv;
-        await this.actor.updateEmbeddedEntity("OwnedItem",item);
+        let item= this.actor.getEmbeddedDocument("Item", dataItemId);
+        item.update({"data.value":newAdv});
+       
 
 
     }
@@ -211,10 +208,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         event.preventDefault;
         const dataset=event.currentTarget.dataset;
-        const weapon=duplicate(this.actor.getEmbeddedEntity("OwnedItem",dataset["weapon"]));
-        const previousAmmo=duplicate(this.actor.getEmbeddedEntity("OwnedItem",dataset["previous"]));
+        const weapon=duplicate(this.actor.getEmbeddedDocument("Item",dataset["weapon"]));
+        const previousAmmo=duplicate(this.actor.getEmbeddedDocument("Item",dataset["previous"]));
         const ammoID=event.currentTarget.value;
-        const ammo=this.actor.getEmbeddedEntity("OwnedItem",ammoID);
+        const ammo=this.actor.getEmbeddedDocument("Item",ammoID);
         weapon.data.ammo._id=ammoID;
 
         let updateWep={};
@@ -237,7 +234,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
 
         items.push(updateWep);
-        await this.actor.updateEmbeddedEntity("OwnedItem",items);
+        await this.actor.updateEmbeddedDocuments("Item",items);
 
 
 
@@ -261,17 +258,18 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let ooa=false;
         //different logic for throwing weapons
         if(weapon.data.class.value!=="Thrown"){
-            const ammo=duplicate(this.actor.getEmbeddedEntity("OwnedItem",weapon.data.ammo._id));
+            const ammo=duplicate(this.actor.getEmbeddedDocument("Item",weapon.data.ammo._id));
 
             if(ammo!==null){
                 let ammoAmt=parseInt(ammo.data.amount.value);
 
                 if(ammoAmt>0){
                     weapon.data.clip.value=weapon.data.clip.max;
+                    
                     ammo.data.amount.value=ammoAmt-1;
 
-                    await this.actor.updateEmbeddedEntity("OwnedItem",weapon);
-                    await this.actor.updateEmbeddedEntity("OwnedItem",ammo);
+                    await this.actor.updateEmbeddedDocuments("Item",weapon);
+                    await this.actor.updateEmbeddedDocuments("Item",ammo);
 
                 }else{
                     ooa=true;
@@ -284,7 +282,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             if(weapon.data.amount.value>0){
                 weapon.data.amount.value=parseInt(weapon.data.amount.value)-1;
                 weapon.data.clip.value=weapon.data.clip.max;
-                await this.actor.updateEmbeddedEntity("OwnedItem",weapon);
+                await this.actor.updateEmbeddedDocuments("Item",weapon);
             }else{
                 ooa=true;
             }
@@ -319,7 +317,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         let actor=this.actor;
 
-        let weapon=actor.getOwnedItem(event.currentTarget.value);
+        let weapon=actor.items.get(event.currentTarget.value);
         if(weapon){
             weapon=weapon.data;
         }
@@ -333,7 +331,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             rightHand.value=weaponID;
 
             update["data.secChar.wornGear.weapons.1"]=weaponID;
-            let oppWeapon=this.actor.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[0]);
+            let oppWeapon=this.actor.getEmbeddedDocument("Item",data.secChar.wornGear.weapons[0]);
             if(weaponID===""&&data.secChar.wornGear.weapons[1]==="2hand"){
                 update["data.secChar.wornGear.weapons.0"]="";
 
@@ -360,7 +358,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             if(weaponID===data.secChar.wornGear.weapons[0]){return}
             leftHand.value=weaponID;
             update["data.secChar.wornGear.weapons.0"]=weaponID;
-            let oppWeapon=this.actor.getEmbeddedEntity("OwnedItem",data.secChar.wornGear.weapons[1]);
+            let oppWeapon=this.actor.getEmbeddedDocument("Item",data.secChar.wornGear.weapons[1]);
             if(weaponID===""&&data.secChar.wornGear.weapons[1]==="2hand"){
 
                 update["data.secChar.wornGear.weapons.1"]="";

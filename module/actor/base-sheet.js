@@ -24,8 +24,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     /* -------------------------------------------- */
     /** @override */
     getData() {
-        const data = super.getData();
-        mergeObject(data.actor,this.actor.prepare());
+        const data = super.getData().data;
+        data.actor=this.actor.prepare();
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
         data.races=game.fortyk.FORTYK.races;
@@ -33,6 +33,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.size=game.fortyk.FORTYK.size;
         data.skillChars=game.fortyk.FORTYK.skillChars;
         data.skillTraining=game.fortyk.FORTYK.skillTraining;
+        console.log(data);
         return data;
     }
     /** @override */
@@ -93,9 +94,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let draggedId=event.dataTransfer.getData("text");
         let targetId=event.target.dataset["id"];
         if(draggedId!==targetId){
-            let draggedItem=await this.actor.getOwnedItem(draggedId);
+            let draggedItem=await this.actor.items.get(draggedId);
 
-            let targetItem=await this.actor.getOwnedItem(targetId);
+            let targetItem=await this.actor.items.get(targetId);
             
             let sortDrag=draggedItem.data.sort;
             let sortTarget=targetItem.data.sort;
@@ -107,7 +108,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 sortDrag=sortTarget;
                 sortTarget+=1;
             }
-            await this.actor.updateOwnedItem([{"_id":draggedId,"sort":sortDrag},{"_id":targetId,"sort":sortTarget}]);
+            await this.actor.updateItem([{"_id":draggedId,"sort":sortDrag},{"_id":targetId,"sort":sortTarget}]);
 
         }
 
@@ -145,7 +146,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             name: `new ${type}`,
             type: type
         };
-        let item= await this.actor.createEmbeddedEntity("OwnedItem",itemData,{renderSheet:true});
+        let item= await this.actor.createEmbeddedEntity("Item",itemData,{renderSheet:true});
         let newItem=null;
         if(this.actor.isToken){
             newItem = await this.actor.items.find(i => i.data._id == item.data._id);
@@ -158,45 +159,45 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         event.preventDefault();
         var actor=this.actor;
         const dh2Talents=await game.packs.get("fortyk.talent-core-dh2");
-        let tnts=await dh2Talents.getContent();
+        let tnts=await dh2Talents.getDocuments();
         var dh2Traits=await game.packs.get("fortyk.traits-core-dh2");
-        tnts=tnts.concat(await dh2Traits.getContent());
+        tnts=tnts.concat(await dh2Traits.getDocuments());
         var dh2EnemyWithinTalents=await game.packs.get("fortyk.talents-enemies-within");
-        tnts=tnts.concat(await dh2EnemyWithinTalents.getContent());
+        tnts=tnts.concat(await dh2EnemyWithinTalents.getDocuments());
         var dh2EnemyWithoutTalents=await game.packs.get("fortyk.talents-enemies-without");
-        tnts=tnts.concat(await dh2EnemyWithoutTalents.getContent());
+        tnts=tnts.concat(await dh2EnemyWithoutTalents.getDocuments());
         var dh2EnemyBeyondTalents=await game.packs.get("fortyk.talents-enemies-beyond");
-        tnts=tnts.concat(await dh2EnemyBeyondTalents.getContent());
+        tnts=tnts.concat(await dh2EnemyBeyondTalents.getDocuments());
         var owCoreTalents=await game.packs.get("fortyk.talents-ow-core");
-        tnts=tnts.concat(await owCoreTalents.getContent());
+        tnts=tnts.concat(await owCoreTalents.getDocuments());
         var owHOTETalents=await game.packs.get("fortyk.talents-hammer-of-the-emperor");
-        tnts=tnts.concat(await owHOTETalents.getContent());
+        tnts=tnts.concat(await owHOTETalents.getDocuments());
         var owShieldOfHumanityTalents=await game.packs.get("fortyk.talents-shield-of-humanity");
-        tnts=tnts.concat(await owShieldOfHumanityTalents.getContent());
+        tnts=tnts.concat(await owShieldOfHumanityTalents.getDocuments());
         //load different packs depending on actor type
         if(actor.data.type==="dhPC"){
             var dh2CoreBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonuscore-dh2");
-            tnts=tnts.concat(await dh2CoreBonus.getContent());
+            tnts=tnts.concat(await dh2CoreBonus.getDocuments());
             var dh2EnemiesWithinBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-within");
-            tnts=tnts.concat(await dh2EnemiesWithinBonus.getContent());
+            tnts=tnts.concat(await dh2EnemiesWithinBonus.getDocuments());
             var dh2EnemiesWithoutBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-without");
-            tnts=tnts.concat(await dh2EnemiesWithoutBonus.getContent());
+            tnts=tnts.concat(await dh2EnemiesWithoutBonus.getDocuments());
             var dh2EnemiesBeyondBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-beyond");
-            tnts=tnts.concat(await dh2EnemiesBeyondBonus.getContent());
+            tnts=tnts.concat(await dh2EnemiesBeyondBonus.getDocuments());
         }else if(actor.data.type==="dwPC"){
             var dwBonus=await game.packs.get("fortyk.deathwatch-bonus-and-drawbacks");
-            tnts=tnts.concat(await dwBonus.getContent());
+            tnts=tnts.concat(await dwBonus.getDocuments());
         }else if(actor.data.type==="owPC"){
             var owCoreAbilities=await game.packs.get("fortyk.homeworld-and-specialty-abilities-core-ow");
-            tnts=tnts.concat(await owCoreAbilities.getContent());
+            tnts=tnts.concat(await owCoreAbilities.getDocuments());
             var owHOTEAbilities=await game.packs.get("fortyk.homeworld-and-specialty-abilities-hammer-of-the-emperor");
-            tnts=tnts.concat(await owHOTEAbilities.getContent());
+            tnts=tnts.concat(await owHOTEAbilities.getDocuments());
             var owHOTEOrders=await game.packs.get("fortyk.orders-hammer-of-the-emperor");
-            tnts=tnts.concat(await owHOTEOrders.getContent());
+            tnts=tnts.concat(await owHOTEOrders.getDocuments());
             var owShieldOfHumanityAbilities=await game.packs.get("fortyk.homeworld-and-specialty-abilities-shield-of-humanity");
-            tnts=tnts.concat(await owShieldOfHumanityAbilities.getContent());
+            tnts=tnts.concat(await owShieldOfHumanityAbilities.getDocuments());
             var owShieldOfHumanityOrders=await game.packs.get("fortyk.orders-shield-of-humanity");
-            tnts=tnts.concat(await owShieldOfHumanityOrders.getContent());
+            tnts=tnts.concat(await owShieldOfHumanityOrders.getDocuments());
         }
         tnts=tnts.sort(function compare(a, b) {
             if (a.name<b.name) {
@@ -227,67 +228,69 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         callback: async html => {
 
                             let selectedIds=$(html).find('#tntselect').val();
+                            console.log(selectedIds);
                             let $selectedCompendiums= $('option:selected',html).map(function(){
                                 return this.getAttribute('data-compendium');
                             }).get();
+                            console.log($selectedCompendiums);
                             let talentsNTraits=[];
                             for(let i=0;i<selectedIds.length;i++){
                                 let tnt=null;
                                 console.log($selectedCompendiums[i]);
                                 switch($selectedCompendiums[i]){
-                                    case"talent-core-dh2":
+                                    case"fortyk.talent-core-dh2":
                                         tnt=await dh2Talents.getEntity(selectedIds[i]);
                                         break;
-                                    case "traits-core-dh2":
+                                    case "fortyk.traits-core-dh2":
                                         tnt=await dh2Traits.getEntity(selectedIds[i]);
                                         break;
-                                    case "talents-enemies-within":
+                                    case "fortyk.talents-enemies-within":
                                         tnt=await dh2EnemyWithinTalents.getEntity(selectedIds[i]);
                                         break;
-                                    case "talents-enemies-without":
+                                    case "fortyk.talents-enemies-without":
                                         tnt=await dh2EnemyWithoutTalents.getEntity(selectedIds[i]);
                                         break;
-                                    case "talents-enemies-beyond":
+                                    case "fortyk.talents-enemies-beyond":
                                         tnt=await dh2EnemyBeyondTalents.getEntity(selectedIds[i]);
                                         break;
-                                    case "role-homeworld-and-background-bonuscore-dh2":
+                                    case "fortyk.role-homeworld-and-background-bonuscore-dh2":
                                         tnt=await dh2CoreBonus.getEntity(selectedIds[i]);
                                         break;
-                                    case "role-homeworld-and-background-bonusenemies-without":
+                                    case "fortyk.role-homeworld-and-background-bonusenemies-without":
                                         tnt=await dh2EnemiesWithoutBonus.getEntity(selectedIds[i]);
                                         break;
-                                    case "role-homeworld-and-background-bonusenemies-within":
+                                    case "fortyk.role-homeworld-and-background-bonusenemies-within":
                                         tnt=await dh2EnemiesWithinBonus.getEntity(selectedIds[i]);
                                         break;
-                                    case "role-homeworld-and-background-bonusenemies-beyond":
+                                    case "fortyk.role-homeworld-and-background-bonusenemies-beyond":
                                         tnt=await dh2EnemiesBeyondBonus.getEntity(selectedIds[i]);
                                         break;
-                                    case "deathwatch-bonus-and-drawbacks":
+                                    case "fortyk.deathwatch-bonus-and-drawbacks":
                                         tnt=await dwBonus.getEntity(selectedIds[i]);
                                         break;
-                                    case "talents-ow-core":
+                                    case "fortyk.talents-ow-core":
                                         tnt=await owCoreTalents.getEntity(selectedIds[i]);
                                         break;
-                                    case "talents-hammer-of-the-emperor":
+                                    case "fortyk.talents-hammer-of-the-emperor":
                                         tnt=await owHOTETalents.getEntity(selectedIds[i]);
 
                                         break;
-                                    case "talents-shield-of-humanity":
+                                    case "fortyk.talents-shield-of-humanity":
                                         tnt=await owShieldOfHumanityTalents.getEntity(selectedIds[i]);
                                         break;
-                                    case "homeworld-and-specialty-abilities-core-ow":
+                                    case "fortyk.homeworld-and-specialty-abilities-core-ow":
                                         tnt=await owCoreAbilities.getEntity(selectedIds[i]);
                                         break;
-                                    case "homeworld-and-specialty-abilities-hammer-of-the-emperor":
+                                    case "fortyk.homeworld-and-specialty-abilities-hammer-of-the-emperor":
                                         tnt=await owHOTEAbilities.getEntity(selectedIds[i]);
                                         break;
-                                    case "orders-hammer-of-the-emperor":
+                                    case "fortyk.orders-hammer-of-the-emperor":
                                         tnt=await owHOTEOrders.getEntity(selectedIds[i]);
                                         break;
-                                    case "homeworld-and-specialty-abilities-shield-of-humanity":
+                                    case "fortyk.homeworld-and-specialty-abilities-shield-of-humanity":
                                         tnt=await owShieldOfHumanityAbilities.getEntity(selectedIds[i]);
                                         break;
-                                    case "orders-shield-of-humanity":
+                                    case "fortyk.orders-shield-of-humanity":
                                         tnt=await owShieldOfHumanityOrders.getEntity(selectedIds[i]);
                                         break;
                                 }
@@ -328,7 +331,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
 
                             }
-                            await actor.createEmbeddedEntity("OwnedItem",talentsNTraits);
+                            await actor.createEmbeddedEntity("Item",talentsNTraits);
                         }
                     }
                 },
@@ -348,7 +351,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     async _onItemDelete(event){
         event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;
-        let item=await this.actor.getEmbeddedEntity("OwnedItem",itemId);
+        let item=await this.actor.getEmbeddedDocument("Item",itemId);
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
         renderedTemplate.then(content => {
             new Dialog({
@@ -379,19 +382,19 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let newAmt=event.target.value;
         let dataItemId=event.target.attributes["data-item-id"].value;
         let target=event.target.attributes["data-target"].value;
-        let item= duplicate(actor.getEmbeddedEntity("OwnedItem", dataItemId));
+        let item= duplicate(actor.getEmbeddedDocument("Item", dataItemId));
         let oldValue=objectByString(item,target);
         if(oldValue!=newAmt){
             let path=target.split(".");
             setNestedKey(item,path,newAmt);
-            await this.actor.updateEmbeddedEntity("OwnedItem",item);
+            await this.actor.updateEmbeddedDocuments("Item",item);
         }
     }
     //handles firing mode change for maximal weapons
     async _onMaximalClick(event){
         let dataset=event.currentTarget.dataset;
         let weaponID=dataset["itemId"];
-        let fortykWeapon=this.actor.getOwnedItem(weaponID);
+        let fortykWeapon=this.actor.items.get(weaponID);
         
 
         if(fortykWeapon.getFlag("fortyk","maximalMode")){
@@ -419,7 +422,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let actor=this.actor;
         let weaponID=dataset["itemId"];
         let fireMode=parseInt(event.currentTarget.value);
-        let weapon=actor.getOwnedItem(weaponID);
+        let weapon=actor.items.get(weaponID);
         await weapon.update({"flags.fortyk.lasMode":fireMode});
 
 
@@ -464,7 +467,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
         }
         if(dataset["itemId"]){
-            item=this.actor.getOwnedItem(dataset["itemId"]);
+            item=this.actor.items.get(dataset["itemId"]);
         }
         if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
             FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
@@ -486,7 +489,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         if(dataset.weapon){
 
             let actor=this.actor;
-            let fortykWeapon=actor.getOwnedItem(dataset.weapon)
+            let fortykWeapon=actor.items.get(dataset.weapon)
             let weapon=fortykWeapon.data;
             console.log(weapon);
             let formula=duplicate(weapon.data.damageFormula);

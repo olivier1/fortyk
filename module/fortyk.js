@@ -291,7 +291,7 @@ Hooks.on('renderChatLog', (log, html, data) => FortykRollDialogs.chatListeners(h
 //add listeners to dialogs to allow searching and the like
 Hooks.on('renderDialog', (dialog, html, data) => ActorDialogs.chatListeners(html));
 //set flags for new weapons and items
-Hooks.on('preCreateOwnedItem', (actor, data,options) =>{
+Hooks.on('preCreateItem', (actor, data,options) =>{
 
 });
 //set flags on the actor when adding an active effect if it should activate a flag

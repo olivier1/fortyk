@@ -34,11 +34,12 @@ export class FortyKItemSheet extends ItemSheet {
 
     /** @override */
     getData() {
-        const data = super.getData();
+        const data = super.getData().data;
         const item=this.item;
+        console.log(super.getData())
         if(this.item.type==="skill"){
             //GET THE SKILLS WITH CHILDREN
-            if(this.actor!==null){
+            if(this.actor!==null&&this.actor.data!==undefined){
                 data['skillgroups']=this.actor.items.filter(function(item){
 
                     if(item.type==="skill"){return item.data.data.hasChildren.value}else{return false;}})
