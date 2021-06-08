@@ -62,8 +62,8 @@ Hooks.once('init', async function() {
     //preload handlebars templates
     preloadHandlebarsTemplates();
     // Define custom Entity classes
-    CONFIG.Actor.entityClass = FortyKActor;
-    CONFIG.Item.entityClass = FortyKItem;
+    CONFIG.Actor.documentClass = FortyKActor;
+    CONFIG.Item.documentClass = FortyKItem;
     //CONFIG.ActiveEffect.entityClass = FortyKActiveEffect;
     // Register sheet application classes
     Actors.unregisterSheet("core", ActorSheet);

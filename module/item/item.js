@@ -80,12 +80,14 @@ export class FortyKItem extends Item {
                 if(data.damTyp===undefined){data.damTyp=data.damageType.value}
                 if(data.flags===undefined){data.flags=itemData.flags}
                 let ammo=this.actor.getEmbeddedDocument("Item",data.ammo._id);
-                if(ammo!==null&&!ammo.data.default.value){
-                    data.damageType.value=ammo.data.damageType.value;
-                    data.range.value=ammo.data.range.formula;
-                    data.pen.value=ammo.data.pen.formula;
-                    data.damageFormula.value=ammo.data.damageFormula.formula;
-                    itemData.flags=ammo.flags;
+                
+                if(ammo!==undefined&&!ammo.data.data.default.value){
+                    let ammoData=ammo.data;
+                    data.damageType.value=ammoData.data.damageType.value;
+                    data.range.value=ammoData.data.range.formula;
+                    data.pen.value=ammoData.data.pen.formula;
+                    data.damageFormula.value=ammoData.data.damageFormula.formula;
+                    itemData.flags=ammoData.flags;
                 }else{
                     if(!data.damTyp===""){
                         data.damageType.value=data.damTyp;

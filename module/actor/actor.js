@@ -157,7 +157,7 @@ export class FortyKActor extends Actor {
         if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC'){
             let items=this.data.items;
             let data=actorData.data;
-            console.log(this);
+            
             data.experience.earned=0;
             data.characteristics["inf"].advance=0;
             data.carry.value=0;
@@ -169,7 +169,7 @@ export class FortyKActor extends Actor {
 
                 }
                 if(item.type==="mission"){
-                    console.log(item)
+                    
                     data.experience.earned=parseInt(data.experience.earned)+parseInt(item.data.exp.value);
                     data.characteristics["inf"].advance= parseInt(data.characteristics["inf"].advance)+parseInt(item.data.inf.value);
                 }
@@ -301,8 +301,9 @@ export class FortyKActor extends Actor {
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
             hitLoc.armor=0;
+            console.log(armor);
             if(armor!==undefined){
-                hitLoc.armor=hitLoc.armor+parseInt(armor.data.ap[key].value);
+                hitLoc.armor=hitLoc.armor+parseInt(armor.data.data.ap[key].value);
             }
             hitLoc.armor=hitLoc.armor+hitLoc.shield;
             if(hitLoc.cyber){

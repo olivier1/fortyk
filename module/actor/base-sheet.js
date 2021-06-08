@@ -27,6 +27,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const data = super.getData().data;
         data.actor=this.actor.prepare();
         data.isGM=game.user.isGM;
+        data.isOwner=this.actor.isOwner;
         data.dtypes = ["String", "Number", "Boolean"];
         data.races=game.fortyk.FORTYK.races;
         data.aptitudes=game.fortyk.FORTYK.aptitudes;
@@ -146,13 +147,16 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             name: `new ${type}`,
             type: type
         };
-        let item= await this.actor.createEmbeddedDocument("Item",itemData,{renderSheet:true});
+        //let item= await this.actor.createEmbeddedDocument("Item",itemData,{renderSheet:true});
+        let itemz=[]
+        itemz.push(itemData);
+         await this.actor.createEmbeddedDocuments("Item",itemz,{"renderSheet":true});
         let newItem=null;
-        if(this.actor.isToken){
+       /*if(this.actor.isToken){
             newItem = await this.actor.items.find(i => i.data._id == item.data._id);
         }else{
             newItem = await this.actor.items.find(i => i.data._id == item._id);
-        }
+        }*/
     }
     //provides an interface to add new talents and apply the corresponding flags
     async _onTntCreate(event){

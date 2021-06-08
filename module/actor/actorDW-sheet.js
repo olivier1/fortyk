@@ -87,11 +87,16 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                                 name: `new ${type}`,
                                 type: type
                             };
+                            console.log(this.actor)
+                            let item=itemData;
+                           
+                            let itemz=[];
+                            itemz.push(item);
 
-                            let item=  await this.actor.createEmbeddedDocument("Item",itemData,{renderSheet:true});
+                            await this.actor.createEmbeddedDocuments("Item",itemz,{"renderSheet":true});
 
 
-                            const newItem =  await this.actor.items.find(i => i.data._id == item._id);
+                            
 
                         }
                     },
@@ -152,7 +157,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let dataItemId=event.target.attributes["data-item-id"].value;
         let item= this.actor.getEmbeddedDocument("Item", dataItemId);
         item.update({"data.value":newAdv});
-       
+
 
 
     }
@@ -265,7 +270,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
                 if(ammoAmt>0){
                     weapon.data.clip.value=weapon.data.clip.max;
-                    
+
                     ammo.data.amount.value=ammoAmt-1;
 
                     await this.actor.updateEmbeddedDocuments("Item",weapon);
