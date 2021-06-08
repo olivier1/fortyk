@@ -168,6 +168,11 @@ export class FortyKActor extends Actor {
                     this.data.data.characterHitLocations[item.data.location.value].cyber=true;
 
                 }
+                if(item.type==="advancement"){
+                //calculates spent exp
+                data.experience.spent=parseInt(data.experience.spent)+parseInt(item.data.cost.value);
+               
+            }
                 if(item.type==="mission"){
                     
                     data.experience.earned=parseInt(data.experience.earned)+parseInt(item.data.exp.value);
@@ -522,8 +527,7 @@ export class FortyKActor extends Actor {
                 missions.push(item);
             }
             if(item.type==="advancement"){
-                //calculates spent exp
-                data.experience.spent=parseInt(data.experience.spent)+parseInt(item.data.cost.value);
+               
                 advancements.push(item);
             }
             if(item.type==="meleeWeapon"){
