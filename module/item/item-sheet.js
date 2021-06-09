@@ -34,9 +34,10 @@ export class FortyKItemSheet extends ItemSheet {
 
     /** @override */
     getData() {
-        const data = super.getData().data;
+        
         const item=this.item;
-        console.log(super.getData())
+        const data = item.data;
+        console.log(item);
         if(this.item.type==="skill"){
             //GET THE SKILLS WITH CHILDREN
             if(this.actor!==null&&this.actor.data!==undefined){
@@ -50,6 +51,7 @@ export class FortyKItemSheet extends ItemSheet {
 
 
         }
+        
         return data;
     }
 

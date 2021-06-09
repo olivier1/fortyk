@@ -81,7 +81,7 @@ export class FortykRollDialogs{
 
         let template="systems/fortyk/templates/actor/dialogs/melee-attack-dialog.html"
         let templateOptions={};
-
+        console.log(modifiers);
         templateOptions["modifiers"]=actor.data.data.secChar.attacks;
         templateOptions["options"]={}
         templateOptions["options"].swift=actor.getFlag("fortyk","swiftattack");
@@ -125,14 +125,14 @@ export class FortykRollDialogs{
                         const size = Number($(html).find('select[name="size"]').val());
                         let other = Number($(html).find('input[name="other"]').val());
                         let addLabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
-                      
+
                         let attackType=html.find('input[name=attack-type]:checked')[0].attributes["attacktype"].value;
                         let update={};
                         update["data.secChar.lastHit.attackType"]=attackType;
                         if(attackType==="called"){
-                            
+
                             update["data.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
-                            
+
                         }
                         await actor.update(update);
                         if(html.find('input[name="guarded"]').is(':checked')){
@@ -148,7 +148,7 @@ export class FortykRollDialogs{
                         if(isNaN(surprised)){surprised=0}
                         if(isNaN(stunned)){stunned=0}
                         if(isNaN(other)){other=0}
-
+                        
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
                     }
@@ -165,7 +165,7 @@ export class FortykRollDialogs{
         let template="systems/fortyk/templates/actor/dialogs/ranged-attack-dialog.html"
         let templateOptions={};
         let itemData=item.data;
-        
+
         templateOptions["modifiers"]=actor.data.data.secChar.attacks;
         templateOptions["size"]=game.fortyk.FORTYK.size;
         templateOptions["modifiers"].standard=itemData.data.attackMods.single;
@@ -377,20 +377,20 @@ export class FortykRollDialogs{
                         const size = Number($(html).find('select[name="size"]').val());
                         let other = Number($(html).find('input[name="other"]').val());
                         //get attack type name for title
-                        
+
                         let addLabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
                         if(html.find('input[name="guarded"]').is(':checked')){
                             addLabel=html.find('input[name="guarded"]')[0].attributes["label"].value+" "+addLabel;
                         }
                         testLabel=addLabel+" "+ testLabel;
-                        
+
                         let attackType=html.find('input[name=attack-type]:checked')[0].attributes["attacktype"].value;
                         let update={};
                         update["data.secChar.lastHit.attackType"]=attackType;
                         if(attackType==="called"){
-                            
+
                             update["data.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
-                            
+
                         }
                         await actor.update(update);
                         //spend ammo on gun
@@ -407,7 +407,7 @@ export class FortykRollDialogs{
                             rof=rofSingle*consump;
                         }
 
-                        
+
                         await item.update({"data.clip.value":curAmmo-rof});
                         //convert unchosen checkboxes into 0s
                         if(isNaN(running)){running=0}

@@ -25,7 +25,7 @@
             <label>Damage Type:</label>
             <select class="damage-type" name="data.damageType.value">
                 {{#select data.damageType.value}}
-                {{#each item.FORTYK.damageTypes}}
+                {{#each FORTYK.damageTypes}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
                 {{/select}}
@@ -36,7 +36,7 @@
                
             <select class="weapon-type"  name="data.class.value">
                 {{#select data.class.value}}
-                {{#each item.FORTYK.meleeWeaponClasses}}
+                {{#each FORTYK.meleeWeaponClasses}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
                 {{/select}}
@@ -53,7 +53,7 @@
 
             <select class="weapon-type"  name="data.type.value">
                 {{#select data.type.value}}
-                {{#each item.FORTYK.meleeWeaponTypes}}
+                {{#each FORTYK.meleeWeaponTypes}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
                 {{/select}}
@@ -64,7 +64,7 @@
 
             <select class="quality"  name="data.quality.value">
                 {{#select data.quality.value}}
-                {{#each item.FORTYK.itemQualities}}
+                {{#each FORTYK.itemQualities}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
                 {{/select}}

@@ -98,7 +98,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let draggedItem=await this.actor.items.get(draggedId);
 
             let targetItem=await this.actor.items.get(targetId);
-            
+
             let sortDrag=draggedItem.data.sort;
             let sortTarget=targetItem.data.sort;
             if(sortTarget>sortDrag){
@@ -147,16 +147,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             name: `new ${type}`,
             type: type
         };
-        //let item= await this.actor.createEmbeddedDocument("Item",itemData,{renderSheet:true});
         let itemz=[]
         itemz.push(itemData);
-         await this.actor.createEmbeddedDocuments("Item",itemz,{"renderSheet":true});
-        let newItem=null;
-       /*if(this.actor.isToken){
-            newItem = await this.actor.items.find(i => i.data._id == item.data._id);
-        }else{
-            newItem = await this.actor.items.find(i => i.data._id == item._id);
-        }*/
+        await this.actor.createEmbeddedDocuments("Item",itemz,{"renderSheet":true});
+        
     }
     //provides an interface to add new talents and apply the corresponding flags
     async _onTntCreate(event){
@@ -335,7 +329,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
 
                             }
-                            await actor.createEmbeddedDocument("Item",talentsNTraits);
+                            await actor.createEmbeddedDocuments("Item",talentsNTraits);
                         }
                     }
                 },
@@ -385,13 +379,13 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let actor= this.actor;
         let newAmt=event.target.value;
         let dataItemId=event.target.attributes["data-item-id"].value;
-        let target=event.target.attributes["data-target"].value;
-        let item= duplicate(actor.getEmbeddedDocument("Item", dataItemId));
+        let target=event.target.attributes["data-target"].value.toString();
+        let item= actor.getEmbeddedDocument("Item", dataItemId);
         let oldValue=objectByString(item,target);
         if(oldValue!=newAmt){
-            let path=target.split(".");
-            setNestedKey(item,path,newAmt);
-            await this.actor.updateEmbeddedDocuments("Item",item);
+            let update={};
+            update[target]=newAmt;
+            item.update(update);
         }
     }
     //handles firing mode change for maximal weapons
@@ -399,7 +393,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let dataset=event.currentTarget.dataset;
         let weaponID=dataset["itemId"];
         let fortykWeapon=this.actor.items.get(weaponID);
-        
+
 
         if(fortykWeapon.getFlag("fortyk","maximalMode")){
             await fortykWeapon.setFlag("fortyk","maximalMode",false);
@@ -461,6 +455,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             attackOptions.running=targetActor.getFlag("core","running");
             attackOptions.size=targetActor.data.data.secChar.size.value;
             attackOptions.selfProne=this.actor.getFlag("core","prone");
+            console.log(attackOptions);
             if(targetActor.getFlag("core","unconscious")||targetActor.getFlag("core","snare")){
                 attackOptions.helpless=true;
             }else{
@@ -468,6 +463,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
             attackOptions.selfBlind=this.actor.getFlag("core","blind");
             attackOptions.distance=tokenDistance(target, attacker);
+            console.log(attackOptions);
 
         }
         if(dataset["itemId"]){
@@ -559,7 +555,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
                         let forceData={name:"Force",type:"rangedWeapon"}
                         let force=await Item.create(forceData, {temporary: true});
-                       
+
                         force.data.flags.fortyk={};
                         force.data.flags.fortyk.ignoreSoak=true;
                         force.data.data.damageFormula.value=`${hits}d10`;

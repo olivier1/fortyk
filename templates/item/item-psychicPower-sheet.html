@@ -61,7 +61,7 @@
             <label>Damage Type:</label>
             <select class="damage-type" name="data.damageType.value">
                 {{#select data.damageType.value}}
-                {{#each item.FORTYK.damageTypes}}
+                {{#each FORTYK.damageTypes}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
                 {{/select}}

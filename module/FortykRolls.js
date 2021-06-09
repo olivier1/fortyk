@@ -1219,7 +1219,7 @@ returns the roll message*/
                 };
                 critActiveEffect5.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fel")]));
                 critActiveEffect5[2].changes=[{key:`data.characteristics.fel.value`,value:-1,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}]
-                await actor.createEmbeddedDocument("Item",{type:"injury",name:"Facial scarring"});
+                await actor.createEmbeddedDocuments("Item",{type:"injury",name:"Facial scarring"});
                 this.applyActiveEffect(actorToken,critActiveEffect5);
                 break;
             case 6:
@@ -1236,14 +1236,14 @@ returns the roll message*/
                 critActiveEffect6[1].changes=[{key:`data.characteristics.per.value`,value:-1*critPerRoll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                 critActiveEffect6.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fel")]));
                 critActiveEffect6[2].changes=[{key:`data.characteristics.fel.value`,value:-1*critPerRoll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
-                await actor.createEmbeddedDocument("Item",{type:"injury",name:"Severe facial scarring"});
+                await actor.createEmbeddedDocuments("Item",{type:"injury",name:"Severe facial scarring"});
                 this.applyActiveEffect(actorToken,critActiveEffect6);
                 break;
             case 7:
                 let fatRoll7=new Roll("1d10");
                 await fatRoll7.roll().toMessage({flavor:"Fatigue amount."});
                 this._addFatigue(actor,fatRoll7._total);
-                actor.createEmbeddedDocument("Item",{name:"Permanently Blinded",type:"injury"});
+                actor.createEmbeddedDocuments("Item",{name:"Permanently Blinded",type:"injury"});
                 let critActiveEffect7=[];
                 critActiveEffect7.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("blind")]));
                 let felRoll7=new Roll("1d10");
@@ -1251,8 +1251,8 @@ returns the roll message*/
                 critActiveEffect7.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fel")]));
                 critActiveEffect7[1].changes=[{key:`data.characteristics.fel.value`,value:felRoll7._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                 await this.applyActiveEffect(actorToken,critActiveEffect7);
-                await actor.createEmbeddedDocument("Item",{type:"injury",name:"Blind"});
-                await actor.createEmbeddedDocument("Item",{type:"injury",name:"Tremendous facial scarring"});
+                await actor.createEmbeddedDocuments("Item",{type:"injury",name:"Blind"});
+                await actor.createEmbeddedDocuments("Item",{type:"injury",name:"Tremendous facial scarring"});
                 break;
             case 8:
 
@@ -1385,7 +1385,7 @@ returns the roll message*/
                 await d5Roll.roll().toMessage({flavor:"Fellowship damage."});
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fel")]));
                 critActiveEffect[4].changes=[{key:`data.characteristics.fel.value`,value:-1*d5Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
-                await actor.createEmbeddedDocument("Item",{type:"injury",name:"Fourth degree chest burns."});
+                await actor.createEmbeddedDocuments("Item",{type:"injury",name:"Fourth degree chest burns."});
                 this.applyActiveEffect(actorToken,critActiveEffect);
                 break;
             case 9:
@@ -1849,7 +1849,7 @@ returns the roll message*/
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("t")]));
                     critActiveEffect[2].changes=[{key:`data.characteristics.t.value`,value:-1,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                 }
-                await actor.createEmbeddedDocument("Item",{type:"injury",name:"Severe internal injuries"}); 
+                await actor.createEmbeddedDocuments("Item",{type:"injury",name:"Severe internal injuries"}); 
                 this.applyActiveEffect(actorToken,critActiveEffect);
                 break;
             case 6:
@@ -1860,7 +1860,7 @@ returns the roll message*/
                     rounds:1,
                     startRound:game.combats.active.current.round
                 };
-                await actor.createEmbeddedDocument("Item",{type:"injury",name:"Severe chest scars"}); 
+                await actor.createEmbeddedDocuments("Item",{type:"injury",name:"Severe chest scars"}); 
                 this.applyActiveEffect(actorToken,critActiveEffect);
                 break;
             case 7:
@@ -1877,7 +1877,7 @@ returns the roll message*/
                 if(!tTest.value){
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("unconscious")]));
                 }
-                await actor.createEmbeddedDocument("Item",{type:"injury",name:"Severe chest scars"}); 
+                await actor.createEmbeddedDocuments("Item",{type:"injury",name:"Severe chest scars"}); 
                 this.applyActiveEffect(actorToken,critActiveEffect);
                 break;
             case 8:
@@ -1922,7 +1922,7 @@ returns the roll message*/
                 break;
             case 3:
                 await d5Roll.roll().toMessage({flavor:"Finger tips removed"});
-                await actor.createEmbeddedDocument("Item",{type:"injury",name:arm+`hand missing ${d5Roll._total} fingers.`}); 
+                await actor.createEmbeddedDocuments("Item",{type:"injury",name:arm+`hand missing ${d5Roll._total} fingers.`}); 
                 await d10Roll.roll().toMessage({flavor:"Weapon skill damage."});
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("ws")]));
                 critActiveEffect[0].changes=[{key:`data.characteristics.ws.value`,value:-1*d10Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
@@ -1953,7 +1953,7 @@ returns the roll message*/
                     critActiveEffect[0].changes=[{key:`data.characteristics.ws.value`,value:-1,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("bs")]));
                     critActiveEffect[1].changes=[{key:`data.characteristics.bs.value`,value:-1,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
-                    await actor.createEmbeddedDocument("Item",{type:"injury",name:"Scarred "+arm+" hand"}); 
+                    await actor.createEmbeddedDocuments("Item",{type:"injury",name:"Scarred "+arm+" hand"}); 
                 }else{
                     injury=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("arm")]);
                     await this._createInjury(actor,"Lost "+arm+" hand",injury);
@@ -2353,7 +2353,7 @@ returns the roll message*/
                 break;
             case 7:
                 await d5Roll.roll().toMessage({flavor:"Number of rib broken."});
-                await actor.createEmbeddedDocument("Item",{type:"injury",name:d5Roll._total+" ribs broken"});
+                await actor.createEmbeddedDocuments("Item",{type:"injury",name:d5Roll._total+" ribs broken"});
                 await d5Roll.reroll().toMessage({flavor:"Toughness damage."});
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("t")]));
                 critActiveEffect[0].changes=[                                       {key:`data.characteristics.t.value`,value:-1*d5Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
@@ -2418,7 +2418,7 @@ returns the roll message*/
                 break;
             case 5:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("arm")]));
-                await actor.createEmbeddedDocument("Item",{type:"injury",name:"Useless "+arm+" arm"});
+                await actor.createEmbeddedDocuments("Item",{type:"injury",name:"Useless "+arm+" arm"});
                 this.applyActiveEffect(actorToken,critActiveEffect);
                 break;
             case 6:
@@ -2683,7 +2683,7 @@ returns the roll message*/
                     startRound:game.combats.active.current.round
                 };
                 if(parseInt(actor.data.data.characterHitLocations.head.armor)===0){
-                    await actor.createEmbeddedDocument("Item",{type:"injury",name:"Lost ear"});
+                    await actor.createEmbeddedDocuments("Item",{type:"injury",name:"Lost ear"});
                     tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist fellowship damage");
                     if(!tTest.value){
                         critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fel")]));
@@ -3059,6 +3059,8 @@ returns the roll message*/
 
             if(game.user.isGM||token.owner){
                 let actor=token.actor;
+                console.log(actor);
+                let aEs=[];
                 for(let index=0; index <effect.length;index++){
                     let dupp=false;
                     for(let ae of actor.effects){
@@ -3095,9 +3097,11 @@ returns the roll message*/
                         this._sON(actor);
                     }
                     if(!dupp&&!skip){
-                        await actor.createEmbeddedDocument("ActiveEffect",effect[index]);
+                        aEs.push(effect[index])
+                        
                     }
                 }
+                await actor.createEmbeddedDocuments("ActiveEffect",aEs);
             }else{
                 //if user isnt GM use socket to have gm update the actor
 
@@ -3159,7 +3163,7 @@ returns the roll message*/
     static async _createInjury(actor,injury,injuryAeData){
         let injuryItem=await Item.create({type:"injury",name:injury, temporary:true});
         injuryAeData.transfer=true;
-        await injuryItem.createEmbeddedDocument("ActiveEffect",injuryAeData);
-        await actor.createEmbeddedDocument("Item",injuryItem.data);
+        await injuryItem.createEmbeddedDocuments("ActiveEffect",injuryAeData);
+        await actor.createEmbeddedDocuments("Item",injuryItem.data);
     };
 }

@@ -213,33 +213,32 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         event.preventDefault;
         const dataset=event.currentTarget.dataset;
-        const weapon=duplicate(this.actor.getEmbeddedDocument("Item",dataset["weapon"]));
-        const previousAmmo=duplicate(this.actor.getEmbeddedDocument("Item",dataset["previous"]));
+        const weapon=this.actor.getEmbeddedDocument("Item",dataset["weapon"]);
+        
+        const previousAmmo=this.actor.getEmbeddedDocument("Item",dataset["previous"]);
         const ammoID=event.currentTarget.value;
         const ammo=this.actor.getEmbeddedDocument("Item",ammoID);
-        weapon.data.ammo._id=ammoID;
+        
+        let weaponUpdate={}
+        weaponUpdate["data.ammo._id"]=ammoID;
+        
+        
 
-        let updateWep={};
-        let updateAmmo={};
-        let items=[];
 
+        if(previousAmmo!==undefined&&previousAmmo.data.data!==undefined){
 
-        if(previousAmmo!==null&&previousAmmo.data!==undefined){
-
-            previousAmmo.data.currentClip.value=weapon.data.clip.value;
-            jQuery.extend(updateAmmo,previousAmmo);
-            items.push(updateAmmo);
+            
+            
+            previousAmmo.update({"data.currentClip.value":weaponData.data.clip.value});
         }
-        if(ammo!==null){
-            weapon.data.clip.value=ammo.data.currentClip.value;
+        if(ammo!==undefined){
+            weaponUpdate["data.clip.value"]=ammo.data.data.currentClip.value;
         }else{
-            weapon.data.clip.value=0;
+            weaponUpdate["data.clip.value"]=0;
         }
-        jQuery.extend(updateWep,weapon);
+        
 
-
-        items.push(updateWep);
-        await this.actor.updateEmbeddedDocuments("Item",items);
+        weapon.update(weaponUpdate);
 
 
 
@@ -251,30 +250,31 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let weapon=null;
 
         let actor=this.actor;
-
+        let update=[];
         for(let w of actor.data.wornGear.weapons){
 
             if(w._id===dataset.weapon){
-                weapon=w;
+                weapon=w.document;
             }
         }
-
+        let weaponUpdate={};
+        let ammoUpdate={};
 
         let ooa=false;
         //different logic for throwing weapons
-        if(weapon.data.class.value!=="Thrown"){
-            const ammo=duplicate(this.actor.getEmbeddedDocument("Item",weapon.data.ammo._id));
+        console.log(weapon);
+        if(weapon.data.data.class.value!=="Thrown"){
+            const ammo=this.actor.getEmbeddedDocument("Item",weapon.data.data.ammo._id);
 
             if(ammo!==null){
-                let ammoAmt=parseInt(ammo.data.amount.value);
+                let ammoAmt=parseInt(ammo.data.data.amount.value);
 
                 if(ammoAmt>0){
-                    weapon.data.clip.value=weapon.data.clip.max;
-
-                    ammo.data.amount.value=ammoAmt-1;
-
-                    await this.actor.updateEmbeddedDocuments("Item",weapon);
-                    await this.actor.updateEmbeddedDocuments("Item",ammo);
+                    weaponUpdate["data.clip.value"]=weapon.data.data.clip.max;
+                    ammoUpdate["data.amount.value"]=ammoAmt-1
+                    weapon.update(weaponUpdate);
+                    ammo.update(ammoUpdate);
+                    
 
                 }else{
                     ooa=true;
@@ -284,10 +284,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             }
 
         }else{
-            if(weapon.data.amount.value>0){
-                weapon.data.amount.value=parseInt(weapon.data.amount.value)-1;
-                weapon.data.clip.value=weapon.data.clip.max;
-                await this.actor.updateEmbeddedDocuments("Item",weapon);
+            if(weapon.data.data.amount.value>0){
+                
+                 weaponUpdate["data.clip.value"]=weapon.data.data.clip.max;
+                 weaponUpdate["data.amount.value"]=parseInt(weapon.data.data.amount.value)-1;
+                 weapon.update(weaponUpdate);
             }else{
                 ooa=true;
             }

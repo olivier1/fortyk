@@ -295,9 +295,11 @@ Hooks.on('preCreateItem', (actor, data,options) =>{
 
 });
 //set flags on the actor when adding an active effect if it should activate a flag
-Hooks.on('createActiveEffect',async (actor,ae,options,id)=>{
+Hooks.on('createActiveEffect',async (ae,options,id)=>{
     if(game.user.isGM){
-        let flag=ae.flags.core.statusId;
+        let actor=ae.parent;
+        console.log(ae,options);
+        let flag=ae.data.flags.core.statusId;
         if(flag){
             await actor.setFlag("core",flag,true);
         }
@@ -305,9 +307,10 @@ Hooks.on('createActiveEffect',async (actor,ae,options,id)=>{
 
 });
 //unset flags on the actor when removing an active effect if it had a flag
-Hooks.on('deleteActiveEffect',async (actor,ae,options,id)=>{
+Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
     if(game.user.isGM){
-        let flag=ae.flags.core.statusId;
+        let actor=ae.parent;
+        let flag=ae.data.flags.core.statusId;
         if(flag){
             await actor.setFlag("core",flag,false);
         }

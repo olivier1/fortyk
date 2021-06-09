@@ -201,7 +201,7 @@
                 {{#unless (contains this.data.class.value "thrown")}}
                 <div class="list-item">
 
-                    <label>Current Ammo:</label>
+                    <label>Remaining Ammo:</label>
                     <select class="weapon-ammo" data-weapon="{{this._id}}" data-previous="{{this.data.ammo._id}}">
 
                         {{#select this.data.ammo._id}}
@@ -226,7 +226,7 @@
                 </div>
                 {{/unless}}
                 <div class="list-item flexrow">
-                    <span>Clip: </span>
+                    <span>Current Clip: </span>
 
                     <input class="item-text-input" type="text" data-target="data.clip.value"  value="{{this.data.clip.value}}" data-item-id="{{this._id}}" data-dtype="Number">
                     <span> / </span>
