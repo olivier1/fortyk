@@ -87,7 +87,6 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                                 name: `new ${type}`,
                                 type: type
                             };
-                            console.log(this.actor)
                             let item=itemData;
                            
                             let itemz=[];
@@ -262,7 +261,6 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         let ooa=false;
         //different logic for throwing weapons
-        console.log(weapon);
         if(weapon.data.data.class.value!=="Thrown"){
             const ammo=this.actor.getEmbeddedDocument("Item",weapon.data.data.ammo._id);
 

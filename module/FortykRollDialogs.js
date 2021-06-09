@@ -81,7 +81,6 @@ export class FortykRollDialogs{
 
         let template="systems/fortyk/templates/actor/dialogs/melee-attack-dialog.html"
         let templateOptions={};
-        console.log(modifiers);
         templateOptions["modifiers"]=actor.data.data.secChar.attacks;
         templateOptions["options"]={}
         templateOptions["options"].swift=actor.getFlag("fortyk","swiftattack");
@@ -138,7 +137,6 @@ export class FortykRollDialogs{
                         if(html.find('input[name="guarded"]').is(':checked')){
                             addLabel=html.find('input[name="guarded"]')[0].attributes["label"].value+" "+addLabel;
                         }
-                        console.log(html.find('input[name="attack-type"]:checked'))
                         testLabel=addLabel+" "+ testLabel;
                         if(isNaN(running)){running=0}
                         if(isNaN(guarded)){guarded=0}

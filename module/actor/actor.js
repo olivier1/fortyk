@@ -74,14 +74,15 @@ export class FortyKActor extends Actor {
             let newSize= 0;
 
             let wounds=false;
+            console.log(data)
             try{
-                wounds=data.data.secChar.wounds.value;
+                wounds=data["data.secChar.wounds.value"];
             }catch(err){
                 wounds=false;
             }
             let size=false;
             try{
-                size=data.data.secChar.size.value; 
+                size=data["data.secChar.size.value"]; 
             }catch(err){
                 size=false;
             }
@@ -91,10 +92,10 @@ export class FortyKActor extends Actor {
 
 
                 if(this.data.data.horde.value){
-                    newSize= data.data.secChar.wounds.value;
+                    newSize= data["data.secChar.wounds.value"];
                     if(newSize<0){newSize=0}
                 }else{
-                    newSize= data.data.secChar.size.value;
+                    newSize= data["data.secChar.size.value"];
                 }
 
                 if ( (!this.data.data.horde.value&&newSize && (newSize !== this.data.data.secChar.size.value))||(this.data.data.horde.value&&newSize!==undefined && (newSize !== this.data.data.secChar.wounds.value)) ) {
@@ -119,7 +120,6 @@ export class FortyKActor extends Actor {
    * Augment the basic actor data with additional dynamic data.
    */
     prepareData(){
-        console.log("HELLO")
 
         if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
         if ( !this.data.name ) this.data.name = "New " + this.entity;
@@ -306,7 +306,6 @@ export class FortyKActor extends Actor {
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
             hitLoc.armor=0;
-            console.log(armor);
             if(armor!==undefined){
                 hitLoc.armor=hitLoc.armor+parseInt(armor.data.data.ap[key].value);
             }

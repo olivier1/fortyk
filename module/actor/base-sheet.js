@@ -34,7 +34,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.size=game.fortyk.FORTYK.size;
         data.skillChars=game.fortyk.FORTYK.skillChars;
         data.skillTraining=game.fortyk.FORTYK.skillTraining;
-        console.log(data);
         return data;
     }
     /** @override */
@@ -147,9 +146,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             name: `new ${type}`,
             type: type
         };
-        let itemz=[]
-        itemz.push(itemData);
-        await this.actor.createEmbeddedDocuments("Item",itemz,{"renderSheet":true});
+        
+        await this.actor.createEmbeddedDocuments("Item",[itemData],{"renderSheet":true});
         
     }
     //provides an interface to add new talents and apply the corresponding flags
@@ -226,15 +224,12 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         callback: async html => {
 
                             let selectedIds=$(html).find('#tntselect').val();
-                            console.log(selectedIds);
                             let $selectedCompendiums= $('option:selected',html).map(function(){
                                 return this.getAttribute('data-compendium');
                             }).get();
-                            console.log($selectedCompendiums);
                             let talentsNTraits=[];
                             for(let i=0;i<selectedIds.length;i++){
                                 let tnt=null;
-                                console.log($selectedCompendiums[i]);
                                 switch($selectedCompendiums[i]){
                                     case"fortyk.talent-core-dh2":
                                         tnt=await dh2Talents.getEntity(selectedIds[i]);
@@ -360,9 +355,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         label:"Yes",
                         callback: async dlg => { 
                             if(item.type==="talentntrait"){
-                                await this.actor.setFlag("fortyk",item.data.flagId.value,false);
+                                await this.actor.setFlag("fortyk",item.data.data.flagId.value,false);
                             }
-                            this.actor.deleteItem(itemId);
+                            this.actor.deleteEmbeddedDocuments("Item",[itemId]);
                         }
                     },
                     cancel:{
@@ -455,7 +450,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             attackOptions.running=targetActor.getFlag("core","running");
             attackOptions.size=targetActor.data.data.secChar.size.value;
             attackOptions.selfProne=this.actor.getFlag("core","prone");
-            console.log(attackOptions);
             if(targetActor.getFlag("core","unconscious")||targetActor.getFlag("core","snare")){
                 attackOptions.helpless=true;
             }else{
@@ -463,7 +457,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
             attackOptions.selfBlind=this.actor.getFlag("core","blind");
             attackOptions.distance=tokenDistance(target, attacker);
-            console.log(attackOptions);
 
         }
         if(dataset["itemId"]){
@@ -491,7 +484,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let actor=this.actor;
             let fortykWeapon=actor.items.get(dataset.weapon)
             let weapon=fortykWeapon.data;
-            console.log(weapon);
             let formula=duplicate(weapon.data.damageFormula);
             new Dialog({
                 title: `Number of Hits & Bonus Damage`,
