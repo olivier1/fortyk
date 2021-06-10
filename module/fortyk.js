@@ -177,6 +177,16 @@ Hooks.once('ready', async function() {
                     
 
                     break;
+                case "perilsRoll":
+                    FortykRolls.perilsOfTheWarp();
+                    break;
+                case "reportDamage":
+                    let targetId=data.package.target;
+                    let target=canvas.tokens.get(targetId);
+                    let targetActor=target.actor;
+                    let damage=data.package.damage;
+                    FortykRolls.reportDamage(targetActor,damage);
+                    break;
             }
 
         }
