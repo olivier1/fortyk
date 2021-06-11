@@ -437,6 +437,7 @@ FORTYK.StatusEffects = [
         id: "dead",
         label: "Dead",
         icon: "icons/svg/skull.svg",
+        overlay: true,
         flags: { core: { statusId: "dead" } }
     },
     {

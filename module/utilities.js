@@ -30,8 +30,9 @@ export const sleep=function(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 export const getActorToken=function(actor){
+    console.log(actor);
     if(actor.token!==null){
-        return actor.token; 
+        return actor.token._object; 
     }
     let tokens=[];
     if(canvas.tokens.children.length>0){

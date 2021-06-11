@@ -1176,8 +1176,7 @@ returns the roll message*/
         }
     }
     static async energyHeadCrits(actor,num,ignoreSON){
-        let actorToken=actor.token;
-        if(!actor.isToken){actorToken=getActorToken(actor);}
+        let actorToken=getActorToken(actor);
         if(num<8&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
             await this._sON(actor);
             return
@@ -1299,8 +1298,8 @@ returns the roll message*/
         let agiTest=false;
         let d5Roll=new Roll('1d5');
         let d10Roll=new Roll('1d10');
-        let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }
+        let actorToken=getActorToken(actor);
+                         
         if(num<9&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
             await this._sON(actor);
             return
@@ -1428,8 +1427,8 @@ returns the roll message*/
         let tTest=false;
         let d5Roll=new Roll('1d5');
         let d10Roll=new Roll('1d10');
-        let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
+        let actorToken=getActorToken(actor);
+                         
         let injury=null;
         if(num<9&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
             await this._sON(actor);
@@ -1569,8 +1568,8 @@ returns the roll message*/
         }
     }
     static async energyLegCrits(actor,num,leg,ignoreSON){
-        let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
+        let actorToken=getActorToken(actor);
+                           
         let critActiveEffect=[];
         let tTest=false;
         let d5Roll=new Roll("1d5");
@@ -1719,8 +1718,8 @@ returns the roll message*/
         }
     }
     static async explosiveHeadCrits(actor,num,ignoreSON){
-        let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
+        let actorToken=getActorToken(actor);
+                           
         let critActiveEffect=[];
         let tTest=false;
         let d5Roll=new Roll("1d5");
@@ -1819,8 +1818,9 @@ returns the roll message*/
         }
     }
     static async explosiveBodyCrits(actor,num,ignoreSON){
-        let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
+        
+        let actorToken=getActorToken(actor);
+                           
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -1917,8 +1917,8 @@ returns the roll message*/
         }
     }
     static async explosiveArmCrits(actor,num,arm,ignoreSON){
-        let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
+        let actorToken=getActorToken(actor);
+                           
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2029,8 +2029,8 @@ returns the roll message*/
         }
     }
     static async explosiveLegCrits(actor,num,leg,ignoreSON){
-        let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
+        let actorToken=getActorToken(actor);
+                          
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2158,7 +2158,7 @@ returns the roll message*/
         }
     }
     static async impactCrits(actor,num,hitLoc,ignoreSON){
-        let actorToken=actor.token;
+        let actorToken=getActorToken(actor);
         switch(hitLoc){
             case "head":
                 await this.impactHeadCrits(actor,num,ignoreSON);
@@ -2181,8 +2181,8 @@ returns the roll message*/
         }
     }
     static async impactHeadCrits(actor,num,ignoreSON){
-        let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
+        let actorToken=getActorToken(actor);
+                         
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2302,8 +2302,9 @@ returns the roll message*/
         }
     }
     static async impactBodyCrits(actor,num,ignoreSON){
-        let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
+        let actorToken=getActorToken(actor);
+        console.log(actor);
+                           
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2401,8 +2402,8 @@ returns the roll message*/
         }
     }
     static async impactArmCrits(actor,num,arm,ignoreSON){
-        let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }
+        let actorToken=getActorToken(actor);
+                         
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2496,8 +2497,8 @@ returns the roll message*/
         }
     }
     static async impactLegCrits(actor,num,leg,ignoreSON){
-        let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
+        let actorToken=getActorToken(actor);
+                          
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2636,8 +2637,8 @@ returns the roll message*/
         }
     }
     static async rendingHeadCrits(actor,num,ignoreSON){
-        let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
+        let actorToken=getActorToken(actor);
+                           
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2767,8 +2768,8 @@ returns the roll message*/
         }
     }
     static async rendingBodyCrits(actor,num,ignoreSON){
-        let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
+        let actorToken=getActorToken(actor);
+                           
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2874,8 +2875,8 @@ returns the roll message*/
         }
     };
     static async rendingArmCrits(actor,num,arm,ignoreSON){
-        let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }  
+        let actorToken=getActorToken(actor);
+                           
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2975,8 +2976,8 @@ returns the roll message*/
         }
     };
     static async rendingLegCrits(actor,num,leg,ignoreSON){
-        let actorToken=actor.token;
-        if(!actor.isToken){                    actorToken=getActorToken(actor);                 }
+        let actorToken=getActorToken(actor);
+                         
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -3137,7 +3138,7 @@ returns the roll message*/
     };
     static async applyDead(target,actor){
 
-        if(target.data.overlayEffect===undefined||target.data.overlayEffect===null||!target.data.overlayEffect.includes("icons/svg/skull.svg")){
+       
 
             if(game.user.isGM||target.owner){
                 let msg=target.name+" is killed!";
@@ -3150,9 +3151,10 @@ returns the roll message*/
                 await ChatMessage.create(chatOptions,{});
                 let id=target.data._id;
                 let effect="icons/svg/skull.svg";
-                let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
-                await this.applyActiveEffect(target,activeEffect);
-                await target.toggleOverlay(effect);
+                //let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
+                //await this.applyActiveEffect(target,activeEffect);
+                console.log(target);
+                await target.toggleEffect(effect,{overlay:true});
                 try{
                     let combatant = await game.combat.getCombatantByToken(id);
                     let combatid=combatant._id;
@@ -3166,7 +3168,7 @@ returns the roll message*/
                 let socketOp={type:"applyDead",package:{token:tokenId,actor:actor}}
                 await game.socket.emit("system.fortyk",socketOp);
             }
-        }
+        
     };
     static async _addFatigue(actor,newfatigue){
         newfatigue=newfatigue+parseInt(actor.data.data.secChar.fatigue.value);
