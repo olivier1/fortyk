@@ -41,7 +41,8 @@ export const getActorToken=function(actor){
     
     let t=null;
     for(let token of tokens){
-        if(token.actor.data._id===actor.data._id){
+        console.log(token);
+        if(token.data.actorId===actor.data._id){
             t=token;
         }
     }
