@@ -29,8 +29,8 @@ export const preloadHandlebarsTemplates = async function() {
 export const sleep=function(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+//returns an actors token object, not the token document. Will search teh active canvas for the current token.
 export const getActorToken=function(actor){
-    console.log(actor);
     if(actor.token!==null){
         return actor.token._object; 
     }
@@ -41,7 +41,6 @@ export const getActorToken=function(actor){
     
     let t=null;
     for(let token of tokens){
-        console.log(token);
         if(token.data.actorId===actor.data._id){
             t=token;
         }

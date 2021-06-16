@@ -318,9 +318,9 @@ returns the roll message*/
         perilsRoll.roll();
         await perilsRoll.toMessage({
             speaker: ChatMessage.getSpeaker({ user: game.users.current }),
-            flavor: "Perils of the Warp!!",
-            rollMode:"gmroll"
-        });
+            flavor: "Perils of the Warp!!"
+            
+        },{rollMode:"gmroll"});
         let perilsResult=parseInt(perilsRoll._total);
         if(perilsResult>100){perilsResult=100};
         let perilsMessage=FORTYKTABLES.perils[perilsResult];

@@ -159,6 +159,7 @@ export class FortyKActor extends Actor {
             let data=actorData.data;
             
             data.experience.earned=0;
+            data.experience.spent=0;
             data.characteristics["inf"].advance=0;
             data.carry.value=0;
             this.items.forEach((fortykItem,id,items)=>{
