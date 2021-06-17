@@ -17,6 +17,7 @@ import { FortyKNPCSheet} from "./actor/actor-npc-sheet.js";
 import { FORTYK } from "./FortykConfig.js";
 import { _getInitiativeFormula } from "./combat.js";
 import {FORTYKTABLES} from "./FortykTables.js";
+import { registerSystemSettings} from "./settings.js"
 Hooks.once('init', async function() {
     game.fortyk = {
         FortyKActor,
@@ -75,6 +76,8 @@ Hooks.once('init', async function() {
     Actors.registerSheet("fortyk", FortyKNPCSheet, { types: ["npc"], makeDefault: true });
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });
+    //register system settings
+    registerSystemSettings();
     // Handlebars helpers
     Handlebars.registerHelper('concat', function() {
         var outStr = '';

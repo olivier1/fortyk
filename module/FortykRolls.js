@@ -312,15 +312,21 @@ returns the roll message*/
         result.value=templateOptions["success"];
         return result;
     }
+    //rolls a result on the perils of the warp table, checks if the roll should be private or not
     static async perilsOfTheWarp(){
-
+        let rollMode="";
+        if(game.settings.get("fortyk","privatePerils")){
+            rollMode="gmroll";
+        }else{
+            rollMode="default";
+        }
         let perilsRoll=new Roll("1d100",{});
         perilsRoll.roll();
         await perilsRoll.toMessage({
             speaker: ChatMessage.getSpeaker({ user: game.users.current }),
             flavor: "Perils of the Warp!!"
-            
-        },{rollMode:"gmroll"});
+
+        },{rollMode:rollMode});
         let perilsResult=parseInt(perilsRoll._total);
         if(perilsResult>100){perilsResult=100};
         let perilsMessage=FORTYKTABLES.perils[perilsResult];
@@ -329,10 +335,13 @@ returns the roll message*/
                         content:perilsMessage,
                         classes:["fortyk"],
                         flavor:"Perils of the Warp!!",
-                        author:game.users.current,
-                        whisper:ChatMessage.getWhisperRecipients("GM"),
-                        blind:true
+                        author:game.users.current
                        };
+        if(game.settings.get("fortyk","privatePerils")){
+            chatPhenom["whisper"]=ChatMessage.getWhisperRecipients("GM");
+        }else{
+            chatPhenom["whisper"]=undefined;
+        }
         await ChatMessage.create(chatPhenom,{});
     }
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
@@ -1055,24 +1064,35 @@ returns the roll message*/
     }
     //reports damage to a target's owners
     static async reportDamage(tarActor, chatDamage){
-        let user_ids = Object.entries(tarActor.data.permission).filter(p=> p[0] !== `default` && p[1] === 3).map(p=>p[0]);
-        for(let user of user_ids)
-        {
-            if(user!==game.users.current.id||user_ids.length===1){
-                let recipient=[user];
-                let damageOptions={user: game.users.current,
-                                   speaker:{user,alias:tarActor.name},
-                                   content:`Attack did ${chatDamage} damage. </br>`,
-                                   classes:["fortyk"],
-                                   flavor:`Damage done`,
-                                   author:tarActor.name,
-                                   whisper:recipient,
-                                   blind:true
-                                  };
-                await ChatMessage.create(damageOptions,{});
-            }
+        if(game.settings.get("fortyk","privateDamage")){
+            let user_ids = Object.entries(tarActor.data.permission).filter(p=> p[0] !== `default` && p[1] === 3).map(p=>p[0]);
+            for(let user of user_ids)
+            {
+                if(user!==game.users.current.id||user_ids.length===1){
+                    let recipient=[user];
+                    let damageOptions={user: game.users.current,
+                                       speaker:{user,alias:tarActor.name},
+                                       content:`Attack did ${chatDamage} damage. </br>`,
+                                       classes:["fortyk"],
+                                       flavor:`Damage done`,
+                                       author:tarActor.name,
+                                       whisper:recipient
+                                      };
+                    await ChatMessage.create(damageOptions,{});
+                }
 
+            } 
+        }else{
+            let damageOptions={user: game.users.current,
+                                       speaker:{user,alias:tarActor.name},
+                                       content:`Attack did ${chatDamage} damage. </br>`,
+                                       classes:["fortyk"],
+                                       flavor:`Damage done`,
+                                       author:tarActor.name
+                                      };
+                    await ChatMessage.create(damageOptions,{});
         }
+
     }
     //handles righteous fury
     static async _righteousFury(actor,label,weapon,curHit,tens, damage=1, tar=null, ignoreSON=false){
@@ -1299,7 +1319,7 @@ returns the roll message*/
         let d5Roll=new Roll('1d5');
         let d10Roll=new Roll('1d10');
         let actorToken=getActorToken(actor);
-                         
+
         if(num<9&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
             await this._sON(actor);
             return
@@ -1428,7 +1448,7 @@ returns the roll message*/
         let d5Roll=new Roll('1d5');
         let d10Roll=new Roll('1d10');
         let actorToken=getActorToken(actor);
-                         
+
         let injury=null;
         if(num<9&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
             await this._sON(actor);
@@ -1569,7 +1589,7 @@ returns the roll message*/
     }
     static async energyLegCrits(actor,num,leg,ignoreSON){
         let actorToken=getActorToken(actor);
-                           
+
         let critActiveEffect=[];
         let tTest=false;
         let d5Roll=new Roll("1d5");
@@ -1719,7 +1739,7 @@ returns the roll message*/
     }
     static async explosiveHeadCrits(actor,num,ignoreSON){
         let actorToken=getActorToken(actor);
-                           
+
         let critActiveEffect=[];
         let tTest=false;
         let d5Roll=new Roll("1d5");
@@ -1818,9 +1838,9 @@ returns the roll message*/
         }
     }
     static async explosiveBodyCrits(actor,num,ignoreSON){
-        
+
         let actorToken=getActorToken(actor);
-                           
+
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -1918,7 +1938,7 @@ returns the roll message*/
     }
     static async explosiveArmCrits(actor,num,arm,ignoreSON){
         let actorToken=getActorToken(actor);
-                           
+
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2030,7 +2050,7 @@ returns the roll message*/
     }
     static async explosiveLegCrits(actor,num,leg,ignoreSON){
         let actorToken=getActorToken(actor);
-                          
+
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2182,7 +2202,7 @@ returns the roll message*/
     }
     static async impactHeadCrits(actor,num,ignoreSON){
         let actorToken=getActorToken(actor);
-                         
+
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2304,7 +2324,7 @@ returns the roll message*/
     static async impactBodyCrits(actor,num,ignoreSON){
         let actorToken=getActorToken(actor);
         console.log(actor);
-                           
+
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2403,7 +2423,7 @@ returns the roll message*/
     }
     static async impactArmCrits(actor,num,arm,ignoreSON){
         let actorToken=getActorToken(actor);
-                         
+
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2498,7 +2518,7 @@ returns the roll message*/
     }
     static async impactLegCrits(actor,num,leg,ignoreSON){
         let actorToken=getActorToken(actor);
-                          
+
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2638,7 +2658,7 @@ returns the roll message*/
     }
     static async rendingHeadCrits(actor,num,ignoreSON){
         let actorToken=getActorToken(actor);
-                           
+
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2769,7 +2789,7 @@ returns the roll message*/
     }
     static async rendingBodyCrits(actor,num,ignoreSON){
         let actorToken=getActorToken(actor);
-                           
+
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2876,7 +2896,7 @@ returns the roll message*/
     };
     static async rendingArmCrits(actor,num,arm,ignoreSON){
         let actorToken=getActorToken(actor);
-                           
+
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -2977,7 +2997,7 @@ returns the roll message*/
     };
     static async rendingLegCrits(actor,num,leg,ignoreSON){
         let actorToken=getActorToken(actor);
-                         
+
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
         let d10Roll=new Roll("1d10");
@@ -3138,37 +3158,37 @@ returns the roll message*/
     };
     static async applyDead(target,actor){
 
-       
 
-            if(game.user.isGM||target.owner){
-                let msg=target.name+" is killed!";
-                let chatOptions={user: game.user._id,
-                                 speaker:{actor,alias:actor.name},
-                                 content:msg,
-                                 classes:["fortyk"],
-                                 flavor:`Death Report`,
-                                 author:actor.name};
-                await ChatMessage.create(chatOptions,{});
-                let id=target.data._id;
-                let effect="icons/svg/skull.svg";
-                //let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
-                //await this.applyActiveEffect(target,activeEffect);
-                console.log(target);
-                await target.toggleEffect(effect,{overlay:true});
-                try{
-                    let combatant = await game.combat.getCombatantByToken(id);
-                    let combatid=combatant._id;
-                    await game.combat.updateCombatant({
-                        '_id':combatid,
-                        'defeated':true
-                    }) 
-                }catch(err){}
-            }else{
-                let tokenId=target.data._id;
-                let socketOp={type:"applyDead",package:{token:tokenId,actor:actor}}
-                await game.socket.emit("system.fortyk",socketOp);
-            }
-        
+
+        if(game.user.isGM||target.owner){
+            let msg=target.name+" is killed!";
+            let chatOptions={user: game.user._id,
+                             speaker:{actor,alias:actor.name},
+                             content:msg,
+                             classes:["fortyk"],
+                             flavor:`Death Report`,
+                             author:actor.name};
+            await ChatMessage.create(chatOptions,{});
+            let id=target.data._id;
+            let effect="icons/svg/skull.svg";
+            //let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
+            //await this.applyActiveEffect(target,activeEffect);
+            console.log(target);
+            await target.toggleEffect(effect,{overlay:true});
+            try{
+                let combatant = await game.combat.getCombatantByToken(id);
+                let combatid=combatant._id;
+                await game.combat.updateCombatant({
+                    '_id':combatid,
+                    'defeated':true
+                }) 
+            }catch(err){}
+        }else{
+            let tokenId=target.data._id;
+            let socketOp={type:"applyDead",package:{token:tokenId,actor:actor}}
+            await game.socket.emit("system.fortyk",socketOp);
+        }
+
     };
     static async _addFatigue(actor,newfatigue){
         newfatigue=newfatigue+parseInt(actor.data.data.secChar.fatigue.value);
