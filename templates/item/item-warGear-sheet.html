@@ -1,4 +1,9 @@
 <form class="{{cssClass}} item-sheet flexcol">
+    <header class="sheet-header">
+        {{debug item.img}}
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
+
+    </header>
     <div class="flexcol">
         <label>Name:</label>
         <input type="text" value="{{name}}" name="name">
@@ -8,16 +13,16 @@
         <input type="text" value="{{data.weight.value}}" name="data.weight.value">
     </div>
     <div class="flexcol">
-            <label>Item Quality:</label>
+        <label>Item Quality:</label>
 
-            <select class="quality"  name="data.quality.value">
-                {{#select data.quality.value}}
-                {{#each FORTYK.itemQualities}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-                {{/select}}
-            </select>
-        </div>
+        <select class="quality"  name="data.quality.value">
+            {{#select data.quality.value}}
+            {{#each FORTYK.itemQualities}}
+            <option value="{{this}}">{{this}}</option>
+            {{/each}}
+            {{/select}}
+        </select>
+    </div>
     <div class="flexcol">
         <label>Rarity:</label>
         <select class="power-type" name="data.rarity.value">

@@ -65,6 +65,7 @@ export class FortykRollDialogs{
 
                             FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, reroll);
                         }
+                        AudioHelper.play({src: "sounds/dice.wav", volume: 0.8, loop: false}, true);
                     }
 
                 }

@@ -580,7 +580,7 @@ export class FortyKActor extends Actor {
                     if(fortykItem.getFlag("fortyk","force")){
                         let pr=parseInt(data.psykana.pr.value);
                         item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
-                        item.data.damageFormula.value=item.data.damageFormula.value.replace(/pr/gmi,pr);
+                        item.data.damageFormula.value+=`+${pr}`;
                     }
                 }catch(err){
                     item.data.pen.value="";
@@ -757,10 +757,10 @@ export class FortyKActor extends Actor {
             let skills=this.items.filter(function(item){return item.type==="skill"});
             for(let s of skills){                
                 if(s.data.data.parent.value===item.name){
-                    this.deleteEmbeddedEntity("Item",s._id);
+                    this.deleteEmbeddedDocuments("Item",[s._id]);
                 }
             }
         }
-        this.deleteEmbeddedEntity("Item", itemId);
+        this.deleteEmbeddedDocuments("Item", [itemId]);
     }
 }

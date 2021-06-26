@@ -34,6 +34,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.size=game.fortyk.FORTYK.size;
         data.skillChars=game.fortyk.FORTYK.skillChars;
         data.skillTraining=game.fortyk.FORTYK.skillTraining;
+        data.editable = this.options.editable;
         return data;
     }
     /** @override */
@@ -463,7 +464,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             item=this.actor.items.get(dataset["itemId"]);
         }
         if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
-            FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
+            await FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
+            
         }else if(testType==="meleeAttack"){
             FortykRollDialogs.callMeleeAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
         }else if(testType==="rangedAttack"){

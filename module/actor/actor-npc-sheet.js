@@ -43,15 +43,12 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
         if (!this.options.editable) return;
 
         html.find('.parse-tnt').click(this._onTntParse.bind(this));
-        html.find('.textinput').focusout(this._onUpdate.bind(this));
+        
 
 
 
     } 
-    async _onUpdate(event){
     
-        this.getData();
-    }
     async _onTntParse(event){
 
         let actor=this.actor;

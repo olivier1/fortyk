@@ -10,8 +10,7 @@ export class FortyKItemSheet extends ItemSheet {
         return mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "item"],
             width: 520,
-            height: 480,
-            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }]
+            height: 480
         });
     }
 
@@ -35,22 +34,27 @@ export class FortyKItemSheet extends ItemSheet {
     /** @override */
     getData() {
         
+       
+        
         const item=this.item;
-        const data = item.data;
+        const data = super.getData().data;
         if(this.item.type==="skill"){
             //GET THE SKILLS WITH CHILDREN
             if(this.actor!==null&&this.actor.data!==undefined){
                 data['skillgroups']=this.actor.items.filter(function(item){
 
                     if(item.type==="skill"){return item.data.data.hasChildren.value}else{return false;}})
-            }else{
-                
             }
 
 
 
         }
-        
+         data.item=this.item.data;
+        data.isGM=game.user.isGM;
+        data.isOwner=this.item.isOwner;
+        data.dtypes = ["String", "Number", "Boolean"];
+        data.FORTYK=game.fortyk.FORTYK;
+        data.editable = this.options.editable;
         return data;
     }
 

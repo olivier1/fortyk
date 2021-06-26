@@ -336,11 +336,12 @@
                 <div class="flexcol">
                     <div class="npc-info">
                         <span class="section-title">Skills</span>
-                        {{editor content=data.skills.value target="data.skills.value" button=true owner=owner editable=editable}}
+                       
+                        {{editor content=data.skills.value target="data.skills.value" button=true owner=owner editable=editable rollData=rollData}}
                     </div>
                     <div class="npc-info">
                         <span class="section-title">Equipment</span>
-                        {{editor content=data.equipment.value target="data.equipment.value" button=true owner=owner editable=editable}}
+                        {{editor content=data.equipment.value target="data.equipment.value" button=true owner=owner editable=editable rollData=rollData}}
                     </div>
                 </div>
                 <div class="flexcol">
@@ -594,7 +595,7 @@ Stays commented until the parse script works
         </div>
         <div class="tab description" data-group="primary" data-tab="description">
             <div class="item-description">
-                {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+                {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable rollData=rollData}}
             </div>
         </div>
     </section>
@@ -609,6 +610,6 @@ Stays commented until the parse script works
 
     {{else}}
     <img class="npc-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
-    {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=false}}
+    {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=false rollData=rollData}}
     {{/if}}
 </form>
