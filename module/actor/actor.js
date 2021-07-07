@@ -164,6 +164,7 @@ export class FortyKActor extends Actor {
             data.carry.value=0;
             this.items.forEach((fortykItem,id,items)=>{
                 let item=fortykItem.data;
+                
 
                 if(item.type==="cybernetic"){
                     this.data.data.characterHitLocations[item.data.location.value].cyber=true;

@@ -346,7 +346,7 @@ returns the roll message*/
     }
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
     static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false){
-        let weapon=duplicate(fortykWeapon.data);
+        let weapon=deepClone(fortykWeapon.data);
         let righteous=10;
         if(fortykWeapon.getFlag("fortyk","vengeful")){
             righteous=fortykWeapon.getFlag("fortyk","vengeful");
@@ -562,36 +562,8 @@ returns the roll message*/
                         //check if weapon ignores soak
                         if(!fortykWeapon.getFlag("fortyk","ignoreSoak")){
                             let armor=parseInt(data.characterHitLocations[curHit.value].armor);
-                            //handle cover
-                            if(!self&&!fortykWeapon.getFlag("fortyk","spray")&&data.characterHitLocations[curHit.value].cover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
-                                let cover=parseInt(data.secChar.cover.value);
-                                armor=armor+cover;
-                                //reduce cover if damage is greater than cover AP
-                                if(roll._total>cover&&cover!==0){
-                                    cover=Math.max(0,(cover-1));
-                                    if(cover!==data.secChar.cover.value){
-                                        let path="data.secChar.cover.value"
-                                        let pack={}
-                                        pack[path]=cover;
-                                        if(game.user.isGM){
-                                            await tarActor.update(pack); 
-                                        }else{
-                                            //if user isnt GM use socket to have gm update the actor
-                                            let tokenId=tar.data._id;
-                                            let socketOp={type:"updateValue",package:{token:tokenId,value:cover,path:path}}
-                                            await game.socket.emit("system.fortyk",socketOp);
-                                        }
-                                        let mesHitLoc=curHit.label;
-                                        let chatOptions={user: game.user._id,
-                                                         speaker:{actor,alias:actor.name},
-                                                         content:"Cover is lowered by 1",
-                                                         classes:["fortyk"],
-                                                         flavor:`${mesHitLoc}: damaged cover`,
-                                                         author:actor.name};
-                                        await ChatMessage.create(chatOptions,{});
-                                    }
-                                }
-                            }
+                            
+                            
                             let pen=0;
                             //random pen logic
                             if(isNaN(weapon.data.pen.value)){
@@ -646,6 +618,38 @@ returns the roll message*/
                             }
                             let maxPen=Math.min(armor,pen);
                             soak=parseInt(data.characterHitLocations[curHit.value].value);
+                            //handle cover
+                           
+                            if(!self&&!fortykWeapon.getFlag("fortyk","spray")&&data.characterHitLocations[curHit.value].cover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
+                                
+                                let cover=parseInt(data.secChar.cover.value);
+                                soak=soak+cover;
+                                //reduce cover if damage is greater than cover AP
+                                if(roll._total>cover&&cover!==0){
+                                    cover=Math.max(0,(cover-1));
+                                    if(cover!==data.secChar.cover.value){
+                                        let path="data.secChar.cover.value"
+                                        let pack={}
+                                        pack[path]=cover;
+                                        if(game.user.isGM){
+                                            await tarActor.update(pack); 
+                                        }else{
+                                            //if user isnt GM use socket to have gm update the actor
+                                            let tokenId=tar.data._id;
+                                            let socketOp={type:"updateValue",package:{token:tokenId,value:cover,path:path}}
+                                            await game.socket.emit("system.fortyk",socketOp);
+                                        }
+                                        let mesHitLoc=curHit.label;
+                                        let chatOptions={user: game.user._id,
+                                                         speaker:{actor,alias:actor.name},
+                                                         content:"Cover is lowered by 1",
+                                                         classes:["fortyk"],
+                                                         flavor:`${mesHitLoc}: damaged cover`,
+                                                         author:actor.name};
+                                        await ChatMessage.create(chatOptions,{});
+                                    }
+                                }
+                            }
                             if(fortykWeapon.getFlag("fortyk","felling")){
                                 let ut=parseInt(tarActor.data.data.characteristics.t.uB);
                                 let fel=Math.min(ut,fortykWeapon.getFlag("fortyk","felling"));
@@ -2323,7 +2327,7 @@ returns the roll message*/
     }
     static async impactBodyCrits(actor,num,ignoreSON){
         let actorToken=getActorToken(actor);
-        console.log(actor);
+        
 
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
@@ -3173,7 +3177,7 @@ returns the roll message*/
             let effect="icons/svg/skull.svg";
             //let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
             //await this.applyActiveEffect(target,activeEffect);
-            console.log(target);
+            
             await target.toggleEffect(effect,{overlay:true});
             try{
                 let combatant = await game.combat.getCombatantByToken(id);

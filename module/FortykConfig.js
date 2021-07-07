@@ -460,7 +460,7 @@ FORTYK.StatusEffects = [
         id: "totalDef",
         label: "Total Defense",
         icon: "systems/fortyk/icons/defense.png",
-        flags: { core: { statusId: "fireShield" } },
+        flags: { core: { statusId: "totalDef" } },
         duration:{
             
             rounds:1
