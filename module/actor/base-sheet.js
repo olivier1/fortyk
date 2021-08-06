@@ -298,7 +298,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
                                         await actor.setFlag("fortyk",flag,true);
                                     }else{
-                                        let chosenSpec= Dialog.prompt({
+                                        let chosenSpec=await Dialog.prompt({
                                             title: "Choose specialisation",
                                             content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${tntData.specialisation.value}" autofocus/></p>`,
 
@@ -318,7 +318,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                             width:100}
                                                                      );
                                         setTimeout(function() {document.getElementById('specInput').select();}, 50);
-                                        tntData.specialisation.value=await chosenSpec;
+                                        await itemData.update({"data.specialisation.value": chosenSpec});
+                                        
                                     }
                                     talentsNTraits.push(itemData);
                                 }

@@ -121,8 +121,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         let newLoc=event.target.value;
         let dataItemId=event.target.attributes["data-item-id"].value;
-        let item= duplicate(this.actor.getEmbeddedDocument("Item", dataItemId));
-        item.data.location.value=newLoc;
+        let item= this.actor.getEmbeddedDocument("Item", dataItemId);
+        //item.data.data.location.value=newLoc;
         item.update({"data.location.value":newLoc});
 
 
