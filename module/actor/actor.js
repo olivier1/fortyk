@@ -346,6 +346,9 @@ export class FortyKActor extends Actor {
                 char.total=Math.ceil(char.value/2);
             }
         }
+        //prepare psyker stuff
+        data.psykana.pr.effective=parseInt(data .psykana.pr.value)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
+        data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
         //movement
 
         if(this.getFlag("fortyk","quadruped")){

@@ -3136,7 +3136,9 @@ returns the roll message*/
 
                     let skip=false;
                     if(effect[index].id==="stunned"&&actor.getFlag("fortyk","ironjaw")){
-                        skip=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Iron Jaw").value;
+                      
+                        skip=(await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Iron Jaw")).value;
+                       
                     }
                     if(effect[index].id==="stunned"&&actor.getFlag("fortyk","frenzy")){
                         skip=true;
