@@ -523,7 +523,7 @@ returns the roll message*/
             //handle spray weapon jams
             if(fortykWeapon.getFlag("fortyk","spray")&&weapon.type==="rangedWeapon"){
                 let jam=false;
-                for ( let r of roll.dice[0].rolls ) {
+                for ( let r of roll.dice[0].results ) {
                     if(r.roll===9){
                         jam=true;
                     }
