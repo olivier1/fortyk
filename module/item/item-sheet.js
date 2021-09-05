@@ -131,9 +131,15 @@ export class FortyKItemSheet extends ItemSheet {
                                 let number
                                 if(spec.num!==undefined){
                                     number=parseInt(html.find(`input[id=${key}num]`).val());
-                                    if(number!==parseInt(spec.num)){num=true};
+                                    if(number!==parseInt(spec.num)){
+                                        
+                                        num=true};
+                                    if(num&&number<0){
+                                        number=false;
+                                    }
 
                                 }
+                                console.log(key,num,number);
                                
                                 if(num){
                                     

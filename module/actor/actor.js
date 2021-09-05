@@ -366,8 +366,14 @@ export class FortyKActor extends Actor {
         data.secChar.movement.charge=data.secChar.movement.half*3;
         data.secChar.movement.run=data.secChar.movement.half*6;
         //total soak
+        
         for(const hitLoc in data.characterHitLocations){
-            data.characterHitLocations[hitLoc].value=parseInt(data.characterHitLocations[hitLoc].armor)+parseInt(data.characteristics.t.bonus);
+            let armor=parseInt(data.characterHitLocations[hitLoc].armor);
+            if(isNaN(armor)){
+                armor=0;
+            }
+            
+            data.characterHitLocations[hitLoc].value=armor+parseInt(data.characteristics.t.bonus);
             let daemonic=this.getFlag("fortyk","daemonic");
             if(daemonic){
                 if(!isNaN(daemonic)){

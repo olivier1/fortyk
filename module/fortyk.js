@@ -129,6 +129,13 @@ Hooks.once('init', async function() {
     Handlebars.registerHelper("equals", function(num1,num2){
         return num1==num2;
     });
+    Handlebars.registerHelper("checkSpecial",function(spec){
+        let bool=false;
+        if(typeof spec==='number'){
+            bool=true;
+        }else{bool=spec}
+        return bool;
+    });
     Handlebars.registerHelper("unescape",function(text){
         var doc = new DOMParser().parseFromString(text, "text/html");
         return doc.documentElement.textContent;
@@ -177,7 +184,7 @@ Hooks.once('ready', async function() {
                     token=canvas.tokens.get(id);
                     actor=data.package.actor;
                     FortykRolls.applyDead(token,actor);
-                    
+
 
                     break;
                 case "perilsRoll":

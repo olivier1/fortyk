@@ -253,7 +253,7 @@
                         
                         {{#each this.flags.fortyk as |flag key|}}
 
-                        {{#if this}}
+                        {{#if (checkSpecial this)}}
 
                         {{#with (lookup ../FORTYK.itemFlags [key])~}}
                         <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
@@ -315,7 +315,7 @@
 
                         {{#each this.flags.fortyk as |flag key|}}
 
-                        {{#if this}}
+                        {{#if (checkSpecial this)}}
 
                         {{#with (lookup ../FORTYK.itemFlags [key])~}}
                         <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >

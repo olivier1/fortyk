@@ -11,7 +11,7 @@ export class FortyKItem extends Item {
     **/
    async update(data, options={}){
         if(this.data.type==="talentntrait"){
-            console.log(this);
+            
             if(this.actor!==undefined){
                 
                 if(this.data.data.specialisation.value!==data["data.specialisation.value"]){
