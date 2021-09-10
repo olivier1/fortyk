@@ -16,7 +16,7 @@ export class FortyKActor extends Actor {
         data.items = [];
         //initialise starting skills
         let startingSkills= await getSkills();
-        if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment"){
+        if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship"){
             for(let s of startingSkills){
                 data.items.push(s);
             }

@@ -6,7 +6,8 @@
             "dhPC",
             "owPC",
             "owComrade",
-            "owRegiment"
+            "owRegiment",
+            "spaceship"
         ],
         "templates": {
             "description": {
@@ -602,6 +603,94 @@
             }
 
 
+        },
+        "spaceship":{
+            "name":{
+                "value":"",
+                "type":"String"
+            },
+            "class":{
+                "value":"",
+                "type":"String"
+            },
+            "hull":{
+                "value":"",
+                "type":"String"
+            },
+            "speed":{
+                "value":0,
+                "type":"Number"
+            },
+            "manoeuvrability":{
+                "value":0,
+                "type":"Number"
+            },
+            "detection":{
+                "value":0,
+                "type":"Number"
+            },
+            "turret":{
+                "value":0,
+                "type":"Number"
+            },
+            "shields":{
+                "value":0,
+                "type":"Number"
+            },
+            "armor":{
+                "value":0,
+                "type":"Number"
+            },
+            "hullIntegrity":{
+                "value":0,
+                "max":0,
+                "min":0,
+                "type":"Number"
+            },
+            "space":{
+                "value":0,
+                "max":0,
+                "min":0,
+                "type":"Number"
+            },
+            "power":{
+                "value":0,
+                "max":0,
+                "min":0,
+                "type":"Number"
+            },
+            "crew":{
+                "value":0,
+                "max":0,
+                "min":0,
+                "rating":0,
+                "type":"Number"
+            },
+            "morale":{
+                "value":0,
+                "max":0,
+                "min":0,
+                "type":"Number"
+            },
+            "weaponCapacity":{
+                "dorsal":0,
+                "prow":0,
+                "keel":0,
+                "port":0,
+                "starboard":0,
+                "type":"Number"
+            },
+            "complications":{
+                "1":"",
+                "2":"",
+                "type":"String"
+            },
+            "shipPoints":{
+                "value":0,
+                "spent":0,
+                "remaining":0,
+                "type":"Number"
+            }
         }
     },
     "Item": {
@@ -623,7 +712,9 @@
             "injury",
             "talentntrait",
             "advancement",
-            "mission"
+            "mission",
+            "spaceshipComponent",
+            "spaceshipWeapon"
         ],
         "templates": {
             "weapon": {
@@ -1010,6 +1101,60 @@
             "inf": {
                 "value": 0,
                 "type": "Number"
+            }
+        },
+        "spaceshipComponent": {
+            "templates": [                
+                "description"
+            ],
+            "power":{
+                "value":0,
+                "type":"Number"
+            },
+            "space":{
+                "value":0,
+                "type":"Number"
+            },
+            "sp":{
+                "value":0,
+                "type":"Number"
+            },
+            "type":{
+                "value":"",
+                "type":"String"
+            }
+        },
+        "spaceshipWeapon":{
+            "templates": [                
+                "description"
+            ],
+            "power":{
+                "value":0,
+                "type":"Number"
+            },
+            "space":{
+                "value":0,
+                "type":"Number"
+            },
+            "sp":{
+                "value":0,
+                "type":"Number"
+            },
+            "type":{
+                "value":"",
+                "type":"String"
+            },
+            "damage":{
+                "value":"1d10",
+                "type":"String"
+            },
+            "range":{
+                "value":0,
+                "type":"Number"
+            },
+            "strength":{
+                "value":"0",
+                "type":"String"
             }
         }
     }
