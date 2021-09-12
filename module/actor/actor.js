@@ -157,26 +157,26 @@ export class FortyKActor extends Actor {
         if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC'){
             let items=this.data.items;
             let data=actorData.data;
-            
+
             data.experience.earned=0;
             data.experience.spent=0;
             data.characteristics["inf"].advance=0;
             data.carry.value=0;
             this.items.forEach((fortykItem,id,items)=>{
                 let item=fortykItem.data;
-                
+
 
                 if(item.type==="cybernetic"){
                     this.data.data.characterHitLocations[item.data.location.value].cyber=true;
 
                 }
                 if(item.type==="advancement"){
-                //calculates spent exp
-                data.experience.spent=parseInt(data.experience.spent)+parseInt(item.data.cost.value);
-               
-            }
+                    //calculates spent exp
+                    data.experience.spent=parseInt(data.experience.spent)+parseInt(item.data.cost.value);
+
+                }
                 if(item.type==="mission"){
-                    
+
                     data.experience.earned=parseInt(data.experience.earned)+parseInt(item.data.exp.value);
                     data.characteristics["inf"].advance= parseInt(data.characteristics["inf"].advance)+parseInt(item.data.inf.value);
                 }
@@ -190,6 +190,31 @@ export class FortyKActor extends Actor {
 
             data.experience.value=parseInt(data.experience.starting)+parseInt(data.experience.earned)-parseInt(data.experience.spent);
 
+        }
+        if(actorData.type === "spaceship"){
+            let items=this.data.items;
+            let data=actorData.data;
+            console.log(data);
+            data.cargo.value=0;
+            data.power.value=0;
+            data.space.value=0;
+            data.shipPoints.spent=0;
+            data.shipPoints.remaining=0;
+            console.log("wut")
+            this.items.forEach((fortykItem,id,items)=>{
+                let item=fortykItem.data;
+                if(item.type==="spaceshipComponent"||item.type==="spaceshipWeapon"){
+                    data.power.value+=parseInt(item.data.power.value);
+                    data.space.value+=parseInt(item.data.space.value);
+                    data.shipPoints.spent+=parseInt(item.data.sp.value);
+                }else if(item.type==="spaceshipCargo"){
+                    data.cargo.value+=parseInt(item.data.space.value);
+                }
+
+
+            });
+            console.log(data);
+            data.shipPoints.remaining=parseInt(data.shipPoints.value)-data.shipPoints.spent;
         }
 
     }
@@ -366,13 +391,13 @@ export class FortyKActor extends Actor {
         data.secChar.movement.charge=data.secChar.movement.half*3;
         data.secChar.movement.run=data.secChar.movement.half*6;
         //total soak
-        
+
         for(const hitLoc in data.characterHitLocations){
             let armor=parseInt(data.characterHitLocations[hitLoc].armor);
             if(isNaN(armor)){
                 armor=0;
             }
-            
+
             data.characterHitLocations[hitLoc].value=armor+parseInt(data.characteristics.t.bonus);
             let daemonic=this.getFlag("fortyk","daemonic");
             if(daemonic){
@@ -390,6 +415,9 @@ export class FortyKActor extends Actor {
         }
         if(preparedData.type==='npc'){
             mergeObject(preparedData, this.prepareNPCItems(preparedData));
+        }
+        if(preparedData.type==="spaceship"){
+            mergeObject(preparedData, this.prepareSpaceshipItems(preparedData));
         }
         return preparedData;
     }
@@ -537,7 +565,7 @@ export class FortyKActor extends Actor {
                 missions.push(item);
             }
             if(item.type==="advancement"){
-               
+
                 advancements.push(item);
             }
             if(item.type==="meleeWeapon"){
@@ -615,8 +643,8 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","deathwatchtraining")){
             actorData.flags.fortyk.deathwatchtraining=forRaces;
         }
-       
-        
+
+
 
 
 
@@ -650,7 +678,7 @@ export class FortyKActor extends Actor {
             // a must be equal to b
             return 0;
         });
-      
+
         let preparedItems={skills:sortedSkills,
                            wargear:sortedGear,
                            cybernetics:cybernetics,
@@ -673,6 +701,7 @@ export class FortyKActor extends Actor {
                            wornGear:wornGear};
         return preparedItems;
     }
+
     prepareNPCItems(actorData){
         let data=actorData.data;           
         const psychicPowers=[];
@@ -758,6 +787,35 @@ export class FortyKActor extends Actor {
             talentsntraits:talentsntraits
         };
         return preparedItems;
+    }
+    prepareSpaceshipItems(actorData){
+        let data=actorData.data;
+        const weapons=[];
+        const components=[];
+        const cargo=[];
+        const squadrons=[];
+        this.items.forEach((fortykItem,id,items)=>{
+            let item=fortykItem.data;
+            if(item.type==="spaceshipComponent"){
+                components.push(item);
+            }else if(item.type==="spaceshipWeapon"){
+                components.push(item);
+                weapons.push(item);
+            }else if(item.type==="spaceshipCargo"){
+                cargo.push(item);
+            }else if(item.type==="spaceshipSquadron"){
+                squadrons.push(item);
+            }
+        });
+        let preparedItems={
+            weapons:weapons,
+            components:components,
+            cargo:cargo,
+            squadrons:squadrons
+        }
+        return preparedItems
+
+
     }
     //this function deletes items from an actor, certain items need more logic to process
     deleteItem(itemId){

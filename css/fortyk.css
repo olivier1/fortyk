@@ -275,6 +275,15 @@
     flex:auto;
 
 }
+.fortyk nav.sheet-tabs2 {
+    -webkit-box-flex: 1;
+    margin-top: 0px;
+    height: 70px;
+    font-weight:bold;
+    font-style:bold;
+    flex:auto;
+
+}
 .fortyk nav.sheet-tabs.npc {
     -webkit-box-flex: 1;
     margin-top: 0px;
@@ -363,6 +372,14 @@
 .fortyk .list5col{
 
     grid-template-columns: 50% auto auto 30px 30px;
+}
+.fortyk .list6col{
+
+    grid-template-columns: 50% auto auto auto 30px 30px;
+}
+.fortyk .list7col{
+
+    grid-template-columns: 40% auto auto auto auto 30px 30px;
 }
 .fortyk .list-item{
     border: 1px solid #999;

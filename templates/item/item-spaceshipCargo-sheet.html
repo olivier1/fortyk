@@ -8,20 +8,26 @@
         <input type="text" value="{{name}}" name="name">
     </div>
     <div class="flexcol">
-        <label>Power:</label>
-        <input type="text" value="{{data.power.value}}" name="data.power.value">
+        <label>Type:</label>
+        <select class="damage-type" name="data.type.value">
+                {{#select data.type.value}}
+                {{#each FORTYK.spaceshipCargoTypes}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
     </div>
     <div class="flexcol">
         <label>Space:</label>
         <input type="text" value="{{data.space.value}}" name="data.space.value">
     </div>
     <div class="flexcol">
-        <label>Ship Points:</label>
+        <label>Profit Factor:</label>
         <input type="text" value="{{data.sp.value}}" name="data.sp.value">
     </div>
     <div class="flexcol">
-        <label>Type:</label>
-        <input type="text" value="{{data.type.value}}" name="data.type.value">
+        <label>Rarity:</label>
+        <input type="text" value="{{data.rarity.value}}" name="data.rarity.value">
     </div>
     
     <div class="item-description">

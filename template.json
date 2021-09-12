@@ -642,8 +642,8 @@
                 "type":"Number"
             },
             "hullIntegrity":{
-                "value":0,
-                "max":0,
+                "value":40,
+                "max":40,
                 "min":0,
                 "type":"Number"
             },
@@ -660,15 +660,15 @@
                 "type":"Number"
             },
             "crew":{
-                "value":0,
-                "max":0,
+                "value":100,
+                "max":100,
                 "min":0,
-                "rating":0,
+                "rating":30,
                 "type":"Number"
             },
             "morale":{
-                "value":0,
-                "max":0,
+                "value":100,
+                "max":100,
                 "min":0,
                 "type":"Number"
             },
@@ -681,14 +681,21 @@
                 "type":"Number"
             },
             "complications":{
+                "0":"",
                 "1":"",
-                "2":"",
                 "type":"String"
             },
             "shipPoints":{
                 "value":0,
                 "spent":0,
                 "remaining":0,
+                "type":"Number"
+            },
+            "cargo":{
+                "value":0,
+                "max":0,
+                "min":0,
+                "profit":0,
                 "type":"Number"
             }
         }
@@ -714,7 +721,9 @@
             "advancement",
             "mission",
             "spaceshipComponent",
-            "spaceshipWeapon"
+            "spaceshipWeapon",
+            "spaceshipCargo",
+            "spaceshipSquadron"
         ],
         "templates": {
             "weapon": {
@@ -1155,6 +1164,48 @@
             "strength":{
                 "value":"0",
                 "type":"String"
+            },
+            "location":{
+                "value":"0",
+                "type":"String"
+            }
+        },
+        "spaceshipCargo":{
+            "templates": [                
+                "description"
+            ],
+            "type":{
+                "value":"",
+                "type":"String" 
+            },
+            "space":{
+                "value":0,
+                "type":"Number"
+            },
+            "pf":{
+                "value":0,
+                "type":"Number"
+            },
+            "rarity":{
+                "value":"",
+                "type":"String"
+            }
+        },
+        "spaceshipSquadron":{
+          "templates": [                
+                "description"
+            ], 
+            "type":{
+                "value":"",
+                "type":"String" 
+            },
+            "rating":{
+                "value":0,
+                "type":"Number" 
+            },
+            "halfstr":{
+                "value":false,
+                "type":"Boolean"
             }
         }
     }

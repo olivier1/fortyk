@@ -1,0 +1,304 @@
+<form class="{{cssClass}} charSheet flexcol" autocomplete="off">
+
+    {{!-- Sheet Header --}}
+    <header class=" flexcol">
+
+        <div class="flexcol">
+            <div class="flexrow sheet-header">
+                {{debug this}}
+                <img class="profile-img" src="{{img}}" data-edit="img" title="{{name}}" />
+                <div class="header-fields">
+                    <div class="flexcol">
+                        <div class="descr grid grid-3col">
+
+                            <div class="descrRow flexcol">
+                                <span class="descrSpan">Name:</span>
+                                <input name="name" type="text" value="{{name}}" placeholder="Name"/>
+                            </div>
+
+                            <div class="descrRow flexcol">
+                                <span class="descrSpan">Class:</span>
+                                <input name="data.class.value" type="text" value="{{data.class.value}}"/>
+                            </div>
+                            <div class="descrRow flexcol">
+                                <span class="descrSpan">Hull:</span>
+                                <input name="data.hull.value" type="text" value="{{data.hull.value}}"/>
+                            </div>
+
+                        </div>
+                        <div class="descrRow flexcol">
+                            <div><span class="descrSpan">Complications/Past History:</span>
+                                <input name="data.complications.0" type="text" value="{{data.complications.[0]}}" /></div>
+
+                            <input name="data.complications.1" type="text" value="{{data.complications.[1]}}" /></div>
+
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="descr grid grid-5col">
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Speed:</span>
+                    <input name="data.speed.value" type="text" value="{{data.speed.value}}"/>
+
+                </div>
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Manoeuver:</span>
+                    <input name="data.manoeuvrability.value" type="text" value="{{data.manoeuvrability.value}}"/>
+                </div>
+
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Detection:</span>
+                    <input name="data.detection.value" type="text" value="{{data.detection.value}}" />
+                </div>
+
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Turret Rating:</span>
+                    <input name="data.turret.value" type="text" value="{{data.turret.value}}"/>
+                </div>
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Void Shields:</span>
+                    <input name="data.shields.value" type="text" value="{{data.shields.value}}" />
+                </div>
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Armor:</span>
+                    <input name="data.armor.value" type="text" value="{{data.armor.value}}" />
+                </div>
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Crew Rating:</span>
+                    <input name="data.crew.rating" type="text" value="{{data.crew.rating}}" />
+                </div>
+                <div class="resource flex-group-center">
+                    <label for="data.secChar.wounds.value" class="resource-label">Hull Integrity</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" class="combat-resources" name="data.hullIntegrity.value" value="{{data.hullIntegrity.value}}" data-dtype="Number"/>
+                        <span> / </span>
+                        <input type="text" class="combat-resources" name="data.hullIntegrity.max" value="{{data.hullIntegrity.max}}" data-dtype="Number"/>
+                    </div>
+                </div>
+
+                <div class="resource flex-group-center">
+                    <label for="data.secChar.fatigue.value" class="resource-label">Crew</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" class="combat-resources" name="data.crew.value" value="{{data.crew.value}}" data-dtype="Number"/>
+                        <span> / </span>
+                        <span type="text">{{data.crew.max}}</span>
+                    </div>
+                </div>
+                <div class="resource flex-group-center">
+                    <label for="data.secChar.fatigue.value" class="resource-label">Morale</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" class="combat-resources" name="data.morale.value" value="{{data.morale.value}}" data-dtype="Number"/>
+                        <span> / </span>
+                        <span type="text">{{data.morale.max}}</span>
+                    </div>
+                </div>
+            </div>
+
+
+            
+
+
+        </div>
+        {{!-- Sheet Tab Navigation --}}
+        <nav class="sheet-tabs2 tabs grid grid-4col" data-group="primary">
+
+            <a class="item" data-tab="components">COMPONENTS</a>
+            <a class="item" data-tab="weapons">WEAPONS</a>
+            <a class="item" data-tab="cargo">CARGO</a>
+            <a class="item" data-tab="hangar">HANGAR</a>
+
+
+        </nav>
+
+    </header>
+
+
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-content">
+
+        {{!-- Main Tab --}}
+        <div class="tab components" data-group="primary" data-tab="components">
+
+            <div class="descr flexrow">
+
+                <div class="resource flex-group-center">
+                    <label for="data.secChar.wounds.value" class="resource-label">Ship Points</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <div class="flexcol">Start:<input type="text" class="combat-resources" name="data.shipPoints.value" value="{{data.shipPoints.value}}" data-dtype="Number"/></div>
+                        <div class="flexcol"> Spent:
+                            <span>{{data.shipPoints.spent}}</span></div>
+                       
+                        <div class="flexcol"> Remnaining:
+                        <span>{{data.shipPoints.remaining}}</span></div>
+                       
+                    </div>
+                </div>
+                <div class="resource flex-group-center">
+                    <label for="data.secChar.fatigue.value" class="resource-label">Power</label>
+                    <div class="resource-content flexcol flex-center flex-between">
+                        {{data.power.value}}
+                        
+                        <input type="text" class="combat-resources" name="data.power.max" value="{{data.power.max}}" data-dtype="Number"/>
+                    </div>
+                </div>
+                <div class="resource  flex-group-center">
+                    <label for="data.secChar.space.value" class="resource-label">Space</label>
+                    <div class="resource-content flexcol flex-center flex-between">
+                        {{data.space.value}}
+                       
+                        <input type="text" class="combat-resources" name="data.space.max" value="{{data.space.max}}" data-dtype="Number"/>
+                    </div>
+                </div>
+
+
+            </div>
+            <a class="shipComponent-create button" data-type="shipComponent" title="Add Ship Component">Add Ship Component</a>
+            <div class="list list6col grid grid-6col">
+                <span class="list-item">Name</span>
+                <span class="list-item">Power</span>
+                <span class="list-item">Space</span>
+                <span class="list-item">SP</span>
+                <span class="list-button"></span>
+                <span class="list-button"></span>
+                {{#each actor.components as |t key|}}
+
+                <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}</a>
+                <span class="item-descr list-item">{{t.data.power.value}}</span>
+                <span class="item-descr list-item">{{t.data.space.value}}</span>
+                <span class="item-descr list-item">{{t.data.sp.value}}</span>
+                <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
+                <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
+
+
+
+                {{/each}}
+
+            </div>
+
+        </div>
+
+        <div class="tab weapons" data-group="primary" data-tab="weapons">
+            <div class="resource flex-group-center">
+                <label for="data.secChar.space.value" class="resource-label">Weapon slots</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <div class="flexcol"> Dorsal: 
+                    <input type="text" class="combat-resources" name="data.weaponCapacity.dorsal" value="{{data.weaponCapacity.dorsal}}" data-dtype="Number"/></div>
+                   
+                    <div class="flexcol"> Prow: 
+                    <input type="text" class="combat-resources" name="data.weaponCapacity.prow" value="{{data.weaponCapacity.prow}}" data-dtype="Number"/></div>
+                   
+                    <div class="flexcol">Keel: 
+                    <input type="text" class="combat-resources" name="data.weaponCapacity.keel" value="{{data.weaponCapacity.keel}}" data-dtype="Number"/></div>
+                    
+                    <div class="flexcol">Port: 
+                    <input type="text" class="combat-resources" name="data.weaponCapacity.port" value="{{data.weaponCapacity.port}}" data-dtype="Number"/></div>
+                    
+                    <div class="flexcol">Starboard: 
+                    <input type="text" class="combat-resources" name="data.weaponCapacity.starboard" value="{{data.weaponCapacity.starboard}}" data-dtype="Number"/></div>
+                    
+                </div>
+            </div>
+            {{#each actor.weapons as |t key|}}
+            <div class="weapons grid grid-3col">
+                <div class="list-item">
+                    <span>Name: {{this.name}}</span>
+                </div>
+                <div class="list-item">
+                    <span>Type: {{this.data.type.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <span>Location: {{this.data.location.value}}</span>
+
+                </div>
+
+                <div class="list-item">
+                    <span>Range: {{this.data.range.value}}</span>
+                </div>
+
+
+
+                <div class="list-item">
+                    <label>Strength: {{this.data.strength.value}}</label>
+                </div>
+                <div class="list-item">
+                    <span>Damage: </span> 
+                    <a class="space-damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damage.value}}" data-weapon="{{this._id}}"> {{this.data.damage.value}}</a>
+
+                </div>
+
+
+
+            </div>
+            {{/each}}
+        </div>
+        <div class="tab cargo" data-group="primary" data-tab="cargo">
+            <div class="resource flex-group-center">
+                <label for="data.secChar.fatigue.value" class="resource-label">Cargo Capacity</label>
+                <div class="resource-content flexcol flex-center flex-between">
+                    {{data.cargo.value}}
+                   
+                    <input type="text" class="combat-resources" name="data.cargo.max" value="{{data.cargo.max}}" data-dtype="Number"/>
+                </div>
+            </div>
+            <a class="item-create button" data-type="spaceshipCargo" title="Add Cargo">Add Cargo</a>
+            <div class="list list7col grid grid-7col">
+                <span class="list-item">Name</span>
+                <span class="list-item">Type</span>
+                <span class="list-item">Space</span>
+                <span class="list-item">PF</span>
+                <span class="list-item">Rarity</span>
+                <span class="list-button"></span>
+                <span class="list-button"></span>
+                {{#each actor.cargo as |t key|}}
+
+                <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}</a>
+                <span class="list-item">{{t.data.type.value}}</span>
+                <span class="list-item">{{t.data.space.value}}</span>
+                <span class="list-item">{{t.data.pf.value}}</span>
+                <span class="list-item">{{t.data.rarity.value}}</span>
+                <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
+                <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
+
+
+
+                {{/each}}
+
+            </div>
+
+        </div>
+        <div class="tab hangar" data-group="primary" data-tab="hangar">
+
+            <a class="item-create button" data-type="spaceshipSquadron" title="Add Squadron">Add Squadron</a>
+            <div class="list list6col grid grid-6col">
+                <span class="list-item">Name</span>
+                <span class="list-item">Type</span>
+                <span class="list-item">Rating</span>
+                <span class="list-item">Half</span>
+                <span class="list-button"></span>
+                <span class="list-button"></span>
+                {{#each actor.squadrons as |t key|}}
+
+                <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}</a>
+                <span class="list-item">{{t.data.type.value}}</span>
+                <span class="list-item">{{t.data.rating.value}}</span>
+                <input type="checkbox" class="halfstr" data-item-id="{{this._id}}"  {{checked this.data.halfstr.value}}>
+                <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
+                <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
+
+
+
+                {{/each}}
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+</form>
