@@ -1179,11 +1179,11 @@
                 "type":"String" 
             },
             "space":{
-                "value":0,
+                "value":1,
                 "type":"Number"
             },
             "pf":{
-                "value":0,
+                "value":1,
                 "total":0,
                 "type":"Number"
             },
