@@ -196,6 +196,7 @@ export class FortyKActor extends Actor {
             let data=actorData.data;
             console.log(data);
             data.cargo.value=0;
+            data.cargo.profit=0;
             data.power.value=0;
             data.space.value=0;
             data.shipPoints.spent=0;
@@ -208,7 +209,10 @@ export class FortyKActor extends Actor {
                     data.space.value+=parseInt(item.data.space.value);
                     data.shipPoints.spent+=parseInt(item.data.sp.value);
                 }else if(item.type==="spaceshipCargo"){
+                    console.log(item);
                     data.cargo.value+=parseInt(item.data.space.value);
+                    item.data.pf.total=parseFloat(item.data.pf.value)*parseFloat(item.data.space.value);
+                    data.cargo.profit+=item.data.pf.total;
                 }
 
 

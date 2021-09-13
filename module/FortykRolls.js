@@ -78,7 +78,12 @@ returns the roll message*/
         templateOptions["rollResult"]="Roll: "+testRoll.toString();
         templateOptions["target"]="Target: "+target.toString();
         const testResult=roll._total>=0;
-        var charObj=actor.data.data.characteristics[char];
+        try{
+            var charObj=actor.data.data.characteristics[char];
+        }catch(err){
+             var charObj=undefined;
+        }
+        
         if(charObj===undefined){charObj={"uB":0}}
         var testDos=0;
         //calculate degrees of failure and success

@@ -9,7 +9,13 @@
     </div>
     <div class="flexcol">
         <label>Type:</label>
-        <input type="text" value="{{data.type.value}}" name="data.type.value">
+        <select class="damage-type" name="data.type.value">
+                {{#select data.type.value}}
+                {{#each FORTYK.spaceshipSquadronTypes}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
     </div>
     <div class="flexcol">
         <label>Rating:</label>

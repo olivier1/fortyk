@@ -1184,6 +1184,7 @@
             },
             "pf":{
                 "value":0,
+                "total":0,
                 "type":"Number"
             },
             "rarity":{

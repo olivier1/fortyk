@@ -197,6 +197,7 @@
 }
 .fortyk .descr .descrRow{
     width:100%;
+    height:100%;
     padding-left: 10px;
     margin-bottom:2px;
     border: 1px solid #999;
@@ -325,6 +326,8 @@
     padding: 0 8px;
 }
 .fortyk .resource{
+    width:100%;
+    height:100%;
 
 }
 

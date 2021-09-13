@@ -17,17 +17,20 @@
                 {{/select}}
             </select>
     </div>
+    
     <div class="flexcol">
-        <label>Space:</label>
-        <input type="text" value="{{data.space.value}}" name="data.space.value">
-    </div>
-    <div class="flexcol">
-        <label>Profit Factor:</label>
-        <input type="text" value="{{data.sp.value}}" name="data.sp.value">
+        <label>Profit Factor Per Quantity:</label>
+        <input type="text" value="{{data.pf.value}}" name="data.pf.value">
     </div>
     <div class="flexcol">
         <label>Rarity:</label>
-        <input type="text" value="{{data.rarity.value}}" name="data.rarity.value">
+        <select class="damage-type" name="data.rarity.value">
+                {{#select data.rarity.value}}
+                {{#each FORTYK.spaceshipCargoRarity}}
+                <option value="{{this}}"{{#if (compareString this "Common")}}selected="selected"{{/if}}>{{this}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
     </div>
     
     <div class="item-description">
