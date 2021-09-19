@@ -11,8 +11,8 @@ export class FortyKItem extends Item {
     **/
     async update(data, options={}){
         if(this.data.type==="talentntrait"){
-
-            if(this.actor!==undefined){
+            console.log(this.actor);
+            if(this.actor!==null){
 
                 if(this.data.data.specialisation.value!==data["data.specialisation.value"]){
                     await this.actor.setFlag("fortyk",this.data.data.flagId.value,data["data.specialisation.value"])
