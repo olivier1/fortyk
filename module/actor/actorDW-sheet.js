@@ -39,6 +39,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         //change cybernetic location
         html.find('.cyber-location-select').change(this._onCyberLocationEdit.bind(this));
+        //change navigator power trianing
+        html.find('.power-training').change(this._onPowerTrainingEdit.bind(this));
         //create different types of wargear
         html.find('.wargear-create').click(this._onWargearCreate.bind(this));
 
@@ -88,14 +90,14 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                                 type: type
                             };
                             let item=itemData;
-                           
+
                             let itemz=[];
                             itemz.push(item);
 
                             await this.actor.createEmbeddedDocuments("Item",itemz,{"renderSheet":true});
 
 
-                            
+
 
                         }
                     },
@@ -122,13 +124,23 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let newLoc=event.target.value;
         let dataItemId=event.target.attributes["data-item-id"].value;
         let item= this.actor.getEmbeddedDocument("Item", dataItemId);
-        //item.data.data.location.value=newLoc;
+
         item.update({"data.location.value":newLoc});
 
 
     }
 
+    async _onPowerTrainingEdit(event){
+        event.preventDefault();
 
+        let newTraining=event.target.value;
+        let dataItemId=event.target.attributes["data-item-id"].value;
+        let item= this.actor.getEmbeddedDocument("Item", dataItemId);
+
+        item.update({"data.training.value":newTraining});
+
+
+    }
 
 
     /**
@@ -213,21 +225,21 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         event.preventDefault;
         const dataset=event.currentTarget.dataset;
         const weapon=this.actor.getEmbeddedDocument("Item",dataset["weapon"]);
-        
+
         const previousAmmo=this.actor.getEmbeddedDocument("Item",dataset["previous"]);
         const ammoID=event.currentTarget.value;
         const ammo=this.actor.getEmbeddedDocument("Item",ammoID);
-        
+
         let weaponUpdate={}
         weaponUpdate["data.ammo._id"]=ammoID;
-        
-        
+
+
 
 
         if(previousAmmo!==undefined&&previousAmmo.data.data!==undefined){
 
-            
-            
+
+
             previousAmmo.update({"data.currentClip.value":weaponData.data.clip.value});
         }
         if(ammo!==undefined){
@@ -235,7 +247,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         }else{
             weaponUpdate["data.clip.value"]=0;
         }
-        
+
 
         weapon.update(weaponUpdate);
 
@@ -272,7 +284,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                     ammoUpdate["data.amount.value"]=ammoAmt-1
                     weapon.update(weaponUpdate);
                     ammo.update(ammoUpdate);
-                    
+
 
                 }else{
                     ooa=true;
@@ -283,10 +295,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         }else{
             if(weapon.data.data.amount.value>0){
-                
-                 weaponUpdate["data.clip.value"]=weapon.data.data.clip.max;
-                 weaponUpdate["data.amount.value"]=parseInt(weapon.data.data.amount.value)-1;
-                 weapon.update(weaponUpdate);
+
+                weaponUpdate["data.clip.value"]=weapon.data.data.clip.max;
+                weaponUpdate["data.amount.value"]=parseInt(weapon.data.data.amount.value)-1;
+                weapon.update(weaponUpdate);
             }else{
                 ooa=true;
             }

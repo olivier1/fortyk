@@ -108,7 +108,7 @@
 
             <a class="item" data-tab="components">COMPONENTS</a>
             <a class="item" data-tab="weapons">WEAPONS</a>
-            <a class="item" data-tab="cargo">CARGO</a>
+            <a class="item" data-tab="cargo">CARGO & SUPPLIES</a>
             <a class="item" data-tab="hangar">HANGAR</a>
 
 
@@ -183,7 +183,7 @@
         </div>
 
         <div class="tab weapons" data-group="primary" data-tab="weapons">
-            <div class="resource flex-group-center">
+            <div class="flex-group-center">
                 <label for="data.secChar.space.value" class="resource-label">Weapon slots</label>
                 <div class="resource-content flexrow flex-center flex-between">
                     <div class="flexcol"> Dorsal: 
@@ -252,6 +252,23 @@
                     <div class="resource-content flexcol flex-center flex-between">
                         {{data.cargo.profit}}
 
+
+                    </div>
+                </div>
+                <div class=" flex-group-center">
+                    <label for="data.secChar.fatigue.value" class="resource-label">Supplies (In days)</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" class="combat-resources" name="data.cargo.supplies" value="{{data.cargo.supplies}}" data-dtype="Number"/>
+                        /
+                        <input type="text" class="combat-resources" name="data.cargo.suppliesMax" value="{{data.cargo.suppliesMax}}" data-dtype="Number"/>
+
+                    </div>
+                </div>
+                <div class=" flex-group-center">
+                    <label for="data.secChar.fatigue.value" class="resource-label">Fuel %</label>
+                    <div class="resource-content flexcol flex-center flex-between">
+                        <input type="text" class="combat-resources" name="data.cargo.fuel" value="{{data.cargo.fuel}}" data-dtype="Number"/>
+                       
 
                     </div>
                 </div>

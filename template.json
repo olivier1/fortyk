@@ -695,6 +695,9 @@
                 "value":0,
                 "max":0,
                 "min":0,
+                "supplies":180,
+                "suppliesMax":180,
+                "fuel":100,
                 "profit":0,
                 "type":"Number"
             }
@@ -997,6 +1000,10 @@
             "target": {
                 "value": 0,
                 "type": "Number"
+            },
+            "training":{
+                "value": "",
+                "type": "String"
             }
         },
         "skill": {

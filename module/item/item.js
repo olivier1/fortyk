@@ -9,11 +9,11 @@ export class FortyKItem extends Item {
     /** 
     ** @override talents and traits should update their flags on the owning actor if the specialisation field is changed
     **/
-   async update(data, options={}){
+    async update(data, options={}){
         if(this.data.type==="talentntrait"){
-            
+
             if(this.actor!==undefined){
-                
+
                 if(this.data.data.specialisation.value!==data["data.specialisation.value"]){
                     await this.actor.setFlag("fortyk",this.data.data.flagId.value,data["data.specialisation.value"])
                 }
@@ -31,14 +31,14 @@ export class FortyKItem extends Item {
         // Get the Item's data
         const itemData = this.data;
         const data = itemData.data;
-        
+
         itemData["FORTYK"]=game.fortyk.FORTYK;
 
         //ensure this is an owned item
-       
+
         if(this.actor!==null&&this.actor.data!==undefined){
             const actorData = this.actor.data;
-          
+
             //prepare skill total value
             if(itemData.type==="skill"){
                 data.total.value=parseInt(data.value)+parseInt(data.mod.value)+parseInt(actorData.data.characteristics[data.characteristic.value].total);
@@ -81,7 +81,7 @@ export class FortyKItem extends Item {
                 if(data.damTyp===undefined){data.damTyp=data.damageType.value}
                 if(data.flags===undefined){data.flags=itemData.flags}
                 let ammo=this.actor.getEmbeddedDocument("Item",data.ammo._id);
-                
+
                 if(ammo!==undefined&&!ammo.data.data.default.value){
                     let ammoData=ammo.data;
                     data.damageType.value=ammoData.data.damageType.value;
@@ -136,53 +136,82 @@ export class FortyKItem extends Item {
             }
             //prepare psychicpowers, calculates pushing and target numbers
             if(itemData.type==="psychicPower"){
-                let pr=parseInt(data.curPR.value);
+                if(actorData.data.psykana.psykerType.value.toLowerCase()==="navigator"){
+                    let range=data.range.formula.toLowerCase();
+
+                    data.range.value=eval(range);
+                    data.pen.value=eval(data.pen.formula.toLowerCase());
+                    let training=0;
+                    switch(data.training.value){
+                        case "Novice":
+                            training=0;
+                            break;
+                        case "Adept":
+                            training=10;
+                            break;
+                        case "Master":
+                            training=20;
+                            break;
+                    }
+                    let char=0;
+                    if(data.testChar.value==="psy"){
+
+                    }else{
+                        char=parseInt(actorData.data.characteristics[data.testChar.value].total);
+                        data.testChar.type=data.testChar.value;
+                    }
+
+                    data.target.value=char+training;
+                }else{
+                    let pr=parseInt(data.curPR.value);
 
 
-                let range=data.range.formula.toLowerCase();
+                    let range=data.range.formula.toLowerCase();
 
-                data.range.value=eval(range);
+                    data.range.value=eval(range);
 
-                data.pen.value=eval(data.pen.formula.toLowerCase());
-
-
-
-                let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(data.curPR.value));
-
-                let specials=itemData.flags.specials;
-                for(const spec in specials){
-
-                    if(specials[spec].value&&specials[spec].num!==undefined){
-
-
-                        if(isNaN(specials[spec].num)&&specials[spec].form!==undefined&&specials[spec].num!==specials[spec].form){
-
-                            specials[spec].form=specials[spec].num;
-
-                        }else if(isNaN(specials[spec].num)&&specials[spec].form===undefined){
-
-                            specials[spec].form=specials[spec].num;
-
-                        } 
+                    data.pen.value=eval(data.pen.formula.toLowerCase());
 
 
 
+                    let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(data.curPR.value));
 
-                        if(specials[spec].form!==undefined){
-                            specials[spec].num=eval(specials[spec].form);
+                    let specials=itemData.flags.specials;
+                    for(const spec in specials){
+
+                        if(specials[spec].value&&specials[spec].num!==undefined){
+
+
+                            if(isNaN(specials[spec].num)&&specials[spec].form!==undefined&&specials[spec].num!==specials[spec].form){
+
+                                specials[spec].form=specials[spec].num;
+
+                            }else if(isNaN(specials[spec].num)&&specials[spec].form===undefined){
+
+                                specials[spec].form=specials[spec].num;
+
+                            } 
+
+
+
+
+                            if(specials[spec].form!==undefined){
+                                specials[spec].num=eval(specials[spec].form);
+                            }
                         }
                     }
+
+                    let char=0;
+                    if(data.testChar.value==="psy"){
+
+                    }else{
+                        char=parseInt(actorData.data.characteristics[data.testChar.value].total);
+                        data.testChar.type=data.testChar.value;
+                    }
+
+                    data.target.value=parseInt(char)+(derivedPR*10)+parseInt(data.testMod.value)+parseInt(actorData.data.psykana.mod.value); 
                 }
 
-                let char=0;
-                if(data.testChar.value==="psy"){
-                    
-                }else{
-                    char=parseInt(actorData.data.characteristics[data.testChar.value].total);
-                    data.testChar.type=data.testChar.value;
-                }
-
-                data.target.value=parseInt(char)+(derivedPR*10)+parseInt(data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
             }
             if(itemData.type==="meleeWeapon"||itemData.type==="rangedWeapon"||itemData.type==="psychicPower"){
 

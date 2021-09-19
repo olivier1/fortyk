@@ -534,31 +534,61 @@ export class FortyKActor extends Actor {
                 wargear.push(item);
             }
             if(item.type==="psychicPower"){
-                try{
-                    let pr=parseInt(item.data.curPR.value);
+                if(actorData.data.psykana.psykerType.value.toLowerCase()==="navigator"){
                     let range=item.data.range.formula.toLowerCase();
-                    let wp=data.characteristics.wp.bonus;
+
                     item.data.range.value=eval(range);
                     item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
-                    let temp;
-                    temp=item.data.damageFormula.formula.replace(/pr/gmi,pr);
-                    item.data.damageFormula.value=temp.replace(/wp/gmi,wp);
-                }catch(err){
-                    item.data.range.value="";
-                    item.data.pen.value="";
-                    item.data.damageFormula.value=="";
-                }
-                let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(item.data.curPR.value));
-                let char=0;
-                if(item.data.testChar.value==="psy"){
-                    char=psyniscience;
-                    item.data.testChar.type="per";
+                    let training=0;
+                    switch(item.data.training.value){
+                        case "Novice":
+                            training=0;
+                            break;
+                        case "Adept":
+                            training=10;
+                            break;
+                        case "Master":
+                            training=20;
+                            break;
+                    }
+                    let char=0;
+                    if(item.data.testChar.value==="psy"){
+                         char=psyniscience;
+                        item.data.testChar.type="per";
+                    }else{
+                        char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
+                        item.data.testChar.type=item.data.testChar.value;
+                    }
+
+                    item.data.target.value=char+training;
                 }else{
-                    char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
-                    item.data.testChar.type=item.data.testChar.value;
+                    try{
+                        let pr=parseInt(item.data.curPR.value);
+                        let range=item.data.range.formula.toLowerCase();
+                        let wp=data.characteristics.wp.bonus;
+                        item.data.range.value=eval(range);
+                        item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
+                        let temp;
+                        temp=item.data.damageFormula.formula.replace(/pr/gmi,pr);
+                        item.data.damageFormula.value=temp.replace(/wp/gmi,wp);
+                    }catch(err){
+                        item.data.range.value="";
+                        item.data.pen.value="";
+                        item.data.damageFormula.value=="";
+                    }
+                    let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(item.data.curPR.value));
+                    let char=0;
+                    if(item.data.testChar.value==="psy"){
+                        char=psyniscience;
+                        item.data.testChar.type="per";
+                    }else{
+                        char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
+                        item.data.testChar.type=item.data.testChar.value;
+                    }
+                    item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
                 }
-                item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
                 psychicPowers.push(item);
+
             }
             if(item.type==="talentntrait"){
 

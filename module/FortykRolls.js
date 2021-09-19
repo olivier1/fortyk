@@ -81,9 +81,9 @@ returns the roll message*/
         try{
             var charObj=actor.data.data.characteristics[char];
         }catch(err){
-             var charObj=undefined;
+            var charObj=undefined;
         }
-        
+
         if(charObj===undefined){charObj={"uB":0}}
         var testDos=0;
         //calculate degrees of failure and success
@@ -200,59 +200,62 @@ returns the roll message*/
             let push=false;
             let phenom=false;
             let perils=false;
-            if(powerPR>basePR){push=true}
-            if(!push&&(firstDigit===secondDigit||testRoll===100)){
-                phenom=true;
-            }else if(push&&(psykerType==="bound")&&(firstDigit!==secondDigit)){
-                phenom=true;
-            }else if(push&&(psykerType!=="bound")){
-                phenom=true;
-            }
-            if(phenom){
-                let mod=0;
-                let sustain=parseInt(actor.data.data.psykana.pr.sustain);
-                if(sustain>1){
-                    mod=(sustain-1)*10;
+            if(psykerType!=="navigator"){
+                if(powerPR>basePR){push=true}
+                if(!push&&(firstDigit===secondDigit||testRoll===100)){
+                    phenom=true;
+                }else if(push&&(psykerType==="bound")&&(firstDigit!==secondDigit)){
+                    phenom=true;
+                }else if(push&&(psykerType!=="bound")){
+                    phenom=true;
                 }
-                if(psykerType!=="bound"&&push){
-                    let pushAmt=powerPR-basePR;
-                    if(psykerType==="unbound"){
-                        mod=mod+pushAmt*5;
+                if(phenom){
+                    let mod=0;
+                    let sustain=parseInt(actor.data.data.psykana.pr.sustain);
+                    if(sustain>1){
+                        mod=(sustain-1)*10;
                     }
-                    if(psykerType==="daemon"){
-                        mod=mod+pushAmt*10;
+                    if(psykerType!=="bound"&&push){
+                        let pushAmt=powerPR-basePR;
+                        if(psykerType==="unbound"){
+                            mod=mod+pushAmt*5;
+                        }
+                        if(psykerType==="daemon"){
+                            mod=mod+pushAmt*10;
+                        }
                     }
-                }
-                let psyRoll=new Roll("1d100+@mod",{mod:mod})
-                psyRoll.roll();
-                await psyRoll.toMessage({
-                    speaker: ChatMessage.getSpeaker({ actor: actor }),
-                    flavor: "Psychic Phenomena!"
-                });
-                let phenomResult=parseInt(psyRoll._total);
-                if(phenomResult>100){phenomResult=100};
-                if(phenomResult>75){perils=true};
-                let phenomMessage=FORTYKTABLES.psychicPhenomena[phenomResult];
-                let chatPhenom={user: game.user._id,
-                                speaker:{actor,alias:actor.name},
-                                content:phenomMessage,
-                                classes:["fortyk"],
-                                flavor:"Psychic Phenomenom!",
-                                author:actor.name};
-                await ChatMessage.create(chatPhenom,{});
-            }
-
-            if(perils){
-                if(game.user.isGM){
-                    this.perilsOfTheWarp();
-                }else{
-                    //if user isnt GM use socket to have gm roll the perils result
-
-                    let socketOp={type:"perilsRoll",package:{}}
-                    await game.socket.emit("system.fortyk",socketOp);
+                    let psyRoll=new Roll("1d100+@mod",{mod:mod})
+                    psyRoll.roll();
+                    await psyRoll.toMessage({
+                        speaker: ChatMessage.getSpeaker({ actor: actor }),
+                        flavor: "Psychic Phenomena!"
+                    });
+                    let phenomResult=parseInt(psyRoll._total);
+                    if(phenomResult>100){phenomResult=100};
+                    if(phenomResult>75){perils=true};
+                    let phenomMessage=FORTYKTABLES.psychicPhenomena[phenomResult];
+                    let chatPhenom={user: game.user._id,
+                                    speaker:{actor,alias:actor.name},
+                                    content:phenomMessage,
+                                    classes:["fortyk"],
+                                    flavor:"Psychic Phenomenom!",
+                                    author:actor.name};
+                    await ChatMessage.create(chatPhenom,{});
                 }
 
+                if(perils){
+                    if(game.user.isGM){
+                        this.perilsOfTheWarp();
+                    }else{
+                        //if user isnt GM use socket to have gm roll the perils result
+
+                        let socketOp={type:"perilsRoll",package:{}}
+                        await game.socket.emit("system.fortyk",socketOp);
+                    }
+
+                }  
             }
+
         } 
         else if(type==="fear"&&!templateOptions["success"]){
             //generating insanity when degrees of failure are high enough
@@ -567,8 +570,8 @@ returns the roll message*/
                         //check if weapon ignores soak
                         if(!fortykWeapon.getFlag("fortyk","ignoreSoak")){
                             let armor=parseInt(data.characterHitLocations[curHit.value].armor);
-                            
-                            
+
+
                             let pen=0;
                             //random pen logic
                             if(isNaN(weapon.data.pen.value)){
@@ -624,9 +627,9 @@ returns the roll message*/
                             let maxPen=Math.min(armor,pen);
                             soak=parseInt(data.characterHitLocations[curHit.value].value);
                             //handle cover
-                           
+
                             if(!self&&!fortykWeapon.getFlag("fortyk","spray")&&data.characterHitLocations[curHit.value].cover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
-                                
+
                                 let cover=parseInt(data.secChar.cover.value);
                                 soak=soak+cover;
                                 //reduce cover if damage is greater than cover AP
@@ -1093,13 +1096,13 @@ returns the roll message*/
             } 
         }else{
             let damageOptions={user: game.users.current,
-                                       speaker:{user,alias:tarActor.name},
-                                       content:`Attack did ${chatDamage} damage. </br>`,
-                                       classes:["fortyk"],
-                                       flavor:`Damage done`,
-                                       author:tarActor.name
-                                      };
-                    await ChatMessage.create(damageOptions,{});
+                               speaker:{user,alias:tarActor.name},
+                               content:`Attack did ${chatDamage} damage. </br>`,
+                               classes:["fortyk"],
+                               flavor:`Damage done`,
+                               author:tarActor.name
+                              };
+            await ChatMessage.create(damageOptions,{});
         }
 
     }
@@ -2332,7 +2335,7 @@ returns the roll message*/
     }
     static async impactBodyCrits(actor,num,ignoreSON){
         let actorToken=getActorToken(actor);
-        
+
 
         let critActiveEffect=[];
         let d5Roll=new Roll("1d5");
@@ -3141,9 +3144,9 @@ returns the roll message*/
 
                     let skip=false;
                     if(effect[index].id==="stunned"&&actor.getFlag("fortyk","ironjaw")){
-                      
+
                         skip=(await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Iron Jaw")).value;
-                       
+
                     }
                     if(effect[index].id==="stunned"&&actor.getFlag("fortyk","frenzy")){
                         skip=true;
@@ -3184,7 +3187,7 @@ returns the roll message*/
             let effect="icons/svg/skull.svg";
             //let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
             //await this.applyActiveEffect(target,activeEffect);
-            
+
             await target.toggleEffect(effect,{overlay:true});
             try{
                 let combatant = await game.combat.getCombatantByToken(id);

@@ -199,6 +199,7 @@
     width:100%;
     height:100%;
     padding-left: 10px;
+    padding-right: 10px;
     margin-bottom:2px;
     border: 1px solid #999;
     font-weight: bold;
@@ -389,6 +390,16 @@
     width:100%;
     height:100%;
     padding:3px;
+}
+.fortyk .list-item2{
+    border: 1px solid #999;
+    width:100%;
+    height:100%;
+    padding:3px;
+    grid-column-end :span 2;
+}
+.fortyk .power-training{
+    width:100%;
 }
 .fortyk .skills{
 
