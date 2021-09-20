@@ -190,6 +190,14 @@
             "path": "./packs/ranged-weapons.db",
             "system": "fortyk",
             "module": "fortyk"
+        },
+        {
+            "label": "Custom Talents",
+            "entity": "Item",
+            "name": "custom-talents",
+            "path": "./packs/custom-talents.db",
+            "system": "fortyk",
+            "module": "fortyk"
         }
     ],
     "languages": [

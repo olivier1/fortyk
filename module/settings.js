@@ -26,4 +26,13 @@ export const registerSystemSettings = function() {
     type: Boolean,
     default: true
     })
+    //Setting to disable the money on dark heresy sheets
+    game.settings.register("fortyk","dhMoney",{
+        name: "Dark Heresy Money",
+        hint: "Enable a section on the dark heresy sheet if using money variant rules.",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+    })
 }

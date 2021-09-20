@@ -35,6 +35,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.skillChars=game.fortyk.FORTYK.skillChars;
         data.skillTraining=game.fortyk.FORTYK.skillTraining;
         data.editable = this.options.editable;
+        data.money=game.settings.get("fortyk","dhMoney");
         return data;
     }
     /** @override */
@@ -109,7 +110,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 sortDrag=sortTarget;
                 sortTarget+=1;
             }
-            await this.actor.updateItem([{"_id":draggedId,"sort":sortDrag},{"_id":targetId,"sort":sortTarget}]);
+            await this.actor.updateEmbeddedDocuments("Item",[{"_id":draggedId,"sort":sortDrag},{"_id":targetId,"sort":sortTarget}]);
 
         }
 
@@ -147,9 +148,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             name: `new ${type}`,
             type: type
         };
-        
+
         await this.actor.createEmbeddedDocuments("Item",[itemData],{"renderSheet":true});
-        
+
     }
     //provides an interface to add new talents and apply the corresponding flags
     async _onTntCreate(event){
@@ -171,6 +172,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         tnts=tnts.concat(await owHOTETalents.getDocuments());
         var owShieldOfHumanityTalents=await game.packs.get("fortyk.talents-shield-of-humanity");
         tnts=tnts.concat(await owShieldOfHumanityTalents.getDocuments());
+        var customTalents=await game.packs.get("fortyk.custom-talents");
+        tnts=tnts.concat(await customTalents.getDocuments());
         //load different packs depending on actor type
         if(actor.data.type==="dhPC"){
             var dh2CoreBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonuscore-dh2");
@@ -287,6 +290,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                     case "fortyk.orders-shield-of-humanity":
                                         tnt=await owShieldOfHumanityOrders.getEntity(selectedIds[i]);
                                         break;
+                                    case "fortyk.custom-talents":
+                                        tnt=await customTalents.getEntity(selectedIds[i]);
+                                        break;
                                 }
                                 let itemData=tnt.data;
                                 let tntData=itemData.data;
@@ -316,10 +322,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
 
                                             width:100}
-                                                                     );
+                                                                          );
                                         setTimeout(function() {document.getElementById('specInput').select();}, 50);
                                         await itemData.update({"data.specialisation.value": chosenSpec});
-                                        
+
                                     }
                                     talentsNTraits.push(itemData);
                                 }
@@ -466,7 +472,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
         if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
             await FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
-            
+
         }else if(testType==="meleeAttack"){
             FortykRollDialogs.callMeleeAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
         }else if(testType==="rangedAttack"){

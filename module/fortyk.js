@@ -117,7 +117,7 @@ Hooks.once('init', async function() {
         }
     });
     Handlebars.registerHelper("contains", function(str1, str2) {
-        console.log(str1,str2)
+        
         if(str1===undefined){return false};
         if(str1===null){return false};
         if(str2===""){
