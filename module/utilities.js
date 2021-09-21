@@ -78,7 +78,7 @@ export const getSkills= async function(){
     for (let sk of skills)
     {
         let skillItem = undefined;
-        await pack.getEntity(sk._id).then(skill => skillItem = skill);
+        await pack.getDocument(sk._id).then(skill => skillItem = skill);
         skillCollection.push(skillItem.data);
     }
     return skillCollection;

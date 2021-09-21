@@ -236,62 +236,62 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                 let tnt=null;
                                 switch($selectedCompendiums[i]){
                                     case"fortyk.talent-core-dh2":
-                                        tnt=await dh2Talents.getEntity(selectedIds[i]);
+                                        tnt=await dh2Talents.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.traits-core-dh2":
-                                        tnt=await dh2Traits.getEntity(selectedIds[i]);
+                                        tnt=await dh2Traits.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.talents-enemies-within":
-                                        tnt=await dh2EnemyWithinTalents.getEntity(selectedIds[i]);
+                                        tnt=await dh2EnemyWithinTalents.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.talents-enemies-without":
-                                        tnt=await dh2EnemyWithoutTalents.getEntity(selectedIds[i]);
+                                        tnt=await dh2EnemyWithoutTalents.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.talents-enemies-beyond":
-                                        tnt=await dh2EnemyBeyondTalents.getEntity(selectedIds[i]);
+                                        tnt=await dh2EnemyBeyondTalents.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.role-homeworld-and-background-bonuscore-dh2":
-                                        tnt=await dh2CoreBonus.getEntity(selectedIds[i]);
+                                        tnt=await dh2CoreBonus.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.role-homeworld-and-background-bonusenemies-without":
-                                        tnt=await dh2EnemiesWithoutBonus.getEntity(selectedIds[i]);
+                                        tnt=await dh2EnemiesWithoutBonus.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.role-homeworld-and-background-bonusenemies-within":
-                                        tnt=await dh2EnemiesWithinBonus.getEntity(selectedIds[i]);
+                                        tnt=await dh2EnemiesWithinBonus.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.role-homeworld-and-background-bonusenemies-beyond":
-                                        tnt=await dh2EnemiesBeyondBonus.getEntity(selectedIds[i]);
+                                        tnt=await dh2EnemiesBeyondBonus.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.deathwatch-bonus-and-drawbacks":
-                                        tnt=await dwBonus.getEntity(selectedIds[i]);
+                                        tnt=await dwBonus.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.talents-ow-core":
-                                        tnt=await owCoreTalents.getEntity(selectedIds[i]);
+                                        tnt=await owCoreTalents.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.talents-hammer-of-the-emperor":
-                                        tnt=await owHOTETalents.getEntity(selectedIds[i]);
+                                        tnt=await owHOTETalents.getDocument(selectedIds[i]);
 
                                         break;
                                     case "fortyk.talents-shield-of-humanity":
-                                        tnt=await owShieldOfHumanityTalents.getEntity(selectedIds[i]);
+                                        tnt=await owShieldOfHumanityTalents.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.homeworld-and-specialty-abilities-core-ow":
-                                        tnt=await owCoreAbilities.getEntity(selectedIds[i]);
+                                        tnt=await owCoreAbilities.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.homeworld-and-specialty-abilities-hammer-of-the-emperor":
-                                        tnt=await owHOTEAbilities.getEntity(selectedIds[i]);
+                                        tnt=await owHOTEAbilities.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.orders-hammer-of-the-emperor":
-                                        tnt=await owHOTEOrders.getEntity(selectedIds[i]);
+                                        tnt=await owHOTEOrders.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.homeworld-and-specialty-abilities-shield-of-humanity":
-                                        tnt=await owShieldOfHumanityAbilities.getEntity(selectedIds[i]);
+                                        tnt=await owShieldOfHumanityAbilities.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.orders-shield-of-humanity":
-                                        tnt=await owShieldOfHumanityOrders.getEntity(selectedIds[i]);
+                                        tnt=await owShieldOfHumanityOrders.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.custom-talents":
-                                        tnt=await customTalents.getEntity(selectedIds[i]);
+                                        tnt=await customTalents.getDocument(selectedIds[i]);
                                         break;
                                 }
                                 let itemData=tnt.data;
