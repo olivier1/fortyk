@@ -39,7 +39,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         //change cybernetic location
         html.find('.cyber-location-select').change(this._onCyberLocationEdit.bind(this));
-        //change navigator power trianing
+        //change navigator power training
         html.find('.power-training').change(this._onPowerTrainingEdit.bind(this));
         //create different types of wargear
         html.find('.wargear-create').click(this._onWargearCreate.bind(this));

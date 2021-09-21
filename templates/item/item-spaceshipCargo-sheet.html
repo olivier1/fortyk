@@ -17,7 +17,17 @@
                 {{/select}}
             </select>
     </div>
+    {{#if (contains data.type.value "Torpedoes")}}
+    <div class="flexcol">
+        <label>Damage:</label>
+        <input type="text" value="{{data.damage.value}}" name="data.damage.value">
+    </div>
     
+    <div class="flexcol">
+        <label>Rating:</label>
+        <input type="text" value="{{data.rating.value}}" name="data.rating.value">
+    </div>
+    {{/if}}
     <div class="flexcol">
         <label>Profit Factor Per Quantity:</label>
         <input type="text" value="{{data.pf.value}}" name="data.pf.value">
@@ -27,7 +37,7 @@
         <select class="damage-type" name="data.rarity.value">
                 {{#select data.rarity.value}}
                 {{#each FORTYK.spaceshipCargoRarity}}
-                <option value="{{this}}"{{#if (compareString this "Common")}}selected="selected"{{/if}}>{{this}}</option>
+                <option value="{{this}}">{{this}}</option>
                 {{/each}}
                 {{/select}}
             </select>

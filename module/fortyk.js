@@ -343,32 +343,7 @@ Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
  * Set default values for new actors' tokens
  */
 Hooks.on("preCreateActor", (createData) =>{
-    if (createData.type !=="npc" && createData.type!=="owComrade" && createData.type!=="owRegiment" && createData.type!=="spaceship"){
-        // Set wounds, fatigue, and display name visibility
-        mergeObject(createData,
-                    {"token.bar1" :{"attribute" : "secChar.wounds"},                 // Default Bar 1 to Wounds
-                     "token.bar2" :{"attribute" : "secChar.fatigue"},               // Default Bar 2 to Fatigue
-                     "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
-                     "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be always on
-                     "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
-                     "token.name" : createData.name                                       // Set token name to actor name
-                    })
-        // Default characters to HasVision = true and Link Data = true
-        if (createData.type !== "npc")
-        {
-            createData.token.vision = true;
-            createData.token.actorLink = true;
-        }
-    }else if(createData.type!=="spaceship"){
-        mergeObject(createData,
-                    {"token.bar1" :{"attribute" : "hullIntegrity"},                 // Default Bar 1 to Wounds
-                     "token.bar2" :{"attribute" : "crew"},               // Default Bar 2 to Fatigue
-                     "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
-                     "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be always on
-                     "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
-                     "token.name" : createData.name                                       // Set token name to actor name
-                    })
-    }
+    
 })
 Hooks.on("preCreateToken", (createData) =>{
 });

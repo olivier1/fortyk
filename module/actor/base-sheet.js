@@ -441,6 +441,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         var testTarget=parseInt(dataset["target"]);
         var testLabel=dataset["label"];
         var testChar=dataset["char"];
+        let rating=dataset["rating"];
+        if(rating!==undefined){
+            testTarget+=parseInt(rating);
+        }
         var item=null;
         let attackOptions={
         }

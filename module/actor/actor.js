@@ -21,7 +21,32 @@ export class FortyKActor extends Actor {
                 data.items.push(s);
             }
         }
-
+        if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship"){
+        // Set wounds, fatigue, and display name visibility
+        mergeObject(data,
+                    {"token.bar1" :{"attribute" : "secChar.wounds"},                 // Default Bar 1 to Wounds
+                     "token.bar2" :{"attribute" : "secChar.fatigue"},               // Default Bar 2 to Fatigue
+                     "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
+                     "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be always on
+                     "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
+                     "token.name" : data.name                                       // Set token name to actor name
+                    })
+        // Default characters to HasVision = true and Link Data = true
+        if (data.type !== "npc")
+        {
+            data.token.vision = true;
+            data.token.actorLink = true;
+        }
+    }else if(data.type==="spaceship"){
+        mergeObject(data,
+                    {"token.bar1" :{"attribute" : "hullIntegrity"},                 // Default Bar 1 to Hull integrity
+                     "token.bar2" :{"attribute" : "crew"},               // Default Bar 2 to Crew %
+                     "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
+                     "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be always on
+                     "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
+                     "token.name" : data.name                                       // Set token name to actor name
+                    })
+    }
         //resume actor creation
         super.create(data, options);
     }
@@ -828,6 +853,7 @@ export class FortyKActor extends Actor {
         const components=[];
         const cargo=[];
         const squadrons=[];
+        const torpedoes=[];
         this.items.forEach((fortykItem,id,items)=>{
             let item=fortykItem.data;
             if(item.type==="spaceshipComponent"){
@@ -837,6 +863,9 @@ export class FortyKActor extends Actor {
                 weapons.push(item);
             }else if(item.type==="spaceshipCargo"){
                 cargo.push(item);
+                if(item.data.type.value==="Torpedoes"){
+                    torpedoes.push(item);
+                }
             }else if(item.type==="spaceshipSquadron"){
                 squadrons.push(item);
             }
@@ -845,7 +874,8 @@ export class FortyKActor extends Actor {
             weapons:weapons,
             components:components,
             cargo:cargo,
-            squadrons:squadrons
+            squadrons:squadrons,
+            torpedoes:torpedoes
         }
         return preparedItems
 

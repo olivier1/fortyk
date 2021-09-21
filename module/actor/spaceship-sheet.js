@@ -5,33 +5,63 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
 
     /** @override */
     static get defaultOptions() {
+        
         return mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/spaceship-sheet.html",
             width: 666,
             height: 660,
-            tabs: [{ navSelector: ".sheet-tabs2", contentSelector: ".sheet-content", initial: "main" }],
+            tabs: [{ navSelector: ".sheet-tabs2", contentSelector: ".sheet-content", initial: "components" }],
             default:null,
             scrollY: [
+                ".components",
+                ".spaceship-weapons",
+                ".cargo",
+                ".hangar"
             ]
+           
+            
 
         });
+    }
+    /* -------------------------------------------- */
+    /** @override */
+    getData() {
+        const data = super.getData();
+        console.log(data);
+        if(game.user.character===undefined){
+            data.bs=this.actor.data.data.crew.rating;
+        }else{
+            let charBS=game.user.character.data.data.characteristics.bs.value;
+            let shipBS=this.actor.data.data.crew.rating;
+            if(charBS>shipBS){
+                data.bs= charBS
+            }else{
+                data.bs= shipBS
+            }
+           
+        }
+        return data;
     }
 
     /** @override */
     activateListeners(html) {
         super.activateListeners(html);
         // Everything below here is only needed if the sheet is editable
+       
+        //damage roll button
         html.find('.space-damage-roll').click(this._onSpaceDamageRoll.bind(this));
         //toggle half strength for squadrons
         html.find('.halfstr').click(this._onHalfStrClick.bind(this));
+          //change cybernetic location
+        html.find('.torpedo-ammo').change(this._onTorpedoAmmoEdit.bind(this));
 
         //Add ship weapons of components to actor
         html.find('.shipComponent-create').click(this._onShipComponentCreate.bind(this));
 
     }
     /**
-   * Handle clickable rolls.
+   * Handle clickable damage rolls.
    * @param {Event} event   The originating click event
    * @private
    */
@@ -49,6 +79,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
             });
         }
     }
+    
 
     async _onShipComponentCreate(event){
         event.preventDefault();
@@ -104,6 +135,27 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
             await fortykSquadron.update({"data.halfstr.value":true});
         }
         
+    }
+     /**
+    *Handle select change for torpedo selector
+    * @param {Event} event   The originating click event
+    * @private
+    */
+    async _onTorpedoAmmoEdit(event){
+        event.preventDefault();
+        console.log(event);
+        let newLoc=event.target.value;
+        let dataItemId=event.target.attributes["data-weapon"].value;
+        let selected=event.currentTarget.selectedOptions.item(0);
+        let damage=selected.attributes.getNamedItem("value").value;
+        let rating=selected.attributes.getNamedItem("data-rating").value;
+        let item= this.actor.getEmbeddedDocument("Item", dataItemId);
+        let update={}
+        update["data.torpedo.rating"]=rating;
+        update["data.damage.value"]=damage;
+        item.update(update);
+
+
     }
 
 }

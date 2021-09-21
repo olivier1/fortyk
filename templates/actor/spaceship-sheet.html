@@ -107,7 +107,7 @@
         <nav class="sheet-tabs2 tabs grid grid-4col" data-group="primary">
 
             <a class="item" data-tab="components">COMPONENTS</a>
-            <a class="item" data-tab="weapons">WEAPONS</a>
+            <a class="item" data-tab="spaceship-weapons">WEAPONS</a>
             <a class="item" data-tab="cargo">CARGO & SUPPLIES</a>
             <a class="item" data-tab="hangar">HANGAR</a>
 
@@ -182,7 +182,7 @@
 
         </div>
 
-        <div class="tab weapons" data-group="primary" data-tab="weapons">
+        <div class="tab spaceship-weapons" data-group="primary" data-tab="spaceship-weapons">
             <div class="flex-group-center">
                 <label for="data.secChar.space.value" class="resource-label">Weapon slots</label>
                 <div class="resource-content flexrow flex-center flex-between">
@@ -205,7 +205,7 @@
             </div>
             {{#each actor.weapons as |t key|}}
             <div class="weapons grid grid-3col">
-                <div class="list-item">
+                <div class="list-item-header3">
                     <span>Name: {{this.name}}</span>
                 </div>
                 <div class="list-item">
@@ -225,6 +225,32 @@
 
                 <div class="list-item">
                     <label>Strength: {{this.data.strength.value}}</label>
+                </div>
+                {{#if (contains this.data.type.value "Torpedo")}}
+                 <div class="list-item">
+                    <select class="torpedo-ammo" data-weapon="{{this._id}}">
+
+                        {{#select this.data.damage.value}}
+                        <option value="" data-rating="0">None</option>
+
+                        {{#each ../actor.torpedoes}}
+                        
+                        <option value="{{this.data.damage.value}}" data-rating="{{this.data.rating.value}}">{{this.name}}</option>
+                        
+                        {{/each}}
+
+                        {{/select}}
+                    </select>
+                </div>
+                 <div class="list-item">
+                    <label>Rating: {{this.data.torpedo.rating}}</label>
+                </div>
+                {{/if}}
+                <div class="list-item">
+                    <span>Attack:</span>
+                    
+                    <a class=" rollable button" data-label="Spaceship Attack"data-roll-type="char"data-target="{{../bs}}"data-char="" data-rating="{{this.data.torpedo.rating}}"> {{../bs}}{{#if (contains this.data.type.value "Torpedo")}}+{{this.data.torpedo.rating}} {{/if}}</a>
+
                 </div>
                 <div class="list-item">
                     <span>Damage: </span> 

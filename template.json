@@ -1175,6 +1175,10 @@
             "location":{
                 "value":"0",
                 "type":"String"
+            },
+            "torpedo":{
+                "rating":0,
+                "type":"Number"
             }
         },
         "spaceshipCargo":{
@@ -1195,12 +1199,20 @@
                 "type":"Number"
             },
             "rarity":{
+                "value":"Common",
+                "type":"String"
+            },
+            "damage":{
                 "value":"",
                 "type":"String"
+            },
+            "rating":{
+                "value":20,
+                "type":"Number"
             }
         },
         "spaceshipSquadron":{
-          "templates": [                
+            "templates": [                
                 "description"
             ], 
             "type":{
