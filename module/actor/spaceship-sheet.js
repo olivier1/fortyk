@@ -5,7 +5,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
 
     /** @override */
     static get defaultOptions() {
-        
+
         return mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/spaceship-sheet.html",
@@ -19,8 +19,8 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
                 ".cargo",
                 ".hangar"
             ]
-           
-            
+
+
 
         });
     }
@@ -28,18 +28,39 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
     /** @override */
     getData() {
         const data = super.getData();
-       
+
         if(game.user.character===undefined){
             data.bs=this.actor.data.data.crew.rating;
-        }else{
-            let charBS=game.user.character.data.data.characteristics.bs.value;
-            let shipBS=this.actor.data.data.crew.rating;
-            if(charBS>shipBS){
-                data.bs= charBS
-            }else{
-                data.bs= shipBS
+            data.hangarAttack=this.actor.data.data.crew.rating;
+        }else if(game.user.character.type.toLowerCase().includes("pc")){
+            let character=game.user.character;
+            let charBS=character.data.data.characteristics.bs.value;
+            let crew=this.actor.data.data.crew.rating;
+
+            data.bs=Math.max(charBS,crew); 
+            let command=0;
+            let tactics=0;
+            let operate=0;
+            if(character.data.skills===undefined){
+                character.prepare();
             }
-           
+            let skills=character.data.skills;
+            skills.forEach((skill,id,items)=>{
+                
+                
+                if(skill.name.toLowerCase()==="command"){
+                    command=skill.data.total.value;
+                }else if(skill.name.toLowerCase()==="voidship"){
+                    operate=skill.data.total.value;
+                }else if(skill.name.toLowerCase()==="void combat"){
+                    tactics=skill.data.total.value;
+                }
+                
+            });
+            console.log(character)
+            data.hangarAttack=Math.max(command,operate,tactics,crew);
+
+
         }
         return data;
     }
@@ -48,12 +69,12 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
     activateListeners(html) {
         super.activateListeners(html);
         // Everything below here is only needed if the sheet is editable
-       
+
         //damage roll button
         html.find('.space-damage-roll').click(this._onSpaceDamageRoll.bind(this));
         //toggle half strength for squadrons
         html.find('.halfstr').click(this._onHalfStrClick.bind(this));
-          //change cybernetic location
+        //change cybernetic location
         html.find('.torpedo-ammo').change(this._onTorpedoAmmoEdit.bind(this));
 
         //Add ship weapons of components to actor
@@ -79,7 +100,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
             });
         }
     }
-    
+
 
     async _onShipComponentCreate(event){
         event.preventDefault();
@@ -127,23 +148,23 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
         let dataset=event.currentTarget.dataset;
         let squadronID=dataset["itemId"];
         let fortykSquadron=this.actor.items.get(squadronID);
-        
+
         let halfstr=fortykSquadron.data.data.halfstr.value;
         if(halfstr){
             await fortykSquadron.update({"data.halfstr.value":false});
         }else{
             await fortykSquadron.update({"data.halfstr.value":true});
         }
-        
+
     }
-     /**
+    /**
     *Handle select change for torpedo selector
     * @param {Event} event   The originating click event
     * @private
     */
     async _onTorpedoAmmoEdit(event){
         event.preventDefault();
-        
+
         let torpId=event.target.value;
         let dataItemId=event.target.attributes["data-weapon"].value;
         let selected=event.currentTarget.selectedOptions.item(0);

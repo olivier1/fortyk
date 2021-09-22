@@ -854,20 +854,32 @@ export class FortyKActor extends Actor {
         const cargo=[];
         const squadrons=[];
         const torpedoes=[];
+        const bombers=[];
         this.items.forEach((fortykItem,id,items)=>{
             let item=fortykItem.data;
             if(item.type==="spaceshipComponent"){
                 components.push(item);
             }else if(item.type==="spaceshipWeapon"){
+                  if(item.data.type.value==="Hangar"){
+                      item.data.damage.value="1d10+"+Math.ceil(data.crew.rating/10);
+                  }
                 components.push(item);
                 weapons.push(item);
+              
             }else if(item.type==="spaceshipCargo"){
                 cargo.push(item);
                 if(item.data.type.value==="Torpedoes"){
                     torpedoes.push(item);
                 }
             }else if(item.type==="spaceshipSquadron"){
+                if(item.data.halfstr.value){
+                        item.data.rating.value-=5;
+                    }
                 squadrons.push(item);
+                if(item.data.type.value.toLowerCase()==="bomber"){
+                    
+                    bombers.push(item);
+                }
             }
         });
         let preparedItems={
@@ -875,7 +887,8 @@ export class FortyKActor extends Actor {
             components:components,
             cargo:cargo,
             squadrons:squadrons,
-            torpedoes:torpedoes
+            torpedoes:torpedoes,
+            bombers:bombers
         }
         return preparedItems
 

@@ -245,11 +245,34 @@
                  <div class="list-item">
                     <label>Rating: {{this.data.torpedo.rating}}</label>
                 </div>
+                {{else if (contains this.data.type.value "Hangar")}}
+                <div class="list-item">
+                    <select class="torpedo-ammo" data-weapon="{{this._id}}">
+                        
+                        {{#select this.data.torpedo.id}}
+                        <option value="" data-damage=" "data-rating="0">None</option>
+
+                        {{#each ../actor.bombers}}
+                        
+                        <option value="{{this._id}}" data-damage="{{../data.damage.value}}" data-rating="{{this.data.rating.value}}">{{this.name}}</option>
+                        
+                        {{/each}}
+
+                        {{/select}}
+                    </select>
+                </div>
+                 <div class="list-item">
+                    <label>Rating: {{this.data.torpedo.rating}}</label>
+                </div>
                 {{/if}}
                 <div class="list-item">
                     <span>Attack:</span>
-                    
+                    {{#if (contains this.data.type.value "Hangar")}}
+                    <a class=" rollable button" data-label="Spaceship Attack"data-roll-type="char"data-target="{{../hangarAttack}}"data-char=""data-rating="{{this.data.torpedo.rating}}"> {{../hangarAttack}}+{{this.data.torpedo.rating}}</a>
+                    {{else}}
                     <a class=" rollable button" data-label="Spaceship Attack"data-roll-type="char"data-target="{{../bs}}"data-char="" data-rating="{{this.data.torpedo.rating}}"> {{../bs}}{{#if (contains this.data.type.value "Torpedo")}}+{{this.data.torpedo.rating}} {{/if}}</a>
+                    {{/if}}
+                    
 
                 </div>
                 <div class="list-item">
