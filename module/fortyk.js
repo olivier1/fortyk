@@ -216,7 +216,7 @@ Hooks.on("updateCombat", async (combat) => {
         for(let activeEffect of actor.effects){
             if(activeEffect.duration.type!=="none"){
                 let remaining=Math.ceil(activeEffect.duration.remaining);
-                if(remaining<0){remaining=0}
+                if(remaining<1){remaining=0}
                 let content="";
                 if(remaining===0){
                     content=`${activeEffect.data.label} expires.`;
