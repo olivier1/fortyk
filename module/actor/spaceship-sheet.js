@@ -46,8 +46,8 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
             }
             let skills=character.data.skills;
             skills.forEach((skill,id,items)=>{
-                
-                
+
+
                 if(skill.name.toLowerCase()==="command"){
                     command=skill.data.total.value;
                 }else if(skill.name.toLowerCase()==="voidship"){
@@ -55,9 +55,8 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
                 }else if(skill.name.toLowerCase()==="void combat"){
                     tactics=skill.data.total.value;
                 }
-                
+
             });
-            console.log(character)
             data.hangarAttack=Math.max(command,operate,tactics,crew);
 
 
@@ -92,16 +91,45 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
         const dataset = element.dataset;
 
         if (dataset.formula) {
-            let roll = new Roll(dataset.formula, this.actor.data.data);
-            let label = dataset.label ? `Rolling ${dataset.label}` : '';
+            let formula=dataset.formula;
+            let label = dataset.label ? `Rolling ${dataset.label} damage` : '';
+            new Dialog({
+                title: `Number of Hits & Bonus Damage`,
+                content: `<div class="flexcol">
+<div class="flexrow"><label>Number of Hits:</label> <input type="text" id="modifier" name="hits" value="1" data-dtype="Number" autofocus/></div>
+<div class="flexrow"><label>Bonus Damage:</label> <input type="text" id="dmg" name="dmg" value="0" data-dtype="Number" /></div>
+</div>`,
+                buttons: {
+                    submit: {
+                        label: 'OK',
+                        callback: (el) => {
+                            const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
+                            const dmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
+                            if(dmg>0){
+                                formula.value+=`+${dmg}`
+                            }
+                            this._damageRoll(formula,label,hits);
+                        }
+                    }
+                },
+                default: "submit",
+                width:100}
+                      ).render(true);
+            setTimeout(function() {document.getElementById('modifier').select();}, 50);
+            
+        }
+    }
+
+    _damageRoll(formula,label,hits){
+        for(let i=0;i<hits;i++){
+            let roll = new Roll(formula, this.actor.data.data);
+           
             roll.roll().toMessage({
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 flavor: label
             });
         }
     }
-
-
     async _onShipComponentCreate(event){
         event.preventDefault();
         let templateOptions={"type":[{"name":"spaceshipComponent","label":"Spaceship Component"},{"name":"spaceshipWeapon","label":"Spaceship Weapon"}]};

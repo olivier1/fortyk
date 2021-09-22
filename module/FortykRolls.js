@@ -3225,5 +3225,6 @@ returns the roll message*/
         injuryAeData.transfer=true;
         await injuryItem.createEmbeddedDocuments("ActiveEffect",[injuryAeData]);
         await actor.createEmbeddedDocuments("Item",[injuryItem.data]);
+        injuryItem.delete();
     };
 }

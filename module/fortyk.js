@@ -321,7 +321,6 @@ Hooks.on('preCreateItem', (actor, data,options) =>{
 Hooks.on('createActiveEffect',async (ae,options,id)=>{
     if(game.user.isGM){
         let actor=ae.parent;
-        console.log(ae,options);
         let flag=ae.data.flags.core.statusId;
         if(flag){
             await actor.setFlag("core",flag,true);
