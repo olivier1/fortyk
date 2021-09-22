@@ -873,7 +873,7 @@ export class FortyKActor extends Actor {
                 }
             }else if(item.type==="spaceshipSquadron"){
                 if(item.data.halfstr.value){
-                        item.data.rating.value-=5;
+                        item.data.rating.value-=10;
                     }
                 squadrons.push(item);
                 if(item.data.type.value.toLowerCase()==="bomber"){
