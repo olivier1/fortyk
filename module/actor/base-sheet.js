@@ -496,7 +496,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
             let actor=this.actor;
             let fortykWeapon=actor.items.get(dataset.weapon);
-            console.log(fortykWeapon);
+            
             let weapon=fortykWeapon.data;
             console.log(weapon);
             let formula=duplicate(weapon.data.damageFormula);

@@ -1178,6 +1178,7 @@
             },
             "torpedo":{
                 "rating":0,
+                "id":"",
                 "type":"Number"
             }
         },

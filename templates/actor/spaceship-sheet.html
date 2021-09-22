@@ -5,7 +5,7 @@
 
         <div class="flexcol">
             <div class="flexrow sheet-header">
-                {{debug this}}
+              
                 <img class="profile-img" src="{{img}}" data-edit="img" title="{{name}}" />
                 <div class="header-fields">
                     <div class="flexcol">
@@ -229,13 +229,13 @@
                 {{#if (contains this.data.type.value "Torpedo")}}
                  <div class="list-item">
                     <select class="torpedo-ammo" data-weapon="{{this._id}}">
-
-                        {{#select this.data.damage.value}}
-                        <option value="" data-rating="0">None</option>
+                        
+                        {{#select this.data.torpedo.id}}
+                        <option value="" data-damage=" "data-rating="0">None</option>
 
                         {{#each ../actor.torpedoes}}
                         
-                        <option value="{{this.data.damage.value}}" data-rating="{{this.data.rating.value}}">{{this.name}}</option>
+                        <option value="{{this._id}}" data-damage="{{this.data.damage.value}}" data-rating="{{this.data.rating.value}}">{{this.name}}</option>
                         
                         {{/each}}
 

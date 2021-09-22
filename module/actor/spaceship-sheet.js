@@ -28,7 +28,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
     /** @override */
     getData() {
         const data = super.getData();
-        console.log(data);
+       
         if(game.user.character===undefined){
             data.bs=this.actor.data.data.crew.rating;
         }else{
@@ -127,7 +127,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
         let dataset=event.currentTarget.dataset;
         let squadronID=dataset["itemId"];
         let fortykSquadron=this.actor.items.get(squadronID);
-        console.log(fortykSquadron);
+        
         let halfstr=fortykSquadron.data.data.halfstr.value;
         if(halfstr){
             await fortykSquadron.update({"data.halfstr.value":false});
@@ -143,17 +143,18 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
     */
     async _onTorpedoAmmoEdit(event){
         event.preventDefault();
-        console.log(event);
-        let newLoc=event.target.value;
+        
+        let torpId=event.target.value;
         let dataItemId=event.target.attributes["data-weapon"].value;
         let selected=event.currentTarget.selectedOptions.item(0);
-        let damage=selected.attributes.getNamedItem("value").value;
+        let damage=selected.attributes.getNamedItem("data-damage").value;
         let rating=selected.attributes.getNamedItem("data-rating").value;
         let item= this.actor.getEmbeddedDocument("Item", dataItemId);
         let update={}
         update["data.torpedo.rating"]=rating;
+        update["data.torpedo.id"]=torpId;
         update["data.damage.value"]=damage;
-        item.update(update);
+        await item.update(update);
 
 
     }

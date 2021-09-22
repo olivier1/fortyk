@@ -99,7 +99,7 @@ export class FortyKActor extends Actor {
             let newSize= 0;
 
             let wounds=false;
-            console.log(data)
+            
             try{
                 wounds=data["data.secChar.wounds.value"];
             }catch(err){
@@ -219,14 +219,14 @@ export class FortyKActor extends Actor {
         if(actorData.type === "spaceship"){
             let items=this.data.items;
             let data=actorData.data;
-            console.log(data);
+          
             data.cargo.value=0;
             data.cargo.profit=0;
             data.power.value=0;
             data.space.value=0;
             data.shipPoints.spent=0;
             data.shipPoints.remaining=0;
-            console.log("wut")
+           
             this.items.forEach((fortykItem,id,items)=>{
                 let item=fortykItem.data;
                 if(item.type==="spaceshipComponent"||item.type==="spaceshipWeapon"){
@@ -234,7 +234,7 @@ export class FortyKActor extends Actor {
                     data.space.value+=parseInt(item.data.space.value);
                     data.shipPoints.spent+=parseInt(item.data.sp.value);
                 }else if(item.type==="spaceshipCargo"){
-                    console.log(item);
+                    
                     data.cargo.value+=parseInt(item.data.space.value);
                     item.data.pf.total=parseFloat(item.data.pf.value)*parseFloat(item.data.space.value);
                     data.cargo.profit+=item.data.pf.total;
@@ -242,7 +242,7 @@ export class FortyKActor extends Actor {
 
 
             });
-            console.log(data);
+           
             data.shipPoints.remaining=parseInt(data.shipPoints.value)-data.shipPoints.spent;
         }
 

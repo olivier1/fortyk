@@ -139,7 +139,7 @@ export class FortyKItemSheet extends ItemSheet {
                                     }
 
                                 }
-                                console.log(key,num,number);
+                            
                                
                                 if(num){
                                     
