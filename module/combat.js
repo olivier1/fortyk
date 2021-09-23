@@ -3,11 +3,11 @@
  */
 export const _getInitiativeFormula = function() {
     const actor = this.actor;
-    console.log(actor);
+    
     if ( !actor ) return "1d10";
     let init=CONFIG.Combat.initiative.formula;
     if(actor.getFlag("fortyk","constantvigilance")){
-        init= `2d10kh + @characteristics.${actor.getFlag("fortyk","constantvigilance")}.bonus + (@characteristics.${actor.getFlag("fortyk","constantvigilance")}.total / 100)`
+        init= `2d10kh + @characteristics.${actor.getFlag("fortyk","constantvigilance")}.bonus + (@characteristics.${actor.getFlag("fortyk","constantvigilance")}.total / 100)`;
     } 
 
     if(actor.getFlag("fortyk","WeaponMaster")){
