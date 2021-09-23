@@ -118,14 +118,14 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
                 width:100}
                       ).render(true);
             setTimeout(function() {document.getElementById('modifier').select();}, 50);
-            
+
         }
     }
 
     _damageRoll(formula,label,hits){
         for(let i=0;i<hits;i++){
             let roll = new Roll(formula, this.actor.data.data);
-           
+
             roll.roll().toMessage({
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 flavor: label
@@ -185,6 +185,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
         }else{
             await fortykSquadron.update({"data.halfstr.value":true});
         }
+        await this.actor.prepare();
 
     }
     /**
@@ -202,24 +203,26 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
         let rating=selected.attributes.getNamedItem("data-rating").value;
         let item= this.actor.getEmbeddedDocument("Item", dataItemId);
         let update={}
-        update["data.torpedo.rating"]=rating;
+
         update["data.torpedo.id"]=torpId;
-        update["data.damage.value"]=damage;
+
         await item.update(update);
+        await this.actor.prepare();
 
 
     }
-   async _onComponentStatusEdit(event){
+    async _onComponentStatusEdit(event){
         event.preventDefault();
 
         let status=event.target.value;
         let dataItemId=event.target.attributes["data-id"].value;
-        
+
         let item= this.actor.getEmbeddedDocument("Item", dataItemId);
         let update={}
         update["data.status.value"]=status;
-       
+
         await item.update(update);
+        await this.actor.prepare();
 
 
     }

@@ -449,7 +449,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let attackOptions={
         }
         let targets=game.user.targets;
-        if(targets.size>0){
+        if(targets.size>0&&this.actor.type!=="spaceship"){
             let targetIt=targets.values();
             let target=targetIt.next().value;
             let attacker=this.actor.getActiveTokens()[0];

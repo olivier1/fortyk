@@ -22,31 +22,31 @@ export class FortyKActor extends Actor {
             }
         }
         if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship"){
-        // Set wounds, fatigue, and display name visibility
-        mergeObject(data,
-                    {"token.bar1" :{"attribute" : "secChar.wounds"},                 // Default Bar 1 to Wounds
-                     "token.bar2" :{"attribute" : "secChar.fatigue"},               // Default Bar 2 to Fatigue
-                     "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
-                     "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be always on
-                     "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
-                     "token.name" : data.name                                       // Set token name to actor name
-                    })
-        // Default characters to HasVision = true and Link Data = true
-        if (data.type !== "npc")
-        {
-            data.token.vision = true;
-            data.token.actorLink = true;
+            // Set wounds, fatigue, and display name visibility
+            mergeObject(data,
+                        {"token.bar1" :{"attribute" : "secChar.wounds"},                 // Default Bar 1 to Wounds
+                         "token.bar2" :{"attribute" : "secChar.fatigue"},               // Default Bar 2 to Fatigue
+                         "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
+                         "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be always on
+                         "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
+                         "token.name" : data.name                                       // Set token name to actor name
+                        })
+            // Default characters to HasVision = true and Link Data = true
+            if (data.type !== "npc")
+            {
+                data.token.vision = true;
+                data.token.actorLink = true;
+            }
+        }else if(data.type==="spaceship"){
+            mergeObject(data,
+                        {"token.bar1" :{"attribute" : "hullIntegrity"},                 // Default Bar 1 to Hull integrity
+                         "token.bar2" :{"attribute" : "crew"},               // Default Bar 2 to Crew %
+                         "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
+                         "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be always on
+                         "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
+                         "token.name" : data.name                                       // Set token name to actor name
+                        })
         }
-    }else if(data.type==="spaceship"){
-        mergeObject(data,
-                    {"token.bar1" :{"attribute" : "hullIntegrity"},                 // Default Bar 1 to Hull integrity
-                     "token.bar2" :{"attribute" : "crew"},               // Default Bar 2 to Crew %
-                     "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
-                     "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be always on
-                     "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
-                     "token.name" : data.name                                       // Set token name to actor name
-                    })
-    }
         //resume actor creation
         super.create(data, options);
     }
@@ -99,7 +99,7 @@ export class FortyKActor extends Actor {
             let newSize= 0;
 
             let wounds=false;
-            
+
             try{
                 wounds=data["data.secChar.wounds.value"];
             }catch(err){
@@ -219,14 +219,14 @@ export class FortyKActor extends Actor {
         if(actorData.type === "spaceship"){
             let items=this.data.items;
             let data=actorData.data;
-          
+
             data.cargo.value=0;
             data.cargo.profit=0;
             data.power.value=0;
             data.space.value=0;
             data.shipPoints.spent=0;
             data.shipPoints.remaining=0;
-           
+
             this.items.forEach((fortykItem,id,items)=>{
                 let item=fortykItem.data;
                 if(item.type==="spaceshipComponent"||item.type==="spaceshipWeapon"){
@@ -234,7 +234,7 @@ export class FortyKActor extends Actor {
                     data.space.value+=parseInt(item.data.space.value);
                     data.shipPoints.spent+=parseInt(item.data.sp.value);
                 }else if(item.type==="spaceshipCargo"){
-                    
+
                     data.cargo.value+=parseInt(item.data.space.value);
                     item.data.pf.total=parseFloat(item.data.pf.value)*parseFloat(item.data.space.value);
                     data.cargo.profit+=item.data.pf.total;
@@ -242,7 +242,7 @@ export class FortyKActor extends Actor {
 
 
             });
-           
+
             data.shipPoints.remaining=parseInt(data.shipPoints.value)-data.shipPoints.spent;
         }
 
@@ -578,7 +578,7 @@ export class FortyKActor extends Actor {
                     }
                     let char=0;
                     if(item.data.testChar.value==="psy"){
-                         char=psyniscience;
+                        char=psyniscience;
                         item.data.testChar.type="per";
                     }else{
                         char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
@@ -857,15 +857,31 @@ export class FortyKActor extends Actor {
         const bombers=[];
         this.items.forEach((fortykItem,id,items)=>{
             let item=fortykItem.data;
+            let unmodItem=item._source;
+            console.log(fortykItem);
             if(item.type==="spaceshipComponent"){
                 components.push(item);
             }else if(item.type==="spaceshipWeapon"){
-                  if(item.data.type.value==="Hangar"){
-                      item.data.damage.value="1d10+"+Math.ceil(data.crew.rating/10);
-                  }
+                if(item.data.type.value==="Hangar"){
+                    item.data.damage.value="1d10+"+Math.ceil(data.crew.rating/10);
+                    let squadron=this.items.get(item.data.torpedo.id);
+                     if(squadron.data.data.halfstr.value){
+                         item.data.torpedo.rating=squadron.data._source.data.rating.value-10;
+                     }else{
+                         item.data.torpedo.rating=squadron.data.data.rating.value;
+                     }
+                    
+                }
+                if(item.data.type.value==="Torpedo"){
+
+                    let torpedo=this.items.get(item.data.torpedo.id);
+                    item.data.damage.value=torpedo.data.data.damage.value;
+                    
+                    item.data.torpedo.rating=torpedo.data.data.rating.value;
+                }
                 components.push(item);
                 weapons.push(item);
-              
+
             }else if(item.type==="spaceshipCargo"){
                 cargo.push(item);
                 if(item.data.type.value==="Torpedoes"){
@@ -873,11 +889,11 @@ export class FortyKActor extends Actor {
                 }
             }else if(item.type==="spaceshipSquadron"){
                 if(item.data.halfstr.value){
-                        item.data.rating.value-=10;
-                    }
+                    item.data.rating.value=unmodItem.data.rating.value-10;
+                }
                 squadrons.push(item);
                 if(item.data.type.value.toLowerCase()==="bomber"){
-                    
+
                     bombers.push(item);
                 }
             }
