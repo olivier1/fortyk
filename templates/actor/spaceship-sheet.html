@@ -5,7 +5,7 @@
 
         <div class="flexcol">
             <div class="flexrow sheet-header">
-              
+
                 <img class="profile-img" src="{{img}}" data-edit="img" title="{{name}}" />
                 <div class="header-fields">
                     <div class="flexcol">
@@ -93,7 +93,7 @@
                     <div class="resource-content flexrow flex-center flex-between">
                         <input type="text" class="combat-resources" name="data.morale.value" value="{{data.morale.value}}" data-dtype="Number"/>
                         <span> / </span>
-                        <span type="text">{{data.morale.max}}</span>
+                        <input type="text" class="combat-resources" name="data.morale.max" value="{{data.morale.max}}" data-dtype="Number"/>
                     </div>
                 </div>
             </div>
@@ -158,16 +158,31 @@
 
             </div>
             <a class="shipComponent-create button" data-type="shipComponent" title="Add Ship Component">Add Ship Component</a>
-            <div class="list list6col grid grid-6col">
+            <div class="list list7col grid grid-7col">
                 <span class="list-item">Name</span>
+                <span class="list-item">Status</span>
                 <span class="list-item">Power</span>
                 <span class="list-item">Space</span>
                 <span class="list-item">SP</span>
                 <span class="list-button"></span>
                 <span class="list-button"></span>
+                {{debug this}}
                 {{#each actor.components as |t key|}}
 
                 <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}</a>
+                <select class="component-status" data-id="{{this._id}}">
+                    
+                    {{#select this.data.status.value}}
+
+
+                    {{#each ../spaceshipComponentStatuses}}
+
+                    <option value="{{this}}" >{{this}}</option>
+
+                    {{/each}}
+
+                    {{/select}}
+                </select>
                 <span class="item-descr list-item">{{t.data.power.value}}</span>
                 <span class="item-descr list-item">{{t.data.space.value}}</span>
                 <span class="item-descr list-item">{{t.data.sp.value}}</span>
@@ -204,6 +219,7 @@
                 </div>
             </div>
             {{#each actor.weapons as |t key|}}
+            {{#if (contains this.data.status.value "Online")}}
             <div class="weapons grid grid-3col">
                 <div class="list-item-header3">
                     <span>Name: {{this.name}}</span>
@@ -227,41 +243,41 @@
                     <label>Strength: {{this.data.strength.value}}</label>
                 </div>
                 {{#if (contains this.data.type.value "Torpedo")}}
-                 <div class="list-item">
+                <div class="list-item">
                     <select class="torpedo-ammo" data-weapon="{{this._id}}">
-                        
+
                         {{#select this.data.torpedo.id}}
                         <option value="" data-damage=" "data-rating="0">None</option>
 
                         {{#each ../actor.torpedoes}}
-                        
+
                         <option value="{{this._id}}" data-damage="{{this.data.damage.value}}" data-rating="{{this.data.rating.value}}">{{this.name}}</option>
-                        
+
                         {{/each}}
 
                         {{/select}}
                     </select>
                 </div>
-                 <div class="list-item">
+                <div class="list-item">
                     <label>Rating: {{this.data.torpedo.rating}}</label>
                 </div>
                 {{else if (contains this.data.type.value "Hangar")}}
                 <div class="list-item">
                     <select class="torpedo-ammo" data-weapon="{{this._id}}">
-                        
+
                         {{#select this.data.torpedo.id}}
                         <option value="" data-damage=" "data-rating="0">None</option>
 
                         {{#each ../actor.bombers}}
-                        
+
                         <option value="{{this._id}}" data-damage="{{../data.damage.value}}" data-rating="{{this.data.rating.value}}">{{this.name}}</option>
-                        
+
                         {{/each}}
 
                         {{/select}}
                     </select>
                 </div>
-                 <div class="list-item">
+                <div class="list-item">
                     <label>Rating: {{this.data.torpedo.rating}}</label>
                 </div>
                 {{/if}}
@@ -272,7 +288,7 @@
                     {{else}}
                     <a class=" rollable button" data-label="Spaceship Attack"data-roll-type="char"data-target="{{../bs}}"data-char="" data-rating="{{this.data.torpedo.rating}}"> {{../bs}}{{#if (contains this.data.type.value "Torpedo")}}+{{this.data.torpedo.rating}} {{/if}}</a>
                     {{/if}}
-                    
+
 
                 </div>
                 <div class="list-item">
@@ -284,6 +300,7 @@
 
 
             </div>
+            {{/if}}
             {{/each}}
         </div>
         <div class="tab cargo" data-group="primary" data-tab="cargo">
@@ -317,7 +334,7 @@
                     <label for="data.secChar.fatigue.value" class="resource-label">Fuel %</label>
                     <div class="resource-content flexcol flex-center flex-between">
                         <input type="text" class="combat-resources" name="data.cargo.fuel" value="{{data.cargo.fuel}}" data-dtype="Number"/>
-                       
+
 
                     </div>
                 </div>

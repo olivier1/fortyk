@@ -1138,6 +1138,10 @@
             "type":{
                 "value":"",
                 "type":"String"
+            },
+            "status":{
+                "value":"",
+                "type":"String"
             }
         },
         "spaceshipWeapon":{
@@ -1180,6 +1184,10 @@
                 "rating":0,
                 "id":"",
                 "type":"Number"
+            },
+            "status":{
+                "value":"Online",
+                "type":"String"
             }
         },
         "spaceshipCargo":{

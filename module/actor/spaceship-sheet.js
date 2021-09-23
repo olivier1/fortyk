@@ -61,6 +61,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
 
 
         }
+        data.spaceshipComponentStatuses=game.fortyk.FORTYK.spaceshipComponentStatuses;
         return data;
     }
 
@@ -75,7 +76,8 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
         html.find('.halfstr').click(this._onHalfStrClick.bind(this));
         //change cybernetic location
         html.find('.torpedo-ammo').change(this._onTorpedoAmmoEdit.bind(this));
-
+        //change component status
+        html.find('.component-status').change(this._onComponentStatusEdit.bind(this));
         //Add ship weapons of components to actor
         html.find('.shipComponent-create').click(this._onShipComponentCreate.bind(this));
 
@@ -203,6 +205,20 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
         update["data.torpedo.rating"]=rating;
         update["data.torpedo.id"]=torpId;
         update["data.damage.value"]=damage;
+        await item.update(update);
+
+
+    }
+   async _onComponentStatusEdit(event){
+        event.preventDefault();
+
+        let status=event.target.value;
+        let dataItemId=event.target.attributes["data-id"].value;
+        
+        let item= this.actor.getEmbeddedDocument("Item", dataItemId);
+        let update={}
+        update["data.status.value"]=status;
+       
         await item.update(update);
 
 
