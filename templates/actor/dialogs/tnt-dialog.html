@@ -2,7 +2,7 @@
 <select id="tntselect" class="tntselect" size=30 multiple>
 
     {{#each tnts}}
-    <option name="tntEntry" value="{{this._id}}" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}" data-compendium="{{pack}}" title="
+    <option name="tntEntry" value="{{this.id}}" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}" data-compendium="{{pack}}" title="
     {{this.data.data.description.value}}">
         {{this.name}}
     </option>
