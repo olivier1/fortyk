@@ -345,7 +345,7 @@ export class FortyKActor extends Actor {
         if(leftHandWeapon){
             leftHandWeaponData=leftHandWeapon.data;
         }
-
+        
 
         //handle shields
         data.characterHitLocations.body.shield= 0;
@@ -627,16 +627,18 @@ export class FortyKActor extends Actor {
 
                 advancements.push(item);
             }
+
             if(item.type==="meleeWeapon"){
+                item.data.damageFormula.value=item.data.damageFormula.formula;
                 if(item.data.class.value==="Melee Two-handed"){
                     item.data.twohanded.value=true;
                 }else{
                     item.data.twohanded.value=false;
                 }
                 if(fortykItem.getFlag("fortyk","crushing")){
-                    item.data.damageFormula.value=item.data.damageFormula.formula+"+"+2*data.characteristics.s.bonus;
+                    item.data.damageFormula.value+="+"+2*data.characteristics.s.bonus;
                 }else{
-                    item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
+                    item.data.damageFormula.value+="+"+data.characteristics.s.bonus;
                 }
                 if(this.getFlag("fortyk","crushingblow")){
                     item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
@@ -645,6 +647,7 @@ export class FortyKActor extends Actor {
                 wargear.push(item);
             }
             if(item.type==="rangedWeapon"){
+                item.data.damageFormula.value=item.data.damageFormula.formula;
                 try
                 {
                     let sb=data.characteristics.s.bonus;
@@ -668,6 +671,13 @@ export class FortyKActor extends Actor {
                 wargear.push(item);
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
+                if(this.getFlag("fortyk","WeaponMaster")){
+                    console.log(this.getFlag("fortyk","WeaponMaster"))
+                    if(this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(item.data.type.value.toLowerCase())){
+                        item.data.damageFormula.value+="+2";
+                        item.data.testMod.value=item._source.data.testMod.value+10;
+                    }
+                }
                 for( let w of wornWeapons){
                     if(w===item._id){
                         wornGear.weapons.push(item);
@@ -865,18 +875,18 @@ export class FortyKActor extends Actor {
                 if(item.data.type.value==="Hangar"){
                     item.data.damage.value="1d10+"+Math.ceil(data.crew.rating/10);
                     let squadron=this.items.get(item.data.torpedo.id);
-                     if(squadron.data.data.halfstr.value){
-                         item.data.torpedo.rating=squadron.data._source.data.rating.value-10;
-                     }else{
-                         item.data.torpedo.rating=squadron.data.data.rating.value;
-                     }
-                    
+                    if(squadron.data.data.halfstr.value){
+                        item.data.torpedo.rating=squadron.data._source.data.rating.value-10;
+                    }else{
+                        item.data.torpedo.rating=squadron.data.data.rating.value;
+                    }
+
                 }
                 if(item.data.type.value==="Torpedo"){
 
                     let torpedo=this.items.get(item.data.torpedo.id);
                     item.data.damage.value=torpedo.data.data.damage.value;
-                    
+
                     item.data.torpedo.rating=torpedo.data.data.rating.value;
                 }
                 components.push(item);

@@ -55,7 +55,7 @@ Hooks.once('init', async function() {
         formula: "1d10 + @characteristics.agi.bonus + (@characteristics.agi.total / 100)",
         decimals: 2
     };
-    Combat.prototype._getInitiativeFormula = _getInitiativeFormula;
+    Combatant.prototype._getInitiativeFormula = _getInitiativeFormula;
     //set custom system status effects
     CONFIG.statusEffects=FORTYK.StatusEffects;
     //set default font
