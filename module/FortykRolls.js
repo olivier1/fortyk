@@ -416,6 +416,10 @@ returns the roll message*/
             curHit=game.fortyk.FORTYK.extraHits["body"][0];
         }
         let form=formula.value.toLowerCase();
+        //peerless killer
+        if(actor.getFlag("fortyk","peerlesskiller")&&lastHit.attackType==="called"){
+            form+="+2";
+        }
         //change formula for d5 weapons
         form=form.replace("d5","d10/2");
 
@@ -559,12 +563,23 @@ returns the roll message*/
 
                     if(!tarActor.getFlag("core","dead")){
 
-
+                        
                         let wounds=getProperty(data,"secChar.wounds");
                         if(newWounds[tarNumbr]===false){
                             newWounds[tarNumbr]=getProperty(data,"secChar.wounds").value;
                         }
-
+                        //killers eye
+                        console.log(actor.getFlag("fortyk","killerseye")&&lastHit.attackType==="called"&&(actor.data.data.secChar.lastHit.dos>=data.characteristics.agi.bonus))
+                        if(actor.getFlag("fortyk","killerseye")&&lastHit.attackType==="called"&&(actor.data.data.secChar.lastHit.dos>=data.characteristics.agi.bonus)){
+                            let randomKiller=new Roll("1d5",{});
+                                randomKiller.roll();
+                                await randomKiller.toMessage({
+                                    speaker: ChatMessage.getSpeaker({ actor: actor }),
+                                    flavor: "Rolling Killer's Eye critical effect."
+                                });
+                            let killerCrit=randomKiller._total;
+                            await this.critEffects(tar,killerCrit,curHit.value,weapon.data.damageType.value,ignoreSON);
+                        }
                         let soak=0;
                         let armor=parseInt(data.characterHitLocations[curHit.value].armor);
                         //check if weapon ignores soak
@@ -894,6 +909,17 @@ returns the roll message*/
                                                     content:`Deathdealer increases critical damage by ${actor.data.data.characteristics.per.bonus}.`,
                                                     classes:["fortyk"],
                                                     flavor:`Deathdealer`,
+                                                    author:actor.name};
+                            await ChatMessage.create(deathDealerOptions,{});
+                        }
+                        //peerless killer
+                        if(actor.getFlag("fortyk","peerlesskiller")&&lastHit.attackType==="called"){
+                            damage+=4;
+                            let deathDealerOptions={user: game.user._id,
+                                                    speaker:{actor,alias:actor.name},
+                                                    content:`Peerless Killer increases critical damage by 4 on called shots.`,
+                                                    classes:["fortyk"],
+                                                    flavor:`Peerless Killer`,
                                                     author:actor.name};
                             await ChatMessage.create(deathDealerOptions,{});
                         }
