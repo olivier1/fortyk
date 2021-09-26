@@ -452,6 +452,13 @@
     padding:3px;
 
 }
+.fortyk .skills .skills-header a{
+    border: 1px solid #AAA;
+    font-weight:bold;
+    font-style:bold;
+    padding:3px;
+
+}
 .fortyk .skills .skillItem{
     flex:1;
     grid-column:initial;

@@ -10,6 +10,9 @@
             "spaceship"
         ],
         "templates": {
+            "sorting":{
+                "sort":{}
+            },
             "description": {
                 "sex": {
                     "value": "",
@@ -409,13 +412,15 @@
                 "characters",
                 "creationOptions",
                 "creationOptionsDW",
-                "player"
+                "player",
+                "sorting"
             ]
         },
         "npc": {
             "templates": [
                 "description",
-                "characters"
+                "characters",
+                "sorting"
             ],
             "skills": {
                 "value": "",
@@ -440,7 +445,8 @@
                 "characters",
                 "creationOptions",
                 "creationOptionsDH",
-                "player"
+                "player",
+                "sorting"
             ],
             "characteristics": {
                 "ws": {
@@ -486,7 +492,8 @@
                 "characters",
                 "creationOptions",
                 "creationOptionsOW",
-                "player"
+                "player",
+                "sorting"
             ],
             "characteristics": {
                 "ws": {
@@ -520,7 +527,8 @@
         },
         "owComrade": {
             "templates": [
-                "description"                
+                "description",
+                "sorting"                
             ],
             "secChar":{
                 "wounds":{
@@ -541,10 +549,10 @@
 
         },
         "owRegiment":{
-            "name":{
-                "value":"",
-                "type":"String"
-            },
+            "templates": [
+
+                "sorting"                
+            ],
             "homeworld":{
                 "value":"",
                 "culture":"",
@@ -605,6 +613,10 @@
 
         },
         "spaceship":{
+            "templates": [
+
+                "sorting"                
+            ],
             "name":{
                 "value":"",
                 "type":"String"

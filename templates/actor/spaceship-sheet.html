@@ -159,11 +159,11 @@
             </div>
             <a class="shipComponent-create button" data-type="shipComponent" title="Add Ship Component">Add Ship Component</a>
             <div class="list list7col grid grid-7col">
-                <span class="list-item">Name</span>
-                <span class="list-item">Status</span>
-                <span class="list-item">Power</span>
-                <span class="list-item">Space</span>
-                <span class="list-item">SP</span>
+                <a class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="components">Name</a>
+                <a class="list-item sort-button" data-sort-type="status" data-path="data.status.value" data-item-type="components">Status</a>
+                <a class="list-item sort-button" data-sort-type="power" data-path="data.power.value" data-item-type="components">Power</a>
+                <a class="list-item sort-button" data-sort-type="space" data-path="data.space.value" data-item-type="components">Space</a>
+                <a class="list-item sort-button" data-sort-type="sp" data-path="data.sp.value" data-item-type="components">SP</a>
                 <span class="list-button"></span>
                 <span class="list-button"></span>
                 {{debug this}}
@@ -342,11 +342,11 @@
 
             <a class="item-create button" data-type="spaceshipCargo" title="Add Cargo">Add Cargo</a>
             <div class="list list7col grid grid-7col">
-                <span class="list-item">Name</span>
-                <span class="list-item">Type</span>
-                <span class="list-item">Quantity</span>
-                <span class="list-item">Value</span>
-                <span class="list-item">Rarity</span>
+                <a class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="cargo">Name</a>
+                <a class="list-item sort-button" data-sort-type="type" data-path="data.type.value" data-item-type="cargo">Type</a>
+                <a class="list-item sort-button" data-sort-type="space" data-path="data.space.value" data-item-type="cargo">Quantity</a>
+                <a class="list-item sort-button" data-sort-type="value" data-path="t.data.pf.total" data-item-type="cargo">Value</a>
+                <a class="list-item sort-button" data-sort-type="rarity" data-path="data.rarity.value" data-item-type="cargo">Rarity</a>
                 <span class="list-button"></span>
                 <span class="list-button"></span>
                 {{#each actor.cargo as |t key|}}
@@ -370,10 +370,10 @@
 
             <a class="item-create button" data-type="spaceshipSquadron" title="Add Squadron">Add Squadron</a>
             <div class="list list6col grid grid-6col">
-                <span class="list-item">Name</span>
-                <span class="list-item">Type</span>
-                <span class="list-item">Rating</span>
-                <span class="list-item">Half</span>
+                <span class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="squadrons">Name</span>
+                <span class="list-item sort-button" data-sort-type="type" data-path="data.type.value" data-item-type="squadrons">Type</span>
+                <span class="list-item sort-button" data-sort-type="rating" data-path="data.rating.value" data-item-type="squadrons">Rating</span>
+                <span class="list-item sort-button" data-sort-type="halfstr" data-path="data.halfstr.value" data-item-type="squadrons">Half</span>
                 <span class="list-button"></span>
                 <span class="list-button"></span>
                 {{#each actor.squadrons as |t key|}}

@@ -67,7 +67,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.force-roll').click(this._onForceRoll.bind(this));
         //creating a tnt
         html.find('.tnt-create').click(this._onTntCreate.bind(this));
-
+        //sorting
+        html.find('.sort-button').click(this._onSortClick.bind(this));
         html.find('.drag').each((i, li) => {
             li.setAttribute("draggable", true);
             li.addEventListener("dragstart", this._onDragListItem, false);
@@ -116,6 +117,28 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
 
 
+    }
+    async _onSortClick(event){
+       
+        let sortType=event.target.dataset["sortType"];
+        let path=event.target.dataset["path"];
+        let itemType=event.target.dataset["itemType"];
+        let actor=this.actor.data;
+        let items=actor[itemType];
+        let update={};
+        let updatePath="data.sort."+itemType;
+        
+        update[updatePath]={};
+        update[updatePath].type=sortType;
+        update[updatePath].path=path;
+        if(!actor.data.sort[itemType]||actor.data.sort[itemType].reverse){
+            update[updatePath].reverse=false;
+        }else{
+             update[updatePath].reverse=true;
+        }
+     
+        await this.actor.update(update);
+        
     }
     //Handle the popup when user clicks item name to show item description
     async _onItemDescrGet(event){

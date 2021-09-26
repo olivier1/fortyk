@@ -1,6 +1,7 @@
 import {getSkills} from "../utilities.js";
 import {isEmpty} from "../utilities.js";
 import {FORTYKTABLES} from "../FortykTables.js";
+import {objectByString} from "../utilities.js";
 /**
  * Extend the base Actor entity by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
@@ -345,7 +346,7 @@ export class FortyKActor extends Actor {
         if(leftHandWeapon){
             leftHandWeaponData=leftHandWeapon.data;
         }
-        
+
 
         //handle shields
         data.characterHitLocations.body.shield= 0;
@@ -441,11 +442,9 @@ export class FortyKActor extends Actor {
         // Call prepareItems first to organize and process Items
         if(preparedData.type==='dwPC'||preparedData.type==='dhPC'||preparedData.type==='owPC'){
             mergeObject(preparedData, this.preparePCItems(preparedData));
-        }
-        if(preparedData.type==='npc'){
+        }else if(preparedData.type==='npc'){
             mergeObject(preparedData, this.prepareNPCItems(preparedData));
-        }
-        if(preparedData.type==="spaceship"){
+        }else if(preparedData.type==="spaceship"){
             mergeObject(preparedData, this.prepareSpaceshipItems(preparedData));
         }
         return preparedData;
@@ -672,7 +671,7 @@ export class FortyKActor extends Actor {
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
                 if(this.getFlag("fortyk","WeaponMaster")){
-                    console.log(this.getFlag("fortyk","WeaponMaster"))
+                   
                     if(this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(item.data.type.value.toLowerCase())){
                         item.data.damageFormula.value+="+2";
                         item.data.testMod.value=item._source.data.testMod.value+10;
@@ -717,7 +716,7 @@ export class FortyKActor extends Actor {
 
 
 
-        let sortedSkills=skills.sort(function compare(a, b) {
+        let sortedSkills=skills/*.sort(function compare(a, b) {
             if (a.name<b.name) {
                 return -1;
             }
@@ -726,8 +725,8 @@ export class FortyKActor extends Actor {
             }
             // a must be equal to b
             return 0;
-        });
-        let sortedTnt=talentsntraits.sort(function compare(a, b) {
+        });*/
+        let sortedTnt=talentsntraits/*.sort(function compare(a, b) {
             if (a.sort<b.sort) {
                 return -1;
             }
@@ -736,8 +735,8 @@ export class FortyKActor extends Actor {
             }
             // a must be equal to b
             return 0;
-        });
-        let sortedGear=wargear.sort(function compare(a, b) {
+        });*/
+        let sortedGear=wargear/*.sort(function compare(a, b) {
             if (a.sort<b.sort) {
                 return -1;
             }
@@ -746,7 +745,7 @@ export class FortyKActor extends Actor {
             }
             // a must be equal to b
             return 0;
-        });
+        });*/
 
         let preparedItems={skills:sortedSkills,
                            wargear:sortedGear,
@@ -768,6 +767,7 @@ export class FortyKActor extends Actor {
                            ammunitions:ammunitions,
                            equippableAmmo:equippableAmmo,
                            wornGear:wornGear};
+        this._sortItems(preparedItems);
         return preparedItems;
     }
 
@@ -855,6 +855,7 @@ export class FortyKActor extends Actor {
             rangedWeapons:rangedWeapons,
             talentsntraits:talentsntraits
         };
+        this._sortItems(preparedItems);
         return preparedItems;
     }
     prepareSpaceshipItems(actorData){
@@ -916,9 +917,55 @@ export class FortyKActor extends Actor {
             torpedoes:torpedoes,
             bombers:bombers
         }
+        this._sortItems(preparedItems);
         return preparedItems
 
 
+    }
+    _sortItems(itemContainers){
+        let data=this.data;
+
+        let sorts=data.data.sort;
+
+        let containers=Object.entries(itemContainers);
+        containers.forEach((container, index )=>{
+
+            if(sorts[container[0]]){
+                let sortPath=sorts[container[0]].path;
+
+                let sorted=[];
+                if(sorts[container[0]].reverse){
+                    sorted=container[1].sort(function compare(a, b) {
+                        let valueA=objectByString(a,sortPath);
+                        let valueB=objectByString(b,sortPath);
+                        if (valueA<valueB) {
+                            return 1;
+                        }
+                        if (valueA>valueB) {
+                            return -1;
+                        }
+                        // a must be equal to b
+                        return 0;
+                    });
+                }else{
+                    sorted=container[1].sort(function compare(a, b) {
+                        let valueA=objectByString(a,sortPath);
+                        let valueB=objectByString(b,sortPath);
+                        if (valueA<valueB) {
+                            return -1;
+                        }
+                        if (valueA>valueB) {
+                            return 1;
+                        }
+                        // a must be equal to b
+                        return 0;
+                    });
+                }
+
+
+                itemContainers[container[0]]=sorted;
+            }
+        })
     }
     //this function deletes items from an actor, certain items need more logic to process
     deleteItem(itemId){
