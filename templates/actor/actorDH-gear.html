@@ -10,7 +10,7 @@
         <a class="item-create button" data-type="cybernetic" title="Add a new Cybernetic">Add Cybernetic</a>
         <div class="list list4col grid grid-4col">
             <a class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="cybernetics">Name</a>
-            <a class="list-item sort-button" data-sort-type="name" data-path="data.location.value" data-item-type="cybernetics">Location</a>
+            <a class="list-item sort-button" data-sort-type="location" data-path="data.location.value" data-item-type="cybernetics">Location</a>
             <span class="list-button"></span>
             <span class="list-button"></span>
             {{#each actor.cybernetics as |c key|}}
@@ -46,8 +46,8 @@
 
         <div class="list list5col grid grid-5col">
             <a class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="wargear">Name</a>
-            <a class="list-item sort-button" data-sort-type="name" data-path="data.amount.value" data-item-type="wargear">Amount</a>
-            <a class="list-item sort-button" data-sort-type="name" data-path="data.weight.total" data-item-type="wargear">Weight</a>
+            <a class="list-item sort-button" data-sort-type="amount" data-path="data.amount.value" data-item-type="wargear">Amount</a>
+            <a class="list-item sort-button" data-sort-type="weight" data-path="data.weight.total" data-item-type="wargear">Weight</a>
             <span class="list-button"></span>
             <span class="list-button"></span>
             {{#each actor.wargear as |w key|}}

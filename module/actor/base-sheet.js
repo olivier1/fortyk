@@ -131,7 +131,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         update[updatePath]={};
         update[updatePath].type=sortType;
         update[updatePath].path=path;
-        if(!actor.data.sort[itemType]||actor.data.sort[itemType].reverse){
+        if(!actor.data.sort[itemType]||actor.data.sort[itemType].type!==sortType||actor.data.sort[itemType].reverse){
             update[updatePath].reverse=false;
         }else{
              update[updatePath].reverse=true;
