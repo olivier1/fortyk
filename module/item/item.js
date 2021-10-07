@@ -6,6 +6,26 @@ import {getItem} from "../utilities.js";
 import {isEmpty} from "../utilities.js";
 
 export class FortyKItem extends Item {
+    //@Override the create function to add an activeeffect for modifiers to an item
+    static async create(data, options) {
+        // If the created item has effects (only applicable to duplicated actors) bypass the new item creation logic
+        console.log(data);
+        if (data.effects)
+        {
+            return super.create(data, options);
+        }
+        let modifiersData={
+            id: "modifiers",
+            label: "Modifiers",
+            changes:[],
+            transfer:false}
+        let modifiers= await ActiveEffect.create(modifiersData,{temporary:true});
+        console.log(modifiers);
+        data.effects=[];
+        data.effects.push(modifiers.data);
+        //resume item creation
+        return super.create(data, options);
+    }
     /** 
     ** @override talents and traits should update their flags on the owning actor if the specialisation field is changed
     **/

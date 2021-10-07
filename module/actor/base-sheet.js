@@ -4,6 +4,7 @@ import {FortykRolls} from "../FortykRolls.js";
 import {objectByString} from "../utilities.js";
 import {setNestedKey} from "../utilities.js";
 import {tokenDistance} from "../utilities.js";
+import {FortyKItem} from "../item/item.js";
 export default class FortyKBaseActorSheet extends ActorSheet {
 
     /** @override */
@@ -49,6 +50,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.item-edit').click(this._onItemEdit.bind(this));
         //delete item on actor
         html.find('.item-delete').click(this._onItemDelete.bind(this));
+       
         //change item property via text input
         html.find('.item-text-input').focusout(this._itemTextInputEdit.bind(this));
         //get item description
@@ -171,8 +173,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             name: `new ${type}`,
             type: type
         };
-
-        await this.actor.createEmbeddedDocuments("Item",[itemData],{"renderSheet":true});
+        let item=await FortyKItem.create(itemData,{temporary:true});
+        await this.actor.createEmbeddedDocuments("Item",[item.data],{"renderSheet":true});
 
     }
     //provides an interface to add new talents and apply the corresponding flags
@@ -400,6 +402,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }).render(true)
         });
     }
+    
     //handles editing text inputs that are linked to owned items 
     async _itemTextInputEdit(event){
         let actor= this.actor;

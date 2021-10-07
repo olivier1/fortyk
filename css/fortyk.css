@@ -485,7 +485,7 @@
     margin-left:3px;
     display:inherit;
 }
-.fortyk .item-delete{
+.item-delete{
     background-image: url("../icons/deleteicon.png") !important; 
     background-size: contain;
     background-repeat: no-repeat;

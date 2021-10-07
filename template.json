@@ -105,6 +105,7 @@
                 }
             },
             "characters": {
+                "skillmods":{},
                 "secChar": {
                     "wounds": {
                         "type": "Number",
@@ -201,6 +202,10 @@
                     "cover": {
                         "value": 0,
                         "type": "String"
+                    },
+                    "initiative":{
+                        "value":0,
+                        "type":"Number"
                     }
                 },
                 "globalMOD": {

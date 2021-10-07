@@ -1,7 +1,7 @@
 <form class="{{cssClass}} item-sheet flexcol">
- <header class="sheet-header">
+    <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
-        
+
     </header>
     <span>You will have to create an ammunition item in order to fire your ranged weapon, unless it is a thrown weapon in which case it will use the amount of the weapon as ammo.</span>
     <div class="grid grid-3col">
@@ -31,8 +31,13 @@
             <input type="text" value="{{data.reload.value}}" name="data.reload.value">
         </div>
         <div class="flexcol">
-            <a class="weapon-special button">Special</a>
+            <a class="special button">Special</a>
         </div>
+        {{#if isGM}}
+        <div class="flexcol">
+            <a class="modifier button">Modifiers</a>
+        </div>
+        {{/if}}
         <div class="flexcol">
             <label>Rate of Fire:</label>
             <div class="flexrow">

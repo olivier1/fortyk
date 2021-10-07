@@ -151,7 +151,34 @@ FORTYK.aptitudes=["Weapon Skill", "Ballistic Skill", "Strength", "Toughness", "A
 FORTYK.psykerTypes={"bound":{"push":2,"sustain":"+10 to Phenomena rolls, -1 to PR per power after the first","perils":0},"unbound":{"push":4,"sustain":"+10 to all rolls on Table 6–2: Psychic Phenomena (see page 196), decrease psy rating by 1 per power.","perils":5}, "daemon":{"push":3, "sustain":"+10 to all rolls on Table 6–2: Psychic Phenomena (see page 196), decrease psy rating by 1 per power. He is not affected by the result unless the result causes Perils of the Warp, though those around him might be.","perils":10},
                     "navigator":{"push":-1,"sustain":"N/A","perils":-1}}
 FORTYK.navigatorPowerTraining=["Novice","Adept","Master"]
-FORTYK.itemFlags={
+FORTYK.armorFlags={
+    "explosive": {
+        "value": false,
+        "label": "Explosive Resistant",
+        "description": "This armor is built to resist explosions, its armor value counts as double against explosive damage."
+    },
+    "rending": {
+        "value": false,
+        "label": "Rending Resistant",
+        "description": "This armor is built to resist rending attacks, its armor value counts as double against rending damage."
+    },
+    "impact": {
+        "value": false,
+        "label": "Impact Resistant",
+        "description": "This armor is built to resist impacts, its armor value counts as double against impact damage."
+    },
+    "energy": {
+        "value": false,
+        "label": "Energy Resistant",
+        "description": "This armor is built to resist energy attacks, its armor value counts as double against energy damage."
+    },
+    "holy": {
+        "value": false,
+        "label": "Holy",
+        "description": "This armor has been blessed by a higher power, it still blocks warp attacks or attacks that normally bypass armor."
+    }
+}
+FORTYK.weaponFlags={
     "accurate": {
         "value": false,
         "num": 0,

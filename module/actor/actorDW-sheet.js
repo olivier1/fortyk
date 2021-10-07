@@ -2,6 +2,7 @@ import {FortykRolls} from "../FortykRolls.js";
 import {objectByString} from "../utilities.js";
 import {setNestedKey} from "../utilities.js";
 import FortyKBaseActorSheet from "./base-sheet.js";
+import {FortyKItem} from "../item/item.js";
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
@@ -89,12 +90,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                                 name: `new ${type}`,
                                 type: type
                             };
-                            let item=itemData;
 
-                            let itemz=[];
-                            itemz.push(item);
+                            let item=await FortyKItem.create(itemData,{temporary:true});
+                            await this.actor.createEmbeddedDocuments("Item",[item.data],{"renderSheet":true});
 
-                            await this.actor.createEmbeddedDocuments("Item",itemz,{"renderSheet":true});
 
 
 
@@ -326,7 +325,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
     }
     //handles when weapons are swapped and stuff
-    _onWeaponChange(event){
+    async _onWeaponChange(event){
 
         const data=this.actor.data.data;
 
@@ -335,6 +334,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         let weapon=actor.items.get(event.currentTarget.value);
         if(weapon){
+            /*
+            if(weapon.effects.size>0){
+                console.log(await weapon.effects.entries().next().value[1].update({"data.transfer":true}));
+            }*/
             weapon=weapon.data;
         }
         const weaponID=event.currentTarget.value;
@@ -342,12 +345,16 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         const leftHand=document.getElementById("left");
         const rightHand=document.getElementById("right");
         var update={};
+        var previousWeaponID="";
         if(hand==="right"){
             if(weaponID===data.secChar.wornGear.weapons[1]){return}
-            rightHand.value=weaponID;
+
 
             update["data.secChar.wornGear.weapons.1"]=weaponID;
-            let oppWeapon=this.actor.getEmbeddedDocument("Item",data.secChar.wornGear.weapons[0]);
+            if(weaponID===data.secChar.wornGear.weapons[0]){
+                update["data.secChar.wornGear.weapons.0"]="";
+            }
+
             if(weaponID===""&&data.secChar.wornGear.weapons[1]==="2hand"){
                 update["data.secChar.wornGear.weapons.0"]="";
 
@@ -357,8 +364,13 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
             if(weaponID===""){}
             else if(!weapon.data.twohanded.value){
-
                 if(data.secChar.wornGear.weapons[1]==="2hand"){
+                    
+
+                    update["data.secChar.wornGear.weapons.0"]="";
+
+                }
+                if(data.secChar.wornGear.weapons[0]==="2hand"){
 
                     update["data.secChar.wornGear.weapons.0"]="";
 
@@ -369,12 +381,17 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
 
             }
+            if(data.secChar.wornGear.weapons[1]!==""&&data.secChar.wornGear.weapons[1]!=="2hand"){
+                previousWeaponID=data.secChar.wornGear.weapons[1];
+            }
 
         }else if(hand==="left"){
             if(weaponID===data.secChar.wornGear.weapons[0]){return}
-            leftHand.value=weaponID;
+
             update["data.secChar.wornGear.weapons.0"]=weaponID;
-            let oppWeapon=this.actor.getEmbeddedDocument("Item",data.secChar.wornGear.weapons[1]);
+            if(weaponID===data.secChar.wornGear.weapons[1]){
+                update["data.secChar.wornGear.weapons.1"]="";
+            }
             if(weaponID===""&&data.secChar.wornGear.weapons[1]==="2hand"){
 
                 update["data.secChar.wornGear.weapons.1"]="";
@@ -384,9 +401,14 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
             if(weaponID===""){}
             else if(!weapon.data.twohanded.value){
+                if(data.secChar.wornGear.weapons[0]==="2hand"){
+                    
 
+                    update["data.secChar.wornGear.weapons.1"]="";
+
+                }
                 if(data.secChar.wornGear.weapons[1]==="2hand"){
-
+                    
 
                     update["data.secChar.wornGear.weapons.1"]="";
 
@@ -397,9 +419,20 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
 
             }
+            if(data.secChar.wornGear.weapons[0]!==""&&data.secChar.wornGear.weapons[0]!=="2hand"){
+                previousWeaponID=data.secChar.wornGear.weapons[0];
+            }
+
 
         }
-        this.actor.update(update);
+        /*if(previousWeaponID){
+            let previousWeapon=actor.getEmbeddedDocument("Item",previousWeaponID);
+            if(previousWeapon.effects.size>0){
+                console.log(await previousWeapon.effects.entries().next().value[1].update({"data.transfer":false}));
+            }
+        }*/
+        await this.actor.update(update);
+        
     }
 
 

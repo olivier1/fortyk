@@ -1,5 +1,5 @@
 <form class="{{cssClass}} flexcol" autocomplete="off">
-    
+
     {{#if isOwner}}
 
     <div class="flexrow">
@@ -90,7 +90,13 @@
 
 
 
+                {{#if isGM}}
+                <div class="flexcol">
+                    <a class="aes button">AEs</a>
+                </div>
+                {{else}}
                 <span class="characteristicsSpan"></span>
+                {{/if}}
 
                 {{#each data.characteristics as |char key|}}
                 {{#unless (compareString key "inf")}}
@@ -188,7 +194,7 @@
 
                                 {{#if (checkSpecial this)}}
 
-                                {{#with (lookup ../FORTYK.itemFlags [key])~}}
+                                {{#with (lookup ../FORTYK.weaponFlags [key])~}}
                                 <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
 
                                     {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
@@ -297,7 +303,7 @@
 
                                 {{#if (checkSpecial this)}}
 
-                                {{#with (lookup ../FORTYK.itemFlags [key])~}}
+                                {{#with (lookup ../FORTYK.weaponFlags [key])~}}
                                 <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
 
                                     {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
@@ -336,7 +342,7 @@
                 <div class="flexcol">
                     <div class="npc-info">
                         <span class="section-title">Skills</span>
-                       
+
                         {{editor content=data.skills.value target="data.skills.value" button=true owner=owner editable=editable rollData=rollData}}
                     </div>
                     <div class="npc-info">
@@ -386,7 +392,11 @@
                         </div>
                         <div class="forcefield flexcol">
                             <span class="section-title">ARMOR & ABSORBTION</span>
-
+                            {{#if data.secChar.wornGear.armor._id}}
+                            <a class="npc-armor-edit button" data-type="armor" title="Edit Armor">Edit Armor</a>
+                            {{else}}
+                            <a class="npc-armor-create button" data-type="armor" title="Add Armor">Add Armor</a>
+                            {{/if}}
                             <div class="flexcol">
                                 <span class="section-title">COVER</span>
                                 <span class="cover-reset button">Reset Cover</span>
@@ -397,7 +407,7 @@
                                         <span>Head</span>
                                         <span>(1-10)</span>
                                         <input type="checkbox" class="combat-resources" title="cover" name="data.characterHitLocations.head.cover" {{checked data.characterHitLocations.head.cover}}>
-                                        <input type="text" name="data.characterHitLocations.head.armor" value="{{data.characterHitLocations.head.armor}}" title="Armor">
+                                        <span title="Armor">{{data.characterHitLocations.head.armor}}</span>
                                         <span title="Total Soak">{{data.characterHitLocations.head.value}}</span>
                                     </div>
 
@@ -408,7 +418,7 @@
                                         <span>Left Arm</span>
                                         <span>(21-30)</span>
                                         <input type="checkbox" class="combat-resources" title="cover" name="data.characterHitLocations.lArm.cover" {{checked data.characterHitLocations.lArm.cover}}>
-                                        <input type="text" name="data.characterHitLocations.lArm.armor" value="{{data.characterHitLocations.lArm.armor}}" title="Armor">
+                                        <span title="Armor">{{data.characterHitLocations.lArm.armor}}</span>
                                         <span title="Total Soak">{{data.characterHitLocations.lArm.value}}</span>
                                     </div>
                                     <div class="armor flexcol flex-group-center">
@@ -416,7 +426,7 @@
                                         <span>Body</span>
                                         <span>(31-70)</span>
                                         <input type="checkbox" class="combat-resources" title="cover" name="data.characterHitLocations.body.cover" {{checked data.characterHitLocations.body.cover}}>
-                                        <input type="text" name="data.characterHitLocations.body.armor" value="{{data.characterHitLocations.body.armor}}" title="Armor">
+                                        <span title="Armor">{{data.characterHitLocations.body.armor}}</span>
                                         <span title="Total Soak">{{data.characterHitLocations.body.value}}</span>
                                     </div>
                                     <div class="armor flexcol flex-group-center">
@@ -424,7 +434,7 @@
                                         <span>Right Arm</span>
                                         <span>(11-20)</span>
                                         <input type="checkbox" class="combat-resources" title="cover" name="data.characterHitLocations.rArm.cover" {{checked data.characterHitLocations.rArm.cover}}> 
-                                        <input type="text" name="data.characterHitLocations.rArm.armor" value="{{data.characterHitLocations.rArm.armor}}" title="Armor">
+                                        <span title="Armor">{{data.characterHitLocations.rArm.armor}}</span>
                                         <span title="Total Soak">{{data.characterHitLocations.rArm.value}}</span>
                                     </div>
                                 </div>
@@ -435,7 +445,7 @@
                                         <span>Left Leg</span>
                                         <span>(71-85)</span>
                                         <input type="checkbox" class="combat-resources" title="cover" name="data.characterHitLocations.lLeg.cover" {{checked data.characterHitLocations.lLeg.cover}}>
-                                        <input type="text" name="data.characterHitLocations.lLeg.armor" value="{{data.characterHitLocations.lLeg.armor}}" title="Armor">
+                                        <span title="Armor" >{{data.characterHitLocations.lLeg.armor}}</span>
                                         <span title="Total Soak">{{data.characterHitLocations.lLeg.value}}</span>
                                     </div>
                                     <div class="armor flexcol flex-group-center">
@@ -443,7 +453,7 @@
                                         <span>Right Leg</span>
                                         <span>(86-100)</span>
                                         <input type="checkbox" class="combat-resources" title="cover" name="data.characterHitLocations.rLeg.cover" {{checked data.characterHitLocations.rLeg.cover}}>
-                                        <input type="text" name="data.characterHitLocations.rLeg.armor" value="{{data.characterHitLocations.rLeg.armor}}" title="Armor">
+                                        <span title="Armor" >{{data.characterHitLocations.rLeg.armor}}</span>
                                         <span title="Total Soak">{{data.characterHitLocations.rLeg.value}}</span>
                                     </div>
                                 </div>
@@ -558,7 +568,7 @@ Stays commented until the parse script works
 
                                     {{#if this}}
 
-                                    {{#with (lookup ../FORTYK.itemFlags [key])~}}
+                                    {{#with (lookup ../FORTYK.weaponFlags [key])~}}
                                     <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
 
                                         {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>

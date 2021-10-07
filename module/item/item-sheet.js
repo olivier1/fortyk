@@ -33,9 +33,9 @@ export class FortyKItemSheet extends ItemSheet {
 
     /** @override */
     getData() {
-        
-       
-        
+
+
+
         const item=this.item;
         const data = super.getData().data;
         if(this.item.type==="skill"){
@@ -49,7 +49,7 @@ export class FortyKItemSheet extends ItemSheet {
 
 
         }
-         data.item=this.item.data;
+        data.item=this.item.data;
         data.isGM=game.user.isGM;
         data.isOwner=this.item.isOwner;
         data.dtypes = ["String", "Number", "Boolean"];
@@ -79,7 +79,8 @@ export class FortyKItemSheet extends ItemSheet {
         if (!this.options.editable) return;
         html.find('.skill-type').change(this._onParentChange.bind(this));
         html.find('.skill-children').click(this._onChildrenClick.bind(this));
-        html.find('.weapon-special').click(this._onSpecialClick.bind(this));
+        html.find('.special').click(this._onSpecialClick.bind(this));
+        html.find('.modifier').click(this._onModifierClick.bind(this));
         // Autoselect entire text 
         $("input[type=text]").focusin(function() {
             $(this).select();
@@ -87,15 +88,55 @@ export class FortyKItemSheet extends ItemSheet {
 
 
     }
+    async _onModifierClick(event){
+        let item=this.item;
+        console.log(item);
+        if(item.effects.size===0){
+            let modifiersData={
+            id: "modifiers",
+            label: "Modifiers",
+            changes:[],
+            transfer:false}
+            await item.createEmbeddedDocuments("ActiveEffect",[modifiersData]);
+        }
+        //console.log(item.effects.entries().next().value)
+        new ActiveEffectConfig(item.effects.entries().next().value[1]).render(true);
+        /*let templateOptions={"specials":specials};
+        let renderedTemplate=renderTemplate('systems/fortyk/templates/item/dialogs/modifier-dialog.html', templateOptions);
+
+
+        renderedTemplate.then(content => { 
+            new Dialog({
+                title: "Item Character Modifier",
+                content: content,
+                buttons:{
+                    submit:{
+                        label:"Yes",
+                        callback: async html => {
+                        }
+                    }
+                },
+                default: "submit"
+            }).render(true)
+
+        });*/
+    }
+
 
     async _onSpecialClick(event){
+        let item=this.item;
+        let specials={};
+        if(this.item.type==="armor"){
+            specials=duplicate(game.fortyk.FORTYK.armorFlags);
+        }else{
+            specials=duplicate(game.fortyk.FORTYK.weaponFlags);
+        }
 
-        let specials=duplicate(game.fortyk.FORTYK.itemFlags);
 
         let flags=this.item.data.flags.fortyk;
-       
+
         for(const flag in flags){
-           
+
             if(specials[flag]){
                 if(specials[flag].num===undefined){
                     specials[flag].value=flags[flag];
@@ -123,7 +164,7 @@ export class FortyKItemSheet extends ItemSheet {
                                 if(value!==spec.value){bool=true}
 
                                 if(bool){
-                                   
+
                                     await this.item.setFlag("fortyk",key,value);
                                 }
 
@@ -132,17 +173,17 @@ export class FortyKItemSheet extends ItemSheet {
                                 if(spec.num!==undefined){
                                     number=parseInt(html.find(`input[id=${key}num]`).val());
                                     if(number!==parseInt(spec.num)){
-                                        
+
                                         num=true};
                                     if(num&&number<0){
                                         number=false;
                                     }
 
                                 }
-                            
-                               
+
+
                                 if(num){
-                                    
+
                                     await this.item.setFlag("fortyk",key,number);
                                 }
 
@@ -156,7 +197,7 @@ export class FortyKItemSheet extends ItemSheet {
             }).render(true)
 
         });
-       
+
     }
     //when changing parents check to see if the skill is part of a group if it is change the value of children to false
     async _onParentChange(event){

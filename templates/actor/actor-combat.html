@@ -255,7 +255,7 @@
 
                         {{#if (checkSpecial this)}}
 
-                        {{#with (lookup ../FORTYK.itemFlags [key])~}}
+                        {{#with (lookup ../FORTYK.weaponFlags [key])~}}
                         <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
 
                             {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
@@ -317,7 +317,7 @@
 
                         {{#if (checkSpecial this)}}
 
-                        {{#with (lookup ../FORTYK.itemFlags [key])~}}
+                        {{#with (lookup ../FORTYK.weaponFlags [key])~}}
                         <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
 
                             {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>

@@ -130,7 +130,7 @@ export const isEmpty=function (obj) {
 console.log("starting item flag update")
     let actors=game.actors;
     
-    let weaponFlags=duplicate(game.fortyk.FORTYK.itemFlags);
+    let weaponFlags=duplicate(game.fortyk.FORTYK.weaponFlags);
     for(let actor of actors){
         let items=actor.items;
         for(let item of items){

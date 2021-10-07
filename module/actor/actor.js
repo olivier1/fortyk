@@ -151,7 +151,7 @@ export class FortyKActor extends Actor {
         if ( !this.data.name ) this.data.name = "New " + this.entity;
         this.prepareBaseData();
         this.prepareEmbeddedDocuments();
-        this.applyActiveEffects();
+        //this.applyActiveEffects();
         this.prepareDerivedData();
     }
     prepareBaseData(){
@@ -346,7 +346,19 @@ export class FortyKActor extends Actor {
         if(leftHandWeapon){
             leftHandWeaponData=leftHandWeapon.data;
         }
+        if(this.getFlag("fortyk","WeaponMaster")){
+        //weaponmaster initiative
+        let master=false;
+        if(rightHandWeaponData&&this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(rightHandWeaponData.data.type.value.toLowerCase())){
+            master=true;
+        }else if(leftHandWeaponData&&this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(leftHandWeaponData.data.type.value.toLowerCase())){
+            master=true;
+        }
+        if(master){
+            data.secChar.initiative.value+=2;
+        }
 
+    }
 
         //handle shields
         data.characterHitLocations.body.shield= 0;
@@ -421,18 +433,20 @@ export class FortyKActor extends Actor {
         data.secChar.movement.charge=data.secChar.movement.half*3;
         data.secChar.movement.run=data.secChar.movement.half*6;
         //total soak
-
-        for(const hitLoc in data.characterHitLocations){
-            let armor=parseInt(data.characterHitLocations[hitLoc].armor);
-            if(isNaN(armor)){
-                armor=0;
+        var armor= this.items.get(data.secChar.wornGear.armor._id);
+        //compute rest of armor and absorption
+        for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
+            hitLoc.armor=parseInt(hitLoc.armor);
+            if(armor!==undefined){
+                hitLoc.armor=parseInt(hitLoc.armor)+parseInt(armor.data.data.ap[key].value);
             }
-
-            data.characterHitLocations[hitLoc].value=armor+parseInt(data.characteristics.t.bonus);
+            
+            
+            hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
             let daemonic=this.getFlag("fortyk","daemonic");
             if(daemonic){
                 if(!isNaN(daemonic)){
-                    data.characterHitLocations[hitLoc].value+=parseInt(daemonic);
+                    hitLoc.value+=parseInt(daemonic);
                 }
             }
         }
@@ -511,6 +525,11 @@ export class FortyKActor extends Actor {
             }
             if(item.type=="skill"){
                 item.data.total.value=0
+                if(data.skillmods[item.name.toLowerCase()]){
+                    console.log(data.skillmods);
+                    console.log(parseInt(data.skillmods[item.name.toLowerCase()]));
+                   item.data.mod.value= parseInt(item._source.data.mod.value)+parseInt(data.skillmods[item.name.toLowerCase()]);
+                }
                 if(item.name==="Parry"){
                     if(parry){
                         item.data.total.value+=parry;
@@ -671,7 +690,7 @@ export class FortyKActor extends Actor {
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
                 if(this.getFlag("fortyk","WeaponMaster")){
-                   
+
                     if(this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(item.data.type.value.toLowerCase())){
                         item.data.damageFormula.value+="+2";
                         item.data.testMod.value=item._source.data.testMod.value+10;
@@ -767,7 +786,9 @@ export class FortyKActor extends Actor {
                            ammunitions:ammunitions,
                            equippableAmmo:equippableAmmo,
                            wornGear:wornGear};
-        this._sortItems(preparedItems);
+        try{
+            this._sortItems(preparedItems);
+        }catch(err){}
         return preparedItems;
     }
 
@@ -855,7 +876,9 @@ export class FortyKActor extends Actor {
             rangedWeapons:rangedWeapons,
             talentsntraits:talentsntraits
         };
-        this._sortItems(preparedItems);
+        try{
+            this._sortItems(preparedItems);
+        }catch(err){}
         return preparedItems;
     }
     prepareSpaceshipItems(actorData){
@@ -917,7 +940,10 @@ export class FortyKActor extends Actor {
             torpedoes:torpedoes,
             bombers:bombers
         }
-        this._sortItems(preparedItems);
+        try{
+            this._sortItems(preparedItems);
+        }catch(err){}
+
         return preparedItems
 
 

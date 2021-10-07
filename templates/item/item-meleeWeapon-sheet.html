@@ -1,7 +1,7 @@
 <form class="{{cssClass}} item-sheet flexcol">
- <header class="sheet-header">
+    <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
-        
+
     </header>
     <div class="grid grid-3col">
         <div class="flexcol">
@@ -22,9 +22,14 @@
             <input type="text" value="{{data.pen.formula}}" name="data.pen.formula" data-dtype="String">
         </div>
         <div class="flexcol">
-            <a class="weapon-special button">Special</a>
-            
+            <a class="special button">Special</a>
+
         </div>
+        {{#if isGM}}
+        <div class="flexcol">
+            <a class="modifier button">Modifiers</a>
+        </div>
+        {{/if}}
         <div class="flexcol">
             <label>Damage Type:</label>
             <select class="damage-type" name="data.damageType.value">
@@ -37,7 +42,7 @@
         </div>
         <div class="flexcol">
             <label>Weapon Class:</label>
-               
+
             <select class="weapon-type"  name="data.class.value">
                 {{#select data.class.value}}
                 {{#each FORTYK.meleeWeaponClasses}}

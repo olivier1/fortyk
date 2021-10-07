@@ -19,6 +19,7 @@ import { FORTYK } from "./FortykConfig.js";
 import { _getInitiativeFormula } from "./combat.js";
 import {FORTYKTABLES} from "./FortykTables.js";
 import { registerSystemSettings} from "./settings.js"
+import {ActiveEffectDialog} from "./dialog/activeEffect-dialog.js";
 Hooks.once('init', async function() {
     game.fortyk = {
         FortyKActor,
@@ -52,7 +53,7 @@ Hooks.once('init', async function() {
    * @type {String}
    */
     CONFIG.Combat.initiative = {
-        formula: "1d10 + @characteristics.agi.bonus + (@characteristics.agi.total / 100)",
+        formula: "1d10 + @characteristics.agi.bonus + @secChar.initiative.value + (@characteristics.agi.total / 100)",
         decimals: 2
     };
     Combatant.prototype._getInitiativeFormula = _getInitiativeFormula;
@@ -117,7 +118,7 @@ Hooks.once('init', async function() {
         }
     });
     Handlebars.registerHelper("contains", function(str1, str2) {
-        
+
         if(str1===undefined){return false};
         if(str1===null){return false};
         if(str2===""){
@@ -246,7 +247,7 @@ Hooks.on("updateCombat", async (combat) => {
                 await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "On Fire! Panic");
                 let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
                 await actor.update({"data.secChar.fatigue.value":fatigue});
-                let flags= duplicate(game.fortyk.FORTYK.itemFlags);
+                let flags= duplicate(game.fortyk.FORTYK.weaponFlags);
                 let fireData={name:"Fire",type:"rangedWeapon"}
                 let fire=await Item.create(fireData, {temporary: true});
 
@@ -321,10 +322,13 @@ Hooks.on('preCreateItem', (actor, data,options) =>{
 Hooks.on('createActiveEffect',async (ae,options,id)=>{
     if(game.user.isGM){
         let actor=ae.parent;
-        let flag=ae.data.flags.core.statusId;
-        if(flag){
-            await actor.setFlag("core",flag,true);
+        if(ae.data.flags.core){
+            let flag=ae.data.flags.core.statusId;
+            if(flag){
+                await actor.setFlag("core",flag,true);
+            } 
         }
+
     }
 
 });
@@ -332,17 +336,61 @@ Hooks.on('createActiveEffect',async (ae,options,id)=>{
 Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
     if(game.user.isGM){
         let actor=ae.parent;
-        let flag=ae.data.flags.core.statusId;
-        if(flag){
-            await actor.setFlag("core",flag,false);
+        if(ae.data.flags.core){
+            let flag=ae.data.flags.core.statusId;
+            if(flag){
+                await actor.setFlag("core",flag,false);
+            }
         }
+
     }
 });
 /**
  * Set default values for new actors' tokens
  */
+Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
+    if(game.user.isGM){
+        let button={}
+        button.class="custom";
+        button.icon="fas fa-asterisk";
+        button.label="Manage AEs";
+        button.onclick=() =>{
+
+            let templateOptions={actor:sheet.actor};
+
+            let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html', templateOptions);
+            var options = {
+                classes:["systems/fortyk/css/fortyk.css"],
+                id:"aeDialog"
+            };
+
+            renderedTemplate.then(content => { 
+                let d=new ActiveEffectDialog({
+                    title: "Active Effects",
+                    content: content,
+                    buttons:{
+                        button:{
+                            label:"Add Active Effect",
+                            callback: async html => {
+                                 
+                                
+                            }
+                        },
+
+                    }
+                },options).render(true)
+                });
+            
+        }
+        let close=buttons.pop();
+        buttons.push(button);
+        buttons.push(close);
+    }
+
+
+})
 Hooks.on("preCreateActor", (createData) =>{
-    
+
 })
 Hooks.on("preCreateToken", (createData) =>{
 });

@@ -3247,10 +3247,10 @@ returns the roll message*/
         }
     }
     static async _createInjury(actor,injury,injuryAeData){
-        let injuryItem=await Item.create({type:"injury",name:injury, temporary:true});
+        let injuryData=await Item.create({type:"injury",name:injury},{temporary:true});
         injuryAeData.transfer=true;
         await injuryItem.createEmbeddedDocuments("ActiveEffect",[injuryAeData]);
         await actor.createEmbeddedDocuments("Item",[injuryItem.data]);
-        injuryItem.delete();
+        
     };
 }
