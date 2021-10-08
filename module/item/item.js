@@ -14,7 +14,7 @@ export class FortyKItem extends Item {
         {
             return super.create(data, options);
         }
-        let modifiersData={
+        /*let modifiersData={
             id: "modifiers",
             label: data.name,
             changes:[],
@@ -25,6 +25,7 @@ export class FortyKItem extends Item {
         data.effects=[];
         data.effects.push(modifiers.data);
         //resume item creation
+        */
         return super.create(data, options);
     }
     /** 
