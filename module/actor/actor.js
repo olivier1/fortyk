@@ -174,6 +174,14 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","berserkcharge")){
             data.secChar.attacks.charge=30;
         }
+        //initialize skill modifiers from active events so that they are integers
+        this.items.forEach((fortykItem,id,items)=>{
+                let item=fortykItem.data;
+
+                if(item.type==="skill"){
+                    data.skillmods[item.name.toLowerCase()]=0;
+                }
+        });
     }
     /*OVERRIDE
     *Prepare the sub documents and apply changes to the actor resulting*/
@@ -191,7 +199,7 @@ export class FortyKActor extends Actor {
             this.items.forEach((fortykItem,id,items)=>{
                 let item=fortykItem.data;
 
-
+                
                 if(item.type==="cybernetic"){
                     this.data.data.characterHitLocations[item.data.location.value].cyber=true;
 
@@ -294,6 +302,10 @@ export class FortyKActor extends Actor {
                     char.total=Math.ceil(char.total/2);
                 }
             }  
+        }
+        //parse skill modifiers from active effects
+        for (let [key, char] of Object.entries(data.skillmods)){
+            char=parseInt(char);
         }
 
 
@@ -526,8 +538,7 @@ export class FortyKActor extends Actor {
             if(item.type=="skill"){
                 item.data.total.value=0
                 if(data.skillmods[item.name.toLowerCase()]){
-                    console.log(data.skillmods);
-                    console.log(parseInt(data.skillmods[item.name.toLowerCase()]));
+                    
                    item.data.mod.value= parseInt(item._source.data.mod.value)+parseInt(data.skillmods[item.name.toLowerCase()]);
                 }
                 if(item.name==="Parry"){
@@ -713,6 +724,7 @@ export class FortyKActor extends Actor {
                 }
             }
             if(item.type==="armor"){
+                
                 armors.push(item);
                 wargear.push(item);
             }
@@ -765,7 +777,7 @@ export class FortyKActor extends Actor {
             // a must be equal to b
             return 0;
         });*/
-
+        
         let preparedItems={skills:sortedSkills,
                            wargear:sortedGear,
                            cybernetics:cybernetics,
@@ -881,6 +893,7 @@ export class FortyKActor extends Actor {
         }catch(err){}
         return preparedItems;
     }
+    //sort spaceship items and apply light logic
     prepareSpaceshipItems(actorData){
         let data=actorData.data;
         const weapons=[];
@@ -892,7 +905,6 @@ export class FortyKActor extends Actor {
         this.items.forEach((fortykItem,id,items)=>{
             let item=fortykItem.data;
             let unmodItem=item._source;
-            console.log(fortykItem);
             if(item.type==="spaceshipComponent"){
                 components.push(item);
             }else if(item.type==="spaceshipWeapon"){
@@ -948,6 +960,7 @@ export class FortyKActor extends Actor {
 
 
     }
+    //function to sort the item containers for display
     _sortItems(itemContainers){
         let data=this.data;
 
@@ -1007,4 +1020,19 @@ export class FortyKActor extends Actor {
         }
         this.deleteEmbeddedDocuments("Item", [itemId]);
     }
+    _onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId){
+        let actor=this;
+        if(embeddedName==="ActiveEffect"){
+            documents.forEach(async function(ae,i){
+                if(ae.data.origin){
+                    let ids=ae.data.origin.split(".");
+                    let itemId=ids[3];
+                    let item=actor.getEmbeddedDocument("Item",itemId);
+                    await item.update({"data.transferId":ae.id});
+                    console.log(item);
+                }
+            })
+        }
+    }
+    
 }

@@ -250,7 +250,7 @@
                 </div>
                 <div class="list-item">
                     <span>Special: 
-                        
+
                         {{#each this.flags.fortyk as |flag key|}}
 
                         {{#if (checkSpecial this)}}
@@ -360,28 +360,28 @@
             <div class="flexrow">
                 <div class="movementbox flex-group-center">
                     <div class="movementlabel"> <label for="data.fatigue.value" class="movementcontent resource-label">Half Move</label></div>
-                   
+
                     <div class="movementnumber">
                         <span>{{data.secChar.movement.half}}</span>
                     </div>
                 </div>
                 <div class="movementbox flex-group-center">
                     <div class="movementlabel"> <label for="data.fatigue.value" class="movementcontent resource-label">Full Move</label></div>
-                   
+
                     <div class="movementnumber">
                         <span>{{data.secChar.movement.full}}</span>
                     </div>
                 </div>
                 <div class="movementbox flex-group-center">
                     <div class="movementlabel"> <label for="data.fatigue.value" class="movementcontent resource-label">Charge</label></div>
-                   
+
                     <div class="movementnumber">
                         <span>{{data.secChar.movement.charge}}</span>
                     </div>
                 </div>
                 <div class="movementbox flex-group-center">
                     <div class="movementlabel"> <label for="data.fatigue.value" class="movementcontent resource-label">Run</label></div>
-                   
+
                     <div class="movementnumber">
                         <span>{{data.secChar.movement.run}}</span>
                     </div>
@@ -410,10 +410,11 @@
             </div>
             <div class="forcefield flexcol">
                 <span class="section-title">ARMOR & ABSORBTION</span>
-                <select class="armor" name="data.secChar.wornGear.armor._id">
+                <select class="armor-select" name="data.secChar.wornGear.armor._id">
                     {{#select data.secChar.wornGear.armor._id}}
                     <option value="">None</option>
                     {{#each actor.armors}}
+
                     <option value="{{this._id}}">{{this.name}}</option>
                     {{/each}}
                     {{/select}}

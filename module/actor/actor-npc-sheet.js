@@ -58,7 +58,7 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
         };
 
         let armor=await this.actor.createEmbeddedDocuments("Item",[itemData],{"renderSheet":true});
-        console.log(armor);
+        
         let armorID=armor[0].id;
         await this.actor.update({"data.secChar.wornGear.armor._id":armorID});
     }

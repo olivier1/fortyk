@@ -569,7 +569,7 @@ returns the roll message*/
                             newWounds[tarNumbr]=getProperty(data,"secChar.wounds").value;
                         }
                         //killers eye
-                        console.log(actor.getFlag("fortyk","killerseye")&&lastHit.attackType==="called"&&(actor.data.data.secChar.lastHit.dos>=data.characteristics.agi.bonus))
+                        
                         if(actor.getFlag("fortyk","killerseye")&&lastHit.attackType==="called"&&(actor.data.data.secChar.lastHit.dos>=data.characteristics.agi.bonus)){
                             let randomKiller=new Roll("1d5",{});
                                 randomKiller.roll();

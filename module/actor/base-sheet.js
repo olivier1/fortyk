@@ -61,6 +61,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.lasMode').change(this._onLasModeChange.bind(this));
         //reset cover fields
         html.find('.cover-reset').click(this._onCoverReset.bind(this));
+         //reset cover fields
+        html.find('.armor-select').change(this._onArmorChange.bind(this));
         //Damage rolls
         html.find('.damage-roll').click(this._onDamageRoll.bind(this));
         //autofcus modifier input
@@ -524,7 +526,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let fortykWeapon=actor.items.get(dataset.weapon);
             
             let weapon=fortykWeapon.data;
-            console.log(weapon);
+           
             let formula=duplicate(weapon.data.damageFormula);
             new Dialog({
                 title: `Number of Hits & Bonus Damage`,
@@ -570,6 +572,29 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.data.characterHitLocations.rLeg.cover=false;
         data.data.characterHitLocations.lLeg.cover=false;
         actor.update(data);
+    }
+    //handle enabling and disabling active effects associated with armor
+    async _onArmorChange(event){
+        let actor=this.actor;
+        let newArmorId=event.currentTarget.value;
+        let newArmor=actor.getEmbeddedDocument("Item",newArmorId);
+        let oldArmorId=this.actor.data.data.secChar.wornGear.armor._id;
+        let oldArmor=actor.getEmbeddedDocument("Item",oldArmorId);
+        let aeUpdates=[];
+        console.log(oldArmor);
+        if(oldArmor&&oldArmor.data.data.transferId){
+            console.log(oldArmor);
+            aeUpdates.push({"_id":oldArmor.data.data.transferId,disabled:true});
+            
+        }
+        if(newArmor&&newArmor.data.data.transferId){
+            aeUpdates.push({"_id":newArmor.data.data.transferId,disabled:false});
+          
+        }
+        if(aeUpdates.length>0){
+            this.actor.updateEmbeddedDocuments("ActiveEffect",aeUpdates);
+        }
+       
     }
     //handles force weapon special damage rolls
     async _onForceRoll(event){

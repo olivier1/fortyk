@@ -25,7 +25,7 @@ export class ActorDialogs{
 
     }
     static _onAeClick(event){
-        console.log("hey");
+        
         let effectId = event.currentTarget.attributes["data-ae-id"].value;
         let actorId = event.currentTarget.attributes["data-actor-id"].value;
         let actor = game.actors.get(actorId);
@@ -33,11 +33,10 @@ export class ActorDialogs{
         new ActiveEffectConfig(effect).render(true);
     }
     static async _onAeCreate(event){
-        console.log(event);
-        console.log(game);
+        
         let actorId = event.currentTarget.attributes["data-actor-id"].value;
         let actor = game.actors.get(actorId);
-        console.log(actor);
+       
         /*
         await actor.createEmbeddedDocuments("ActiveEffect",[{name:"newActiveEffect","data.label":"newActiveEffect"}])*/
 

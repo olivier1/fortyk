@@ -90,7 +90,7 @@ export class FortyKItemSheet extends ItemSheet {
     }
     async _onModifierClick(event){
         let item=this.item;
-        console.log(item);
+       
         if(item.effects.size===0){
             let modifiersData={
             id: "modifiers",
