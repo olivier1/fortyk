@@ -1029,7 +1029,7 @@ export class FortyKActor extends Actor {
                     let itemId=ids[3];
                     let item=actor.getEmbeddedDocument("Item",itemId);
                     await item.update({"data.transferId":ae.id});
-                    console.log(item);
+                    
                 }
             })
         }

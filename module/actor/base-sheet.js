@@ -581,9 +581,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let oldArmorId=this.actor.data.data.secChar.wornGear.armor._id;
         let oldArmor=actor.getEmbeddedDocument("Item",oldArmorId);
         let aeUpdates=[];
-        console.log(oldArmor);
+       
         if(oldArmor&&oldArmor.data.data.transferId){
-            console.log(oldArmor);
+           
             aeUpdates.push({"_id":oldArmor.data.data.transferId,disabled:true});
             
         }

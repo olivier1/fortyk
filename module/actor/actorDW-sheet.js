@@ -334,12 +334,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let aeUpdates=[];
         let weapon=actor.items.get(event.currentTarget.value);
         if(weapon){
-            console.log(weapon);
+           
             if(weapon.data.data.transferId){
                 aeUpdates.push({"_id":weapon.data.data.transferId,disabled:false});
-                /*let transferredAE1=actor.getEmbeddedDocument("ActiveEffect",weapon.data.data.transferId);
-                console.log(transferredAE1)
-                console.log(await transferredAE1.update({"data.disabled":false}));*/
+                
             }
             
             weapon=weapon.data;
@@ -434,14 +432,13 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             
             if(previousWeapon.data.data.transferId){
                  aeUpdates.push({"_id":previousWeapon.data.data.transferId,disabled:true});
-                /*let transferredAE2=actor.getEmbeddedDocument("ActiveEffect",previousWeapon.data.data.transferId);
-                await transferredAE2.update({"data.disabled":true});*/
+                
             }
         }
         
         await this.actor.update(update);
         if(aeUpdates.length>0){
-            console.log(await this.actor.updateEmbeddedDocuments("ActiveEffect",aeUpdates));
+            await this.actor.updateEmbeddedDocuments("ActiveEffect",aeUpdates);
         }
         
     }
