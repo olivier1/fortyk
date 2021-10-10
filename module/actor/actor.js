@@ -176,11 +176,11 @@ export class FortyKActor extends Actor {
         }
         //initialize skill modifiers from active events so that they are integers
         this.items.forEach((fortykItem,id,items)=>{
-                let item=fortykItem.data;
+            let item=fortykItem.data;
 
-                if(item.type==="skill"){
-                    data.skillmods[item.name.toLowerCase()]=0;
-                }
+            if(item.type==="skill"){
+                data.skillmods[item.name.toLowerCase()]=0;
+            }
         });
     }
     /*OVERRIDE
@@ -199,7 +199,7 @@ export class FortyKActor extends Actor {
             this.items.forEach((fortykItem,id,items)=>{
                 let item=fortykItem.data;
 
-                
+
                 if(item.type==="cybernetic"){
                     this.data.data.characterHitLocations[item.data.location.value].cyber=true;
 
@@ -359,18 +359,18 @@ export class FortyKActor extends Actor {
             leftHandWeaponData=leftHandWeapon.data;
         }
         if(this.getFlag("fortyk","WeaponMaster")){
-        //weaponmaster initiative
-        let master=false;
-        if(rightHandWeaponData&&this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(rightHandWeaponData.data.type.value.toLowerCase())){
-            master=true;
-        }else if(leftHandWeaponData&&this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(leftHandWeaponData.data.type.value.toLowerCase())){
-            master=true;
-        }
-        if(master){
-            data.secChar.initiative.value+=2;
-        }
+            //weaponmaster initiative
+            let master=false;
+            if(rightHandWeaponData&&this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(rightHandWeaponData.data.type.value.toLowerCase())){
+                master=true;
+            }else if(leftHandWeaponData&&this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(leftHandWeaponData.data.type.value.toLowerCase())){
+                master=true;
+            }
+            if(master){
+                data.secChar.initiative.value+=2;
+            }
 
-    }
+        }
 
         //handle shields
         data.characterHitLocations.body.shield= 0;
@@ -452,8 +452,8 @@ export class FortyKActor extends Actor {
             if(armor!==undefined){
                 hitLoc.armor=parseInt(hitLoc.armor)+parseInt(armor.data.data.ap[key].value);
             }
-            
-            
+
+
             hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
             let daemonic=this.getFlag("fortyk","daemonic");
             if(daemonic){
@@ -538,8 +538,8 @@ export class FortyKActor extends Actor {
             if(item.type=="skill"){
                 item.data.total.value=0
                 if(data.skillmods[item.name.toLowerCase()]){
-                    
-                   item.data.mod.value= parseInt(item._source.data.mod.value)+parseInt(data.skillmods[item.name.toLowerCase()]);
+
+                    item.data.mod.value= parseInt(item._source.data.mod.value)+parseInt(data.skillmods[item.name.toLowerCase()]);
                 }
                 if(item.name==="Parry"){
                     if(parry){
@@ -724,7 +724,7 @@ export class FortyKActor extends Actor {
                 }
             }
             if(item.type==="armor"){
-                
+
                 armors.push(item);
                 wargear.push(item);
             }
@@ -777,7 +777,7 @@ export class FortyKActor extends Actor {
             // a must be equal to b
             return 0;
         });*/
-        
+
         let preparedItems={skills:sortedSkills,
                            wargear:sortedGear,
                            cybernetics:cybernetics,
@@ -1030,21 +1030,20 @@ export class FortyKActor extends Actor {
                     let itemId=ids[3];
                     let item=actor.getEmbeddedDocument("Item",itemId);
                     await item.update({"data.transferId":ae.id});
-                    
+
                 }
             })
         }
     }
-    //when deleting talents, remove the flags associated with each of them.
+    //when deleting talents, remove the flag associated with each of them.
     _onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId){
         if(embeddedName==="Item"){
-             documents.forEach(async function(item,i){
-                 if(item.data.type==="talentntrait"){
-                     let flag=item.data.data.flagId.value;
+            documents.forEach(async function(item,i){
+                if(item.data.type==="talentntrait"){
+                    let flag=item.data.data.flagId.value;
                     this.setFlag("fortyk",flag,false); 
-                 }
-             }
+                }
+            })
         }
     }
-    
 }
