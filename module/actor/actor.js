@@ -1020,6 +1020,7 @@ export class FortyKActor extends Actor {
         }
         this.deleteEmbeddedDocuments("Item", [itemId]);
     }
+    //when creating active effects check if they are transferred from an item, if so give the active effect flag to the item for referrence.
     _onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId){
         let actor=this;
         if(embeddedName==="ActiveEffect"){
@@ -1032,6 +1033,17 @@ export class FortyKActor extends Actor {
                     
                 }
             })
+        }
+    }
+    //when deleting talents, remove the flags associated with each of them.
+    _onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId){
+        if(embeddedName==="Item"){
+             documents.forEach(async function(item,i){
+                 if(item.data.type==="talentntrait"){
+                     let flag=item.data.data.flagId.value;
+                    this.setFlag("fortyk",flag,false); 
+                 }
+             }
         }
     }
     

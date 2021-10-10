@@ -172,6 +172,11 @@ FORTYK.armorFlags={
         "label": "Energy Resistant",
         "description": "This armor is built to resist energy attacks, its armor value counts as double against energy damage."
     },
+    "flamerepellent": {
+        "value": false,
+        "label": "Flame Repellent",
+        "description": "This armor negates flammable substances that come into contact with it, making the wearer immune to the flame weapon quality."
+    },
     "holy": {
         "value": false,
         "label": "Holy",

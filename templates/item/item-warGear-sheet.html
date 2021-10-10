@@ -1,6 +1,6 @@
 <form class="{{cssClass}} item-sheet flexcol">
     <header class="sheet-header">
-    
+
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
 
     </header>
@@ -43,6 +43,11 @@
             {{/select}}
         </select>
     </div>
+    {{#if isGM}}
+    <div class="flexcol">
+        <a class="modifier button">Modifiers</a>
+    </div>
+    {{/if}}
     <div class="item-description">
         <label>Description:</label>
         {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}

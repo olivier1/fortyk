@@ -18,7 +18,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/actor-sheet.html",
             width: 666,
-            height: 660,
+            height: 715,
             tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "main" }],
             default:null
         });

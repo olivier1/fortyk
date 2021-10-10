@@ -99,8 +99,14 @@ export class FortyKItemSheet extends ItemSheet {
             transfer:false}
             await item.createEmbeddedDocuments("ActiveEffect",[modifiersData]);
         }
+        if(this.item.isEmbedded&&this.item.data.data.transferId){
+            let ae=this.item.actor.getEmbeddedEntity("ActiveEffect",this.item.data.data.transferId);
+             new ActiveEffectConfig(ae).render(true);
+        }else{
+            new ActiveEffectConfig(item.effects.entries().next().value[1]).render(true);
+        }
         //console.log(item.effects.entries().next().value)
-        new ActiveEffectConfig(item.effects.entries().next().value[1]).render(true);
+        
         /*let templateOptions={"specials":specials};
         let renderedTemplate=renderTemplate('systems/fortyk/templates/item/dialogs/modifier-dialog.html', templateOptions);
 
