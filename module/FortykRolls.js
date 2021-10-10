@@ -563,20 +563,20 @@ returns the roll message*/
 
                     if(!tarActor.getFlag("core","dead")){
 
-                        
+
                         let wounds=getProperty(data,"secChar.wounds");
                         if(newWounds[tarNumbr]===false){
                             newWounds[tarNumbr]=getProperty(data,"secChar.wounds").value;
                         }
                         //killers eye
-                        
+
                         if(actor.getFlag("fortyk","killerseye")&&lastHit.attackType==="called"&&(actor.data.data.secChar.lastHit.dos>=data.characteristics.agi.bonus)){
                             let randomKiller=new Roll("1d5",{});
-                                randomKiller.roll();
-                                await randomKiller.toMessage({
-                                    speaker: ChatMessage.getSpeaker({ actor: actor }),
-                                    flavor: "Rolling Killer's Eye critical effect."
-                                });
+                            randomKiller.roll();
+                            await randomKiller.toMessage({
+                                speaker: ChatMessage.getSpeaker({ actor: actor }),
+                                flavor: "Rolling Killer's Eye critical effect."
+                            });
                             let killerCrit=randomKiller._total;
                             await this.critEffects(tar,killerCrit,curHit.value,weapon.data.damageType.value,ignoreSON);
                         }
@@ -1104,6 +1104,7 @@ returns the roll message*/
     static async reportDamage(tarActor, chatDamage){
         if(game.settings.get("fortyk","privateDamage")){
             let user_ids = Object.entries(tarActor.data.permission).filter(p=> p[0] !== `default` && p[1] === 3).map(p=>p[0]);
+            console.log(user_ids);
             for(let user of user_ids)
             {
                 if(user!==game.users.current.id||user_ids.length===1){
@@ -3147,25 +3148,28 @@ returns the roll message*/
                 for(let index=0; index <effect.length;index++){
                     let dupp=false;
                     for(let ae of actor.effects){
-                        if(ae.data.flags.core.statusId===effect[index].flags.core.statusId){
-                            dupp=true;
-                            let change=false;
-                            let upg=false;
-                            for(let i=0;i<ae.data.changes.length;i++){
-                                if(ae.data.changes[i].key===effect[index].changes[0].key){
-                                    ae.data.changes[i].value+=effect[index].changes[0].value;
-                                    upg=true;
+                        if(ae.data.flags.core){
+                            if(ae.data.flags.core.statusId===effect[index].flags.core.statusId){
+                                dupp=true;
+                                let change=false;
+                                let upg=false;
+                                for(let i=0;i<ae.data.changes.length;i++){
+                                    if(ae.data.changes[i].key===effect[index].changes[0].key){
+                                        ae.data.changes[i].value+=effect[index].changes[0].value;
+                                        upg=true;
+                                        change=true;
+                                    }
+                                }
+                                if(effect[index].duration&&(effect[index].duration.rounds>ae.duration.remaining)){
+                                    ae.data.duration.rounds=effect[index].duration.rounds;
+                                    ae.data.duration.startRound=effect[index].duration.startRound;
                                     change=true;
                                 }
+                                if(effect[index].changes!==undefined&&!upg){ae.data.changes.push(effect[index].changes[0])}
+                                if(change){await ae.update(ae.data);}
                             }
-                            if(effect[index].duration&&(effect[index].duration.rounds>ae.duration.remaining)){
-                                ae.data.duration.rounds=effect[index].duration.rounds;
-                                ae.data.duration.startRound=effect[index].duration.startRound;
-                                change=true;
-                            }
-                            if(effect[index].changes!==undefined&&!upg){ae.data.changes.push(effect[index].changes[0])}
-                            if(change){ae.update(ae.data);}
                         }
+
                     }
 
                     let skip=false;
@@ -3214,7 +3218,7 @@ returns the roll message*/
             //let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
             //await this.applyActiveEffect(target,activeEffect);
 
-            await target.toggleEffect(effect,{overlay:true});
+            await target.toggleEffect(effect,{active:true,overlay:true});
             try{
                 let combatant = await game.combat.getCombatantByToken(id);
                 let combatid=combatant._id;
@@ -3251,6 +3255,6 @@ returns the roll message*/
         injuryAeData.transfer=true;
         await injuryItem.createEmbeddedDocuments("ActiveEffect",[injuryAeData]);
         await actor.createEmbeddedDocuments("Item",[injuryItem.data]);
-        
+
     };
 }
