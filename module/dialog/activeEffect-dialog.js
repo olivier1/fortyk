@@ -4,7 +4,7 @@ export class ActiveEffectDialog extends Dialog {
 
     activateListeners(html) {
         super.activateListeners(html);
-        console.log("HEYYYYYY")
+       
         //if (!this.options.editable) return;
 
         html.find('.ae').click(this._onAeClick.bind(this));

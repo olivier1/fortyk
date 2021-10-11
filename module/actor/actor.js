@@ -2,6 +2,7 @@ import {getSkills} from "../utilities.js";
 import {isEmpty} from "../utilities.js";
 import {FORTYKTABLES} from "../FortykTables.js";
 import {objectByString} from "../utilities.js";
+import {setNestedKey} from "../utilities.js";
 /**
  * Extend the base Actor entity by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
@@ -53,6 +54,8 @@ export class FortyKActor extends Actor {
     }
     //@Override the update function to modify token size for hordes and larger entities
     async update(data, options={}) {
+        console.trace();
+        console.log(data);
         let actor=this;
         let actorData=actor.data;
         if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC' || actorData.type === 'npc'){
@@ -149,9 +152,10 @@ export class FortyKActor extends Actor {
 
         if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
         if ( !this.data.name ) this.data.name = "New " + this.entity;
+        this.data.reset();
         this.prepareBaseData();
-        this.prepareEmbeddedDocuments();
-        //this.applyActiveEffects();
+        
+        this.prepareEmbeddedEntities();
         this.prepareDerivedData();
     }
     prepareBaseData(){
@@ -160,10 +164,14 @@ export class FortyKActor extends Actor {
         if(actorData.flags.fortyk===undefined){actorData.flags.fortyk={}}
         const data = actorData.data;
         if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC' || actorData.type === 'npc'){
-            this._prepareCharacterBaseData(data);
+           this._prepareCharacterBaseData(data);
         }
     }
     _prepareCharacterBaseData(data){
+        data.secChar.wornGear.armor={};
+        data.secChar.wornGear.weapons=[{},{}];
+        data.secChar.wornGear.extraWeapons=[];
+        data.secChar.wornGear.forceField={};
         if(this.getFlag("fortyk","marksman")){
             data.secChar.attacks.range.long=0;
             data.secChar.attacks.range.extreme=0;
@@ -185,12 +193,12 @@ export class FortyKActor extends Actor {
     }
     /*OVERRIDE
     *Prepare the sub documents and apply changes to the actor resulting*/
-    prepareEmbeddedDocuments(){
-        super.prepareEmbeddedEntities();
+    prepareEmbeddedEntities(){
+        this.applyActiveEffects();
         let actorData=this.data;
         if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC'){
             let items=this.data.items;
-            let data=actorData.data;
+            const data=actorData.data;
 
             data.experience.earned=0;
             data.experience.spent=0;
@@ -218,6 +226,34 @@ export class FortyKActor extends Actor {
                     //total weight calcs
                     item.data.weight.total=(parseInt(item.data.amount.value)*parseFloat(item.data.weight.value)).toFixed(2);
                     data.carry.value=(parseFloat(data.carry.value)+parseFloat(item.data.weight.total)).toFixed(2);
+
+
+                }
+                //check if equipped
+                if((item.type==="meleeWeapon"||item.type==="rangedWeapon")&&item.data.isEquipped){
+                    if(item.data.isEquipped==="right"){
+                        data.secChar.wornGear.weapons[0]=fortykItem;  
+                        if(item.data.twohanded.value){
+                            data.secChar.wornGear.weapons[1]=fortykItem;}
+
+                    }else if(item.data.isEquipped==="left"){
+                        data.secChar.wornGear.weapons[1]=fortykItem;  
+                        if(item.data.twohanded.value){
+                            data.secChar.wornGear.weapons[0]=fortykItem;
+                        }
+                    }
+
+
+                   
+                    if(item.data.twohanded.value){
+                        data.secChar.wornGear.weapons.push(item);
+                    }
+                }
+                if(item.type==="armor"&&item.data.isEquipped){
+                    data.secChar.wornGear.armor=item;
+                }
+                if(item.type==="forceField"&&item.data.isEquipped){
+                    data.secChar.wornGear.forceField=item;
                 }
             })
             data.characteristics["inf"].total=data.characteristics["inf"].value+data.characteristics["inf"].advance;
@@ -256,7 +292,71 @@ export class FortyKActor extends Actor {
         }
 
     }
+    //OVERRIDE
+   applyActiveEffects(){
+        let actor=this;
+        let actorData=this.data;
+        let data=actorData.data;
+        this.effects.forEach(function(ae,id){
+            if(!ae.data.disabled){
+               
+                let proceed=false;
+                if(ae.data.origin){
+                    let itemId=ae.data.origin.split('.')[3];
+                    let item=actor.getEmbeddedDocument("Item",itemId);
+                    if(item){
+                        let equipped=item.data.data.isEquipped;
+                        if(equipped){
+                            proceed=true;
+                        }else{
+                            proceed=false;
+                        }
+                    }
 
+                }else{
+                    proceed=true;
+                }
+                if(proceed){
+                    ae.data.changes.forEach(function(change,i){
+                        let basevalue=parseInt(objectByString(actorData,change.key));
+                        let newvalue=parseInt(change.value);
+                        if(!isNaN(basevalue)&&!isNaN(newvalue)){
+                            let path=change.key.split(".");
+                            
+                            let changedValue=0;
+                            if(change.mode===0){}
+                            else if(change.mode===1){
+                                changedValue=basevalue*newvalue
+                                setNestedKey(actorData,path,changedValue);
+
+                            }else if(change.mode===2){
+                                changedValue=basevalue+newvalue;
+                                console.log(changedValue);
+                                setNestedKey(actorData,path,changedValue);
+                            }else if(change.mode===3){
+                                if(change.value<basevalue){
+                                    changedValue=newvalue;
+                                    setNestedKey(actorData,path,changedValue);
+                                }
+                            }else if(change.mode===4){
+                                if(change.value>basevalue){
+                                    changedValue=newvalue;
+                                    setNestedKey(actorData,path,changedValue);
+                                }
+                            }else if(change.mode===5){
+                                changedValue=newvalue;
+                                setNestedKey(actorData,path,changedValue);
+                            }  
+                        }
+
+
+                    })
+                }
+
+            }
+
+        })
+    }
     prepareDerivedData() {
 
         const actorData = this.data;
@@ -346,14 +446,19 @@ export class FortyKActor extends Actor {
         data.secChar.movement.run=data.secChar.movement.half*6;
         //add up all armor and stuff
 
-        var armor= this.items.get(data.secChar.wornGear.armor._id);
+        var armor= data.secChar.wornGear.armor;
+        
+        var rightHandWeapon= data.secChar.wornGear.weapons[0];
 
-        var rightHandWeapon= this.items.get(data.secChar.wornGear.weapons[1]);
         let rightHandWeaponData=null;
         if(rightHandWeapon){
             rightHandWeaponData=rightHandWeapon.data;
         }
-        var leftHandWeapon= this.items.get(data.secChar.wornGear.weapons[0]);
+
+
+        var leftHandWeapon= data.secChar.wornGear.weapons[1];
+
+
         let leftHandWeaponData=null;
         if(leftHandWeapon){
             leftHandWeaponData=leftHandWeapon.data;
@@ -371,24 +476,24 @@ export class FortyKActor extends Actor {
             }
 
         }
-
+       
         //handle shields
         data.characterHitLocations.body.shield= 0;
         data.characterHitLocations.rArm.shield= 0;
         data.characterHitLocations.lArm.shield= 0;
-        if(rightHandWeaponData!==null&&rightHandWeaponData.type!=="rangedWeapon"){
+        if(rightHandWeaponData!==undefined&&rightHandWeaponData.type!=="rangedWeapon"){
             data.characterHitLocations.rArm.shield= parseInt(rightHandWeaponData.data.shield.value);
             data.characterHitLocations.body.shield= parseInt(rightHandWeaponData.data.shield.value);
         }
-        if(leftHandWeaponData!==null&&leftHandWeaponData.type!=="rangedWeapon"){
+        if(leftHandWeaponData!==undefined&&leftHandWeaponData.type!=="rangedWeapon"){
             data.characterHitLocations.lArm.shield= parseInt(leftHandWeaponData.data.shield.value);
             data.characterHitLocations.body.shield= parseInt(leftHandWeaponData.data.shield.value);
         }
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
             hitLoc.armor=0;
-            if(armor!==undefined){
-                hitLoc.armor=hitLoc.armor+parseInt(armor.data.data.ap[key].value);
+            if(armor.data!==undefined){
+                hitLoc.armor=hitLoc.armor+parseInt(armor.data.ap[key].value);
             }
             hitLoc.armor=hitLoc.armor+hitLoc.shield;
             if(hitLoc.cyber){
@@ -445,16 +550,16 @@ export class FortyKActor extends Actor {
         data.secChar.movement.charge=data.secChar.movement.half*3;
         data.secChar.movement.run=data.secChar.movement.half*6;
         //total soak
-        var armor= this.items.get(data.secChar.wornGear.armor._id);
+        var armor= data.secChar.wornGear.armor;
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
             hitLoc.armor=parseInt(hitLoc.armor);
-            if(armor!==undefined){
-                hitLoc.armor=parseInt(hitLoc.armor)+parseInt(armor.data.data.ap[key].value);
+            if(armor.data!==undefined){
+                hitLoc.armor=parseInt(hitLoc.armor)+parseInt(armor.data.ap[key].value);
             }
 
 
-            hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
+            hitLoc.value=parseInt(hitLoc.armor)+data.characteristics.t.bonus;
             let daemonic=this.getFlag("fortyk","daemonic");
             if(daemonic){
                 if(!isNaN(daemonic)){
@@ -507,19 +612,25 @@ export class FortyKActor extends Actor {
         if(!Array.isArray(data.secChar.wornGear.weapons)){
             wornWeapons=Object.values(data.secChar.wornGear.weapons);
         }
-        var rightHandWeapon= this.items.get(data.secChar.wornGear.weapons[1]);
+        try{
+            var rightHandWeapon= data.secChar.wornGear.weapons[0];
+        }
+        catch(err){var rightHandWeapon= undefined;}
+        try{
+            var leftHandWeapon= data.secChar.wornGear.weapons[1];
+        }
+        catch(err){var leftHandWeapon= undefined;}
 
-        var leftHandWeapon= this.items.get(data.secChar.wornGear.weapons[0]);
 
         let parry=false;
 
-        if((rightHandWeapon!==undefined&&rightHandWeapon.getFlag("fortyk","unbalanced"))||(leftHandWeapon!==undefined&&leftHandWeapon.getFlag("fortyk","unbalanced"))){
+        if((rightHandWeapon.data!==undefined&&rightHandWeapon.getFlag("fortyk","unbalanced"))||(leftHandWeapon.data!==undefined&&leftHandWeapon.getFlag("fortyk","unbalanced"))){
             parry=-10;
         }
-        if((rightHandWeapon!==undefined&&rightHandWeapon.getFlag("fortyk","balanced"))||(leftHandWeapon!==undefined&&leftHandWeapon.getFlag("fortyk","balanced"))){
+        if((rightHandWeapon.data!==undefined&&rightHandWeapon.getFlag("fortyk","balanced"))||(leftHandWeapon.data!==undefined&&leftHandWeapon.getFlag("fortyk","balanced"))){
             parry=10;
         }
-        if((rightHandWeapon!==undefined&&rightHandWeapon.getFlag("fortyk","defensive"))||(leftHandWeapon!==undefined&&leftHandWeapon.getFlag("fortyk","defensive"))){
+        if((rightHandWeapon.data!==undefined&&rightHandWeapon.getFlag("fortyk","defensive"))||(leftHandWeapon.data!==undefined&&leftHandWeapon.getFlag("fortyk","defensive"))){
             parry=15;
         }
         let psyniscience=0;
@@ -529,10 +640,10 @@ export class FortyKActor extends Actor {
         this.items.forEach((fortykItem,id,items)=>{
             let item=fortykItem.data;
 
-            if(item._id===data.secChar.wornGear.armor._id){
+            if(item._id===data.secChar.wornGear.armor.id){
                 wornGear["armor"]=item;
             }
-            if(item._id===data.secChar.wornGear.forceField._id){
+            if(item._id===data.secChar.wornGear.forceField.id){
                 wornGear["forceField"]=item;
             }
             if(item.type=="skill"){
@@ -708,7 +819,7 @@ export class FortyKActor extends Actor {
                     }
                 }
                 for( let w of wornWeapons){
-                    if(w===item._id){
+                    if(w.id===item._id){
                         wornGear.weapons.push(item);
                     }
                 }
@@ -810,6 +921,7 @@ export class FortyKActor extends Actor {
         const meleeweapons=[];
         const rangedWeapons=[];
         const talentsntraits=[];
+        const armors=[];
         //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
@@ -818,6 +930,9 @@ export class FortyKActor extends Actor {
             if(item.type==="talentntrait"){
 
                 talentsntraits.push(item);
+            }
+            if(item.type==="armor"){
+                armors.push(item);
             }
             if(item.type==="psychicPower"){
                 try{
@@ -886,7 +1001,8 @@ export class FortyKActor extends Actor {
             psychicPowers:psychicPowers,
             meleeWeapons:meleeweapons,
             rangedWeapons:rangedWeapons,
-            talentsntraits:talentsntraits
+            talentsntraits:talentsntraits,
+            armors:armors
         };
         try{
             this._sortItems(preparedItems);
@@ -1021,7 +1137,7 @@ export class FortyKActor extends Actor {
         this.deleteEmbeddedDocuments("Item", [itemId]);
     }
     //when creating active effects check if they are transferred from an item, if so give the active effect flag to the item for referrence.
-    _onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId){
+    /*_onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId){
         let actor=this;
         if(embeddedName==="ActiveEffect"){
             documents.forEach(async function(ae,i){
@@ -1029,21 +1145,50 @@ export class FortyKActor extends Actor {
                     let ids=ae.data.origin.split(".");
                     let itemId=ids[3];
                     let item=actor.getEmbeddedDocument("Item",itemId);
-                    await item.update({"data.transferId":ae.id});
+                    await item.update({"data.transferId":ae.id},{render:true});
 
                 }
             })
         }
-    }
+        super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
+    }*/
+    /*_onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId){
+        if(embeddedName==="Item"){
+            console.log(embeddedName, documents, result, options, userId);
+            let actor=this;
+            let updates=[];
+            result.forEach(function(update,i){
+                if(update.data.isEquipped!==undefined){
+                    console.log(update.data.isEquipped);
+                    let disabled=false;
+                    if(update.data.isEquipped){
+                        disabled=false;
+                    }else{
+                        disabled=true;
+                    }
+                    updates.push({"_id":documents[i].data.data.transferId,"disabled":disabled});
+                }
+            });
+            console.log(updates);
+            if(updates.length>0){
+                options.render=false;
+                console.log(actor.updateEmbeddedDocuments("ActiveEffect",updates));
+            }
+        }
+        super._onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId);
+    }*/
     //when deleting talents, remove the flag associated with each of them.
     _onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId){
+        let actor=this;
         if(embeddedName==="Item"){
             documents.forEach(async function(item,i){
                 if(item.data.type==="talentntrait"){
                     let flag=item.data.data.flagId.value;
-                    this.setFlag("fortyk",flag,false); 
+                    await actor.setFlag("fortyk",flag,false); 
                 }
             })
         }
+        super._onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId);
     }
+
 }

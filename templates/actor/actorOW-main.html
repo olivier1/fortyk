@@ -144,7 +144,8 @@
             {{#each data.characteristics as |char key|}}
             {{#unless (compareString key "inf")}}
             <div>
-                <input type="text" name="data.characteristics.{{key}}.value" value="{{char.value}}" data-dtype="Number"/>
+                <input type="text" class="combat-resources" data-target="data.characteristics.{{key}}.value" value="{{char.value}}" data-dtype="Number"/>
+               
 
             </div>
             {{/unless}}
@@ -157,7 +158,7 @@
             {{#unless (compareString key "inf")}}
             <div>
 
-                <input class="ub" type="text" name="data.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number"/>
+                <input type="text" class="combat-resources" data-target="data.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number"/>
             </div>
             {{/unless}}
             {{/each}}
@@ -186,8 +187,8 @@
             </div>
             {{#each data.characteristics as |char key|}}
             {{#unless (compareString key "inf")}}
-
-            <input type="text" name="data.characteristics.{{key}}.mod" value="{{char.mod}}" data-dtype="Number"/>
+            <input type="text" class="combat-resources" data-target="data.characteristics.{{key}}.mod" value="{{char.mod}}" data-dtype="Number"/>
+            
             {{/unless}}
             {{/each}}
 

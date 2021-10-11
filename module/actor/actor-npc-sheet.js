@@ -44,6 +44,7 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
 
         html.find('.parse-tnt').click(this._onTntParse.bind(this));
         html.find('.npc-armor-create').click(this._onArmorCreate.bind(this));
+        html.find('.npc-armor-delete').click(this._onArmorDelete.bind(this));
          html.find('.npc-armor-edit').click(this._onArmorEdit.bind(this));
 
 
@@ -61,6 +62,10 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
         
         let armorID=armor[0].id;
         await this.actor.update({"data.secChar.wornGear.armor._id":armorID});
+    }
+    async _onArmorDelete(event){
+        await this.actor.items.get(this.actor.data.data.secChar.wornGear.armor._id).delete();
+        await this.actor.update({"data.secChar.wornGear.armor._id":""});
     }
     async _onArmorEdit(event){
         event.preventDefault();

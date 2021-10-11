@@ -25,7 +25,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     /* -------------------------------------------- */
     /** @override */
     getData() {
-        const data = super.getData().data;
+        const data = super.getData().actor.data;
         data.actor=this.actor.prepare();
         data.isGM=game.user.isGM;
         data.isOwner=this.actor.isOwner;
@@ -63,6 +63,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.cover-reset').click(this._onCoverReset.bind(this));
          //reset cover fields
         html.find('.armor-select').change(this._onArmorChange.bind(this));
+         //reset cover fields
+        html.find('.force-field').change(this._onArmorChange.bind(this));
         //Damage rolls
         html.find('.damage-roll').click(this._onDamageRoll.bind(this));
         //autofcus modifier input
@@ -360,6 +362,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
                             }
                             await actor.createEmbeddedDocuments("Item",talentsNTraits);
+                            this.render(true);
                         }
                     }
                 },
@@ -380,6 +383,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;
         let item=await this.actor.getEmbeddedDocument("Item",itemId);
+        console.log(item);
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
         renderedTemplate.then(content => {
             new Dialog({
@@ -389,10 +393,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     submit:{
                         label:"Yes",
                         callback: async dlg => { 
-                            if(item.type==="talentntrait"){
-                                await this.actor.setFlag("fortyk",item.data.data.flagId.value,false);
-                            }
-                            this.actor.deleteEmbeddedDocuments("Item",[itemId]);
+                            
+                            await this.actor.deleteEmbeddedDocuments("Item",[itemId]);
+                            this.render(true);
                         }
                     },
                     cancel:{
@@ -579,21 +582,41 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let newArmorId=event.currentTarget.value;
         let newArmor=actor.getEmbeddedDocument("Item",newArmorId);
         let oldArmorId=this.actor.data.data.secChar.wornGear.armor._id;
-        let oldArmor=actor.getEmbeddedDocument("Item",oldArmorId);
-        let aeUpdates=[];
+        
+        let oldArmor=this.actor.data.data.secChar.wornGear.armor
+        let updates=[];
        
-        if(oldArmor&&oldArmor.data.data.transferId){
-           
-            aeUpdates.push({"_id":oldArmor.data.data.transferId,disabled:true});
-            
+        if(oldArmor&&oldArmor.data){
+            updates.push({"_id":oldArmorId,"data.isEquipped":false});
         }
-        if(newArmor&&newArmor.data.data.transferId){
-            aeUpdates.push({"_id":newArmor.data.data.transferId,disabled:false});
-          
+        if(newArmor&&newArmor.data){
+            updates.push({"_id":newArmorId,"data.isEquipped":true});
         }
-        if(aeUpdates.length>0){
-            this.actor.updateEmbeddedDocuments("ActiveEffect",aeUpdates);
+        
+        if(updates.length>0){
+            await this.actor.updateEmbeddedDocuments("Item",updates);
         }
+        
+       
+    }
+    async _onForceFieldChange(event){
+        let actor=this.actor;
+        let newForceFieldId=event.currentTarget.value;
+        let newForceField=actor.getEmbeddedDocument("Item",newArmorId);
+        let oldForceFieldId=this.actor.data.data.secChar.wornGear.forceField._id;
+        let oldForceField=this.actor.data.data.secChar.wornGear.forceField
+        let updates=[];
+       
+        if(oldForceField&&oldForceField.data){
+            updates.push({"_id":oldForceFieldId,"data.isEquipped":false});
+        }
+        if(newForceField&&newForceField.data){
+            updates.push({"_id":newForceFieldId,"data.isEquipped":true});
+        }
+        if(updates.length>0){
+            await this.actor.updateEmbeddedDocuments("Item",updates);
+        }
+        
        
     }
     //handles force weapon special damage rolls

@@ -13,9 +13,9 @@ export class FortyKOWComradeSheet extends ActorSheet {
     }
     /** @override */
     getData(){
-        const data = super.getData();
-        data.races=game.fortyk.FORTYK.races;
-        data.ranks=game.fortyk.FORTYK.comradeRanks;
-        return data;
+        const context = super.getData().data;
+        context.races=game.fortyk.FORTYK.races;
+        context.ranks=game.fortyk.FORTYK.comradeRanks;
+        return context;
     }
 }

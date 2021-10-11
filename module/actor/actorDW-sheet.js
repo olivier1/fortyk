@@ -118,6 +118,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     * @private
     */
     async _onCyberLocationEdit(event){
+
         event.preventDefault();
 
         let newLoc=event.target.value;
@@ -177,7 +178,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     //handles the duplicate inputs for wounds fatigue fate points etc on the combat tab
 
     async _combatResourceEdit(event){
-
+        console.log("HEY");
         event.preventDefault();
         let actor=this.actor;
 
@@ -326,121 +327,53 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     }
     //handles when weapons are swapped and stuff
     async _onWeaponChange(event){
-
+        event.preventDefault;
         const data=this.actor.data.data;
 
-
+        console.log("hey")
         let actor=this.actor;
-        let aeUpdates=[];
         let weapon=actor.items.get(event.currentTarget.value);
+        console.log("hey")
         if(weapon){
-           
-            if(weapon.data.data.transferId){
-                aeUpdates.push({"_id":weapon.data.data.transferId,disabled:false});
-                
-            }
+
             
+
             weapon=weapon.data;
         }
         const weaponID=event.currentTarget.value;
         const hand=event.currentTarget.dataset["hand"];
         const leftHand=document.getElementById("left");
         const rightHand=document.getElementById("right");
-        var update={};
+        var update=[];
         var previousWeaponID="";
         if(hand==="right"){
-            if(weaponID===data.secChar.wornGear.weapons[1]){return}
-
-
-            update["data.secChar.wornGear.weapons.1"]=weaponID;
-            if(weaponID===data.secChar.wornGear.weapons[0]){
-                update["data.secChar.wornGear.weapons.0"]="";
+            previousWeaponID=data.secChar.wornGear.weapons[0].id;
+            if(previousWeaponID){
+                update.push({"_id":previousWeaponID,"data.isEquipped":false});
             }
-
-            if(weaponID===""&&data.secChar.wornGear.weapons[1]==="2hand"){
-                update["data.secChar.wornGear.weapons.0"]="";
-
-
-
-            }
-
-            if(weaponID===""){}
-            else if(!weapon.data.twohanded.value){
-                if(data.secChar.wornGear.weapons[1]==="2hand"){
-                    
-
-                    update["data.secChar.wornGear.weapons.0"]="";
-
-                }
-                if(data.secChar.wornGear.weapons[0]==="2hand"){
-
-                    update["data.secChar.wornGear.weapons.0"]="";
-
-
-                }
-            }else{
-                update["data.secChar.wornGear.weapons.0"]="2hand";
-
-
-            }
-            if(data.secChar.wornGear.weapons[1]!==""&&data.secChar.wornGear.weapons[1]!=="2hand"){
-                previousWeaponID=data.secChar.wornGear.weapons[1];
+            if(weaponID!==""){
+                update.push({"_id":weaponID,"data.isEquipped":"right"});
             }
 
         }else if(hand==="left"){
-            if(weaponID===data.secChar.wornGear.weapons[0]){return}
 
-            update["data.secChar.wornGear.weapons.0"]=weaponID;
-            if(weaponID===data.secChar.wornGear.weapons[1]){
-                update["data.secChar.wornGear.weapons.1"]="";
+            previousWeaponID=data.secChar.wornGear.weapons[1].id;
+            if(previousWeaponID){
+                update.push({"_id":previousWeaponID,"data.isEquipped":false});
             }
-            if(weaponID===""&&data.secChar.wornGear.weapons[1]==="2hand"){
-
-                update["data.secChar.wornGear.weapons.1"]="";
-
-
+            if(weaponID!==""){
+                update.push({"_id":weaponID,"data.isEquipped":"left"});
             }
 
-            if(weaponID===""){}
-            else if(!weapon.data.twohanded.value){
-                if(data.secChar.wornGear.weapons[0]==="2hand"){
-                    
-
-                    update["data.secChar.wornGear.weapons.1"]="";
-
-                }
-                if(data.secChar.wornGear.weapons[1]==="2hand"){
-                    
-
-                    update["data.secChar.wornGear.weapons.1"]="";
-
-                }
-            }else{
-
-                update["data.secChar.wornGear.weapons.1"]="2hand";
-
-
-            }
-            if(data.secChar.wornGear.weapons[0]!==""&&data.secChar.wornGear.weapons[0]!=="2hand"){
-                previousWeaponID=data.secChar.wornGear.weapons[0];
-            }
-
-
-        }
-        if(previousWeaponID){
-            let previousWeapon=actor.getEmbeddedDocument("Item",previousWeaponID);
-            
-            if(previousWeapon.data.data.transferId){
-                 aeUpdates.push({"_id":previousWeapon.data.data.transferId,disabled:true});
-                
-            }
         }
         
-        await this.actor.update(update);
-        if(aeUpdates.length>0){
-            await this.actor.updateEmbeddedDocuments("ActiveEffect",aeUpdates);
+
+
+        if(update.length>0){
+            await this.actor.updateEmbeddedDocuments("Item",update);
         }
-        
+       
+
     }
 
 

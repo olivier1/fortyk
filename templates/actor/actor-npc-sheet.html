@@ -8,7 +8,7 @@
             <div class="npcheader">
                 <div class="descrRow flexcol npcdescr">
                     <span class="descrSpan">Name:</span>
-                    <input name="name" type="text" value="{{actor.name}}" placeholder="Name" data-dtype="String"/>
+                    <input name="name" type="text" value="{{name}}" placeholder="Name" data-dtype="String"/>
                 </div>
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Race:</span>
@@ -90,13 +90,9 @@
 
 
 
-                {{#if isGM}}
-                <div class="flexcol">
-                    <a class="aes button">AEs</a>
-                </div>
-                {{else}}
+
                 <span class="characteristicsSpan"></span>
-                {{/if}}
+
 
                 {{#each data.characteristics as |char key|}}
                 {{#unless (compareString key "inf")}}
@@ -392,11 +388,28 @@
                         </div>
                         <div class="forcefield flexcol">
                             <span class="section-title">ARMOR & ABSORBTION</span>
+                            <div class="flexrow">
+                                <select class="armor-select" >
+
+                                    <option value="" {{#if data.secChar.wornGear.armor.data}}selected{{/if}}>None</option>
+                                    {{#each actor.armors}}
+
+                                    <option value="{{this._id}}" {{#if this.data.isEquipped}}selected{{/if}}>{{this.name}}</option>
+                                    {{/each}}
+                                </select>
+                                <a class="npc-armor-create plus-button" data-type="armor" title="Add Armor"></a>
+                                {{#if data.secChar.wornGear.armor._id}}
+
+                                <a class="npc-armor-delete minus-button" data-type="armor" title="Delete Armor"></a>
+                                {{/if}}
+
+                            </div>
                             {{#if data.secChar.wornGear.armor._id}}
                             <a class="npc-armor-edit button" data-type="armor" title="Edit Armor">Edit Armor</a>
-                            {{else}}
-                            <a class="npc-armor-create button" data-type="armor" title="Add Armor">Add Armor</a>
+
+
                             {{/if}}
+
                             <div class="flexcol">
                                 <span class="section-title">COVER</span>
                                 <span class="cover-reset button">Reset Cover</span>

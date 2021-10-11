@@ -4,15 +4,17 @@
         {{#unless (contains data.psykana.psykerType.value "navigator")}}
         <div class="flexcol">
             <label>Psy Rating:</label>
-            <input type="text" name="data.psykana.pr.value" value="{{data.psykana.pr.value}}" data-dtype="Number">
+            <input type="text" class="combat-resources" data-target="data.psykana.pr.value" value="{{data.psykana.pr.value}}" data-dtype="Number"/>
+           
         </div>
         <div class="flexcol">
             <label>Sustained Powers:</label>
-            <input type="text" name="data.psykana.pr.sustain" value="{{data.psykana.pr.sustain}}" data-dtype="Number">
+            <input type="text" class="combat-resources" data-target="data.psykana.pr.sustain" value="{{data.psykana.pr.sustain}}" data-dtype="Number"/>
+            
         </div>
         <div class="flexcol">
-            <label>Effective PR:</label>
-            <input type="text" name="data.psykana.pr.effective" value="{{data.psykana.pr.effective}}" disabled>
+            <label>Effective PR: {{data.psykana.pr.effective}}</label>
+            
         </div>
         {{/unless}}
         <div class="flexcol">

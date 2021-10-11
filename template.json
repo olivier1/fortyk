@@ -138,17 +138,10 @@
                         "mod": 0
                     },
                     "wornGear": {
-                        "weapons": [
-                            "", ""
-                        ],
-                        "armor": {
-                            "_id": "",
-                            "type": "String"
-                        },
-                        "forceField": {
-                            "_id": "",
-                            "type": "String"
-                        }
+                        "weapons": [],
+                        "extraWeapons":[],
+                        "armor": {},
+                        "forceField": {}
                     },
                     "movement": {
                         "half": 0,
@@ -747,6 +740,7 @@
         ],
         "templates": {
             "weapon": {
+                "extraWeapon":false,
                 "damageFormula": {
                     "value": "1d10",
                     "formula": "1d10",
@@ -806,6 +800,9 @@
                     "type": "String"
                 }
             },
+            "equippable": {
+                "isEquipped":false
+            },
             "physicalProp": {
                 "weight": {
                     "value": 0,
@@ -840,7 +837,8 @@
             "templates": [
                 "weapon",
                 "description",
-                "physicalProp"
+                "physicalProp",
+                "equippable"
             ],
             "mods": [],
             "shield": {
@@ -852,7 +850,8 @@
             "templates": [
                 "weapon",
                 "description",
-                "physicalProp"
+                "physicalProp",
+                "equippable"
             ],
             "rof": [{
                 "value": "s",
@@ -917,7 +916,8 @@
         "armor": {
             "templates": [
                 "description",
-                "physicalProp"
+                "physicalProp",
+                "equippable"
             ],
             "maxAgi": {
                 "value": 0,
@@ -953,7 +953,8 @@
         "forceField": {
             "templates": [
                 "description",
-                "physicalProp"
+                "physicalProp",
+                "equippable"
             ],
             "rating": {
                 "value": 0,
