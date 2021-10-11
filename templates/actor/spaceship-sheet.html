@@ -41,35 +41,40 @@
             <div class="descr grid grid-5col">
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Speed:</span>
-                    <input name="data.speed.value" type="text" value="{{data.speed.value}}"/>
-
+                    <input type="text" class="combat-resources" data-target="data.speed.value" value="{{data.speed.value}}" data-dtype="Number"/>
                 </div>
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Manoeuver:</span>
-                    <input name="data.manoeuvrability.value" type="text" value="{{data.manoeuvrability.value}}"/>
+                    <input type="text" class="combat-resources" data-target="data.manoeuvrability.value" value="{{data.manoeuvrability.value}}" data-dtype="Number"/>
+                    
                 </div>
 
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Detection:</span>
-                    <input name="data.detection.value" type="text" value="{{data.detection.value}}" />
+                    <input type="text" class="combat-resources" data-target="data.detection.value" value="{{data.detection.value}}" data-dtype="Number"/>
+                    
                 </div>
 
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Turret Rating:</span>
-                    <input name="data.turret.value" type="text" value="{{data.turret.value}}"/>
+                    <input type="text" class="combat-resources" data-target="data.turret.value" value="{{data.turret.value}}" data-dtype="Number"/>
+                    
                 </div>
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Void Shields:</span>
-                    <input name="data.shields.value" type="text" value="{{data.shields.value}}" />
+                    <input type="text" class="combat-resources" data-target="data.shields.value" value="{{data.shields.value}}" data-dtype="Number"/>
+                    
                 </div>
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Armor:</span>
-                    <input name="data.armor.value" type="text" value="{{data.armor.value}}" />
+                    <input type="text" class="combat-resources" data-target="data.armor.value" value="{{data.armor.value}}" data-dtype="Number"/>
+                    
                 </div>
                 <div class="descrRow flexcol">
                     <span class="char-total rollable button" data-roll-type="char" data-target="{{data.crew.rating}}" data-label="Crew Rating" data-char="">Crew Rating:</span>
                     <span class="descrSpan"></span>
-                    <input name="data.crew.rating" type="text" value="{{data.crew.rating}}" />
+                    <input type="text" class="combat-resources" data-target="data.crew.rating" value="{{data.crew.rating}}" data-dtype="Number"/>
+                    
                 </div>
                 <div class="resource flex-group-center">
                     <label for="data.secChar.wounds.value" class="resource-label">Hull Integrity</label>
