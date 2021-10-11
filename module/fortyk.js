@@ -367,7 +367,7 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
             };
 
             renderedTemplate.then(content => { 
-                let d=new ActiveEffectDialog({
+                var d=new ActiveEffectDialog({
                     title: "Active Effects",
                     content: content,
                     buttons:{
@@ -381,6 +381,7 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
 
                     }
                 },options).render(true)
+                sheet.actor.dialog=d;
                 });
             
         }

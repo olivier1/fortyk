@@ -54,7 +54,7 @@ export class FortyKActor extends Actor {
     }
     //@Override the update function to modify token size for hordes and larger entities
     async update(data, options={}) {
-        
+
         let actor=this;
         let actorData=actor.data;
         if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC' || actorData.type === 'npc'){
@@ -142,6 +142,7 @@ export class FortyKActor extends Actor {
                 }
             }
         }
+
         return super.update(data, options);
     }
     /**
@@ -153,7 +154,7 @@ export class FortyKActor extends Actor {
         if ( !this.data.name ) this.data.name = "New " + this.entity;
         this.data.reset();
         this.prepareBaseData();
-        
+
         this.prepareEmbeddedEntities();
         this.prepareDerivedData();
     }
@@ -163,7 +164,7 @@ export class FortyKActor extends Actor {
         if(actorData.flags.fortyk===undefined){actorData.flags.fortyk={}}
         const data = actorData.data;
         if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC' || actorData.type === 'npc'){
-           this._prepareCharacterBaseData(data);
+            this._prepareCharacterBaseData(data);
         }
     }
     _prepareCharacterBaseData(data){
@@ -245,7 +246,7 @@ export class FortyKActor extends Actor {
                     }
 
 
-                   
+
                     if(item.data.twohanded.value){
                         data.secChar.wornGear.weapons.push(item);
                     }
@@ -294,13 +295,13 @@ export class FortyKActor extends Actor {
 
     }
     //OVERRIDE
-   applyActiveEffects(){
+    applyActiveEffects(){
         let actor=this;
         let actorData=this.data;
         let data=actorData.data;
         this.effects.forEach(function(ae,id){
             if(!ae.data.disabled){
-               
+
                 let proceed=false;
                 if(ae.data.origin){
                     let itemId=ae.data.origin.split('.')[3];
@@ -323,7 +324,7 @@ export class FortyKActor extends Actor {
                         let newvalue=parseInt(change.value);
                         if(!isNaN(basevalue)&&!isNaN(newvalue)){
                             let path=change.key.split(".");
-                            
+
                             let changedValue=0;
                             if(change.mode===0){}
                             else if(change.mode===1){
@@ -447,7 +448,7 @@ export class FortyKActor extends Actor {
         //add up all armor and stuff
 
         var armor= data.secChar.wornGear.armor;
-        
+
         var rightHandWeapon= data.secChar.wornGear.weapons[0];
 
         let rightHandWeaponData=null;
@@ -476,7 +477,7 @@ export class FortyKActor extends Actor {
             }
 
         }
-       
+
         //handle shields
         data.characterHitLocations.body.shield= 0;
         data.characterHitLocations.rArm.shield= 0;
@@ -818,11 +819,11 @@ export class FortyKActor extends Actor {
                         item.data.testMod.value=item._source.data.testMod.value+10;
                     }
                 }
-                
-                    if(item.data.isEquipped){
-                        wornGear.weapons.push(fortykItem);
-                    }
-                
+
+                if(item.data.isEquipped){
+                    wornGear.weapons.push(fortykItem);
+                }
+
                 try{
                     if(fortykItem.getFlag("fortyk","force")){
                         let pr=parseInt(data.psykana.pr.value);
@@ -1138,13 +1139,22 @@ export class FortyKActor extends Actor {
     }
     //when creating active effects check if they are transferred from an item, if so give the active effect flag to the item for referrence.
     /*_onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId){
-        
+
         super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
     }*/
-    /*_onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId){
-        
+    _onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId){
+        console.log(this);
+        if(this.dialog){
+
+
+
+
+            this.dialog.updateDialog(this.id);
+
+
+        }
         super._onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId);
-    }*/
+    }
     //when deleting talents, remove the flag associated with each of them.
     _onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId){
         let actor=this;

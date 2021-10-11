@@ -26,13 +26,8 @@ export class ActiveEffectDialog extends Dialog {
         let actor = game.actors.get(actorId);
      
 
-        await actor.createEmbeddedDocuments("ActiveEffect",[{name:"newActiveEffect","data.label":"newActiveEffect"}]);
-        let templateOptions={actor:actor};
-
-        let renderedTemplate=await renderTemplate('systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html', templateOptions);
-        this.data.content=renderedTemplate;
-        
-        this.render(true);
+        await actor.createEmbeddedDocuments("ActiveEffect",[{name:"newActiveEffect","label":"newActiveEffect"}]);
+        this.updateDialog(actorId);
 
 
     }
@@ -48,10 +43,19 @@ export class ActiveEffectDialog extends Dialog {
         let renderedTemplate=await renderTemplate('systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html', templateOptions);
         this.data.content=renderedTemplate;
         
+        this.updateDialog(actorId);
+
+
+
+
+    }
+    async updateDialog(actorId){
+        let actor = game.actors.get(actorId);
+        let templateOptions={actor:actor};
+
+        let renderedTemplate=await renderTemplate('systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html', templateOptions);
+        this.data.content=renderedTemplate;
+        
         this.render(true);
-
-
-
-
     }
 }
