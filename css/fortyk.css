@@ -697,9 +697,9 @@
     height:100%;
     display:block;
 }
-.attack-section{
-    width:100%;
-}
+
+
+
 .attack-section input{
     flex:1;
 }
