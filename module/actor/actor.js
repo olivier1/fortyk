@@ -818,11 +818,11 @@ export class FortyKActor extends Actor {
                         item.data.testMod.value=item._source.data.testMod.value+10;
                     }
                 }
-                for( let w of wornWeapons){
-                    if(w.id===item._id){
-                        wornGear.weapons.push(item);
+                
+                    if(item.data.isEquipped){
+                        wornGear.weapons.push(fortykItem);
                     }
-                }
+                
                 try{
                     if(fortykItem.getFlag("fortyk","force")){
                         let pr=parseInt(data.psykana.pr.value);

@@ -555,12 +555,18 @@ returns the roll message*/
                 let tarNumbr=0;
                 //if there are targets apply damage to all of them
                 for (let tar of targets){
+                    
                     let activeEffects=[];
                     let data={};
                     let tarActor={};
                     data=tar.actor.data.data; 
                     tarActor=tar.actor;
-
+                    let armorSuit=data.secChar.wornGear.armor.document;
+                    console.log(data);
+                    console.log(armorSuit);
+                    if(armorSuit===undefined){
+                        armorSuit=Item.create({type:"armor",name:"standin"},{temporary:true});
+                    }
                     if(!tarActor.getFlag("core","dead")){
 
 
@@ -582,6 +588,10 @@ returns the roll message*/
                         }
                         let soak=0;
                         let armor=parseInt(data.characterHitLocations[curHit.value].armor);
+                        
+                        if(armorSuit.getFlag("fortyk",weapon.data.damageType.value.toLowerCase())){
+                            armor=Math.ceil(armor*1.5);
+                        }
                         //check if weapon ignores soak
                         if(!fortykWeapon.getFlag("fortyk","ignoreSoak")){
                             let armor=parseInt(data.characterHitLocations[curHit.value].armor);
@@ -1002,7 +1012,7 @@ returns the roll message*/
                             await this.critEffects(tar,crit+1,curHit.value,weapon.data.damageType.value,ignoreSON);
                         }
                         //flame weapon
-                        if(fortykWeapon.getFlag("fortyk","flame")&&!data.horde.value){
+                        if(!armorSuit.getFlag("fortyk","flamerepellent")&&fortykWeapon.getFlag("fortyk","flame")&&!data.horde.value){
                             let fire=await this.fortykTest("agi", "char", tarActor.data.data.characteristics.agi.total,tarActor, "Resist fire");
                             if(!fire.value){
                                 let fireActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fire")]);
