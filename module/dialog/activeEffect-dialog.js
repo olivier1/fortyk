@@ -21,12 +21,10 @@ export class ActiveEffectDialog extends Dialog {
         new ActiveEffectConfig(effect).render(true);
     }
     async _onAeCreate(event){
-        console.log(event);
-        console.log(game);
+     
         let actorId = event.currentTarget.attributes["data-actor-id"].value;
         let actor = game.actors.get(actorId);
-        console.log(this);
-        console.log(actor);
+     
 
         await actor.createEmbeddedDocuments("ActiveEffect",[{name:"newActiveEffect","data.label":"newActiveEffect"}]);
         let templateOptions={actor:actor};

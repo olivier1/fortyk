@@ -310,7 +310,7 @@ Hooks.on("preDeleteCombat", async (combat,options,id) =>{
     }
 })
 Hooks.on("preUpdateActor", (data, updatedData) =>{
-    console.trace();
+  
 })
 //add listeners to the chatlog for dice rolls
 Hooks.on('renderChatLog', (log, html, data) => FortykRollDialogs.chatListeners(html));

@@ -178,7 +178,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     //handles the duplicate inputs for wounds fatigue fate points etc on the combat tab
 
     async _combatResourceEdit(event){
-        console.log("HEY");
+    
         event.preventDefault();
         let actor=this.actor;
 
@@ -347,10 +347,9 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         event.preventDefault;
         const data=this.actor.data.data;
 
-        console.log("hey")
         let actor=this.actor;
         let weapon=actor.items.get(event.currentTarget.value);
-        console.log("hey")
+      
         if(weapon){
 
             

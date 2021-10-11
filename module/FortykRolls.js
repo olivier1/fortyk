@@ -562,8 +562,7 @@ returns the roll message*/
                     data=tar.actor.data.data; 
                     tarActor=tar.actor;
                     let armorSuit=data.secChar.wornGear.armor.document;
-                    console.log(data);
-                    console.log(armorSuit);
+                    
                     if(armorSuit===undefined){
                         armorSuit=Item.create({type:"armor",name:"standin"},{temporary:true});
                     }

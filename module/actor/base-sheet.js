@@ -383,7 +383,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;
         let item=await this.actor.getEmbeddedDocument("Item",itemId);
-        console.log(item);
+      
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
         renderedTemplate.then(content => {
             new Dialog({
