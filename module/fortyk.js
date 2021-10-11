@@ -118,13 +118,14 @@ Hooks.once('init', async function() {
         }
     });
     Handlebars.registerHelper("contains", function(str1, str2) {
-
+        console.log(str1,str2)
         if(str1===undefined){return false};
         if(str1===null){return false};
+        if(!str1){return false};
         if(str2===""){
             return true;
         }else{
-            return str1.toLowerCase().includes(str2.toLowerCase());
+            return str1.toLowerCase().includes(str2.toString().toLowerCase());
         }
     });
     Handlebars.registerHelper("greaterThan", function(num1,num2){

@@ -170,7 +170,6 @@ export class FortyKActor extends Actor {
     _prepareCharacterBaseData(data){
         data.secChar.wornGear.armor={};
         data.secChar.wornGear.weapons=[{},{}];
-        data.secChar.wornGear.extraWeapons=[];
         data.secChar.wornGear.forceField={};
         if(this.getFlag("fortyk","marksman")){
             data.secChar.attacks.range.long=0;
@@ -241,6 +240,9 @@ export class FortyKActor extends Actor {
                         if(item.data.twohanded.value){
                             data.secChar.wornGear.weapons[0]=fortykItem;
                         }
+                    }else if(item.data.isEquipped.includes("extra")){
+                        let index=parseInt(item.data.isEquipped.substring(5));
+                        data.secChar.wornGear.extraWeapons[index]=fortykItem;
                     }
 
 

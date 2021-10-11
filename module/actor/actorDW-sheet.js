@@ -52,7 +52,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         //handles adding or removing worn weapon slots
         html.find('.worn-item-plus').click(this._onAddExtraWeapon.bind(this));
         html.find('.worn-item-minus').click(this._onRemoveExtraWeapon.bind(this));
-
+         html.find('.extra-weapon').change(this._onExtraWeaponChange.bind(this));
         //handles changing ammo type
         html.find('.weapon-ammo').change(this._onAmmoChange.bind(this));
         //handles reloading a ranged weapon
@@ -198,27 +198,44 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let actor=this.actor;
         let data=duplicate(actor.data);
 
-        let weapons=Object.values(data.data.secChar.wornGear.weapons);
-        weapons.push("");
+        let weapons=Object.values(data.data.secChar.wornGear.extraWeapons);
+        weapons.push({});
         let weaponsObj=Object.assign({},weapons);
-        await actor.update({"data.secChar.wornGear.weapons":weaponsObj});
+        await actor.update({"data.secChar.wornGear.extraWeapons":weaponsObj});
 
     }
     //handles removing extra weapon slots
     async _onRemoveExtraWeapon(event){
         let actor=this.actor;
         let data=duplicate(actor.data.data);
-        let weapons=Object.values(data.secChar.wornGear.weapons);
+        let weapons=Object.values(data.secChar.wornGear.extraWeapons);
 
-        if(weapons.length>2){
+        if(weapons.length>0){
 
             weapons.pop();
 
-            await actor.update({"data.secChar.wornGear.weapons":weapons});
+            await actor.update({"data.secChar.wornGear.extraWeapons":weapons});
         }
 
     }
-
+    async _onExtraWeaponChange(event){
+        let actor=this.actor;
+        const weaponId=event.currentTarget.value;
+        const index=parseInt(event.currentTarget.dataset["index"]);
+        const previousWeaponId=this.actor.data.data.secChar.wornGear.extraWeapons[index].id;
+        let str="extra"+index;
+        let updates=[];
+        if(weaponId!==""){
+            updates.push({"_id":weaponId,"data.isEquipped":str});
+        }
+        if(previousWeaponId!==undefined){
+            updates.push({"_id":previousWeaponId,"data.isEquipped":false});
+        }
+        if(updates.length>0){
+            await actor.updateEmbeddedDocuments("Item",updates);
+        }
+        
+    }
     //handles when swapping ammo type in a ranged weapon
     async _onAmmoChange(event){
 

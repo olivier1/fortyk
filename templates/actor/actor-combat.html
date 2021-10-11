@@ -120,23 +120,23 @@
                         
                     </select>
                 </div>
-                {{#each data.secChar.wornGear.weapons}}
-                {{#if (greaterThan @index 1)}}
+                {{#each data.secChar.wornGear.extraWeapons}}
+                
                 <div class="flexcol weapon-select">
                     <label>Extra Weapon</label>
-                    <select class="extra-weapon" name="data.secChar.wornGear.weapons.{{@index}}" >
-                        {{#select this}}
-                        <option value="">None</option>
+                    <select class="extra-weapon" data-index="{{@index}}">
+                        {{debug this}})
+                        <option value="" {{#if data.secChar.wornGear.extraWeapons.[@index].data}}selected{{/if}}>None</option>
                         {{#each ../actor.meleeWeapons}}
-                        <option value="{{this._id}}">{{this.name}}</option>
+                        <option value="{{this._id}}" {{#if (contains this.data.isEquipped @../index)}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                         {{#each ../actor.rangedWeapons}}
-                        <option value="{{this._id}}">{{this.name}}</option>
+                        <option value="{{this._id}}" {{#if (contains this.data.isEquipped @../index)}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
-                        {{/select}}
+                        
                     </select>
                 </div>
-                {{/if}}
+                
 
                 {{/each}}
 
@@ -398,7 +398,6 @@
                         <option value="{{this._id}}" {{#if this.data.isEquipped}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                     </select>
-                    {{debug this}}
                     {{#if data.secChar.wornGear.forceField.id}}
                     <div class="forcefield flexrow flex-group-center">
                         <label>Overload: {{actor.wornGear.forceField.data.rating.overload}}</label>

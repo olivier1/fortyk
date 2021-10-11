@@ -740,7 +740,7 @@
         ],
         "templates": {
             "weapon": {
-                "extraWeapon":false,
+                
                 "damageFormula": {
                     "value": "1d10",
                     "formula": "1d10",
