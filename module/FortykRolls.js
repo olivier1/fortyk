@@ -588,13 +588,17 @@ returns the roll message*/
                         }
                         let soak=0;
                         let armor=parseInt(data.characterHitLocations[curHit.value].armor);
-                        
+                        //resistant armor
                         if(armorSuit.getFlag("fortyk",weapon.data.damageType.value.toLowerCase())){
                             armor=Math.ceil(armor*1.5);
                         }
+                        //warp weapon vs holy armor
+                        if(fortykWeapon.getFlag("fortyk","warp")&&!armorSuit.getFlag("fortyk","holy")){
+                            armor=0;
+                        }
                         //check if weapon ignores soak
                         if(!fortykWeapon.getFlag("fortyk","ignoreSoak")){
-                            let armor=parseInt(data.characterHitLocations[curHit.value].armor);
+                            
 
 
                             let pen=0;
