@@ -307,7 +307,7 @@ export class FortyKActor extends Actor {
                     let item=actor.getEmbeddedDocument("Item",itemId);
                     if(item){
                         let equipped=item.data.data.isEquipped;
-                        if(equipped!==undefined||equipped){
+                        if(equipped===undefined||equipped){
                             proceed=true;
                         }else{
                             proceed=false;
