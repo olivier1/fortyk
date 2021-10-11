@@ -54,8 +54,7 @@ export class FortyKActor extends Actor {
     }
     //@Override the update function to modify token size for hordes and larger entities
     async update(data, options={}) {
-        console.trace();
-        console.log(data);
+        
         let actor=this;
         let actorData=actor.data;
         if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC' || actorData.type === 'npc'){
@@ -333,7 +332,6 @@ export class FortyKActor extends Actor {
 
                             }else if(change.mode===2){
                                 changedValue=basevalue+newvalue;
-                                console.log(changedValue);
                                 setNestedKey(actorData,path,changedValue);
                             }else if(change.mode===3){
                                 if(change.value<basevalue){
@@ -1140,43 +1138,11 @@ export class FortyKActor extends Actor {
     }
     //when creating active effects check if they are transferred from an item, if so give the active effect flag to the item for referrence.
     /*_onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId){
-        let actor=this;
-        if(embeddedName==="ActiveEffect"){
-            documents.forEach(async function(ae,i){
-                if(ae.data.origin){
-                    let ids=ae.data.origin.split(".");
-                    let itemId=ids[3];
-                    let item=actor.getEmbeddedDocument("Item",itemId);
-                    await item.update({"data.transferId":ae.id},{render:true});
-
-                }
-            })
-        }
+        
         super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
     }*/
     /*_onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId){
-        if(embeddedName==="Item"){
-            console.log(embeddedName, documents, result, options, userId);
-            let actor=this;
-            let updates=[];
-            result.forEach(function(update,i){
-                if(update.data.isEquipped!==undefined){
-                    console.log(update.data.isEquipped);
-                    let disabled=false;
-                    if(update.data.isEquipped){
-                        disabled=false;
-                    }else{
-                        disabled=true;
-                    }
-                    updates.push({"_id":documents[i].data.data.transferId,"disabled":disabled});
-                }
-            });
-            console.log(updates);
-            if(updates.length>0){
-                options.render=false;
-                console.log(actor.updateEmbeddedDocuments("ActiveEffect",updates));
-            }
-        }
+        
         super._onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId);
     }*/
     //when deleting talents, remove the flag associated with each of them.

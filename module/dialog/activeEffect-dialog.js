@@ -14,7 +14,6 @@ export class ActiveEffectDialog extends Dialog {
 
     } 
     async _onAeClick(event){
-        console.log("hey");
         let effectId = event.currentTarget.attributes["data-ae-id"].value;
         let actorId = event.currentTarget.attributes["data-actor-id"].value;
         let actor = game.actors.get(actorId);

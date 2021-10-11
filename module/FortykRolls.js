@@ -1104,7 +1104,7 @@ returns the roll message*/
     static async reportDamage(tarActor, chatDamage){
         if(game.settings.get("fortyk","privateDamage")){
             let user_ids = Object.entries(tarActor.data.permission).filter(p=> p[0] !== `default` && p[1] === 3).map(p=>p[0]);
-            console.log(user_ids);
+           
             for(let user of user_ids)
             {
                 if(user!==game.users.current.id||user_ids.length===1){

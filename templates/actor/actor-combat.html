@@ -125,7 +125,7 @@
                 <div class="flexcol weapon-select">
                     <label>Extra Weapon</label>
                     <select class="extra-weapon" data-index="{{@index}}">
-                        {{debug this}})
+                       
                         <option value="" {{#if data.secChar.wornGear.extraWeapons.[@index].data}}selected{{/if}}>None</option>
                         {{#each ../actor.meleeWeapons}}
                         <option value="{{this._id}}" {{#if (contains this.data.isEquipped @../index)}}selected{{/if}}>{{this.name}}</option>

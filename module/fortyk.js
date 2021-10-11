@@ -118,7 +118,7 @@ Hooks.once('init', async function() {
         }
     });
     Handlebars.registerHelper("contains", function(str1, str2) {
-        console.log(str1,str2)
+        
         if(str1===undefined){return false};
         if(str1===null){return false};
         if(!str1){return false};
@@ -372,7 +372,7 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
                     content: content,
                     buttons:{
                         button:{
-                            label:"Add Active Effect",
+                            label:"Ok",
                             callback: async html => {
                                  
                                 
