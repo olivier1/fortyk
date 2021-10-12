@@ -44,13 +44,17 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         super.activateListeners(html);
         // Everything below here is only needed if the sheet is editable
         if (!this.options.editable) return;
+        //handles combat tab resources
+
+        html.find('.combat-resources').focusout(this._combatResourceEdit.bind(this));
+        html.find('.combat-resources').keydown(this._combatResourceEnter.bind(this));
         //Add item to actor
         html.find('.item-create').click(this._onItemCreate.bind(this));
         //edit item on actor
         html.find('.item-edit').click(this._onItemEdit.bind(this));
         //delete item on actor
         html.find('.item-delete').click(this._onItemDelete.bind(this));
-       
+
         //change item property via text input
         html.find('.item-text-input').focusout(this._itemTextInputEdit.bind(this));
         //get item description
@@ -61,9 +65,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.lasMode').change(this._onLasModeChange.bind(this));
         //reset cover fields
         html.find('.cover-reset').click(this._onCoverReset.bind(this));
-         //reset cover fields
+        //reset cover fields
         html.find('.armor-select').change(this._onArmorChange.bind(this));
-         //reset cover fields
+        //reset cover fields
         html.find('.force-field').change(this._onArmorChange.bind(this));
         //Damage rolls
         html.find('.damage-roll').click(this._onDamageRoll.bind(this));
@@ -124,8 +128,54 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
 
     }
+    //handles the duplicate inputs for wounds fatigue fate points etc on the combat tab
+
+    async _combatResourceEdit(event){
+
+        event.preventDefault();
+        if(!this.updateObj){
+            this.updateObj={};
+        }
+
+        let actor=this.actor;
+        let target=event.target.attributes["data-target"].value;
+        let newAmt=event.target.value;
+
+        let oldValue=objectByString(actor.data,target);
+        if(oldValue!=newAmt){
+            this.updateObj[target]=newAmt;
+            if(!event.relatedTarget||($(event.relatedTarget).prop("class").indexOf("combat-resources") === -1)) {
+
+                await actor.update(this.updateObj);
+                this.updateObj=undefined;
+
+            }
+
+        }
+
+    }
+    async _combatResourceEnter(event){
+        if (event.keyCode == 13){
+            if(!this.updateObj){
+                this.updateObj={};
+            }
+            let actor=this.actor;
+            let target=event.target.attributes["data-target"].value;
+            let newAmt=event.target.value;
+
+            let oldValue=objectByString(actor.data,target);
+            if(oldValue!=newAmt){
+                this.updateObj[target]=newAmt;
+                await actor.update(this.updateObj);
+                this.updateObj=undefined;
+
+
+
+            }
+        }
+    }
     async _onSortClick(event){
-       
+
         let sortType=event.target.dataset["sortType"];
         let path=event.target.dataset["path"];
         let itemType=event.target.dataset["itemType"];
@@ -133,18 +183,18 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let items=actor[itemType];
         let update={};
         let updatePath="data.sort."+itemType;
-        
+
         update[updatePath]={};
         update[updatePath].type=sortType;
         update[updatePath].path=path;
         if(!actor.data.sort[itemType]||actor.data.sort[itemType].type!==sortType||actor.data.sort[itemType].reverse){
             update[updatePath].reverse=false;
         }else{
-             update[updatePath].reverse=true;
+            update[updatePath].reverse=true;
         }
-     
+
         await this.actor.update(update);
-        
+
     }
     //Handle the popup when user clicks item name to show item description
     async _onItemDescrGet(event){
@@ -383,7 +433,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;
         let item=await this.actor.getEmbeddedDocument("Item",itemId);
-      
+
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
         renderedTemplate.then(content => {
             new Dialog({
@@ -393,7 +443,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     submit:{
                         label:"Yes",
                         callback: async dlg => { 
-                            
+
                             await this.actor.deleteEmbeddedDocuments("Item",[itemId]);
                             this.render(true);
                         }
@@ -407,7 +457,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }).render(true)
         });
     }
-    
+
     //handles editing text inputs that are linked to owned items 
     async _itemTextInputEdit(event){
         let actor= this.actor;
@@ -527,9 +577,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
             let actor=this.actor;
             let fortykWeapon=actor.items.get(dataset.weapon);
-            
+
             let weapon=fortykWeapon.data;
-           
+
             let formula=duplicate(weapon.data.damageFormula);
             new Dialog({
                 title: `Number of Hits & Bonus Damage`,
@@ -582,22 +632,22 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let newArmorId=event.currentTarget.value;
         let newArmor=actor.getEmbeddedDocument("Item",newArmorId);
         let oldArmorId=this.actor.data.data.secChar.wornGear.armor._id;
-        
+
         let oldArmor=this.actor.data.data.secChar.wornGear.armor
         let updates=[];
-       
+
         if(oldArmor&&oldArmor.data){
             updates.push({"_id":oldArmorId,"data.isEquipped":false});
         }
         if(newArmor&&newArmor.data){
             updates.push({"_id":newArmorId,"data.isEquipped":true});
         }
-        
+
         if(updates.length>0){
             await this.actor.updateEmbeddedDocuments("Item",updates);
         }
-        
-       
+
+
     }
     async _onForceFieldChange(event){
         let actor=this.actor;
@@ -606,7 +656,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let oldForceFieldId=this.actor.data.data.secChar.wornGear.forceField._id;
         let oldForceField=this.actor.data.data.secChar.wornGear.forceField
         let updates=[];
-       
+
         if(oldForceField&&oldForceField.data){
             updates.push({"_id":oldForceFieldId,"data.isEquipped":false});
         }
@@ -616,8 +666,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         if(updates.length>0){
             await this.actor.updateEmbeddedDocuments("Item",updates);
         }
-        
-       
+
+
     }
     //handles force weapon special damage rolls
     async _onForceRoll(event){

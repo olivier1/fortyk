@@ -116,7 +116,7 @@
                 {{#each data.characteristics as |char key|}}
                 {{#unless (compareString key "inf")}}
                 <div>
-                    <input type="text" class="combat-resources" data-target="data.characteristics.{{key}}.value" value="{{data.characteristics.{{key}}.value}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="data.characteristics.{{key}}.value" value="{{char.value}}" data-dtype="Number"/>
                    
 
                 </div>
@@ -129,7 +129,7 @@
                 {{#each data.characteristics as |char key|}}
                 {{#unless (compareString key "inf")}}
                 <div>
-                    <input type="text" class="combat-resources" data-target="data.characteristics.{{key}}.uB" value="{{data.characteristics.{{key}}.uB}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="data.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number"/>
                     
                 </div>
                 {{/unless}}

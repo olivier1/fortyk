@@ -46,9 +46,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         html.find('.wargear-create').click(this._onWargearCreate.bind(this));
 
 
-        //handles combat tab resources
-
-        html.find('.combat-resources').focusout(this._combatResourceEdit.bind(this));
+        
         //handles adding or removing worn weapon slots
         html.find('.worn-item-plus').click(this._onAddExtraWeapon.bind(this));
         html.find('.worn-item-minus').click(this._onRemoveExtraWeapon.bind(this));
@@ -175,24 +173,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
 
 
-    //handles the duplicate inputs for wounds fatigue fate points etc on the combat tab
-
-    async _combatResourceEdit(event){
     
-        event.preventDefault();
-        let actor=this.actor;
-
-        let target=event.target.attributes["data-target"].value;
-        let newAmt=event.target.value;
-
-        let oldValue=objectByString(actor.data,target);
-        if(oldValue!=newAmt){
-            let options={};
-            options[target]=newAmt;
-            await actor.update(options);
-        }
-
-    }
     //handles adding extra worn weapon slots
     async _onAddExtraWeapon(event){
         let actor=this.actor;
