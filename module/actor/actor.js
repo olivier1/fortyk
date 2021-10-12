@@ -228,6 +228,7 @@ export class FortyKActor extends Actor {
 
 
                 }
+                //prepare melee weapons
                 if(item.type==="meleeWeapon"){
                     item.data.damageFormula.value=item.data.damageFormula.formula;
                     if(item.data.class.value==="Melee Two-handed"){
@@ -244,6 +245,7 @@ export class FortyKActor extends Actor {
                         item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
                     }
                 }
+                //prepare ranged weapons
                 if(item.type==="rangedWeapon"){
                     item.data.damageFormula.value=item.data.damageFormula.formula;
                     try
@@ -268,10 +270,10 @@ export class FortyKActor extends Actor {
                 }
                 //check if equipped
                 if((item.type==="meleeWeapon"||item.type==="rangedWeapon")&&item.data.isEquipped){
-                    console.log(item.data.isEquipped)
+                   
                     if(item.data.isEquipped.indexOf("right")!==-1){
                         data.secChar.wornGear.weapons[0]=fortykItem; 
-                        console.log(item);
+                       
                         if(item.data.twohanded.value){
                             data.secChar.wornGear.weapons[1]=fortykItem;
                         }
@@ -335,6 +337,7 @@ export class FortyKActor extends Actor {
 
     }
     //OVERRIDE
+    //custom function to manage effects that are linked to equippable items
     applyActiveEffects(){
         let actor=this;
         let actorData=this.data;
