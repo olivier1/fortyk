@@ -230,33 +230,16 @@ export class FortyKActor extends Actor {
                 }
                 //prepare melee weapons
                 if(item.type==="meleeWeapon"){
-                    item.data.damageFormula.value=item.data.damageFormula.formula;
+                    
                     if(item.data.class.value==="Melee Two-handed"){
                         item.data.twohanded.value=true;
                     }else{
                         item.data.twohanded.value=false;
                     }
-                    if(fortykItem.getFlag("fortyk","crushing")){
-                        item.data.damageFormula.value+="+"+2*data.characteristics.s.bonus;
-                    }else{
-                        item.data.damageFormula.value+="+"+data.characteristics.s.bonus;
-                    }
-                    if(this.getFlag("fortyk","crushingblow")){
-                        item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
-                    }
                 }
                 //prepare ranged weapons
                 if(item.type==="rangedWeapon"){
-                    item.data.damageFormula.value=item.data.damageFormula.formula;
-                    try
-                    {
-                        let sb=data.characteristics.s.bonus;
-                        let formula=item.data.range.formula.toLowerCase();
-                        item.data.range.value=eval(formula);
-                    } 
-                    catch(err){
-                        item.data.range.value="";
-                    } 
+                    
                     if(item.data.class.value==="Pistol"||item.data.class.value==="Thrown"){
 
                         item.data.twohanded.value=false;
@@ -264,9 +247,7 @@ export class FortyKActor extends Actor {
                     }else{
                         item.data.twohanded.value=true;
                     }
-                    if(this.getFlag("fortyk","mightyshot")){
-                        item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.bs.bonus/2);
-                    }
+                    
                 }
                 //check if equipped
                 if((item.type==="meleeWeapon"||item.type==="rangedWeapon")&&item.data.isEquipped){
@@ -813,11 +794,34 @@ export class FortyKActor extends Actor {
             }
 
             if(item.type==="meleeWeapon"){
+                item.data.damageFormula.value=item.data.damageFormula.formula;
+                    
+                    if(fortykItem.getFlag("fortyk","crushing")){
+                        item.data.damageFormula.value+="+"+2*data.characteristics.s.bonus;
+                    }else{
+                        item.data.damageFormula.value+="+"+data.characteristics.s.bonus;
+                    }
+                    if(this.getFlag("fortyk","crushingblow")){
+                        item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
+                    }
 
                 meleeweapons.push(item);
                 wargear.push(item);
             }
             if(item.type==="rangedWeapon"){
+                item.data.damageFormula.value=item.data.damageFormula.formula;
+                    try
+                    {
+                        let sb=data.characteristics.s.bonus;
+                        let formula=item.data.range.formula.toLowerCase();
+                        item.data.range.value=eval(formula);
+                    } 
+                    catch(err){
+                        item.data.range.value="";
+                    } 
+                    if(this.getFlag("fortyk","mightyshot")){
+                        item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.bs.bonus/2);
+                    }
 
                 rangedWeapons.push(item);
                 wargear.push(item);
