@@ -8,17 +8,14 @@
         <div class="descr grid grid-4col">
             <div class="descrRow flexcol">
                 <span class="descrSpan">Name:</span>
-                <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
+                 <input type="text" class="combat-resources" data-target="name" value="{{actor.name}}" data-dtype="Number"/>
             </div>
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Age:</span>
-                <input name="data.age.value" type="text" value="{{data.age.value}}" placeholder="??"/>
+                <input type="text" class="combat-resources" data-target="data.age.value" value="{{data.age.value}}" data-dtype="Number"/>
             </div>
-            <div class="descrRow flexcol">
-                <span class="descrSpan">Sex:</span>
-                <input name="data.sex.value" type="text" value="{{data.sex.value}}" placeholder="M/F"/>
-            </div>
+
             <div class="descrRow flexcol">
                 <span class="descrSpan">Race:</span>
                 <select class="raceSelect" name="data.race.value" data-dtype="String">
@@ -31,57 +28,57 @@
                     {{/each}}
                     {{/select}}
                 </select>
-               
+
             </div>
-        </div>
-        <div class="descr grid grid-3col">
+
             <div class="descrRow flexcol">
                 <span class="descrSpan">Build:</span>
-                <input name="data.build.value" type="text" value="{{data.build.value}}" placeholder="??"/>
+                <input type="text" class="combat-resources" data-target="data.build.value" value="{{data.build.value}}" data-dtype="Number"/>
             </div>
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Hair:</span>
-                <input name="data.hair.value" type="text" value="{{data.hair.value}}" placeholder="??"/>
+                <input type="text" class="combat-resources" data-target="data.hair.value" value="{{data.hair.value}}" data-dtype="Number"/>
             </div>
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Eye:</span>
-                <input name="data.eye.value" type="text" value="{{data.eye.value}}" placeholder="??"/>
+                <input type="text" class="combat-resources" data-target="data.eye.value" value="{{data.eye.value}}" data-dtype="Number"/>
             </div>
             <div class="descrRow flexcol">
                 <span class="descrSpan">Quirks:</span>
-                <input name="data.quirks.value" type="text" value="{{data.quirks.value}}" placeholder="??"/>
+                <input type="text" class="combat-resources" data-target="data.quirks.value" value="{{data.quirks.value}}" data-dtype="Number"/>
             </div>
             <div class="descrRow flexcol">
                 <span class="descrSpan">Superstitions:</span>
-                <input name="data.superstitions.value" type="text" value="{{data.superstitions.value}}" placeholder="??"/>
+                <input type="text" class="combat-resources" data-target="data.superstitions.value" value="{{data.superstitions.value}}" data-dtype="Number"/>
             </div>
             <div class="descrRow flexcol">
-                <span class="descrSpan">momentos:</span>
-                <input name="data.momentos.value" type="text" value="{{data.momentos.value}}" placeholder="??"/>
+                <span class="descrSpan">Momentos:</span>
+                <input type="text" class="combat-resources" data-target="data.momentos.value" value="{{data.momentos.value}}" data-dtype="Number"/>
             </div>
 
         </div>
         <div class="descr grid grid-3col">
             <div class="descrRow flexcol">
                 <span class="descrSpan">Homeworld:</span>
-                <input name="data.homeWorld.value" type="text" value="{{data.homeWorld.value}}" placeholder="???"/>
+                <input type="text" class="combat-resources" data-target="data.homeWorld.value" value="{{data.homeWorld.value}}" data-dtype="Number"/>
             </div>
             <div class="descrRow flexcol">
                 <span class="descrSpan">Regiment:</span>
-                <input name="data.regiment.value" type="text" value="{{data.regiment.value}}" placeholder="???"/>
+                <input type="text" class="combat-resources" data-target="data.regiment.value" value="{{data.regiment.value}}" data-dtype="Number"/>
+                
             </div>
             <div class="descrRow flexcol">
                 <span class="descrSpan">Specialty:</span>
-                <input name="data.specialty.value" type="text" value="{{data.specialty.value}}" placeholder="???"/>
+                <input type="text" class="combat-resources" data-target="data.specialty.value" value="{{data.specialty.value}}" data-dtype="Number"/>
+               
             </div>
 
         </div>
         <div class="eliteAdvances flexcol">
             <div><span class="descrSpan">Specialty path:</span>
-            <input name="data.eliteAdvances.value" type="text" value="{{data.specialty.path}}" placeholder="???"/></div>
-            
+            <input type="text" class="combat-resources" data-target="data.specialty.path" value="{{data.specialty.path}}" data-dtype="Number"/>
             
 
         </div>
