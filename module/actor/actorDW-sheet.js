@@ -46,11 +46,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         html.find('.wargear-create').click(this._onWargearCreate.bind(this));
 
 
-        
+
         //handles adding or removing worn weapon slots
         html.find('.worn-item-plus').click(this._onAddExtraWeapon.bind(this));
         html.find('.worn-item-minus').click(this._onRemoveExtraWeapon.bind(this));
-         html.find('.extra-weapon').change(this._onExtraWeaponChange.bind(this));
+        html.find('.extra-weapon').change(this._onExtraWeaponChange.bind(this));
         //handles changing ammo type
         html.find('.weapon-ammo').change(this._onAmmoChange.bind(this));
         //handles reloading a ranged weapon
@@ -173,7 +173,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
 
 
-    
+
     //handles adding extra worn weapon slots
     async _onAddExtraWeapon(event){
         let actor=this.actor;
@@ -215,7 +215,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         if(updates.length>0){
             await actor.updateEmbeddedDocuments("Item",updates);
         }
-        
+
     }
     //handles when swapping ammo type in a ranged weapon
     async _onAmmoChange(event){
@@ -330,10 +330,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         let actor=this.actor;
         let weapon=actor.items.get(event.currentTarget.value);
-      
+
         if(weapon){
 
-            
+
 
             weapon=weapon.data;
         }
@@ -343,13 +343,19 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         const rightHand=document.getElementById("right");
         var update=[];
         var previousWeaponID="";
+        console.log(data);
         if(hand==="right"){
             previousWeaponID=data.secChar.wornGear.weapons[0].id;
             if(previousWeaponID){
                 update.push({"_id":previousWeaponID,"data.isEquipped":false});
             }
             if(weaponID!==""){
-                update.push({"_id":weaponID,"data.isEquipped":"right"});
+                if(weapon.data.twohanded.value){
+                    update.push({"_id":weaponID,"data.isEquipped":"rightleft"});
+                }else{
+                    update.push({"_id":weaponID,"data.isEquipped":"right"});
+                }
+
             }
 
         }else if(hand==="left"){
@@ -359,17 +365,21 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 update.push({"_id":previousWeaponID,"data.isEquipped":false});
             }
             if(weaponID!==""){
-                update.push({"_id":weaponID,"data.isEquipped":"left"});
+                if(weapon.data.twohanded.value){
+                    update.push({"_id":weaponID,"data.isEquipped":"rightleft"});
+                }else{
+                    update.push({"_id":weaponID,"data.isEquipped":"left"});
+                }
             }
 
         }
-        
-
+        console.log(weaponID,previousWeaponID);
+        console.log(update);
 
         if(update.length>0){
             await this.actor.updateEmbeddedDocuments("Item",update);
         }
-       
+
 
     }
 

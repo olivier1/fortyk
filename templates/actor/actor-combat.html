@@ -95,11 +95,11 @@
                         <option value="" {{#if data.secChar.wornGear.weapons.[1].data}}selected{{/if}}>None</option>
                         
                         {{#each actor.meleeWeapons}}
-                        <option value="{{this._id}}" {{#if (compareString this.data.isEquipped "left")}}selected{{/if}}>{{this.name}}</option>
+                        <option value="{{this._id}}" {{#if (contains this.data.isEquipped "left")}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                         {{#each actor.rangedWeapons}}
 
-                        <option value="{{this._id}}" {{#if (compareString this.data.isEquipped "left")}}selected{{/if}}>{{this.name}}</option>
+                        <option value="{{this._id}}" {{#if (contains this.data.isEquipped "left")}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                     </select>
                 </div>
@@ -110,11 +110,11 @@
                         <option value="" {{#if data.secChar.wornGear.weapons.[0].data}}selected{{/if}}>None</option>
                         
                         {{#each actor.meleeWeapons}}
-                        <option value="{{this._id}}" {{#if (compareString this.data.isEquipped "right")}}selected{{/if}}>{{this.name}}</option>
+                        <option value="{{this._id}}" {{#if (contains this.data.isEquipped "right")}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                         {{#each actor.rangedWeapons}}
 
-                        <option value="{{this._id}}" {{#if (compareString this.data.isEquipped "right")}}selected{{/if}}>{{this.name}}</option>
+                        <option value="{{this._id}}" {{#if (contains this.data.isEquipped "right")}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
 
                         

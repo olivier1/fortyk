@@ -230,12 +230,13 @@ export class FortyKActor extends Actor {
                 }
                 //check if equipped
                 if((item.type==="meleeWeapon"||item.type==="rangedWeapon")&&item.data.isEquipped){
-                    if(item.data.isEquipped==="right"){
+                    console.log(item.data.isEquipped)
+                    if(item.data.isEquipped.indexOf("right")!==-1){
                         data.secChar.wornGear.weapons[0]=fortykItem;  
                         if(item.data.twohanded.value){
                             data.secChar.wornGear.weapons[1]=fortykItem;}
 
-                    }else if(item.data.isEquipped==="left"){
+                    }else if(item.data.isEquipped.indexOf("left")!==-1){
                         data.secChar.wornGear.weapons[1]=fortykItem;  
                         if(item.data.twohanded.value){
                             data.secChar.wornGear.weapons[0]=fortykItem;
