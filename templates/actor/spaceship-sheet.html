@@ -13,24 +13,27 @@
 
                             <div class="descrRow flexcol">
                                 <span class="descrSpan">Name:</span>
-                                <input name="name" type="text" value="{{name}}" placeholder="Name"/>
+                                <input type="text" class="combat-resources" data-target="name" value="{{name}}" data-dtype="Number"/>
                             </div>
 
                             <div class="descrRow flexcol">
                                 <span class="descrSpan">Class:</span>
-                                <input name="data.class.value" type="text" value="{{data.class.value}}"/>
+                                <input type="text" class="combat-resources" data-target="data.class.value" value="{{data.class.value}}" data-dtype="Number"/>
                             </div>
                             <div class="descrRow flexcol">
                                 <span class="descrSpan">Hull:</span>
-                                <input name="data.hull.value" type="text" value="{{data.hull.value}}"/>
+                                <input type="text" class="combat-resources" data-target="data.hull.value" value="{{data.hull.value}}" data-dtype="Number"/>
                             </div>
 
                         </div>
                         <div class="descrRow flexcol">
                             <div><span class="descrSpan">Complications/Past History:</span>
-                                <input name="data.complications.0" type="text" value="{{data.complications.[0]}}" /></div>
-
-                            <input name="data.complications.1" type="text" value="{{data.complications.[1]}}" /></div>
+                                <input type="text" class="combat-resources" data-target="data.complications.0" value="{{data.complications.0}}" data-dtype="Number"/>
+                                <input type="text" class="combat-resources" data-target="data.complications.1" value="{{data.complications.1}}" data-dtype="Number"/>
+                            </div>
+                            
+                            
+                        </div>
 
 
                     </div>
@@ -46,35 +49,35 @@
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Manoeuver:</span>
                     <input type="text" class="combat-resources" data-target="data.manoeuvrability.value" value="{{data.manoeuvrability.value}}" data-dtype="Number"/>
-                    
+
                 </div>
 
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Detection:</span>
                     <input type="text" class="combat-resources" data-target="data.detection.value" value="{{data.detection.value}}" data-dtype="Number"/>
-                    
+
                 </div>
 
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Turret Rating:</span>
                     <input type="text" class="combat-resources" data-target="data.turret.value" value="{{data.turret.value}}" data-dtype="Number"/>
-                    
+
                 </div>
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Void Shields:</span>
                     <input type="text" class="combat-resources" data-target="data.shields.value" value="{{data.shields.value}}" data-dtype="Number"/>
-                    
+
                 </div>
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Armor:</span>
                     <input type="text" class="combat-resources" data-target="data.armor.value" value="{{data.armor.value}}" data-dtype="Number"/>
-                    
+
                 </div>
                 <div class="descrRow flexcol">
                     <span class="char-total rollable button" data-roll-type="char" data-target="{{data.crew.rating}}" data-label="Crew Rating" data-char="">Crew Rating:</span>
                     <span class="descrSpan"></span>
                     <input type="text" class="combat-resources" data-target="data.crew.rating" value="{{data.crew.rating}}" data-dtype="Number"/>
-                    
+
                 </div>
                 <div class="resource flex-group-center">
                     <label for="data.secChar.wounds.value" class="resource-label">Hull Integrity</label>
@@ -171,12 +174,12 @@
                 <a class="list-item sort-button" data-sort-type="sp" data-path="data.sp.value" data-item-type="components">SP</a>
                 <span class="list-button"></span>
                 <span class="list-button"></span>
-                
+
                 {{#each actor.components as |t key|}}
 
                 <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}</a>
                 <select class="component-status" data-id="{{this._id}}">
-                    
+
                     {{#select this.data.status.value}}
 
 
