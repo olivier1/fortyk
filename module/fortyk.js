@@ -118,7 +118,7 @@ Hooks.once('init', async function() {
         }
     });
     Handlebars.registerHelper("contains", function(str1, str2) {
-        
+
         if(str1===undefined){return false};
         if(str1===null){return false};
         if(!str1){return false};
@@ -236,65 +236,68 @@ Hooks.on("updateCombat", async (combat) => {
                     activeEffect.delete({});
                 }
             }
-            //check for fire
-            if(activeEffect.data.flags.core.statusId==="fire"){
-                let onFireOptions={user: game.user._id,
-                                   speaker:{actor,alias:actor.name},
-                                   content:"On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
-                                   classes:["fortyk"],
-                                   flavor:`On Fire!`,
-                                   author:actor.name};
-                await ChatMessage.create(onFireOptions,{});
-                await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "On Fire! Panic");
-                let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
-                await actor.update({"data.secChar.fatigue.value":fatigue});
-                let flags= duplicate(game.fortyk.FORTYK.weaponFlags);
-                let fireData={name:"Fire",type:"rangedWeapon"}
-                let fire=await Item.create(fireData, {temporary: true});
-
-                fire._data.flags.specials=flags;
-                fire._data.data.damageType.value="Energy";
-                fire._data.data.pen.value=99999;
-                await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire,1, true);
-            }
-            //check for bleeding
-            if(activeEffect.data.flags.core.statusId==="bleeding"){
-                let bleed=true;
-                if(actor.getFlag("fortyk","diehard")){
-                    let diehrd= await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "Die Hard");
-                    if(diehrd.value){
-                        bleed=false;
-                        let dieHardOptions={user: game.user._id,
-                                            speaker:{actor,alias:actor.name},
-                                            content:"Resisted bleeding fatigue.",
-                                            classes:["fortyk"],
-                                            flavor:`Bleeding`,
-                                            author:actor.name};
-                        await ChatMessage.create(dieHardOptions,{});
-                    }
-                }
-                if(bleed){
-                    let bleedingOptions={user: game.user._id,
-                                         speaker:{actor,alias:actor.name},
-                                         content:"On round start gain 1 fatigue per stack of bleeding",
-                                         classes:["fortyk"],
-                                         flavor:`Bleeding`,
-                                         author:actor.name};
-                    await ChatMessage.create(bleedingOptions,{});
+            //check for flags
+            if(activeEffect.data.flags.core){
+                //check for fire
+                if(activeEffect.data.flags.core.statusId==="fire"){
+                    let onFireOptions={user: game.user._id,
+                                       speaker:{actor,alias:actor.name},
+                                       content:"On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
+                                       classes:["fortyk"],
+                                       flavor:`On Fire!`,
+                                       author:actor.name};
+                    await ChatMessage.create(onFireOptions,{});
+                    await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "On Fire! Panic");
                     let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
                     await actor.update({"data.secChar.fatigue.value":fatigue});
+                    let flags= duplicate(game.fortyk.FORTYK.weaponFlags);
+                    let fireData={name:"Fire",type:"rangedWeapon"}
+                    let fire=await Item.create(fireData, {temporary: true});
+
+                    fire._data.flags.specials=flags;
+                    fire._data.data.damageType.value="Energy";
+                    fire._data.data.pen.value=99999;
+                    await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire,1, true);
+                }
+                //check for bleeding
+                if(activeEffect.data.flags.core.statusId==="bleeding"){
+                    let bleed=true;
+                    if(actor.getFlag("fortyk","diehard")){
+                        let diehrd= await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "Die Hard");
+                        if(diehrd.value){
+                            bleed=false;
+                            let dieHardOptions={user: game.user._id,
+                                                speaker:{actor,alias:actor.name},
+                                                content:"Resisted bleeding fatigue.",
+                                                classes:["fortyk"],
+                                                flavor:`Bleeding`,
+                                                author:actor.name};
+                            await ChatMessage.create(dieHardOptions,{});
+                        }
+                    }
+                    if(bleed){
+                        let bleedingOptions={user: game.user._id,
+                                             speaker:{actor,alias:actor.name},
+                                             content:"On round start gain 1 fatigue per stack of bleeding",
+                                             classes:["fortyk"],
+                                             flavor:`Bleeding`,
+                                             author:actor.name};
+                        await ChatMessage.create(bleedingOptions,{});
+                        let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
+                        await actor.update({"data.secChar.fatigue.value":fatigue});
+                    }
                 }
             }
-        }
-        //check for regeneration
-        if(actor.getFlag("fortyk","regeneration")){
-            let regen=await FortykRolls.fortykTest("t", "char", actor.data.data.characteristics.t.total,actor, "Regeneration Test");
-            if(regen.value){
-                let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
-                let maxWounds=actor.data.data.secChar.wounds.max;
-                let currWounds=actor.data.data.secChar.wounds.value;
-                currWounds=Math.min(maxWounds,currWounds+regenAmt);
-                await actor.update({"data.secChar.wounds.value":currWounds});
+            //check for regeneration
+            if(actor.getFlag("fortyk","regeneration")){
+                let regen=await FortykRolls.fortykTest("t", "char", actor.data.data.characteristics.t.total,actor, "Regeneration Test");
+                if(regen.value){
+                    let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
+                    let maxWounds=actor.data.data.secChar.wounds.max;
+                    let currWounds=actor.data.data.secChar.wounds.value;
+                    currWounds=Math.min(maxWounds,currWounds+regenAmt);
+                    await actor.update({"data.secChar.wounds.value":currWounds});
+                }
             }
         }
     }
@@ -310,7 +313,7 @@ Hooks.on("preDeleteCombat", async (combat,options,id) =>{
     }
 })
 Hooks.on("preUpdateActor", (data, updatedData) =>{
-  
+
 })
 //add listeners to the chatlog for dice rolls
 Hooks.on('renderChatLog', (log, html, data) => FortykRollDialogs.chatListeners(html));
@@ -374,8 +377,8 @@ Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
                         button:{
                             label:"Ok",
                             callback: async html => {
-                                 
-                                
+
+
                             }
                         },
 
@@ -383,7 +386,7 @@ Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
                 },options).render(true)
                 sheet.actor.dialog=d;
                 });
-            
+
         }
         let close=buttons.pop();
         buttons.push(button);
