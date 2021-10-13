@@ -829,7 +829,7 @@ export class FortyKActor extends Actor {
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
                 if(this.getFlag("fortyk","WeaponMaster")){
 
-                    if(this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(item.data.type.value.toLowerCase())){
+                   if(this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(item.data.type.value.toLowerCase())){
                         item.data.damageFormula.value+="+2";
                         item.data.testMod.value=item._source.data.testMod.value+10;
                     }
