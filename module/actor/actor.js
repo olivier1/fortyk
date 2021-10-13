@@ -230,7 +230,7 @@ export class FortyKActor extends Actor {
                 }
                 //prepare melee weapons
                 if(item.type==="meleeWeapon"){
-                    
+
                     if(item.data.class.value==="Melee Two-handed"){
                         item.data.twohanded.value=true;
                     }else{
@@ -239,7 +239,7 @@ export class FortyKActor extends Actor {
                 }
                 //prepare ranged weapons
                 if(item.type==="rangedWeapon"){
-                    
+
                     if(item.data.class.value==="Pistol"||item.data.class.value==="Thrown"){
 
                         item.data.twohanded.value=false;
@@ -247,14 +247,14 @@ export class FortyKActor extends Actor {
                     }else{
                         item.data.twohanded.value=true;
                     }
-                    
+
                 }
                 //check if equipped
                 if((item.type==="meleeWeapon"||item.type==="rangedWeapon")&&item.data.isEquipped){
-                   
+
                     if(item.data.isEquipped.indexOf("right")!==-1){
                         data.secChar.wornGear.weapons[0]=fortykItem; 
-                       
+
                         if(item.data.twohanded.value){
                             data.secChar.wornGear.weapons[1]=fortykItem;
                         }
@@ -682,7 +682,9 @@ export class FortyKActor extends Actor {
                         item.data.total.value+=parry;
                     } 
                 }
-
+                if(this.getFlag("fortyk","fieldvivisection")&&item.name==="Medicae"){
+                    data.fieldVivisection=parseInt(item.data.value)+parseInt(item.data.mod.value);
+                }
                 if(item.data.parent.value==="Forbidden Lore"){
                     if(game.fortyk.FORTYK.races.includes(item.name)){
                         forRaces.push(item.name);
@@ -795,33 +797,101 @@ export class FortyKActor extends Actor {
 
             if(item.type==="meleeWeapon"){
                 item.data.damageFormula.value=item.data.damageFormula.formula;
-                    
-                    if(fortykItem.getFlag("fortyk","crushing")){
-                        item.data.damageFormula.value+="+"+2*data.characteristics.s.bonus;
-                    }else{
-                        item.data.damageFormula.value+="+"+data.characteristics.s.bonus;
-                    }
-                    if(this.getFlag("fortyk","crushingblow")){
-                        item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
-                    }
+
+                if(fortykItem.getFlag("fortyk","crushing")){
+                    item.data.damageFormula.value+="+"+2*data.characteristics.s.bonus;
+                }else{
+                    item.data.damageFormula.value+="+"+data.characteristics.s.bonus;
+                }
+                if(this.getFlag("fortyk","crushingblow")){
+                    item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
+                }
 
                 meleeweapons.push(item);
                 wargear.push(item);
             }
             if(item.type==="rangedWeapon"){
                 item.data.damageFormula.value=item.data.damageFormula.formula;
-                    try
-                    {
-                        let sb=data.characteristics.s.bonus;
-                        let formula=item.data.range.formula.toLowerCase();
-                        item.data.range.value=eval(formula);
-                    } 
-                    catch(err){
-                        item.data.range.value="";
-                    } 
-                    if(this.getFlag("fortyk","mightyshot")){
-                        item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.bs.bonus/2);
+                try
+                {
+                    let sb=data.characteristics.s.bonus;
+                    let formula=item.data.range.formula.toLowerCase();
+                    item.data.range.value=eval(formula);
+                } 
+                catch(err){
+                    item.data.range.value="";
+                } 
+                if(this.getFlag("fortyk","mightyshot")){
+                    item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.bs.bonus/2);
+                }
+                if(this.getFlag("fortyk","accurate")){
+                    item.data.attackMods.aim.half=20;
+                    item.data.attackMods.aim.full=30;
+                }
+
+                if(this.getFlag("fortyk","scatter")){
+                    item.data.attackMods.range.pointblank=40;
+                    item.data.attackMods.range.short=20;
+
+                }
+                if(this.getFlag("fortyk","twinlinked")){
+
+                    item.data.testMod.value=20;
+                    item.data.clip.consumption=2;
+                }
+                if(item.data.damTyp===undefined){item.data.damTyp=item.data.damageType.value}
+
+                let ammo=this.getEmbeddedDocument("Item",item.data.ammo._id);
+
+                if(ammo!==undefined&&!ammo.data.data.default.value){
+                    let ammoData=ammo.data;
+                    item.data.damageType.value=ammoData.data.damageType.value;
+                    item.data.range.value=ammoData.data.range.formula;
+                    item.data.pen.value=ammoData.data.pen.formula;
+                    item.data.damageFormula.value=ammoData.data.damageFormula.formula;
+                    item.flags=ammoData.flags;
+                }else{
+                    if(!item.data.damTyp===""){
+                        item.data.damageType.value=data.damTyp;
+                    }else{
+                        item.data.damTyp=item.data.damageType.value;
                     }
+
+                    item.data.range.value=item.data.range.formula;
+                    item.data.pen.value=item.data.pen.formula;
+                    item.data.damageFormula.value=item.data.damageFormula.formula;
+
+                }
+
+                item.data.clip.max=item.data.clip.formula;
+
+                if(fortykItem.getFlag("fortyk","lasModal")){
+                    if(fortykItem.getFlag("fortyk","lasMode")===0){
+
+                    }else if(fortykItem.getFlag("fortyk","lasMode")===1){
+                        item.data.clip.consumption=2;
+                        item.data.damageFormula.value+="+1"
+                    }else if(fortykItem.getFlag("fortyk","lasMode")===2){
+                        item.data.clip.consumption=4;
+                        item.data.damageFormula.value+="+2"
+                        item.data.pen.value=parseInt(item.data.pen.formula)+2;
+                        item.flags.fortyk.reliable=false;
+                        item.flags.fortyk.unreliable=true;
+                    }
+                }
+                if(fortykItem.getFlag("fortyk","maximalMode")){
+
+
+                    item.data.range.value=parseInt(item.data.range.formula)+10;
+                    let form=item.data.damageFormula.formula;
+                    let dPos = form.indexOf('d');
+                    let dieNum = form.substr(0,dPos);
+                    let newNum=parseInt(dieNum)+1;
+                    item.data.damageFormula.value=form.slice(dPos)
+                    item.data.damageFormula.value=newNum+item.data.damageFormula.value;
+                    item.data.pen.value=parseInt(item.data.pen.formula)+2;
+                    item.data.clip.consumption=3;
+                }
 
                 rangedWeapons.push(item);
                 wargear.push(item);
@@ -829,7 +899,7 @@ export class FortyKActor extends Actor {
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
                 if(this.getFlag("fortyk","WeaponMaster")){
 
-                   if(this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(item.data.type.value.toLowerCase())){
+                    if(this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(item.data.type.value.toLowerCase())){
                         item.data.damageFormula.value+="+2";
                         item.data.testMod.value=item._source.data.testMod.value+10;
                     }
@@ -869,7 +939,9 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","deathwatchtraining")){
             actorData.flags.fortyk.deathwatchtraining=forRaces;
         }
-
+        if(this.getFlag("fortyk","fieldvivisection")){
+            actorData.flags.fortyk.fieldvivisection=forRaces;
+        }
 
 
 

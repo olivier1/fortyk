@@ -85,76 +85,10 @@ export class FortyKItem extends Item {
             }
             if(itemData.type==="rangedWeapon"){
 
-                if(this.getFlag("fortyk","accurate")){
-                    data.attackMods.aim.half=20;
-                    data.attackMods.aim.full=30;
-                }
-
-                if(this.getFlag("fortyk","scatter")){
-                    data.attackMods.range.pointblank=40;
-                    data.attackMods.range.short=20;
-
-                }
-                if(this.getFlag("fortyk","twinlinked")){
-
-                    data.testMod.value=20;
-                    data.clip.consumption=2;
-                }
-                if(data.damTyp===undefined){data.damTyp=data.damageType.value}
-                if(data.flags===undefined){data.flags=itemData.flags}
-                let ammo=this.actor.getEmbeddedDocument("Item",data.ammo._id);
-
-                if(ammo!==undefined&&!ammo.data.data.default.value){
-                    let ammoData=ammo.data;
-                    data.damageType.value=ammoData.data.damageType.value;
-                    data.range.value=ammoData.data.range.formula;
-                    data.pen.value=ammoData.data.pen.formula;
-                    data.damageFormula.value=ammoData.data.damageFormula.formula;
-                    itemData.flags=ammoData.flags;
-                }else{
-                    if(!data.damTyp===""){
-                        data.damageType.value=data.damTyp;
-                    }else{
-                        data.damTyp=data.damageType.value;
-                    }
-
-                    data.range.value=data.range.formula;
-                    data.pen.value=data.pen.formula;
-                    data.damageFormula.value=data.damageFormula.formula;
-                    itemData.flags=data.flags;
-                }
-
-                data.clip.max=data.clip.formula;
-
-                if(this.getFlag("fortyk","lasModal")){
-                    if(this.getFlag("fortyk","lasMode")===0){
-
-                    }else if(this.getFlag("fortyk","lasMode")===1){
-                        data.clip.consumption=2;
-                        data.damageFormula.value+="+1"
-                    }else if(this.getFlag("fortyk","lasMode")===2){
-                        data.clip.consumption=4;
-                        data.damageFormula.value+="+2"
-                        data.pen.value=parseInt(itemData.data.pen.formula)+2;
-                        itemData.flags.fortyk.reliable=false;
-                        itemData.flags.fortyk.unreliable=true;
-                    }
-                }
+                
 
 
-                if(this.getFlag("fortyk","maximalMode")){
-
-
-                    itemData.data.range.value=parseInt(itemData.data.range.formula)+10;
-                    let form=itemData.data.damageFormula.formula;
-                    let dPos = form.indexOf('d');
-                    let dieNum = form.substr(0,dPos);
-                    let newNum=parseInt(dieNum)+1;
-                    itemData.data.damageFormula.value=form.slice(dPos)
-                    itemData.data.damageFormula.value=newNum+itemData.data.damageFormula.value;
-                    itemData.data.pen.value=parseInt(itemData.data.pen.formula)+2;
-                    itemData.data.clip.consumption=3;
-                }
+                
             }
             //prepare psychicpowers, calculates pushing and target numbers
             if(itemData.type==="psychicPower"){

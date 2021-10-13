@@ -175,7 +175,7 @@
                 {{/if}}
                 {{#if this.data.flags.fortyk.maximal}}
                 <div class="list-item">
-                    <span>Maximal: <input type="checkbox" class="maximal" data-item-id="{{this._id}}"  {{checked this.flags.fortyk.maximalMode}}></span>
+                    <span>Maximal: <input type="checkbox" class="maximal" data-item-id="{{this._id}}"  {{checked this.data.flags.fortyk.maximalMode}}></span>
 
 
                 </div>
@@ -184,9 +184,9 @@
                 <div class="list-item">
                     <span>Las Fire Mode: 
                         <select class="lasMode"  data-item-id="{{this._id}}" data-dtype="Number">
-                            {{#select this.flags.fortyk.lasMode}}
-
-                            {{#each this.FORTYK.lasModes}}
+                            {{#select this.data.flags.fortyk.lasMode}}
+                            {{debug this}}
+                            {{#each this.data.FORTYK.lasModes}}
 
                             <option value="{{@index}}">{{this}}</option>
                             {{/each}}
@@ -210,7 +210,7 @@
                         {{#each ../actor.equippableAmmo}}
                         {{#if (compareString this.data.class.value ../this.data.data.class.value)}}
                         {{#if (compareString this.data.type.value ../this.data.data.type.value)}}
-                        <option value="{{this._id}}">{{this.name}}:{{this.data.data.amount.value}}</option>
+                        <option value="{{this._id}}">{{this.name}}:{{this.data.amount.value}}</option>
                         {{/if}}
                         {{/if}}
                         {{/each}}
@@ -228,7 +228,7 @@
                 <div class="list-item flexrow">
                     <span>Current Clip: </span>
 
-                    <input class="item-text-input" type="text" data-target="data.clip.value"  value="{{this.data.clip.value}}" data-item-id="{{this._id}}" data-dtype="Number">
+                    <input class="item-text-input" type="text" data-target="data.clip.value"  value="{{this.data.data.clip.value}}" data-item-id="{{this._id}}" data-dtype="Number">
                     <span> / </span>
                     <span>{{this.data.data.clip.max}}</span>
 
@@ -252,10 +252,11 @@
                     <span>Special: 
 
                         {{#each this.data.flags.fortyk as |flag key|}}
+                        {{debug this}}
 
                         {{#if (checkSpecial this)}}
 
-                        {{#with (lookup ../FORTYK.weaponFlags [key])~}}
+                        {{#with (lookup ../data.FORTYK.weaponFlags [key])~}}
                         <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
 
                             {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
@@ -317,7 +318,7 @@
 
                         {{#if (checkSpecial this)}}
 
-                        {{#with (lookup ../FORTYK.weaponFlags [key])~}}
+                        {{#with (lookup ../data.FORTYK.weaponFlags [key])~}}
                         <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
 
                             {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>

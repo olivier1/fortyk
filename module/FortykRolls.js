@@ -353,7 +353,7 @@ returns the roll message*/
         await ChatMessage.create(chatPhenom,{});
     }
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
-    static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false){
+    static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0){
         let weapon=deepClone(fortykWeapon.data);
         let righteous=10;
         if(fortykWeapon.getFlag("fortyk","vengeful")){
@@ -391,26 +391,7 @@ returns the roll message*/
             targets=game.users.current.targets;
             curHit=actor.data.data.secChar.lastHit;
         }
-        if(actor.getFlag("fortyk","deathwatchtraining")){
-            if(!self&&targets.size!==0){
-                let target=targets.values().next().value;
-                let targetRace=target.actor.data.data.race.value;
-                let forRaces=actor.data.flags.deathwatchtraining;
-                if(forRaces.includes(targetRace)){
-                    righteous-=1;
-                }
-            }
-        }
-        if(fortykWeapon.getFlag("fortyk","daemonbane")){
-            if(!self&&targets.size!==0){
-                let target=targets.values().next().value;
-                let targetRace=target.actor.data.data.race.value;
 
-                if(targetRace==="Daemon"){
-                    righteous-=1;
-                }
-            }
-        }
         //spray and blast weapons always hit the body hit location
         if(fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","spray")){
             curHit=game.fortyk.FORTYK.extraHits["body"][0];
@@ -496,14 +477,14 @@ returns the roll message*/
             let roll=new Roll(form,actor.data.data);
             let label = weapon.name ? `Rolling ${weapon.name} damage.` : 'damage';
             roll.roll();
-
-            let tens=0;
-
+            //calculate righteous for non targetted rolls
+            let tenz=0;
+            
             try{
                 for ( let r of roll.dice[0].results ) {
                     if(r.active){
-                        if(r.result>=righteous){
-                            tens+=1;
+                        if(r.result>=tarRighteous){
+                            tenz+=1;
                         }
                     }
 
@@ -511,7 +492,6 @@ returns the roll message*/
             }catch(err){
 
             }
-
 
 
 
@@ -555,14 +535,48 @@ returns the roll message*/
                 let tarNumbr=0;
                 //if there are targets apply damage to all of them
                 for (let tar of targets){
-                    
+
                     let activeEffects=[];
                     let data={};
                     let tarActor={};
                     data=tar.actor.data.data; 
                     tarActor=tar.actor;
                     let armorSuit=data.secChar.wornGear.armor.document;
-                    
+                    let tarRighteous=righteous;
+                    if(actor.getFlag("fortyk","deathwatchtraining")){
+
+
+                        let targetRace=data.race.value;
+                        let forRaces=actor.data.flags.deathwatchtraining;
+                        if(forRaces.includes(targetRace)){
+                            tarRighteous-=1;
+                        }
+
+                    }
+                    if(fortykWeapon.getFlag("fortyk","daemonbane")){
+
+
+                        let targetRace=data.race.value;
+
+                        if(targetRace==="Daemon"){
+                            tarRighteous-=1;
+                        }
+
+                    }
+                    let tens=0;
+
+                    try{
+                        for ( let r of roll.dice[0].results ) {
+                            if(r.active){
+                                if(r.result>=tarRighteous){
+                                    tens+=1;
+                                }
+                            }
+
+                        } 
+                    }catch(err){
+
+                    }
                     if(armorSuit===undefined){
                         armorSuit=Item.create({type:"armor",name:"standin"},{temporary:true});
                     }
@@ -597,7 +611,7 @@ returns the roll message*/
                         }
                         //check if weapon ignores soak
                         if(!fortykWeapon.getFlag("fortyk","ignoreSoak")){
-                            
+
 
 
                             let pen=0;
@@ -957,7 +971,7 @@ returns the roll message*/
                         }
                         //process horde damage for different weapon qualities
                         if(data.horde.value&&damage>0){
-                            damage=1;
+                            damage=1+magdamage;
                             chatDamage=1;
                             if(weapon.data.damageType.value==="Explosive"){
                                 damage+=1;
@@ -1097,7 +1111,7 @@ returns the roll message*/
                     speaker: ChatMessage.getSpeaker({ actor: actor }),
                     flavor: label
                 });
-                this._righteousFury(actor,label,weapon,lastHit,tens);
+                this._righteousFury(actor,label,weapon,lastHit,tenz);
             }
 
             hitNmbr++;
@@ -1117,7 +1131,7 @@ returns the roll message*/
     static async reportDamage(tarActor, chatDamage){
         if(game.settings.get("fortyk","privateDamage")){
             let user_ids = Object.entries(tarActor.data.permission).filter(p=> p[0] !== `default` && p[1] === 3).map(p=>p[0]);
-           
+
             for(let user of user_ids)
             {
                 if(user!==game.users.current.id||user_ids.length===1){

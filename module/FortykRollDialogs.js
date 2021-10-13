@@ -98,7 +98,18 @@ export class FortykRollDialogs{
             templateOptions["options"].selfBlind=modifiers.selfBlind;
         }
         templateOptions["size"]=game.fortyk.FORTYK.size;
-
+        let targets=game.user.targets;
+        if(actor.getFlag("fortyk","fieldvivisection")&&targets.size>0){
+            
+            let targetIt=targets.values();
+            let target=targetIt.next().value;
+          
+            let targetActor=target.actor;
+            let tarRace=targetActor.data.data.race.value;
+            if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)){
+                templateOptions["modifiers"].called+=actor.data.data.fieldVivisection;
+            }
+        }
         let renderedTemplate= await renderTemplate(template,templateOptions);
 
         new Dialog({
@@ -149,6 +160,7 @@ export class FortykRollDialogs{
                         if(isNaN(other)){other=0}
                         
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
+                         AudioHelper.play({src: "sounds/dice.wav", volume: 0.8, loop: false}, true);
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
                     }
 
@@ -167,15 +179,16 @@ export class FortykRollDialogs{
 
         templateOptions["modifiers"]=actor.data.data.secChar.attacks;
         templateOptions["size"]=game.fortyk.FORTYK.size;
-        templateOptions["modifiers"].standard=itemData.data.attackMods.single;
-        templateOptions["modifiers"].semi=itemData.data.attackMods.semi;
-        templateOptions["modifiers"].full=itemData.data.attackMods.full;
-        if(templateOptions["modifiers"].semi||templateOptions["modifiers"].full){
+        templateOptions["modifiers"].standard=Math.max(templateOptions["modifiers"].standard,itemData.data.attackMods.single);
+        templateOptions["modifiers"].semi=Math.max(itemData.data.attackMods.semi,templateOptions["modifiers"].semi);
+        templateOptions["modifiers"].full=Math.max(itemData.data.attackMods.full,templateOptions["modifiers"].full);
+        if(itemData.data.rof[1].value||itemData.data.rof[2].value){
             templateOptions["modifiers"].supp=true;
         }else{
             templateOptions["modifiers"].supp=false;
         }
-        templateOptions["modifiers"].suppressive=itemData.data.attackMods.suppressive;
+        
+        templateOptions["modifiers"].suppressive=Math.max(itemData.data.attackMods.suppressive,templateOptions["modifiers"].suppressive);
         templateOptions["modifiers"].aim=itemData.data.attackMods.aim;
         templateOptions["modifiers"].testMod=itemData.data.testMod.value;
 
@@ -274,7 +287,20 @@ export class FortykRollDialogs{
         templateOptions["options"].size=modifiers.size;
         templateOptions["options"].running=modifiers.running;
         templateOptions["options"].normal=true;
-
+        //field vivisection
+        let targets=game.user.targets;
+      
+        if(actor.getFlag("fortyk","fieldvivisection")&&targets.size>0){
+            
+            let targetIt=targets.values();
+            let target=targetIt.next().value;
+          
+            let targetActor=target.actor;
+            let tarRace=targetActor.data.data.race.value;
+            if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)){
+                templateOptions["modifiers"].called+=actor.data.data.fieldVivisection;
+            }
+        }
         //distance shenanigans
 
         if(modifiers.distance){
@@ -419,6 +445,7 @@ export class FortykRollDialogs{
                         if(isNaN(other)){other=0}
 
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus);
+                         AudioHelper.play({src: "sounds/dice.wav", volume: 0.8, loop: false}, true);
                         await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType);
                         if(aimBonus>0){
                             await actor.update({"data.secChar.lastHit.aim":true});
@@ -533,6 +560,7 @@ export class FortykRollDialogs{
                         if(isNaN(stunned)){stunned=0}
                         if(isNaN(other)){other=0}
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(melee)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
+                         AudioHelper.play({src: "sounds/dice.wav", volume: 0.8, loop: false}, true);
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
                     }
 

@@ -579,30 +579,33 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let fortykWeapon=actor.items.get(dataset.weapon);
 
             let weapon=fortykWeapon.data;
-
+            let dfa=false;
+            if(actor.getFlag("fortyk","deathfromabove")&&actor.data.data.secChar.lastHit.attackType==="charge"){
+                dfa=true;
+            }
+            let options={dfa:dfa};
+            let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
             let formula=duplicate(weapon.data.damageFormula);
-            new Dialog({
+            renderedTemplate.then(content => {new Dialog({
                 title: `Number of Hits & Bonus Damage`,
-                content: `<div class="flexcol">
-<div class="flexrow"><label>Number of Hits:</label> <input type="text" id="modifier" name="hits" value="1" data-dtype="Number" autofocus/></div>
-<div class="flexrow"><label>Bonus Damage:</label> <input type="text" id="dmg" name="dmg" value="0" data-dtype="Number" /></div>
-</div>`,
+                content: content,
                 buttons: {
                     submit: {
                         label: 'OK',
                         callback: (el) => {
                             const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
                             const dmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
+                            const magdmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
                             if(dmg>0){
                                 formula.value+=`+${dmg}`
                             }
-                            FortykRolls.damageRoll(formula,actor,fortykWeapon,hits);
+                            FortykRolls.damageRoll(formula,actor,fortykWeapon,hits,false,false,magdmg);
                         }
                     }
                 },
                 default: "submit",
-                width:100}
-                      ).render(true);
+                width:100}).render(true)
+                                             });
             setTimeout(function() {document.getElementById('modifier').select();}, 50);
         }else if(dataset.formula){
             let roll = new Roll(dataset.formula, this.actor.data.data);
