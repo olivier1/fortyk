@@ -1,9 +1,11 @@
 import {FortykRolls} from "../FortykRolls.js";
 import {objectByString} from "../utilities.js";
 import {setNestedKey} from "../utilities.js";
+import FortyKBaseActorSheet from "./base-sheet.js";
+import {FortyKItem} from "../item/item.js";
 import FortyKDWActorSheet from "./actorDW-sheet.js";
 /**
- * Extend the basic ActorSheet with some very simple modifications
+ * Extend the deathwatch sheet with some very simple modifications
  * @extends {ActorSheet}
  */
 export class FortyKDHActorSheet extends FortyKDWActorSheet {
@@ -17,7 +19,7 @@ export class FortyKDHActorSheet extends FortyKDWActorSheet {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/actorDH-sheet.html",
             width: 666,
-            height: 660,
+            height: 760,
             tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "main" }],
             default:null
         });

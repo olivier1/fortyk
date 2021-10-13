@@ -350,7 +350,7 @@ Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
 /**
  * Set default values for new actors' tokens
  */
-Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
+/*Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
     if(game.user.isGM){
         let button={}
         button.class="custom";
@@ -391,7 +391,7 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
     }
 
 
-})
+})*/
 Hooks.on("preCreateActor", (createData) =>{
 
 })
