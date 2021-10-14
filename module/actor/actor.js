@@ -181,6 +181,9 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","berserkcharge")){
             data.secChar.attacks.charge=30;
         }
+        for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
+            hitLoc.armor=0;
+        }
         //initialize skill modifiers from active events so that they are integers
         this.items.forEach((fortykItem,id,items)=>{
             let item=fortykItem.data;
@@ -516,7 +519,7 @@ export class FortyKActor extends Actor {
         }
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
-            hitLoc.armor=0;
+            
             if(armor.data!==undefined){
                 hitLoc.armor=hitLoc.armor+parseInt(armor.data.ap[key].value);
             }
@@ -578,7 +581,7 @@ export class FortyKActor extends Actor {
         var armor= data.secChar.wornGear.armor;
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
-            hitLoc.armor=parseInt(hitLoc.armor);
+            hitLoc.armor+=parseInt(hitLoc.armor);
             if(armor.data!==undefined){
                 hitLoc.armor=parseInt(hitLoc.armor)+parseInt(armor.data.ap[key].value);
             }
