@@ -105,7 +105,7 @@ export class FortykRollDialogs{
             let target=targetIt.next().value;
           
             let targetActor=target.actor;
-            let tarRace=targetActor.data.data.race.value;
+            let tarRace=targetActor.data.data.race.value.toLowerCase();
             if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)){
                 templateOptions["modifiers"].called+=actor.data.data.fieldVivisection;
             }
@@ -296,7 +296,7 @@ export class FortykRollDialogs{
             let target=targetIt.next().value;
           
             let targetActor=target.actor;
-            let tarRace=targetActor.data.data.race.value;
+            let tarRace=targetActor.data.data.race.value.toLowerCase();
             if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)){
                 templateOptions["modifiers"].called+=actor.data.data.fieldVivisection;
             }

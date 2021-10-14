@@ -546,7 +546,7 @@ returns the roll message*/
                     if(actor.getFlag("fortyk","deathwatchtraining")){
 
 
-                        let targetRace=data.race.value;
+                        let targetRace=data.race.value.toLowerCase();
                         let forRaces=actor.data.flags.deathwatchtraining;
                         if(forRaces.includes(targetRace)){
                             tarRighteous-=1;
