@@ -638,8 +638,19 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let pr=power.data.data.curPR.value;
             aeData.changes.forEach(function(change){
                 change.value=eval(change.value);
+                if(change.value>=0){
+                    aeData.icon="icons/svg/upgrade.svg";
+                    aeData.id="buff";
+                    aeData.flags.core={ statusId: "buff" }
+                }else{
+                    aeData.icon="icons/svg/downrade.svg";
+                    aeData.id="weakened";
+                    aeData.flags.core={ statusId: "weakened" }
+                }
             })
+            
             aeData.disabled=false;
+            aeData.origin=null;
             targets.forEach(async function(target){
                 let actor=target.actor;
                 actor.createEmbeddedDocuments("ActiveEffect",[aeData]);
