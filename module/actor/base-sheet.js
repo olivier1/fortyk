@@ -35,6 +35,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.size=game.fortyk.FORTYK.size;
         data.skillChars=game.fortyk.FORTYK.skillChars;
         data.skillTraining=game.fortyk.FORTYK.skillTraining;
+        data.psyDisciplines=game.fortyk.FORTYK.psychicDisciplines;
         data.editable = this.options.editable;
         data.money=game.settings.get("fortyk","dhMoney");
         return data;
@@ -71,6 +72,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.force-field').change(this._onArmorChange.bind(this));
         //Damage rolls
         html.find('.damage-roll').click(this._onDamageRoll.bind(this));
+        //Psychic power buff/debuffs
+        html.find('.buff-debuff').click(this._onBuffDebuff.bind(this));
         //autofcus modifier input
         html.find('.rollable').click(this._onRoll.bind(this));
         //force damage roll
@@ -614,6 +617,34 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 flavor: label
             });
+        }
+    }
+    //handles applying active effects from psychic powers
+    async _onBuffDebuff(event){
+        event.preventDefault();
+        let targets=game.user.targets;
+        if(targets.size>0){
+            
+            const element = event.currentTarget;
+            const dataset = element.dataset;
+            let powerId=dataset["power"];
+            let label=dataset["label"];
+            let power=this.actor.getEmbeddedDocument("Item",powerId);
+            let ae=power.effects.entries().next().value[1];
+            if(power.data.data.transferId){
+                ae=this.actor.effects.get(power.data.data.transferId);
+            }
+            let aeData=duplicate(ae.data);
+            let pr=power.data.data.curPR.value;
+            aeData.changes.forEach(function(change){
+                change.value=eval(change.value);
+            })
+            targets.forEach(async function(target){
+                let actor=target.actor;
+                actor.createEmbeddedDocuments("ActiveEffect",[aeData]);
+                
+            });
+            
         }
     }
     //handles resetting cover values to zero

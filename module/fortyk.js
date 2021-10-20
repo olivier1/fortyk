@@ -107,6 +107,18 @@ Hooks.once('init', async function() {
         }
         return str1===str2;
     });
+    Handlebars.registerHelper('length', function (array) {
+        try{
+            if(array.length>0){
+                return true;
+            }else{
+                return false;
+            }
+        }catch(err){
+            return false;
+        }
+     
+    });
     Handlebars.registerHelper("debug", function(optionalValue) {
         console.log("Current Context");
         console.log("====================");
@@ -353,15 +365,19 @@ Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
 /**
  * Set default values for new actors' tokens
  */
-/*Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
+Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
     if(game.user.isGM){
         let button={}
         button.class="custom";
         button.icon="fas fa-asterisk";
         button.label="Manage AEs";
         button.onclick=() =>{
-
-            let templateOptions={actor:sheet.actor};
+            
+            let actor=sheet.actor;
+            if(sheet.token){
+                actor=sheet.token.actor;
+            }
+            let templateOptions={actor:actor};
 
             let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html', templateOptions);
             var options = {
@@ -394,7 +410,7 @@ Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
     }
 
 
-})*/
+})
 Hooks.on("preCreateActor", (createData) =>{
 
 })

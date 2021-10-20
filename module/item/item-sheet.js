@@ -92,40 +92,29 @@ export class FortyKItemSheet extends ItemSheet {
         let item=this.item;
        
         if(item.effects.size===0){
+            let disabled=false;
+            if(this.item.type==="psychicPower"){
+                disabled=true;
+            }
             let modifiersData={
             id: "modifiers",
-            label: "Modifiers",
+            label: this.item.name,
             changes:[],
-            transfer:false}
+            transfer:true,
+            disabled:disabled}
             await item.createEmbeddedDocuments("ActiveEffect",[modifiersData]);
         }
-        if(this.item.isEmbedded&&this.item.data.data.transferId){
-            let ae=this.item.actor.getEmbeddedEntity("ActiveEffect",this.item.data.data.transferId);
-             new ActiveEffectConfig(ae).render(true);
+        let ae={};
+        console.log(this.item.data)
+        if(this.item.data.data.transferId){
+            ae=this.item.actor.effects.get(this.item.data.data.transferId);
         }else{
-            new ActiveEffectConfig(item.effects.entries().next().value[1]).render(true);
+            ae=item.effects.entries().next().value[1];
         }
-        //console.log(item.effects.entries().next().value)
+        console.log(ae);
+            new ActiveEffectConfig(ae).render(true);
         
-        /*let templateOptions={"specials":specials};
-        let renderedTemplate=renderTemplate('systems/fortyk/templates/item/dialogs/modifier-dialog.html', templateOptions);
-
-
-        renderedTemplate.then(content => { 
-            new Dialog({
-                title: "Item Character Modifier",
-                content: content,
-                buttons:{
-                    submit:{
-                        label:"Yes",
-                        callback: async html => {
-                        }
-                    }
-                },
-                default: "submit"
-            }).render(true)
-
-        });*/
+        
     }
 
 

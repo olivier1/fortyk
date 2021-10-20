@@ -37,7 +37,9 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         html.find('.skill-char').change(this._onSkillCharEdit.bind(this));
         //change skill advancement
         html.find('.skill-adv').change(this._onSkillAdvEdit.bind(this));
-
+        //favorite psychic power
+        //toggle half strength for squadrons
+        html.find('.favorite').click(this._onFavoriteClick.bind(this));
         //change cybernetic location
         html.find('.cyber-location-select').change(this._onCyberLocationEdit.bind(this));
         //change navigator power training
@@ -376,7 +378,19 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
 
     }
+    async _onFavoriteClick(event){
+        let dataset=event.currentTarget.dataset;
+        let powerID=dataset["itemId"];
+        let power=this.actor.items.get(powerID);
 
+        let favorite=power.data.data.favorite;
+        if(favorite){
+            await power.update({"data.favorite":false});
+        }else{
+            await power.update({"data.favorite":true});
+        }
+        await this.actor.prepare();
+    }
 
     _onFilterChange(event){
 

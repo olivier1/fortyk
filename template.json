@@ -991,6 +991,10 @@
                 "value": "",
                 "type": "String"
             },
+            "class": {
+                    "value": "Psychic Bolt",
+                    "type": "String"
+                },
             "subtype": {
                 "value": "",
                 "type": "String"

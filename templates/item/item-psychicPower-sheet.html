@@ -1,12 +1,33 @@
 <form class="{{cssClass}} item-sheet flexcol">
- <header class="sheet-header">
+    <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
-        
+
     </header>
     <div class="grid grid-3col">
         <div class="flexcol">
             <label>Name:</label>
             <input type="text" value="{{name}}" name="name">
+        </div>
+        <div class="flexcol">
+            <label>Discipline:</label>
+            <select class="discipline" name="data.discipline.value">
+                {{#select data.discipline.value}}
+                {{#each FORTYK.psychicDisciplines}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+        </div>
+        <div class="flexcol">
+            <label>Power Type:</label>
+
+            <select class="power-type" name="data.class.value">
+                {{#select data.class.value}}
+                {{#each FORTYK.psychicPowerTypes}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
         </div>
         <div class="flexcol">
             <label>Action:</label>
@@ -16,14 +37,11 @@
             <label>Subtype:</label>
             <input type="text" value="{{data.subtype.value}}" name="data.subtype.value">
         </div>
-        <div class="flexcol">
-            <label>Discipline:</label>
-            <input type="text" value="{{data.discipline.value}}" name="data.discipline.value">
-        </div>
+
         <div class="flexcol">
             <label>Test Type:</label>
-            
-            <select class="power-type" name="data.testChar.value">
+
+            <select class="power-char" name="data.testChar.value">
                 {{#select data.testChar.value}}
                 <option value="wp">Willpower</option>
                 <option value="per">Perception</option>
@@ -47,6 +65,7 @@
             <label>Range:</label>
             <input type="text" value="{{data.range.formula}}" name="data.range.formula">
         </div>
+        {{#if (contains data.class.value "Psychic")}}
         <div class="flexcol">
             <label>Damage:</label>
             <input type="text" value="{{data.damageFormula.formula}}" name="data.damageFormula.formula">
@@ -56,10 +75,10 @@
             <input type="text" value="{{data.pen.formula}}" name="data.pen.formula" data-dtype="String">
         </div>
         <div class="flexcol">
-           
+
             <a class="weapon-special button">Special</a>
-            
-       
+
+
         </div>
         <div class="flexcol">
             <label>Damage Type:</label>
@@ -71,10 +90,13 @@
                 {{/select}}
             </select>
         </div>
+        {{else if (contains data.class.value "Buff/Debuff")}}
+        {{#if isGM}}
         <div class="flexcol">
-            <label>Power Type:</label>
-            <input type="text" value="{{data.class.value}}" name="data.class.value">
+            <a class="modifier button">Buff/Debuff</a>
         </div>
+        {{/if}}
+        {{/if}}
     </div>
     <div class="item-description">
         <label>Description:</label>

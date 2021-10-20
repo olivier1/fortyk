@@ -81,6 +81,92 @@
     </div>
     <div class="combat-weaponsarmor grid grid-2col">
         <div class="flexcol flex-group-center">
+            {{#if (length favoritePowers)}}
+            <span class="section-title">POWERS</span>
+            {{#each favoritePowers}}
+            <div class="list-item flexcol">
+            
+            <div class="grid grid-3col">
+
+
+
+
+                <a class="list-item psy-name item-descr" data-name="{{this.name}}" data-item-descr="{{this.data.description.value}}">Name: {{this.name}}</a>
+
+
+
+                <label class="list-item">Action: {{this.data.action.value}}</label>
+
+                {{#unless (contains ../data.psykana.psykerType.value "navigator")}}
+                
+
+                
+                <div class="list-item flexrow">
+                    <label>PR: </label>
+                    <input type="text" class="item-text-input" data-target="data.curPR.value" data-item-id="{{this._id}}" value="{{this.data.curPR.value}}" data-dtype="Number">
+                </div>
+
+
+                <label class="list-item">Sustain: {{this.data.sustain.value}}</label>
+                {{else}}
+                
+
+                
+                {{/unless}}
+                
+
+
+
+                
+
+
+
+                <label class="list-item">Range: {{this.data.range.value}}m</label>
+
+                {{#if (contains this.data.class.value "psychic")}}
+
+
+
+                <label class="list-item">Penetration: {{this.data.pen.value}}</label>
+
+                <div class="list-item">
+                    <span>Special: 
+                        {{#each this.flags.fortyk as |flag key|}}
+
+                        {{#if this}}
+
+                        {{#with (lookup ../FORTYK.weaponFlags [key])~}}
+                        <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                            {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
+                        {{/if}}{{/each}}
+
+                    </span>
+
+                </div>
+
+                <label class="list-item">Damage Type: {{this.data.damageType.value}}</label>
+
+                {{/if}}
+
+                <div class="list-item flexrow">
+                    <label>Test Target: </label>
+                    <span data-item-id="{{this._id}}" class="rollable powerItem button{{#if (greaterThan this.data.curPR.value ../data.psykana.pr.effective)}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-target="{{this.data.target.value}}" data-label="{{this.name}}" data-char="{{this.data.testChar.type}}">{{this.data.target.value}}</span>
+                </div>
+                {{#if (contains this.data.class.value "psychic")}}
+                <label class="list-item">Damage: <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}">{{this.data.damageFormula.value}}</a></label>
+                {{else if (contains this.data.class.value "Buff/Debuff")}}
+                <label class="list-item"><a class="buff-debuff button" data-label="{{this.name}}"data-power="{{this._id}}">Apply Buff/Debuff</a></label>
+                {{/if}}
+                
+               
+            </div>
+
+
+
+        </div>
+            {{/each}}
+            {{/if}}
             <span class="section-title" title="This represents your wielded weapons, you can add additional wielded weapons if you have sub weapons or mechadentrites etc.">WEAPONS</span>
             <div class="flexrow">
                 <a class="worn-item-plus plus-button" title="Add extra weapon"></a>

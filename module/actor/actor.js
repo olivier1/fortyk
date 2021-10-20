@@ -519,7 +519,7 @@ export class FortyKActor extends Actor {
         }
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
-            
+
             if(armor.data!==undefined){
                 hitLoc.armor=hitLoc.armor+parseInt(armor.data.ap[key].value);
             }
@@ -631,6 +631,7 @@ export class FortyKActor extends Actor {
         const armors=[];
         const ammunitions=[];
         const equippableAmmo=[];
+        const favoritePowers=[];
         const wornGear={weapons:[],"armor":"","forceField":""};
 
         let unrelenting=false;
@@ -782,7 +783,17 @@ export class FortyKActor extends Actor {
                     }
                     item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
                 }
-                psychicPowers.push(item);
+                if(data.psykana.filter){
+                    console.log(item.data.class.value,data.psykana.filter)
+                    if(data.psykana.filter===item.data.discipline.value){
+                        psychicPowers.push(item);
+                    }
+                }else{
+                    psychicPowers.push(item);
+                }
+                if(item.data.favorite){
+                    favoritePowers.push(item);
+                }
 
             }
             if(item.type==="talentntrait"){
@@ -800,6 +811,18 @@ export class FortyKActor extends Actor {
 
             if(item.type==="meleeWeapon"){
                 item.data.damageFormula.value=item.data.damageFormula.formula;
+                item.data.range.value=item.data.range.formula;
+                item.data.pen.value=item.data.pen.formula;
+
+
+
+
+
+                //ensure that a weapon that is not a shield does not have an armor rating
+                if(item.data.class.value!=="Shield"&&item.data.shield.value!==0){
+                    item.data.shield.value=0;
+
+                }
 
                 if(fortykItem.getFlag("fortyk","crushing")){
                     item.data.damageFormula.value+="+"+2*data.characteristics.s.bonus;
@@ -999,7 +1022,8 @@ export class FortyKActor extends Actor {
                            armors:armors,
                            ammunitions:ammunitions,
                            equippableAmmo:equippableAmmo,
-                           wornGear:wornGear};
+                           wornGear:wornGear,
+                          favoritePowers:favoritePowers};
         try{
             this._sortItems(preparedItems);
         }catch(err){}
@@ -1050,6 +1074,18 @@ export class FortyKActor extends Actor {
                 psychicPowers.push(item);
             }
             if(item.type==="meleeWeapon"){
+                item.data.range.value=item.data.range.formula;
+                item.data.pen.value=item.data.pen.formula;
+
+
+
+
+
+                //ensure that a weapon that is not a shield does not have an armor rating
+                if(item.data.class.value!=="Shield"&&item.data.shield.value!==0){
+                    item.data.shield.value=0;
+
+                }
                 if(fortykItem.getFlag("fortyk","crushing")){
                     item.data.damageFormula.value=item.data.damageFormula.formula+"+"+2*data.characteristics.s.bonus;
                 }else{
@@ -1228,10 +1264,20 @@ export class FortyKActor extends Actor {
         this.deleteEmbeddedDocuments("Item", [itemId]);
     }
     //when creating active effects check if they are transferred from an item, if so give the active effect flag to the item for referrence.
-    /*_onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId){
+    _onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId){
+        if(embeddedName==="ActiveEffect"){
+            let actor=this;
+            documents.forEach(async function(item,i){
+                if(item.data.origin){
+                    let powerId=item.data.origin.split('.')[3];
+                    let power=actor.getEmbeddedDocument("Item",powerId);
+                    await power.update({"data.transferId":item.id})
 
+                }
+            })
+        }
         super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
-    }*/
+    }
     _onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId){
         console.log(this);
         if(this.dialog){

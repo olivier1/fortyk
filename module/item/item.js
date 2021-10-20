@@ -68,18 +68,7 @@ export class FortyKItem extends Item {
             //logic for weapons
 
             if(itemData.type==="meleeWeapon"){
-                data.range.value=data.range.formula;
-                data.pen.value=data.pen.formula;
-
-
-
-
-
-                //ensure that a weapon that is not a shield does not have an armor rating
-                if(data.class.value!=="Shield"&&data.shield.value!==0){
-                    data.shield.value=0;
-
-                }
+                
 
 
             }
