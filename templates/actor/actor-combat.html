@@ -149,7 +149,7 @@
 
                 {{/if}}
 
-                <div class="list-item flexrow">
+                <div class="list-item flexcol">
                     <label>Test Target: </label>
                     <span data-item-id="{{this._id}}" class="rollable powerItem button{{#if (greaterThan this.data.curPR.value ../data.psykana.pr.effective)}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-target="{{this.data.target.value}}" data-label="{{this.name}}" data-char="{{this.data.testChar.type}}">{{this.data.target.value}}</span>
                 </div>

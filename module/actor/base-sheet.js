@@ -639,6 +639,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             aeData.changes.forEach(function(change){
                 change.value=eval(change.value);
             })
+            aeData.disabled=false;
             targets.forEach(async function(target){
                 let actor=target.actor;
                 actor.createEmbeddedDocuments("ActiveEffect",[aeData]);
