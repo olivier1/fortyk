@@ -669,9 +669,9 @@ returns the roll message*/
                             let maxPen=Math.min(armor,pen);
                             soak=parseInt(data.characterHitLocations[curHit.value].value);
                             //handle cover
-
+                            console.log(!self,!fortykWeapon.getFlag("fortyk","spray"),data.characterHitLocations[curHit.value].cover,weapon.type==="rangedWeapon",weapon.type==="psychicPower")
                             if(!self&&!fortykWeapon.getFlag("fortyk","spray")&&data.characterHitLocations[curHit.value].cover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
-
+                                console.log("hello")
                                 let cover=parseInt(data.secChar.cover.value);
                                 soak=soak+cover;
                                 //reduce cover if damage is greater than cover AP
