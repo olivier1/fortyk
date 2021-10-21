@@ -653,6 +653,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             aeData.origin=null;
             targets.forEach(async function(target){
                 let actor=target.actor;
+                FortykRolls.applyActiveEffect(target,[aeData]);
                 actor.createEmbeddedDocuments("ActiveEffect",[aeData]);
                 
             });

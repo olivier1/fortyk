@@ -3176,7 +3176,7 @@ returns the roll message*/
                     let dupp=false;
                     for(let ae of actor.effects){
                         if(ae.data.flags.core){
-                            if(ae.data.flags.core.statusId===effect[index].flags.core.statusId){
+                            if(ae.data.flags.core.statusId!=="weakened"&&ae.data.flags.core.statusId!=="buff"&&ae.data.flags.core.statusId===effect[index].flags.core.statusId){
                                 dupp=true;
                                 let change=false;
                                 let upg=false;
