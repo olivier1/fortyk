@@ -577,8 +577,8 @@ returns the roll message*/
                     }catch(err){
 
                     }
-                    if(armorSuit===undefined){
-                        armorSuit=Item.create({type:"armor",name:"standin"},{temporary:true});
+                    if(!armorSuit){
+                        armorSuit=await Item.create({type:"armor",name:"standin"},{temporary:true});
                     }
                     if(!tarActor.getFlag("core","dead")){
 
