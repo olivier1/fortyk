@@ -79,10 +79,11 @@ export class FortykRollDialogs{
     }
     //handles the melee attack dialog WHEW
     static async callMeleeAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
-
+        let itemData=item.data;
         let template="systems/fortyk/templates/actor/dialogs/melee-attack-dialog.html"
         let templateOptions={};
         templateOptions["modifiers"]=actor.data.data.secChar.attacks;
+        templateOptions["modifiers"].testMod=itemData.data.testMod.value;
         templateOptions["options"]={}
         templateOptions["options"].swift=actor.getFlag("fortyk","swiftattack");
         templateOptions["options"].lightning=actor.getFlag("fortyk","lightningattack");
