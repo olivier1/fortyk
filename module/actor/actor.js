@@ -689,10 +689,15 @@ export class FortyKActor extends Actor {
             }
             if(item.type=="skill"){
                 item.data.total.value=0
+                item.data.mod.value=parseInt(item._source.data.mod.value);
                 if(data.skillmods[item.name.toLowerCase()]){
 
-                    item.data.mod.value= parseInt(item._source.data.mod.value)+parseInt(data.skillmods[item.name.toLowerCase()]);
+                    item.data.mod.value+=parseInt(data.skillmods[item.name.toLowerCase()]);
+                    
                 }
+                if(item.name==="Stealth"){
+                      item.data.mod.value+=data.secChar.size.stealth;  
+                    }
                 if(item.name==="Parry"){
                     if(parry){
                         item.data.total.value+=parry;
