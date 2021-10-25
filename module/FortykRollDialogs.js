@@ -62,7 +62,9 @@ export class FortykRollDialogs{
                             this.callRollDialog(testChar, testType, testTarget, actor, testLabel, item, reroll,"Invalid Number ");
                         }else{
                             testTarget=parseInt(testTarget)+parseInt(bonus);
-
+                            if(testType==="fear"){
+                                testTarget+=parseInt(actor.data.data.secChar.fearMod);
+                            }
                             FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, reroll);
                         }
                         AudioHelper.play({src: "sounds/dice.wav", volume: 0.8, loop: false}, true);

@@ -449,18 +449,7 @@ returns the roll message*/
             let endstr=form.slice(afterD);
             form=startstr+`r<${wpb}`+endstr;
         }
-        //calculate horde bonus damage
-        if(actor.data.data.horde.value){
-            let hordeDmgBonus=Math.min(2,Math.floor(actor.data.data.secChar.wounds.value/10));
-            if(actor.getFlag("fortyk","overwhelming")&&weapon.type==="meleeWeapon"&&actor.data.data.secChar.wounds.value>=20){
-                hordeDmgBonus+=1;
-            }
-            let dPos = form.indexOf('d');
-            let dieNum = form.substr(0,dPos);
-            let newNum=parseInt(dieNum)+hordeDmgBonus;
-            form=form.slice(dPos);
-            form=newNum+form;
-        }
+        
         //make an array to store the wounds of all targets so that they can all be updated together once done
         var newWounds=[]
         for(let i=0;i<targets.size;i++){

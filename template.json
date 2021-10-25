@@ -199,7 +199,8 @@
                     "initiative":{
                         "value":0,
                         "type":"Number"
-                    }
+                    },
+                    "fearMod":0
                 },
                 "globalMOD": {
                     "value": 0,

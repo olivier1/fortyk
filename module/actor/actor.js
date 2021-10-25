@@ -299,693 +299,693 @@ export class FortyKActor extends Actor {
                 }
             })}
 
-    
-    if(actorData.type === "spaceship"){
-        let items=this.data.items;
-        let data=actorData.data;
 
-        data.cargo.value=0;
-        data.cargo.profit=0;
-        data.power.value=0;
-        data.space.value=0;
-        data.shipPoints.spent=0;
-        data.shipPoints.remaining=0;
+        if(actorData.type === "spaceship"){
+            let items=this.data.items;
+            let data=actorData.data;
 
-        this.items.forEach((fortykItem,id,items)=>{
-            let item=fortykItem.data;
-            if(item.type==="spaceshipComponent"||item.type==="spaceshipWeapon"){
-                data.power.value+=parseInt(item.data.power.value);
-                data.space.value+=parseInt(item.data.space.value);
-                data.shipPoints.spent+=parseInt(item.data.sp.value);
-            }else if(item.type==="spaceshipCargo"){
+            data.cargo.value=0;
+            data.cargo.profit=0;
+            data.power.value=0;
+            data.space.value=0;
+            data.shipPoints.spent=0;
+            data.shipPoints.remaining=0;
 
-                data.cargo.value+=parseInt(item.data.space.value);
-                item.data.pf.total=parseFloat(item.data.pf.value)*parseFloat(item.data.space.value);
-                data.cargo.profit+=item.data.pf.total;
-            }
+            this.items.forEach((fortykItem,id,items)=>{
+                let item=fortykItem.data;
+                if(item.type==="spaceshipComponent"||item.type==="spaceshipWeapon"){
+                    data.power.value+=parseInt(item.data.power.value);
+                    data.space.value+=parseInt(item.data.space.value);
+                    data.shipPoints.spent+=parseInt(item.data.sp.value);
+                }else if(item.type==="spaceshipCargo"){
 
-
-        });
-
-        data.shipPoints.remaining=parseInt(data.shipPoints.value)-data.shipPoints.spent;
-    }
-
-}
-//OVERRIDE
-//custom function to manage effects that are linked to equippable items
-applyActiveEffects(){
-    let actor=this;
-    let actorData=this.data;
-    let data=actorData.data;
-    this.effects.forEach(function(ae,id){
-        if(!ae.data.disabled){
-
-            let proceed=false;
-            if(ae.data.origin){
-                let itemId=ae.data.origin.split('.')[3];
-                let item=actor.getEmbeddedDocument("Item",itemId);
-                if(item){
-                    let equipped=item.data.data.isEquipped;
-                    if(equipped===undefined||equipped){
-                        proceed=true;
-                    }else{
-                        proceed=false;
-                    }
+                    data.cargo.value+=parseInt(item.data.space.value);
+                    item.data.pf.total=parseFloat(item.data.pf.value)*parseFloat(item.data.space.value);
+                    data.cargo.profit+=item.data.pf.total;
                 }
 
-            }else{
-                proceed=true;
-            }
-            if(proceed){
-                ae.data.changes.forEach(function(change,i){
-                    let basevalue=parseInt(objectByString(actorData,change.key));
-                    let newvalue=parseInt(change.value);
-                    if(!isNaN(basevalue)&&!isNaN(newvalue)){
-                        let path=change.key.split(".");
 
-                        let changedValue=0;
-                        if(change.mode===0){}
-                        else if(change.mode===1){
-                            changedValue=basevalue*newvalue
-                            setNestedKey(actorData,path,changedValue);
+            });
 
-                        }else if(change.mode===2){
-                            changedValue=basevalue+newvalue;
-                            setNestedKey(actorData,path,changedValue);
-                        }else if(change.mode===3){
-                            if(change.value<basevalue){
-                                changedValue=newvalue;
-                                setNestedKey(actorData,path,changedValue);
-                            }
-                        }else if(change.mode===4){
-                            if(change.value>basevalue){
-                                changedValue=newvalue;
-                                setNestedKey(actorData,path,changedValue);
-                            }
-                        }else if(change.mode===5){
-                            changedValue=newvalue;
-                            setNestedKey(actorData,path,changedValue);
-                        }  
-                    }
-
-
-                })
-            }
-
+            data.shipPoints.remaining=parseInt(data.shipPoints.value)-data.shipPoints.spent;
         }
 
-    })
-}
-prepareDerivedData() {
+    }
+    //OVERRIDE
+    //custom function to manage effects that are linked to equippable items
+    applyActiveEffects(){
+        let actor=this;
+        let actorData=this.data;
+        let data=actorData.data;
+        this.effects.forEach(function(ae,id){
+            if(!ae.data.disabled){
 
-    const actorData = this.data;
-    const data = actorData.data;
+                let proceed=false;
+                if(ae.data.origin){
+                    let itemId=ae.data.origin.split('.')[3];
+                    let item=actor.getEmbeddedDocument("Item",itemId);
+                    if(item){
+                        let equipped=item.data.data.isEquipped;
+                        if(equipped===undefined||equipped){
+                            proceed=true;
+                        }else{
+                            proceed=false;
+                        }
+                    }
 
-    // Make separate methods for each Actor type (character, npc, etc.) to keep
-    // things organized.
-    if (actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC') {this._prepareCharacterData(actorData)};
-    if (actorData.type === 'npc') {this._prepareNPCData(actorData)};
-    if (actorData.type === 'owRegiment'){this._prepareRegimentData(actorData)};
-}
-_prepareRegimentData(actorData){
-    const data=actorData.data;
-    data.characteristics.inf.total=parseInt(data.characteristics.inf.value)+parseInt(data.characteristics.inf.not)+parseInt(data.characteristics.inf.time)+parseInt(data.characteristics.inf.frontActive)+parseInt(data.characteristics.inf.war)+parseInt(data.characteristics.inf.mod);
-}
-/**
+                }else{
+                    proceed=true;
+                }
+                if(proceed){
+                    ae.data.changes.forEach(function(change,i){
+                        let basevalue=parseInt(objectByString(actorData,change.key));
+                        let newvalue=parseInt(change.value);
+                        if(!isNaN(basevalue)&&!isNaN(newvalue)){
+                            let path=change.key.split(".");
+
+                            let changedValue=0;
+                            if(change.mode===0){}
+                            else if(change.mode===1){
+                                changedValue=basevalue*newvalue
+                                setNestedKey(actorData,path,changedValue);
+
+                            }else if(change.mode===2){
+                                changedValue=basevalue+newvalue;
+                                setNestedKey(actorData,path,changedValue);
+                            }else if(change.mode===3){
+                                if(change.value<basevalue){
+                                    changedValue=newvalue;
+                                    setNestedKey(actorData,path,changedValue);
+                                }
+                            }else if(change.mode===4){
+                                if(change.value>basevalue){
+                                    changedValue=newvalue;
+                                    setNestedKey(actorData,path,changedValue);
+                                }
+                            }else if(change.mode===5){
+                                changedValue=newvalue;
+                                setNestedKey(actorData,path,changedValue);
+                            }  
+                        }
+
+
+                    })
+                }
+
+            }
+
+        })
+    }
+    prepareDerivedData() {
+
+        const actorData = this.data;
+        const data = actorData.data;
+
+        // Make separate methods for each Actor type (character, npc, etc.) to keep
+        // things organized.
+        if (actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC') {this._prepareCharacterData(actorData)};
+        if (actorData.type === 'npc') {this._prepareNPCData(actorData)};
+        if (actorData.type === 'owRegiment'){this._prepareRegimentData(actorData)};
+    }
+    _prepareRegimentData(actorData){
+        const data=actorData.data;
+        data.characteristics.inf.total=parseInt(data.characteristics.inf.value)+parseInt(data.characteristics.inf.not)+parseInt(data.characteristics.inf.time)+parseInt(data.characteristics.inf.frontActive)+parseInt(data.characteristics.inf.war)+parseInt(data.characteristics.inf.mod);
+    }
+    /**
    * Prepare Character type specific data
    * this only has light computation other more complex data that process items see prepare()
    */
-_prepareCharacterData(actorData) {
-    const data = actorData.data;
-    //prepare characteristics data
-    for (let [key, char] of Object.entries(data.characteristics)){
-        if(key==="inf"){
-        }else{
-            char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod);
-            char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
-            char.total+=parseInt(data.globalMOD.value);
-        }
-    }
-    data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
-    if(this.getFlag("fortyk","neverquit")){
-        data.secChar.fatigue.max+=2;
-    }
-    //modify total characteristics depending on fatigue
-    var fatigueMult=1;
-    if(this.getFlag("fortyk","unrelenting")){
-        fatigueMult=2;
-    }
-    if(!this.getFlag("core","frenzy")){
-        for (let [key,char] of Object.entries(data.characteristics)){
-            if(char.bonus*fatigueMult<data.secChar.fatigue.value){
-                char.total=Math.ceil(char.total/2);
-            }
-        }  
-    }
-    //parse skill modifiers from active effects
-    for (let [key, char] of Object.entries(data.skillmods)){
-        char=parseInt(char);
-    }
-
-
-    //prepare psyker stuff
-    data.psykana.pr.effective=parseInt(data .psykana.pr.value)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
-    data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
-    //get max carry weight ensure it is not out of bounds
-    if((data.characteristics["s"].bonus+data.characteristics["t"].bonus)>19){
-        data.carry.max=game.fortyk.FORTYK.carry[19].carry+data.carry.mod;
-    }else if((data.characteristics["s"].bonus+data.characteristics["t"].bonus)<=19){
-        data.carry.max=game.fortyk.FORTYK.carry[(data.characteristics["s"].bonus+data.characteristics["t"].bonus)].carry+data.carry.mod;
-    }else{
-        data.carry.max=game.fortyk.FORTYK.carry[1].carry+data.carry.mod;
-    }
-    //get income based on influence for dark heresy PCs
-    if(this.data.type==="dhPC"){
-        let inf=data.characteristics["inf"].total;
-        if(this.getFlag("fortyk","breedingcounts")){
-            inf+=10;
-        }
-
-        data.currency.income=FORTYKTABLES.income[inf]; 
-    }
-    //movement
-    if(this.getFlag("fortyk","quadruped")){
-
-        data.secChar.movement.multi=parseInt(data.secChar.movement.multi)*2; 
-    }
-    let size=data.secChar.size.value;
-    data.secChar.size.label=game.fortyk.FORTYK.size[size].name;
-    data.secChar.size.mod=game.fortyk.FORTYK.size[size].mod;
-    data.secChar.size.movement=game.fortyk.FORTYK.size[size].movement;
-    data.secChar.size.stealth=game.fortyk.FORTYK.size[size].stealth
-    //movement
-    data.secChar.movement.half=Math.max(Math.ceil((data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseInt(data.secChar.movement.multi)),1);
-    data.secChar.movement.full=data.secChar.movement.half*2;
-    data.secChar.movement.charge=data.secChar.movement.half*3;
-    data.secChar.movement.run=data.secChar.movement.half*6;
-    //add up all armor and stuff
-
-    var armor= data.secChar.wornGear.armor;
-
-    var rightHandWeapon= data.secChar.wornGear.weapons[0];
-
-    let rightHandWeaponData=null;
-    if(rightHandWeapon){
-        rightHandWeaponData=rightHandWeapon.data;
-    }
-
-
-    var leftHandWeapon= data.secChar.wornGear.weapons[1];
-
-
-    let leftHandWeaponData=null;
-    if(leftHandWeapon){
-        leftHandWeaponData=leftHandWeapon.data;
-    }
-    if(this.getFlag("fortyk","WeaponMaster")){
-        //weaponmaster initiative
-        let master=false;
-        if(rightHandWeaponData&&this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(rightHandWeaponData.data.type.value.toLowerCase())){
-            master=true;
-        }else if(leftHandWeaponData&&this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(leftHandWeaponData.data.type.value.toLowerCase())){
-            master=true;
-        }
-        if(master){
-            data.secChar.initiative.value+=2;
-        }
-
-    }
-
-    //handle shields
-    data.characterHitLocations.body.shield= 0;
-    data.characterHitLocations.rArm.shield= 0;
-    data.characterHitLocations.lArm.shield= 0;
-    if(rightHandWeaponData!==undefined&&rightHandWeaponData.type!=="rangedWeapon"){
-        data.characterHitLocations.rArm.shield= parseInt(rightHandWeaponData.data.shield.value);
-        data.characterHitLocations.body.shield= parseInt(rightHandWeaponData.data.shield.value);
-    }
-    if(leftHandWeaponData!==undefined&&leftHandWeaponData.type!=="rangedWeapon"){
-        data.characterHitLocations.lArm.shield= parseInt(leftHandWeaponData.data.shield.value);
-        data.characterHitLocations.body.shield= parseInt(leftHandWeaponData.data.shield.value);
-    }
-    //compute rest of armor and absorption
-    for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
-
-        if(armor.data!==undefined){
-            hitLoc.armor=hitLoc.armor+parseInt(armor.data.ap[key].value);
-        }
-        hitLoc.armor=hitLoc.armor+hitLoc.shield;
-        if(hitLoc.cyber){
-            hitLoc.armor=hitLoc.armor+2;
-        }
-        hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
-        let daemonic=this.getFlag("fortyk","daemonic");
-        if(daemonic){
-            if(!isNaN(daemonic)){
-                hitLoc.value+=parseInt(daemonic);
-            }
-        }
-    }
-}
-_prepareNPCData(actorData){
-
-    const data=actorData.data;
-    //calc char bonuses
-    for (let [key, char] of Object.entries(data.characteristics)){
-        if(key==="inf"){
-        }else{
-            char.total=parseInt(char.value);
-
-            char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
-            char.total+=parseInt(data.globalMOD.value);
-
-        }
-    }
-    data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
-    //modify total characteristics depending on fatigue
-    var fatigueMult=1;
-    for (let [key,char] of Object.entries(data.characteristics)){
-        if(!this.getFlag("core","frenzy")&&char.bonus*fatigueMult<data.secChar.fatigue.value){
-            char.total=Math.ceil(char.value/2);
-        }
-    }
-    //prepare psyker stuff
-    data.psykana.pr.effective=parseInt(data .psykana.pr.value)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
-    data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
-    //movement
-
-    if(this.getFlag("fortyk","quadruped")){
-
-        data.secChar.movement.multi=parseInt(data.secChar.movement.multi)*2; 
-    }
-    let size=data.secChar.size.value;
-    data.secChar.size.label=game.fortyk.FORTYK.size[size].name;
-    data.secChar.size.mod=game.fortyk.FORTYK.size[size].mod;
-    data.secChar.size.movement=game.fortyk.FORTYK.size[size].movement;
-    data.secChar.size.stealth=game.fortyk.FORTYK.size[size].stealth
-    //movement
-    data.secChar.movement.half=Math.max(Math.ceil((data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseInt(data.secChar.movement.multi)),1);
-    data.secChar.movement.full=data.secChar.movement.half*2;
-    data.secChar.movement.charge=data.secChar.movement.half*3;
-    data.secChar.movement.run=data.secChar.movement.half*6;
-    //total soak
-    var armor= data.secChar.wornGear.armor;
-    console.log(armor)
-    //compute rest of armor and absorption
-    for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
-        hitLoc.armor+=parseInt(hitLoc.armor);
-        if(armor.data!==undefined){
-            hitLoc.armor=parseInt(hitLoc.armor)+parseInt(armor.data.ap[key].value);
-        }
-
-
-        hitLoc.value=parseInt(hitLoc.armor)+data.characteristics.t.bonus;
-        let daemonic=this.getFlag("fortyk","daemonic");
-        if(daemonic){
-            if(!isNaN(daemonic)){
-                hitLoc.value+=parseInt(daemonic);
-            }
-        }
-    }
-}
-prepare(){
-    let preparedData = this.data
-    // Call prepareItems first to organize and process Items
-    if(preparedData.type==='dwPC'||preparedData.type==='dhPC'||preparedData.type==='owPC'){
-        mergeObject(preparedData, this.preparePCItems(preparedData));
-    }else if(preparedData.type==='npc'){
-        mergeObject(preparedData, this.prepareNPCItems(preparedData));
-    }else if(preparedData.type==="spaceship"){
-        mergeObject(preparedData, this.prepareSpaceshipItems(preparedData));
-    }
-    return preparedData;
-}
-//this prepares all items into containers that can be easily accessed by the html sheets, also adds in logic for sorting and all computing logic for items
-preparePCItems(actorData){
-
-    let data=actorData.data;
-    const skills=[];
-    const wargear=[];
-    const cybernetics=[];
-    const forceFields=[];
-    const mods=[];
-    const consummables=[];
-    const psychicPowers=[];
-    const mutations=[];
-    const injuries=[];
-    const malignancies=[];
-    const disorders=[];
-    const talentsntraits=[];
-    const missions=[];
-    const advancements=[];
-    const meleeweapons=[];
-    const rangedWeapons=[];
-    const armors=[];
-    const ammunitions=[];
-    const equippableAmmo=[];
-    const favoritePowers=[];
-    const wornGear={weapons:[],"armor":"","forceField":""};
-
-    let unrelenting=false;
-    let forRaces=[];
-    //get worn weapon ids into an array so that they can be accessed by the sheet easily
-    let wornWeapons=data.secChar.wornGear.weapons;
-    if(!Array.isArray(data.secChar.wornGear.weapons)){
-        wornWeapons=Object.values(data.secChar.wornGear.weapons);
-    }
-    try{
-        var rightHandWeapon= data.secChar.wornGear.weapons[0];
-    }
-    catch(err){var rightHandWeapon= undefined;}
-    try{
-        var leftHandWeapon= data.secChar.wornGear.weapons[1];
-    }
-    catch(err){var leftHandWeapon= undefined;}
-
-
-    let parry=false;
-
-    if((rightHandWeapon.data!==undefined&&rightHandWeapon.getFlag("fortyk","unbalanced"))||(leftHandWeapon.data!==undefined&&leftHandWeapon.getFlag("fortyk","unbalanced"))){
-        parry=-10;
-    }
-    if((rightHandWeapon.data!==undefined&&rightHandWeapon.getFlag("fortyk","balanced"))||(leftHandWeapon.data!==undefined&&leftHandWeapon.getFlag("fortyk","balanced"))){
-        parry=10;
-    }
-    if((rightHandWeapon.data!==undefined&&rightHandWeapon.getFlag("fortyk","defensive"))||(leftHandWeapon.data!==undefined&&leftHandWeapon.getFlag("fortyk","defensive"))){
-        parry=15;
-    }
-    let psyniscience=0;
-
-    //apply logic to items that depends on actor data so that it updates readily when the actor is updated
-    //put all items in their respective containers and do some item logic
-    this.items.forEach((fortykItem,id,items)=>{
-        let item=fortykItem.data;
-
-        if(item._id===data.secChar.wornGear.armor.id){
-            wornGear["armor"]=item;
-        }
-        if(item._id===data.secChar.wornGear.forceField.id){
-            wornGear["forceField"]=item;
-        }
-        if(item.type=="skill"){
-            item.data.total.value=0
-            if(data.skillmods[item.name.toLowerCase()]){
-
-                item.data.mod.value= parseInt(item._source.data.mod.value)+parseInt(data.skillmods[item.name.toLowerCase()]);
-            }
-            if(item.name==="Parry"){
-                if(parry){
-                    item.data.total.value+=parry;
-                } 
-            }
-            if(this.getFlag("fortyk","fieldvivisection")&&item.name==="Medicae"){
-                data.fieldVivisection=parseInt(item.data.value)+parseInt(item.data.mod.value);
-            }
-            if(item.data.parent.value==="Forbidden Lore"){
-                if(game.fortyk.FORTYK.races.includes(item.name)){
-                    forRaces.push(item.name.toLowerCase());
-                }
-            } item.data.total.value+=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
-            if(item.name==="Psyniscience"){
-                psyniscience=item.data.total.value;
-            }
-            skills.push(item);
-        }
-        if(item.type==="malignancy"){
-            malignancies.push(item);
-        }
-        if(item.type==="injury"){
-            injuries.push(item);
-        }
-        if(item.type==="mutation"){
-            mutations.push(item);
-        }
-        if(item.type==="disorder"){
-            disorders.push(item);
-        }
-        if(item.type==="wargear"){
-            wargear.push(item);
-        }
-        if(item.type==="cybernetic"){
-
-            cybernetics.push(item);
-        }
-        if(item.type==="forceField"){
-            forceFields.push(item);
-            wargear.push(item);
-        }
-        if(item.type==="mod"){
-            mods.push(item);
-        }
-        if(item.type==="consummable"){
-            consummables.push(item);
-            wargear.push(item);
-        }
-        if(item.type==="psychicPower"){
-            if(actorData.data.psykana.psykerType.value.toLowerCase()==="navigator"){
-                let range=item.data.range.formula.toLowerCase();
-
-                item.data.range.value=eval(range);
-                item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
-                let training=0;
-                switch(item.data.training.value){
-                    case "Novice":
-                        training=0;
-                        break;
-                    case "Adept":
-                        training=10;
-                        break;
-                    case "Master":
-                        training=20;
-                        break;
-                }
-                let char=0;
-                if(item.data.testChar.value==="psy"){
-                    char=psyniscience;
-                    item.data.testChar.type="per";
-                }else{
-                    char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
-                    item.data.testChar.type=item.data.testChar.value;
-                }
-
-                item.data.target.value=char+training;
+    _prepareCharacterData(actorData) {
+        const data = actorData.data;
+        //prepare characteristics data
+        for (let [key, char] of Object.entries(data.characteristics)){
+            if(key==="inf"){
             }else{
-                try{
-                    let pr=parseInt(item.data.curPR.value);
+                char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod);
+                char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
+                char.total+=parseInt(data.globalMOD.value);
+            }
+        }
+        data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
+        if(this.getFlag("fortyk","neverquit")){
+            data.secChar.fatigue.max+=2;
+        }
+        //modify total characteristics depending on fatigue
+        var fatigueMult=1;
+        if(this.getFlag("fortyk","unrelenting")){
+            fatigueMult=2;
+        }
+        if(!this.getFlag("core","frenzy")){
+            for (let [key,char] of Object.entries(data.characteristics)){
+                if(char.bonus*fatigueMult<data.secChar.fatigue.value){
+                    char.total=Math.ceil(char.total/2);
+                }
+            }  
+        }
+        //parse skill modifiers from active effects
+        for (let [key, char] of Object.entries(data.skillmods)){
+            char=parseInt(char);
+        }
+
+
+        //prepare psyker stuff
+        data.psykana.pr.effective=parseInt(data .psykana.pr.value)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
+        data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
+        //get max carry weight ensure it is not out of bounds
+        if((data.characteristics["s"].bonus+data.characteristics["t"].bonus)>19){
+            data.carry.max=game.fortyk.FORTYK.carry[19].carry+data.carry.mod;
+        }else if((data.characteristics["s"].bonus+data.characteristics["t"].bonus)<=19){
+            data.carry.max=game.fortyk.FORTYK.carry[(data.characteristics["s"].bonus+data.characteristics["t"].bonus)].carry+data.carry.mod;
+        }else{
+            data.carry.max=game.fortyk.FORTYK.carry[1].carry+data.carry.mod;
+        }
+        //get income based on influence for dark heresy PCs
+        if(this.data.type==="dhPC"){
+            let inf=data.characteristics["inf"].total;
+            if(this.getFlag("fortyk","breedingcounts")){
+                inf+=10;
+            }
+
+            data.currency.income=FORTYKTABLES.income[inf]; 
+        }
+        //movement
+        if(this.getFlag("fortyk","quadruped")){
+
+            data.secChar.movement.multi=parseInt(data.secChar.movement.multi)*2; 
+        }
+        let size=data.secChar.size.value;
+        data.secChar.size.label=game.fortyk.FORTYK.size[size].name;
+        data.secChar.size.mod=game.fortyk.FORTYK.size[size].mod;
+        data.secChar.size.movement=game.fortyk.FORTYK.size[size].movement;
+        data.secChar.size.stealth=game.fortyk.FORTYK.size[size].stealth
+        //movement
+        data.secChar.movement.half=Math.max(Math.ceil((data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseInt(data.secChar.movement.multi)),1);
+        data.secChar.movement.full=data.secChar.movement.half*2;
+        data.secChar.movement.charge=data.secChar.movement.half*3;
+        data.secChar.movement.run=data.secChar.movement.half*6;
+        //add up all armor and stuff
+
+        var armor= data.secChar.wornGear.armor;
+
+        var rightHandWeapon= data.secChar.wornGear.weapons[0];
+
+        let rightHandWeaponData=null;
+        if(rightHandWeapon){
+            rightHandWeaponData=rightHandWeapon.data;
+        }
+
+
+        var leftHandWeapon= data.secChar.wornGear.weapons[1];
+
+
+        let leftHandWeaponData=null;
+        if(leftHandWeapon){
+            leftHandWeaponData=leftHandWeapon.data;
+        }
+        if(this.getFlag("fortyk","WeaponMaster")){
+            //weaponmaster initiative
+            let master=false;
+            if(rightHandWeaponData&&this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(rightHandWeaponData.data.type.value.toLowerCase())){
+                master=true;
+            }else if(leftHandWeaponData&&this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(leftHandWeaponData.data.type.value.toLowerCase())){
+                master=true;
+            }
+            if(master){
+                data.secChar.initiative.value+=2;
+            }
+
+        }
+
+        //handle shields
+        data.characterHitLocations.body.shield= 0;
+        data.characterHitLocations.rArm.shield= 0;
+        data.characterHitLocations.lArm.shield= 0;
+        if(rightHandWeaponData!==undefined&&rightHandWeaponData.type!=="rangedWeapon"){
+            data.characterHitLocations.rArm.shield= parseInt(rightHandWeaponData.data.shield.value);
+            data.characterHitLocations.body.shield= parseInt(rightHandWeaponData.data.shield.value);
+        }
+        if(leftHandWeaponData!==undefined&&leftHandWeaponData.type!=="rangedWeapon"){
+            data.characterHitLocations.lArm.shield= parseInt(leftHandWeaponData.data.shield.value);
+            data.characterHitLocations.body.shield= parseInt(leftHandWeaponData.data.shield.value);
+        }
+        //compute rest of armor and absorption
+        for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
+
+            if(armor.data!==undefined){
+                hitLoc.armor=hitLoc.armor+parseInt(armor.data.ap[key].value);
+            }
+            hitLoc.armor=hitLoc.armor+hitLoc.shield;
+            if(hitLoc.cyber){
+                hitLoc.armor=hitLoc.armor+2;
+            }
+            hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
+            let daemonic=this.getFlag("fortyk","daemonic");
+            if(daemonic){
+                if(!isNaN(daemonic)){
+                    hitLoc.value+=parseInt(daemonic);
+                }
+            }
+        }
+    }
+    _prepareNPCData(actorData){
+
+        const data=actorData.data;
+        //calc char bonuses
+        for (let [key, char] of Object.entries(data.characteristics)){
+            if(key==="inf"){
+            }else{
+                char.total=parseInt(char.value);
+
+                char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
+                char.total+=parseInt(data.globalMOD.value);
+
+            }
+        }
+        data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
+        //modify total characteristics depending on fatigue
+        var fatigueMult=1;
+        for (let [key,char] of Object.entries(data.characteristics)){
+            if(!this.getFlag("core","frenzy")&&char.bonus*fatigueMult<data.secChar.fatigue.value){
+                char.total=Math.ceil(char.value/2);
+            }
+        }
+        //prepare psyker stuff
+        data.psykana.pr.effective=parseInt(data .psykana.pr.value)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
+        data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
+        //movement
+
+        if(this.getFlag("fortyk","quadruped")){
+
+            data.secChar.movement.multi=parseInt(data.secChar.movement.multi)*2; 
+        }
+        let size=data.secChar.size.value;
+        data.secChar.size.label=game.fortyk.FORTYK.size[size].name;
+        data.secChar.size.mod=game.fortyk.FORTYK.size[size].mod;
+        data.secChar.size.movement=game.fortyk.FORTYK.size[size].movement;
+        data.secChar.size.stealth=game.fortyk.FORTYK.size[size].stealth
+        //movement
+        data.secChar.movement.half=Math.max(Math.ceil((data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseInt(data.secChar.movement.multi)),1);
+        data.secChar.movement.full=data.secChar.movement.half*2;
+        data.secChar.movement.charge=data.secChar.movement.half*3;
+        data.secChar.movement.run=data.secChar.movement.half*6;
+        //total soak
+        var armor= data.secChar.wornGear.armor;
+        console.log(armor)
+        //compute rest of armor and absorption
+        for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
+            hitLoc.armor+=parseInt(hitLoc.armor);
+            if(armor.data!==undefined){
+                hitLoc.armor=parseInt(hitLoc.armor)+parseInt(armor.data.ap[key].value);
+            }
+
+
+            hitLoc.value=parseInt(hitLoc.armor)+data.characteristics.t.bonus;
+            let daemonic=this.getFlag("fortyk","daemonic");
+            if(daemonic){
+                if(!isNaN(daemonic)){
+                    hitLoc.value+=parseInt(daemonic);
+                }
+            }
+        }
+    }
+    prepare(){
+        let preparedData = this.data
+        // Call prepareItems first to organize and process Items
+        if(preparedData.type==='dwPC'||preparedData.type==='dhPC'||preparedData.type==='owPC'){
+            mergeObject(preparedData, this.preparePCItems(preparedData));
+        }else if(preparedData.type==='npc'){
+            mergeObject(preparedData, this.prepareNPCItems(preparedData));
+        }else if(preparedData.type==="spaceship"){
+            mergeObject(preparedData, this.prepareSpaceshipItems(preparedData));
+        }
+        return preparedData;
+    }
+    //this prepares all items into containers that can be easily accessed by the html sheets, also adds in logic for sorting and all computing logic for items
+    preparePCItems(actorData){
+
+        let data=actorData.data;
+        const skills=[];
+        const wargear=[];
+        const cybernetics=[];
+        const forceFields=[];
+        const mods=[];
+        const consummables=[];
+        const psychicPowers=[];
+        const mutations=[];
+        const injuries=[];
+        const malignancies=[];
+        const disorders=[];
+        const talentsntraits=[];
+        const missions=[];
+        const advancements=[];
+        const meleeweapons=[];
+        const rangedWeapons=[];
+        const armors=[];
+        const ammunitions=[];
+        const equippableAmmo=[];
+        const favoritePowers=[];
+        const wornGear={weapons:[],"armor":"","forceField":""};
+
+        let unrelenting=false;
+        let forRaces=[];
+        //get worn weapon ids into an array so that they can be accessed by the sheet easily
+        let wornWeapons=data.secChar.wornGear.weapons;
+        if(!Array.isArray(data.secChar.wornGear.weapons)){
+            wornWeapons=Object.values(data.secChar.wornGear.weapons);
+        }
+        try{
+            var rightHandWeapon= data.secChar.wornGear.weapons[0];
+        }
+        catch(err){var rightHandWeapon= undefined;}
+        try{
+            var leftHandWeapon= data.secChar.wornGear.weapons[1];
+        }
+        catch(err){var leftHandWeapon= undefined;}
+
+
+        let parry=false;
+
+        if((rightHandWeapon.data!==undefined&&rightHandWeapon.getFlag("fortyk","unbalanced"))||(leftHandWeapon.data!==undefined&&leftHandWeapon.getFlag("fortyk","unbalanced"))){
+            parry=-10;
+        }
+        if((rightHandWeapon.data!==undefined&&rightHandWeapon.getFlag("fortyk","balanced"))||(leftHandWeapon.data!==undefined&&leftHandWeapon.getFlag("fortyk","balanced"))){
+            parry=10;
+        }
+        if((rightHandWeapon.data!==undefined&&rightHandWeapon.getFlag("fortyk","defensive"))||(leftHandWeapon.data!==undefined&&leftHandWeapon.getFlag("fortyk","defensive"))){
+            parry=15;
+        }
+        let psyniscience=0;
+
+        //apply logic to items that depends on actor data so that it updates readily when the actor is updated
+        //put all items in their respective containers and do some item logic
+        this.items.forEach((fortykItem,id,items)=>{
+            let item=fortykItem.data;
+
+            if(item._id===data.secChar.wornGear.armor.id){
+                wornGear["armor"]=item;
+            }
+            if(item._id===data.secChar.wornGear.forceField.id){
+                wornGear["forceField"]=item;
+            }
+            if(item.type=="skill"){
+                item.data.total.value=0
+                if(data.skillmods[item.name.toLowerCase()]){
+
+                    item.data.mod.value= parseInt(item._source.data.mod.value)+parseInt(data.skillmods[item.name.toLowerCase()]);
+                }
+                if(item.name==="Parry"){
+                    if(parry){
+                        item.data.total.value+=parry;
+                    } 
+                }
+                if(this.getFlag("fortyk","fieldvivisection")&&item.name==="Medicae"){
+                    data.fieldVivisection=parseInt(item.data.value)+parseInt(item.data.mod.value);
+                }
+                if(item.data.parent.value==="Forbidden Lore"){
+                    if(game.fortyk.FORTYK.races.includes(item.name)){
+                        forRaces.push(item.name.toLowerCase());
+                    }
+                } item.data.total.value+=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
+                if(item.name==="Psyniscience"){
+                    psyniscience=item.data.total.value;
+                }
+                skills.push(item);
+            }
+            if(item.type==="malignancy"){
+                malignancies.push(item);
+            }
+            if(item.type==="injury"){
+                injuries.push(item);
+            }
+            if(item.type==="mutation"){
+                mutations.push(item);
+            }
+            if(item.type==="disorder"){
+                disorders.push(item);
+            }
+            if(item.type==="wargear"){
+                wargear.push(item);
+            }
+            if(item.type==="cybernetic"){
+
+                cybernetics.push(item);
+            }
+            if(item.type==="forceField"){
+                forceFields.push(item);
+                wargear.push(item);
+            }
+            if(item.type==="mod"){
+                mods.push(item);
+            }
+            if(item.type==="consummable"){
+                consummables.push(item);
+                wargear.push(item);
+            }
+            if(item.type==="psychicPower"){
+                if(actorData.data.psykana.psykerType.value.toLowerCase()==="navigator"){
                     let range=item.data.range.formula.toLowerCase();
-                    let wp=data.characteristics.wp.bonus;
+
                     item.data.range.value=eval(range);
                     item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
-                    let temp;
-                    temp=item.data.damageFormula.formula.replace(/pr/gmi,pr);
-                    item.data.damageFormula.value=temp.replace(/wp/gmi,wp);
-                }catch(err){
-                    item.data.range.value="";
-                    item.data.pen.value="";
-                    item.data.damageFormula.value=="";
-                }
-                let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(item.data.curPR.value));
-                let char=0;
-                if(item.data.testChar.value==="psy"){
-                    char=psyniscience;
-                    item.data.testChar.type="per";
+                    let training=0;
+                    switch(item.data.training.value){
+                        case "Novice":
+                            training=0;
+                            break;
+                        case "Adept":
+                            training=10;
+                            break;
+                        case "Master":
+                            training=20;
+                            break;
+                    }
+                    let char=0;
+                    if(item.data.testChar.value==="psy"){
+                        char=psyniscience;
+                        item.data.testChar.type="per";
+                    }else{
+                        char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
+                        item.data.testChar.type=item.data.testChar.value;
+                    }
+
+                    item.data.target.value=char+training;
                 }else{
-                    char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
-                    item.data.testChar.type=item.data.testChar.value;
+                    try{
+                        let pr=parseInt(item.data.curPR.value);
+                        let range=item.data.range.formula.toLowerCase();
+                        let wp=data.characteristics.wp.bonus;
+                        item.data.range.value=eval(range);
+                        item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
+                        let temp;
+                        temp=item.data.damageFormula.formula.replace(/pr/gmi,pr);
+                        item.data.damageFormula.value=temp.replace(/wp/gmi,wp);
+                    }catch(err){
+                        item.data.range.value="";
+                        item.data.pen.value="";
+                        item.data.damageFormula.value=="";
+                    }
+                    let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(item.data.curPR.value));
+                    let char=0;
+                    if(item.data.testChar.value==="psy"){
+                        char=psyniscience;
+                        item.data.testChar.type="per";
+                    }else{
+                        char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
+                        item.data.testChar.type=item.data.testChar.value;
+                    }
+                    item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
                 }
-                item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
-            }
-            if(data.psykana.filter){
-                console.log(item.data.class.value,data.psykana.filter)
-                if(data.psykana.filter===item.data.discipline.value){
+                if(data.psykana.filter){
+                    console.log(item.data.class.value,data.psykana.filter)
+                    if(data.psykana.filter===item.data.discipline.value){
+                        psychicPowers.push(item);
+                    }
+                }else{
                     psychicPowers.push(item);
                 }
-            }else{
-                psychicPowers.push(item);
-            }
-            if(item.data.favorite){
-                favoritePowers.push(item);
-            }
-
-        }
-        if(item.type==="talentntrait"){
-
-            talentsntraits.push(item);
-        }
-        if(item.type==="mission"){
-
-            missions.push(item);
-        }
-        if(item.type==="advancement"){
-
-            advancements.push(item);
-        }
-
-        if(item.type==="meleeWeapon"){
-            item.data.damageFormula.value=item.data.damageFormula.formula;
-            item.data.range.value=item.data.range.formula;
-            item.data.pen.value=item.data.pen.formula;
-
-
-
-
-
-            //ensure that a weapon that is not a shield does not have an armor rating
-            if(item.data.class.value!=="Shield"&&item.data.shield.value!==0){
-                item.data.shield.value=0;
-
-            }
-
-            if(fortykItem.getFlag("fortyk","crushing")){
-                item.data.damageFormula.value+="+"+2*data.characteristics.s.bonus;
-            }else{
-                item.data.damageFormula.value+="+"+data.characteristics.s.bonus;
-            }
-            if(this.getFlag("fortyk","crushingblow")){
-                item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
-            }
-
-            meleeweapons.push(item);
-            wargear.push(item);
-        }
-        if(item.type==="rangedWeapon"){
-            item.data.damageFormula.value=item.data.damageFormula.formula;
-            try
-            {
-                let sb=data.characteristics.s.bonus;
-                let formula=item.data.range.formula.toLowerCase();
-                item.data.range.value=eval(formula);
-            } 
-            catch(err){
-                item.data.range.value="";
-            } 
-            if(this.getFlag("fortyk","mightyshot")){
-                item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.bs.bonus/2);
-            }
-            if(this.getFlag("fortyk","accurate")){
-                item.data.attackMods.aim.half=20;
-                item.data.attackMods.aim.full=30;
-            }
-
-            if(this.getFlag("fortyk","scatter")){
-                item.data.attackMods.range.pointblank=40;
-                item.data.attackMods.range.short=20;
-
-            }
-            if(this.getFlag("fortyk","twinlinked")){
-
-                item.data.testMod.value=20;
-                item.data.clip.consumption=2;
-            }
-            if(item.data.damTyp===undefined){item.data.damTyp=item.data.damageType.value}
-
-            let ammo=this.getEmbeddedDocument("Item",item.data.ammo._id);
-
-            if(ammo!==undefined&&!ammo.data.data.default.value){
-                let ammoData=ammo.data;
-                item.data.damageType.value=ammoData.data.damageType.value;
-                item.data.range.value=ammoData.data.range.formula;
-                item.data.pen.value=ammoData.data.pen.formula;
-                item.data.damageFormula.value=ammoData.data.damageFormula.formula;
-                item.flags=ammoData.flags;
-            }else{
-                if(!item.data.damTyp===""){
-                    item.data.damageType.value=data.damTyp;
-                }else{
-                    item.data.damTyp=item.data.damageType.value;
+                if(item.data.favorite){
+                    favoritePowers.push(item);
                 }
 
+            }
+            if(item.type==="talentntrait"){
+
+                talentsntraits.push(item);
+            }
+            if(item.type==="mission"){
+
+                missions.push(item);
+            }
+            if(item.type==="advancement"){
+
+                advancements.push(item);
+            }
+
+            if(item.type==="meleeWeapon"){
+                item.data.damageFormula.value=item.data.damageFormula.formula;
                 item.data.range.value=item.data.range.formula;
                 item.data.pen.value=item.data.pen.formula;
+
+
+
+
+
+                //ensure that a weapon that is not a shield does not have an armor rating
+                if(item.data.class.value!=="Shield"&&item.data.shield.value!==0){
+                    item.data.shield.value=0;
+
+                }
+
+                if(fortykItem.getFlag("fortyk","crushing")){
+                    item.data.damageFormula.value+="+"+2*data.characteristics.s.bonus;
+                }else{
+                    item.data.damageFormula.value+="+"+data.characteristics.s.bonus;
+                }
+                if(this.getFlag("fortyk","crushingblow")){
+                    item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
+                }
+
+                meleeweapons.push(item);
+                wargear.push(item);
+            }
+            if(item.type==="rangedWeapon"){
                 item.data.damageFormula.value=item.data.damageFormula.formula;
+                try
+                {
+                    let sb=data.characteristics.s.bonus;
+                    let formula=item.data.range.formula.toLowerCase();
+                    item.data.range.value=eval(formula);
+                } 
+                catch(err){
+                    item.data.range.value="";
+                } 
+                if(this.getFlag("fortyk","mightyshot")){
+                    item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.bs.bonus/2);
+                }
+                if(this.getFlag("fortyk","accurate")){
+                    item.data.attackMods.aim.half=20;
+                    item.data.attackMods.aim.full=30;
+                }
 
-            }
+                if(this.getFlag("fortyk","scatter")){
+                    item.data.attackMods.range.pointblank=40;
+                    item.data.attackMods.range.short=20;
 
-            item.data.clip.max=item.data.clip.formula;
+                }
+                if(this.getFlag("fortyk","twinlinked")){
 
-            if(fortykItem.getFlag("fortyk","lasModal")){
-                if(fortykItem.getFlag("fortyk","lasMode")===0){
-
-                }else if(fortykItem.getFlag("fortyk","lasMode")===1){
+                    item.data.testMod.value=20;
                     item.data.clip.consumption=2;
-                    item.data.damageFormula.value+="+1"
-                }else if(fortykItem.getFlag("fortyk","lasMode")===2){
-                    item.data.clip.consumption=4;
-                    item.data.damageFormula.value+="+2"
+                }
+                if(item.data.damTyp===undefined){item.data.damTyp=item.data.damageType.value}
+
+                let ammo=this.getEmbeddedDocument("Item",item.data.ammo._id);
+
+                if(ammo!==undefined&&!ammo.data.data.default.value){
+                    let ammoData=ammo.data;
+                    item.data.damageType.value=ammoData.data.damageType.value;
+                    item.data.range.value=ammoData.data.range.formula;
+                    item.data.pen.value=ammoData.data.pen.formula;
+                    item.data.damageFormula.value=ammoData.data.damageFormula.formula;
+                    item.flags=ammoData.flags;
+                }else{
+                    if(!item.data.damTyp===""){
+                        item.data.damageType.value=data.damTyp;
+                    }else{
+                        item.data.damTyp=item.data.damageType.value;
+                    }
+
+                    item.data.range.value=item.data.range.formula;
+                    item.data.pen.value=item.data.pen.formula;
+                    item.data.damageFormula.value=item.data.damageFormula.formula;
+
+                }
+
+                item.data.clip.max=item.data.clip.formula;
+
+                if(fortykItem.getFlag("fortyk","lasModal")){
+                    if(fortykItem.getFlag("fortyk","lasMode")===0){
+
+                    }else if(fortykItem.getFlag("fortyk","lasMode")===1){
+                        item.data.clip.consumption=2;
+                        item.data.damageFormula.value+="+1"
+                    }else if(fortykItem.getFlag("fortyk","lasMode")===2){
+                        item.data.clip.consumption=4;
+                        item.data.damageFormula.value+="+2"
+                        item.data.pen.value=parseInt(item.data.pen.formula)+2;
+                        item.flags.fortyk.reliable=false;
+                        item.flags.fortyk.unreliable=true;
+                    }
+                }
+                if(fortykItem.getFlag("fortyk","maximalMode")){
+
+
+                    item.data.range.value=parseInt(item.data.range.formula)+10;
+                    let form=item.data.damageFormula.formula;
+                    let dPos = form.indexOf('d');
+                    let dieNum = form.substr(0,dPos);
+                    let newNum=parseInt(dieNum)+1;
+                    item.data.damageFormula.value=form.slice(dPos)
+                    item.data.damageFormula.value=newNum+item.data.damageFormula.value;
                     item.data.pen.value=parseInt(item.data.pen.formula)+2;
-                    item.flags.fortyk.reliable=false;
-                    item.flags.fortyk.unreliable=true;
+                    item.data.clip.consumption=3;
+                }
+
+                rangedWeapons.push(item);
+                wargear.push(item);
+            }
+            if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
+                if(this.getFlag("fortyk","WeaponMaster")){
+                    console.log(this.getFlag("fortyk","WeaponMaster"),item.data.type.value.toLowerCase())
+                    if(this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(item.data.type.value.toLowerCase())){
+
+                        item.data.damageFormula.value+="+2";
+                        item.data.testMod.value=item._source.data.testMod.value+10;
+                    }
+                }
+
+                if(item.data.isEquipped){
+                    wornGear.weapons.push(fortykItem);
+                }
+
+                try{
+                    if(fortykItem.getFlag("fortyk","force")){
+                        let pr=parseInt(data.psykana.pr.value);
+                        item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
+                        item.data.damageFormula.value+=`+${pr}`;
+                    }
+                }catch(err){
+                    item.data.pen.value="";
+                    item.data.damageFormula.value="";
                 }
             }
-            if(fortykItem.getFlag("fortyk","maximalMode")){
+            if(item.type==="armor"){
 
-
-                item.data.range.value=parseInt(item.data.range.formula)+10;
-                let form=item.data.damageFormula.formula;
-                let dPos = form.indexOf('d');
-                let dieNum = form.substr(0,dPos);
-                let newNum=parseInt(dieNum)+1;
-                item.data.damageFormula.value=form.slice(dPos)
-                item.data.damageFormula.value=newNum+item.data.damageFormula.value;
-                item.data.pen.value=parseInt(item.data.pen.formula)+2;
-                item.data.clip.consumption=3;
+                armors.push(item);
+                wargear.push(item);
             }
-
-            rangedWeapons.push(item);
-            wargear.push(item);
-        }
-        if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
-            if(this.getFlag("fortyk","WeaponMaster")){
-                 console.log(this.getFlag("fortyk","WeaponMaster"),item.data.type.value.toLowerCase())
-                if(this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(item.data.type.value.toLowerCase())){
-                   
-                    item.data.damageFormula.value+="+2";
-                    item.data.testMod.value=item._source.data.testMod.value+10;
+            if(item.type==="ammunition"){
+                ammunitions.push(item);
+                wargear.push(item);
+                if(item.data.amount.value>=0){
+                    equippableAmmo.push(item);
                 }
             }
 
-            if(item.data.isEquipped){
-                wornGear.weapons.push(fortykItem);
-            }
+        })
 
-            try{
-                if(fortykItem.getFlag("fortyk","force")){
-                    let pr=parseInt(data.psykana.pr.value);
-                    item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
-                    item.data.damageFormula.value+=`+${pr}`;
-                }
-            }catch(err){
-                item.data.pen.value="";
-                item.data.damageFormula.value="";
-            }
+        //store known xenos for deathwatchtraining
+        if(this.getFlag("fortyk","deathwatchtraining")){
+            actorData.flags.fortyk.deathwatchtraining=forRaces;
         }
-        if(item.type==="armor"){
-
-            armors.push(item);
-            wargear.push(item);
-        }
-        if(item.type==="ammunition"){
-            ammunitions.push(item);
-            wargear.push(item);
-            if(item.data.amount.value>=0){
-                equippableAmmo.push(item);
-            }
+        if(this.getFlag("fortyk","fieldvivisection")){
+            actorData.flags.fortyk.fieldvivisection=forRaces;
         }
 
-    })
-
-    //store known xenos for deathwatchtraining
-    if(this.getFlag("fortyk","deathwatchtraining")){
-        actorData.flags.fortyk.deathwatchtraining=forRaces;
-    }
-    if(this.getFlag("fortyk","fieldvivisection")){
-        actorData.flags.fortyk.fieldvivisection=forRaces;
-    }
 
 
 
-
-    let sortedSkills=skills/*.sort(function compare(a, b) {
+        let sortedSkills=skills/*.sort(function compare(a, b) {
             if (a.name<b.name) {
                 return -1;
             }
@@ -995,7 +995,7 @@ preparePCItems(actorData){
             // a must be equal to b
             return 0;
         });*/
-    let sortedTnt=talentsntraits/*.sort(function compare(a, b) {
+        let sortedTnt=talentsntraits/*.sort(function compare(a, b) {
             if (a.sort<b.sort) {
                 return -1;
             }
@@ -1005,7 +1005,7 @@ preparePCItems(actorData){
             // a must be equal to b
             return 0;
         });*/
-    let sortedGear=wargear/*.sort(function compare(a, b) {
+        let sortedGear=wargear/*.sort(function compare(a, b) {
             if (a.sort<b.sort) {
                 return -1;
             }
@@ -1016,306 +1016,391 @@ preparePCItems(actorData){
             return 0;
         });*/
 
-    let preparedItems={skills:sortedSkills,
-                       wargear:sortedGear,
-                       cybernetics:cybernetics,
-                       forceFields:forceFields,
-                       mods:mods,
-                       consummables:consummables,
-                       psychicPowers:psychicPowers,
-                       mutations:mutations,
-                       malignancies:malignancies,
-                       injuries:injuries,
-                       disorders:disorders,
-                       talentsntraits:sortedTnt,
-                       missions:missions,
-                       advancements:advancements,
-                       meleeWeapons:meleeweapons,
-                       rangedWeapons:rangedWeapons,
-                       armors:armors,
-                       ammunitions:ammunitions,
-                       equippableAmmo:equippableAmmo,
-                       wornGear:wornGear,
-                       favoritePowers:favoritePowers};
-    try{
-        this._sortItems(preparedItems);
-    }catch(err){}
-    return preparedItems;
-}
+        let preparedItems={skills:sortedSkills,
+                           wargear:sortedGear,
+                           cybernetics:cybernetics,
+                           forceFields:forceFields,
+                           mods:mods,
+                           consummables:consummables,
+                           psychicPowers:psychicPowers,
+                           mutations:mutations,
+                           malignancies:malignancies,
+                           injuries:injuries,
+                           disorders:disorders,
+                           talentsntraits:sortedTnt,
+                           missions:missions,
+                           advancements:advancements,
+                           meleeWeapons:meleeweapons,
+                           rangedWeapons:rangedWeapons,
+                           armors:armors,
+                           ammunitions:ammunitions,
+                           equippableAmmo:equippableAmmo,
+                           wornGear:wornGear,
+                           favoritePowers:favoritePowers};
+        try{
+            this._sortItems(preparedItems);
+        }catch(err){}
+        return preparedItems;
+    }
 
-prepareNPCItems(actorData){
-    let data=actorData.data;           
-    const psychicPowers=[];
-    const meleeweapons=[];
-    const rangedWeapons=[];
-    const talentsntraits=[];
-    const armors=[];
-    //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
-    //apply logic to items that depends on actor data so that it updates readily when the actor is updated
-    //put all items in their respective containers and do some item logic
-    this.items.forEach((fortykItem,id,items)=>{
-        let item=fortykItem.data;
-        if(item.type==="talentntrait"){
+    prepareNPCItems(actorData){
+        let data=actorData.data;           
+        const psychicPowers=[];
+        const meleeweapons=[];
+        const rangedWeapons=[];
+        const talentsntraits=[];
+        const armors=[];
+        //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
+        //apply logic to items that depends on actor data so that it updates readily when the actor is updated
+        //put all items in their respective containers and do some item logic
+        this.items.forEach((fortykItem,id,items)=>{
+            let item=fortykItem.data;
+            if(item.type==="talentntrait"){
 
-            talentsntraits.push(item);
-        }
-        if(item.type==="armor"){
-            armors.push(item);
-        }
-        if(item.type==="psychicPower"){
-            try{
-                let pr=parseInt(item.data.curPR.value);
-                let range=item.data.range.formula.toLowerCase();
-                item.data.range.value=eval(range);
-                item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
-                item.data.damageFormula.value=item.data.damageFormula.formula.replace(/pr/gmi,pr);
-            }catch(err){
-                item.data.range.value="";
-                item.data.pen.value="";
-                item.data.damageFormula.value=="";
+                talentsntraits.push(item);
             }
-            let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(item.data.curPR.value));
-            let char=0;
-            if(item.data.testChar.value==="psy"){
-                char=getItem(this,"Psyniscience").data.total.value;
-                item.data.testChar.type="per";
-            }else{
-                char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
-                item.data.testChar.type=item.data.testChar.value;
+            if(item.type==="armor"){
+                armors.push(item);
             }
-            item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
-            psychicPowers.push(item);
-        }
-        if(item.type==="meleeWeapon"){
-            item.data.range.value=item.data.range.formula;
-            item.data.pen.value=item.data.pen.formula;
-
-
-
-
-
-            //ensure that a weapon that is not a shield does not have an armor rating
-            if(item.data.class.value!=="Shield"&&item.data.shield.value!==0){
-                item.data.shield.value=0;
-
-            }
-            if(fortykItem.getFlag("fortyk","crushing")){
-                item.data.damageFormula.value=item.data.damageFormula.formula+"+"+2*data.characteristics.s.bonus;
-            }else{
-                item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
-            }
-            if(this.getFlag("fortyk","crushingblow")){
-                item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
-            }
-            meleeweapons.push(item);
-        }
-        if(item.type==="rangedWeapon"){
-            try
-            {
-                let sb=data.characteristics.s.bonus;
-                let formula=item.data.range.formula.toLowerCase();
-                item.data.range.value=eval(formula);
-            } 
-            catch(err){
-                item.data.range.value="";
-            } 
-            if(this.getFlag("fortyk","mightyshot")){
-                item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.bs.bonus/2);
-            }
-            rangedWeapons.push(item);
-        }
-        if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
-            try{
-                if(fortykItem.getFlag("fortyk","force")){
-                    let pr=parseInt(data.psykana.pr.value);
+            if(item.type==="psychicPower"){
+                try{
+                    let pr=parseInt(item.data.curPR.value);
+                    let range=item.data.range.formula.toLowerCase();
+                    item.data.range.value=eval(range);
                     item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
-                    item.data.damageFormula.value=item.data.damageFormula.value.replace(/pr/gmi,pr);
+                    item.data.damageFormula.value=item.data.damageFormula.formula.replace(/pr/gmi,pr);
+                }catch(err){
+                    item.data.range.value="";
+                    item.data.pen.value="";
+                    item.data.damageFormula.value=="";
                 }
-            }catch(err){
-                item.data.pen.value="";
-                item.data.damageFormula.value="";
-            }
-        }
-    })
-    let preparedItems={
-        psychicPowers:psychicPowers,
-        meleeWeapons:meleeweapons,
-        rangedWeapons:rangedWeapons,
-        talentsntraits:talentsntraits,
-        armors:armors
-    };
-    try{
-        this._sortItems(preparedItems);
-    }catch(err){}
-    return preparedItems;
-}
-//sort spaceship items and apply light logic
-prepareSpaceshipItems(actorData){
-    let data=actorData.data;
-    const weapons=[];
-    const components=[];
-    const cargo=[];
-    const squadrons=[];
-    const torpedoes=[];
-    const bombers=[];
-    this.items.forEach((fortykItem,id,items)=>{
-        let item=fortykItem.data;
-        let unmodItem=item._source;
-        if(item.type==="spaceshipComponent"){
-            components.push(item);
-        }else if(item.type==="spaceshipWeapon"){
-            if(item.data.type.value==="Hangar"){
-                item.data.damage.value="1d10+"+Math.ceil(data.crew.rating/10);
-                let squadron=this.items.get(item.data.torpedo.id);
-                if(squadron.data.data.halfstr.value){
-                    item.data.torpedo.rating=squadron.data._source.data.rating.value-10;
+                let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(item.data.curPR.value));
+                let char=0;
+                if(item.data.testChar.value==="psy"){
+                    char=getItem(this,"Psyniscience").data.total.value;
+                    item.data.testChar.type="per";
                 }else{
-                    item.data.torpedo.rating=squadron.data.data.rating.value;
+                    char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
+                    item.data.testChar.type=item.data.testChar.value;
+                }
+                item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
+                psychicPowers.push(item);
+            }
+            if(item.type==="meleeWeapon"){
+                item.data.range.value=item.data.range.formula;
+                item.data.pen.value=item.data.pen.formula;
+
+
+
+
+
+                //ensure that a weapon that is not a shield does not have an armor rating
+                if(item.data.class.value!=="Shield"&&item.data.shield.value!==0){
+                    item.data.shield.value=0;
+
+                }
+                if(fortykItem.getFlag("fortyk","crushing")){
+                    item.data.damageFormula.value=item.data.damageFormula.formula+"+"+2*data.characteristics.s.bonus;
+                }else{
+                    item.data.damageFormula.value=item.data.damageFormula.formula+"+"+data.characteristics.s.bonus;
+                }
+                if(this.getFlag("fortyk","crushingblow")){
+                    item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
+                }
+                meleeweapons.push(item);
+            }
+            if(item.type==="rangedWeapon"){
+                item.data.damageFormula.value=item.data.damageFormula.formula;
+                try
+                {
+                    let sb=data.characteristics.s.bonus;
+                    let formula=item.data.range.formula.toLowerCase();
+                    item.data.range.value=eval(formula);
+                } 
+                catch(err){
+                    item.data.range.value="";
+                } 
+                if(this.getFlag("fortyk","mightyshot")){
+                    item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.bs.bonus/2);
+                }
+                if(this.getFlag("fortyk","accurate")){
+                    item.data.attackMods.aim.half=20;
+                    item.data.attackMods.aim.full=30;
                 }
 
-            }
-            if(item.data.type.value==="Torpedo"){
+                if(this.getFlag("fortyk","scatter")){
+                    item.data.attackMods.range.pointblank=40;
+                    item.data.attackMods.range.short=20;
 
-                let torpedo=this.items.get(item.data.torpedo.id);
-                item.data.damage.value=torpedo.data.data.damage.value;
+                }
+                if(this.getFlag("fortyk","twinlinked")){
 
-                item.data.torpedo.rating=torpedo.data.data.rating.value;
-            }
-            components.push(item);
-            weapons.push(item);
+                    item.data.testMod.value=20;
+                    item.data.clip.consumption=2;
+                }
+                if(item.data.damTyp===undefined){item.data.damTyp=item.data.damageType.value}
 
-        }else if(item.type==="spaceshipCargo"){
-            cargo.push(item);
-            if(item.data.type.value==="Torpedoes"){
-                torpedoes.push(item);
-            }
-        }else if(item.type==="spaceshipSquadron"){
-            if(item.data.halfstr.value){
-                item.data.rating.value=unmodItem.data.rating.value-10;
-            }
-            squadrons.push(item);
-            if(item.data.type.value.toLowerCase()==="bomber"){
+                let ammo=this.getEmbeddedDocument("Item",item.data.ammo._id);
 
-                bombers.push(item);
+                if(ammo!==undefined&&!ammo.data.data.default.value){
+                    let ammoData=ammo.data;
+                    item.data.damageType.value=ammoData.data.damageType.value;
+                    item.data.range.value=ammoData.data.range.formula;
+                    item.data.pen.value=ammoData.data.pen.formula;
+                    item.data.damageFormula.value=ammoData.data.damageFormula.formula;
+                    item.flags=ammoData.flags;
+                }else{
+                    if(!item.data.damTyp===""){
+                        item.data.damageType.value=data.damTyp;
+                    }else{
+                        item.data.damTyp=item.data.damageType.value;
+                    }
+
+                    item.data.range.value=item.data.range.formula;
+                    item.data.pen.value=item.data.pen.formula;
+                    item.data.damageFormula.value=item.data.damageFormula.formula;
+
+                }
+
+                item.data.clip.max=item.data.clip.formula;
+
+                if(fortykItem.getFlag("fortyk","lasModal")){
+                    if(fortykItem.getFlag("fortyk","lasMode")===0){
+
+                    }else if(fortykItem.getFlag("fortyk","lasMode")===1){
+                        item.data.clip.consumption=2;
+                        item.data.damageFormula.value+="+1"
+                    }else if(fortykItem.getFlag("fortyk","lasMode")===2){
+                        item.data.clip.consumption=4;
+                        item.data.damageFormula.value+="+2"
+                        item.data.pen.value=parseInt(item.data.pen.formula)+2;
+                        item.flags.fortyk.reliable=false;
+                        item.flags.fortyk.unreliable=true;
+                    }
+                }
+                if(fortykItem.getFlag("fortyk","maximalMode")){
+
+
+                    item.data.range.value=parseInt(item.data.range.formula)+10;
+                    let form=item.data.damageFormula.formula;
+                    let dPos = form.indexOf('d');
+                    let dieNum = form.substr(0,dPos);
+                    let newNum=parseInt(dieNum)+1;
+                    item.data.damageFormula.value=form.slice(dPos)
+                    item.data.damageFormula.value=newNum+item.data.damageFormula.value;
+                    item.data.pen.value=parseInt(item.data.pen.formula)+2;
+                    item.data.clip.consumption=3;
+                }
+
+                rangedWeapons.push(item);
+
             }
-        }
-    });
-    let preparedItems={
-        weapons:weapons,
-        components:components,
-        cargo:cargo,
-        squadrons:squadrons,
-        torpedoes:torpedoes,
-        bombers:bombers
+            if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
+                //calculate horde bonus damage
+                if(this.data.data.horde.value){
+                    let hordeDmgBonus=Math.min(2,Math.floor(this.data.data.secChar.wounds.value/10));
+                    if(this.getFlag("fortyk","overwhelming")&&item.type==="meleeWeapon"&&this.data.data.secChar.wounds.value>=20){
+                        hordeDmgBonus+=1;
+                    }
+                    let form= item.data.damageFormula.value
+                    let dPos = form.indexOf('d');
+                    let dieNum = form.substr(0,dPos);
+                    let newNum=parseInt(dieNum)+hordeDmgBonus;
+                    form=form.slice(dPos);
+                    form=newNum+form;
+                    item.data.damageFormula.value=form;
+                }
+                try{
+                    if(fortykItem.getFlag("fortyk","force")){
+                        let pr=parseInt(data.psykana.pr.value);
+                        item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
+                        item.data.damageFormula.value=item.data.damageFormula.value.replace(/pr/gmi,pr);
+                    }
+                }catch(err){
+                    item.data.pen.value="";
+                    item.data.damageFormula.value="";
+                }
+            }
+        })
+        let preparedItems={
+            psychicPowers:psychicPowers,
+            meleeWeapons:meleeweapons,
+            rangedWeapons:rangedWeapons,
+            talentsntraits:talentsntraits,
+            armors:armors
+        };
+        try{
+            this._sortItems(preparedItems);
+        }catch(err){}
+        return preparedItems;
     }
-    try{
-        this._sortItems(preparedItems);
-    }catch(err){}
-
-    return preparedItems
-
-
-}
-//function to sort the item containers for display
-_sortItems(itemContainers){
-    let data=this.data;
-
-    let sorts=data.data.sort;
-
-    let containers=Object.entries(itemContainers);
-    containers.forEach((container, index )=>{
-
-        if(sorts[container[0]]){
-            let sortPath=sorts[container[0]].path;
-
-            let sorted=[];
-            if(sorts[container[0]].reverse){
-                sorted=container[1].sort(function compare(a, b) {
-                    let valueA=objectByString(a,sortPath);
-                    let valueB=objectByString(b,sortPath);
-                    if (valueA<valueB) {
-                        return 1;
+    //sort spaceship items and apply light logic
+    prepareSpaceshipItems(actorData){
+        let data=actorData.data;
+        const weapons=[];
+        const components=[];
+        const cargo=[];
+        const squadrons=[];
+        const torpedoes=[];
+        const bombers=[];
+        this.items.forEach((fortykItem,id,items)=>{
+            let item=fortykItem.data;
+            let unmodItem=item._source;
+            if(item.type==="spaceshipComponent"){
+                components.push(item);
+            }else if(item.type==="spaceshipWeapon"){
+                if(item.data.type.value==="Hangar"){
+                    item.data.damage.value="1d10+"+Math.ceil(data.crew.rating/10);
+                    let squadron=this.items.get(item.data.torpedo.id);
+                    if(squadron.data.data.halfstr.value){
+                        item.data.torpedo.rating=squadron.data._source.data.rating.value-10;
+                    }else{
+                        item.data.torpedo.rating=squadron.data.data.rating.value;
                     }
-                    if (valueA>valueB) {
-                        return -1;
-                    }
-                    // a must be equal to b
-                    return 0;
-                });
-            }else{
-                sorted=container[1].sort(function compare(a, b) {
-                    let valueA=objectByString(a,sortPath);
-                    let valueB=objectByString(b,sortPath);
-                    if (valueA<valueB) {
-                        return -1;
-                    }
-                    if (valueA>valueB) {
-                        return 1;
-                    }
-                    // a must be equal to b
-                    return 0;
-                });
+
+                }
+                if(item.data.type.value==="Torpedo"){
+
+                    let torpedo=this.items.get(item.data.torpedo.id);
+                    item.data.damage.value=torpedo.data.data.damage.value;
+
+                    item.data.torpedo.rating=torpedo.data.data.rating.value;
+                }
+                components.push(item);
+                weapons.push(item);
+
+            }else if(item.type==="spaceshipCargo"){
+                cargo.push(item);
+                if(item.data.type.value==="Torpedoes"){
+                    torpedoes.push(item);
+                }
+            }else if(item.type==="spaceshipSquadron"){
+                if(item.data.halfstr.value){
+                    item.data.rating.value=unmodItem.data.rating.value-10;
+                }
+                squadrons.push(item);
+                if(item.data.type.value.toLowerCase()==="bomber"){
+
+                    bombers.push(item);
+                }
             }
+        });
+        let preparedItems={
+            weapons:weapons,
+            components:components,
+            cargo:cargo,
+            squadrons:squadrons,
+            torpedoes:torpedoes,
+            bombers:bombers
+        }
+        try{
+            this._sortItems(preparedItems);
+        }catch(err){}
+
+        return preparedItems
 
 
-            itemContainers[container[0]]=sorted;
-        }
-    })
-}
-//this function deletes items from an actor, certain items need more logic to process
-deleteItem(itemId){
-    let item=this.items.get(itemId);
-    //iterate through skills to delete all the children of a group skill
-    if(item.type==="skill"&&item.data.hasChildren){
-        let skills=this.items.filter(function(item){return item.type==="skill"});
-        for(let s of skills){                
-            if(s.data.data.parent.value===item.name){
-                this.deleteEmbeddedDocuments("Item",[s._id]);
-            }
-        }
     }
-    this.deleteEmbeddedDocuments("Item", [itemId]);
-}
-//when creating active effects check if they are transferred from an item, if so give the active effect flag to the item for referrence.
-_onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId){
-    if(embeddedName==="ActiveEffect"){
+    //function to sort the item containers for display
+    _sortItems(itemContainers){
+        let data=this.data;
+
+        let sorts=data.data.sort;
+
+        let containers=Object.entries(itemContainers);
+        containers.forEach((container, index )=>{
+
+            if(sorts[container[0]]){
+                let sortPath=sorts[container[0]].path;
+
+                let sorted=[];
+                if(sorts[container[0]].reverse){
+                    sorted=container[1].sort(function compare(a, b) {
+                        let valueA=objectByString(a,sortPath);
+                        let valueB=objectByString(b,sortPath);
+                        if (valueA<valueB) {
+                            return 1;
+                        }
+                        if (valueA>valueB) {
+                            return -1;
+                        }
+                        // a must be equal to b
+                        return 0;
+                    });
+                }else{
+                    sorted=container[1].sort(function compare(a, b) {
+                        let valueA=objectByString(a,sortPath);
+                        let valueB=objectByString(b,sortPath);
+                        if (valueA<valueB) {
+                            return -1;
+                        }
+                        if (valueA>valueB) {
+                            return 1;
+                        }
+                        // a must be equal to b
+                        return 0;
+                    });
+                }
+
+
+                itemContainers[container[0]]=sorted;
+            }
+        })
+    }
+    //this function deletes items from an actor, certain items need more logic to process
+    deleteItem(itemId){
+        let item=this.items.get(itemId);
+        //iterate through skills to delete all the children of a group skill
+        if(item.type==="skill"&&item.data.hasChildren){
+            let skills=this.items.filter(function(item){return item.type==="skill"});
+            for(let s of skills){                
+                if(s.data.data.parent.value===item.name){
+                    this.deleteEmbeddedDocuments("Item",[s._id]);
+                }
+            }
+        }
+        this.deleteEmbeddedDocuments("Item", [itemId]);
+    }
+    //when creating active effects check if they are transferred from an item, if so give the active effect flag to the item for referrence.
+    _onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId){
+        if(embeddedName==="ActiveEffect"){
+            let actor=this;
+            documents.forEach(async function(item,i){
+                if(item.data.origin){
+                    let powerId=item.data.origin.split('.')[3];
+                    let power=actor.getEmbeddedDocument("Item",powerId);
+                    await power.update({"data.transferId":item.id})
+
+                }
+            })
+        }
+        super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
+    }
+    _onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId){
+
+        if(this.dialog){
+
+
+
+
+            this.dialog.updateDialog(this);
+
+
+        }
+        super._onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId);
+    }
+    //when deleting talents, remove the flag associated with each of them.
+    _onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId){
         let actor=this;
-        documents.forEach(async function(item,i){
-            if(item.data.origin){
-                let powerId=item.data.origin.split('.')[3];
-                let power=actor.getEmbeddedDocument("Item",powerId);
-                await power.update({"data.transferId":item.id})
-
-            }
-        })
+        if(embeddedName==="Item"){
+            documents.forEach(async function(item,i){
+                if(item.data.type==="talentntrait"){
+                    let flag=item.data.data.flagId.value;
+                    await actor.setFlag("fortyk",flag,false); 
+                }
+            })
+        }
+        super._onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId);
     }
-    super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
-}
-_onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId){
-
-    if(this.dialog){
-
-
-
-
-        this.dialog.updateDialog(this);
-
-
-    }
-    super._onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId);
-}
-//when deleting talents, remove the flag associated with each of them.
-_onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId){
-    let actor=this;
-    if(embeddedName==="Item"){
-        documents.forEach(async function(item,i){
-            if(item.data.type==="talentntrait"){
-                let flag=item.data.data.flagId.value;
-                await actor.setFlag("fortyk",flag,false); 
-            }
-        })
-    }
-    super._onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId);
-}
 
 }
