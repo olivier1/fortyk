@@ -45,6 +45,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         super.activateListeners(html);
         // Everything below here is only needed if the sheet is editable
         if (!this.options.editable) return;
+        //right click profile img
+        html.find('.profile-img').contextmenu(this._onImgRightClick.bind(this));
         //handles combat tab resources
 
         html.find('.combat-resources').focusout(this._combatResourceEdit.bind(this));
@@ -103,6 +105,31 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     _onDragOverListItem(event){
 
         event.preventDefault();
+
+    }
+    _onImgRightClick(event){
+
+        event = event || window.event;
+
+      
+        var options = {
+            width: "auto",
+            height: "auto"
+        };
+        let img=this.actor.img
+        let dlg = new Dialog({
+            title: `Profile Image`,
+            content: `<img src="${img}"  width="auto" height="auto">`,
+            buttons: {
+                submit: {
+                    label: "OK",
+                    callback: null
+                }
+            },
+            default: "submit",
+        }, options);
+        dlg.render(true);
+
 
     }
     async _onDropListItem(event){
@@ -624,7 +651,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         event.preventDefault();
         let targets=game.user.targets;
         if(targets.size>0){
-            
+
             const element = event.currentTarget;
             const dataset = element.dataset;
             let powerId=dataset["power"];
@@ -648,16 +675,16 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     aeData.flags.core={ statusId: "weakened" }
                 }
             })
-            
+
             aeData.disabled=false;
             aeData.origin=null;
             targets.forEach(async function(target){
                 let actor=target.actor;
                 FortykRolls.applyActiveEffect(target,[aeData]);
                 actor.createEmbeddedDocuments("ActiveEffect",[aeData]);
-                
+
             });
-            
+
         }
     }
     //handles resetting cover values to zero

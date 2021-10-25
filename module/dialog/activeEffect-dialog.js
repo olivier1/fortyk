@@ -18,7 +18,7 @@ export class ActiveEffectDialog extends Dialog {
         let actorId = event.currentTarget.attributes["data-actor-id"].value;
         let tokenId = event.currentTarget.attributes["data-token-id"].value;
         let actor = game.actors.get(actorId);
-        console.log(tokenId)
+        
         if(tokenId){
            let token =canvas.tokens.get(tokenId);
             actor= token.actor;
@@ -34,7 +34,7 @@ export class ActiveEffectDialog extends Dialog {
         let actorId = event.currentTarget.attributes["data-actor-id"].value;
         let tokenId = event.currentTarget.attributes["data-token-id"].value;
         let actor = game.actors.get(actorId);
-        console.log(tokenId)
+        
         if(tokenId){
            let token =canvas.tokens.get(tokenId);
             actor= token.actor;
@@ -52,7 +52,7 @@ export class ActiveEffectDialog extends Dialog {
         let actorId = event.currentTarget.attributes["data-actor-id"].value;
         let tokenId = event.currentTarget.attributes["data-token-id"].value;
         let actor = game.actors.get(actorId);
-        console.log(tokenId)
+        
         if(tokenId){
            let token =canvas.tokens.get(tokenId);
             actor= token.actor;
@@ -60,7 +60,7 @@ export class ActiveEffectDialog extends Dialog {
         }
         let effectId = event.currentTarget.attributes["data-ae-id"].value;
         let effect = actor.effects.get(effectId);
-        console.log(actor,effect);
+       
         await effect.delete();
         let templateOptions={actor:actor};
 

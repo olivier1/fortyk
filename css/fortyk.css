@@ -179,7 +179,7 @@
     -webkit-box-flex: 0;
     -ms-flex: 0 0 100px;
     flex: 0 0 100px;
-    height: 100px;
+    height: 9.6em;
     width:auto;
     margin-right: 10px;
 }
@@ -271,7 +271,7 @@
 .fortyk nav.sheet-tabs {
     -webkit-box-flex: 1;
     margin-top: 0px;
-    height: 100px;
+    height: 150px;
     font-weight:bold;
     font-style:bold;
     flex:auto;
@@ -615,6 +615,13 @@
 .fortyk .item-description{
     flex-grow:10;
     height: 300px;
+}
+.fortyk .actor-background{
+    flex-grow:10;
+    height: 100%;
+}
+.fortyk .backgroundandnotes{
+    height:100%
 }
 .fortyk .editor{
     height:100%;

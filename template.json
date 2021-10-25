@@ -37,6 +37,10 @@
                 "race": {
                     "value": "",
                     "type": "String"
+                },
+                "notesAndBackground":{
+                    "background":"",
+                    "notes":""
                 }
             },
             "creationOptions": {

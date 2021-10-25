@@ -590,7 +590,7 @@ export class FortyKActor extends Actor {
         data.secChar.movement.run=data.secChar.movement.half*6;
         //total soak
         var armor= data.secChar.wornGear.armor;
-        console.log(armor)
+        
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
             hitLoc.armor+=parseInt(hitLoc.armor);
@@ -796,7 +796,7 @@ export class FortyKActor extends Actor {
                     item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
                 }
                 if(data.psykana.filter){
-                    console.log(item.data.class.value,data.psykana.filter)
+                   
                     if(data.psykana.filter===item.data.discipline.value){
                         psychicPowers.push(item);
                     }
@@ -936,7 +936,7 @@ export class FortyKActor extends Actor {
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
                 if(this.getFlag("fortyk","WeaponMaster")){
-                    console.log(this.getFlag("fortyk","WeaponMaster"),item.data.type.value.toLowerCase())
+                   
                     if(this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(item.data.type.value.toLowerCase())){
 
                         item.data.damageFormula.value+="+2";

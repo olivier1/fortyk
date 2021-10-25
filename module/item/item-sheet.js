@@ -105,13 +105,13 @@ export class FortyKItemSheet extends ItemSheet {
             await item.createEmbeddedDocuments("ActiveEffect",[modifiersData]);
         }
         let ae={};
-        console.log(this.item.data)
+        
         if(this.item.data.data.transferId){
             ae=this.item.actor.effects.get(this.item.data.data.transferId);
         }else{
             ae=item.effects.entries().next().value[1];
         }
-        console.log(ae);
+       
             new ActiveEffectConfig(ae).render(true);
         
         

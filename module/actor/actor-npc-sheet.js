@@ -41,7 +41,8 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
         super.activateListeners(html);
 
         if (!this.options.editable) return;
-
+        //right click profile img
+        html.find('.npc-img').contextmenu(this._onImgRightClick.bind(this));
         html.find('.parse-tnt').click(this._onTntParse.bind(this));
         html.find('.npc-armor-create').click(this._onArmorCreate.bind(this));
         html.find('.npc-armor-delete').click(this._onArmorDelete.bind(this));
@@ -49,6 +50,32 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
 
 
     } 
+    
+    _onImgRightClick(event){
+
+        event = event || window.event;
+
+        
+        var options = {
+            width: "auto",
+            height: "auto"
+        };
+        let img=this.actor.img
+        let dlg = new Dialog({
+            title: `Profile Image`,
+            content: `<img src="${img}"  width="auto" height="auto">`,
+            buttons: {
+                submit: {
+                    label: "OK",
+                    callback: null
+                }
+            },
+            default: "submit",
+        }, options);
+        dlg.render(true);
+
+
+    }
     async _onArmorCreate(event) {
         event.preventDefault();
         const header = event.currentTarget;

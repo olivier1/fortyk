@@ -5,16 +5,19 @@
         
         <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
         {{!-- Sheet Tab Navigation --}}
-        <nav class="sheet-tabs tabs grid grid-4col" data-group="primary">
+        <nav class="sheet-tabs tabs grid grid-3col" data-group="primary">
             
             <a class="item" data-tab="main">MAIN</a>
             <a class="item" data-tab="skills">SKILLS</a>
             <a class="item" data-tab="tnt">TALENTS & TRAITS</a>
-            <a class="item" data-tab="exp">EXP & MISSIONS</a>
-            <a class="item" data-tab="combat">COMBAT</a>
             <a class="item" data-tab="gear">GEAR & CYBERNETICS</a>
+            <a class="item" data-tab="exp">EXP & MISSIONS</a>
+            
+            
             <a class="item" data-tab="psykana">PSYKANA</a>
+            <a class="item" data-tab="combat">COMBAT</a>
             <a class="item" data-tab="corruption">CORRUPTION, INSANITY & INJURY</a>
+             <a class="item" data-tab="background">BACKGROUND & NOTES</a>
             
         </nav>
 
@@ -50,6 +53,9 @@
         </div>
         <div class="tab corruption" data-group="primary" data-tab="corruption">
             {{> "systems/fortyk/templates/actor/actor-corruption.html"}}
+        </div>
+        <div class="tab background" data-group="primary" data-tab="background">
+            {{> "systems/fortyk/templates/actor/actor-background.html"}}
         </div>
         
     </section>

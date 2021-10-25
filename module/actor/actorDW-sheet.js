@@ -18,7 +18,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/actor-sheet.html",
             width: 666,
-            height: 715,
+            height: 760,
             tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "main" }],
             default:null
         });
@@ -339,7 +339,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         const rightHand=document.getElementById("right");
         var update=[];
         var previousWeaponID="";
-        console.log(data);
+       
         if(hand==="right"){
             previousWeaponID=data.secChar.wornGear.weapons[0].id;
             if(previousWeaponID){
@@ -369,8 +369,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             }
 
         }
-        console.log(weaponID,previousWeaponID);
-        console.log(update);
+       
 
         if(update.length>0){
             await this.actor.updateEmbeddedDocuments("Item",update);
