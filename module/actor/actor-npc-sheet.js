@@ -39,10 +39,11 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
     }*/
     activateListeners(html) {
         super.activateListeners(html);
-
-        if (!this.options.editable) return;
         //right click profile img
         html.find('.npc-img').contextmenu(this._onImgRightClick.bind(this));
+
+        if (!this.options.editable) return;
+        
         html.find('.parse-tnt').click(this._onTntParse.bind(this));
         html.find('.npc-armor-create').click(this._onArmorCreate.bind(this));
         html.find('.npc-armor-delete').click(this._onArmorDelete.bind(this));

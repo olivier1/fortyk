@@ -43,10 +43,13 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     /** @override */
     activateListeners(html) {
         super.activateListeners(html);
-        // Everything below here is only needed if the sheet is editable
-        if (!this.options.editable) return;
         //right click profile img
         html.find('.profile-img').contextmenu(this._onImgRightClick.bind(this));
+
+        // Everything below here is only needed if the sheet is editable
+        
+        if (!this.options.editable) return;
+
         //handles combat tab resources
 
         html.find('.combat-resources').focusout(this._combatResourceEdit.bind(this));
@@ -111,7 +114,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
         event = event || window.event;
 
-      
+
         var options = {
             width: "auto",
             height: "auto"
