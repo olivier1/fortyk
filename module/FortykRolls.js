@@ -449,7 +449,7 @@ returns the roll message*/
             let endstr=form.slice(afterD);
             form=startstr+`r<${wpb}`+endstr;
         }
-        
+
         //make an array to store the wounds of all targets so that they can all be updated together once done
         var newWounds=[]
         for(let i=0;i<targets.size;i++){
@@ -468,7 +468,7 @@ returns the roll message*/
             roll.roll();
             //calculate righteous for non targetted rolls
             let tenz=0;
-            
+
             try{
                 for ( let r of roll.dice[0].results ) {
                     if(r.active){
@@ -590,14 +590,7 @@ returns the roll message*/
                         }
                         let soak=0;
                         let armor=parseInt(data.characterHitLocations[curHit.value].armor);
-                        //resistant armor
-                        if(armorSuit.getFlag("fortyk",weapon.data.damageType.value.toLowerCase())){
-                            armor=Math.ceil(armor*1.5);
-                        }
-                        //warp weapon vs holy armor
-                        if(fortykWeapon.getFlag("fortyk","warp")&&!armorSuit.getFlag("fortyk","holy")){
-                            armor=0;
-                        }
+
                         //check if weapon ignores soak
                         if(!fortykWeapon.getFlag("fortyk","ignoreSoak")){
 
@@ -657,10 +650,19 @@ returns the roll message*/
                             }
                             let maxPen=Math.min(armor,pen);
                             soak=parseInt(data.characterHitLocations[curHit.value].value);
-                            //handle cover
+                            //resistant armor
+                            if(armorSuit.getFlag("fortyk",weapon.data.damageType.value.toLowerCase())){
+                                soak+=armor*0.5;
+                            }
+                            //warp weapon vs holy armor
+                            if(fortykWeapon.getFlag("fortyk","warp")&&!armorSuit.getFlag("fortyk","holy")){
+                                maxPen=armor;
+                            }
                             
+                            //handle cover
+
                             if(!self&&!fortykWeapon.getFlag("fortyk","spray")&&data.characterHitLocations[curHit.value].cover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
-                                
+
                                 let cover=parseInt(data.secChar.cover.value);
                                 soak=soak+cover;
                                 //reduce cover if damage is greater than cover AP
@@ -702,6 +704,7 @@ returns the roll message*/
                                 soak-=fel;
                             }
                             soak=soak-maxPen;
+                            
                             //sanctified logic
                             let daemonic=tarActor.getFlag("fortyk","daemonic");
                             if((fortykWeapon.getFlag("fortyk","sanctified")||fortykWeapon.getFlag("fortyk","daemonbane"))&&daemonic){
@@ -768,9 +771,10 @@ returns the roll message*/
                         //scatter weapon logic
                         if(fortykWeapon.getFlag("fortyk","scatter")){
                             let distance=tokenDistance(attackerToken,tar);
+                            console.log(distance,parseInt(weapon.data.range.value)/2)
                             if(distance<=2||distance<=2*canvas.dimensions.distance){
                                 damage+=3;
-                            }else if(distance<=parseInt(weapon.data.range.value)/2){
+                            }else if(distance>=parseInt(weapon.data.range.value)/2){
                                 damage-=3
                             }
                         }
@@ -785,7 +789,9 @@ returns the roll message*/
                                               author:actor.name};
                             await ChatMessage.create(swarmOptions,{});
                         }
+                        console.log(damage,soak);
                         damage=damage-soak;
+                        console.log(damage,soak);
                         //corrosive weapon logic
                         if(fortykWeapon.getFlag("fortyk","corrosive")){
                             let corrosiveAmt=new Roll("1d10",{});

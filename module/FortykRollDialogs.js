@@ -179,19 +179,22 @@ export class FortykRollDialogs{
         let template="systems/fortyk/templates/actor/dialogs/ranged-attack-dialog.html"
         let templateOptions={};
         let itemData=item.data;
+        
 
         templateOptions["modifiers"]=actor.data.data.secChar.attacks;
+        
         templateOptions["size"]=game.fortyk.FORTYK.size;
-        templateOptions["modifiers"].standard=Math.max(templateOptions["modifiers"].standard,itemData.data.attackMods.single);
-        templateOptions["modifiers"].semi=Math.max(itemData.data.attackMods.semi,templateOptions["modifiers"].semi);
-        templateOptions["modifiers"].full=Math.max(itemData.data.attackMods.full,templateOptions["modifiers"].full);
+        templateOptions["modifiers"].standard=itemData.data.attackMods.single;
+        templateOptions["modifiers"].semi=itemData.data.attackMods.semi;
+        templateOptions["modifiers"].full=itemData.data.attackMods.full;
+        
         if(itemData.data.rof[1].value||itemData.data.rof[2].value){
             templateOptions["modifiers"].supp=true;
         }else{
             templateOptions["modifiers"].supp=false;
         }
         
-        templateOptions["modifiers"].suppressive=Math.max(itemData.data.attackMods.suppressive,templateOptions["modifiers"].suppressive);
+        templateOptions["modifiers"].suppressive=itemData.data.attackMods.suppressive;
         templateOptions["modifiers"].aim=itemData.data.attackMods.aim;
         templateOptions["modifiers"].testMod=itemData.data.testMod.value;
 
@@ -224,6 +227,7 @@ export class FortykRollDialogs{
             }
 
         }
+        
         if(parseInt(rofSemi)===0){
             templateOptions["semi"]=false;
         }else{
