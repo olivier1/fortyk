@@ -652,7 +652,7 @@ returns the roll message*/
                             soak=parseInt(data.characterHitLocations[curHit.value].value);
                             //resistant armor
                             if(armorSuit.getFlag("fortyk",weapon.data.damageType.value.toLowerCase())){
-                                soak+=armor*0.5;
+                                soak+=Math.ceil(armor*0.5);
                             }
                             //warp weapon vs holy armor
                             if(fortykWeapon.getFlag("fortyk","warp")&&!armorSuit.getFlag("fortyk","holy")){

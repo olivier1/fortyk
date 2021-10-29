@@ -184,9 +184,6 @@ export class FortykRollDialogs{
         templateOptions["modifiers"]=actor.data.data.secChar.attacks;
         
         templateOptions["size"]=game.fortyk.FORTYK.size;
-        templateOptions["modifiers"].standard=itemData.data.attackMods.single;
-        templateOptions["modifiers"].semi=itemData.data.attackMods.semi;
-        templateOptions["modifiers"].full=itemData.data.attackMods.full;
         
         if(itemData.data.rof[1].value||itemData.data.rof[2].value){
             templateOptions["modifiers"].supp=true;

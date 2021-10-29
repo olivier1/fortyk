@@ -161,6 +161,8 @@
                         "allOut": 30,
                         "stun": -20,
                         "guarded": -10,
+                        "semi":0,
+                        "full":-10,
                         "aim": {
                             "half": 10,
                             "full": 20
