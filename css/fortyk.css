@@ -501,6 +501,9 @@
     padding:3px;
     font-weight: bolder;
 }
+.fortyk .ammo-list{
+    overflow: auto;
+}
 .fortyk .weapon-select{
     flex-basis:50%;
 }

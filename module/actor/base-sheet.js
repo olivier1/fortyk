@@ -673,7 +673,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     aeData.id="buff";
                     aeData.flags.core={ statusId: "buff" }
                 }else{
-                    aeData.icon="icons/svg/downrade.svg";
+                    aeData.icon="icons/svg/downgrade.svg";
                     aeData.id="weakened";
                     aeData.flags.core={ statusId: "weakened" }
                 }
@@ -681,10 +681,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
             aeData.disabled=false;
             aeData.origin=null;
+            console.log(targets);
             targets.forEach(async function(target){
                 let actor=target.actor;
                 FortykRolls.applyActiveEffect(target,[aeData]);
-                actor.createEmbeddedDocuments("ActiveEffect",[aeData]);
 
             });
 

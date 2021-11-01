@@ -317,6 +317,7 @@
                     "head": {
                         "value": 0,
                         "armor": 0,
+                        "armorMod":0,
                         "cover": false,
                         "cyber": false,
                         "shield": 0,
@@ -326,6 +327,7 @@
                     "body": {
                         "value": 0,
                         "armor": 0,
+                        "armorMod":0,
                         "cover": false,
                         "cyber": false,
                         "shield": 0,
@@ -335,6 +337,7 @@
                     "rArm": {
                         "value": 0,
                         "armor": 0,
+                        "armorMod":0,
                         "cover": false,
                         "cyber": false,
                         "shield": 0,
@@ -344,6 +347,7 @@
                     "lArm": {
                         "value": 0,
                         "armor": 0,
+                        "armorMod":0,
                         "cover": false,
                         "cyber": false,
                         "shield": 0,
@@ -353,6 +357,7 @@
                     "rLeg": {
                         "value": 0,
                         "armor": 0,
+                        "armorMod":0,
                         "cover": false,
                         "cyber": false,
                         "shield": 0,
@@ -362,6 +367,7 @@
                     "lLeg": {
                         "value": 0,
                         "armor": 0,
+                        "armorMod":0,
                         "cover": false,
                         "cyber": false,
                         "shield": 0,

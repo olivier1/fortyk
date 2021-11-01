@@ -358,8 +358,15 @@ export class FortyKActor extends Actor {
                 }
                 if(proceed){
                     ae.data.changes.forEach(function(change,i){
+                        console.log(change)
                         let basevalue=parseInt(objectByString(actorData,change.key));
-                        let newvalue=parseInt(change.value);
+                        let newvalue=parseFloat(change.value);
+                        if(newvalue>=0){
+                            newvalue=Math.ceil(newvalue);
+                        }else{
+                            newvalue=Math.floor(newvalue);
+                        }
+                        console.log(newvalue)
                         if(!isNaN(basevalue)&&!isNaN(newvalue)){
                             let path=change.key.split(".");
 
@@ -538,6 +545,8 @@ export class FortyKActor extends Actor {
             if(hitLoc.cyber){
                 hitLoc.armor=hitLoc.armor+2;
             }
+            hitLoc.armor+=hitLoc.armorMod;
+            hitLoc.armor=Math.max(0,hitLoc.armor);
             hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
             let daemonic=this.getFlag("fortyk","daemonic");
             if(daemonic){
@@ -593,12 +602,13 @@ export class FortyKActor extends Actor {
 
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
-            hitLoc.armor+=parseInt(hitLoc.armor);
+            hitLoc.armor=parseInt(hitLoc.armor);
             if(armor.data!==undefined){
                 hitLoc.armor=parseInt(hitLoc.armor)+parseInt(armor.data.ap[key].value);
             }
 
-
+             hitLoc.armor+=hitLoc.armorMod;
+            hitLoc.armor=Math.max(0,hitLoc.armor);
             hitLoc.value=parseInt(hitLoc.armor)+data.characteristics.t.bonus;
             let daemonic=this.getFlag("fortyk","daemonic");
             if(daemonic){
@@ -982,7 +992,9 @@ export class FortyKActor extends Actor {
         })
 
         //store known xenos for deathwatchtraining
+       
         if(this.getFlag("fortyk","deathwatchtraining")){
+             console.log(forRaces);
             actorData.flags.fortyk.deathwatchtraining=forRaces;
         }
         if(this.getFlag("fortyk","fieldvivisection")){

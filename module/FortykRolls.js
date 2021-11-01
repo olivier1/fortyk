@@ -401,6 +401,20 @@ returns the roll message*/
         if(actor.getFlag("fortyk","peerlesskiller")&&lastHit.attackType==="called"){
             form+="+2";
         }
+        //scatter weapon logic
+        if(fortykWeapon.getFlag("fortyk","scatter")){
+            
+            if(targets.size>0);
+            let targetIt=targets.values();
+            let target=targetIt.next().value;
+            let distance=tokenDistance(attackerToken,target);
+
+            if(distance<=2||distance<=2*canvas.dimensions.distance){
+                form+="+3";
+            }else if(distance>=parseInt(weapon.data.range.value)/2){
+                form+="-3";
+            }
+        }
         //change formula for d5 weapons
         form=form.replace("d5","d10/2");
 
@@ -536,7 +550,9 @@ returns the roll message*/
 
 
                         let targetRace=data.race.value.toLowerCase();
-                        let forRaces=actor.data.flags.deathwatchtraining;
+                        let forRaces=actor.data.flags.fortyk.deathwatchtraining;
+
+
                         if(forRaces.includes(targetRace)){
                             tarRighteous-=1;
                         }
@@ -658,7 +674,7 @@ returns the roll message*/
                             if(fortykWeapon.getFlag("fortyk","warp")&&!armorSuit.getFlag("fortyk","holy")){
                                 maxPen=armor;
                             }
-                            
+
                             //handle cover
 
                             if(!self&&!fortykWeapon.getFlag("fortyk","spray")&&data.characterHitLocations[curHit.value].cover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
@@ -704,7 +720,7 @@ returns the roll message*/
                                 soak-=fel;
                             }
                             soak=soak-maxPen;
-                            
+
                             //sanctified logic
                             let daemonic=tarActor.getFlag("fortyk","daemonic");
                             if((fortykWeapon.getFlag("fortyk","sanctified")||fortykWeapon.getFlag("fortyk","daemonbane"))&&daemonic){
@@ -768,16 +784,7 @@ returns the roll message*/
                                 damage+=accRoll._total;
                             }
                         }
-                        //scatter weapon logic
-                        if(fortykWeapon.getFlag("fortyk","scatter")){
-                            let distance=tokenDistance(attackerToken,tar);
-                            console.log(distance,parseInt(weapon.data.range.value)/2)
-                            if(distance<=2||distance<=2*canvas.dimensions.distance){
-                                damage+=3;
-                            }else if(distance>=parseInt(weapon.data.range.value)/2){
-                                damage-=3
-                            }
-                        }
+
                         //logic against swarm enemies
                         if(tarActor.getFlag("fortyk","swarm")&&!(fortykWeapon.getFlag("fortyk","spray")||fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","flame")||fortykWeapon.getFlag("fortyk","scatter"))){
                             damage=Math.ceil(damage/2);
@@ -803,10 +810,11 @@ returns the roll message*/
                             let corrosiveDamage=0;
                             let newArmor=Math.max(0,(armor-corrosiveAmt._total));
                             corrosiveDamage=Math.abs(Math.min(0,(armor-corrosiveAmt._total)));
-                            let path=`data.characterHitLocations.${curHit.value}.armor`
+                            let corrosiveAmount=-corrosiveAmt._total;
+                            let path=`data.characterHitLocations.${curHit.value}.armorMod`
                             let corrodeActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("corrode")]);
                             corrodeActiveEffect.changes=[];
-                            let changes={key:path,value:newArmor,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE};
+                            let changes={key:path,value:corrosiveAmount,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD};
                             corrodeActiveEffect.changes.push(changes);
                             activeEffects.push(corrodeActiveEffect);
                             if(damage<=0){
@@ -3273,8 +3281,9 @@ returns the roll message*/
         }
     }
     static async _createInjury(actor,injury,injuryAeData){
-        let injuryData=await Item.create({type:"injury",name:injury},{temporary:true});
+        let injuryItem=await Item.create({type:"injury",name:injury},{temporary:true});
         injuryAeData.transfer=true;
+
         await injuryItem.createEmbeddedDocuments("ActiveEffect",[injuryAeData]);
         await actor.createEmbeddedDocuments("Item",[injuryItem.data]);
 

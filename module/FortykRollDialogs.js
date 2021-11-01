@@ -293,6 +293,7 @@ export class FortykRollDialogs{
         templateOptions["options"].normal=true;
         //field vivisection
         let targets=game.user.targets;
+        
       
         if(actor.getFlag("fortyk","fieldvivisection")&&targets.size>0){
             
@@ -405,6 +406,7 @@ export class FortykRollDialogs{
                         let stunned = Number($(html).find('input[name="stunned"]:checked').val());
                         const size = Number($(html).find('select[name="size"]').val());
                         let other = Number($(html).find('input[name="other"]').val());
+                        let melee = Number($(html).find('input[name="melee"]:checked').val());
                         //get attack type name for title
 
                         let addLabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
@@ -447,8 +449,8 @@ export class FortykRollDialogs{
                         if(isNaN(stunned)){stunned=0}
                         if(isNaN(concealed)){concealed=0}
                         if(isNaN(other)){other=0}
-
-                        testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus);
+                        if(isNaN(melee)){melee=0} console.log(testTarget,running,attackTypeBonus,guarded,aimBonus,visibilityBonus,prone,high,surprised,stunned,size,other,concealed,rangeBonus)
+                        testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(melee);
                          AudioHelper.play({src: "sounds/dice.wav", volume: 0.8, loop: false}, true);
                         await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType);
                         if(aimBonus>0){

@@ -224,12 +224,14 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         event.preventDefault;
         const dataset=event.currentTarget.dataset;
+        console.log(dataset)
         const weapon=this.actor.getEmbeddedDocument("Item",dataset["weapon"]);
+        if(!weapon){return};
 
+        let weaponData=weapon.data;
         const previousAmmo=this.actor.getEmbeddedDocument("Item",dataset["previous"]);
         const ammoID=event.currentTarget.value;
         const ammo=this.actor.getEmbeddedDocument("Item",ammoID);
-
         let weaponUpdate={}
         weaponUpdate["data.ammo._id"]=ammoID;
 
@@ -339,7 +341,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         const rightHand=document.getElementById("right");
         var update=[];
         var previousWeaponID="";
-       
+
         if(hand==="right"){
             previousWeaponID=data.secChar.wornGear.weapons[0].id;
             if(previousWeaponID){
@@ -369,7 +371,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             }
 
         }
-       
+
 
         if(update.length>0){
             await this.actor.updateEmbeddedDocuments("Item",update);
