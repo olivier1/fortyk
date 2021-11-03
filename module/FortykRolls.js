@@ -276,7 +276,7 @@ returns the roll message*/
                 });
                 let shockMes="";
                 let fearCap=0;
-                if(actor.data.flags["atsknf"]){
+                if(actor.getFlag("fortyk","atsknf")){
                     fearCap=Math.min(80,parseInt(fearRoll._total)-1);
                     shockMes=FORTYKTABLES.atsknf[fearCap];
                 }else{
