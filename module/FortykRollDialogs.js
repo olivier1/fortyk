@@ -84,8 +84,8 @@ export class FortykRollDialogs{
         let itemData=item.data;
         let template="systems/fortyk/templates/actor/dialogs/melee-attack-dialog.html"
         let templateOptions={};
-        templateOptions["modifiers"]=actor.data.data.secChar.attacks;
-        templateOptions["modifiers"].testMod=itemData.data.testMod.value;
+        templateOptions["modifiers"]=duplicate(actor.data.data.secChar.attacks);
+        templateOptions["modifiers"].testMod+=itemData.data.testMod.value;
         templateOptions["options"]={}
         templateOptions["options"].swift=actor.getFlag("fortyk","swiftattack");
         templateOptions["options"].lightning=actor.getFlag("fortyk","lightningattack");
@@ -180,9 +180,9 @@ export class FortykRollDialogs{
         let templateOptions={};
         let itemData=item.data;
         
-
-        templateOptions["modifiers"]=actor.data.data.secChar.attacks;
-        
+        console.log(itemData.data.testMod.value)
+        templateOptions["modifiers"]=duplicate(actor.data.data.secChar.attacks);
+        templateOptions["modifiers"].testMod+=itemData.data.testMod.value;
         templateOptions["size"]=game.fortyk.FORTYK.size;
         
         if(itemData.data.rof[1].value||itemData.data.rof[2].value){
@@ -474,7 +474,7 @@ export class FortykRollDialogs{
         let template="systems/fortyk/templates/actor/dialogs/psychic-power-attack-dialog.html"
         let templateOptions={};
 
-        templateOptions["modifiers"]=actor.data.data.secChar.attacks;
+        templateOptions["modifiers"]=duplicate(actor.data.data.secChar.attacks);
         templateOptions["options"]={}
         templateOptions["options"].prone=modifiers.prone;
         templateOptions["options"].stunned=modifiers.stunned;
