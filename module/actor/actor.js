@@ -720,7 +720,8 @@ export class FortyKActor extends Actor {
                     if(game.fortyk.FORTYK.races.includes(item.name)){
                         forRaces.push(item.name.toLowerCase());
                     }
-                } item.data.total.value+=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
+                }
+                item.data.total.value+=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
                 if(item.name==="Psyniscience"){
                     psyniscience=item.data.total.value;
                 }

@@ -153,7 +153,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         event.preventDefault();
         let newChar=event.target.value;
         let dataItemId=event.target.attributes["data-item-id"].value;
-        let item= duplicate(this.actor.getEmbeddedDocument("Item", dataItemId));
+        console.log(dataItemId);
+        let item= this.actor.getEmbeddedDocument("Item", dataItemId);
         item.update({"data.characteristic.value":newChar});
 
     }
