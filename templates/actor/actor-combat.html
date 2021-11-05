@@ -485,11 +485,12 @@
                         <option value="{{this._id}}" {{#if this.data.isEquipped}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                     </select>
-                    {{#if data.secChar.wornGear.forceField.id}}
+                    {{debug data}}
+                    {{#if data.secChar.wornGear.forceField._id}}
                     <div class="forcefield flexrow flex-group-center">
-                        <label>Overload: {{actor.wornGear.forceField.data.rating.overload}}</label>
+                        <label>Overload: {{data.secChar.wornGear.forceField.data.rating.overload}}</label>
                         <label>Rating: </label> 
-                        <span class="forcefield rollable button" data-roll-type="forcefield" data-target="{{actor.wornGear.forceField.data.rating.value}}" data-label="{{actor.wornGear.forceField.name}}" data-char="{{actor.wornGear.forceField.data.rating.overload}}" >{{actor.wornGear.forceField.data.rating.value}}</span>
+                        <span class="forcefield rollable button" data-roll-type="forcefield" data-target="{{data.secChar.wornGear.forceField.data.rating.value}}" data-label="{{data.secChar.wornGear.forceField.name}}" data-char="{{data.secChar.wornGear.forceField.data.rating.overload}}" >{{data.secChar.wornGear.forceField.data.rating.value}}</span>
                     </div>
                     {{/if}}
                 </div>

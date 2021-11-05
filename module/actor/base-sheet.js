@@ -74,7 +74,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         //reset cover fields
         html.find('.armor-select').change(this._onArmorChange.bind(this));
         //reset cover fields
-        html.find('.force-field').change(this._onArmorChange.bind(this));
+        html.find('.force-field').change(this._onForceFieldChange.bind(this));
         //Damage rolls
         html.find('.damage-roll').click(this._onDamageRoll.bind(this));
         //Psychic power buff/debuffs
@@ -729,11 +729,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     async _onForceFieldChange(event){
         let actor=this.actor;
         let newForceFieldId=event.currentTarget.value;
-        let newForceField=actor.getEmbeddedDocument("Item",newArmorId);
+        let newForceField=actor.getEmbeddedDocument("Item",newForceFieldId);
         let oldForceFieldId=this.actor.data.data.secChar.wornGear.forceField._id;
         let oldForceField=this.actor.data.data.secChar.wornGear.forceField
         let updates=[];
-
+        console.log(oldForceField,newForceField)
         if(oldForceField&&oldForceField.data){
             updates.push({"_id":oldForceFieldId,"data.isEquipped":false});
         }
