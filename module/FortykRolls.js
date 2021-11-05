@@ -360,7 +360,7 @@ returns the roll message*/
             righteous=fortykWeapon.getFlag("fortyk","vengeful");
         }
         let ignoreSON=(fortykWeapon.type==="psychicPower"||fortykWeapon.getFlag("fortyk","force")||fortykWeapon.getFlag("fortyk","sanctified")||fortykWeapon.getFlag("fortyk","daemonbane")||fortykWeapon.getFlag("fortyk","warp"));
-
+        
         let lastHit=actor.data.data.secChar.lastHit;
 
         let attackerToken=actor.getActiveTokens()[0];

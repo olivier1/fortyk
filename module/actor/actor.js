@@ -607,7 +607,7 @@ export class FortyKActor extends Actor {
                 hitLoc.armor=parseInt(hitLoc.armor)+parseInt(armor.data.ap[key].value);
             }
 
-             hitLoc.armor+=hitLoc.armorMod;
+            hitLoc.armor+=hitLoc.armorMod;
             hitLoc.armor=Math.max(0,hitLoc.armor);
             hitLoc.value=parseInt(hitLoc.armor)+data.characteristics.t.bonus;
             let daemonic=this.getFlag("fortyk","daemonic");
@@ -917,9 +917,11 @@ export class FortyKActor extends Actor {
                 if(fortykItem.getFlag("fortyk","twinlinked")){
 
                     item.data.testMod.value=20;
-                    item.data.clip.consumption=2;
+                    item.data.clip.consumption=item.data.clip.consumption*2;
                 }
-                
+                if(fortykItem.getFlag("fortyk","storm")){
+                    item.data.clip.consumption=item.data.clip.consumption*2;
+                }
                 if(fortykItem.getFlag("fortyk","lasModal")){
                     if(fortykItem.getFlag("fortyk","lasMode")===0){
 
@@ -992,9 +994,9 @@ export class FortyKActor extends Actor {
         })
 
         //store known xenos for deathwatchtraining
-       
+
         if(this.getFlag("fortyk","deathwatchtraining")){
-             console.log(forRaces);
+            console.log(forRaces);
             actorData.flags.fortyk.deathwatchtraining=forRaces;
         }
         if(this.getFlag("fortyk","fieldvivisection")){
@@ -1169,12 +1171,14 @@ export class FortyKActor extends Actor {
                 }
                 console.log(this);
                 if(fortykItem.getFlag("fortyk","twinlinked")){
-                    
+
                     item.data.testMod.value=20;
-                    item.data.clip.consumption=2;
+                    item.data.clip.consumption=item.data.clip.consumption*2;
+                }
+                if(fortykItem.getFlag("fortyk","storm")){
+                    item.data.clip.consumption=item.data.clip.consumption*2;
                 }
 
-                
                 if(fortykItem.getFlag("fortyk","lasModal")){
                     if(fortykItem.getFlag("fortyk","lasMode")===0){
 
