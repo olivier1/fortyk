@@ -101,7 +101,28 @@ export class FortykRollDialogs{
         if(!templateOptions["options"].blindfight){
             templateOptions["options"].selfBlind=modifiers.selfBlind;
         }
+        let weaponQuality=itemData.data.quality.value;
+        console.log(weaponQuality);
+        if(weaponQuality==="Poor"){
+            templateOptions["modifiers"].testMod+=-10;
+        }else if(weaponQuality==="Good"){
+            templateOptions["modifiers"].testMod+=5;
+        }else if(weaponQuality==="Best"){
+            templateOptions["modifiers"].testMod+=10;
+        }
         templateOptions["size"]=game.fortyk.FORTYK.size;
+        if(actor.data.data.horde.value){
+            let hordeSize=actor.data.data.secChar.wounds.value;
+            if(hordeSize>=120){
+                templateOptions["modifiers"].testMod+=60;
+            }else if(hordeSize>=90){
+                templateOptions["modifiers"].testMod+=50;
+            }else if(hordeSize>=60){
+                templateOptions["modifiers"].testMod+=40;
+            }else if(hordeSize>=30){
+                templateOptions["modifiers"].testMod+=30;
+            }
+        }
         let targets=game.user.targets;
         if(actor.getFlag("fortyk","fieldvivisection")&&targets.size>0){
             
@@ -180,8 +201,7 @@ export class FortykRollDialogs{
         let template="systems/fortyk/templates/actor/dialogs/ranged-attack-dialog.html"
         let templateOptions={};
         let itemData=item.data;
-        
-        console.log(itemData.data.testMod.value,actor.data.data.secChar.attacks)
+       
         templateOptions["modifiers"]=duplicate(actor.data.data.secChar.attacks);
         templateOptions["size"]=game.fortyk.FORTYK.size;
         
@@ -194,7 +214,18 @@ export class FortykRollDialogs{
         templateOptions["modifiers"].suppressive=itemData.data.attackMods.suppressive;
         templateOptions["modifiers"].aim=itemData.data.attackMods.aim;
         templateOptions["modifiers"].testMod=itemData.data.testMod.value;
-
+        if(actor.data.data.horde.value){
+            let hordeSize=actor.data.data.secChar.wounds.value;
+            if(hordeSize>=120){
+                templateOptions["modifiers"].testMod+=60;
+            }else if(hordeSize>=90){
+                templateOptions["modifiers"].testMod+=50;
+            }else if(hordeSize>=60){
+                templateOptions["modifiers"].testMod+=40;
+            }else if(hordeSize>=30){
+                templateOptions["modifiers"].testMod+=30;
+            }
+        }
         templateOptions["modifiers"].inaccurate=item.getFlag("fortyk","innacurate");
 
 

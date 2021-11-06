@@ -673,7 +673,7 @@ export class FortyKActor extends Actor {
         catch(err){var leftHandWeapon= undefined;}
 
 
-        let parry=false;
+        let parry=0;
 
         if((rightHandWeapon.data!==undefined&&rightHandWeapon.getFlag("fortyk","unbalanced"))||(leftHandWeapon.data!==undefined&&leftHandWeapon.getFlag("fortyk","unbalanced"))){
             parry=-10;
@@ -683,6 +683,15 @@ export class FortyKActor extends Actor {
         }
         if((rightHandWeapon.data!==undefined&&rightHandWeapon.getFlag("fortyk","defensive"))||(leftHandWeapon.data!==undefined&&leftHandWeapon.getFlag("fortyk","defensive"))){
             parry=15;
+        }
+        if(rightHandWeapon.data!==undefined&&rightHandWeapon.data.data.quality.value==="Best"||leftHandWeapon.data!==undefined&&leftHandWeapon.data.data.quality.value==="Best"){
+            parry+=10;
+        }else if(rightHandWeapon.data!==undefined&&rightHandWeapon.data.data.quality.value==="Good"||leftHandWeapon.data!==undefined&&leftHandWeapon.data.data.quality.value==="Good"){
+            parry+=5;
+        }else if(rightHandWeapon.data!==undefined&&rightHandWeapon.data.data.quality.value==="Common"||leftHandWeapon.data!==undefined&&leftHandWeapon.data.data.quality.value==="Common"){
+            
+        }else if(rightHandWeapon.data!==undefined&&rightHandWeapon.data.data.quality.value==="Poor"||leftHandWeapon.data!==undefined&&leftHandWeapon.data.data.quality.value==="Poor"){
+            parry-=10;
         }
         let psyniscience=0;
 
@@ -710,7 +719,7 @@ export class FortyKActor extends Actor {
                 }
                 if(item.name==="Parry"){
                     if(parry){
-                        item.data.total.value+=parry;
+                        item.data.mod.value+=parry;
                     } 
                 }
                 if(this.getFlag("fortyk","fieldvivisection")&&item.name==="Medicae"){
@@ -850,6 +859,9 @@ export class FortyKActor extends Actor {
                 if(item.data.class.value!=="Shield"&&item.data.shield.value!==0){
                     item.data.shield.value=0;
 
+                }
+                if(item.data.quality.value==="Best"){
+                    item.data.damageFormula.value+="+1";
                 }
 
                 if(fortykItem.getFlag("fortyk","crushing")){
