@@ -393,11 +393,14 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
                         button:{
                             label:"Ok",
                             callback: async html => {
-
-
+                                
+                                sheet.actor.dialog=undefined;
                             }
                         },
 
+                    },
+                    close:function(){
+                        sheet.actor.dialog=undefined;
                     }
                 },options).render(true)
                 sheet.actor.dialog=d;
