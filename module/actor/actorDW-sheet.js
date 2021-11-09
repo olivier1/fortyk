@@ -153,7 +153,6 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         event.preventDefault();
         let newChar=event.target.value;
         let dataItemId=event.target.attributes["data-item-id"].value;
-        console.log(dataItemId);
         let item= this.actor.getEmbeddedDocument("Item", dataItemId);
         item.update({"data.characteristic.value":newChar});
 
@@ -225,7 +224,6 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         event.preventDefault;
         const dataset=event.currentTarget.dataset;
-        console.log(dataset)
         const weapon=this.actor.getEmbeddedDocument("Item",dataset["weapon"]);
         if(!weapon){return};
 

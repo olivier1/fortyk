@@ -358,7 +358,7 @@ export class FortyKActor extends Actor {
                 }
                 if(proceed){
                     ae.data.changes.forEach(function(change,i){
-                        console.log(change)
+                        
                         let basevalue=parseInt(objectByString(actorData,change.key));
                         let newvalue=parseFloat(change.value);
                         if(newvalue>=0){
@@ -366,7 +366,6 @@ export class FortyKActor extends Actor {
                         }else{
                             newvalue=Math.floor(newvalue);
                         }
-                        console.log(newvalue)
                         if(!isNaN(basevalue)&&!isNaN(newvalue)){
                             let path=change.key.split(".");
 
@@ -673,26 +672,11 @@ export class FortyKActor extends Actor {
         catch(err){var leftHandWeapon= undefined;}
 
 
-        let parry=0;
+        //figure out parry bonus from equipped weapons
+        let leftParry=this.weaponParry(leftHandWeapon);
+        let rightParry=this.weaponParry(rightHandWeapon);
+        let parry=Math.max(leftParry,rightParry);
 
-        if((rightHandWeapon.data!==undefined&&rightHandWeapon.getFlag("fortyk","unbalanced"))||(leftHandWeapon.data!==undefined&&leftHandWeapon.getFlag("fortyk","unbalanced"))){
-            parry=-10;
-        }
-        if((rightHandWeapon.data!==undefined&&rightHandWeapon.getFlag("fortyk","balanced"))||(leftHandWeapon.data!==undefined&&leftHandWeapon.getFlag("fortyk","balanced"))){
-            parry=10;
-        }
-        if((rightHandWeapon.data!==undefined&&rightHandWeapon.getFlag("fortyk","defensive"))||(leftHandWeapon.data!==undefined&&leftHandWeapon.getFlag("fortyk","defensive"))){
-            parry=15;
-        }
-        if(rightHandWeapon.data!==undefined&&rightHandWeapon.data.data.quality.value==="Best"||leftHandWeapon.data!==undefined&&leftHandWeapon.data.data.quality.value==="Best"){
-            parry+=10;
-        }else if(rightHandWeapon.data!==undefined&&rightHandWeapon.data.data.quality.value==="Good"||leftHandWeapon.data!==undefined&&leftHandWeapon.data.data.quality.value==="Good"){
-            parry+=5;
-        }else if(rightHandWeapon.data!==undefined&&rightHandWeapon.data.data.quality.value==="Common"||leftHandWeapon.data!==undefined&&leftHandWeapon.data.data.quality.value==="Common"){
-            
-        }else if(rightHandWeapon.data!==undefined&&rightHandWeapon.data.data.quality.value==="Poor"||leftHandWeapon.data!==undefined&&leftHandWeapon.data.data.quality.value==="Poor"){
-            parry-=10;
-        }
         let psyniscience=0;
 
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
@@ -913,7 +897,6 @@ export class FortyKActor extends Actor {
                 catch(err){
                     item.data.range.value="";
                 } 
-                console.log(this)
                 if(this.getFlag("fortyk","mightyshot")){
                     item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.bs.bonus/2);
                 }
@@ -1009,7 +992,7 @@ export class FortyKActor extends Actor {
         //store known xenos for deathwatchtraining
 
         if(this.getFlag("fortyk","deathwatchtraining")){
-            console.log(forRaces);
+           
             actorData.flags.fortyk.deathwatchtraining=forRaces;
         }
         if(this.getFlag("fortyk","fieldvivisection")){
@@ -1182,7 +1165,6 @@ export class FortyKActor extends Actor {
                     item.data.attackMods.range.short=20;
 
                 }
-                console.log(this);
                 if(fortykItem.getFlag("fortyk","twinlinked")){
 
                     item.data.testMod.value=20;
@@ -1388,6 +1370,29 @@ export class FortyKActor extends Actor {
             }
         }
         this.deleteEmbeddedDocuments("Item", [itemId]);
+    }
+    //calculate the parry bonus from a weapon, if no weapon returns -20
+    weaponParry(weapon){
+        if(weapon===undefined||weapon.data===undefined||weapon.data.type==="rangedWeapon"&&weapon.data.data.class.value!=="Pistol"){return -20}
+        let parry=0;
+        if(weapon.getFlag("fortyk","unbalanced")){
+            parry-=10;
+        }
+        if(weapon.getFlag("fortyk","balanced")){
+            parry+=10;
+        }
+        if(weapon.getFlag("fortyk","defensive")){
+            parry+=15;
+        }
+        if(weapon.data.data.quality.value==="Best"){
+            parry+=10;
+        }else if(weapon.data.data.quality.value==="Good"){
+            parry+=5;
+        }else if(weapon.data.data.quality.value==="Poor"){
+            parry-=10;
+        }
+        return parry; 
+
     }
     //when creating active effects check if they are transferred from an item, if so give the active effect flag to the item for referrence.
     _onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId){

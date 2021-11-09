@@ -796,9 +796,7 @@ returns the roll message*/
                                               author:actor.name};
                             await ChatMessage.create(swarmOptions,{});
                         }
-                        console.log(damage,soak);
                         damage=damage-soak;
-                        console.log(damage,soak);
                         //corrosive weapon logic
                         if(fortykWeapon.getFlag("fortyk","corrosive")){
                             let corrosiveAmt=new Roll("1d10",{});

@@ -84,7 +84,6 @@ export class FortykRollDialogs{
         let itemData=item.data;
         let template="systems/fortyk/templates/actor/dialogs/melee-attack-dialog.html"
         let templateOptions={};
-        console.log(itemData.data, actor.data.data.secChar.attacks)
         templateOptions["modifiers"]=duplicate(actor.data.data.secChar.attacks);
         templateOptions["modifiers"].testMod=itemData.data.testMod.value;
         templateOptions["options"]={}
@@ -102,7 +101,6 @@ export class FortykRollDialogs{
             templateOptions["options"].selfBlind=modifiers.selfBlind;
         }
         let weaponQuality=itemData.data.quality.value;
-        console.log(weaponQuality);
         if(weaponQuality==="Poor"){
             templateOptions["modifiers"].testMod+=-10;
         }else if(weaponQuality==="Good"){
@@ -480,7 +478,7 @@ export class FortykRollDialogs{
                         if(isNaN(stunned)){stunned=0}
                         if(isNaN(concealed)){concealed=0}
                         if(isNaN(other)){other=0}
-                        if(isNaN(melee)){melee=0} console.log(testTarget,running,attackTypeBonus,guarded,aimBonus,visibilityBonus,prone,high,surprised,stunned,size,other,concealed,rangeBonus)
+                        if(isNaN(melee)){melee=0} 
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(melee);
                          AudioHelper.play({src: "sounds/dice.wav", volume: 0.8, loop: false}, true);
                         await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType);

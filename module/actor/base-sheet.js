@@ -681,7 +681,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
             aeData.disabled=false;
             aeData.origin=null;
-            console.log(targets);
             targets.forEach(async function(target){
                 let actor=target.actor;
                 FortykRolls.applyActiveEffect(target,[aeData]);
@@ -733,7 +732,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let oldForceFieldId=this.actor.data.data.secChar.wornGear.forceField._id;
         let oldForceField=this.actor.data.data.secChar.wornGear.forceField
         let updates=[];
-        console.log(oldForceField,newForceField)
         if(oldForceField&&oldForceField.data){
             updates.push({"_id":oldForceFieldId,"data.isEquipped":false});
         }
