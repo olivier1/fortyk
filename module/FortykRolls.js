@@ -3002,8 +3002,11 @@ returns the roll message*/
             case 5:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("bleeding")]));
                 injury=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("arm")]);
+                
                 await this._createInjury(actor,"Useless "+arm+" arm",injury);
+                
                 await this.applyActiveEffect(actorToken,critActiveEffect);
+                
                 break;
             case 6:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist lost hand");
@@ -3230,7 +3233,7 @@ returns the roll message*/
     };
     static async applyDead(target,actor){
 
-
+            console.log(target);
 
         if(game.user.isGM||target.owner){
             let msg=target.name+" is killed!";
@@ -3280,9 +3283,9 @@ returns the roll message*/
     }
     static async _createInjury(actor,injury,injuryAeData){
         let injuryItem=await Item.create({type:"injury",name:injury},{temporary:true});
-        injuryAeData.transfer=true;
-
-        await injuryItem.createEmbeddedDocuments("ActiveEffect",[injuryAeData]);
+        //injuryAeData.transfer=true;
+        
+        //await injuryItem.createEmbeddedDocuments("ActiveEffect",[injuryAeData]);
         await actor.createEmbeddedDocuments("Item",[injuryItem.data]);
 
     };
