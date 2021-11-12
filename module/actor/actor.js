@@ -448,6 +448,9 @@ export class FortyKActor extends Actor {
                 }
             }  
         }
+        if(this.getFlag("fortyk","soundconstitution")&&!isNaN(parseInt(this.getFlag("fortyk","soundconstitution")))){
+            data.secChar.wounds.max+=parseInt(this.getFlag("fortyk","soundconstitution"));
+        }
         //parse skill modifiers from active effects
         for (let [key, char] of Object.entries(data.skillmods)){
             char=parseInt(char);
