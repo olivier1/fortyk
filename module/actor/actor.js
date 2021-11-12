@@ -537,6 +537,11 @@ export class FortyKActor extends Actor {
             data.characterHitLocations.lArm.shield= parseInt(leftHandWeaponData.data.shield.value);
             data.characterHitLocations.body.shield= parseInt(leftHandWeaponData.data.shield.value);
         }
+        //machine
+        let machine=0;
+        if(this.getFlag("fortyk","machine")&&!isNaN(parseInt(this.getFlag("fortyk","machine")))){
+            machine=parseInt(this.getFlag("fortyk","machine"));
+        }
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
 
@@ -548,6 +553,7 @@ export class FortyKActor extends Actor {
                 hitLoc.armor=hitLoc.armor+2;
             }
             hitLoc.armor+=hitLoc.armorMod;
+            hitLoc.armor+=machine;
             hitLoc.armor=Math.max(0,hitLoc.armor);
             hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
             let daemonic=this.getFlag("fortyk","daemonic");
@@ -601,7 +607,11 @@ export class FortyKActor extends Actor {
         data.secChar.movement.run=data.secChar.movement.half*6;
         //total soak
         var armor= data.secChar.wornGear.armor;
-
+        //machine
+        let machine=0;
+        if(this.getFlag("fortyk","machine")&&!isNaN(parseInt(this.getFlag("fortyk","machine")))){
+            machine=parseInt(this.getFlag("fortyk","machine"));
+        }
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
             hitLoc.armor=parseInt(hitLoc.armor);
@@ -610,6 +620,7 @@ export class FortyKActor extends Actor {
             }
 
             hitLoc.armor+=hitLoc.armorMod;
+            hitLoc.armor+=machine;
             hitLoc.armor=Math.max(0,hitLoc.armor);
             hitLoc.value=parseInt(hitLoc.armor)+data.characteristics.t.bonus;
             let daemonic=this.getFlag("fortyk","daemonic");
