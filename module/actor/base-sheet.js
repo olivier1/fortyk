@@ -568,7 +568,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let target=targetIt.next().value;
             let attacker=this.actor.getActiveTokens()[0];
             let targetActor=target.actor;
-
+            
 
             attackOptions.prone=targetActor.getFlag("core","prone");
             attackOptions.stunned=targetActor.getFlag("core","stunned");
@@ -583,11 +583,17 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
             attackOptions.selfBlind=this.actor.getFlag("core","blind");
             attackOptions.distance=tokenDistance(target, attacker);
-
+           
         }
+        //have to redo how items are prepared because it doesnt persist sometimes????
         if(dataset["itemId"]){
             item=this.actor.items.get(dataset["itemId"]);
+            console.log(item.data.data);
+            if(!item.data.data.isPrepared){
+                await item.prepareData();
+            }
         }
+        console.log(this.actor);
         if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
             await FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
 

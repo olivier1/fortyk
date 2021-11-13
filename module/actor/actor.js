@@ -697,7 +697,7 @@ export class FortyKActor extends Actor {
         //put all items in their respective containers and do some item logic
         this.items.forEach((fortykItem,id,items)=>{
             let item=fortykItem.data;
-
+            fortykItem.prepareData();
             if(item._id===data.secChar.wornGear.armor.id){
                 wornGear["armor"]=item;
             }
@@ -765,7 +765,7 @@ export class FortyKActor extends Actor {
                 wargear.push(item);
             }
             if(item.type==="psychicPower"){
-                if(actorData.data.psykana.psykerType.value.toLowerCase()==="navigator"){
+                /*if(actorData.data.psykana.psykerType.value.toLowerCase()==="navigator"){
                     let range=item.data.range.formula.toLowerCase();
 
                     item.data.range.value=eval(range);
@@ -817,7 +817,7 @@ export class FortyKActor extends Actor {
                         item.data.testChar.type=item.data.testChar.value;
                     }
                     item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
-                }
+                }*/
                 if(data.psykana.filter){
 
                     if(data.psykana.filter===item.data.discipline.value){
@@ -845,7 +845,7 @@ export class FortyKActor extends Actor {
             }
 
             if(item.type==="meleeWeapon"){
-                item.data.damageFormula.value=item.data.damageFormula.formula;
+                /*item.data.damageFormula.value=item.data.damageFormula.formula;
                 item.data.range.value=item.data.range.formula;
                 item.data.pen.value=item.data.pen.formula;
 
@@ -870,12 +870,12 @@ export class FortyKActor extends Actor {
                 if(this.getFlag("fortyk","crushingblow")){
                     item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
                 }
-
+                */
                 meleeweapons.push(item);
                 wargear.push(item);
             }
             if(item.type==="rangedWeapon"){
-                let ammo=this.getEmbeddedDocument("Item",item.data.ammo._id);
+                /*let ammo=this.getEmbeddedDocument("Item",item.data.ammo._id);
 
                 if(ammo!==undefined&&!ammo.data.data.default.value){
                     let ammoData=ammo.data;
@@ -959,11 +959,12 @@ export class FortyKActor extends Actor {
                     item.data.pen.value=parseInt(item.data.pen.formula)+2;
                     item.data.clip.consumption=3;
                 }
-
+                */
                 rangedWeapons.push(item);
                 wargear.push(item);
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
+                /*
                 if(this.getFlag("fortyk","WeaponMaster")){
 
                     if(this.getFlag("fortyk","WeaponMaster").toLowerCase().includes(item.data.type.value.toLowerCase())){
@@ -972,11 +973,11 @@ export class FortyKActor extends Actor {
                         item.data.testMod.value=item._source.data.testMod.value+10;
                     }
                 }
-
+                */
                 if(item.data.isEquipped){
                     wornGear.weapons.push(fortykItem);
                 }
-
+                /*
                 try{
                     if(fortykItem.getFlag("fortyk","force")){
                         let pr=parseInt(data.psykana.pr.value);
@@ -987,6 +988,7 @@ export class FortyKActor extends Actor {
                     item.data.pen.value="";
                     item.data.damageFormula.value="";
                 }
+                */
             }
             if(item.type==="armor"){
 
@@ -1086,6 +1088,7 @@ export class FortyKActor extends Actor {
         //put all items in their respective containers and do some item logic
         this.items.forEach((fortykItem,id,items)=>{
             let item=fortykItem.data;
+            fortykItem.prepareData();
             if(item.type==="talentntrait"){
 
                 talentsntraits.push(item);
@@ -1094,7 +1097,7 @@ export class FortyKActor extends Actor {
                 armors.push(item);
             }
             if(item.type==="psychicPower"){
-                try{
+               /* try{
                     let pr=parseInt(item.data.curPR.value);
                     let range=item.data.range.formula.toLowerCase();
                     item.data.range.value=eval(range);
@@ -1114,11 +1117,11 @@ export class FortyKActor extends Actor {
                     char=parseInt(actorData.data.characteristics[item.data.testChar.value].total);
                     item.data.testChar.type=item.data.testChar.value;
                 }
-                item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(actorData.data.psykana.mod.value);
+                item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(actorData.data.psykana.mod.value);*/
                 psychicPowers.push(item);
             }
             if(item.type==="meleeWeapon"){
-                item.data.range.value=item.data.range.formula;
+               /* item.data.range.value=item.data.range.formula;
                 item.data.pen.value=item.data.pen.formula;
 
 
@@ -1137,11 +1140,11 @@ export class FortyKActor extends Actor {
                 }
                 if(this.getFlag("fortyk","crushingblow")){
                     item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
-                }
+                }*/
                 meleeweapons.push(item);
             }
             if(item.type==="rangedWeapon"){
-                if(item.data.damTyp===undefined){item.data.damTyp=item.data.damageType.value}
+                /*if(item.data.damTyp===undefined){item.data.damTyp=item.data.damageType.value}
 
 
                 if(!item.data.damTyp===""){
@@ -1215,13 +1218,13 @@ export class FortyKActor extends Actor {
                     item.data.pen.value=parseInt(item.data.pen.formula)+2;
                     item.data.clip.consumption=3;
                 }
-
+                */
                 rangedWeapons.push(item);
 
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
                 //calculate horde bonus damage
-                if(this.data.data.horde.value){
+                /*if(this.data.data.horde.value){
                     let hordeDmgBonus=Math.min(2,Math.floor(this.data.data.secChar.wounds.value/10));
                     if(this.getFlag("fortyk","overwhelming")&&item.type==="meleeWeapon"&&this.data.data.secChar.wounds.value>=20){
                         hordeDmgBonus+=1;
@@ -1243,7 +1246,7 @@ export class FortyKActor extends Actor {
                 }catch(err){
                     item.data.pen.value="";
                     item.data.damageFormula.value="";
-                }
+                }*/
             }
         })
         let preparedItems={

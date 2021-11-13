@@ -199,7 +199,7 @@ export class FortykRollDialogs{
         let template="systems/fortyk/templates/actor/dialogs/ranged-attack-dialog.html"
         let templateOptions={};
         let itemData=item.data;
-       
+       console.log(actor);
         templateOptions["modifiers"]=duplicate(actor.data.data.secChar.attacks);
         templateOptions["size"]=game.fortyk.FORTYK.size;
         

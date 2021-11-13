@@ -51,43 +51,29 @@ export class FortyKItem extends Item {
         super.prepareData();
 
         // Get the Item's data
-        const itemData = this.data;
-        const data = itemData.data;
+        const item = this.data;
+        
 
-        itemData["FORTYK"]=game.fortyk.FORTYK;
+        item.data["FORTYK"]=game.fortyk.FORTYK;
 
         //ensure this is an owned item
 
         if(this.actor!==null&&this.actor.data!==undefined){
-            const actorData = this.actor.data;
+            const data = this.actor.data.data;
+            let actor=this.actor;
+            item.data.isPrepared=true;
+            
+            
+           
+            
+            if(item.type==="psychicPower"){
+                if(data.psykana.psykerType.value.toLowerCase()==="navigator"){
+                    let range=item.data.range.formula.toLowerCase();
 
-            //prepare skill total value
-            if(itemData.type==="skill"){
-                data.total.value=parseInt(data.value)+parseInt(data.mod.value)+parseInt(actorData.data.characteristics[data.characteristic.value].total);
-            }
-            //logic for weapons
-
-            if(itemData.type==="meleeWeapon"){
-                
-
-
-            }
-            if(itemData.type==="rangedWeapon"){
-
-                
-
-
-                
-            }
-            //prepare psychicpowers, calculates pushing and target numbers
-            if(itemData.type==="psychicPower"){
-                if(actorData.data.psykana.psykerType.value.toLowerCase()==="navigator"){
-                    let range=data.range.formula.toLowerCase();
-
-                    data.range.value=eval(range);
-                    data.pen.value=eval(data.pen.formula.toLowerCase());
+                    item.data.range.value=eval(range);
+                    item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
                     let training=0;
-                    switch(data.training.value){
+                    switch(item.data.training.value){
                         case "Novice":
                             training=0;
                             break;
@@ -99,78 +85,204 @@ export class FortyKItem extends Item {
                             break;
                     }
                     let char=0;
-                    if(data.testChar.value==="psy"){
-
+                    if(item.data.testChar.value==="psy"){
+                        char=psyniscience;
+                        item.data.testChar.type="per";
                     }else{
-                        char=parseInt(actorData.data.characteristics[data.testChar.value].total);
-                        data.testChar.type=data.testChar.value;
+                        char=parseInt(data.characteristics[item.data.testChar.value].total);
+                        item.data.testChar.type=item.data.testChar.value;
                     }
 
-                    data.target.value=char+training;
+                    item.data.target.value=char+training;
                 }else{
-                    let pr=parseInt(data.curPR.value);
-
-
-                    let range=data.range.formula.toLowerCase();
-
-                    data.range.value=eval(range);
-
-                    data.pen.value=eval(data.pen.formula.toLowerCase());
-
-
-
-                    let derivedPR=Math.abs(parseInt(actorData.data.psykana.pr.effective)-parseInt(data.curPR.value));
-
-                    let specials=itemData.flags.specials;
-                    for(const spec in specials){
-
-                        if(specials[spec].value&&specials[spec].num!==undefined){
-
-
-                            if(isNaN(specials[spec].num)&&specials[spec].form!==undefined&&specials[spec].num!==specials[spec].form){
-
-                                specials[spec].form=specials[spec].num;
-
-                            }else if(isNaN(specials[spec].num)&&specials[spec].form===undefined){
-
-                                specials[spec].form=specials[spec].num;
-
-                            } 
-
-
-
-
-                            if(specials[spec].form!==undefined){
-                                specials[spec].num=eval(specials[spec].form);
-                            }
-                        }
+                    try{
+                        let pr=parseInt(item.data.curPR.value);
+                        let range=item.data.range.formula.toLowerCase();
+                        let wp=data.characteristics.wp.bonus;
+                        item.data.range.value=eval(range);
+                        item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
+                        let temp;
+                        temp=item.data.damageFormula.formula.replace(/pr/gmi,pr);
+                        item.data.damageFormula.value=temp.replace(/wp/gmi,wp);
+                    }catch(err){
+                        item.data.range.value="";
+                        item.data.pen.value="";
+                        item.data.damageFormula.value=="";
                     }
-
+                    let derivedPR=Math.abs(parseInt(data.psykana.pr.effective)-parseInt(item.data.curPR.value));
                     let char=0;
-                    if(data.testChar.value==="psy"){
-
+                    if(item.data.testChar.value==="psy"){
+                        char=psyniscience;
+                        item.data.testChar.type="per";
                     }else{
-                        char=parseInt(actorData.data.characteristics[data.testChar.value].total);
-                        data.testChar.type=data.testChar.value;
+                        char=parseInt(data.characteristics[item.data.testChar.value].total);
+                        item.data.testChar.type=item.data.testChar.value;
                     }
+                    item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(data.psykana.mod.value);
+                }
+                
 
-                    data.target.value=parseInt(char)+(derivedPR*10)+parseInt(data.testMod.value)+parseInt(actorData.data.psykana.mod.value); 
+            }
+            
+
+            if(item.type==="meleeWeapon"){
+                item.data.damageFormula.value=item.data.damageFormula.formula;
+                item.data.range.value=item.data.range.formula;
+                item.data.pen.value=item.data.pen.formula;
+
+
+
+
+
+                //ensure that a weapon that is not a shield does not have an armor rating
+                if(item.data.class.value!=="Shield"&&item.data.shield.value!==0){
+                    item.data.shield.value=0;
+
+                }
+                if(item.data.quality.value==="Best"){
+                    item.data.damageFormula.value+="+1";
                 }
 
+                if(this.getFlag("fortyk","crushing")){
+                    item.data.damageFormula.value+="+"+2*data.characteristics.s.bonus;
+                }else{
+                    item.data.damageFormula.value+="+"+data.characteristics.s.bonus;
+                }
+                if(actor.getFlag("fortyk","crushingblow")){
+                    item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
+                }
+
+              
             }
-            if(itemData.type==="meleeWeapon"||itemData.type==="rangedWeapon"||itemData.type==="psychicPower"){
+            if(item.type==="rangedWeapon"){
+                let ammo=actor.getEmbeddedDocument("Item",item.data.ammo._id);
+
+                if(ammo!==undefined&&!ammo.data.data.default.value){
+                    let ammoData=ammo.data;
+                    item.data.damageType.value=ammoData.data.damageType.value;
+                    item.data.range.value=ammoData.data.range.formula;
+                    item.data.pen.value=ammoData.data.pen.formula;
+                    item.data.damageFormula.value=ammoData.data.damageFormula.formula;
+                    item.flags=ammoData.flags;
+                }else{
+                    if(!item.data.damTyp===""){
+                        item.data.damageType.value=data.damTyp;
+                    }else{
+                        item.data.damTyp=item.data.damageType.value;
+                    }
+
+                    item.data.range.value=item.data.range.formula;
+                    item.data.pen.value=item.data.pen.formula;
+                    item.data.damageFormula.value=item.data.damageFormula.formula;
+
+                }
+                if(item.data.damTyp===undefined){item.data.damTyp=item.data.damageType.value}
 
 
 
+                item.data.clip.max=item.data.clip.formula;
+
+                try
+                {
+                    let sb=data.characteristics.s.bonus;
+                    let formula=item.data.range.formula.toLowerCase();
+                    item.data.range.value=eval(formula);
+                } 
+                catch(err){
+                    item.data.range.value="";
+                } 
+                if(actor.getFlag("fortyk","mightyshot")){
+                    item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.bs.bonus/2);
+                }
+                if(this.getFlag("fortyk","accurate")){
+                    item.data.attackMods.aim.half=20;
+                    item.data.attackMods.aim.full=30;
+                }
+
+                if(this.getFlag("fortyk","scatter")){
+                    item.data.attackMods.range.pointblank=40;
+                    item.data.attackMods.range.short=20;
+
+                }
+                if(this.getFlag("fortyk","twinlinked")){
+
+                    item.data.testMod.value=20;
+                    item.data.clip.consumption=item.data.clip.consumption*2;
+                }
+                if(this.getFlag("fortyk","storm")){
+                    item.data.clip.consumption=item.data.clip.consumption*2;
+                }
+                if(this.getFlag("fortyk","lasModal")){
+                    if(this.getFlag("fortyk","lasMode")===0){
+
+                    }else if(this.getFlag("fortyk","lasMode")===1){
+                        item.data.clip.consumption=2;
+                        item.data.damageFormula.value+="+1"
+                    }else if(this.getFlag("fortyk","lasMode")===2){
+                        item.data.clip.consumption=4;
+                        item.data.damageFormula.value+="+2"
+                        item.data.pen.value=parseInt(item.data.pen.formula)+2;
+                        item.flags.fortyk.reliable=false;
+                        item.flags.fortyk.unreliable=true;
+                    }
+                }
+                if(this.getFlag("fortyk","maximalMode")){
 
 
+                    item.data.range.value=parseInt(item.data.range.formula)+10;
+                    let form=item.data.damageFormula.formula;
+                    let dPos = form.indexOf('d');
+                    let dieNum = form.substr(0,dPos);
+                    let newNum=parseInt(dieNum)+1;
+                    item.data.damageFormula.value=form.slice(dPos)
+                    item.data.damageFormula.value=newNum+item.data.damageFormula.value;
+                    item.data.pen.value=parseInt(item.data.pen.formula)+2;
+                    item.data.clip.consumption=3;
+                }
 
-
-
+                
             }
+            if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
+                if(actor.getFlag("fortyk","WeaponMaster")){
 
+                    if(actor.getFlag("fortyk","WeaponMaster").toLowerCase().includes(item.data.type.value.toLowerCase())){
+
+                        item.data.damageFormula.value+="+2";
+                        item.data.testMod.value=item._source.data.testMod.value+10;
+                    }
+                }
+
+                if(actor.data.data.horde.value){
+                    let hordeDmgBonus=Math.min(2,Math.floor(actor.data.data.secChar.wounds.value/10));
+                    if(actor.getFlag("fortyk","overwhelming")&&item.type==="meleeWeapon"&&actor.data.data.secChar.wounds.value>=20){
+                        hordeDmgBonus+=1;
+                    }
+                    let form= item.data.damageFormula.value
+                    let dPos = form.indexOf('d');
+                    let dieNum = form.substr(0,dPos);
+                    let newNum=parseInt(dieNum)+hordeDmgBonus;
+                    form=form.slice(dPos);
+                    form=newNum+form;
+                    item.data.damageFormula.value=form;
+                }
+
+                try{
+                    if(this.getFlag("fortyk","force")){
+                        let pr=parseInt(data.psykana.pr.value);
+                        item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
+                        item.data.damageFormula.value+=`+${pr}`;
+                    }
+                }catch(err){
+                    item.data.pen.value="";
+                    item.data.damageFormula.value="";
+                }
+            }
+            
+            
         }
 
     }
+     
+    
 }
 
