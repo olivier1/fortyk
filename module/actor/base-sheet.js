@@ -585,10 +585,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             attackOptions.distance=tokenDistance(target, attacker);
            
         }
-        //have to redo how items are prepared because it doesnt persist sometimes????
         if(dataset["itemId"]){
-            item=this.actor.items.get(dataset["itemId"]);
-            console.log(item.data.data);
+            item=await this.actor.items.get(dataset["itemId"]);
+            
             if(!item.data.data.isPrepared){
                 await item.prepareData();
             }

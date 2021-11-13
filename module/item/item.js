@@ -52,9 +52,9 @@ export class FortyKItem extends Item {
 
         // Get the Item's data
         const item = this.data;
-        
 
-        item.data["FORTYK"]=game.fortyk.FORTYK;
+
+        item["FORTYK"]=game.fortyk.FORTYK;
 
         //ensure this is an owned item
 
@@ -62,10 +62,10 @@ export class FortyKItem extends Item {
             const data = this.actor.data.data;
             let actor=this.actor;
             item.data.isPrepared=true;
-            
-            
-           
-            
+
+
+
+
             if(item.type==="psychicPower"){
                 if(data.psykana.psykerType.value.toLowerCase()==="navigator"){
                     let range=item.data.range.formula.toLowerCase();
@@ -120,10 +120,10 @@ export class FortyKItem extends Item {
                     }
                     item.data.target.value=parseInt(char)+(derivedPR*10)+parseInt(item.data.testMod.value)+parseInt(data.psykana.mod.value);
                 }
-                
+
 
             }
-            
+
 
             if(item.type==="meleeWeapon"){
                 item.data.damageFormula.value=item.data.damageFormula.formula;
@@ -151,12 +151,16 @@ export class FortyKItem extends Item {
                 if(actor.getFlag("fortyk","crushingblow")){
                     item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
                 }
+                if(item.data.class.value==="Melee Two-handed"){
+                    item.data.twohanded.value=true;
+                }else{
+                    item.data.twohanded.value=false;
+                }
 
-              
             }
             if(item.type==="rangedWeapon"){
                 let ammo=actor.getEmbeddedDocument("Item",item.data.ammo._id);
-
+                console.log(ammo)
                 if(ammo!==undefined&&!ammo.data.data.default.value){
                     let ammoData=ammo.data;
                     item.data.damageType.value=ammoData.data.damageType.value;
@@ -164,6 +168,7 @@ export class FortyKItem extends Item {
                     item.data.pen.value=ammoData.data.pen.formula;
                     item.data.damageFormula.value=ammoData.data.damageFormula.formula;
                     item.flags=ammoData.flags;
+                    console.log(item);
                 }else{
                     if(!item.data.damTyp===""){
                         item.data.damageType.value=data.damTyp;
@@ -240,7 +245,14 @@ export class FortyKItem extends Item {
                     item.data.clip.consumption=3;
                 }
 
-                
+                if(item.data.class.value==="Pistol"||item.data.class.value==="Thrown"){
+
+                    item.data.twohanded.value=false;
+
+                }else{
+                    item.data.twohanded.value=true;
+                }
+
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
                 if(actor.getFlag("fortyk","WeaponMaster")){
@@ -277,12 +289,12 @@ export class FortyKItem extends Item {
                     item.data.damageFormula.value="";
                 }
             }
-            
-            
+
+
         }
 
     }
-     
-    
+
+
 }
 
