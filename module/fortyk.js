@@ -222,6 +222,7 @@ Hooks.once('ready', async function() {
 //round management effects, when a token's turn starts
 Hooks.on("updateCombat", async (combat) => {
     if(game.user.isGM){
+        game.user.updateTokenTargets();
         let token=canvas.tokens.get(combat.current.tokenId);
         if(token===undefined){return}
         let actor=token.actor;
