@@ -189,7 +189,10 @@ export class FortyKActor extends Actor {
             let item=fortykItem.data;
 
             if(item.type==="skill"){
-                data.skillmods[item.name.toLowerCase()]=0;
+                let name="";
+                if(item.data.parent.value){name+=item.data.parent.value.toLowerCase()+":"}
+                name+=item.name.toLowerCase();
+                data.skillmods[name]=0;
             }
         });
     }
@@ -431,7 +434,7 @@ export class FortyKActor extends Actor {
                 char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod);
                 char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
                 char.total+=parseInt(data.globalMOD.value);
-                console.log(char.max);
+                
                 char.total=Math.min(char.total,char.max);
             }
         }
@@ -720,7 +723,10 @@ export class FortyKActor extends Actor {
             if(item.type=="skill"){
                 item.data.total.value=0
                 item.data.mod.value=parseInt(item._source.data.mod.value);
-                if(data.skillmods[item.name.toLowerCase()]){
+                let name="";
+                if(item.data.parent.value){name+=item.data.parent.value.toLowerCase()+":"}
+                name+=item.name.toLowerCase();
+                if(data.skillmods[name]){
 
                     item.data.mod.value+=parseInt(data.skillmods[item.name.toLowerCase()]);
 
