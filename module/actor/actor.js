@@ -426,10 +426,13 @@ export class FortyKActor extends Actor {
         //prepare characteristics data
         for (let [key, char] of Object.entries(data.characteristics)){
             if(key==="inf"){
+                char.total=Math.min(char.total,char.max);
             }else{
                 char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod);
                 char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
                 char.total+=parseInt(data.globalMOD.value);
+                console.log(char.max);
+                char.total=Math.min(char.total,char.max);
             }
         }
         data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
@@ -542,6 +545,10 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","machine")&&!isNaN(parseInt(this.getFlag("fortyk","machine")))){
             machine=parseInt(this.getFlag("fortyk","machine"));
         }
+        let natural=0;
+         if(this.getFlag("fortyk","naturalarmor")&&!isNaN(parseInt(this.getFlag("fortyk","naturalarmor")))){
+            natural=parseInt(this.getFlag("fortyk","naturalarmor"));
+        }
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
 
@@ -553,7 +560,7 @@ export class FortyKActor extends Actor {
                 hitLoc.armor=hitLoc.armor+2;
             }
             hitLoc.armor+=hitLoc.armorMod;
-            hitLoc.armor+=machine;
+            hitLoc.armor+=Math.max(machine,natural);
             hitLoc.armor=Math.max(0,hitLoc.armor);
             hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
             let daemonic=this.getFlag("fortyk","daemonic");
@@ -570,11 +577,13 @@ export class FortyKActor extends Actor {
         //calc char bonuses
         for (let [key, char] of Object.entries(data.characteristics)){
             if(key==="inf"){
+                char.total=Math.min(char.total,char.max);
             }else{
                 char.total=parseInt(char.value);
 
                 char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
                 char.total+=parseInt(data.globalMOD.value);
+                char.total=Math.min(char.total,char.max);
 
             }
         }
@@ -612,6 +621,10 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","machine")&&!isNaN(parseInt(this.getFlag("fortyk","machine")))){
             machine=parseInt(this.getFlag("fortyk","machine"));
         }
+        let natural=0;
+         if(this.getFlag("fortyk","naturalarmor")&&!isNaN(parseInt(this.getFlag("fortyk","naturalarmor")))){
+            natural=parseInt(this.getFlag("fortyk","naturalarmor"));
+        }
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
             hitLoc.armor=parseInt(hitLoc.armor);
@@ -620,7 +633,7 @@ export class FortyKActor extends Actor {
             }
 
             hitLoc.armor+=hitLoc.armorMod;
-            hitLoc.armor+=machine;
+            hitLoc.armor+=Math.max(machine,natural);
             hitLoc.armor=Math.max(0,hitLoc.armor);
             hitLoc.value=parseInt(hitLoc.armor)+data.characteristics.t.bonus;
             let daemonic=this.getFlag("fortyk","daemonic");

@@ -109,6 +109,30 @@ returns the roll message*/
                 templateOptions["pass"]="Failure!"; 
             }
         }
+        //adamantium faith logic
+        if(type==="fear"&&!templateOptions["success"]&&actor.getFlag("fortyk","adfaith")){
+            let wpb=actor.data.data.characteristics.wp.bonus;
+            let newDos=testDos-wpb;
+            testDos=newDos;
+            if(newDos<=0){
+                templateOptions["dos"]="with 1 degree";
+                templateOptions["dos"]+=" of success!";
+                templateOptions["pass"]="Adamantium Faith Pass!";
+                templateOptions["success"]=true;
+            }else{
+                templateOptions["dos"]="with "+newDos+" degree";
+                if(newDos===1){}else{templateOptions["dos"]+="s";}
+                templateOptions["dos"]+=" of failure!";
+                templateOptions["success"]=false;
+                
+                if(testRoll>=96){
+                    templateOptions["pass"]="96+ is an automatic failure!";
+                }
+                else{
+                    templateOptions["pass"]="Adamantium Faith Failure!"; 
+                }
+            }
+        }
         //give the chat object options and stuff
         let renderedTemplate= await renderTemplate(template,templateOptions);
         var chatOptions={user: game.user._id,
@@ -360,7 +384,7 @@ returns the roll message*/
             righteous=fortykWeapon.getFlag("fortyk","vengeful");
         }
         let ignoreSON=(fortykWeapon.type==="psychicPower"||fortykWeapon.getFlag("fortyk","force")||fortykWeapon.getFlag("fortyk","sanctified")||fortykWeapon.getFlag("fortyk","daemonbane")||fortykWeapon.getFlag("fortyk","warp"));
-        
+
         let lastHit=actor.data.data.secChar.lastHit;
 
         let attackerToken=actor.getActiveTokens()[0];
@@ -403,7 +427,7 @@ returns the roll message*/
         }
         //scatter weapon logic
         if(fortykWeapon.getFlag("fortyk","scatter")){
-            
+
             if(targets.size>0);
             let targetIt=targets.values();
             let target=targetIt.next().value;
@@ -663,6 +687,17 @@ returns the roll message*/
                                                       author:actor.name};
                                     await ChatMessage.create(meltaOptions,{});
                                 }
+                            }
+                            //ignore natural armor weapons
+                            if(fortykWeapon.getFlag("fortyk","ignoreNaturalArmor")&&tarActor.getFlag("fortyk","naturalarmor")){
+                                pen+=parseInt(tarActor.getFlag("fortyk","naturalarmor"));
+                                let ignoreNatOptions={user: game.user._id,
+                                                      speaker:{actor,alias:actor.name},
+                                                      content:`The weapon ignores ${tarActor.getFlag("fortyk","naturalarmor")}natural armor.`,
+                                                      classes:["fortyk"],
+                                                      flavor:"Natural Armor Ignored",
+                                                      author:actor.name};
+                                    await ChatMessage.create(ignoreNatOptions,{});
                             }
                             let maxPen=Math.min(armor,pen);
                             soak=parseInt(data.characterHitLocations[curHit.value].value);
@@ -3002,11 +3037,11 @@ returns the roll message*/
             case 5:
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("bleeding")]));
                 injury=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("arm")]);
-                
+
                 await this._createInjury(actor,"Useless "+arm+" arm",injury);
-                
+
                 await this.applyActiveEffect(actorToken,critActiveEffect);
-                
+
                 break;
             case 6:
                 tTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total),actor, "Resist lost hand");
@@ -3233,7 +3268,7 @@ returns the roll message*/
     };
     static async applyDead(target,actor){
 
-            console.log(target);
+        console.log(target);
 
         if(game.user.isGM||target.owner){
             let msg=target.name+" is killed!";
@@ -3284,7 +3319,7 @@ returns the roll message*/
     static async _createInjury(actor,injury,injuryAeData){
         let injuryItem=await Item.create({type:"injury",name:injury},{temporary:true});
         //injuryAeData.transfer=true;
-        
+
         //await injuryItem.createEmbeddedDocuments("ActiveEffect",[injuryAeData]);
         await actor.createEmbeddedDocuments("Item",[injuryItem.data]);
 

@@ -279,6 +279,11 @@ FORTYK.weaponFlags={
         "label": "Haywire",
         "description": "A foul affront to the Omnissiah in the eyes of many Tech-Priests, devices with this quality seek to cripple machine spirits and make metal as weak as flesh. Everything within the field’s radius, indicated by the number in parentheses, is affected; Haywire (3), for example, would affect an area with a three metre radius. Roll 1d10 on Table 5–4: Haywire Field Effects (adding any modifiers from the weapon) to determine the strength of the effect. As the field slowly dissipates, the strength lessens one step in severity each round until it becomes Insignificant (i.e., a result of Major Disruption would become Minor Disruption the following round and then cease to have an effect the round after that). Additional Haywire attacks in the same area do not stack but instead create a new effect that is either ignored if lower than the current effect or replaces the old one if higher."
     },
+    "ignoreNaturalArmor": {
+        "value": false,
+        "label": "Ignore Natural Armor",
+        "description": "Some weapons ignore the natural armor of their targets. This weapon ignores the armor granted by the natural armor trait."
+    },
     "ignoreSoak": {
         "value": false,
         "label": "Ignore Soak",
