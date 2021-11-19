@@ -257,7 +257,7 @@ export class FortyKActor extends Actor {
                 }
                 //check if equipped
                 if((item.type==="meleeWeapon"||item.type==="rangedWeapon")&&item.data.isEquipped){
-                    
+
                     if(item.data.isEquipped.indexOf("right")!==-1){
                         data.secChar.wornGear.weapons[0]=fortykItem; 
 
@@ -292,7 +292,7 @@ export class FortyKActor extends Actor {
             data.experience.value=parseInt(data.experience.starting)+parseInt(data.experience.earned)-parseInt(data.experience.spent);
 
         }
-        if(actorData.type === 'npc'){
+        else if(actorData.type === 'npc'){
             let items=this.data.items;
             const data=actorData.data;
             this.items.forEach((fortykItem,id,items)=>{
@@ -300,10 +300,11 @@ export class FortyKActor extends Actor {
                 if(item.type==="armor"&&item.data.isEquipped){
                     data.secChar.wornGear.armor=item;
                 }
-            })}
+            })
+        }
 
 
-        if(actorData.type === "spaceship"){
+        else if(actorData.type === "spaceship"){
             let items=this.data.items;
             let data=actorData.data;
 
@@ -323,7 +324,7 @@ export class FortyKActor extends Actor {
                 }else if(item.type==="spaceshipCargo"){
 
                     data.cargo.value+=parseInt(item.data.space.value);
-                    item.data.pf.total=parseFloat(item.data.pf.value)*parseFloat(item.data.space.value);
+                    item.data.pf.total=eval(item.data.pf.value)*parseFloat(item.data.space.value);
                     data.cargo.profit+=item.data.pf.total;
                 }
 
@@ -344,6 +345,7 @@ export class FortyKActor extends Actor {
             if(!ae.data.disabled){
 
                 let proceed=false;
+                //check if ae is from an item
                 if(ae.data.origin){
                     let itemId=ae.data.origin.split('.')[3];
                     let item=actor.getEmbeddedDocument("Item",itemId);
@@ -359,9 +361,10 @@ export class FortyKActor extends Actor {
                 }else{
                     proceed=true;
                 }
+                //if item if equipped and/or not disabled
                 if(proceed){
                     ae.data.changes.forEach(function(change,i){
-                        
+
                         let basevalue=parseInt(objectByString(actorData,change.key));
                         let newvalue=parseFloat(change.value);
                         if(newvalue>=0){
@@ -412,9 +415,9 @@ export class FortyKActor extends Actor {
 
         // Make separate methods for each Actor type (character, npc, etc.) to keep
         // things organized.
-        if (actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC') {this._prepareCharacterData(actorData)};
-        if (actorData.type === 'npc') {this._prepareNPCData(actorData)};
-        if (actorData.type === 'owRegiment'){this._prepareRegimentData(actorData)};
+        if (actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC') {this._prepareCharacterData(actorData)}
+        else if (actorData.type === 'npc') {this._prepareNPCData(actorData)}
+        else if (actorData.type === 'owRegiment'){this._prepareRegimentData(actorData)};
     }
     _prepareRegimentData(actorData){
         const data=actorData.data;
@@ -434,7 +437,7 @@ export class FortyKActor extends Actor {
                 char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod);
                 char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
                 char.total+=parseInt(data.globalMOD.value);
-                
+
                 char.total=Math.min(char.total,char.max);
             }
         }
@@ -549,7 +552,7 @@ export class FortyKActor extends Actor {
             machine=parseInt(this.getFlag("fortyk","machine"));
         }
         let natural=0;
-         if(this.getFlag("fortyk","naturalarmor")&&!isNaN(parseInt(this.getFlag("fortyk","naturalarmor")))){
+        if(this.getFlag("fortyk","naturalarmor")&&!isNaN(parseInt(this.getFlag("fortyk","naturalarmor")))){
             natural=parseInt(this.getFlag("fortyk","naturalarmor"));
         }
         //compute rest of armor and absorption
@@ -625,7 +628,7 @@ export class FortyKActor extends Actor {
             machine=parseInt(this.getFlag("fortyk","machine"));
         }
         let natural=0;
-         if(this.getFlag("fortyk","naturalarmor")&&!isNaN(parseInt(this.getFlag("fortyk","naturalarmor")))){
+        if(this.getFlag("fortyk","naturalarmor")&&!isNaN(parseInt(this.getFlag("fortyk","naturalarmor")))){
             natural=parseInt(this.getFlag("fortyk","naturalarmor"));
         }
         //compute rest of armor and absorption
@@ -1027,7 +1030,7 @@ export class FortyKActor extends Actor {
         //store known xenos for deathwatchtraining
 
         if(this.getFlag("fortyk","deathwatchtraining")){
-           
+
             actorData.flags.fortyk.deathwatchtraining=forRaces;
         }
         if(this.getFlag("fortyk","fieldvivisection")){
@@ -1116,7 +1119,7 @@ export class FortyKActor extends Actor {
                 armors.push(item);
             }
             if(item.type==="psychicPower"){
-               /* try{
+                /* try{
                     let pr=parseInt(item.data.curPR.value);
                     let range=item.data.range.formula.toLowerCase();
                     item.data.range.value=eval(range);
@@ -1140,7 +1143,7 @@ export class FortyKActor extends Actor {
                 psychicPowers.push(item);
             }
             if(item.type==="meleeWeapon"){
-               /* item.data.range.value=item.data.range.formula;
+                /* item.data.range.value=item.data.range.formula;
                 item.data.pen.value=item.data.pen.formula;
 
 

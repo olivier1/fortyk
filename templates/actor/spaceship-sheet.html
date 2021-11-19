@@ -93,8 +93,10 @@
                     <div class="resource-content flexrow flex-center flex-between">
                         <input type="text" class="combat-resources" name="data.crew.value" value="{{data.crew.value}}" data-dtype="Number"/>
                         <span> / </span>
-                        <span type="text">{{data.crew.max}}</span>
+                        <input type="text" class="combat-resources" name="data.crew.max" value="{{data.crew.max}}" data-dtype="Number"/>
+                        
                     </div>
+                    <input type="text" class="combat-resources" name="data.crew.capacity" value="{{data.crew.capacity}}" placeholder="Crew capacity" data-dtype="Number"/>
                 </div>
                 <div class="resource flex-group-center">
                     <label for="data.secChar.fatigue.value" class="resource-label">Morale</label>
