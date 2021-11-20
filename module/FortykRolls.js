@@ -124,7 +124,7 @@ returns the roll message*/
                 if(newDos===1){}else{templateOptions["dos"]+="s";}
                 templateOptions["dos"]+=" of failure!";
                 templateOptions["success"]=false;
-                
+
                 if(testRoll>=96){
                     templateOptions["pass"]="96+ is an automatic failure!";
                 }
@@ -378,6 +378,9 @@ returns the roll message*/
     }
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
     static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0){
+        if(!fortykWeapon.data.data.isPrepared){
+            await fortykWeapon.prepareData();
+        }
         let weapon=deepClone(fortykWeapon.data);
         let righteous=10;
         if(fortykWeapon.getFlag("fortyk","vengeful")){
@@ -697,7 +700,7 @@ returns the roll message*/
                                                       classes:["fortyk"],
                                                       flavor:"Natural Armor Ignored",
                                                       author:actor.name};
-                                    await ChatMessage.create(ignoreNatOptions,{});
+                                await ChatMessage.create(ignoreNatOptions,{});
                             }
                             let maxPen=Math.min(armor,pen);
                             soak=parseInt(data.characterHitLocations[curHit.value].value);
