@@ -160,7 +160,7 @@ export class FortyKItem extends Item {
             }
             if(item.type==="rangedWeapon"){
                 let ammo=actor.getEmbeddedDocument("Item",item.data.ammo._id);
-                console.log(ammo)
+              
                 if(ammo!==undefined&&!ammo.data.data.default.value){
                     let ammoData=ammo.data;
                     item.data.damageType.value=ammoData.data.damageType.value;
@@ -168,7 +168,7 @@ export class FortyKItem extends Item {
                     item.data.pen.value=ammoData.data.pen.formula;
                     item.data.damageFormula.value=ammoData.data.damageFormula.formula;
                     item.flags=ammoData.flags;
-                    console.log(item);
+                  
                 }else{
                     if(!item.data.damTyp===""){
                         item.data.damageType.value=data.damTyp;

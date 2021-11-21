@@ -3271,7 +3271,7 @@ returns the roll message*/
     };
     static async applyDead(target,actor){
 
-        console.log(target);
+   
 
         if(game.user.isGM||target.owner){
             let msg=target.name+" is killed!";

@@ -495,10 +495,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     async _itemTextInputEdit(event){
         let actor= this.actor;
         let newAmt=event.target.value;
+        
         let dataItemId=event.target.attributes["data-item-id"].value;
         let target=event.target.attributes["data-target"].value.toString();
         let item= actor.getEmbeddedDocument("Item", dataItemId);
-        let oldValue=objectByString(item,target);
+        let oldValue=event.target.defaultValue;
         if(oldValue!=newAmt){
             let update={};
             update[target]=newAmt;
@@ -592,7 +593,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 await item.prepareData();
             }
         }
-        console.log(this.actor);
+        
         if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
             await FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
 
