@@ -67,7 +67,7 @@ export class FortykRollDialogs{
                             }
                             FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, reroll);
                         }
-                        AudioHelper.play({src: "sounds/dice.wav", volume: 0.8, loop: false}, true);
+                        
                     }
 
                 }
@@ -183,7 +183,7 @@ export class FortykRollDialogs{
                         if(isNaN(other)){other=0}
                         
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
-                         AudioHelper.play({src: "sounds/dice.wav", volume: 0.8, loop: false}, true);
+                         
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
                     }
 
@@ -480,7 +480,7 @@ export class FortykRollDialogs{
                         if(isNaN(other)){other=0}
                         if(isNaN(melee)){melee=0} 
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(melee);
-                         AudioHelper.play({src: "sounds/dice.wav", volume: 0.8, loop: false}, true);
+                         
                         await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType);
                         if(aimBonus>0){
                             await actor.update({"data.secChar.lastHit.aim":true});
@@ -595,7 +595,7 @@ export class FortykRollDialogs{
                         if(isNaN(stunned)){stunned=0}
                         if(isNaN(other)){other=0}
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(melee)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
-                         AudioHelper.play({src: "sounds/dice.wav", volume: 0.8, loop: false}, true);
+                         
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
                     }
 

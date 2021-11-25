@@ -135,13 +135,11 @@ returns the roll message*/
         }
         //give the chat object options and stuff
         let renderedTemplate= await renderTemplate(template,templateOptions);
-        var chatOptions={user: game.user._id,
+        roll.toMessage({user: game.user._id,
                          speaker:{actor,alias:actor.name},
                          content:renderedTemplate,
                          classes:["fortyk"],
-                         roll:roll,
-                         author:actor.name};
-        await ChatMessage.create(chatOptions,{});
+                         author:actor.name})
         //get first and second digits for hit locations and perils
         let firstDigit=Math.floor(testRoll/10);
         let secondDigit=testRoll-firstDigit*10;
