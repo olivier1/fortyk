@@ -376,9 +376,8 @@ returns the roll message*/
     }
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
     static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0){
-        if(!fortykWeapon.data.data.isPrepared){
-            await fortykWeapon.prepareData();
-        }
+        
+        
         let weapon=deepClone(fortykWeapon.data);
         let righteous=10;
         if(fortykWeapon.getFlag("fortyk","vengeful")){

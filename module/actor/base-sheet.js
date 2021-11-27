@@ -47,7 +47,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.profile-img').contextmenu(this._onImgRightClick.bind(this));
 
         // Everything below here is only needed if the sheet is editable
-        
+
         if (!this.options.editable) return;
 
         //handles combat tab resources
@@ -495,7 +495,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     async _itemTextInputEdit(event){
         let actor= this.actor;
         let newAmt=event.target.value;
-        
+
         let dataItemId=event.target.attributes["data-item-id"].value;
         let target=event.target.attributes["data-target"].value.toString();
         let item= actor.getEmbeddedDocument("Item", dataItemId);
@@ -569,7 +569,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let target=targetIt.next().value;
             let attacker=this.actor.getActiveTokens()[0];
             let targetActor=target.actor;
-            
+
 
             attackOptions.prone=targetActor.getFlag("core","prone");
             attackOptions.stunned=targetActor.getFlag("core","stunned");
@@ -584,16 +584,16 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
             attackOptions.selfBlind=this.actor.getFlag("core","blind");
             attackOptions.distance=tokenDistance(target, attacker);
-           
+
         }
         if(dataset["itemId"]){
             item=await this.actor.items.get(dataset["itemId"]);
-            
+
             if(!item.data.data.isPrepared){
                 await item.prepareData();
             }
         }
-        
+
         if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
             await FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
 
@@ -616,7 +616,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
             let actor=this.actor;
             let fortykWeapon=actor.items.get(dataset.weapon);
-
+            if(!fortykWeapon.data.data.isPrepared){
+                await fortykWeapon.prepareData();
+                console.log(fortykWeapon);
+            }
             let weapon=fortykWeapon.data;
             let dfa=false;
             if(actor.getFlag("fortyk","deathfromabove")&&actor.data.data.secChar.lastHit.attackType==="charge"){

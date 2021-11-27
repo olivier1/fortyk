@@ -469,6 +469,7 @@ export class FortykRollDialogs{
 
 
                         await item.update({"data.clip.value":curAmmo-rof});
+                        
                         //convert unchosen checkboxes into 0s
                         if(isNaN(running)){running=0}
                         if(isNaN(guarded)){guarded=0}
