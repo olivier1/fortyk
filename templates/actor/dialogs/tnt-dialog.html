@@ -1,11 +1,33 @@
 <input type="text"  id="tntfilter" class="tntfilter" placeholder="Search...">
-<select id="tntselect" class="tntselect" size=30 multiple>
+<!--<select id="tntselect" class="tntselect" size=30 multiple>
 
-    {{#each tnts}}
-    <option name="tntEntry" value="{{this.id}}" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}" data-compendium="{{pack}}" title="
-    {{this.data.data.description.value}}">
-        {{this.name}}
-    </option>
+{{#each tnts}}
+<option name="tntEntry" value="{{this.id}}" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}" data-compendium="{{pack}}" title="
+{{this.data.data.description.value}}">
+{{this.name}}
+</option>
 
-    {{/each}}
-</select>
+{{/each}}
+</select>-->
+<div class="tntselect flexcol">
+    <div class="tntgrid grid grid-8col">
+        <span class="tntcheckbox tntheaderitem">Add</span>
+        <span class="tntname tntheaderitem">Name</span>
+        <span class="tnttier tntheaderitem">Tier</span>
+        <span class="tntaptitudes tntheaderitem">Aptitudes</span>
+        <span class="tntdescr tntheaderitem">Descr</span>
+
+        {{#each tnts}}
+            <div class="tntitem" name="tntEntry" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}"><input type="checkbox" class="tntcheckbox tntitem"  data-compendium="{{pack}}" value="{{this.id}}"></div>
+            
+            <span name="tntEntry" class="tntname tntitem" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}">{{this.name}}</span>
+            <span name="tntEntry"  class="tnttier tntitem" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}">{{this.data.data.tier.value}}</span>
+            <span name="tntEntry" class="tntaptitudes tntitem" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}">{{this.data.data.aptitudes.value}}</span>
+            <a name="tntEntry" class="tntdescr tntitem tntdescr-button" class="tnt-desscription" data-name="{{this.name}}" data-description="{{this.data.data.description.value}}" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}">Descr</a>
+        
+
+
+
+        {{/each}}
+    </div>
+</div>

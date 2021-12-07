@@ -2,9 +2,31 @@
 export class ActorDialogs{
     static chatListeners(html){
         html.find('.tntfilter').keyup(this._onTntFilterChange.bind(this));
+        html.find('.tntdescr-button').click(this._onTntDescrClick.bind(this));
         /*html.find('.ae').click(this._onAeClick.bind(this));
         html.find('.ae-create').click(this._onAeCreate.bind(this));
         html.find('.ae-delete').click(this._onAeDelete.bind(this));*/
+    }
+    static _onTntDescrClick(event){
+        event.preventDefault();
+        let descr = event.target.attributes["data-description"].value;
+        var options = {
+            width: 300,
+            height: 400
+        };
+        var name=event.currentTarget.dataset["name"];
+        let dlg = new Dialog({
+            title: `${name} Description`,
+            content: "<p>"+descr+"</p>",
+            buttons: {
+                submit: {
+                    label: "OK",
+                    callback: null
+                }
+            },
+            default: "submit",
+        }, options);
+        dlg.render(true);
     }
     static _onTntFilterChange(event){
 

@@ -325,9 +325,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/tnt-dialog.html', templateOptions);
         var options = {
-            width: 250,
+            width: 400,
             height: 600,
-            classes:["systems/fortyk/css/fortyk.css"]
+            classes:["systems/fortyk/css/fortyk.css","tntdialog"]
         };
 
         renderedTemplate.then(content => { 
@@ -338,11 +338,15 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     submit:{
                         label:"Add selected to Actor",
                         callback: async html => {
-
-                            let selectedIds=$(html).find('#tntselect').val();
-                            let $selectedCompendiums= $('option:selected',html).map(function(){
+                            let selectedIds=[];
+                            $(html).find('input:checked').each(function(){
+                                selectedIds.push($(this).val());
+                            })
+                            
+                            let $selectedCompendiums= $('input:checked',html).map(function(){
                                 return this.getAttribute('data-compendium');
                             }).get();
+                            
                             let talentsNTraits=[];
                             for(let i=0;i<selectedIds.length;i++){
                                 let tnt=null;
@@ -354,6 +358,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                         tnt=await dh2Traits.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.talents-enemies-within":
+                                        
                                         tnt=await dh2EnemyWithinTalents.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.talents-enemies-without":
