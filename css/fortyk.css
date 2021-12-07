@@ -744,6 +744,9 @@
 .tntname{
     grid-column-start:span 3;
 }
+.tntprereqs{
+    grid-column-start:span 3;
+}
 .tnttier{
     grid-column-start:span 1; 
 }

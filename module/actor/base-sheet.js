@@ -325,7 +325,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/tnt-dialog.html', templateOptions);
         var options = {
-            width: 400,
+            width: 666,
             height: 600,
             classes:["systems/fortyk/css/fortyk.css","tntdialog"]
         };
