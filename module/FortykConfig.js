@@ -150,6 +150,17 @@ FORTYK.spaceshipComponentStatuses=["Online", "Damaged", "Destroyed"]
 FORTYK.spaceshipCargoRarity=["Poor","Common","Rare","Unique"]
 FORTYK.spaceshipSquadronTypes=["Fighter","Bomber","Assault Boat","Civilian"]
 FORTYK.aptitudes=["Weapon Skill", "Ballistic Skill", "Strength", "Toughness", "Agility", "Intelligence", "Perception", "Willpower", "Fellowship", "Offence", "Finesse", "Defence","Tech", "Knowledge", "Leadership", "Fieldcraft", "Social","Psyker"]
+FORTYK.advancementTypes=["Custom","Characteristic Upgrade","Skill Upgrade", "Talent"]
+//For costs put the number of matching aptitudes into the array, then whatever other parameter
+FORTYK.characteristicUpgradeCosts=[{"5":500,"10":750,"15":1000,"20":1500,"25":2500},
+                                  {"5":250,"10":500,"15":750,"20":1000,"25":1500},
+                                  {"5":100,"10":250,"15":500,"20":750,"25":1250}]
+FORTYK.skillUpgradeCosts=[{"0":300,"10":600,"20":900,"30":1200},
+                         {"0":200,"10":400,"20":600,"30":800},
+                         {"0":100,"10":200,"20":300,"30":400}]
+FORTYK.talentCosts=[[600,900,1200],
+                   [300,450,600],
+                   [200,300,400]]
 FORTYK.psykerTypes={"bound":{"push":2,"sustain":"+10 to Phenomena rolls, -1 to PR per power after the first","perils":0},"unbound":{"push":4,"sustain":"+10 to all rolls on Table 6–2: Psychic Phenomena (see page 196), decrease psy rating by 1 per power.","perils":5}, "daemon":{"push":3, "sustain":"+10 to all rolls on Table 6–2: Psychic Phenomena (see page 196), decrease psy rating by 1 per power. He is not affected by the result unless the result causes Perils of the Warp, though those around him might be.","perils":10},
                     "navigator":{"push":-1,"sustain":"N/A","perils":-1}}
 FORTYK.navigatorPowerTraining=["Novice","Adept","Master"]

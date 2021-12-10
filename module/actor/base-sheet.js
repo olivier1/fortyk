@@ -332,11 +332,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
         renderedTemplate.then(content => { 
             new Dialog({
-                title: "Talents, Traits and Bonus",
+                title: "Add Talents, Traits and Bonus",
                 content: content,
                 buttons:{
                     submit:{
-                        label:"Add selected to Actor",
+                        label:"Add selected to Character",
                         callback: async html => {
                             let selectedIds=[];
                             $(html).find('input:checked').each(function(){

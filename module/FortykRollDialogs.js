@@ -345,30 +345,7 @@ export class FortykRollDialogs{
             let long=false;
             let extreme=false;
             let range=itemData.data.range.value;
-            if((distance<=1||distance<=canvas.dimensions.distance)){
-                if(itemData.data.class.value==="Pistol"){
-                    normal=true;
-                }else{
-                    new Dialog({
-                        title: `Melee`,
-                        classes:"fortky",
-                        content: "You cannot shoot while engaged in melee!",
-                        buttons: {
-                            submit: {
-                                label: 'OK',
-                                callback: null
-
-                            }
-                        },
-                        default: "submit",
-
-
-                        width:400}
-                              ).render(true);
-                    return;
-                }
-
-            }else if(distance<=2||distance<=2*canvas.dimensions.distance){
+            if(distance<=2||distance<=2*canvas.dimensions.distance){
                 pointblank=true;
             }else if(distance<=parseInt(range)/2){
                 short=true;

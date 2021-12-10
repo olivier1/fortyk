@@ -301,7 +301,9 @@ Hooks.on("updateCombat", async (combat) => {
                     }
                 }
             }
-            //check for regeneration
+            
+        }
+        //check for regeneration
             if(actor.getFlag("fortyk","regeneration")){
                 let regen=await FortykRolls.fortykTest("t", "char", actor.data.data.characteristics.t.total,actor, "Regeneration Test");
                 if(regen.value){
@@ -312,7 +314,6 @@ Hooks.on("updateCombat", async (combat) => {
                     await actor.update({"data.secChar.wounds.value":currWounds});
                 }
             }
-        }
     }
 })
 Hooks.on("preDeleteCombat", async (combat,options,id) =>{
