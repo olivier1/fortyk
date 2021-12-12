@@ -136,10 +136,10 @@ returns the roll message*/
         //give the chat object options and stuff
         let renderedTemplate= await renderTemplate(template,templateOptions);
         roll.toMessage({user: game.user._id,
-                         speaker:{actor,alias:actor.name},
-                         content:renderedTemplate,
-                         classes:["fortyk"],
-                         author:actor.name})
+                        speaker:{actor,alias:actor.name},
+                        content:renderedTemplate,
+                        classes:["fortyk"],
+                        author:actor.name})
         //get first and second digits for hit locations and perils
         let firstDigit=Math.floor(testRoll/10);
         let secondDigit=testRoll-firstDigit*10;
@@ -376,8 +376,8 @@ returns the roll message*/
     }
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
     static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0){
-        
-        
+
+
         let weapon=deepClone(fortykWeapon.data);
         let righteous=10;
         if(fortykWeapon.getFlag("fortyk","vengeful")){
@@ -460,6 +460,22 @@ returns the roll message*/
             }else{
                 form=startstr+"dl1"+endstr; 
             }
+
+        }
+        //change formula for tearing weapons 
+        if(fortykWeapon.getFlag("fortyk","shredding")){
+            let dPos = form.indexOf('d');
+            let dieNum = form.substr(0,dPos);
+            let newNum=parseInt(dieNum)*2;
+
+            form=form.slice(dPos);
+            form=newNum+form;
+            let afterD=dPos+3;
+            let startstr=form.slice(0,afterD);
+            let endstr=form.slice(afterD);
+
+            form=startstr+"dl"+dieNum+endstr; 
+
 
         }
         //change formula for primitive and proven weapons
@@ -859,6 +875,9 @@ returns the roll message*/
                         //toxic weapon logic
                         if(damage>0&&fortykWeapon.getFlag("fortyk","toxic")){
                             let toxicMod=fortykWeapon.getFlag("fortyk","toxic")*10;
+                            if(tarActor.getFlag("fortyk","resistance")&&tarActor.getFlag("fortyk","resistance").toLowerCase().includes("toxic")){
+                                toxicMod=-10;
+                            }
                             let toxic=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total-toxicMod),tarActor, "Resist toxic");
                             if(!toxic.value){
                                 let toxicDmg=new Roll("1d10",{});
@@ -3268,7 +3287,7 @@ returns the roll message*/
     };
     static async applyDead(target,actor){
 
-   
+
 
         if(game.user.isGM||target.owner){
             let msg=target.name+" is killed!";

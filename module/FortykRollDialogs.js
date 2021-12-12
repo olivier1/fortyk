@@ -64,6 +64,9 @@ export class FortykRollDialogs{
                             testTarget=parseInt(testTarget)+parseInt(bonus);
                             if(testType==="fear"){
                                 testTarget+=parseInt(actor.data.data.secChar.fearMod);
+                                if(actor.getFlag("fortyk","resistance")&&actor.getFlag("fortyk","resistance").toLowerCase().includes("fear")){
+                                    testTarget+=10;
+                                }
                             }
                             FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, reroll);
                         }
