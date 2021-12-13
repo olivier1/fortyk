@@ -145,7 +145,7 @@ returns the roll message*/
         let secondDigit=testRoll-firstDigit*10;
 
         //determine hitlocation if the attack is a success
-        if(templateOptions["success"]&&(type==="focuspower"||type==="rangedAttack"||type==="meleeAttack")){
+        if(templateOptions["success"]&&(type==="rangedAttack"||type==="meleeAttack"||type==="focuspower"&&(fortykWeapon.data.data.class.value==="Psychic Bolt"||fortykWeapon.data.data.class.value==="Psychic Barrage"||fortykWeapon.data.data.class.value==="Psychic Storm"||fortykWeapon.data.data.class.value==="Psychic Blast"))){
             //reverse roll to get hit location
             let inverted=parseInt(secondDigit*10+firstDigit);
             let hitlocation=FORTYKTABLES.hitLocations[inverted];
