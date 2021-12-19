@@ -117,7 +117,7 @@ Hooks.once('init', async function() {
         }catch(err){
             return false;
         }
-     
+
     });
     Handlebars.registerHelper("debug", function(optionalValue) {
         console.log("Current Context");
@@ -171,6 +171,24 @@ Hooks.once('ready', async function() {
             let token=null;
             let value=0;
             switch(data.type){
+                case "damageRoll":
+                    let user=await game.users.get(data.package.user);
+                    let formula=await data.package.formula;
+                    actor=await game.actors.get(data.package.actor);
+                    let fortykWeapon=actor.getEmbeddedDocument("Item",data.package.fortykWeapon);
+                    let hits=data.package.hits;
+                    let magdamage=data.package.magdmg;
+                    let extraPen=data.package.pen;
+
+                    FortykRolls.damageRoll(formula,actor,fortykWeapon,hits, false, false,magdamage,extraPen, user);
+                    break;
+                case "reportDamage":
+                    let targetId=data.package.target;
+                    let target=canvas.tokens.get(targetId);
+                    let targetActor=target.actor;
+                    let damage=data.package.damage;
+                    FortykRolls.reportDamage(targetActor,damage);
+                    break;
                 case "applyActiveEffect":
                     id=data.package.token;
                     token=canvas.tokens.get(id);
@@ -207,13 +225,7 @@ Hooks.once('ready', async function() {
                 case "perilsRoll":
                     FortykRolls.perilsOfTheWarp();
                     break;
-                case "reportDamage":
-                    let targetId=data.package.target;
-                    let target=canvas.tokens.get(targetId);
-                    let targetActor=target.actor;
-                    let damage=data.package.damage;
-                    FortykRolls.reportDamage(targetActor,damage);
-                    break;
+
             }
 
         }
@@ -301,19 +313,19 @@ Hooks.on("updateCombat", async (combat) => {
                     }
                 }
             }
-            
+
         }
         //check for regeneration
-            if(actor.getFlag("fortyk","regeneration")){
-                let regen=await FortykRolls.fortykTest("t", "char", actor.data.data.characteristics.t.total,actor, "Regeneration Test");
-                if(regen.value){
-                    let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
-                    let maxWounds=actor.data.data.secChar.wounds.max;
-                    let currWounds=actor.data.data.secChar.wounds.value;
-                    currWounds=Math.min(maxWounds,currWounds+regenAmt);
-                    await actor.update({"data.secChar.wounds.value":currWounds});
-                }
+        if(actor.getFlag("fortyk","regeneration")){
+            let regen=await FortykRolls.fortykTest("t", "char", actor.data.data.characteristics.t.total,actor, "Regeneration Test");
+            if(regen.value){
+                let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
+                let maxWounds=actor.data.data.secChar.wounds.max;
+                let currWounds=actor.data.data.secChar.wounds.value;
+                currWounds=Math.min(maxWounds,currWounds+regenAmt);
+                await actor.update({"data.secChar.wounds.value":currWounds});
             }
+        }
     }
 })
 Hooks.on("preDeleteCombat", async (combat,options,id) =>{
@@ -374,7 +386,7 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
         button.icon="fas fa-asterisk";
         button.label="Manage AEs";
         button.onclick=() =>{
-            
+
             let actor=sheet.actor;
             if(sheet.token){
                 actor=sheet.token.actor;
@@ -395,7 +407,7 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
                         button:{
                             label:"Ok",
                             callback: async html => {
-                                
+
                                 sheet.actor.dialog=undefined;
                             }
                         },
@@ -406,7 +418,7 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
                     }
                 },options).render(true)
                 sheet.actor.dialog=d;
-                });
+            });
 
         }
         let close=buttons.pop();

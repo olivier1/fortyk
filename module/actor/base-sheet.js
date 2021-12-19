@@ -623,7 +623,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let fortykWeapon=actor.items.get(dataset.weapon);
             if(!fortykWeapon.data.data.isPrepared){
                 await fortykWeapon.prepareData();
-                console.log(fortykWeapon);
+                
             }
             let weapon=fortykWeapon.data;
             let dfa=false;
@@ -642,11 +642,20 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         callback: (el) => {
                             const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
                             const dmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
+                            const pen = parseInt(Number($(el).find('input[name="pen"]').val()));
                             const magdmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
                             if(dmg>0){
                                 formula.value+=`+${dmg}`
                             }
-                            FortykRolls.damageRoll(formula,actor,fortykWeapon,hits,false,false,magdmg);
+                            if(game.user.isGM){
+                               FortykRolls.damageRoll(formula,actor,fortykWeapon,hits,false,false,magdmg,pen); 
+                            }else{
+                                //if user isnt GM use socket to have gm process the damage roll
+                                           
+                                            let socketOp={type:"damageRoll",package:{formula:formula,actor:actor.id,fortykWeapon:fortykWeapon.id,hits:hits,magdmg:magdmg,pen:pen,user:game.user.id}}
+                                            game.socket.emit("system.fortyk",socketOp);
+                            }
+                            
                         }
                     }
                 },

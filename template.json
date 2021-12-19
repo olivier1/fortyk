@@ -91,6 +91,10 @@
                 "role": {
                     "value": "",
                     "type": "String"
+                },
+                "honours":{
+                    "value": "",
+                    "type": "String"
                 }
             },
             "creationOptionsOW": {

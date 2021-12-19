@@ -375,9 +375,9 @@ returns the roll message*/
         await ChatMessage.create(chatPhenom,{});
     }
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
-    static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0){
+    static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0, user=game.users.current){
 
-
+       
         let weapon=deepClone(fortykWeapon.data);
         let righteous=10;
         if(fortykWeapon.getFlag("fortyk","vengeful")){
@@ -412,7 +412,7 @@ returns the roll message*/
             }
             targets.push(attackerToken);
         }else{
-            targets=game.users.current.targets;
+            targets=user.targets;
             curHit=actor.data.data.secChar.lastHit;
         }
 
@@ -547,7 +547,7 @@ returns the roll message*/
                 let hayRoll=new Roll("1d5",{});
                 hayRoll.roll();
                 let hayText=FORTYKTABLES.haywire[hayRoll._total-1];
-                let hayOptions={user: game.user._id,
+                let hayOptions={user: user._id,
                                 speaker:{actor,alias:actor.name},
                                 content:hayText,
                                 classes:["fortyk"],
@@ -564,7 +564,7 @@ returns the roll message*/
                     }
                 }
                 if(jam){
-                    let jamOptions={user: game.user._id,
+                    let jamOptions={user: user._id,
                                     speaker:{actor,alias:actor.name},
                                     content:"Spray weapon jammed on a roll of 9",
                                     classes:["fortyk"],
@@ -665,12 +665,12 @@ returns the roll message*/
                             }else{
                                 pen=parseInt(weapon.data.pen.value); 
                             }
-
+                            pen+=extraPen;
                             //smite the unholy
                             if(actor.getFlag("fortyk","smitetheunholy")&&tarActor.getFlag("fortyk","fear")&&weapon.type==="meleeWeapon"){
                                 if(!isNaN(tarActor.getFlag("fortyk","fear"))){
                                     pen+=parseInt(tarActor.getFlag("fortyk","fear"));
-                                    let smiteOptions={user: game.user._id,
+                                    let smiteOptions={user: user._id,
                                                       speaker:{actor,alias:actor.name},
                                                       content:`Smite the unholy increases damage and penetration by ${tarActor.getFlag("fortyk","fear")} against the target.`,
                                                       classes:["fortyk"],
@@ -681,7 +681,7 @@ returns the roll message*/
                             }
                             if(fortykWeapon.getFlag("fortyk","razorsharp")&&actor.data.data.secChar.lastHit.dos>=3){
                                 pen=pen*2;
-                                let razorOptions={user: game.user._id,
+                                let razorOptions={user: user._id,
                                                   speaker:{actor,alias:actor.name},
                                                   content:`Razor Sharp doubles penetration to ${pen}`,
                                                   classes:["fortyk"],
@@ -695,7 +695,7 @@ returns the roll message*/
                                 let shortRange=parseInt(weapon.data.range.value)/2
                                 if(distance<=shortRange){
                                     pen=pen*2;
-                                    let meltaOptions={user: game.user._id,
+                                    let meltaOptions={user: user._id,
                                                       speaker:{actor,alias:actor.name},
                                                       content:`Melta range increases penetration to ${pen}`,
                                                       classes:["fortyk"],
@@ -707,7 +707,7 @@ returns the roll message*/
                             //ignore natural armor weapons
                             if(fortykWeapon.getFlag("fortyk","ignoreNaturalArmor")&&tarActor.getFlag("fortyk","naturalarmor")){
                                 pen+=parseInt(tarActor.getFlag("fortyk","naturalarmor"));
-                                let ignoreNatOptions={user: game.user._id,
+                                let ignoreNatOptions={user: user._id,
                                                       speaker:{actor,alias:actor.name},
                                                       content:`The weapon ignores ${tarActor.getFlag("fortyk","naturalarmor")}natural armor.`,
                                                       classes:["fortyk"],
@@ -748,7 +748,7 @@ returns the roll message*/
                                             await game.socket.emit("system.fortyk",socketOp);
                                         }
                                         let mesHitLoc=curHit.label;
-                                        let chatOptions={user: game.user._id,
+                                        let chatOptions={user: user._id,
                                                          speaker:{actor,alias:actor.name},
                                                          content:"Cover is lowered by 1",
                                                          classes:["fortyk"],
@@ -761,7 +761,7 @@ returns the roll message*/
                             if(fortykWeapon.getFlag("fortyk","felling")){
                                 let ut=parseInt(tarActor.data.data.characteristics.t.uB);
                                 let fel=Math.min(ut,fortykWeapon.getFlag("fortyk","felling"));
-                                let fellingOptions={user: game.user._id,
+                                let fellingOptions={user: user._id,
                                                     speaker:{actor,alias:actor.name},
                                                     content:`Felling ignores ${fel} unnatural toughness.`,
                                                     classes:["fortyk"],
@@ -770,14 +770,16 @@ returns the roll message*/
                                 await ChatMessage.create(fellingOptions,{});
                                 soak-=fel;
                             }
+                            console.log(soak)
                             soak=soak-maxPen;
 
                             //sanctified logic
                             let daemonic=tarActor.getFlag("fortyk","daemonic");
                             if((fortykWeapon.getFlag("fortyk","sanctified")||fortykWeapon.getFlag("fortyk","daemonbane"))&&daemonic){
+                                daemonic=parseInt(daemonic);
                                 if(!isNaN(daemonic)){
                                     soak-=parseInt(daemonic);
-                                    let sanctifiedOptions={user: game.user._id,
+                                    let sanctifiedOptions={user: user._id,
                                                            speaker:{actor,alias:actor.name},
                                                            content:`Sanctified ignores ${daemonic} soak from the daemonic trait.`,
                                                            classes:["fortyk"],
@@ -812,7 +814,7 @@ returns the roll message*/
                         if(fortykWeapon.getFlag("fortyk","graviton")){
                             let gravitonDmg=2*armor;
                             damage+=gravitonDmg;
-                            let gravitonOptions={user: game.user._id,
+                            let gravitonOptions={user: user._id,
                                                  speaker:{actor,alias:actor.name},
                                                  content:`Graviton Extra Damage ${gravitonDmg}`,
                                                  classes:["fortyk"],
@@ -839,7 +841,7 @@ returns the roll message*/
                         //logic against swarm enemies
                         if(tarActor.getFlag("fortyk","swarm")&&!(fortykWeapon.getFlag("fortyk","spray")||fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","flame")||fortykWeapon.getFlag("fortyk","scatter"))){
                             damage=Math.ceil(damage/2);
-                            let swarmOptions={user: game.user._id,
+                            let swarmOptions={user: user._id,
                                               speaker:{actor,alias:actor.name},
                                               content:`Swarm enemies take reduced damage against non blast, spray, flame or scatter weapons.`,
                                               classes:["fortyk"],
@@ -900,7 +902,7 @@ returns the roll message*/
                                     rounds:shock.dos
                                 };
                                 activeEffects.push(stunActiveEffect);
-                                let shockingOptions={user: game.user._id,
+                                let shockingOptions={user: user._id,
                                                      speaker:{tarActor,alias:tarActor.name},
                                                      content:`${tarActor.name} is stunned for ${shock.dos} rounds and takes 1 fatigue!`,
                                                      classes:["fortyk"],
@@ -917,7 +919,7 @@ returns the roll message*/
                             crippleActiveEffect.location=curHit;
                             crippleActiveEffect.num=fortykWeapon.getFlag("fortyk","crippling");
                             activeEffects.push(crippleActiveEffect);
-                            let crippleOptions={user: game.user._id,
+                            let crippleOptions={user: user._id,
                                                 speaker:{tarActor,alias:tarActor.name},
                                                 content:`${tarActor.name} is crippled, they take ${fortykWeapon.getFlag("fortyk","crippling")} damage to the ${curHit.label} which ignores all soak, if they ever take more than a half action in a turn. This lasts until they are fully healed or until the end of the encounter.`,
                                                 classes:["fortyk"],
@@ -932,7 +934,7 @@ returns the roll message*/
                             damage=1;
                         }else if(damage<=0){
                             damage=0;
-                            let chatOptions={user: game.user._id,
+                            let chatOptions={user: user._id,
                                              speaker:{actor,alias:actor.name},
                                              content:"Damage is fully absorbed.",
                                              classes:["fortyk"],
@@ -953,7 +955,7 @@ returns the roll message*/
                                         rounds:stun.dos
                                     };
                                     activeEffects.push(stunActiveEffect);
-                                    let shockingOptions={user: game.user._id,
+                                    let shockingOptions={user: user._id,
                                                          speaker:{tarActor,alias:tarActor.name},
                                                          content:`${tarActor.name} is stunned for ${stun.dos} rounds!`,
                                                          classes:["fortyk"],
@@ -967,7 +969,7 @@ returns the roll message*/
                                 if(!warpinst.value){
                                     let warpdmg=warpinst.dos;
                                     if(warpdmg>newWounds){
-                                        let banishOptions={user: game.user._id,
+                                        let banishOptions={user: user._id,
                                                            speaker:{actor,alias:actor.name},
                                                            content:`${actor.name} is banished to the warp!`,
                                                            classes:["fortyk"],
@@ -986,7 +988,7 @@ returns the roll message*/
 
                         if(damage>newWounds[tarNumbr]&&actor.getFlag("fortyk","deathdealer")&&(weapon.type.toLowerCase().includes(actor.getFlag("fortyk","deathdealer").toLowerCase()))){
                             damage+=actor.data.data.characteristics.per.bonus;
-                            let deathDealerOptions={user: game.user._id,
+                            let deathDealerOptions={user: user._id,
                                                     speaker:{actor,alias:actor.name},
                                                     content:`Deathdealer increases critical damage by ${actor.data.data.characteristics.per.bonus}.`,
                                                     classes:["fortyk"],
@@ -997,7 +999,7 @@ returns the roll message*/
                         //peerless killer
                         if(actor.getFlag("fortyk","peerlesskiller")&&lastHit.attackType==="called"){
                             damage+=4;
-                            let deathDealerOptions={user: game.user._id,
+                            let deathDealerOptions={user: user._id,
                                                     speaker:{actor,alias:actor.name},
                                                     content:`Peerless Killer increases critical damage by 4 on called shots.`,
                                                     classes:["fortyk"],
@@ -1016,7 +1018,7 @@ returns the roll message*/
                                 chatDamage=Math.max(1,chatDamage-data.characteristics.t.bonus); 
                             }
                             damage=Math.max(1,damage-data.characteristics.t.bonus);
-                            let chatOptions={user: game.user._id,
+                            let chatOptions={user: user._id,
                                              speaker:{actor,alias:tarActor.name},
                                              content:"True Grit reduces critical damage!",
                                              classes:["fortyk"],
@@ -1058,7 +1060,7 @@ returns the roll message*/
                         newWounds[tarNumbr]=newWounds[tarNumbr]-damage;
                         newWounds[tarNumbr]=Math.max(wounds.min,newWounds[tarNumbr]);
 
-
+                        
                         //report damage dealt to gm and the target's owner
                         if(game.user.isGM){
                             this.reportDamage(tarActor, chatDamage);
@@ -1096,7 +1098,7 @@ returns the roll message*/
                             let snareMod=fortykWeapon.getFlag("fortyk","snare")*10;
                             let snare=await this.fortykTest("agi", "char", (tarActor.data.data.characteristics.agi.total-snareMod),tarActor, "Resist snare");
                             if(!snare.value){
-                                let chatSnare={user: game.user._id,
+                                let chatSnare={user: user._id,
                                                speaker:{actor,alias:actor.name},
                                                content:`${tar.name} is immobilised. An Immobilised target can attempt no actions other than trying to escape the bonds. As a Full Action, he can make a (-${snareMod}) Strength or Agility test to break free.`,
                                                classes:["fortyk"],
@@ -1112,7 +1114,7 @@ returns the roll message*/
                             let stunMod=parseInt(fortykWeapon.getFlag("fortyk","concussive"))*10;
                             let stun=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total-stunMod),tarActor, "Resist stun");
                             if(!stun.value){
-                                let chatStun={user: game.user._id,
+                                let chatStun={user: user._id,
                                               speaker:{actor,alias:actor.name},
                                               content:`${tar.name} is stunned for ${stun.dos} rounds!`,
                                               classes:["fortyk"],
@@ -1128,7 +1130,7 @@ returns the roll message*/
                                 if(damage>tarActor.data.data.characteristics.s.bonus){
                                     let proneActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("prone")]);
                                     activeEffects.push(proneActiveEffect);
-                                    let chatKnockdown={user: game.user._id,
+                                    let chatKnockdown={user: user._id,
                                                        speaker:{actor,alias:actor.name},
                                                        content:`${tar.name} is knocked down.`,
                                                        classes:["fortyk"],
