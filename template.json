@@ -768,7 +768,7 @@
         ],
         "templates": {
             "weapon": {
-                
+
                 "damageFormula": {
                     "value": "1d10",
                     "formula": "1d10",
@@ -1020,9 +1020,9 @@
                 "type": "String"
             },
             "class": {
-                    "value": "Psychic Bolt",
-                    "type": "String"
-                },
+                "value": "Psychic Bolt",
+                "type": "String"
+            },
             "subtype": {
                 "value": "",
                 "type": "String"
@@ -1154,6 +1154,18 @@
             "cost": {
                 "value": 0,
                 "type": "Number"
+            },
+            "type":{
+                "value":"Custom",
+                "type":"String"
+            },
+            "itemId":{
+                "value":"",
+                "type":"String"
+            },
+            "characteristic":{
+                "value":"",
+                "type":"String"
             }
         },
         "mission": {

@@ -150,7 +150,7 @@ FORTYK.spaceshipComponentStatuses=["Online", "Damaged", "Destroyed"]
 FORTYK.spaceshipCargoRarity=["Poor","Common","Rare","Unique"]
 FORTYK.spaceshipSquadronTypes=["Fighter","Bomber","Assault Boat","Civilian"]
 FORTYK.aptitudes=["Weapon Skill", "Ballistic Skill", "Strength", "Toughness", "Agility", "Intelligence", "Perception", "Willpower", "Fellowship", "Offence", "Finesse", "Defence","Tech", "Knowledge", "Leadership", "Fieldcraft", "Social","Psyker"]
-FORTYK.advancementTypes=["Custom","Characteristic Upgrade","Skill Upgrade", "Talent"]
+FORTYK.advancementTypes=["Custom","Characteristic Upgrade","Skill Upgrade","New Skill", "Talent"]
 //For costs put the number of matching aptitudes into the array, then whatever other parameter
 FORTYK.characteristicUpgradeCosts=[{"5":500,"10":750,"15":1000,"20":1500,"25":2500},
                                   {"5":250,"10":500,"15":750,"20":1000,"25":1500},

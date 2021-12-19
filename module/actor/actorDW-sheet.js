@@ -3,6 +3,7 @@ import {objectByString} from "../utilities.js";
 import {setNestedKey} from "../utilities.js";
 import FortyKBaseActorSheet from "./base-sheet.js";
 import {FortyKItem} from "../item/item.js";
+import {SpendExpDialog} from "../dialog/spendExp-dialog.js";
 /**
  * 
  * @extends {ActorSheet}
@@ -38,7 +39,6 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         //change skill advancement
         html.find('.skill-adv').change(this._onSkillAdvEdit.bind(this));
         //favorite psychic power
-        //toggle half strength for squadrons
         html.find('.favorite').click(this._onFavoriteClick.bind(this));
         //change cybernetic location
         html.find('.cyber-location-select').change(this._onCyberLocationEdit.bind(this));
@@ -48,7 +48,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         html.find('.wargear-create').click(this._onWargearCreate.bind(this));
 
 
-
+        //spend exp button
+        html.find('.spend-exp').click(this._onSpendExp.bind(this));
         //handles adding or removing worn weapon slots
         html.find('.worn-item-plus').click(this._onAddExtraWeapon.bind(this));
         html.find('.worn-item-minus').click(this._onRemoveExtraWeapon.bind(this));
@@ -68,7 +69,12 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     /* -------------------------------------------- */
 
 
-
+    async _onSpendExp(event){
+        event.preventDefault();
+        let dialog=new SpendExpDialog({actor:this.actor});
+        dialog.render(true);
+        console.log(dialog)
+    }
 
     //handle creating a wargear item, these can be several types of different item types
     async _onWargearCreate(event){

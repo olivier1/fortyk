@@ -16,7 +16,13 @@ export const preloadHandlebarsTemplates = async function() {
         "systems/fortyk/templates/actor/actor-corruption.html",
         "systems/fortyk/templates/actor/actor-psykana.html",
         "systems/fortyk/templates/actor/actor-background.html",    
-        "systems/fortyk/templates/item/item-header.html"
+        "systems/fortyk/templates/item/item-header.html",
+        //spend exp dialog parts
+       "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/custom.html",
+        "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/characteristic.html",
+        "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/skill.html",
+        "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/talent.html",
+        "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/newSkill.html"
 
 
 
