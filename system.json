@@ -111,13 +111,22 @@
             "tag" : "deathwatchbonusdrawbacks"
         },
         {
+            "label": "Deathwatch Talents",
+            "entity": "Item",
+            "name": "deathwatch-talents",
+            "path": "./packs/deathwatch-talents.db",
+            "system": "fortyk",
+            "module": "fortyk",
+            "tag" : "deathwatchtalents"
+        },
+        {
             "label": "Homeworld and specialty Abilities (Core OW)",
             "entity": "Item",
             "name": "homeworld-and-specialty-abilities-core-ow",
             "path": "./packs/homeworld-and-specialty-abilities-core-ow.db",
             "system": "fortyk",
             "module": "fortyk"
-            
+
         },
         {
             "label": "Talents (OW Core)",
@@ -196,6 +205,14 @@
             "entity": "Item",
             "name": "custom-talents",
             "path": "./packs/custom-talents.db",
+            "system": "fortyk",
+            "module": "fortyk"
+        },
+        {
+            "label": "Custom Bonus And Drawbacks",
+            "entity": "Item",
+            "name": "custom-bonus-and-drawbacks",
+            "path": "./packs/custom-bonus-and-drawbacks.db",
             "system": "fortyk",
             "module": "fortyk"
         }

@@ -1,0 +1,29 @@
+<input type="text"  id="talentfilter" class="talentfilter" placeholder="Search...">
+<div class="tntselect flexcol">
+    <div class="tntgrid grid grid-11col">
+        <span class="tntcheckbox tntheaderitem">Add</span>
+        <span class="tntname tntheaderitem">Name</span>
+        <span class="tntprereqs tntheaderitem">Prerequisites</span>
+        <span class="tnttier tntheaderitem">Tier</span>
+        <span class="tntaptitudes tntheaderitem">Aptitudes</span>
+        <span class="tntdescr tntheaderitem">Descr</span>
+        {{debug talents}}
+        {{#each talents}}
+            <div class="tntitem" name="tntEntry" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}"><input type="radio" class="tntcheckbox" name="talent-choice"  data-compendium="{{pack}}" value="{{this.id}}"></div>
+            
+            <span name="tntEntry" class="tntname tntitem" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}">{{this.name}}</span>
+         <span name="tntEntry" class="tntprereqs tntitem" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}">{{this.data.data.prereqs.value}}</span>
+            <span name="tntEntry"  class="tnttier tntitem" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}">{{this.data.data.tier.value}}</span>
+            <span name="tntEntry" class="tntaptitudes tntitem" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}">{{this.data.data.aptitudes.value}}</span>
+            <a name="tntEntry" class="tntdescr tntitem tntdescr-button" class="tnt-desscription" data-name="{{this.name}}" data-description="{{this.data.data.description.value}}" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}">Descr</a>
+        
+
+
+
+        {{/each}}
+    </div>
+</div>
+<div class="flexrow">
+    <span>Discount:</span>
+    <input id="discount" class="discount" type="text"  value="0">
+</div>

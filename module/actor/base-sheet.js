@@ -286,6 +286,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         tnts=tnts.concat(await owShieldOfHumanityTalents.getDocuments());
         var customTalents=await game.packs.get("fortyk.custom-talents");
         tnts=tnts.concat(await customTalents.getDocuments());
+        var customBonus=await game.packs.get("fortyk.custom-bonus-and-drawbacks");
+        tnts=tnts.concat(await customBonus.getDocuments());
         //load different packs depending on actor type
         if(actor.data.type==="dhPC"){
             var dh2CoreBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonuscore-dh2");
@@ -299,6 +301,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }else if(actor.data.type==="dwPC"){
             var dwBonus=await game.packs.get("fortyk.deathwatch-bonus-and-drawbacks");
             tnts=tnts.concat(await dwBonus.getDocuments());
+            var dwTalents=await game.packs.get("fortyk.deathwatch-talents");
+            tnts=tnts.concat(await dwTalents.getDocuments());
         }else if(actor.data.type==="owPC"){
             var owCoreAbilities=await game.packs.get("fortyk.homeworld-and-specialty-abilities-core-ow");
             tnts=tnts.concat(await owCoreAbilities.getDocuments());
@@ -382,6 +386,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                     case "fortyk.deathwatch-bonus-and-drawbacks":
                                         tnt=await dwBonus.getDocument(selectedIds[i]);
                                         break;
+                                        case "fortyk.deathwatch-talents":
+                                        tnt=await dwTalents.getDocument(selectedIds[i]);
+                                        break;
                                     case "fortyk.talents-ow-core":
                                         tnt=await owCoreTalents.getDocument(selectedIds[i]);
                                         break;
@@ -409,6 +416,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                         break;
                                     case "fortyk.custom-talents":
                                         tnt=await customTalents.getDocument(selectedIds[i]);
+                                        break;
+                                        case "fortyk.custom-bonus-and-drawbacks":
+                                        tnt=await customBonus.getDocument(selectedIds[i]);
                                         break;
                                 }
                                 let itemData=tnt.data;

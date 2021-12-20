@@ -1,0 +1,83 @@
+<div class="flexcol">
+    <label>Skill Type:</label>
+    <select id="skill-type"class="skill-type">
+
+
+        <option class="new-skill-select" value="" selected>Stand Alone Skill</option>
+        {{#each parentSkills as |skill key|}}
+
+
+        <option class="new-skill-select" value="{{skill.name}}">{{skill.name}}</option>
+
+        {{/each}}
+
+
+    </select>
+</div>
+<div class="flexcol">
+    <label>Specialisations:</label>
+    <input id="children" type="checkbox" class="children">
+</div>
+<div class="flexcol">
+    <label>Name:</label>
+
+    <input type="text" class="name skill-dialog" id="name" data-dtype="String" required>
+</div>
+<div class="flexcol">
+    <label>Characteristic</label>
+    <select class="skill-characteristic" name="data.characteristic.value">
+
+        <option value="ws">Weapon Skill</option>
+        <option value="bs">Ballistic Skill</option>
+        <option value="s">Strength</option>
+        <option value="t">Toughness</option>
+        <option value="agi">Agility</option>
+        <option value="int" selected>Intelligence</option>
+        <option value="per">Perception</option>
+        <option value="wp">Willpower</option>
+        <option value="fel">Fellowship</option>   
+
+    </select>
+</div>
+<div class="flexcol">
+    <label>Aptitudes:</label>
+    <select id="aptitude1" class="aptitude-select">
+
+
+        <option class="new-skill-select" value="general" >General</option>
+        {{#each aptitudes as |apt key|}}
+
+
+        <option class="new-skill-select" value="{{apt.key}}"{{#if (contains apt.key "intelligence")}}selected{{/if}}>{{apt.label}}</option>
+
+        {{/each}}
+
+
+    </select>
+    <select id="aptitude2" class="aptitude-select">
+
+
+        <option class="new-skill-select" value="general">General</option>
+        {{#each aptitudes as |apt key|}}
+
+
+        <option class="new-skill-select" value="{{apt.key}}"{{#if (contains apt.key "knowledge")}}selected{{/if}}>{{apt.label}}</option>
+
+        {{/each}}
+
+
+    </select>
+</div>
+<div class="flexcol">
+    <label>Skill Use:</label>
+    <input type="text" class="skill-use skill-dialog" id="skillUse">
+</div>
+<div class="item-description">
+    <label>Skill Description:</label>
+    <textarea id="description" rows="5" cols="50">
+    </textarea>
+</div>
+<div class="flexrow">
+    <span>Discount:</span>
+    <input id="discount" class="discount" type="text"  value="0">
+</div>

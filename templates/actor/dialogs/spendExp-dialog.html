@@ -16,6 +16,12 @@
     {{#if (compareString mode "Characteristic Upgrade")}}
     {{> "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/characteristic.html"}}
     {{/if}}
+    {{#if (compareString mode "New Skill")}}
+    {{> "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/newSkill.html"}}
+    {{/if}}
+    {{#if (compareString mode "Talent")}}
+    {{> "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/talent.html"}}
+    {{/if}}
     <span>Cost: <span id="cost">{{cost}}</span></span>
     <a class="submit button" data-type="advancement" title="Add a new Advancement">Add Advancement</a>
 </form>

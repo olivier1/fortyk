@@ -149,7 +149,7 @@ FORTYK.spaceshipCargoTypes=["Food Supplies","Unrefined Materials","Refined Mater
 FORTYK.spaceshipComponentStatuses=["Online", "Damaged", "Destroyed"]
 FORTYK.spaceshipCargoRarity=["Poor","Common","Rare","Unique"]
 FORTYK.spaceshipSquadronTypes=["Fighter","Bomber","Assault Boat","Civilian"]
-FORTYK.aptitudes=["Weapon Skill", "Ballistic Skill", "Strength", "Toughness", "Agility", "Intelligence", "Perception", "Willpower", "Fellowship", "Offence", "Finesse", "Defence","Tech", "Knowledge", "Leadership", "Fieldcraft", "Social","Psyker"]
+FORTYK.aptitudes=[{"key":"weaponskill","label":"Weapon Skill"}, {"key":"ballisticskill","label":"Ballistic Skill"}, {"key":"strength","label":"Strength"},{"key":"toughness","label":"Toughness"} ,{"key":"agility","label":"Agility"} ,{"key":"intelligence","label": "Intelligence"},{"key":"perception","label":"Perception"} ,{"key":"willpower","label":"Willpower"} ,{"key":"fellowship","label":"Fellowship"} ,{"key":"offence","label":"Offence"} ,{"key":"finesse","label":"Finesse"} ,{"key":"defence","label":"Defence"} ,{"key":"tech","label":"Tech"},{"key":"knowledge","label":"Knowledge"} ,{"key":"leadership","label":"Leadership"} ,{"key":"fieldcraft","label":"Fieldcraft"} ,{"key":"social","label":"Social"} ,{"key":"psyker","label":"Psyker"}]
 FORTYK.advancementTypes=["Custom","Characteristic Upgrade","Skill Upgrade","New Skill", "Talent"]
 //For costs put the number of matching aptitudes into the array, then whatever other parameter
 FORTYK.characteristicUpgradeCosts=[{"5":500,"10":750,"15":1000,"20":1500,"25":2500},
