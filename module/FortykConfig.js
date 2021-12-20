@@ -483,6 +483,7 @@ FORTYK.weaponFlags={
 FORTYK.lasModes=["normal","overcharge","overload"]
 FORTYK.itemQualities=["Poor","Common","Good","Best"]
 FORTYK.skillChars={"ws":{"name":"ws","caps":"WS"},"bs":{"name":"bs","caps":"BS"},"s":{"name":"s","caps":"S"},"t":{"name":"t","caps":"T"},"agi":{"name":"agi","caps":"AGI"},"int":{"name":"int","caps":"INT"},"per":{"name":"per","caps":"PER"},"wp":{"name":"wp","caps":"WP"},"fel":{"name":"fel","caps":"FEL"}}
+FORTYK.characteristics={"ws":{"key":"ws","label":"Weapon Skill","aptitudes":"weapon skill, offence"},"bs":{"key":"bs","label":"Ballistic Skill","aptitudes":"ballistic skill, finesse"},"s":{"key":"s","label":"Strength","aptitudes":"strength, offence"},"t":{"key":"t","label":"Toughness","aptitudes":"toughness, defence"},"agi":{"key":"agi","label":"Agility","aptitudes":"agility, finesse"},"int":{"key":"int","label":"Intelligence","aptitudes":"intelligence, knowledge"},"per":{"key":"per","label":"Perception","aptitudes":"perception, fieldcraft"},"wp":{"key":"wp","label":"Willpower","aptitudes":"willpower, psyker, leadership"},"fel":{"key":"fel","label":"Fellowship","aptitudes":"fellowship, social"}}
 FORTYK.skillTraining={"0":{"name":"Untrained","value":-20},"1":{"name":"Known","value":0},"2":{"name":"Trained","value":10},"3":{"name":"Experienced","value":20},"4":{"name":"Veteran","value":30}}
 FORTYK.ACTIVE_EFFECT_MODES = {
     CUSTOM: 0,

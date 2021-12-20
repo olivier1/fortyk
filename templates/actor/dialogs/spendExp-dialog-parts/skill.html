@@ -1,0 +1,12 @@
+<span>Skill</span>
+<select class="skillChoice">
+        <option hidden>Choose Skill</option>
+        {{#each upgradeableSkills}}
+        <option value="{{this._id}}">{{#if this.data.parent.value}}{{this.data.parent.value}}: {{/if}}{{this.name}}</option>
+        {{/each}}
+        
+    </select>
+<div class="flexrow">
+    <span>Discount:</span>
+    <input id="discount" class="discount" type="text"  value="0">
+</div>
