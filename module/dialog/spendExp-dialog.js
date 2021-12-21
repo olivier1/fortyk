@@ -161,7 +161,7 @@ export class SpendExpDialog extends Application {
                 name: `${name}`,
                 type: type,
                 data:{
-                    type:{value:"Skill Upgrade"},
+                    type:{value:"Characteristic Upgrade"},
                     cost:{value:this.options.cost},
                     characteristic:{value:char}
 
@@ -189,7 +189,7 @@ export class SpendExpDialog extends Application {
 
                 await actor.setFlag("fortyk",flag,true);
             }else{
-                let chosenSpec=await Dialog.prompt({
+                var chosenSpec=await Dialog.prompt({
                     title: "Choose specialisation",
                     content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${tntData.specialisation.value}" autofocus/></p>`,
 
@@ -198,7 +198,8 @@ export class SpendExpDialog extends Application {
                     callback: async(html) => {
                         const choosenSpec = $(html).find('input[name="spec"]').val();
                         advanceName+=" ("+choosenSpec+")";
-                        await actor.setFlag("fortyk",flag,choosenSpec);
+                        
+
                         return choosenSpec;
                     },
 
@@ -213,22 +214,43 @@ export class SpendExpDialog extends Application {
                 await itemData.update({"data.specialisation.value": chosenSpec});
 
             }
-            let actorTalent=await actor.createEmbeddedDocuments("Item",[talent.data]);
-            
+            let talentId=""
+            if(chosenSpec&&actor.getFlag("fortyk",flag)){
+                console.log(actor)
+                let actorTalent=actor.itemTypes["talentntrait"].filter(function(tlnt){
+                    if(tlnt.name===talent.name){
+                        return true;
+                    }
+                    return false;
+                });
+                console.log(actorTalent);
+                if(actorTalent.length>0){
+                    let spec2=actorTalent[0].data.data.specialisation.value;
+                    talentId=actorTalent[0].id;
+                    spec2+=", "+chosenSpec;
+                    await actorTalent[0].update({"data.specialisation.value":spec2}); 
+                }
+
+            }else{
+                let actorTalent=await actor.createEmbeddedDocuments("Item",[talent.data]);
+                talentId=actorTalent[0].id;
+            }
+            await actor.setFlag("fortyk",flag,chosenSpec);
+            console.log(talentId);
             const advData = {
                 name: `${advanceName}`,
                 type: type,
                 data:{
-                    type:{value:"New Skill"},
+                    type:{value:"Talent"},
                     cost:{value:this.options.cost},
-                    itemId:{value:actorTalent[0].id}
+                    itemId:{value:talentId}
 
                 }
             };
             await actor.createEmbeddedDocuments("Item",[advData]);
             this.options.cost=0;
         }
-        
+
         this.render(true);
     }
 
