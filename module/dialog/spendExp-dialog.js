@@ -26,9 +26,11 @@ export class SpendExpDialog extends Application {
         let actorChars=this.options.actor.data.data.characteristics;
         data.upgradeableChars=this.upgradeableChars(actorChars,data.FORTYK.characteristics);
         data.aptitudes=data.FORTYK.aptitudes;
-        if(data.mode==="Talent"){
-            data.talents=await this._loadTalents();
+        
+        if(!this.options.talents){
+            this.options.talents=await this._loadTalents();
         }
+        data.talents=this.options.talents;
         return this.data;
     }
     activateListeners(html) {
