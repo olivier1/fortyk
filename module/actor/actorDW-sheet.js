@@ -73,7 +73,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         event.preventDefault();
         let dialog=new SpendExpDialog({actor:this.actor});
         dialog.render(true);
-        console.log(dialog)
+     
     }
 
     //handle creating a wargear item, these can be several types of different item types

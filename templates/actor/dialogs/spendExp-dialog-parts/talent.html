@@ -7,7 +7,7 @@
         <span class="tnttier tntheaderitem">Tier</span>
         <span class="tntaptitudes tntheaderitem">Aptitudes</span>
         <span class="tntdescr tntheaderitem">Descr</span>
-        {{debug talents}}
+       
         {{#each talents}}
             <div class="tntitem" name="tntEntry" data-search="{{this.name}}{{this.data.data.tags.value}}{{this.data.data.aptitudes.value}}"><input type="radio" class="tntcheckbox" name="talent-choice"  data-compendium="{{pack}}" value="{{this.id}}"></div>
             

@@ -1,9 +1,9 @@
 <span>Characteristic</span>
 <select class="charChoice">
         <option hidden>Choose Characteristic</option>
-    {{debug upgradeableChars}}
+  
         {{#each upgradeableChars as |key k|}}
-        {{debug key}}
+       
         <option value="{{k}}">{{key.label}}</option>
         {{/each}}
         

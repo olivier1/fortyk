@@ -32,7 +32,6 @@ export class SpendExpDialog extends Application {
         return this.data;
     }
     activateListeners(html) {
-        console.log("hey")
         super.activateListeners(html);
         //select dialog mode
         html.find('.mode').change(this._onModeChange.bind(this));
@@ -62,9 +61,7 @@ export class SpendExpDialog extends Application {
     } 
     upgradeableChars(actorChars,chars){
         let upgChars={}
-        console.log(actorChars,chars)
         for(const char in chars){
-            console.log(char)
             if(actorChars[char].advance<25){
                 upgChars[char]=chars[char]
             }
@@ -216,14 +213,13 @@ export class SpendExpDialog extends Application {
             }
             let talentId=""
             if(chosenSpec&&actor.getFlag("fortyk",flag)){
-                console.log(actor)
+               
                 let actorTalent=actor.itemTypes["talentntrait"].filter(function(tlnt){
                     if(tlnt.name===talent.name){
                         return true;
                     }
                     return false;
                 });
-                console.log(actorTalent);
                 if(actorTalent.length>0){
                     let spec2=actorTalent[0].data.data.specialisation.value;
                     talentId=actorTalent[0].id;
@@ -236,7 +232,6 @@ export class SpendExpDialog extends Application {
                 talentId=actorTalent[0].id;
             }
             await actor.setFlag("fortyk",flag,chosenSpec);
-            console.log(talentId);
             const advData = {
                 name: `${advanceName}`,
                 type: type,
@@ -272,11 +267,9 @@ export class SpendExpDialog extends Application {
     async _onSkillTypeChange(event){
         event.preventDefault();
         let newSkillType=event.target.value;
-        console.log(newSkillType);
         if(newSkillType!==""){
             document.getElementById("children").setAttribute("disabled",true);
         }else{
-            console.log("hey")
             document.getElementById("children").removeAttribute("disabled");
         }
     }

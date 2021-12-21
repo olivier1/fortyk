@@ -14,8 +14,6 @@ export class ActiveEffectDialog extends Dialog {
 
     } 
     getData(){
-        console.log(this)
-        console.log("hello");
         return this.data;
     }
     async _onAeClick(event){

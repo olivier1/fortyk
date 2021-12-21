@@ -770,7 +770,6 @@ returns the roll message*/
                                 await ChatMessage.create(fellingOptions,{});
                                 soak-=fel;
                             }
-                            console.log(soak)
                             soak=soak-maxPen;
 
                             //sanctified logic

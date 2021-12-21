@@ -1123,34 +1123,34 @@ export class FortyKActor extends Actor {
         
         if(embeddedName==="Item"){
             documents.forEach(async function(item,i){
-                console.log(item)
+              
                 if(item.data.type==="talentntrait"){
                     let flag=item.data.data.flagId.value;
                     await actor.setFlag("fortyk",flag,false); 
                 }else if(item.data.type==="advancement"){
                     let advType=item.data.data.type.value
                     let data=item.data.data;
-                    console.log(advType,data);
+                   
                     if(advType==="Skill Upgrade"){
-                        console.log("1")
+                     
                         let skill=actor.getEmbeddedDocument("Item",data.itemId.value);
                         let skillAdv=skill.data.data.value;
                         if(skillAdv===0){skillAdv=-20}else{skillAdv-=10}
                         skill.update({"data.value":skillAdv});
                     }else if(advType==="New Skill"){
-                        console.log("2")
+                       
                         try{
                             actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
                         }catch(err){}
                         
                         
                     }else if(advType==="Talent"){
-                        console.log("3")
+                       
                         try{
-                            console.log(actor.deleteEmbeddedDocuments("Item",[data.itemId.value]));
+                           actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
                         }catch(err){}
                     }else if(advType==="Characteristic Upgrade"){
-                        console.log("4")
+                       
                         let char=data.characteristic.value;
                         let charAdv=actor.data.data.characteristics[char].advance;
                         charAdv-=5;
