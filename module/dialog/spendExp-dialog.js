@@ -1,18 +1,21 @@
 import {FortyKItem} from "../item/item.js";
 export class SpendExpDialog extends Application {
+    
     /** @override */
 
     static get defaultOptions() {
-
+        
         return mergeObject(super.defaultOptions, {
             classes: ["fortyk"],
             template: "systems/fortyk/templates/actor/dialogs/spendExp-dialog.html",
             width: 666,
-            height: 810,
+            height: 190,
             mode:"Custom",
-            default:null
+            default:null,
+            heights:{"Custom":190,"Characteristic Upgrade":170,"Skill Upgrade":170,"New Skill":730,"Talent":720}
         });
     }
+    
     async getData(){
         this.data=super.getData();
         let data=this.data;
@@ -53,6 +56,7 @@ export class SpendExpDialog extends Application {
         //change talent choice
         html.find('.tntcheckbox').click(this._onTalentChoice.bind(this));
         html.find('.talentfilter').keyup(this._onTntFilterChange.bind(this));
+        html.find('.talentfilter').ready(this._onTalentLoad.bind(this));
         html.find('.tntdescr-button').click(this._onTntDescrClick.bind(this));
         //new skill children
         html.find('.children').click(this._onChildrenClick.bind(this));
@@ -69,6 +73,18 @@ export class SpendExpDialog extends Application {
             }
         }
         return upgChars;
+    }
+    _onTalentLoad(event){
+        if(this.options.mode==="Custom"){
+            let input=document.getElementById("custom-name").select();
+        }else if(this.options.mode==="New Skill"){
+            let input=document.getElementById("name").select();
+        }else if(this.options.mode==="Talent"){
+            let input=document.getElementById("talentfilter").select();
+        }
+        
+        
+        
     }
     async _onSubmit(event){
         let actor=this.options.actor;
@@ -259,6 +275,8 @@ export class SpendExpDialog extends Application {
         if(this.options.mode==="New Skill"){
             this.baseSkillCost();
         }
+        console.log(this)
+        this.position.height=this.options.heights[newMode];
         this.options.chosenSkill=undefined;
         this.options.chosenChar=undefined;
         this.options.chosenTalent=undefined;
@@ -505,4 +523,5 @@ export class SpendExpDialog extends Application {
         },{});
         return map;
     }
+    
 }
