@@ -478,66 +478,10 @@ export class FortykRollDialogs{
         let template="systems/fortyk/templates/actor/dialogs/psychic-power-attack-dialog.html"
         let templateOptions={};
 
-        templateOptions["modifiers"]=duplicate(actor.data.data.secChar.attacks);
-        templateOptions["options"]={}
-        templateOptions["options"].prone=modifiers.prone;
-        templateOptions["options"].stunned=modifiers.stunned;
-        templateOptions["options"].helpless=modifiers.helpless;
-        templateOptions["options"].size=modifiers.size;
-        templateOptions["options"].running=modifiers.running;
-        templateOptions["options"].normal=true;
-
-        //distance shenanigans
-
-        if(modifiers.distance){
-            let distance=modifiers.distance;
-            let pointblank=false;
-            let short=false;
-            let normal=false;
-            let long=false;
-            let extreme=false;
-            let range=item.data.data.range.value;
-            if(distance<=2||distance<=2*canvas.dimensions.distance){
-                pointblank=true;
-            }else if(distance<=parseInt(range)/2){
-                short=true;
-            }else if(distance<=range){
-                normal=true;
-            }else if(distance<=2*range){
-                long=true;
-            }else if(distance<=3*range){
-                extreme=true;
-            }else{
-                new Dialog({
-                    title: `Out of range`,
-                    classes:"fortky",
-                    content: "You are out of range!",
-                    buttons: {
-                        submit: {
-                            label: 'OK',
-                            callback: null
-
-                        }
-                    },
-                    default: "submit",
-
-
-                    width:400}
-                          ).render(true);
-                return;
-            }
-            templateOptions["options"].pointblank=pointblank;
-            templateOptions["options"].short=short;
-            templateOptions["options"].normal=normal;
-            templateOptions["options"].long=long;
-            templateOptions["options"].extreme=extreme;
-        }
-        templateOptions["size"]=game.fortyk.FORTYK.size;
-
         let renderedTemplate= await renderTemplate(template,templateOptions);
 
         new Dialog({
-            title: `${item.name} Psychic Attack Test.`,
+            title: `${item.name} Focus Power Test.`,
             classes:"fortky",
             content: renderedTemplate,
             buttons: {
@@ -547,29 +491,11 @@ export class FortykRollDialogs{
 
 
 
-                        const rangeBonus = Number($(html).find('input[name="distance"]:checked').val());
-
-                        const visibilityBonus = Number($(html).find('input[name="visibility"]:checked').val());
-
-                        let prone = Number($(html).find('input[name="prone"]:checked').val());
-                        let high = Number($(html).find('input[name="high"]:checked').val());
-                        let surprised = Number($(html).find('input[name="surprised"]:checked').val());
-                        let stunned = Number($(html).find('input[name="stunned"]:checked').val());
-                        let running= Number($(html).find('input[name="running"]:checked').val());
-                        let melee = Number($(html).find('input[name="melee"]:checked').val());
-                        const size = Number($(html).find('select[name="size"]').val());
+                        
                         let other = Number($(html).find('input[name="other"]').val());
-                        let concealed= Number($(html).find('input[name="concealed"]:checked').val());
-
-                        if(isNaN(melee)){melee=0}
-                        if(isNaN(running)){running=0}
-                        if(isNaN(concealed)){concealed=0}
-                        if(isNaN(prone)){prone=0}
-                        if(isNaN(high)){high=0}
-                        if(isNaN(surprised)){surprised=0}
-                        if(isNaN(stunned)){stunned=0}
-                        if(isNaN(other)){other=0}
-                        testTarget=parseInt(testTarget)+parseInt(running)+parseInt(melee)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
+                       
+                       
+                        testTarget=parseInt(testTarget)+parseInt(other);
                          
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
                     }
@@ -579,7 +505,7 @@ export class FortykRollDialogs{
             default: "submit",
 
 
-            width:400}
+            width:200}
                   ).render(true);
     }
     //activate chatlisteners
