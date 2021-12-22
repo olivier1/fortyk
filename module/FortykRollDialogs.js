@@ -19,13 +19,7 @@ export class FortykRollDialogs{
         this.callRollDialog(char, type, target, actor, label, weapon , true, fireRate);
 
     }
-    //focuses the modifier input on rerolls
-    static _onModifierCall(event){
-
-
-        setTimeout(function() {document.getElementById('modifier').select();}, 50);
-
-    }
+    
     //handles dealing damage if the actor doesnt drop the weapon on overheat
     static async _onOverheat(event){
         event.preventDefault();
@@ -591,7 +585,6 @@ export class FortykRollDialogs{
     //activate chatlisteners
     static chatListeners(html){
         html.on("mouseup",".reroll", this._onReroll.bind(this));
-        html.on("click",".reroll", this._onModifierCall.bind(this));
         html.on("click",".overheat", this._onOverheat.bind(this));
     }
 }

@@ -117,7 +117,6 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
                 default: "submit",
                 width:100}
                       ).render(true);
-            setTimeout(function() {document.getElementById('modifier').select();}, 50);
 
         }
     }

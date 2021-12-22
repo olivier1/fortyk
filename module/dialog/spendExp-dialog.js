@@ -9,10 +9,10 @@ export class SpendExpDialog extends Application {
             classes: ["fortyk"],
             template: "systems/fortyk/templates/actor/dialogs/spendExp-dialog.html",
             width: 666,
-            height: 190,
+            height: 240,
             mode:"Custom",
             default:null,
-            heights:{"Custom":190,"Characteristic Upgrade":170,"Skill Upgrade":170,"New Skill":730,"Talent":720}
+            heights:{"Custom":240,"Characteristic Upgrade":235,"Skill Upgrade":235,"New Skill":765,"Talent":755}
         });
     }
     
@@ -62,6 +62,10 @@ export class SpendExpDialog extends Application {
         html.find('.children').click(this._onChildrenClick.bind(this));
         //create advance
         html.find('.submit').click(this._onSubmit.bind(this));
+        // Autoselect entire text 
+        $("input[type=text]").focusin(function() {
+            $(this).select();
+        });
 
 
     } 
@@ -518,7 +522,12 @@ export class SpendExpDialog extends Application {
             return 0;
         });
         let map=tnts.reduce(function(map,talent){
-            map[talent.id]=talent;
+            let flagId=talent.data.data.flagId.value;
+            
+            if(talent.data.data.specialisation.value!=="N/A"||!actor.getFlag("fortyk",flagId)){
+              map[talent.id]=talent;  
+            }
+            
             return map;
         },{});
         return map;

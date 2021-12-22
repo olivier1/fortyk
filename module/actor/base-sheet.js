@@ -619,8 +619,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }else if(testType==="focuspower"){
             FortykRollDialogs.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
         }
-        //autofocus the input after it is rendered.
-        setTimeout(function() {document.getElementById('modifier').select();}, 100);
+        
     }
     //handles weapon damage rolls
     async _onDamageRoll(event) {
@@ -672,7 +671,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 default: "submit",
                 width:100}).render(true)
                                              });
-            setTimeout(function() {document.getElementById('modifier').select();}, 50);
         }else if(dataset.formula){
             let roll = new Roll(dataset.formula, this.actor.data.data);
             let label = dataset.label ? `Rolling ${dataset.label} damage.` : '';
@@ -806,7 +804,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             default: "submit",
             width:100}
                   ).render(true);
-        setTimeout(function() {document.getElementById('modifier').select();}, 50);
     }
 
 

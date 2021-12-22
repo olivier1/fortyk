@@ -47,7 +47,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         //create different types of wargear
         html.find('.wargear-create').click(this._onWargearCreate.bind(this));
 
-
+        //focus skill search
+        html.find('.skills').click(this._onSkillsTab.bind(this));
         //spend exp button
         html.find('.spend-exp').click(this._onSpendExp.bind(this));
         //handles adding or removing worn weapon slots
@@ -68,7 +69,12 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
     /* -------------------------------------------- */
 
-
+    _onSkillsTab(event){
+       
+        setTimeout(function () {
+        document.getElementById("skillfilter").select();
+            }, 1000);
+    }
     async _onSpendExp(event){
         event.preventDefault();
         let dialog=new SpendExpDialog({actor:this.actor});

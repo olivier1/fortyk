@@ -58,7 +58,6 @@ export class FortyKOWRegimentSheet extends ActorSheet {
             FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
        
         //autofocus the input after it is rendered.
-        setTimeout(function() {document.getElementById('modifier').select();}, 50);
     }
    async _onCreateGuard(event){
         let newGuard={"name":"","status":"","cod":""}

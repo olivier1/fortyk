@@ -22,6 +22,10 @@
     {{#if (compareString mode "Talent")}}
     {{> "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/talent.html"}}
     {{/if}}
-    <span>Cost: <span id="cost">{{cost}}</span></span>
+    <div class="flexcol">
+        <span >Cost: </span>
+        <span class="cost-span" id="cost">{{cost}} EXP</span>
+    </div>
+    
     <a class="submit button" data-type="advancement" title="Add a new Advancement">Add Advancement</a>
 </form>

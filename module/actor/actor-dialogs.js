@@ -2,15 +2,20 @@
 export class ActorDialogs{
     static chatListeners(html){
         html.find('.tntfilter').keyup(this._onTntFilterChange.bind(this));
-        html.find('.tntfilter').ready(this._onTntReady.bind(this));
+        html.find('.tntfilter').ready(this._onPopupReady.bind(this));
         html.find('.tntdescr-button').click(this._onTntDescrClick.bind(this));
         /*html.find('.ae').click(this._onAeClick.bind(this));
         html.find('.ae-create').click(this._onAeCreate.bind(this));
         html.find('.ae-delete').click(this._onAeDelete.bind(this));*/
     }
-    static _onTntReady(event){
-        let input=document.getElementById("tntfilter")
+    //focus inputs on popups
+    static _onPopupReady(event){
+        try{let input=document.getElementById("tntfilter")
         input.select();
+           }catch(err){}
+        try{let input=document.getElementById("modifier")
+        input.select();
+           }catch(err){}
     }
     static _onTntDescrClick(event){
         event.preventDefault();
