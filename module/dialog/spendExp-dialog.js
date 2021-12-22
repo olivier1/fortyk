@@ -279,7 +279,6 @@ export class SpendExpDialog extends Application {
         if(this.options.mode==="New Skill"){
             this.baseSkillCost();
         }
-        console.log(this)
         this.position.height=this.options.heights[newMode];
         this.options.chosenSkill=undefined;
         this.options.chosenChar=undefined;
