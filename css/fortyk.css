@@ -741,7 +741,7 @@
     padding:3px;
 }
 .tntcheckbox{
-   grid-column-start:span 1; 
+    grid-column-start:span 1; 
 }
 .tntname{
     grid-column-start:span 3;
@@ -765,5 +765,13 @@
     font-weight: bold;
     border: inset;
     padding-left: 5px;
+    width: -webkit-fill-available;
+     text-align: center;
+}
+.cost-header{
+    border: groove;
+    width: -webkit-fill-available;
+    text-align: center;
+    font-weight: bolder;
 }
 [hidden] { display: none !important; }

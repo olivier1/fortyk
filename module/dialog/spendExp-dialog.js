@@ -9,24 +9,27 @@ export class SpendExpDialog extends Application {
             classes: ["fortyk"],
             template: "systems/fortyk/templates/actor/dialogs/spendExp-dialog.html",
             width: 666,
-            height: 240,
+            height: 280,
             mode:"Custom",
             default:null,
-            heights:{"Custom":240,"Characteristic Upgrade":235,"Skill Upgrade":235,"New Skill":765,"Talent":755}
+            heights:{"Custom":280,"Characteristic Upgrade":275,"Skill Upgrade":275,"New Skill":805,"Talent":795}
         });
     }
     
     async getData(){
         this.data=super.getData();
         let data=this.data;
+        let actor=this.options.actor;
         if(!this.options.cost){this.options.cost=0}
+        data.actorExp=actor.data.data.experience.value;
         data.cost=this.options.cost;
+        data.remainingExp=data.actorExp-data.cost;
         data.FORTYK=game.fortyk.FORTYK;
         data.mode=this.options.mode;
-        data.skills=this.options.actor.data.skills
+        data.skills=actor.data.skills
         data.parentSkills=data.skills.filter(skill => skill.data.hasChildren.value)
         data.upgradeableSkills=data.skills.filter(skill => !skill.data.hasChildren.value&&(skill.data.value<30));
-        let actorChars=this.options.actor.data.data.characteristics;
+        let actorChars=actor.data.data.characteristics;
         data.upgradeableChars=this.upgradeableChars(actorChars,data.FORTYK.characteristics);
         data.aptitudes=data.FORTYK.aptitudes;
         
@@ -84,14 +87,40 @@ export class SpendExpDialog extends Application {
         }else if(this.options.mode==="New Skill"){
             let input=document.getElementById("name").select();
         }else if(this.options.mode==="Talent"){
+            
             let input=document.getElementById("talentfilter").select();
+        }
+        if(this.options.mode==="Talent"||this.options.mode==="Skill Upgrade"||this.options.mode==="Characteristic Upgrade"){
+            document.getElementById("submitButton").setAttribute("disabled",true);
         }
         
         
         
     }
     async _onSubmit(event){
+        event.preventDefault();
         let actor=this.options.actor;
+        if(this.data.remainingExp<0){
+             new Dialog({
+            title: `Insufficient Experience.`,
+            classes:"fortky",
+            content: "You have insufficient experience points to purchase this advance!",
+            buttons: {
+                submit: {
+                    label: 'OK',
+                    callback: (html) => {
+
+                    }
+
+                }
+            },
+            default: "submit",
+
+
+            width:200}
+                  ).render(true);
+            return
+        }
         const type = "advancement";
         if(this.options.mode==="Custom"){
 
@@ -276,9 +305,11 @@ export class SpendExpDialog extends Application {
         let newMode=event.target.value;
         this.options.mode=newMode;
         this.options.cost=0;
-        if(this.options.mode==="New Skill"){
+        let mode=this.options.mode;
+        if(mode==="New Skill"){
             this.baseSkillCost();
         }
+        
         this.position.height=this.options.heights[newMode];
         this.options.chosenSkill=undefined;
         this.options.chosenChar=undefined;
@@ -315,6 +346,7 @@ export class SpendExpDialog extends Application {
         let skill=await this.options.actor.getEmbeddedDocument("Item",skillId);
         this.options.chosenSkill=skill;
         this.calculateSkillCost(skill.data.data.aptitudes.value,skill.data.data.value);
+        document.getElementById("submitButton").removeAttribute("disabled");
 
     }
     async _onCharUpgrade(event){
@@ -324,6 +356,7 @@ export class SpendExpDialog extends Application {
         let charAptitudes=this.data.FORTYK.characteristics[charKey].aptitudes;
         this.options.chosenChar=charKey;
         this.calculateCharCost(charAptitudes,charAdv);
+        document.getElementById("submitButton").removeAttribute("disabled");
     }
     async _onTalentChoice(event){
         let node=event.target;
@@ -335,6 +368,7 @@ export class SpendExpDialog extends Application {
         let tier=parseInt(talent.data.data.tier.value);
         if(isNaN(tier)){tier=3};
         this.calculateTalentCost(aptitudes,tier);
+        document.getElementById("submitButton").removeAttribute("disabled");
     }
     async calculateTalentCost(aptitudes,tier){
         let splitAptitudes=aptitudes.toLowerCase().replace(/\s/g, '').split(",");
@@ -485,6 +519,10 @@ export class SpendExpDialog extends Application {
     }
     _updateCost(){
         document.getElementById("cost").textContent=this.options.cost;
+        this.data.remainingExp=this.data.actorExp-this.options.cost;
+        document.getElementById("remainingExp").textContent=this.data.remainingExp
+        
+        
     }
     async _loadTalents(){
         let actor=this.options.actor;
