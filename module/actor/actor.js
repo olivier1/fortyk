@@ -813,7 +813,13 @@ export class FortyKActor extends Actor {
 
                 advancements.push(item);
             }
+            if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="wargear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
+                    //total weight calcs
+                    item.data.weight.total=(parseInt(item.data.amount.value)*parseFloat(item.data.weight.value)).toFixed(2);
+                    
 
+
+                }
             if(item.type==="meleeWeapon"){
                 
                 meleeweapons.push(item);
