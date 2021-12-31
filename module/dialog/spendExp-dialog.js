@@ -36,10 +36,11 @@ export class SpendExpDialog extends Application {
             if(!skill.data.hasChildren.value&&(skill.data.value<30)){
                 let dupSkill=duplicate(skill);
                 let label=dupSkill.name;
+                console.log(dupSkill);
                 if(dupSkill.data.value===-20){
                     label+=" +0";  
                 }else{
-                    label+=" +"+(dupSkill.data.value+10);
+                    label+=" +"+(parseInt(dupSkill.data.value)+10);
                 }
                 dupSkill.name=label;
                 map.push(dupSkill);  
@@ -445,6 +446,7 @@ export class SpendExpDialog extends Application {
         this.calculateSkillCost(aptitudes,-20);
     }
     async calculateSkillCost(aptitudes,training){
+        training=parseInt(training);
         let splitAptitudes=aptitudes.toLowerCase().replace(/\s/g, '').split(",");
         let actorAptitudes=this.options.actor.data.data.aptitudes;
         let matchingAptitudes=0;
