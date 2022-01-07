@@ -21,7 +21,6 @@ export class SpendExpDialog extends Application {
         this.data=super.getData();
         let data=this.data;
         let actor=this.options.actor;
-        console.log(data)
         if(!this.options.cost){this.options.cost=0}
         data.actorExp=actor.data.data.experience.value;
         data.cost=this.options.cost;
@@ -36,8 +35,7 @@ export class SpendExpDialog extends Application {
             if(!skill.data.hasChildren.value&&(skill.data.value<30)){
                 let dupSkill=duplicate(skill);
                 let label=dupSkill.name;
-                console.log(dupSkill);
-                if(dupSkill.data.value===-20){
+                if(parseInt(dupSkill.data.value)===-20){
                     label+=" +0";  
                 }else{
                     label+=" +"+(parseInt(dupSkill.data.value)+10);
@@ -50,7 +48,6 @@ export class SpendExpDialog extends Application {
         },[]);
 
         let actorChars=this.options.actor.data.data.characteristics;
-        console.log(actorChars)
         data.upgradeableChars=this.upgradeableChars(actorChars,data.FORTYK.characteristics);
         data.aptitudes=data.FORTYK.aptitudes;
 
@@ -162,8 +159,10 @@ export class SpendExpDialog extends Application {
             this.options.cost=0;
         }else if(this.options.mode==="Skill Upgrade"){
             let skill=this.options.chosenSkill;
-            let skillUpgrade=skill.data.data.value;
-            if(skillUpgrade===-20){skillUpgrade=0}else{skillUpgrade=+10}
+            let skillUpgrade=parseInt(skill.data.data.value);
+            console.log(skillUpgrade);
+            if(skillUpgrade===-20){skillUpgrade=0}else{skillUpgrade+=10}
+            console.log(skillUpgrade);
             let name = skill.name+" +"+skillUpgrade;
             if(skill.data.data.parent.value){
                 name=skill.data.data.parent.value+": "+name;
@@ -447,6 +446,7 @@ export class SpendExpDialog extends Application {
     }
     async calculateSkillCost(aptitudes,training){
         training=parseInt(training);
+        console.log(training);
         let splitAptitudes=aptitudes.toLowerCase().replace(/\s/g, '').split(",");
         let actorAptitudes=this.options.actor.data.data.aptitudes;
         let matchingAptitudes=0;
