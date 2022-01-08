@@ -1140,7 +1140,7 @@ export class FortyKActor extends Actor {
                     if(advType==="Skill Upgrade"){
                      
                         let skill=actor.getEmbeddedDocument("Item",data.itemId.value);
-                        let skillAdv=skill.data.data.value;
+                        let skillAdv=parseInt(skill.data.data.value);
                         if(skillAdv===0){skillAdv=-20}else{skillAdv-=10}
                         skill.update({"data.value":skillAdv});
                     }else if(advType==="New Skill"){
