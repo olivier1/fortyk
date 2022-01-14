@@ -824,7 +824,7 @@ returns the roll message*/
                         //accurate weapon logic
                         if(fortykWeapon.getFlag("fortyk","accurate")&&actor.data.data.secChar.lastHit.aim){
                             let distance=tokenDistance(attackerToken,tar);
-                            if(distance>20){
+                            if(distance>10){
                                 let accDice=Math.min(fortykWeapon.getFlag("fortyk","accurate"),Math.ceil((actor.data.data.secChar.lastHit.dos-1)/2));
                                 let accForm=accDice+"d10"
                                 let accRoll=new Roll(accForm,{});

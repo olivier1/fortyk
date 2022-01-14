@@ -176,6 +176,10 @@ Hooks.once('ready', async function() {
                     let formula=await data.package.formula;
                     actor=await game.actors.get(data.package.actor);
                     let fortykWeapon=actor.getEmbeddedDocument("Item",data.package.fortykWeapon);
+                    if(!fortykWeapon.data.data.isPrepared){
+                        fortykWeapon.prepareData();
+                    }
+                    
                     let hits=data.package.hits;
                     let magdamage=data.package.magdmg;
                     let extraPen=data.package.pen;
