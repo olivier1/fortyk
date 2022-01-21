@@ -103,7 +103,7 @@
                 
                 <div class="list-item flexrow">
                     <label>PR: </label>
-                    <input type="text" class="item-text-input" data-target="data.curPR.value" data-item-id="{{this.id}}" value="{{this.data.curPR.value}}" data-dtype="Number">
+                    <input type="text" class="item-text-input" data-target="data.curPR.value" data-item-id="{{this._id}}" value="{{this.data.curPR.value}}" data-dtype="Number">
                 </div>
 
 
@@ -151,12 +151,12 @@
 
                 <div class="list-item flexcol">
                     <label>Test Target: </label>
-                    <span data-item-id="{{this.id}}" class="rollable powerItem button{{#if (greaterThan this.data.curPR.value ../data.psykana.pr.effective)}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-target="{{this.data.target.value}}" data-label="{{this.name}}" data-char="{{this.data.testChar.type}}">{{this.data.target.value}}</span>
+                    <span data-item-id="{{this._id}}" class="rollable powerItem button{{#if (greaterThan this.data.curPR.value ../data.psykana.pr.effective)}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-target="{{this.data.target.value}}" data-label="{{this.name}}" data-char="{{this.data.testChar.type}}">{{this.data.target.value}}</span>
                 </div>
                 {{#if (contains this.data.class.value "psychic")}}
-                <label class="list-item">Damage: <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this.id}}">{{this.data.damageFormula.value}}</a></label>
+                <label class="list-item">Damage: <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}">{{this.data.damageFormula.value}}</a></label>
                 {{else if (contains this.data.class.value "Buff/Debuff")}}
-                <label class="list-item"><a class="buff-debuff button" data-label="{{this.name}}"data-power="{{this.id}}">Apply Buff/Debuff</a></label>
+                <label class="list-item"><a class="buff-debuff button" data-label="{{this.name}}"data-power="{{this._id}}">Apply Buff/Debuff</a></label>
                 {{/if}}
                 
                
@@ -181,11 +181,11 @@
                         <option value="" {{#if data.secChar.wornGear.weapons.[1].data}}selected{{/if}}>None</option>
                         
                         {{#each actor.meleeWeapons}}
-                        <option value="{{this.id}}" {{#if (contains this.data.isEquipped "left")}}selected{{/if}}>{{this.name}}</option>
+                        <option value="{{this._id}}" {{#if (contains this.data.isEquipped "left")}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                         {{#each actor.rangedWeapons}}
 
-                        <option value="{{this.id}}" {{#if (contains this.data.isEquipped "left")}}selected{{/if}}>{{this.name}}</option>
+                        <option value="{{this._id}}" {{#if (contains this.data.isEquipped "left")}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                     </select>
                 </div>
@@ -196,11 +196,11 @@
                         <option value="" {{#if data.secChar.wornGear.weapons.[0].data}}selected{{/if}}>None</option>
                         
                         {{#each actor.meleeWeapons}}
-                        <option value="{{this.id}}" {{#if (contains this.data.isEquipped "right")}}selected{{/if}}>{{this.name}}</option>
+                        <option value="{{this._id}}" {{#if (contains this.data.isEquipped "right")}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                         {{#each actor.rangedWeapons}}
 
-                        <option value="{{this.id}}" {{#if (contains this.data.isEquipped "right")}}selected{{/if}}>{{this.name}}</option>
+                        <option value="{{this._id}}" {{#if (contains this.data.isEquipped "right")}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
 
                         
@@ -214,10 +214,10 @@
                        
                         <option value="" {{#if data.secChar.wornGear.extraWeapons.[@index].data}}selected{{/if}}>None</option>
                         {{#each ../actor.meleeWeapons}}
-                        <option value="{{this.id}}" {{#if (contains this.data.isEquipped @../index)}}selected{{/if}}>{{this.name}}</option>
+                        <option value="{{this._id}}" {{#if (contains this.data.isEquipped @../index)}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                         {{#each ../actor.rangedWeapons}}
-                        <option value="{{this.id}}" {{#if (contains this.data.isEquipped @../index)}}selected{{/if}}>{{this.name}}</option>
+                        <option value="{{this._id}}" {{#if (contains this.data.isEquipped @../index)}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                         
                     </select>
@@ -236,8 +236,7 @@
                 <div class="weapon-name">
                     <span>Name: {{this.name}}</span>
                 </div>
-
-
+               
                 <div class="list-item">
                     <span>Attack: </span> 
                     {{#if (greaterThan this.data.data.clip.value 0)}}
@@ -482,7 +481,8 @@
                         
                         <option value="" {{#if data.secChar.wornGear.forceField.data}}selected{{/if}}>None</option>
                         {{#each actor.forceFields}}
-                        <option value="{{this.id}}" {{#if this.data.isEquipped}}selected{{/if}}>{{this.name}}</option>
+                        {{debug this}}
+                        <option value="{{this._id}}" {{#if this.data.isEquipped}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                     </select>
                     {{#if data.secChar.wornGear.forceField._id}}
@@ -501,7 +501,7 @@
                     <option value="" {{#if data.secChar.wornGear.armor.data}}selected{{/if}}>None</option>
                     {{#each actor.armors}}
 
-                    <option value="{{this.id}}" {{#if this.data.isEquipped}}selected{{/if}}>{{this.name}}</option>
+                    <option value="{{this._id}}" {{#if this.data.isEquipped}}selected{{/if}}>{{this.name}}</option>
                     {{/each}}
                 </select>
                 <div class="flexcol">
