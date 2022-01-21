@@ -346,11 +346,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                             $(html).find('input:checked').each(function(){
                                 selectedIds.push($(this).val());
                             })
-                            
+
                             let $selectedCompendiums= $('input:checked',html).map(function(){
                                 return this.getAttribute('data-compendium');
                             }).get();
-                            
+
                             let talentsNTraits=[];
                             for(let i=0;i<selectedIds.length;i++){
                                 let tnt=null;
@@ -362,7 +362,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                         tnt=await dh2Traits.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.talents-enemies-within":
-                                        
+
                                         tnt=await dh2EnemyWithinTalents.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.talents-enemies-without":
@@ -386,7 +386,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                     case "fortyk.deathwatch-bonus-and-drawbacks":
                                         tnt=await dwBonus.getDocument(selectedIds[i]);
                                         break;
-                                        case "fortyk.deathwatch-talents":
+                                    case "fortyk.deathwatch-talents":
                                         tnt=await dwTalents.getDocument(selectedIds[i]);
                                         break;
                                     case "fortyk.talents-ow-core":
@@ -417,7 +417,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                     case "fortyk.custom-talents":
                                         tnt=await customTalents.getDocument(selectedIds[i]);
                                         break;
-                                        case "fortyk.custom-bonus-and-drawbacks":
+                                    case "fortyk.custom-bonus-and-drawbacks":
                                         tnt=await customBonus.getDocument(selectedIds[i]);
                                         break;
                                 }
@@ -619,20 +619,21 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }else if(testType==="focuspower"){
             FortykRollDialogs.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
         }
-        
+
     }
     //handles weapon damage rolls
     async _onDamageRoll(event) {
         event.preventDefault();
         const element = event.currentTarget;
         const dataset = element.dataset;
+        console.log(dataset);
         if(dataset.weapon){
 
             let actor=this.actor;
             let fortykWeapon=actor.items.get(dataset.weapon);
             if(!fortykWeapon.data.data.isPrepared){
                 await fortykWeapon.prepareData();
-                
+
             }
             let weapon=fortykWeapon.data;
             let dfa=false;
@@ -657,14 +658,14 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                 formula.value+=`+${dmg}`
                             }
                             if(game.user.isGM){
-                               FortykRolls.damageRoll(formula,actor,fortykWeapon,hits,false,false,magdmg,pen); 
+                                FortykRolls.damageRoll(formula,actor,fortykWeapon,hits,false,false,magdmg,pen); 
                             }else{
                                 //if user isnt GM use socket to have gm process the damage roll
-                                           
-                                            let socketOp={type:"damageRoll",package:{formula:formula,actor:actor.id,fortykWeapon:fortykWeapon.id,hits:hits,magdmg:magdmg,pen:pen,user:game.user.id}}
-                                            game.socket.emit("system.fortyk",socketOp);
+
+                                let socketOp={type:"damageRoll",package:{formula:formula,actor:actor.id,fortykWeapon:fortykWeapon.id,hits:hits,magdmg:magdmg,pen:pen,user:game.user.id}}
+                                game.socket.emit("system.fortyk",socketOp);
                             }
-                            
+
                         }
                     }
                 },
@@ -674,7 +675,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }else if(dataset.formula){
             let roll = new Roll(dataset.formula, this.actor.data.data);
             let label = dataset.label ? `Rolling ${dataset.label} damage.` : '';
-            roll.roll().toMessage({
+            await roll.roll();
+            roll.toMessage({
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 flavor: label
             });

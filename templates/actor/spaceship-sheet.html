@@ -180,7 +180,7 @@
                 {{#each actor.components as |t key|}}
 
                 <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}</a>
-                <select class="component-status" data-id="{{this._id}}">
+                <select class="component-status" data-id="{{this.id}}">
 
                     {{#select this.data.status.value}}
 
@@ -254,14 +254,14 @@
                 </div>
                 {{#if (contains this.data.type.value "Torpedo")}}
                 <div class="list-item">
-                    <select class="torpedo-ammo" data-weapon="{{this._id}}">
+                    <select class="torpedo-ammo" data-weapon="{{this.id}}">
 
                         {{#select this.data.torpedo.id}}
                         <option value="" data-damage=" "data-rating="0">None</option>
 
                         {{#each ../actor.torpedoes}}
 
-                        <option value="{{this._id}}" data-damage="{{this.data.damage.value}}" data-rating="{{this.data.rating.value}}">{{this.name}}</option>
+                        <option value="{{this.id}}" data-damage="{{this.data.damage.value}}" data-rating="{{this.data.rating.value}}">{{this.name}}</option>
 
                         {{/each}}
 
@@ -273,14 +273,14 @@
                 </div>
                 {{else if (contains this.data.type.value "Hangar")}}
                 <div class="list-item">
-                    <select class="torpedo-ammo" data-weapon="{{this._id}}">
+                    <select class="torpedo-ammo" data-weapon="{{this.id}}">
 
                         {{#select this.data.torpedo.id}}
                         <option value="" data-damage=" "data-rating="0">None</option>
 
                         {{#each ../actor.bombers}}
 
-                        <option value="{{this._id}}" data-damage="{{../data.damage.value}}" data-rating="{{this.data.rating.value}}">{{this.name}}</option>
+                        <option value="{{this.id}}" data-damage="{{../data.damage.value}}" data-rating="{{this.data.rating.value}}">{{this.name}}</option>
 
                         {{/each}}
 
@@ -303,7 +303,7 @@
                 </div>
                 <div class="list-item">
                     <span>Damage: </span> 
-                    <a class="space-damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damage.value}}" data-weapon="{{this._id}}"> {{this.data.damage.value}}</a>
+                    <a class="space-damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damage.value}}" data-weapon="{{this.id}}"> {{this.data.damage.value}}</a>
 
                 </div>
 
@@ -391,7 +391,7 @@
                 <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}</a>
                 <span class="list-item">{{t.data.type.value}}</span>
                 <span class="list-item">{{t.data.rating.value}}</span>
-                <span class="list-item"><input type="checkbox" class="halfstr" data-item-id="{{this._id}}"  {{checked this.data.halfstr.value}}></span>
+                <span class="list-item"><input type="checkbox" class="halfstr" data-item-id="{{this.id}}"  {{checked this.data.halfstr.value}}></span>
                 <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
                 <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
 

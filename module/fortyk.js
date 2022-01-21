@@ -283,9 +283,9 @@ Hooks.on("updateCombat", async (combat) => {
                     let fireData={name:"Fire",type:"rangedWeapon"}
                     let fire=await Item.create(fireData, {temporary: true});
 
-                    fire._data.flags.specials=flags;
-                    fire._data.data.damageType.value="Energy";
-                    fire._data.data.pen.value=99999;
+                    fire.data.flags.specials=flags;
+                    fire.data.data.damageType.value="Energy";
+                    fire.data.data.pen.value=99999;
                     await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire,1, true);
                 }
                 //check for bleeding

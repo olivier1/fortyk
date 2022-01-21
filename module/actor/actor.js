@@ -209,10 +209,17 @@ export class FortyKActor extends Actor {
             data.experience.spent=0;
             data.characteristics["inf"].advance=0;
             data.carry.value=0;
+            let forRaces=[];
             this.items.forEach((fortykItem,id,items)=>{
                 let item=fortykItem.data;
 
-
+                if(item.type==="skill"){
+                    if(item.data.parent.value==="Forbidden Lore"){
+                        if(game.fortyk.FORTYK.races.includes(item.name)){
+                            forRaces.push(item.name.toLowerCase());
+                        }
+                    }
+                }
                 if(item.type==="cybernetic"){
                     this.data.data.characterHitLocations[item.data.location.value].cyber=true;
 
@@ -287,6 +294,15 @@ export class FortyKActor extends Actor {
                     data.secChar.wornGear.forceField=item;
                 }
             })
+            //store known xenos for deathwatchtraining
+
+            if(this.getFlag("fortyk","deathwatchtraining")){
+
+                actorData.flags.fortyk.deathwatchtraining=forRaces;
+            }
+            if(this.getFlag("fortyk","fieldvivisection")){
+                actorData.flags.fortyk.fieldvivisection=forRaces;
+            }
             data.characteristics["inf"].total=data.characteristics["inf"].value+data.characteristics["inf"].advance;
 
             data.experience.value=parseInt(data.experience.starting)+parseInt(data.experience.earned)-parseInt(data.experience.spent);
@@ -689,7 +705,7 @@ export class FortyKActor extends Actor {
         const wornGear={weapons:[],"armor":"","forceField":""};
 
         let unrelenting=false;
-        let forRaces=[];
+
         //get worn weapon ids into an array so that they can be accessed by the sheet easily
         let wornWeapons=data.secChar.wornGear.weapons;
         if(!Array.isArray(data.secChar.wornGear.weapons)){
@@ -745,11 +761,7 @@ export class FortyKActor extends Actor {
                 if(this.getFlag("fortyk","fieldvivisection")&&item.name==="Medicae"){
                     data.fieldVivisection=parseInt(item.data.value)+parseInt(item.data.mod.value);
                 }
-                if(item.data.parent.value==="Forbidden Lore"){
-                    if(game.fortyk.FORTYK.races.includes(item.name)){
-                        forRaces.push(item.name.toLowerCase());
-                    }
-                }
+
                 item.data.total.value+=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
                 if(item.name==="Psyniscience"){
                     psyniscience=item.data.total.value;
@@ -787,7 +799,7 @@ export class FortyKActor extends Actor {
                 wargear.push(item);
             }
             if(item.type==="psychicPower"){
-                
+
                 if(data.psykana.filter){
 
                     if(data.psykana.filter===item.data.discipline.value){
@@ -814,28 +826,28 @@ export class FortyKActor extends Actor {
                 advancements.push(item);
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="wargear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
-                    //total weight calcs
-                    item.data.weight.total=(parseInt(item.data.amount.value)*parseFloat(item.data.weight.value)).toFixed(2);
-                    
+                //total weight calcs
+                item.data.weight.total=(parseInt(item.data.amount.value)*parseFloat(item.data.weight.value)).toFixed(2);
 
 
-                }
+
+            }
             if(item.type==="meleeWeapon"){
-                
+
                 meleeweapons.push(item);
                 wargear.push(item);
             }
             if(item.type==="rangedWeapon"){
-                
+
                 rangedWeapons.push(item);
                 wargear.push(item);
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
-                
+
                 if(item.data.isEquipped){
                     wornGear.weapons.push(fortykItem);
                 }
-                
+
             }
             if(item.type==="armor"){
 
@@ -852,16 +864,7 @@ export class FortyKActor extends Actor {
 
         })
 
-        //store known xenos for deathwatchtraining
-
-        if(this.getFlag("fortyk","deathwatchtraining")){
-
-            actorData.flags.fortyk.deathwatchtraining=forRaces;
-        }
-        if(this.getFlag("fortyk","fieldvivisection")){
-            actorData.flags.fortyk.fieldvivisection=forRaces;
-        }
-
+        
 
 
 
@@ -917,20 +920,20 @@ export class FortyKActor extends Actor {
                 armors.push(item);
             }
             if(item.type==="psychicPower"){
-                
+
                 psychicPowers.push(item);
             }
             if(item.type==="meleeWeapon"){
-                
+
                 meleeweapons.push(item);
             }
             if(item.type==="rangedWeapon"){
-                
+
                 rangedWeapons.push(item);
 
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
-               
+
             }
         })
         let preparedItems={
@@ -1126,37 +1129,37 @@ export class FortyKActor extends Actor {
     //when deleting talents, remove the flag associated with each of them.
     _onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId){
         let actor=this;
-        
+
         if(embeddedName==="Item"){
             documents.forEach(async function(item,i){
-              
+
                 if(item.data.type==="talentntrait"){
                     let flag=item.data.data.flagId.value;
                     await actor.setFlag("fortyk",flag,false); 
                 }else if(item.data.type==="advancement"){
                     let advType=item.data.data.type.value
                     let data=item.data.data;
-                   
+
                     if(advType==="Skill Upgrade"){
-                     
+
                         let skill=actor.getEmbeddedDocument("Item",data.itemId.value);
                         let skillAdv=parseInt(skill.data.data.value);
                         if(skillAdv===0){skillAdv=-20}else{skillAdv-=10}
                         skill.update({"data.value":skillAdv});
                     }else if(advType==="New Skill"){
-                       
+
                         try{
                             actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
                         }catch(err){}
-                        
-                        
+
+
                     }else if(advType==="Talent"){
-                       
+
                         try{
-                           actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
+                            actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
                         }catch(err){}
                     }else if(advType==="Characteristic Upgrade"){
-                       
+
                         let char=data.characteristic.value;
                         let charAdv=actor.data.data.characteristics[char].advance;
                         charAdv-=5;

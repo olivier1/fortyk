@@ -7,11 +7,11 @@
         <span>Range: {{this.data.range.value}}m</span>
     </div>
     <div class="list-item">
-        <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{data.characteristics.bs.total}}" data-item-id="this._id" data-label="Ranged Attack" data-char="bs">Attack Roll</span>
+        <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{data.characteristics.bs.total}}" data-item-id="this.id" data-label="Ranged Attack" data-char="bs">Attack Roll</span>
     </div>
     <div class="list-item">
         <span>Damage: </span> 
-        <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
+        <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.data.damageFormula.value}}</a>
 
     </div>
     <div class="list-item">
@@ -24,7 +24,7 @@
     <div class="list-item flexrow">
         <span>Clip: </span>
 
-        <input class="clip-current" type="text" value="{{this.data.clip.value}}" name="actor.wornGear.weapons.1.data.clip.value" data-item-id="{{this._id}}" data-dtype="Number">
+        <input class="clip-current" type="text" value="{{this.data.clip.value}}" name="actor.wornGear.weapons.1.data.clip.value" data-item-id="{{this.id}}" data-dtype="Number">
         <span> / </span>
         <span>{{this.data.clip.max}}</span>
 

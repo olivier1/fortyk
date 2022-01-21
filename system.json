@@ -217,13 +217,6 @@
             "module": "fortyk"
         }
     ],
-    "languages": [
-        {
-            "lang": "en",
-            "name": "English",
-            "path": "lang/en.json"
-        }
-    ],
     "gridDistance": 1,
     "gridUnits": "m",
     "primaryTokenAttribute": "secChar.wounds",

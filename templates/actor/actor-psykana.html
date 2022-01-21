@@ -133,7 +133,7 @@
                 <label class="list-item"><a class="buff-debuff button" data-label="{{power.name}}"data-power="{{power._id}}">Apply Buff/Debuff</a></label>
                 {{/if}}
                 <div class="list-item flexrow">
-                    <span>Favorite <input type="checkbox" class="favorite" data-item-id="{{this._id}}"  {{checked this.data.favorite}}></span>
+                    <span>Favorite <input type="checkbox" class="favorite" data-item-id="{{this.id}}"  {{checked this.data.favorite}}></span>
                     <a class="item-edit" title="Edit Power" data-item-id="{{power._id}}"></a>
                     <a class="item-delete" title="Delete Power" data-item-id="{{power._id}}"></a>
                 </div>

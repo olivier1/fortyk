@@ -8,11 +8,11 @@
         <span>Reach: {{this.data.range.value}}m</span>
     </div>
     <div class="list-item">
-        <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{data.characteristics.ws.total}}" data-item-id="this._id" data-label="Melee Attack" data-char="ws">Attack Roll</span>
+        <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{data.characteristics.ws.total}}" data-item-id="this.id" data-label="Melee Attack" data-char="ws">Attack Roll</span>
     </div>
     <div class="list-item">
         <span>Damage: </span>
-        <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}+@characteristics.s.bonus" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}+{{data.characteristics.s.bonus}}</a>
+        <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}+@characteristics.s.bonus" data-weapon="{{this.id}}"> {{this.data.damageFormula.value}}+{{data.characteristics.s.bonus}}</a>
     </div>
     <div class="list-item">
         <span>Penetration: {{this.data.pen.value}}</span>

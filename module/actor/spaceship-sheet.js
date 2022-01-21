@@ -121,14 +121,14 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
         }
     }
 
-    _damageRoll(formula,label,hits){
+    async _damageRoll(formula,label,hits){
         for(let i=0;i<hits;i++){
             let roll = new Roll(formula, this.actor.data.data);
-
-            roll.roll().toMessage({
+            await roll.roll().then(value=>{roll.toMessage({
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 flavor: label
-            });
+            });});
+
         }
     }
     async _onShipComponentCreate(event){

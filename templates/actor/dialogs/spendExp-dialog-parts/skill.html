@@ -3,7 +3,7 @@
 <select class="skillChoice">
         <option hidden>Choose Skill</option>
         {{#each upgradeableSkills}}
-        <option value="{{this._id}}">{{#if this.data.parent.value}}{{this.data.parent.value}}: {{/if}}{{this.name}}</option>
+        <option value="{{this.id}}">{{#if this.data.parent.value}}{{this.data.parent.value}}: {{/if}}{{this.name}}</option>
         {{/each}}
         
     </select>
