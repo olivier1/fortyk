@@ -46,7 +46,7 @@ returns the roll message*/
             fireRate:fireRate
         }
         if(!reroll){
-            templateOptions["actor"]=actor._id;
+            templateOptions["actor"]=actor.id;
             templateOptions["char"]=char;
             templateOptions["type"]=type;
             templateOptions["targetNumber"]=target;
