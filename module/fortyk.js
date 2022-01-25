@@ -170,16 +170,17 @@ Hooks.once('ready', async function() {
 
     //SOCKET used to update actors via the damage scripts
     game.socket.on("system.fortyk",async(data) => {
-        console.log(data)
+       
         if(data.type==="cardSplash"){
             var options = {
-                width: "500",
+                width: "auto",
                 height: "800"
             };
-            let img=data.package.img
+            let img=data.package.img;
+            let title=data.package.title;
             let dlg = new Dialog({
-                title: `Profile Image`,
-                content: `<img src="${img}"  width="auto" height="auto">`,
+                title: title,
+                content: `<img src="${img}"  width="auto" height="700">`,
                 buttons: {
                     submit: {
                         label: "OK",

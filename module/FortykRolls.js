@@ -635,7 +635,7 @@ returns the roll message*/
                         if(newWounds[tarNumbr]===false){
                             newWounds[tarNumbr]=curWounds;
                         }
-                        console.log(wounds, curWounds,newWounds[tarNumbr])
+                       
                         //killers eye
 
                         if(actor.getFlag("fortyk","killerseye")&&lastHit.attackType==="called"&&(actor.data.data.secChar.lastHit.dos>=data.characteristics.agi.bonus)){
@@ -1059,7 +1059,7 @@ returns the roll message*/
                                 chatDamage+=additionalHits;
                             }
                         }
-                        console.log(newWounds[tarNumbr],damage)
+                      
                         newWounds[tarNumbr]=newWounds[tarNumbr]-damage;
                         newWounds[tarNumbr]=Math.max(wounds.min,newWounds[tarNumbr]);
 
@@ -1152,7 +1152,7 @@ returns the roll message*/
                         //update wounds
                         if(game.user.isGM||tar.owner){
                             if(self){
-                                console.log(newWounds[tarNumbr]);
+                                
                                 await tarActor.update({"data.secChar.wounds.value":newWounds[tarNumbr]});
                             }else{
                                 await tarActor.update({"data.secChar.wounds.value":newWounds[tarNumbr]});
