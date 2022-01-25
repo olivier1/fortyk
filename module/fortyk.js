@@ -20,6 +20,7 @@ import { _getInitiativeFormula } from "./combat.js";
 import {FORTYKTABLES} from "./FortykTables.js";
 import { registerSystemSettings} from "./settings.js"
 import {ActiveEffectDialog} from "./dialog/activeEffect-dialog.js";
+import {FortyKCards} from "./card/card.js";
 Hooks.once('init', async function() {
     game.fortyk = {
         FortyKActor,
@@ -77,8 +78,12 @@ Hooks.once('init', async function() {
     Actors.registerSheet("fortyk", FortyKOWRegimentSheet, { types:["owRegiment"], makeDefault: true });
     Actors.registerSheet("fortyk", FortyKSpaceshipSheet, { types:["spaceship"], makeDefault: true });
     Actors.registerSheet("fortyk", FortyKNPCSheet, { types: ["npc"], makeDefault: true });
+
+
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });
+    //setup handcards
+    CONFIG.Cards.documentClass=FortyKCards;
     //register system settings
     registerSystemSettings();
     // Handlebars helpers
@@ -165,6 +170,26 @@ Hooks.once('ready', async function() {
 
     //SOCKET used to update actors via the damage scripts
     game.socket.on("system.fortyk",async(data) => {
+        console.log(data)
+        if(data.type==="cardSplash"){
+            var options = {
+                width: "500",
+                height: "800"
+            };
+            let img=data.package.img
+            let dlg = new Dialog({
+                title: `Profile Image`,
+                content: `<img src="${img}"  width="auto" height="auto">`,
+                buttons: {
+                    submit: {
+                        label: "OK",
+                        callback: null
+                    }
+                },
+                default: "submit",
+            }, options);
+            dlg.render(true); 
+        }
         if(game.user.isGM){
             let id="";
             let actor=null;
@@ -179,7 +204,7 @@ Hooks.once('ready', async function() {
                     if(!fortykWeapon.data.data.isPrepared){
                         fortykWeapon.prepareData();
                     }
-                    
+
                     let hits=data.package.hits;
                     let magdamage=data.package.magdmg;
                     let extraPen=data.package.pen;
