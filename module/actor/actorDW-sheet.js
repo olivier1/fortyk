@@ -271,9 +271,9 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     async _onWeaponReload(event){
         event.preventDefault;
         const dataset=event.currentTarget.dataset;
-        console.log(dataset);
+      
         let weapon=this.actor.getEmbeddedDocument("Item",dataset.weapon);
-        console.log(weapon)
+       
         let actor=this.actor;
         let update=[];
         let weaponUpdate={};
