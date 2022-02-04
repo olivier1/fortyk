@@ -180,7 +180,7 @@ export class FortykRollDialogs{
                         if(isNaN(other)){other=0}
                         
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
-                         
+                         actor.data.data.secChar.lastHit.attackRange="melee";
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
                     }
 
@@ -333,7 +333,7 @@ export class FortykRollDialogs{
             }
         }
         //distance shenanigans
-
+        let attackRange="normal";
         if(modifiers.distance){
             let distance=modifiers.distance;
             let pointblank=false;
@@ -344,14 +344,19 @@ export class FortykRollDialogs{
             let range=itemData.data.range.value;
             if(distance<=2||distance<=2*canvas.dimensions.distance){
                 pointblank=true;
+                attackRange="pointBlank";
             }else if(distance<=parseInt(range)/2){
                 short=true;
+                attackRange="short";
             }else if(distance<=range){
                 normal=true;
+                attackRange="normal";
             }else if(distance<=2*range){
                 long=true;
+                attackRange="long";
             }else if(distance<=3*range){
                 extreme=true;
+                attackRange="extreme";
             }else{
                 new Dialog({
                     title: `Out of range`,
@@ -455,11 +460,12 @@ export class FortykRollDialogs{
                         if(isNaN(other)){other=0}
                         if(isNaN(melee)){melee=0} 
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(melee);
-                         
+                         actor.data.data.secChar.lastHit.attackRange=attackRange;
                         await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType);
                         if(aimBonus>0){
                             await actor.update({"data.secChar.lastHit.aim":true});
                             actor.data.data.secChar.lastHit.aim=true;
+                            
                         }else{
                             await actor.update({"data.secChar.lastHit.aim":false});
                         }

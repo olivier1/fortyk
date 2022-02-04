@@ -295,7 +295,7 @@
                         {{#each ../actor.equippableAmmo}}
                         {{#if (compareString this.data.class.value ../this.data.data.class.value)}}
                         {{#if (compareString this.data.type.value ../this.data.data.type.value)}}
-                        <option value="{{this.id}}">{{this.name}}:{{this.data.amount.value}}</option>
+                        <option value="{{this._id}}">{{this.name}}:{{this.data.amount.value}}</option>
                         {{/if}}
                         {{/if}}
                         {{/each}}

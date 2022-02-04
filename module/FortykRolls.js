@@ -89,11 +89,21 @@ returns the roll message*/
         //calculate degrees of failure and success
         if((testResult&&testRoll<96||testRoll===1)&&!jam){
             testDos=Math.floor(Math.abs(roll._total)/10)+1+Math.ceil(charObj.uB/2);
+            //close quarter combat dos bonus
+            if((type==="rangedAttack"||type==="meleeAttack")&&actor.getFlag("fortyk","closequarterdiscipline")){
+                let attackRange=actor.data.data.secChar.lastHit.attackRange;
+                if(attackRange==="melee"||attackRange==="pointBlank"||attackRange==="short"){
+                    testDos+=1;
+                } 
+
+            }
+
             templateOptions["dos"]="with "+testDos.toString()+" degree";
             if(testDos===1){}else{templateOptions["dos"]+="s";}
             templateOptions["dos"]+=" of success!";
             templateOptions["pass"]="Pass!";
             templateOptions["success"]=true;
+
         }else{
             testDos=Math.floor(Math.abs(roll._total)/10)+1;
             templateOptions["dos"]="with "+testDos.toString()+" degree";
@@ -375,7 +385,7 @@ returns the roll message*/
         await ChatMessage.create(chatPhenom,{});
     }
     //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
-    static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0, user=game.users.current){
+    static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0, user=game.users.current,lastHit=null){
 
 
         let weapon=deepClone(fortykWeapon.data);
@@ -384,8 +394,10 @@ returns the roll message*/
             righteous=fortykWeapon.getFlag("fortyk","vengeful");
         }
         let ignoreSON=(fortykWeapon.type==="psychicPower"||fortykWeapon.getFlag("fortyk","force")||fortykWeapon.getFlag("fortyk","sanctified")||fortykWeapon.getFlag("fortyk","daemonbane")||fortykWeapon.getFlag("fortyk","warp"));
+        if(!lastHit){
+            lastHit=actor.data.data.secChar.lastHit;
+        }
 
-        let lastHit=actor.data.data.secChar.lastHit;
 
         let attackerToken=actor.getActiveTokens()[0];
         let targets=[];
@@ -635,7 +647,7 @@ returns the roll message*/
                         if(newWounds[tarNumbr]===false){
                             newWounds[tarNumbr]=curWounds;
                         }
-                       
+
                         //killers eye
 
                         if(actor.getFlag("fortyk","killerseye")&&lastHit.attackType==="called"&&(actor.data.data.secChar.lastHit.dos>=data.characteristics.agi.bonus)){
@@ -1059,7 +1071,7 @@ returns the roll message*/
                                 chatDamage+=additionalHits;
                             }
                         }
-                      
+
                         newWounds[tarNumbr]=newWounds[tarNumbr]-damage;
                         newWounds[tarNumbr]=Math.max(wounds.min,newWounds[tarNumbr]);
 
@@ -1148,11 +1160,11 @@ returns the roll message*/
 
                     }
                     if(h===hits-1){
-                        
+
                         //update wounds
                         if(game.user.isGM||tar.owner){
                             if(self){
-                                
+
                                 await tarActor.update({"data.secChar.wounds.value":newWounds[tarNumbr]});
                             }else{
                                 await tarActor.update({"data.secChar.wounds.value":newWounds[tarNumbr]});
@@ -3309,18 +3321,20 @@ returns the roll message*/
             await ChatMessage.create(chatOptions,{});
             let id=target.data._id;
             let effect="icons/svg/skull.svg";
-            //let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
-            //await this.applyActiveEffect(target,activeEffect);
+            let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
 
-            await target.toggleEffect(effect,{active:true,overlay:true});
+            await this.applyActiveEffect(target,activeEffect);
+            console.log("hey")
+
             try{
                 let combatant = await game.combat.getCombatantByToken(id);
-                let combatid=combatant._id;
-                await game.combat.updateCombatant({
-                    '_id':combatid,
-                    'defeated':true
-                }) 
-            }catch(err){}
+                let combatid=combatant.id;
+                let update=[];
+                update.push({"_id":combatid, 'defeated':true})
+                await game.combat.updateEmbeddedDocuments("Combatant",update) 
+            }catch(err){
+                console.log(err)
+            }
         }else{
             let tokenId=target.data._id;
             let socketOp={type:"applyDead",package:{token:tokenId,actor:actor}}

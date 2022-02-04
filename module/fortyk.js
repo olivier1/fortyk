@@ -205,12 +205,12 @@ Hooks.once('ready', async function() {
                     if(!fortykWeapon.data.data.isPrepared){
                         fortykWeapon.prepareData();
                     }
-
+                    let lastHit=data.package.lastHit;
                     let hits=data.package.hits;
                     let magdamage=data.package.magdmg;
                     let extraPen=data.package.pen;
 
-                    FortykRolls.damageRoll(formula,actor,fortykWeapon,hits, false, false,magdamage,extraPen, user);
+                    FortykRolls.damageRoll(formula,actor,fortykWeapon,hits, false, false,magdamage,extraPen, user, lastHit);
                     break;
                 case "reportDamage":
                     let targetId=data.package.target;
