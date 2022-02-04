@@ -18,7 +18,7 @@ export const preloadHandlebarsTemplates = async function() {
         "systems/fortyk/templates/actor/actor-background.html",    
         "systems/fortyk/templates/item/item-header.html",
         //spend exp dialog parts
-       "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/custom.html",
+        "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/custom.html",
         "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/characteristic.html",
         "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/skill.html",
         "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/talent.html",
@@ -34,7 +34,7 @@ export const preloadHandlebarsTemplates = async function() {
     return loadTemplates(templatePaths);
 };
 export const sleep=function(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 //returns an actors token object, not the token document. Will search teh active canvas for the current token.
 export const getActorToken=function(actor){
@@ -45,7 +45,7 @@ export const getActorToken=function(actor){
     if(canvas.tokens.children.length>0){
         tokens=canvas.tokens.children[0].children;
     }
-    
+
     let t=null;
     for(let token of tokens){
         if(token.data.actorId===actor.data._id){
@@ -56,15 +56,41 @@ export const getActorToken=function(actor){
 }
 export const tokenDistance=function(token1,token2){
     let gridRatio=canvas.dimensions.distance/canvas.dimensions.size;
+    let token1x=token1.data.x;
+    let token1y=token1.data.y;
+    let token2x=token2.data.x;
+    let token2y=token2.data.y;
+    if(token1.data.width>=2){
+        if(token2x>token1x){
+            token1x+=Math.ceil(token1.data.width/2)*100;
+        }
+    }
+    if(token1.data.height>=2){
+        if(token2y>token1y){
+            token1y+=Math.ceil(token1.data.height/2)*100;
+        }
+    }
+    if(token2.data.width>=2){
+        if(token1x>token2x){
+            token2x+=Math.ceil(token2.data.width/2)*100;
+        }
+    }
+    if(token2.data.height>=2){
+        if(token1y>token2y){
+            token2y+=Math.ceil(token2.data.height/2)*100;
+        }
+    }
     if(canvas.scene.data.gridType===0){
-        let distancePx=Math.sqrt((Math.pow(token1.data.x-token2.data.x),2)+Math.pow((token1.data.y-token2.data.y),2))
+        let distancePx=Math.sqrt((Math.pow(token1x-token2x),2)+Math.pow((token1y-token2y),2)+Math.pow((token1.data.elevation-token2.data.elevation),2))
         return distancePx*gridRatio
     }
     if(canvas.scene.data.gridType===1){
-        let xDistance=Math.abs(gridRatio*(token1.data.x-token2.data.x));
-        let yDistance=Math.abs(gridRatio*(token1.data.y-token2.data.y));
-       
-        return Math.max(xDistance,yDistance) 
+
+        let xDistance=Math.abs(gridRatio*(token1x-token2x));
+        let yDistance=Math.abs(gridRatio*(token1y-token2y));
+        let zDistance=Math.abs(gridRatio*(token1.data.elevation-token2.data.elevation));
+        
+        return Math.max(xDistance,yDistance,zDistance); 
     }
 
 }
@@ -136,7 +162,7 @@ export const isEmpty=function (obj) {
 /*
 console.log("starting item flag update")
     let actors=game.actors;
-    
+
     let weaponFlags=duplicate(game.fortyk.FORTYK.weaponFlags);
     for(let actor of actors){
         let items=actor.items;
@@ -161,7 +187,7 @@ console.log("starting item flag update")
                 if(update){
                     console.log(await actor.updateEmbeddedDocuments("Item",mod));
                 }
-                
+
             }
 
         }

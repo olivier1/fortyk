@@ -3320,7 +3320,6 @@ returns the roll message*/
                              author:actor.name};
             await ChatMessage.create(chatOptions,{});
             let id=target.data._id;
-            let effect="icons/svg/skull.svg";
             let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
 
             await this.applyActiveEffect(target,activeEffect);
