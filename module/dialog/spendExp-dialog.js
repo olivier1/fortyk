@@ -160,9 +160,9 @@ export class SpendExpDialog extends Application {
         }else if(this.options.mode==="Skill Upgrade"){
             let skill=this.options.chosenSkill;
             let skillUpgrade=parseInt(skill.data.data.value);
-            console.log(skillUpgrade);
+         
             if(skillUpgrade===-20){skillUpgrade=0}else{skillUpgrade+=10}
-            console.log(skillUpgrade);
+        
             let name = skill.name+" +"+skillUpgrade;
             if(skill.data.data.parent.value){
                 name=skill.data.data.parent.value+": "+name;

@@ -384,8 +384,8 @@ returns the roll message*/
         }
         await ChatMessage.create(chatPhenom,{});
     }
-    //handles damage rolls and applies damage to the target, generates critical effects, doesnt do any status effects yet
-    static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0, user=game.users.current,lastHit=null){
+    //handles damage rolls and applies damage to the target, generates critical effects
+    static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0, user=game.users.current, lastHit=null, targets=null){
 
 
         let weapon=deepClone(fortykWeapon.data);
@@ -394,13 +394,13 @@ returns the roll message*/
             righteous=fortykWeapon.getFlag("fortyk","vengeful");
         }
         let ignoreSON=(fortykWeapon.type==="psychicPower"||fortykWeapon.getFlag("fortyk","force")||fortykWeapon.getFlag("fortyk","sanctified")||fortykWeapon.getFlag("fortyk","daemonbane")||fortykWeapon.getFlag("fortyk","warp"));
+
         if(!lastHit){
             lastHit=actor.data.data.secChar.lastHit;
         }
 
-
         let attackerToken=actor.getActiveTokens()[0];
-        let targets=[];
+
         let curHit={};
         var hammer=false;
         if(actor.getFlag("fortyk","hammerblow")&&lastHit.attackType==="allout"){
@@ -424,14 +424,15 @@ returns the roll message*/
             }
             targets.push(attackerToken);
         }else{
-            targets=user.targets;
-            curHit=actor.data.data.secChar.lastHit;
+
+            if(targets===null){
+                targets=user.targets;
+            }
+
+            curHit=lastHit;
         }
 
-        //spray and blast weapons always hit the body hit location
-        if(fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","spray")){
-            curHit=game.fortyk.FORTYK.extraHits["body"][0];
-        }
+
         let form=formula.value.toLowerCase();
         //peerless killer
         if(actor.getFlag("fortyk","peerlesskiller")&&lastHit.attackType==="called"){
@@ -440,16 +441,18 @@ returns the roll message*/
         //scatter weapon logic
         if(fortykWeapon.getFlag("fortyk","scatter")){
 
-            if(targets.size>0);
-            let targetIt=targets.values();
-            let target=targetIt.next().value;
-            let distance=tokenDistance(attackerToken,target);
+            if(targets.size>0){
+                let targetIt=targets.values();
+                let target=targetIt.next().value;
+                let distance=tokenDistance(attackerToken,target);
 
-            if(distance<=2||distance<=2*canvas.dimensions.distance){
-                form+="+3";
-            }else if(distance>=parseInt(weapon.data.range.value)/2){
-                form+="-3";
+                if(distance<=2||distance<=2*canvas.dimensions.distance){
+                    form+="+3";
+                }else if(distance>=parseInt(weapon.data.range.value)/2){
+                    form+="-3";
+                }
             }
+
         }
         //change formula for d5 weapons
         form=form.replace("d5","d10/2");
@@ -531,8 +534,26 @@ returns the roll message*/
             if(!self){
                 curHit=game.fortyk.FORTYK.extraHits[lastHit.value][hitNmbr];
             }
+            //spray and blast weapons always hit the body hit location
+            if(fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","spray")){
+                curHit.value="body";
+                curHit.label="Body";
+            }
+
+            //formations and hordes always get hit in the body
+            if(targets.size>0){
+                let targetIt=targets.values();
+                let target=targetIt.next().value;
+                let targetData=target.actor.data.data;
+
+                if(targetData.horde.value||targetData.formation.value){
+                    curHit.value="body";
+                    curHit.label="Body";
+
+                }
+            }
             let roll=new Roll(form,actor.data.data);
-            let label = weapon.name ? `Rolling ${weapon.name} damage.` : 'damage';
+            let label = weapon.name ? `Rolling ${weapon.name} damage to ${curHit.label}.` : 'damage';
             await roll.roll();
             //calculate righteous for non targetted rolls
             let tenz=0;
@@ -600,6 +621,7 @@ returns the roll message*/
                     tarActor=tar.actor;
                     let armorSuit=data.secChar.wornGear.armor.document;
                     let tarRighteous=righteous;
+                    
                     if(actor.getFlag("fortyk","deathwatchtraining")){
 
 
@@ -1024,7 +1046,7 @@ returns the roll message*/
                         }
                         let chatDamage=damage;
                         // true grit!@!!@
-                        if(!data.suddenDeath.value&&!data.horde.value&&(damage>0)&&(newWounds[tarNumbr]-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
+                        if(!data.suddenDeath.value&&!data.horde.value&&!data.formation.value&&(damage>0)&&(newWounds[tarNumbr]-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
                             if(newWounds[tarNumbr]>=0){
                                 chatDamage=parseInt(newWounds[tarNumbr])+parseInt(Math.max(1,(chatDamage-newWounds[tarNumbr])-data.characteristics.t.bonus));
                                 damage=damage-newWounds[tarNumbr];
@@ -1044,7 +1066,7 @@ returns the roll message*/
                         //process horde damage for different weapon qualities
                         if(data.horde.value&&damage>0){
                             damage=1+magdamage;
-                            chatDamage=1;
+                            chatDamage=1+magdamage;
                             if(weapon.data.damageType.value==="Explosive"){
                                 damage+=1;
                                 chatDamage+=1;
@@ -1071,7 +1093,27 @@ returns the roll message*/
                                 chatDamage+=additionalHits;
                             }
                         }
-
+                        //process damage against formations
+                        if(data.formation.value&&damage>0){
+                            damage=1;
+                            chatDamage=1;
+                            if(fortykWeapon.getFlag("fortyk","blast")){
+                                damage+=2;
+                                chatDamage+=2;
+                                if(righteous){
+                                    damage+=fortykWeapon.getFlag("fortyk","blast");
+                                    chatDamage+=fortykWeapon.getFlag("fortyk","blast");
+                                }
+                            }
+                            if(fortykWeapon.getFlag("fortyk","spray")){
+                                damage+=1;
+                                chatDamage+=1;
+                                if(righteous){
+                                    damage+=1;
+                                    chatDamage+=1;
+                                }
+                            }
+                        }
                         newWounds[tarNumbr]=newWounds[tarNumbr]-damage;
                         newWounds[tarNumbr]=Math.max(wounds.min,newWounds[tarNumbr]);
 
@@ -1089,7 +1131,8 @@ returns the roll message*/
 
 
                         //handle critical effects and death
-                        if(data.horde.value&&newWounds[tarNumbr]<=0){
+                        if((data.horde.value||data.formation.value)&&newWounds[tarNumbr]<=0){
+
                             await this.applyDead(tar,actor);
                             return;
                         }else if(data.suddenDeath.value&&newWounds[tarNumbr]<=0){
@@ -1101,7 +1144,7 @@ returns the roll message*/
                             await this.critEffects(tar,crit+1,curHit.value,weapon.data.damageType.value,ignoreSON);
                         }
                         //flame weapon
-                        if(!armorSuit.getFlag("fortyk","flamerepellent")&&fortykWeapon.getFlag("fortyk","flame")&&!data.horde.value){
+                        if(!armorSuit.getFlag("fortyk","flamerepellent")&&fortykWeapon.getFlag("fortyk","flame")&&!data.horde.value&&!data.formation.value){
                             let fire=await this.fortykTest("agi", "char", tarActor.data.data.characteristics.agi.total,tarActor, "Resist fire");
                             if(!fire.value){
                                 let fireActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fire")]);
@@ -1240,7 +1283,7 @@ returns the roll message*/
         if(tens>0){
             crit=true;
         }
-        if(tar!==null&&tar.actor.data.data.horde.value){crit=false}
+        if(tar!==null&&(tar.actor.data.data.horde.value||tar.actor.data.data.formation.value)){crit=false}
         //if righteous fury roll the d5 and spew out the crit result
         if(crit&&damage>0){
             let rightRoll=new Roll("1d5",actor.data.data);
@@ -3323,7 +3366,7 @@ returns the roll message*/
             let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
 
             await this.applyActiveEffect(target,activeEffect);
-      
+
 
             try{
                 let combatant = await game.combat.getCombatantByToken(id);
@@ -3332,7 +3375,7 @@ returns the roll message*/
                 update.push({"_id":combatid, 'defeated':true})
                 await game.combat.updateEmbeddedDocuments("Combatant",update) 
             }catch(err){
-               
+
             }
         }else{
             let tokenId=target.data._id;

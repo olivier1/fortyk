@@ -19,7 +19,7 @@ export class FortykRollDialogs{
         this.callRollDialog(char, type, target, actor, label, weapon , true, fireRate);
 
     }
-    
+
     //handles dealing damage if the actor doesnt drop the weapon on overheat
     static async _onOverheat(event){
         event.preventDefault();
@@ -64,7 +64,7 @@ export class FortykRollDialogs{
                             }
                             FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, reroll);
                         }
-                        
+
                     }
 
                 }
@@ -118,12 +118,34 @@ export class FortykRollDialogs{
                 templateOptions["modifiers"].testMod+=30;
             }
         }
+        if(actor.data.data.formation.value){
+            let unitStr=actor.data.data.secChar.wounds.value;
+            templateOptions["modifiers"].charge=Math.min((10+unitStr*5),60);
+            templateOptions["modifiers"].standard=Math.min(unitStr*5,60);
+        }
         let targets=game.user.targets;
+        if(targets.size>0){
+            let target=targets.values().next().value;
+            let tarActor=target.actor;
+            let tarData=tarActor.data;
+            if(tarData.data.horde.value){
+                let hordeSize=tarData.data.secChar.wounds.value;
+                if(hordeSize>=120){
+                    templateOptions["modifiers"].testMod+=60;
+                }else if(hordeSize>=90){
+                    templateOptions["modifiers"].testMod+=50;
+                }else if(hordeSize>=60){
+                    templateOptions["modifiers"].testMod+=40;
+                }else if(hordeSize>=30){
+                    templateOptions["modifiers"].testMod+=30;
+                }
+            }
+        }
         if(actor.getFlag("fortyk","fieldvivisection")&&targets.size>0){
-            
+
             let targetIt=targets.values();
             let target=targetIt.next().value;
-          
+
             let targetActor=target.actor;
             let tarRace=targetActor.data.data.race.value.toLowerCase();
             if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)){
@@ -178,9 +200,9 @@ export class FortykRollDialogs{
                         if(isNaN(surprised)){surprised=0}
                         if(isNaN(stunned)){stunned=0}
                         if(isNaN(other)){other=0}
-                        
+
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
-                         actor.data.data.secChar.lastHit.attackRange="melee";
+                        actor.data.data.secChar.lastHit.attackRange="melee";
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
                     }
 
@@ -196,16 +218,16 @@ export class FortykRollDialogs{
         let template="systems/fortyk/templates/actor/dialogs/ranged-attack-dialog.html"
         let templateOptions={};
         let itemData=item.data;
-     
+
         templateOptions["modifiers"]=duplicate(actor.data.data.secChar.attacks);
         templateOptions["size"]=game.fortyk.FORTYK.size;
-        
+
         if(itemData.data.rof[1].value||itemData.data.rof[2].value){
             templateOptions["modifiers"].supp=true;
         }else{
             templateOptions["modifiers"].supp=false;
         }
-        
+
         templateOptions["modifiers"].suppressive=itemData.data.attackMods.suppressive;
         templateOptions["modifiers"].aim=itemData.data.attackMods.aim;
         templateOptions["modifiers"].testMod=itemData.data.testMod.value;
@@ -220,6 +242,10 @@ export class FortykRollDialogs{
             }else if(hordeSize>=30){
                 templateOptions["modifiers"].testMod+=30;
             }
+        }
+        if(actor.data.data.formation.value){
+            let unitStr=actor.data.data.secChar.wounds.value;
+            templateOptions["modifiers"].standard=Math.min(unitStr*5,60);
         }
         templateOptions["modifiers"].inaccurate=item.getFlag("fortyk","innacurate");
 
@@ -250,7 +276,7 @@ export class FortykRollDialogs{
             }
 
         }
-        
+
         if(parseInt(rofSemi)===0){
             templateOptions["semi"]=false;
         }else{
@@ -319,13 +345,29 @@ export class FortykRollDialogs{
         templateOptions["options"].normal=true;
         //field vivisection
         let targets=game.user.targets;
-        
-      
+
+        if(targets.size>0){
+            let target=targets.values().next().value;
+            let tarActor=target.actor;
+            let tarData=tarActor.data;
+            if(tarData.data.horde.value){
+                let hordeSize=tarData.data.secChar.wounds.value;
+                if(hordeSize>=120){
+                    templateOptions["modifiers"].testMod+=60;
+                }else if(hordeSize>=90){
+                    templateOptions["modifiers"].testMod+=50;
+                }else if(hordeSize>=60){
+                    templateOptions["modifiers"].testMod+=40;
+                }else if(hordeSize>=30){
+                    templateOptions["modifiers"].testMod+=30;
+                }
+            }
+        }
         if(actor.getFlag("fortyk","fieldvivisection")&&targets.size>0){
-            
+
             let targetIt=targets.values();
             let target=targetIt.next().value;
-          
+
             let targetActor=target.actor;
             let tarRace=targetActor.data.data.race.value.toLowerCase();
             if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)){
@@ -448,7 +490,7 @@ export class FortykRollDialogs{
 
 
                         await item.update({"data.clip.value":curAmmo-rof});
-                        
+
                         //convert unchosen checkboxes into 0s
                         if(isNaN(running)){running=0}
                         if(isNaN(guarded)){guarded=0}
@@ -460,12 +502,12 @@ export class FortykRollDialogs{
                         if(isNaN(other)){other=0}
                         if(isNaN(melee)){melee=0} 
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(melee);
-                         actor.data.data.secChar.lastHit.attackRange=attackRange;
+                        actor.data.data.secChar.lastHit.attackRange=attackRange;
                         await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType);
                         if(aimBonus>0){
                             await actor.update({"data.secChar.lastHit.aim":true});
                             actor.data.data.secChar.lastHit.aim=true;
-                            
+
                         }else{
                             await actor.update({"data.secChar.lastHit.aim":false});
                         }
@@ -497,12 +539,12 @@ export class FortykRollDialogs{
 
 
 
-                        
+
                         let other = Number($(html).find('input[name="other"]').val());
-                       
-                       
+
+
                         testTarget=parseInt(testTarget)+parseInt(other);
-                         
+
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
                     }
 

@@ -205,12 +205,14 @@ Hooks.once('ready', async function() {
                     if(!fortykWeapon.data.data.isPrepared){
                         fortykWeapon.prepareData();
                     }
+                    let targetIds=data.package.targets;
                     let lastHit=data.package.lastHit;
                     let hits=data.package.hits;
                     let magdamage=data.package.magdmg;
                     let extraPen=data.package.pen;
-
-                    FortykRolls.damageRoll(formula,actor,fortykWeapon,hits, false, false,magdamage,extraPen, user, lastHit);
+                    let targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
+                    targets=new Set(targets);
+                    FortykRolls.damageRoll(formula,actor,fortykWeapon,hits, false, false,magdamage,extraPen, user, lastHit, targets);
                     break;
                 case "reportDamage":
                     let targetId=data.package.target;
@@ -531,20 +533,20 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
     }
 
 
-    if(wounds&&tokenActor.data.data.horde.value||size){
+    if(wounds&&(tokenActor.data.data.horde.value||tokenActor.data.data.formation.value)||size){
 
 
-        if(tokenActor.data.data.horde.value){
+        if(tokenActor.data.data.horde.value||tokenActor.data.data.formation.value){
             newSize= data.data.secChar.wounds.value;
             if(newSize<0){newSize=0}
         }else{
             newSize= data.data.secChar.size.value;
         }
 
-        if ( (!tokenActor.data.data.horde.value&&newSize && (newSize !== tokenActor.data.data.secChar.size.value))||(tokenActor.data.data.horde.value&&newSize!==undefined && (newSize !== tokenActor.data.data.secChar.wounds.value)) ) {
+        if ( (!tokenActor.data.data.horde.value&&!tokenActor.data.data.formation.value&&newSize && (newSize !== tokenActor.data.data.secChar.size.value))||((tokenActor.data.data.horde.value||tokenActor.data.data.formation.value)&&newSize!==undefined && (newSize !== tokenActor.data.data.secChar.wounds.value)) ) {
 
             let size= 0;
-            if(tokenActor.data.data.horde.value){
+            if(tokenActor.data.data.horde.value||tokenActor.data.data.formation.value){
                 size= FORTYKTABLES.hordeSizes[newSize];
             }else{
                 size= game.fortyk.FORTYK.size[newSize].size;

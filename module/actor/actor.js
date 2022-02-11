@@ -116,24 +116,25 @@ export class FortyKActor extends Actor {
             }
 
 
-            if(wounds&&this.data.data.horde.value||size){
+            if(wounds&&(this.data.data.horde.value||this.data.data.formation.value)||size){
 
 
-                if(this.data.data.horde.value){
+                if(this.data.data.horde.value||this.data.data.formation.value){
                     newSize= data["data.secChar.wounds.value"];
                     if(newSize<0){newSize=0}
                 }else{
                     newSize= data["data.secChar.size.value"];
                 }
 
-                if ( (!this.data.data.horde.value&&newSize && (newSize !== this.data.data.secChar.size.value))||(this.data.data.horde.value&&newSize!==undefined && (newSize !== this.data.data.secChar.wounds.value)) ) {
+                if ( (!this.data.data.horde.value&&!this.data.data.formation.value&&newSize && (newSize !== this.data.data.secChar.size.value))||((this.data.data.horde.value||this.data.data.formation.value)&&newSize!==undefined && (newSize !== this.data.data.secChar.wounds.value)) ) {
 
                     let size= 0;
-                    if(this.data.data.horde.value){
+                    if(this.data.data.horde.value||this.data.data.formation.value){
                         size= FORTYKTABLES.hordeSizes[newSize];
                     }else{
                         size= game.fortyk.FORTYK.size[newSize].size;
                     }
+                    console.log(size)
                     if ( this.isToken ) this.token.update({height: size, width: size});
                     else if ( !data["token.width"] && !hasProperty(data, "token.width") ) {
                         data["token.height"] = size;

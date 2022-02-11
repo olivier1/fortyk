@@ -62,12 +62,20 @@
                         <input type="text" class="combat-resources" data-target="data.secChar.fate.max" value="{{data.secChar.fate.max}}" data-dtype="Number"/>
                     </div>
                 </div>
+
                 <div class="resource flex-group-center">
                     <label  class="resource-label">Horde</label>
                     <div class="resource-content flex-group-center">
                         <input type="checkbox" name="data.horde.value" {{checked data.horde.value}}>
                     </div>
                 </div>
+                <div class="resource flex-group-center">
+                    <label  class="resource-label">Formation</label>
+                    <div class="resource-content flex-group-center">
+                        <input type="checkbox" name="data.formation.value" {{checked data.formation.value}}>
+                    </div>
+                </div>
+
                 <div class="resource flex-group-center">
                     <label  class="resource-label">Sudden Death</label>
                     <div class="resource-content flex-group-center">
@@ -637,7 +645,7 @@ Stays commented until the parse script works
                             <label class="list-item"><a class="buff-debuff button" data-label="{{power.name}}"data-power="{{power._id}}">Apply Buff/Debuff</a></label>
                             {{/if}}
                             <div class="list-item flexrow">
-                                
+
                                 <a class="item-edit" title="Edit Power" data-item-id="{{power._id}}"></a>
                                 <a class="item-delete" title="Delete Power" data-item-id="{{power._id}}"></a>
                             </div>

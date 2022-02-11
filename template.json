@@ -413,6 +413,10 @@
                 "horde":{
                     "value": false,
                     "type": "Boolean"
+                },
+                "formation":{
+                    "value": false,
+                    "type": "Boolean"
                 }
             },
             "player": {

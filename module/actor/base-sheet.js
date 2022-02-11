@@ -661,8 +661,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                 FortykRolls.damageRoll(formula,actor,fortykWeapon,hits,false,false,magdmg,pen); 
                             }else{
                                 //if user isnt GM use socket to have gm process the damage roll
+                                let targets=game.user.targets.ids;
                                 let lastHit=this.actor.data.data.secChar.lastHit
-                                let socketOp={type:"damageRoll",package:{formula:formula,actor:actor.id,fortykWeapon:fortykWeapon.id,hits:hits,magdmg:magdmg,pen:pen,user:game.user.id,lastHit:lastHit}}
+                                let socketOp={type:"damageRoll",package:{formula:formula,actor:actor.id,fortykWeapon:fortykWeapon.id,hits:hits,magdmg:magdmg,pen:pen,user:game.user.id,lastHit:lastHit,targets:targets}}
                                 game.socket.emit("system.fortyk",socketOp);
                             }
 
