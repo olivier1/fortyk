@@ -169,20 +169,25 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         if(!this.updateObj){
             this.updateObj={};
         }
-
         let actor=this.actor;
         let target=event.target.attributes["data-target"].value;
-        let newAmt=event.target.value;
+        let newAmt=parseFloat(event.target.value);
 
-        let oldValue=objectByString(actor.data,target);
-        if(oldValue!=newAmt){
+        let oldValue=parseFloat(objectByString(actor.data,target));
+
+        if((oldValue!=newAmt)){
+
             this.updateObj[target]=newAmt;
-            if(!event.relatedTarget||($(event.relatedTarget).prop("class").indexOf("combat-resources") === -1)) {
 
-                await actor.update(this.updateObj);
-                this.updateObj=undefined;
 
-            }
+
+
+        }
+        let updateNmbr=Object.keys(this.updateObj).length;
+        if(updateNmbr>0&&(!event.relatedTarget||($(event.relatedTarget).prop("class").indexOf("combat-resources") === -1))) {
+
+            await actor.update(this.updateObj);
+            this.updateObj=undefined;
 
         }
 
@@ -626,7 +631,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         event.preventDefault();
         const element = event.currentTarget;
         const dataset = element.dataset;
-        
+
         if(dataset.weapon){
 
             let actor=this.actor;
