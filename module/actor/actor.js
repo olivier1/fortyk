@@ -290,6 +290,8 @@ export class FortyKActor extends Actor {
                 }
                 if(item.type==="armor"&&item.data.isEquipped){
                     data.secChar.wornGear.armor=item;
+                    //set max agi from equipped armor
+                    data.characteristics.agi.max=item.data.maxAgi.value;
                 }
                 if(item.type==="forceField"&&item.data.isEquipped){
                     data.secChar.wornGear.forceField=item;
@@ -446,12 +448,16 @@ export class FortyKActor extends Actor {
    */
     _prepareCharacterData(actorData) {
         const data = actorData.data;
+     
+
+        
         //prepare characteristics data
         for (let [key, char] of Object.entries(data.characteristics)){
             if(key==="inf"){
                 char.total=Math.min(char.total,char.max);
             }else{
                 char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod);
+                char.total=Math.min(char.total,char.max);
                 char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
                 char.total+=parseInt(data.globalMOD.value);
 
@@ -568,6 +574,7 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","machine")&&!isNaN(parseInt(this.getFlag("fortyk","machine")))){
             machine=parseInt(this.getFlag("fortyk","machine"));
         }
+        //natural armor
         let natural=0;
         if(this.getFlag("fortyk","naturalarmor")&&!isNaN(parseInt(this.getFlag("fortyk","naturalarmor")))){
             natural=parseInt(this.getFlag("fortyk","naturalarmor"));
@@ -865,7 +872,7 @@ export class FortyKActor extends Actor {
 
         })
 
-        
+
 
 
 

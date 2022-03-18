@@ -952,7 +952,7 @@
                 "equippable"
             ],
             "maxAgi": {
-                "value": 0,
+                "value": 100,
                 "type": "Number"
             },
             "ap": {
