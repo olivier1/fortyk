@@ -425,7 +425,7 @@ FORTYK.weaponFlags={
     "storm": {
         "value": false,
         "label": "Storm",
-        "description": "Firing with a hail of shots, these weapons strike so rapidly that enemies are filled with metal in an instant. This quality doubles the number of hits the weapon inflicts on the target and the amount of ammunition expended. For example, when firing a weapon with the Storm quality in fully automatic mode, each degree of success yields two additional hits (up to the weapon’s firing rate, as normal)."
+        "description": "A weapon with the Storm Quality unleashes shots at rapid speed, often through use of a double-barrelled design. This Quality doubles the number of hits inflicted on the target and the amount of ammunition expended. For example, when firing a weapon with the Storm Quality in fully automatic mode, each degree of success yields two additional hits (to a maximum of twice the weapon’s Full Automatic rate of fire). When evading hits from a weapon with the storm quality, 2 hits are evaded per degree of success."
     },
     "tainted": {
         "value": false,
@@ -514,7 +514,7 @@ FORTYK.StatusEffects = [
         flags: { core: { statusId: "running" } },
         duration:{
 
-            rounds:1
+            rounds:0
         }
     },
     {
@@ -524,7 +524,7 @@ FORTYK.StatusEffects = [
         flags: { core: { statusId: "totalDef" } },
         duration:{
 
-            rounds:1
+            rounds:0
         }
     },
     {

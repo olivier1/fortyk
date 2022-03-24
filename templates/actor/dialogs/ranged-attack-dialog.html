@@ -19,17 +19,30 @@
                 <input type="radio" name="attack-type" value="{{modifiers.suppressive}}" index='3' attacktype="full"label="Suppressing Fire"><label>Suppressing Fire: {{modifiers.suppressive}}</label>
             </div>
 
-            <div class="list-item flexrow" {{#unless single}} hidden{{/unless}}>
+            <div class="list-item flexcol">
+                <div class="flexrow">
+                    <input type="radio" name="attack-type" value="{{modifiers.called}}" index='0' label="Called Shot" attacktype="called"><label>Called Shot: {{modifiers.called}}</label>
+                    <select name="calledLoc">
+                        <option value="9">Head</option>
+                        <option value="69">Body</option>
+                        <option value="29">Left Arm</option>
+                        <option value="19">Right Arm</option>
+                        <option value="84">Left Leg</option>
+                        <option value="99">Right Leg</option>
+                    </select>
+                </div>
+                {{debug this}}
+                {{#if fieldPractice}}
+                <div class="flexrow">
+                    <label>Critical:</label>
+                    <select name="fieldPracticeAmt">
+                        {{#each fieldPractice}}
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                    </select>
+                </div>
 
-                <input type="radio" name="attack-type" value="{{modifiers.called}}" index='0' attacktype="called" label="Called Shot" ><label>Called Shot: {{modifiers.called}}</label>
-                <select name="calledLoc">
-                    <option value="9">Head</option>
-                    <option value="69">Body</option>
-                    <option value="29">Left Arm</option>
-                    <option value="19">Right Arm</option>
-                    <option value="84">Left Leg</option>
-                    <option value="99">Right Leg</option>
-                </select>
+                {{/if}}
             </div>
             <div class="list-item flexrow">
 

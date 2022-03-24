@@ -26,17 +26,30 @@
 
                 <input type="radio" name="attack-type" value="{{modifiers.stun}}" label="Stun"attacktype="stun"><label>Stun: {{modifiers.stun}}</label>
             </div>
-            <div class="list-item flexrow">
+            <div class="list-item flexcol">
+                <div class="flexrow">
+                    <input type="radio" name="attack-type" value="{{modifiers.called}}" label="Called Shot" attacktype="called"><label>Called Shot: {{modifiers.called}}</label>
+                    <select name="calledLoc">
+                        <option value="9">Head</option>
+                        <option value="69">Body</option>
+                        <option value="29">Left Arm</option>
+                        <option value="19">Right Arm</option>
+                        <option value="84">Left Leg</option>
+                        <option value="99">Right Leg</option>
+                    </select>
+                </div>
 
-                <input type="radio" name="attack-type" value="{{modifiers.called}}" label="Called Shot" attacktype="called"><label>Called Shot: {{modifiers.called}}</label>
-                <select name="calledLoc">
-                    <option value="9">Head</option>
-                    <option value="69">Body</option>
-                    <option value="29">Left Arm</option>
-                    <option value="19">Right Arm</option>
-                    <option value="84">Left Leg</option>
-                    <option value="99">Right Leg</option>
-                </select>
+                {{#if fieldPractice}}
+                <div class="flexrow">
+                    <label>Critical:</label>
+                    <select name="fieldPracticeAmt">
+                        {{#each fieldPractice}}
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+
+                {{/if}}
             </div>
             <div class="list-item flexrow">
 
@@ -148,16 +161,16 @@
 
             </div>
             <select class="size" name="size">
-                
+
                 {{#if options.size}}
                 {{#each size}}
                 <option value="{{this.mod}}" {{#if (equals @index ../options.size)}}selected{{/if}}>{{this.name}}</option>
-              
+
                 {{/each}}
                 {{else}}
                 {{#each size}}
                 <option value="{{this.mod}}" {{#if (contains this.name "average")}}selected{{/if}}>{{this.name}}</option>
-               
+
                 {{/each}}
                 {{/if}}
             </select>

@@ -404,6 +404,10 @@
                     "mod": {
                         "value": 0,
                         "type": "Number"
+                    },
+                    "phenomena":{
+                        "value":0,
+                        "type":"Number"
                     }
                 },
                 "suddenDeath": {

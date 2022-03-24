@@ -225,6 +225,7 @@ returns the roll message*/
             }
         }
         //logic for psychic phenomena and perils of the warp
+        console.log(type)
         if(type==="focuspower"){
             let psykerType=actor.data.data.psykana.psykerType.value;
             let basePR=actor.data.data.psykana.pr.effective;
@@ -242,7 +243,7 @@ returns the roll message*/
                     phenom=true;
                 }
                 if(phenom){
-                    let mod=0;
+                    let mod=parseInt(actor.data.data.psykana.phenomena.value);
                     let sustain=parseInt(actor.data.data.psykana.pr.sustain);
                     if(sustain>1){
                         mod=(sustain-1)*10;
@@ -264,6 +265,7 @@ returns the roll message*/
                     });
                     let phenomResult=parseInt(psyRoll._total);
                     if(phenomResult>100){phenomResult=100};
+                    if(phenomResult<1){phenomResult=1};
                     if(phenomResult>75){perils=true};
                     let phenomMessage=FORTYKTABLES.psychicPhenomena[phenomResult];
                     let chatPhenom={user: game.user._id,
@@ -628,9 +630,18 @@ returns the roll message*/
                         let targetRace=data.race.value.toLowerCase();
                         let forRaces=actor.data.flags.fortyk.deathwatchtraining;
 
-
+                        var toxic=fortykWeapon.data.flags.toxic;
                         if(forRaces.includes(targetRace)){
                             tarRighteous-=1;
+                            if(actor.getFlag("fortyk","ailments")){
+                                console.log("hello")
+                                let ailmentAmt=Math.ceil(actor.data.data.characteristics.int.bonus/2);
+                                if(toxic){
+                                    toxic+=ailmentAmt;
+                                }else{
+                                    toxic=ailmentAmt;
+                                }
+                            }
                         }
 
                     }
@@ -912,13 +923,13 @@ returns the roll message*/
                             }
                         }
                         //toxic weapon logic
-                        if(damage>0&&fortykWeapon.getFlag("fortyk","toxic")){
-                            let toxicMod=fortykWeapon.getFlag("fortyk","toxic")*10;
+                        if(damage>0&&toxic){
+                            let toxicMod=toxic*10;
                             if(tarActor.getFlag("fortyk","resistance")&&tarActor.getFlag("fortyk","resistance").toLowerCase().includes("toxic")){
                                 toxicMod=-10;
                             }
-                            let toxic=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total-toxicMod),tarActor, "Resist toxic");
-                            if(!toxic.value){
+                            let toxicTest=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total-toxicMod),tarActor, `Resist toxic ${toxic}`);
+                            if(!toxicTest.value){
                                 let toxicDmg=new Roll("1d10",{});
                                 await toxicDmg.roll();
                                 await toxicDmg.toMessage({
@@ -964,7 +975,17 @@ returns the roll message*/
                                                 author:actor.name};
                             await ChatMessage.create(crippleOptions,{});
                         }
-
+                        //apply field practitioner critical
+                        if(lastHit.fieldPractice&&damage>0){
+                            let practiceOptions={user: user._id,
+                                                speaker:{tarActor,alias:tarActor.name},
+                                                content:`Field Practitioner Critical Hit!`,
+                                                classes:["fortyk"],
+                                                flavor:`Field Practitioner`,
+                                                author:actor.name};
+                            await ChatMessage.create(practiceOptions,{});
+                            await this.critEffects(tar,lastHit.fieldPractice,curHit.value,weapon.data.damageType.value,ignoreSON);
+                        }
                         //check for righteous fury
                         let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar,ignoreSON);
                         if(crit&&damage<=0){

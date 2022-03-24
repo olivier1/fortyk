@@ -147,9 +147,17 @@ export class FortykRollDialogs{
             let target=targetIt.next().value;
 
             let targetActor=target.actor;
-            let tarRace=targetActor.data.data.race.value.toLowerCase();
+            var tarRace=targetActor.data.data.race.value.toLowerCase();
             if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)){
                 templateOptions["modifiers"].called+=actor.data.data.fieldVivisection;
+                if(actor.getFlag("fortyk","fieldpractitioner")){
+                    let praticeArray=[];
+                    var practiceMax=Math.ceil(actor.data.data.characteristics.int.bonus/2);
+                    for(let i=1;i<=practiceMax;i++){
+                        praticeArray.push(i);
+                    }
+                    templateOptions.fieldPractice=praticeArray;
+                }
             }
         }
         let renderedTemplate= await renderTemplate(template,templateOptions);
@@ -185,7 +193,15 @@ export class FortykRollDialogs{
                         if(attackType==="called"){
 
                             update["data.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
-
+                            if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
+                                
+                                    
+                                    update["data.secChar.lastHit.fieldPractice"]=$(html).find('select[name="fieldPracticeAmt"] option:selected').val();
+                            }else{
+                            update["data.secChar.lastHit.fieldPractice"]=null;
+                            }
+                        }else{
+                            update["data.secChar.lastHit.fieldPractice"]=null;
                         }
                         await actor.update(update);
                         if(html.find('input[name="guarded"]').is(':checked')){
@@ -343,7 +359,7 @@ export class FortykRollDialogs{
         templateOptions["options"].size=modifiers.size;
         templateOptions["options"].running=modifiers.running;
         templateOptions["options"].normal=true;
-        //field vivisection
+        //target specific changes
         let targets=game.user.targets;
 
         if(targets.size>0){
@@ -369,9 +385,17 @@ export class FortykRollDialogs{
             let target=targetIt.next().value;
 
             let targetActor=target.actor;
-            let tarRace=targetActor.data.data.race.value.toLowerCase();
+            var tarRace=targetActor.data.data.race.value.toLowerCase();
             if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)){
                 templateOptions["modifiers"].called+=actor.data.data.fieldVivisection;
+                if(actor.getFlag("fortyk","fieldpractitioner")){
+                    let praticeArray=[];
+                    var practiceMax=Math.ceil(actor.data.data.characteristics.int.bonus/2);
+                    for(let i=1;i<=practiceMax;i++){
+                        praticeArray.push(i);
+                    }
+                    templateOptions.fieldPractice=praticeArray;
+                }
             }
         }
         //distance shenanigans
@@ -471,7 +495,15 @@ export class FortykRollDialogs{
                         if(attackType==="called"){
 
                             update["data.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
-
+                            if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
+                                
+                                    
+                                    update["data.secChar.lastHit.fieldPractice"]=$(html).find('select[name="fieldPracticeAmt"] option:selected').val();
+                            }else{
+                            update["data.secChar.lastHit.fieldPractice"]=null;
+                            }
+                        }else{
+                            update["data.secChar.lastHit.fieldPractice"]=null;
                         }
                         await actor.update(update);
                         //spend ammo on gun

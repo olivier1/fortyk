@@ -67,6 +67,7 @@ export class FortyKItem extends Item {
 
 
             if(item.type==="psychicPower"){
+                let pr=parseInt(item.data.curPR.value);
                 if(data.psykana.psykerType.value.toLowerCase()==="navigator"){
                     let range=item.data.range.formula.toLowerCase();
 
@@ -96,7 +97,7 @@ export class FortyKItem extends Item {
                     item.data.target.value=char+training;
                 }else{
                     try{
-                        let pr=parseInt(item.data.curPR.value);
+                        
                         let range=item.data.range.formula.toLowerCase();
                         let wp=data.characteristics.wp.bonus;
                         item.data.range.value=eval(range);
