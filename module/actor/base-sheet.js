@@ -581,6 +581,21 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             testTarget+=parseInt(rating);
         }
         var item=null;
+        
+
+
+        if(dataset["itemId"]){
+            item=await this.actor.items.get(dataset["itemId"]);
+
+            if(!item.data.data.isPrepared){
+                await item.prepareData();
+            }
+        }
+
+        if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
+            await FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
+            return;
+        }
         let attackOptions={
         }
         let targets=game.user.targets;
@@ -606,18 +621,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             attackOptions.distance=tokenDistance(target, attacker);
 
         }
-        if(dataset["itemId"]){
-            item=await this.actor.items.get(dataset["itemId"]);
-
-            if(!item.data.data.isPrepared){
-                await item.prepareData();
-            }
-        }
-
-        if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
-            await FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
-
-        }else if(testType==="meleeAttack"){
+        if(testType==="meleeAttack"){
             FortykRollDialogs.callMeleeAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
         }else if(testType==="rangedAttack"){
             FortykRollDialogs.callRangedAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);

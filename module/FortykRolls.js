@@ -683,7 +683,7 @@ returns the roll message*/
 
                         //killers eye
 
-                        if(actor.getFlag("fortyk","killerseye")&&lastHit.attackType==="called"&&(actor.data.data.secChar.lastHit.dos>=data.characteristics.agi.bonus)){
+                        if(actor.getFlag("fortyk","killerseye")&&lastHit.attackType==="called"&&(lastHit.dos>=data.characteristics.agi.bonus)){
                             let randomKiller=new Roll("1d5",{});
                             await randomKiller.roll();
                             await randomKiller.toMessage({
@@ -728,7 +728,7 @@ returns the roll message*/
                                     await ChatMessage.create(smiteOptions,{});
                                 }
                             }
-                            if(fortykWeapon.getFlag("fortyk","razorsharp")&&actor.data.data.secChar.lastHit.dos>=3){
+                            if(fortykWeapon.getFlag("fortyk","razorsharp")&&lastHit.dos>=3){
                                 pen=pen*2;
                                 let razorOptions={user: user._id,
                                                   speaker:{actor,alias:actor.name},
@@ -871,10 +871,10 @@ returns the roll message*/
                             await ChatMessage.create(gravitonOptions,{});
                         }
                         //accurate weapon logic
-                        if(fortykWeapon.getFlag("fortyk","accurate")&&actor.data.data.secChar.lastHit.aim){
+                        if(fortykWeapon.getFlag("fortyk","accurate")&&lastHit.aim){
                             let distance=tokenDistance(attackerToken,tar);
                             if(distance>10){
-                                let accDice=Math.min(fortykWeapon.getFlag("fortyk","accurate"),Math.ceil((actor.data.data.secChar.lastHit.dos-1)/2));
+                                let accDice=Math.min(fortykWeapon.getFlag("fortyk","accurate"),Math.ceil((lastHit.dos-1)/2));
                                 let accForm=accDice+"d10"
                                 let accRoll=new Roll(accForm,{});
                                 await accRoll.roll();
