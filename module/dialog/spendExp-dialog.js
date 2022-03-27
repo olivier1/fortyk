@@ -399,8 +399,10 @@ export class SpendExpDialog extends Application {
         for(const apt in actorAptitudes){
 
             let apti=actorAptitudes[apt];
+            
             splitAptitudes.forEach(function(aptStr){
-                if(aptStr===apti){matchingAptitudes+=1;}
+                
+                if(aptStr.includes(apti)){matchingAptitudes+=1;}
             });
         }
         if(matchingAptitudes>2){matchingAptitudes=2};
