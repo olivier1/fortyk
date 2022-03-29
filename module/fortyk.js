@@ -255,7 +255,8 @@ Hooks.once('ready', async function() {
 
                     break;
                 case "perilsRoll":
-                    FortykRolls.perilsOfTheWarp();
+                    let ork=data.package.ork;
+                    FortykRolls.perilsOfTheWarp(ork);
                     break;
 
             }

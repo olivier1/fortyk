@@ -225,7 +225,7 @@ returns the roll message*/
             }
         }
         //logic for psychic phenomena and perils of the warp
-        console.log(type)
+     
         if(type==="focuspower"){
             let psykerType=actor.data.data.psykana.psykerType.value;
             let basePR=actor.data.data.psykana.pr.effective;
@@ -258,32 +258,47 @@ returns the roll message*/
                         }
                     }
                     let psyRoll=new Roll("1d100+@mod",{mod:mod})
+                    let psyFlavor="Psychic Phenomena!";
+                    if(actor.data.data.race.value==="Ork"){
+                        psyFlavor="Perils of the Waaagh!";
+                    }
                     await psyRoll.roll();
                     await psyRoll.toMessage({
                         speaker: ChatMessage.getSpeaker({ actor: actor }),
-                        flavor: "Psychic Phenomena!"
+                        flavor: psyFlavor
                     });
                     let phenomResult=parseInt(psyRoll._total);
                     if(phenomResult>100){phenomResult=100};
                     if(phenomResult<1){phenomResult=1};
                     if(phenomResult>75){perils=true};
-                    let phenomMessage=FORTYKTABLES.psychicPhenomena[phenomResult];
+                    let phenomMessage="";
+                    let flavor="";
+                    var ork=false;
+                    if(actor.data.data.race.value==="Ork"){
+                        phenomMessage=FORTYKTABLES.weirdFings[phenomResult];
+                        flavor="Weird Fing!"
+                        ork=true;
+                    }else{
+                       phenomMessage=FORTYKTABLES.psychicPhenomena[phenomResult]; 
+                        flavor="Psychic Phenomenom!"
+                    }
+                    
                     let chatPhenom={user: game.user._id,
                                     speaker:{actor,alias:actor.name},
                                     content:phenomMessage,
                                     classes:["fortyk"],
-                                    flavor:"Psychic Phenomenom!",
+                                    flavor:flavor,
                                     author:actor.name};
                     await ChatMessage.create(chatPhenom,{});
                 }
 
                 if(perils){
                     if(game.user.isGM){
-                        this.perilsOfTheWarp();
+                        this.perilsOfTheWarp(ork);
                     }else{
                         //if user isnt GM use socket to have gm roll the perils result
 
-                        let socketOp={type:"perilsRoll",package:{}}
+                        let socketOp={type:"perilsRoll",package:{ork:ork}}
                         await game.socket.emit("system.fortyk",socketOp);
                     }
 
@@ -355,7 +370,7 @@ returns the roll message*/
         return result;
     }
     //rolls a result on the perils of the warp table, checks if the roll should be private or not
-    static async perilsOfTheWarp(){
+    static async perilsOfTheWarp(ork=false){
         let rollMode="";
         if(game.settings.get("fortyk","privatePerils")){
             rollMode="gmroll";
@@ -363,20 +378,25 @@ returns the roll message*/
             rollMode="default";
         }
         let perilsRoll=new Roll("1d100",{});
+        let perilsFlavor="Perils of the Warp!!";
+        if(ork){
+            perilsFlavor="'Eadbang!"
+        }
         await perilsRoll.roll();
         await perilsRoll.toMessage({
             speaker: ChatMessage.getSpeaker({ user: game.users.current }),
-            flavor: "Perils of the Warp!!"
+            flavor: perilsFlavor
 
         },{rollMode:rollMode});
         let perilsResult=parseInt(perilsRoll._total);
         if(perilsResult>100){perilsResult=100};
         let perilsMessage=FORTYKTABLES.perils[perilsResult];
+        if(ork){perilsMessage=FORTYKTABLES.eadBang[perilsResult]}
         let chatPhenom={user: game.users.current,
                         speaker:{user: game.users.current},
                         content:perilsMessage,
                         classes:["fortyk"],
-                        flavor:"Perils of the Warp!!",
+                        flavor:perilsFlavor,
                         author:game.users.current
                        };
         if(game.settings.get("fortyk","privatePerils")){
@@ -1306,7 +1326,19 @@ returns the roll message*/
         }
         if(tar!==null&&(tar.actor.data.data.horde.value||tar.actor.data.data.formation.value)){crit=false}
         //if righteous fury roll the d5 and spew out the crit result
+        if(tar!==null&&crit&&tar.actor.data.data.suddenDeath.value){
+            let chatOptions={user: game.user._id,
+                             speaker:{actor,alias:actor.name},
+                             content:`Righteous Fury kills ${tar.name}!`,
+                             classes:["fortyk"],
+                             flavor:`Righteous Fury!`,
+                             author:actor.name};
+            await ChatMessage.create(chatOptions,{});
+            this.applyDead(tar,actor);
+            return true;
+        }
         if(crit&&damage>0){
+            
             let rightRoll=new Roll("1d5",actor.data.data);
             await rightRoll.roll();
             rightRoll.toMessage({
