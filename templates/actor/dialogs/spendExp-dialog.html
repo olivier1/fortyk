@@ -2,7 +2,7 @@
 
     <select class="mode">
         {{#select mode}}
-        {{#each FORTYK.advancementTypes}}
+        {{#each advancementTypes}}
         <option value="{{this}}">{{this}}</option>
         {{/each}}
         {{/select}}
@@ -21,6 +21,9 @@
     {{/if}}
     {{#if (compareString mode "Talent")}}
     {{> "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/talent.html"}}
+    {{/if}}
+    {{#if (compareString mode "Signature Wargear")}}
+    {{> "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/signature-wargear.html"}}
     {{/if}}
     <div class="grid grid-3col">
         <span class="cost-header">Cost </span><span class="cost-header">Character Exp </span><span class="cost-header">Remaining Exp </span>

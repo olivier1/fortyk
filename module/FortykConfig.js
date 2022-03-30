@@ -214,6 +214,11 @@ FORTYK.weaponFlags={
         "label": "Blast",
         "description": "Attacks from this weapon explode on impact, hurling debris and shrapnel in all directions. When working out a hit from a Blast weapon, anyone within the weapon’s blast radius in metres, indicated by the number in parentheses, is also suffers a single hit from the weapon. Roll damage once and apply it to each character affected by the blast. A Blast weapon also scatters when the user fails his Ballistic Skill test when firing it (see page 230)."
     },
+    "bulwark": {
+        "value":false,
+        "label":"Bulwark",
+        "description":"Shields with this trait extend their AP to all hit locations except the head when the wearer is prone."
+    },
     "concussive": {
         "value": false,
         "num": -1,

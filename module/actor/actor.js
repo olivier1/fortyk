@@ -448,9 +448,9 @@ export class FortyKActor extends Actor {
    */
     _prepareCharacterData(actorData) {
         const data = actorData.data;
-     
 
-        
+
+
         //prepare characteristics data
         for (let [key, char] of Object.entries(data.characteristics)){
             if(key==="inf"){
@@ -564,10 +564,21 @@ export class FortyKActor extends Actor {
         if(rightHandWeaponData!==undefined&&rightHandWeaponData.type!=="rangedWeapon"){
             data.characterHitLocations.rArm.shield= parseInt(rightHandWeaponData.data.shield.value);
             data.characterHitLocations.body.shield= parseInt(rightHandWeaponData.data.shield.value);
+            console.log(rightHandWeaponData,this)
+            if(rightHandWeaponData.flags.fortyk.bulwark&&this.getFlag("core","prone")){
+                data.characterHitLocations.lArm.shield=parseInt(rightHandWeaponData.data.shield.value);
+                data.characterHitLocations.lLeg.shield=parseInt(rightHandWeaponData.data.shield.value);
+                data.characterHitLocations.rLeg.shield=parseInt(rightHandWeaponData.data.shield.value);
+            }
         }
         if(leftHandWeaponData!==undefined&&leftHandWeaponData.type!=="rangedWeapon"){
             data.characterHitLocations.lArm.shield= parseInt(leftHandWeaponData.data.shield.value);
             data.characterHitLocations.body.shield= parseInt(leftHandWeaponData.data.shield.value);
+            if(leftHandWeaponData.flags.fortyk.bulwark&&this.getFlag("core","prone")){
+                data.characterHitLocations.rArm.shield=parseInt(leftHandWeaponData.data.shield.value);
+                data.characterHitLocations.lLeg.shield=parseInt(leftHandWeaponData.data.shield.value);
+                data.characterHitLocations.rLeg.shield=parseInt(leftHandWeaponData.data.shield.value);
+            }
         }
         //machine
         let machine=0;

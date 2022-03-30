@@ -12,12 +12,12 @@ export class SpendExpDialog extends Application {
             height: 280,
             mode:"Custom",
             default:null,
-            heights:{"Custom":280,"Characteristic Upgrade":275,"Skill Upgrade":275,"New Skill":805,"Talent":795}
+            heights:{"Custom":280,"Characteristic Upgrade":275,"Skill Upgrade":275,"New Skill":805,"Talent":795, "Signature Wargear":360}
         });
     }
 
     async getData(){
-        
+
         this.data=super.getData();
         let data=this.data;
         let actor=this.options.actor;
@@ -26,6 +26,10 @@ export class SpendExpDialog extends Application {
         data.cost=this.options.cost;
         data.remainingExp=data.actorExp-data.cost;
         data.FORTYK=game.fortyk.FORTYK;
+        data.advancementTypes=duplicate(data.FORTYK.advancementTypes);
+        if(actor.type==="dwPC"){
+            data.advancementTypes.push("Signature Wargear");
+        }
         data.mode=this.options.mode;
         data.skills=actor.data.skills;
         data.parentSkills=data.skills.filter(skill => skill.data.hasChildren.value)
@@ -65,7 +69,10 @@ export class SpendExpDialog extends Application {
         html.find('.skill-type').change(this._onSkillTypeChange.bind(this));
         //select aptitude change
         html.find('.aptitude-select').change(this._onAptitudeChange.bind(this));
-
+        //select item rarity change
+        html.find('.rarity-select').change(this._onRarityChange.bind(this));
+        //select item quality change
+        html.find('.quality-select').change(this._onQualityChange.bind(this));
         //input custom cost
         html.find('.custom-cost').keyup(this._onCustomCost.bind(this));
         //input discount
@@ -109,6 +116,9 @@ export class SpendExpDialog extends Application {
         }else if(this.options.mode==="Talent"){
 
             let input=document.getElementById("talentfilter").select();
+        }
+        else if(this.options.mode==="Signature Wargear"){
+            let input=document.getElementById("name").select();
         }
         if(this.options.mode==="Talent"||this.options.mode==="Skill Upgrade"||this.options.mode==="Characteristic Upgrade"){
             document.getElementById("submitButton").setAttribute("disabled",true);
@@ -160,9 +170,9 @@ export class SpendExpDialog extends Application {
         }else if(this.options.mode==="Skill Upgrade"){
             let skill=this.options.chosenSkill;
             let skillUpgrade=parseInt(skill.data.data.value);
-         
+
             if(skillUpgrade===-20){skillUpgrade=0}else{skillUpgrade+=10}
-        
+
             let name = skill.name+" +"+skillUpgrade;
             if(skill.data.data.parent.value){
                 name=skill.data.data.parent.value+": "+name;
@@ -317,6 +327,20 @@ export class SpendExpDialog extends Application {
             };
             await actor.createEmbeddedDocuments("Item",[advData]);
             this.options.cost=0;
+        }else if(this.options.mode==="Signature Wargear"){
+            const wargearName = document.getElementById("name").value;
+            const itemData = {
+                name: `Signature Wargear: ${wargearName}`,
+                type: type,
+                data:{
+                    type:{value:"Signature Wargear"},
+                    cost:{value:this.options.cost}
+                }
+            };
+
+            let item=await FortyKItem.create(itemData,{temporary:true});
+            await actor.createEmbeddedDocuments("Item",[item.data]);
+            this.options.cost=0;
         }
 
         await this.render(true);
@@ -330,6 +354,8 @@ export class SpendExpDialog extends Application {
         let mode=this.options.mode;
         if(mode==="New Skill"){
             this.baseSkillCost();
+        }else if(mode==="Signature Wargear"){
+            this.options.cost=200;
         }
 
         this.position.height=this.options.heights[newMode];
@@ -399,9 +425,9 @@ export class SpendExpDialog extends Application {
         for(const apt in actorAptitudes){
 
             let apti=actorAptitudes[apt];
-            
+
             splitAptitudes.forEach(function(aptStr){
-                
+
                 if(aptStr.includes(apti)){matchingAptitudes+=1;}
             });
         }
@@ -468,6 +494,33 @@ export class SpendExpDialog extends Application {
         this.options.cost=cost;
         this._updateCost();
     }
+    async _onRarityChange(event){
+        this.calculateWargearCost();
+    }
+    async _onQualityChange(event){
+        this.calculateWargearCost();
+    }
+    calculateWargearCost(){
+        let quality=document.getElementById("quality").value;
+        let rarity=parseFloat(document.getElementById("rarity").value);
+        let cost=0;
+        console.log(quality)
+        if(rarity>=-20){
+            cost=200;  
+        }else if(rarity>=-40){
+            cost=300;
+        }else{
+            cost=400;
+        }
+        if(quality==="Good"){
+            cost=cost*1.5;
+        }else if(quality==="Best"){
+            cost=cost*2;
+        }
+        this.options.cost=cost;
+        this._updateCost();
+    }
+
     async _onDiscount(event){
         let mode=this.options.mode;
         if(mode==="Skill Upgrade"){
@@ -494,6 +547,8 @@ export class SpendExpDialog extends Application {
                 if(isNaN(tier)){tier=3};
                 this.calculateTalentCost(aptitudes,tier);
             }
+        }else if(mode==="Signature Wargear"){
+            this.calculateWargearCost();
         }
 
     }

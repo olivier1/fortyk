@@ -22,7 +22,8 @@ export const preloadHandlebarsTemplates = async function() {
         "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/characteristic.html",
         "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/skill.html",
         "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/talent.html",
-        "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/newSkill.html"
+        "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/newSkill.html",
+        "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/signature-wargear.html"
 
 
 
