@@ -97,7 +97,7 @@ export class FortyKItem extends Item {
                     item.data.target.value=char+training;
                 }else{
                     try{
-                        
+
                         let range=item.data.range.formula.toLowerCase();
                         let wp=data.characteristics.wp.bonus;
                         item.data.range.value=eval(range);
@@ -133,16 +133,22 @@ export class FortyKItem extends Item {
 
 
 
-
+                let weaponQuality=item.data.quality.value;
+                if(weaponQuality==="Poor"){
+                    item.data.testMod.value+=-10;
+                }else if(weaponQuality==="Good"){
+                    item.data.testMod.value+=5;
+                }else if(weaponQuality==="Best"){
+                    item.data.testMod.value+=10;
+                    item.data.damageFormula.value+="+1";
+                }
 
                 //ensure that a weapon that is not a shield does not have an armor rating
                 if(item.data.class.value!=="Shield"&&item.data.shield.value!==0){
                     item.data.shield.value=0;
 
                 }
-                if(item.data.quality.value==="Best"){
-                    item.data.damageFormula.value+="+1";
-                }
+
 
                 if(this.getFlag("fortyk","crushing")){
                     item.data.damageFormula.value+="+"+2*data.characteristics.s.bonus;
@@ -157,11 +163,14 @@ export class FortyKItem extends Item {
                 }else{
                     item.data.twohanded.value=false;
                 }
+                if(this.getFlag("fortyk","defensive")){
+                    item.data.testMod.value-=10;
+                }
 
             }
             if(item.type==="rangedWeapon"){
                 let ammo=actor.getEmbeddedDocument("Item",item.data.ammo._id);
-              
+
                 if(ammo!==undefined&&!ammo.data.data.default.value){
                     let ammoData=ammo.data;
                     item.data.damageType.value=ammoData.data.damageType.value;
@@ -169,7 +178,7 @@ export class FortyKItem extends Item {
                     item.data.pen.value=ammoData.data.pen.formula;
                     item.data.damageFormula.value=ammoData.data.damageFormula.formula;
                     item.flags=ammoData.flags;
-                  
+
                 }else{
                     if(!item.data.damTyp===""){
                         item.data.damageType.value=data.damTyp;
@@ -264,7 +273,15 @@ export class FortyKItem extends Item {
                         item.data.testMod.value=item._source.data.testMod.value+10;
                     }
                 }
-
+                //tainted weapon logic
+                if(this.getFlag("fortyk","tainted")){
+                    let corruptBonus=Math.floor(parseInt(actor.data.data.secChar.corruption.value)/10);
+                    let daemonic=parseFloat(actor.getFlag("fortyk","daemonic"));
+                    if(isNaN(daemonic)){daemonic=0};
+                    var taintbonus=Math.Max(corruptBonus,daemonic);
+                    item.data.damageFormula.value+=`+${taintbonus}`;
+                    item.data.pen.value+=taintbonus;
+                }
                 if(actor.data.data.horde.value){
                     let hordeDmgBonus=Math.min(2,Math.floor(actor.data.data.secChar.wounds.value/10));
                     if(actor.getFlag("fortyk","overwhelming")&&item.type==="meleeWeapon"&&actor.data.data.secChar.wounds.value>=20){
@@ -277,6 +294,18 @@ export class FortyKItem extends Item {
                     form=form.slice(dPos);
                     form=newNum+form;
                     item.data.damageFormula.value=form;
+
+                    let hordeSize=actor.data.data.secChar.wounds.value;
+                    if(hordeSize>=120){
+                        item.data.testMod.value+=60;
+                    }else if(hordeSize>=90){
+                        item.data.testMod.value+=50;
+                    }else if(hordeSize>=60){
+                        item.data.testMod.value+=40;
+                    }else if(hordeSize>=30){
+                        item.data.testMod.value+=30;
+                    }
+
                 }
 
                 try{

@@ -97,6 +97,10 @@ returns the roll message*/
                 } 
 
             }
+            //weapon instinct bonus DoS
+            if((type==="rangedAttack"||type==="meleeAttack")&&actor.getFlag("fortyk","weaponinstinct")&&fortykWeapon&&weapon.data.type.value==="Exotic"){
+                testDos+=1;
+            }
 
             templateOptions["dos"]="with "+testDos.toString()+" degree";
             if(testDos===1){}else{templateOptions["dos"]+="s";}
@@ -643,7 +647,7 @@ returns the roll message*/
                     tarActor=tar.actor;
                     let armorSuit=data.secChar.wornGear.armor.document;
                     let tarRighteous=righteous;
-                    
+                    let deathwatch=false;
                     if(actor.getFlag("fortyk","deathwatchtraining")){
 
 
@@ -652,9 +656,18 @@ returns the roll message*/
 
                         var toxic=fortykWeapon.data.flags.toxic;
                         if(forRaces.includes(targetRace)){
+                            deathwatch=true;
                             tarRighteous-=1;
+                            //Xenos bane #1
+                            if(actor.getFlag("fortyk","xenosbane")){
+                                if(toxic){
+                                    toxic++;
+                                }else{
+                                    toxic=1;
+                                }
+                            }
                             if(actor.getFlag("fortyk","ailments")){
-                                console.log("hello")
+                                
                                 let ailmentAmt=Math.ceil(actor.data.data.characteristics.int.bonus/2);
                                 if(toxic){
                                     toxic+=ailmentAmt;
@@ -715,7 +728,7 @@ returns the roll message*/
                         }
                         let soak=0;
                         let armor=parseInt(data.characterHitLocations[curHit.value].armor);
-
+                        
                         //check if weapon ignores soak
                         if(!fortykWeapon.getFlag("fortyk","ignoreSoak")){
 
@@ -748,6 +761,7 @@ returns the roll message*/
                                     await ChatMessage.create(smiteOptions,{});
                                 }
                             }
+                            //razor sharp weapons
                             if(fortykWeapon.getFlag("fortyk","razorsharp")&&lastHit.dos>=3){
                                 pen=pen*2;
                                 let razorOptions={user: user._id,
@@ -757,6 +771,17 @@ returns the roll message*/
                                                   flavor:"Razor Sharp",
                                                   author:actor.name};
                                 await ChatMessage.create(razorOptions,{});
+                            }
+                            //lance weapons
+                            if(fortykWeapon.getFlag("fortyk","lance")){
+                                pen=pen*lastHit.dos;
+                                let lanceOptions={user: user._id,
+                                                  speaker:{actor,alias:actor.name},
+                                                  content:`Lance increases penetration to ${pen}`,
+                                                  classes:["fortyk"],
+                                                  flavor:"Lance",
+                                                  author:actor.name};
+                                await ChatMessage.create(lanceOptions,{});
                             }
                             //handle melta weapons
                             if(fortykWeapon.getFlag("fortyk","melta")){
@@ -959,6 +984,7 @@ returns the roll message*/
                                 damage+=toxicDmg._total;
                             }
                         }
+                        
                         //shocking weapon logic
                         if(damage>0&&fortykWeapon.getFlag("fortyk","shocking")){
                             let shock=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total),tarActor, "Resist shocking");
@@ -1020,7 +1046,14 @@ returns the roll message*/
                                              author:actor.name};
                             await ChatMessage.create(chatOptions,{});
                         }
-
+                        //Xenos Bane Logic #2
+                        console.log(crit)
+                        if(crit&&deathwatch&actor.getFlag("fortyk","xenosbane")&&(actor.data.data.secChar.wounds.value>curWounds)){
+                            let banetest=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total),tarActor, `Resist Xenos Bane intant death!`);
+                            if(!banetest.value){
+                                this.applyDead(tarActor,actor);
+                            }
+                        }
                         //NIDITUS WEAPON
                         if((fortykWeapon.getFlag("fortyk","niditus")&&damage)>0){
                             if(tarActor.data.data.psykana.pr.value>0){

@@ -97,27 +97,9 @@ export class FortykRollDialogs{
         if(!templateOptions["options"].blindfight){
             templateOptions["options"].selfBlind=modifiers.selfBlind;
         }
-        let weaponQuality=itemData.data.quality.value;
-        if(weaponQuality==="Poor"){
-            templateOptions["modifiers"].testMod+=-10;
-        }else if(weaponQuality==="Good"){
-            templateOptions["modifiers"].testMod+=5;
-        }else if(weaponQuality==="Best"){
-            templateOptions["modifiers"].testMod+=10;
-        }
+        
         templateOptions["size"]=game.fortyk.FORTYK.size;
-        if(actor.data.data.horde.value){
-            let hordeSize=actor.data.data.secChar.wounds.value;
-            if(hordeSize>=120){
-                templateOptions["modifiers"].testMod+=60;
-            }else if(hordeSize>=90){
-                templateOptions["modifiers"].testMod+=50;
-            }else if(hordeSize>=60){
-                templateOptions["modifiers"].testMod+=40;
-            }else if(hordeSize>=30){
-                templateOptions["modifiers"].testMod+=30;
-            }
-        }
+        
         if(actor.data.data.formation.value){
             let unitStr=actor.data.data.secChar.wounds.value;
             templateOptions["modifiers"].charge=Math.min((10+unitStr*5),60);
@@ -247,18 +229,7 @@ export class FortykRollDialogs{
         templateOptions["modifiers"].suppressive=itemData.data.attackMods.suppressive;
         templateOptions["modifiers"].aim=itemData.data.attackMods.aim;
         templateOptions["modifiers"].testMod=itemData.data.testMod.value;
-        if(actor.data.data.horde.value){
-            let hordeSize=actor.data.data.secChar.wounds.value;
-            if(hordeSize>=120){
-                templateOptions["modifiers"].testMod+=60;
-            }else if(hordeSize>=90){
-                templateOptions["modifiers"].testMod+=50;
-            }else if(hordeSize>=60){
-                templateOptions["modifiers"].testMod+=40;
-            }else if(hordeSize>=30){
-                templateOptions["modifiers"].testMod+=30;
-            }
-        }
+        
         if(actor.data.data.formation.value){
             let unitStr=actor.data.data.secChar.wounds.value;
             templateOptions["modifiers"].standard=Math.min(unitStr*5,60);
