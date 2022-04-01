@@ -149,7 +149,7 @@ returns the roll message*/
         }
         //give the chat object options and stuff
         let renderedTemplate= await renderTemplate(template,templateOptions);
-        roll.toMessage({user: game.user._id,
+        await roll.toMessage({user: game.user._id,
                         speaker:{actor,alias:actor.name},
                         content:renderedTemplate,
                         classes:["fortyk"],
@@ -648,13 +648,14 @@ returns the roll message*/
                     let armorSuit=data.secChar.wornGear.armor.document;
                     let tarRighteous=righteous;
                     let deathwatch=false;
+                    var toxic=fortykWeapon.getFlag("fortyk","toxic");
                     if(actor.getFlag("fortyk","deathwatchtraining")){
 
 
                         let targetRace=data.race.value.toLowerCase();
                         let forRaces=actor.data.flags.fortyk.deathwatchtraining;
 
-                        var toxic=fortykWeapon.data.flags.toxic;
+                        
                         if(forRaces.includes(targetRace)){
                             deathwatch=true;
                             tarRighteous-=1;
@@ -968,6 +969,7 @@ returns the roll message*/
                             }
                         }
                         //toxic weapon logic
+                        console.log(toxic);
                         if(damage>0&&toxic){
                             let toxicMod=toxic*10;
                             if(tarActor.getFlag("fortyk","resistance")&&tarActor.getFlag("fortyk","resistance").toLowerCase().includes("toxic")){
