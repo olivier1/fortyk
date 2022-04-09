@@ -378,7 +378,7 @@ Hooks.on("preUpdateActor", (data, updatedData) =>{
 Hooks.on('renderChatLog', (log, html, data) => FortykRollDialogs.chatListeners(html));
 //add listeners to dialogs to allow searching and the like
 Hooks.on('renderDialog', (dialog, html, data) => ActorDialogs.chatListeners(html));
-//set flags for new weapons and items
+
 Hooks.on('preCreateItem', (actor, data,options) =>{
 
 });
@@ -410,7 +410,7 @@ Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
     }
 });
 /**
- * Set default values for new actors' tokens
+ * Add the mane active effects button to actor sheets
  */
 Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
     if(game.user.isGM){

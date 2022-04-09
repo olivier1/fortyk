@@ -619,6 +619,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
             attackOptions.selfBlind=this.actor.getFlag("core","blind");
             attackOptions.distance=tokenDistance(target, attacker);
+            let attackerElevation=attacker.data.elevation;
+            let targetElevation=target.data.elevation;
+            attackOptions.elevation=attackerElevation-targetElevation;
 
         }
         if(testType==="meleeAttack"){

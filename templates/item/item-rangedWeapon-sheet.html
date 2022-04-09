@@ -53,7 +53,7 @@
         <div class="flexcol">
             <label>Damage Type:</label>
             <select class="damage-type" name="data.damageType.value">
-                
+
                 {{#select data.damageType.value}}
                 {{#each FORTYK.damageTypes}}
                 <option value="{{this}}">{{this}}</option>
@@ -117,6 +117,31 @@
         <div class="flexcol">
             <label>Weight:</label>
             <input type="text" value="{{data.weight.value}}" name="data.weight.value">
+        </div>
+        <div class="flexcol simple-grid3">
+            <label>Attack Modifiers:</label>
+            <div class="flexrow">
+                <div class="flexcol">
+                    <label>Single Shot:</label>
+                    <input type="text" value="{{data.attackMods.single}}" name="data.attackMods.single">
+                </div>
+                <div class="flexcol">
+                    <label>Semi Auto:</label>
+                    <input type="text" value="{{data.attackMods.semi}}" name="data.attackMods.semi">
+                </div>
+                <div class="flexcol">
+                    <label>Full Auto:</label>
+                    <input type="text" value="{{data.attackMods.full}}" name="data.attackMods.full">
+                </div>
+                <div class="flexcol">
+                    <label>Suppressive:</label>
+                    <input type="text" value="{{data.attackMods.suppressive}}" name="data.attackMods.suppressive">
+                </div>
+                <div class="flexcol">
+                    <label>Test Mod:</label>
+                    <input type="text" value="{{data.testMod.value}}" name="data.testMod.value">
+                </div>
+            </div>
         </div>
     </div>
     <div class="item-description">

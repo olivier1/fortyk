@@ -221,7 +221,7 @@ export class FortyKItem extends Item {
                 }
                 if(this.getFlag("fortyk","twinlinked")){
 
-                    item.data.testMod.value=20;
+                    item.data.testMod.value+=20;
                     item.data.clip.consumption=item.data.clip.consumption*2;
                 }
                 if(this.getFlag("fortyk","storm")){
@@ -270,7 +270,7 @@ export class FortyKItem extends Item {
                     if(actor.getFlag("fortyk","WeaponMaster").toLowerCase().includes(item.data.type.value.toLowerCase())){
 
                         item.data.damageFormula.value+="+2";
-                        item.data.testMod.value=item._source.data.testMod.value+10;
+                        item.data.testMod.value+=10;
                     }
                 }
                 //tainted weapon logic

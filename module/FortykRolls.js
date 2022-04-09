@@ -384,7 +384,7 @@ returns the roll message*/
         let perilsRoll=new Roll("1d100",{});
         let perilsFlavor="Perils of the Warp!!";
         if(ork){
-            perilsFlavor="'Eadbang!"
+            perilsFlavor="'Eadbang!";
         }
         await perilsRoll.roll();
         await perilsRoll.toMessage({
@@ -869,15 +869,15 @@ returns the roll message*/
 
                             //sanctified logic
                             let daemonic=tarActor.getFlag("fortyk","daemonic");
-                            if((fortykWeapon.getFlag("fortyk","sanctified")||fortykWeapon.getFlag("fortyk","daemonbane"))&&daemonic){
+                            if(daemonic&&(weapon.type==="psychicPower"||fortykWeapon.getFlag("fortyk","force")||fortykWeapon.getFlag("fortyk","warp")||fortykWeapon.getFlag("fortyk","sanctified")||fortykWeapon.getFlag("fortyk","daemonbane"))){
                                 daemonic=parseInt(daemonic);
                                 if(!isNaN(daemonic)){
                                     soak-=parseInt(daemonic);
                                     let sanctifiedOptions={user: user._id,
                                                            speaker:{actor,alias:actor.name},
-                                                           content:`Sanctified ignores ${daemonic} soak from the daemonic trait.`,
+                                                           content:`The attack ignores ${daemonic} soak from the daemonic trait.`,
                                                            classes:["fortyk"],
-                                                           flavor:"Sanctified",
+                                                           flavor:"Daemonic",
                                                            author:actor.name};
                                     await ChatMessage.create(sanctifiedOptions,{});
                                 }
@@ -1049,8 +1049,8 @@ returns the roll message*/
                             await ChatMessage.create(chatOptions,{});
                         }
                         //Xenos Bane Logic #2
-                        console.log(crit)
-                        if(crit&&deathwatch&actor.getFlag("fortyk","xenosbane")&&(actor.data.data.secChar.wounds.value>curWounds)){
+                        
+                        if(crit&&deathwatch&actor.getFlag("fortyk","xenosbane")&&(actor.data.data.secChar.wounds.value>=curWounds)){
                             let banetest=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total),tarActor, `Resist Xenos Bane intant death!`);
                             if(!banetest.value){
                                 this.applyDead(tarActor,actor);

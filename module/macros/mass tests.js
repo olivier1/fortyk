@@ -1,4 +1,3 @@
-
 new Dialog({
     title: "Mass Test",
     content: `<div><label>Characteristic:</label><select name="characteristic"><option value="agi">agi</option><option value="t">t</option><option value="wp">wp</option><option value="s">s</option><option value="per">per</option><option value="int">int</option><option value="fel">fel</option><option value="ws">ws</option><option value="bs">bs</option></select></div><div><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="0" autofocus/></div>`,
@@ -23,7 +22,7 @@ new Dialog({
                         newColor="#ff0000";
                     }
 
-                    token.update({tint: newColor});
+                    token.document.update({tint: newColor});
                 }
 
             }

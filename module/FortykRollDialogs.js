@@ -97,7 +97,14 @@ export class FortykRollDialogs{
         if(!templateOptions["options"].blindfight){
             templateOptions["options"].selfBlind=modifiers.selfBlind;
         }
-        
+        //elevation stuff
+        console.log(modifiers.elevation)
+        if(modifiers.elevation>0){
+            templateOptions["options"].prone=true;
+        }else if(modifiers.elevation<0){
+            console.log(modifiers.elevation)
+            templateOptions["options"].selfProne=true;
+        }
         templateOptions["size"]=game.fortyk.FORTYK.size;
         
         if(actor.data.data.formation.value){
@@ -142,6 +149,7 @@ export class FortykRollDialogs{
                 }
             }
         }
+        console.log(templateOptions)
         let renderedTemplate= await renderTemplate(template,templateOptions);
 
         new Dialog({
@@ -227,6 +235,9 @@ export class FortykRollDialogs{
         }
 
         templateOptions["modifiers"].suppressive=itemData.data.attackMods.suppressive;
+        templateOptions["modifiers"].full=itemData.data.attackMods.full;
+        templateOptions["modifiers"].semi=itemData.data.attackMods.semi;
+        templateOptions["modifiers"].single=itemData.data.attackMods.single;
         templateOptions["modifiers"].aim=itemData.data.attackMods.aim;
         templateOptions["modifiers"].testMod=itemData.data.testMod.value;
         
@@ -236,7 +247,7 @@ export class FortykRollDialogs{
         }
         templateOptions["modifiers"].inaccurate=item.getFlag("fortyk","innacurate");
 
-
+       
         for (let [key, rng] of Object.entries(templateOptions.modifiers.range)){
             let wepMod=itemData.data.attackMods.range[key];
             templateOptions.modifiers.range[key]=Math.max(wepMod,rng);
@@ -330,6 +341,12 @@ export class FortykRollDialogs{
         templateOptions["options"].size=modifiers.size;
         templateOptions["options"].running=modifiers.running;
         templateOptions["options"].normal=true;
+         //elevation stuff
+        if(modifiers.elevation>0){
+            templateOptions["options"].high=true;
+        }else if(modifiers.elevation<0){
+            templateOptions["options"].prone=true;
+        }
         //target specific changes
         let targets=game.user.targets;
 
