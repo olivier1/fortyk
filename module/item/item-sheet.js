@@ -107,7 +107,7 @@ export class FortyKItemSheet extends ItemSheet {
         let ae={};
 
         if(this.item.data.data.transferId){
-            ae=this.item.actor.effects.get(this.item.data.data.transferId);
+            ae=this.item.actor.getEmbeddedDocument("ActiveEffect",this.item.data.data.transferId);
         }else{
             ae=item.effects.entries().next().value[1];
         }

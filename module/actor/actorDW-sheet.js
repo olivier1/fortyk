@@ -48,7 +48,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         html.find('.wargear-create').click(this._onWargearCreate.bind(this));
 
         //focus skill search
-        html.find('.skillTab').click(this._onSkillsTab.bind(this));
+        
+        html.find('.sheet-tabs').click(this._onSkillsTab.bind(this));
         //spend exp button
         html.find('.spend-exp').click(this._onSpendExp.bind(this));
         //handles adding or removing worn weapon slots
@@ -70,16 +71,19 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     /* -------------------------------------------- */
 
     _onSkillsTab(event){
-       
-        setTimeout(function () {
-        document.getElementById("skillfilter").select();
-            }, 2000);
+        const tab = $(event.target.closest("[data-tab]")).html();
+        console.log(tab);
+        if(tab==="SKILLS"){
+          document.getElementById("skillfilter").select();  
+        }
+        
+
     }
     async _onSpendExp(event){
         event.preventDefault();
         let dialog=new SpendExpDialog({actor:this.actor});
         dialog.render(true);
-     
+
     }
 
     //handle creating a wargear item, these can be several types of different item types
@@ -271,9 +275,9 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     async _onWeaponReload(event){
         event.preventDefault;
         const dataset=event.currentTarget.dataset;
-      
+
         let weapon=this.actor.getEmbeddedDocument("Item",dataset.weapon);
-       
+
         let actor=this.actor;
         let update=[];
         let weaponUpdate={};

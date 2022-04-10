@@ -172,7 +172,14 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let actor=this.actor;
         let target=event.target.attributes["data-target"].value;
         let newAmt=event.target.value;
-
+        let type=event.target.attributes["data-dtype"].value;
+            if(type==="Number"){
+                newAmt=parseFloat(newAmt);
+                if(isNaN(newAmt)){
+                    newAmt=0;
+                    event.target.value=0;
+                }
+            }
         let oldValue=objectByString(actor.data,target);
 
         if((oldValue!=newAmt)){
@@ -200,7 +207,14 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let actor=this.actor;
             let target=event.target.attributes["data-target"].value;
             let newAmt=event.target.value;
-
+            let type=event.target.attributes["data-dtype"].value;
+            if(type==="Number"){
+                newAmt=parseFloat(newAmt);
+                if(isNaN(newAmt)){
+                    newAmt=0;
+                    event.target.value=0;
+                }
+            }
             let oldValue=objectByString(actor.data,target);
             if(oldValue!=newAmt){
                 this.updateObj[target]=newAmt;
