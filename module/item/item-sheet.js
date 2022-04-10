@@ -90,31 +90,31 @@ export class FortyKItemSheet extends ItemSheet {
     }
     async _onModifierClick(event){
         let item=this.item;
-       
+
         if(item.effects.size===0){
             let disabled=false;
             if(this.item.type==="psychicPower"){
                 disabled=true;
             }
             let modifiersData={
-            id: "modifiers",
-            label: this.item.name,
-            changes:[],
-            transfer:true,
-            disabled:disabled}
+                id: "modifiers",
+                label: this.item.name,
+                changes:[],
+                transfer:true,
+                disabled:disabled}
             await item.createEmbeddedDocuments("ActiveEffect",[modifiersData]);
         }
         let ae={};
-        
+
         if(this.item.data.data.transferId){
             ae=this.item.actor.effects.get(this.item.data.data.transferId);
         }else{
             ae=item.effects.entries().next().value[1];
         }
-       
-            new ActiveEffectConfig(ae).render(true);
-        
-        
+
+        new ActiveEffectConfig(ae).render(true);
+
+
     }
 
 
@@ -131,12 +131,19 @@ export class FortyKItemSheet extends ItemSheet {
         let flags=this.item.data.flags.fortyk;
 
         for(const flag in flags){
-
+            console.log(flag)
             if(specials[flag]){
-                if(specials[flag].num===undefined){
-                    specials[flag].value=flags[flag];
+
+                if(specials[flag].num!==undefined){
+                    if(isNaN(parseInt(flags[flag]))){
+                        specials[flag].num=0;
+                    }else{
+                        specials[flag].num=flags[flag];
+                        specials[flag].value=true;
+                    }
+
                 }else{
-                    specials[flag].num=flags[flag];
+                    specials[flag].value=flags[flag]; 
                 }
             }
         }
@@ -158,22 +165,22 @@ export class FortyKItemSheet extends ItemSheet {
                                 let value=html.find(`input[id=${key}]`).is(":checked");
                                 if(value!==spec.value){bool=true}
 
-                                if(bool){
+                                if(bool&&spec.num===undefined){
 
                                     await this.item.setFlag("fortyk",key,value);
                                 }
 
                                 let num=false;
                                 let number
-                                if(spec.num!==undefined){
+                                if(spec.num!==undefined&&value){
                                     number=parseInt(html.find(`input[id=${key}num]`).val());
                                     if(number!==parseInt(spec.num)){
 
                                         num=true};
-                                    if(num&&number<0){
-                                        number=false;
-                                    }
 
+
+                                }else if(spec.num!==undefined&&!value){
+                                    await this.item.setFlag("fortyk",key,false);
                                 }
 
 

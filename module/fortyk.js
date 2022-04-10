@@ -104,7 +104,7 @@ Hooks.once('init', async function() {
     });
     Handlebars.registerHelper('isnumber', function (value) {
 
-        return parseInt(value);
+        return !isNaN(parseInt(value));
     });
     Handlebars.registerHelper('compareString', function (str1, str2="") {
         if(typeof str2!=="string"){
