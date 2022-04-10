@@ -905,6 +905,7 @@ returns the roll message*/
                             });
                             damage+=volkRoll._total;
                         }
+                        //GRAVITON LOGIC
                         if(fortykWeapon.getFlag("fortyk","graviton")){
                             let gravitonDmg=2*armor;
                             damage+=gravitonDmg;
@@ -969,7 +970,6 @@ returns the roll message*/
                             }
                         }
                         //toxic weapon logic
-                        console.log(toxic);
                         if(damage>0&&toxic){
                             let toxicMod=toxic*10;
                             if(tarActor.getFlag("fortyk","resistance")&&tarActor.getFlag("fortyk","resistance").toLowerCase().includes("toxic")){
@@ -1138,6 +1138,18 @@ returns the roll message*/
                                              flavor:`Critical effect`,
                                              author:tarActor.name};
                             await ChatMessage.create(chatOptions,{});
+                        }
+                        //impenetrable armor logic
+                        if(armorSuit.getFlag("fortyk","impenetrable")){
+                            damage=Math.ceil(damage/2);
+                            chatDamage=Math.ceil(damage/2);
+                            let impOptions={user: user._id,
+                                             speaker:{actor,alias:tarActor.name},
+                                             content:"Impenetrable reduces damage taken by half!",
+                                             classes:["fortyk"],
+                                             flavor:`${armorSuit.name} is impenetrable`,
+                                             author:tarActor.name};
+                            await ChatMessage.create(impOptions,{});
                         }
                         //process horde damage for different weapon qualities
                         if(data.horde.value&&damage>0){

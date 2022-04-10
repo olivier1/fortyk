@@ -194,6 +194,11 @@ FORTYK.armorFlags={
         "value": false,
         "label": "Holy",
         "description": "This armor has been blessed by a higher power, it still blocks warp attacks or attacks that normally bypass armor."
+    },
+    "impenetrable": {
+        "value": false,
+        "label": "Impenetrable",
+        "description": "This armor reduces damage taken by the wearer by half (rounded down) after ALL mitigation."
     }
 }
 FORTYK.weaponFlags={
