@@ -49,6 +49,22 @@ Hooks.once('init', async function() {
         }
         return statusFlags;
     })();
+    //set speed provider for dragruler integration
+    game.fortyk.speedProvider=function(token, color){
+        let actor=token.actor;
+        let movement=actor.data.data.secChar.movement;
+        let ranges=[];
+        let half={range:movement.half,color:color}
+        ranges.push(half);
+        let full={range:movement.half*2,color:0x191970}
+        ranges.push(full);
+        let charge={range:movement.charge,color:0xFFA500}
+        ranges.push(charge);
+        let run={range:movement.run,color:0xFFFF00}
+        ranges.push(run);
+        return ranges;
+        
+    }
     /**
    * Set an initiative formula for the system
    * @type {String}
@@ -79,7 +95,7 @@ Hooks.once('init', async function() {
     Actors.registerSheet("fortyk", FortyKSpaceshipSheet, { types:["spaceship"], makeDefault: true });
     Actors.registerSheet("fortyk", FortyKNPCSheet, { types: ["npc"], makeDefault: true });
 
-
+    
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });
     //setup handcards
@@ -162,6 +178,7 @@ Hooks.once('init', async function() {
         var doc = new DOMParser().parseFromString(text, "text/html");
         return doc.documentElement.textContent;
     });
+    
 });
 Hooks.once("setup", function() {
 });
@@ -560,3 +577,7 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
         }
     }
 });
+//drag ruler integration
+Hooks.once("dragRuler.ready", () => {
+	dragRuler.registerSystem("fortyk", game.fortyk.speedProvider)
+})

@@ -198,7 +198,7 @@ FORTYK.armorFlags={
     "impenetrable": {
         "value": false,
         "label": "Impenetrable",
-        "description": "This armor reduces damage taken by the wearer by half (rounded down) after ALL mitigation."
+        "description": "This armor reduces damage taken by the wearer by half (rounded up) after ALL mitigation."
     }
 }
 FORTYK.weaponFlags={
@@ -747,6 +747,24 @@ FORTYK.StatusEffects = [
         label: "Leg Injury",
         icon: "systems/fortyk/icons/leg.png",
         flags: { core: { statusId: "leg" } }
+    },
+    {
+        id: "rough",
+        label: "Rough Terrain",
+        icon: "systems/fortyk/icons/sticky-boot.png",
+        flags: { core: { statusId: "rough" } }
+    },
+    {
+        id: "tough",
+        label: "Tough Terrain",
+        icon: "systems/fortyk/icons/232784.png",
+        flags: { core: { statusId: "tough" } }
+    },
+    {
+        id: "severe",
+        label: "Severe Terrain",
+        icon: "systems/fortyk/icons/quarry-512.png",
+        flags: { core: { statusId: "severe" } }
     }
 ];
 FORTYK.comradeRanks=["Green","Guardsman","Veteran"]

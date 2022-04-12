@@ -150,10 +150,10 @@ returns the roll message*/
         //give the chat object options and stuff
         let renderedTemplate= await renderTemplate(template,templateOptions);
         await roll.toMessage({user: game.user._id,
-                        speaker:{actor,alias:actor.name},
-                        content:renderedTemplate,
-                        classes:["fortyk"],
-                        author:actor.name})
+                              speaker:{actor,alias:actor.name},
+                              content:renderedTemplate,
+                              classes:["fortyk"],
+                              author:actor.name})
         //get first and second digits for hit locations and perils
         let firstDigit=Math.floor(testRoll/10);
         let secondDigit=testRoll-firstDigit*10;
@@ -229,7 +229,7 @@ returns the roll message*/
             }
         }
         //logic for psychic phenomena and perils of the warp
-     
+
         if(type==="focuspower"){
             let psykerType=actor.data.data.psykana.psykerType.value;
             let basePR=actor.data.data.psykana.pr.effective;
@@ -283,10 +283,10 @@ returns the roll message*/
                         flavor="Weird Fing!"
                         ork=true;
                     }else{
-                       phenomMessage=FORTYKTABLES.psychicPhenomena[phenomResult]; 
+                        phenomMessage=FORTYKTABLES.psychicPhenomena[phenomResult]; 
                         flavor="Psychic Phenomenom!"
                     }
-                    
+
                     let chatPhenom={user: game.user._id,
                                     speaker:{actor,alias:actor.name},
                                     content:phenomMessage,
@@ -440,7 +440,12 @@ returns the roll message*/
 
             weapon.data.pen.value=parseInt(weapon.data.pen.value)+Math.ceil(actor.data.data.characteristics.s.bonus/2);
         }
+        
+        if(targets===null){
+            targets=user.targets;
+        }
         if(self){
+
             if(overheat){
                 let arm=["rArm","lArm"];
                 let rng=Math.floor(Math.random() * 2);
@@ -448,12 +453,9 @@ returns the roll message*/
             }else{
                 curHit=game.fortyk.FORTYK.extraHits["body"][0];
             }
-            targets.push(attackerToken);
+            targets.add(attackerToken);
         }else{
 
-            if(targets===null){
-                targets=user.targets;
-            }
 
             curHit=lastHit;
         }
@@ -655,7 +657,7 @@ returns the roll message*/
                         let targetRace=data.race.value.toLowerCase();
                         let forRaces=actor.data.flags.fortyk.deathwatchtraining;
 
-                        
+
                         if(forRaces.includes(targetRace)){
                             deathwatch=true;
                             tarRighteous-=1;
@@ -668,7 +670,7 @@ returns the roll message*/
                                 }
                             }
                             if(actor.getFlag("fortyk","ailments")){
-                                
+
                                 let ailmentAmt=Math.ceil(actor.data.data.characteristics.int.bonus/2);
                                 if(toxic){
                                     toxic+=ailmentAmt;
@@ -729,7 +731,7 @@ returns the roll message*/
                         }
                         let soak=0;
                         let armor=parseInt(data.characterHitLocations[curHit.value].armor);
-                        
+
                         //check if weapon ignores soak
                         if(!fortykWeapon.getFlag("fortyk","ignoreSoak")){
 
@@ -986,7 +988,7 @@ returns the roll message*/
                                 damage+=toxicDmg._total;
                             }
                         }
-                        
+
                         //shocking weapon logic
                         if(damage>0&&fortykWeapon.getFlag("fortyk","shocking")){
                             let shock=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total),tarActor, "Resist shocking");
@@ -1026,11 +1028,11 @@ returns the roll message*/
                         //apply field practitioner critical
                         if(lastHit.fieldPractice&&damage>0){
                             let practiceOptions={user: user._id,
-                                                speaker:{tarActor,alias:tarActor.name},
-                                                content:`Field Practitioner Critical Hit!`,
-                                                classes:["fortyk"],
-                                                flavor:`Field Practitioner`,
-                                                author:actor.name};
+                                                 speaker:{tarActor,alias:tarActor.name},
+                                                 content:`Field Practitioner Critical Hit!`,
+                                                 classes:["fortyk"],
+                                                 flavor:`Field Practitioner`,
+                                                 author:actor.name};
                             await ChatMessage.create(practiceOptions,{});
                             await this.critEffects(tar,lastHit.fieldPractice,curHit.value,weapon.data.damageType.value,ignoreSON);
                         }
@@ -1049,7 +1051,7 @@ returns the roll message*/
                             await ChatMessage.create(chatOptions,{});
                         }
                         //Xenos Bane Logic #2
-                        
+
                         if(crit&&deathwatch&actor.getFlag("fortyk","xenosbane")&&(actor.data.data.secChar.wounds.value>=curWounds)){
                             let banetest=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total),tarActor, `Resist Xenos Bane intant death!`);
                             if(!banetest.value){
@@ -1144,11 +1146,11 @@ returns the roll message*/
                             damage=Math.ceil(damage/2);
                             chatDamage=Math.ceil(damage/2);
                             let impOptions={user: user._id,
-                                             speaker:{actor,alias:tarActor.name},
-                                             content:"Impenetrable reduces damage taken by half!",
-                                             classes:["fortyk"],
-                                             flavor:`${armorSuit.name} is impenetrable`,
-                                             author:tarActor.name};
+                                            speaker:{actor,alias:tarActor.name},
+                                            content:"Impenetrable reduces damage taken by half!",
+                                            classes:["fortyk"],
+                                            flavor:`${armorSuit.name} is impenetrable`,
+                                            author:tarActor.name};
                             await ChatMessage.create(impOptions,{});
                         }
                         //process horde damage for different weapon qualities
@@ -1385,7 +1387,7 @@ returns the roll message*/
             return true;
         }
         if(crit&&damage>0){
-            
+
             let rightRoll=new Roll("1d5",actor.data.data);
             await rightRoll.roll();
             rightRoll.toMessage({

@@ -93,22 +93,22 @@
             <label class="section-title">Terrain Type</label>
             <div class="list-item flexrow">
 
-                <input type="radio" name="terrain" value="0" checked><label>Normal: +0</label>
+                <input type="radio" name="terrain" value="0" {{#if options.normal}} checked{{/if}}><label>Normal: +0</label>
 
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="terrain" value="-10" ><label>Rough: -10</label>
+                <input type="radio" name="terrain" value="-10"{{#if options.rough}} checked{{/if}} ><label>Rough: -10</label>
 
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="terrain" value="-20" ><label>Tough: -20</label>
+                <input type="radio" name="terrain" value="-20" {{#if options.tough}} checked{{/if}}><label>Tough: -20</label>
 
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="terrain" value="-30" ><label>Severe: -30</label>
+                <input type="radio" name="terrain" value="-30" {{#if options.severe}} checked{{/if}}><label>Severe: -30</label>
 
             </div>
         </div>

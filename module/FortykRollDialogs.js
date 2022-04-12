@@ -94,6 +94,14 @@ export class FortykRollDialogs{
         templateOptions["options"].blindfight=actor.getFlag("fortyk","blindfight");
         templateOptions["options"].running=modifiers.running;
         templateOptions["options"].totalDef=modifiers.totalDef;
+        templateOptions["options"].rough=actor.getFlag("core","rough");
+        templateOptions["options"].tough=actor.getFlag("core","tough");
+        templateOptions["options"].severe=actor.getFlag("core","severe");
+        if(!(templateOptions["options"].rough&&templateOptions["options"].tough&&templateOptions["options"].severe)){
+            templateOptions["options"].normal=true;
+        }else{
+            templateOptions["options"].normal=false;
+        }
         if(!templateOptions["options"].blindfight){
             templateOptions["options"].selfBlind=modifiers.selfBlind;
         }

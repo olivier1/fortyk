@@ -72,7 +72,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
     _onSkillsTab(event){
         const tab = $(event.target.closest("[data-tab]")).html();
-        console.log(tab);
+        
         if(tab==="SKILLS"){
           document.getElementById("skillfilter").select();  
         }

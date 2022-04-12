@@ -4,7 +4,7 @@
     "description": "The fortyk system for FoundryVTT!",
     "version": "0.8.8.1",
     "minimumCoreVersion": "9.242",
-    "compatibleCoreVersion": "9.242",
+    "compatibleCoreVersion": "9.266",
     "templateVersion": 9,
     "author": "Olivier Bouchard Vanasse",
     "esmodules": ["module/fortyk.js"],
@@ -213,6 +213,14 @@
             "entity": "Item",
             "name": "custom-bonus-and-drawbacks",
             "path": "./packs/custom-bonus-and-drawbacks.db",
+            "system": "fortyk",
+            "module": "fortyk"
+        },
+        {
+            "label": "fortykMacros",
+            "entity": "Macro",
+            "name": "fortymacros",
+            "path": "./packs/fortykmacros.db",
             "system": "fortyk",
             "module": "fortyk"
         }
