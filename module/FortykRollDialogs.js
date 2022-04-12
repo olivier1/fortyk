@@ -92,6 +92,7 @@ export class FortykRollDialogs{
         templateOptions["options"].helpless=modifiers.helpless;
         templateOptions["options"].size=modifiers.size;
         templateOptions["options"].blindfight=actor.getFlag("fortyk","blindfight");
+        templateOptions["options"].counter=actor.getFlag("fortyk","counterattack");
         templateOptions["options"].running=modifiers.running;
         templateOptions["options"].totalDef=modifiers.totalDef;
         templateOptions["options"].rough=actor.getFlag("core","rough");
@@ -105,8 +106,8 @@ export class FortykRollDialogs{
         if(!templateOptions["options"].blindfight){
             templateOptions["options"].selfBlind=modifiers.selfBlind;
         }
+        
         //elevation stuff
-        console.log(modifiers.elevation)
         if(modifiers.elevation>0){
             templateOptions["options"].prone=true;
         }else if(modifiers.elevation<0){
@@ -171,6 +172,7 @@ export class FortykRollDialogs{
                         const attackTypeBonus = Number($(html).find('input[name="attack-type"]:checked').val());
 
                         let guarded = Number($(html).find('input[name="guarded"]:checked').val());
+                        let counter = Number($(html).find('input[name="counter"]:checked').val());
                         const aimBonus = Number($(html).find('input[name="aim-type"]:checked').val());
                         const outnumberBonus = Number($(html).find('input[name="outnumber"]:checked').val());
                         const terrainBonus = Number($(html).find('input[name="terrain"]:checked').val());
@@ -204,10 +206,14 @@ export class FortykRollDialogs{
                         await actor.update(update);
                         if(html.find('input[name="guarded"]').is(':checked')){
                             addLabel=html.find('input[name="guarded"]')[0].attributes["label"].value+" "+addLabel;
+                        } 
+                        if(html.find('input[name="counter"]').is(':checked')){
+                           addLabel=  html.find('input[name="counter"]')[0].attributes["label"].value+" "+addLabel
                         }
                         testLabel=addLabel+" "+ testLabel;
                         if(isNaN(running)){running=0}
                         if(isNaN(guarded)){guarded=0}
+                         if(isNaN(counter)){counter=0}
                         if(isNaN(defensive)){defensive=0}
                         if(isNaN(prone)){prone=0}
                         if(isNaN(high)){high=0}
@@ -215,7 +221,7 @@ export class FortykRollDialogs{
                         if(isNaN(stunned)){stunned=0}
                         if(isNaN(other)){other=0}
 
-                        testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
+                        testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(counter)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
                         actor.data.data.secChar.lastHit.attackRange="melee";
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
                     }
@@ -461,6 +467,7 @@ export class FortykRollDialogs{
 
 
                         let guarded = Number($(html).find('input[name="guarded"]:checked').val());
+                        let overwatch = Number($(html).find('input[name="overwatch"]:checked').val());
                         let aimBonus = Number($(html).find('input[name="aim-type"]:checked').val());
                         const rangeBonus = Number($(html).find('input[name="distance"]:checked').val());
                         if(isNaN(aimBonus)){
@@ -482,6 +489,9 @@ export class FortykRollDialogs{
                         let addLabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
                         if(html.find('input[name="guarded"]').is(':checked')){
                             addLabel=html.find('input[name="guarded"]')[0].attributes["label"].value+" "+addLabel;
+                        }
+                        if(html.find('input[name="overwatch"]').is(':checked')){
+                           addLabel=  html.find('input[name="overwatch"]')[0].attributes["label"].value+" "+addLabel
                         }
                         testLabel=addLabel+" "+ testLabel;
 
@@ -522,6 +532,7 @@ export class FortykRollDialogs{
                         //convert unchosen checkboxes into 0s
                         if(isNaN(running)){running=0}
                         if(isNaN(guarded)){guarded=0}
+                        if(isNaN(overwatch)){overwatch=0}
                         if(isNaN(prone)){prone=0}
                         if(isNaN(high)){high=0}
                         if(isNaN(surprised)){surprised=0}
@@ -529,7 +540,7 @@ export class FortykRollDialogs{
                         if(isNaN(concealed)){concealed=0}
                         if(isNaN(other)){other=0}
                         if(isNaN(melee)){melee=0} 
-                        testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(melee);
+                        testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(overwatch)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(melee);
                         actor.data.data.secChar.lastHit.attackRange=attackRange;
                         await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType);
                         if(aimBonus>0){

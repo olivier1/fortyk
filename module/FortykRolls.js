@@ -825,7 +825,7 @@ returns the roll message*/
 
                             //handle cover
 
-                            if(!self&&!fortykWeapon.getFlag("fortyk","spray")&&data.characterHitLocations[curHit.value].cover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
+                            if(!self&&!fortykWeapon.getFlag("fortyk","ignoreCover")&&!fortykWeapon.getFlag("fortyk","spray")&&data.characterHitLocations[curHit.value].cover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
 
                                 let cover=parseInt(data.secChar.cover.value);
                                 soak=soak+cover;

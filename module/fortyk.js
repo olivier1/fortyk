@@ -56,7 +56,7 @@ Hooks.once('init', async function() {
         let ranges=[];
         let half={range:movement.half,color:color}
         ranges.push(half);
-        let full={range:movement.half*2,color:0x191970}
+        let full={range:movement.full,color:0x191970}
         ranges.push(full);
         let charge={range:movement.charge,color:0xFFA500}
         ranges.push(charge);
