@@ -49,22 +49,7 @@ Hooks.once('init', async function() {
         }
         return statusFlags;
     })();
-    //set speed provider for dragruler integration
-    game.fortyk.speedProvider=function(token, color){
-        let actor=token.actor;
-        let movement=actor.data.data.secChar.movement;
-        let ranges=[];
-        let half={range:movement.half,color:color}
-        ranges.push(half);
-        let full={range:movement.full,color:0x191970}
-        ranges.push(full);
-        let charge={range:movement.charge,color:0xFFA500}
-        ranges.push(charge);
-        let run={range:movement.run,color:0xFFFF00}
-        ranges.push(run);
-        return ranges;
-        
-    }
+
     /**
    * Set an initiative formula for the system
    * @type {String}
@@ -95,7 +80,7 @@ Hooks.once('init', async function() {
     Actors.registerSheet("fortyk", FortyKSpaceshipSheet, { types:["spaceship"], makeDefault: true });
     Actors.registerSheet("fortyk", FortyKNPCSheet, { types: ["npc"], makeDefault: true });
 
-    
+
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });
     //setup handcards
@@ -178,7 +163,7 @@ Hooks.once('init', async function() {
         var doc = new DOMParser().parseFromString(text, "text/html");
         return doc.documentElement.textContent;
     });
-    
+
 });
 Hooks.once("setup", function() {
 });
@@ -187,7 +172,7 @@ Hooks.once('ready', async function() {
 
     //SOCKET used to update actors via the damage scripts
     game.socket.on("system.fortyk",async(data) => {
-       
+
         if(data.type==="cardSplash"){
             var options = {
                 width: "auto",
@@ -577,7 +562,25 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
         }
     }
 });
+
 //drag ruler integration
-Hooks.once("dragRuler.ready", () => {
-	dragRuler.registerSystem("fortyk", game.fortyk.speedProvider)
+Hooks.once("dragRuler.ready", (Speedprovider) => {
+    class FortykSpeedProvider extends Speedprovider{
+        get colors(){
+            return[{id:"half",default:0xADD8E6,name:"Half Move"},
+                   {id:"full",default:0x191970,name:"Full Move"},
+                   {id:"charge",default:0xFFA500,name:"Charge Move"},
+                   {id:"run",default:0xFFFF00,name:"Run"}]
+        }
+        getRanges(token){
+            const movement=token.actor.data.data.secChar.movement;
+            const ranges=[
+                {range:movement.half,color:"half"},
+                {range:movement.full,color:"full"},
+                {range:movement.charge,color:"charge"},
+                {range:movement.run,color:"run"}]
+            return ranges;
+        }
+    }
+    dragRuler.registerSystem("fortyk", FortykSpeedProvider);
 })

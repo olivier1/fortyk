@@ -90,6 +90,25 @@
                 <input type="radio" name="outnumber" value="{{modifiers.gangup.[2]}}" ><label>3 to 1: +{{modifiers.gangup.[2]}}</label>
             </div>
         </div>
+        <div class="flexcol attack-section"{{#if options.blindfight}} hidden{{/if}}>
+            <label class="section-title">Visibility</label>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="visibility" value="0" {{#unless options.selfBlind}} checked{{/unless}}><label>Normal: +0</label>
+
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="visibility" value="-10" ><label>Fog/mist/shadow/smoke: -10</label>
+
+            </div>
+            <div class="list-item flexrow">
+
+                <input type="radio" name="visibility" value="-20" {{#if options.selfBlind}} checked{{/if}}><label>Darkness: -20</label>
+
+            </div>
+
+        </div>
     </div>
     <div class="flexcol dialog-column">
 
@@ -116,25 +135,7 @@
 
             </div>
         </div>
-        <div class="flexcol attack-section"{{#if options.blindfight}} hidden{{/if}}>
-            <label class="section-title">Visibility</label>
-            <div class="list-item flexrow">
-
-                <input type="radio" name="visibility" value="0" {{#unless options.selfBlind}} checked{{/unless}}><label>Normal: +0</label>
-
-            </div>
-            <div class="list-item flexrow">
-
-                <input type="radio" name="visibility" value="-10" ><label>Fog/mist/shadow/smoke: -10</label>
-
-            </div>
-            <div class="list-item flexrow">
-
-                <input type="radio" name="visibility" value="-20" {{#if options.selfBlind}} checked{{/if}}><label>Darkness: -20</label>
-
-            </div>
-
-        </div>
+        
         <div class="flexcol attack-section">
             <label class="section-title">Target is</label>
             <div class="list-item flexrow">
