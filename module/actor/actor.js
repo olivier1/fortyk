@@ -211,7 +211,7 @@ export class FortyKActor extends Actor {
             data.carry.value=0;
             let forRaces=[];
             this.items.forEach((fortykItem,id,items)=>{
-                fortykItem.prepareData();
+                
                 let item=fortykItem.data;
 
                 if(item.type==="skill"){
@@ -242,11 +242,35 @@ export class FortyKActor extends Actor {
 
 
                 }
-              
-               
+                if(item.type==="rangedWeapon"){
+                    if(!this.getFlag("fortyk","irongrip")){
+                        if((this.getFlag("fortyk","firmgrip")&&item.data.class.value!=="Heavy")||item.data.class.value==="Pistol"||item.data.class.value==="Thrown"){
+
+                            item.data.twohanded.value=false;
+
+                        }else{
+
+                            item.data.twohanded.value=true;
+                        }
+                    }else{
+
+                        item.data.twohanded.value=false;
+                    }
+                }
+                if(item.type==="meleeWeapon"){
+                    if(!this.getFlag("fortyk","irongrip")){
+                        if(item.data.class.value==="Melee Two-handed"){
+                            item.data.twohanded.value=true;
+                        }else{
+                            item.data.twohanded.value=false;
+                        }
+                    }else{
+                        item.data.twohanded.value=false; 
+                    }
+                }
                 //check if equipped
                 if((item.type==="meleeWeapon"||item.type==="rangedWeapon")&&item.data.isEquipped){
-                    
+
                     if(item.data.isEquipped.indexOf("right")!==-1){
                         data.secChar.wornGear.weapons[0]=fortykItem; 
 
@@ -374,7 +398,7 @@ export class FortyKActor extends Actor {
                             newvalue=Math.floor(newvalue);
                         }
                         if(!isNaN(basevalue)&&!isNaN(newvalue)){
-                            
+
 
                             let changedValue=0;
                             if(change.mode===0){}
@@ -398,7 +422,7 @@ export class FortyKActor extends Actor {
                             } 
                         }
                         if(change.mode===5){
-                           
+
                             setNestedKey(actorData,path,change.value);
                         }  
 
@@ -547,7 +571,7 @@ export class FortyKActor extends Actor {
         if(rightHandWeaponData!==undefined&&rightHandWeaponData.type!=="rangedWeapon"){
             data.characterHitLocations.rArm.shield= parseInt(rightHandWeaponData.data.shield.value);
             data.characterHitLocations.body.shield= parseInt(rightHandWeaponData.data.shield.value);
-            
+
             if(rightHandWeapon.getFlag("fortyk","bulwark")&&this.getFlag("core","prone")){
                 data.characterHitLocations.lArm.shield=parseInt(rightHandWeaponData.data.shield.value);
                 data.characterHitLocations.lLeg.shield=parseInt(rightHandWeaponData.data.shield.value);
