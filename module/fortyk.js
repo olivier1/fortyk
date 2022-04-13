@@ -581,6 +581,22 @@ Hooks.once("dragRuler.ready", (Speedprovider) => {
                 {range:movement.run,color:"run"}]
             return ranges;
         }
+        getCostForStep(token, area, options={}) {
+            // Lookup the cost for each square occupied by the token
+            options.token = token;
+            
+            const costs = area.map(space => terrainRuler.getCost(space.x, space.y, options));
+            
+            // Return the maximum of the costs
+            let actor=token.actor;
+            let cost=1;
+            if(actor.getFlag("fortyk","crawler")||actor.getFlag("fortyk","hoverer")||actor.getFlag("fortyk","flyer")){
+                cost=1;
+            }else{
+                cost=costs.reduce((max, current) => Math.max(max, current));
+            }
+            return cost;
+        }
     }
     dragRuler.registerSystem("fortyk", FortykSpeedProvider);
 })
