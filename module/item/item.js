@@ -271,7 +271,6 @@ export class FortyKItem extends Item {
                         item.data.twohanded.value=true;
                     }
                 }else{
-
                     item.data.twohanded.value=false;
                 }
 

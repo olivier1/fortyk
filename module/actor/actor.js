@@ -211,7 +211,7 @@ export class FortyKActor extends Actor {
             data.carry.value=0;
             let forRaces=[];
             this.items.forEach((fortykItem,id,items)=>{
-                
+
                 let item=fortykItem.data;
 
                 if(item.type==="skill"){
@@ -253,7 +253,6 @@ export class FortyKActor extends Actor {
                             item.data.twohanded.value=true;
                         }
                     }else{
-
                         item.data.twohanded.value=false;
                     }
                 }
@@ -388,7 +387,7 @@ export class FortyKActor extends Actor {
                 //if item is equipped and/or not disabled
                 if(proceed){
                     ae.data.changes.forEach(function(change,i){
-
+                        
                         let basevalue=parseInt(objectByString(actorData,change.key));
                         let newvalue=parseFloat(change.value);
                         let path=change.key.split(".");
@@ -397,11 +396,13 @@ export class FortyKActor extends Actor {
                         }else{
                             newvalue=Math.floor(newvalue);
                         }
-                        if(!isNaN(basevalue)&&!isNaN(newvalue)){
+                        if(change.mode===0||(!isNaN(basevalue)&&!isNaN(newvalue))){
 
 
                             let changedValue=0;
-                            if(change.mode===0){}
+                            if(change.mode===0){
+                                setNestedKey(actorData,path,change.value);
+                            }
                             else if(change.mode===1){
                                 changedValue=basevalue*newvalue
                                 setNestedKey(actorData,path,changedValue);
@@ -419,13 +420,12 @@ export class FortyKActor extends Actor {
                                     changedValue=newvalue;
                                     setNestedKey(actorData,path,changedValue);
                                 }
+                            }else if(change.mode===5){
+
+                                setNestedKey(actorData,path,newvalue);
                             } 
                         }
-                        if(change.mode===5){
-
-                            setNestedKey(actorData,path,change.value);
-                        }  
-
+                        
 
                     })
                 }
