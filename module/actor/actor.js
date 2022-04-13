@@ -184,6 +184,13 @@ export class FortyKActor extends Actor {
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
             hitLoc.armor=0;
         }
+        if(this.getFlag("fortyk","quadruped")){
+
+            data.secChar.movement.multi=parseInt(data.secChar.movement.multi)*2; 
+        }
+        if(this.getFlag("fortyk","crawler")){
+            data.secChar.movement.multi=parseInt(data.secChar.movement.multi)/2; 
+        }
         //initialize skill modifiers from active events so that they are integers
         this.items.forEach((fortykItem,id,items)=>{
             let item=fortykItem.data;
@@ -517,20 +524,8 @@ export class FortyKActor extends Actor {
             data.currency.income=FORTYKTABLES.income[inf]; 
         }
         //movement
-        if(this.getFlag("fortyk","quadruped")){
-
-            data.secChar.movement.multi=parseInt(data.secChar.movement.multi)*2; 
-        }
-        let size=data.secChar.size.value;
-        data.secChar.size.label=game.fortyk.FORTYK.size[size].name;
-        data.secChar.size.mod=game.fortyk.FORTYK.size[size].mod;
-        data.secChar.size.movement=game.fortyk.FORTYK.size[size].movement;
-        data.secChar.size.stealth=game.fortyk.FORTYK.size[size].stealth
-        //movement
-        data.secChar.movement.half=Math.max(Math.ceil((data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseInt(data.secChar.movement.multi)),1);
-        data.secChar.movement.full=data.secChar.movement.half*2;
-        data.secChar.movement.charge=data.secChar.movement.half*3;
-        data.secChar.movement.run=data.secChar.movement.half*6;
+        this.prepareMovement(data);
+        
         //add up all armor and stuff
 
         var armor= data.secChar.wornGear.armor;
@@ -619,6 +614,8 @@ export class FortyKActor extends Actor {
             }
         }
     }
+    
+
     _prepareNPCData(actorData){
 
         const data=actorData.data;
@@ -648,20 +645,8 @@ export class FortyKActor extends Actor {
         data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
         //movement
 
-        if(this.getFlag("fortyk","quadruped")){
-
-            data.secChar.movement.multi=parseInt(data.secChar.movement.multi)*2; 
-        }
-        let size=data.secChar.size.value;
-        data.secChar.size.label=game.fortyk.FORTYK.size[size].name;
-        data.secChar.size.mod=game.fortyk.FORTYK.size[size].mod;
-        data.secChar.size.movement=game.fortyk.FORTYK.size[size].movement;
-        data.secChar.size.stealth=game.fortyk.FORTYK.size[size].stealth
-        //movement
-        data.secChar.movement.half=Math.max(Math.ceil((data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseInt(data.secChar.movement.multi)),1);
-        data.secChar.movement.full=data.secChar.movement.half*2;
-        data.secChar.movement.charge=data.secChar.movement.half*3;
-        data.secChar.movement.run=data.secChar.movement.half*6;
+        
+        this.prepareMovement(data);
         //total soak
         var armor= data.secChar.wornGear.armor;
         //machine
@@ -691,6 +676,27 @@ export class FortyKActor extends Actor {
                 }
             }
         }
+    }
+    prepareMovement(data) {
+        let size=data.secChar.size.value;
+        data.secChar.size.label=game.fortyk.FORTYK.size[size].name;
+        data.secChar.size.mod=game.fortyk.FORTYK.size[size].mod;
+        data.secChar.size.movement=game.fortyk.FORTYK.size[size].movement;
+        data.secChar.size.stealth=game.fortyk.FORTYK.size[size].stealth
+        if(this.getFlag("fortyk","flyer")){
+            data.secChar.movement.half=Math.max(Math.ceil((parseInt(this.getFlag("fortyk","flyer"))+data.secChar.size.movement+data.secChar.movement.mod)*parseFloat(data.secChar.movement.multi)),1);
+        }else if(this.getFlag("fortyk","hoverer")){
+            data.secChar.movement.half=Math.max(Math.ceil((parseInt(this.getFlag("fortyk","hoverer"))+data.secChar.size.movement+data.secChar.movement.mod)*parseFloat(data.secChar.movement.multi)),1);
+        }else{
+            if(this.name==="Servitor X3N-00345"){
+                console.log(data.characteristics["agi"].bonus,data.secChar.size.movement,data.secChar.movement.mod,parseInt(data.secChar.movement.multi))
+            }
+           data.secChar.movement.half=Math.max(Math.ceil((data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseFloat(data.secChar.movement.multi)),1); 
+        }
+        
+        data.secChar.movement.full=data.secChar.movement.half*2;
+        data.secChar.movement.charge=data.secChar.movement.half*3;
+        data.secChar.movement.run=data.secChar.movement.half*6;
     }
     prepare(){
         let preparedData = this.data

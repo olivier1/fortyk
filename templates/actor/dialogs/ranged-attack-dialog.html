@@ -19,7 +19,7 @@
                 <input type="radio" name="attack-type" value="{{modifiers.suppressive}}" index='3' attacktype="full"label="Suppressing Fire"><label>Suppressing Fire: {{modifiers.suppressive}}</label>
             </div>
 
-            <div class="list-item flexcol">
+            <div class="list-item flexcol"{{#unless single}} hidden{{/unless}}>
                 <div class="flexrow">
                     <input type="radio" name="attack-type" value="{{modifiers.called}}" index='0' label="Called Shot" attacktype="called"><label>Called Shot: {{modifiers.called}}</label>
                     <select name="calledLoc">

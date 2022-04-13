@@ -68,11 +68,23 @@ export class FortyKItem extends Item {
 
             if(item.type==="psychicPower"){
                 let pr=parseInt(item.data.curPR.value);
+                //iterate through item flags to evaluate PR strings
+                let flags=item.flags.fortyk;
+                for(const flag in flags){
+                    let fl=flags[flag];
+                    
+                    if(typeof fl=="string"){
+                        if(fl.toLowerCase().indexOf("pr")!==-1){
+                            
+                            flags[flag]=Math.ceil(eval(flags[flag]));
+                        }
+                    }
+                }
                 if(data.psykana.psykerType.value.toLowerCase()==="navigator"){
                     let range=item.data.range.formula.toLowerCase();
 
-                    item.data.range.value=eval(range);
-                    item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
+                    item.data.range.value=Math.ceil(eval(range));
+                    item.data.pen.value=Math.ceil(eval(item.data.pen.formula.toLowerCase()));
                     let training=0;
                     switch(item.data.training.value){
                         case "Novice":
@@ -100,8 +112,8 @@ export class FortyKItem extends Item {
 
                         let range=item.data.range.formula.toLowerCase();
                         let wp=data.characteristics.wp.bonus;
-                        item.data.range.value=eval(range);
-                        item.data.pen.value=eval(item.data.pen.formula.toLowerCase());
+                        item.data.range.value=Math.ceil(eval(range));
+                        item.data.pen.value=Math.ceil(eval(item.data.pen.formula.toLowerCase()));
                         let temp;
                         temp=item.data.damageFormula.formula.replace(/pr/gmi,pr);
                         item.data.damageFormula.value=temp.replace(/wp/gmi,wp);

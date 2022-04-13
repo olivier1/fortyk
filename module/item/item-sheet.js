@@ -131,7 +131,7 @@ export class FortyKItemSheet extends ItemSheet {
         let flags=this.item.data.flags.fortyk;
 
         for(const flag in flags){
-           
+
             if(specials[flag]){
 
                 if(specials[flag].num!==undefined){
@@ -173,10 +173,19 @@ export class FortyKItemSheet extends ItemSheet {
                                 let num=false;
                                 let number
                                 if(spec.num!==undefined&&value){
-                                    number=parseInt(html.find(`input[id=${key}num]`).val());
+                                    number=html.find(`input[id=${key}num]`).val();
+                                    if(isNaN(parseFloat(number))&&number.toLowerCase().indexOf("pr")!==-1){
+                                        if(number!==spec.num){
+
+                                            num=true
+                                        };
+                                    }else{
+                                        number=parseFloat(number);
+                                    }
                                     if(number!==parseInt(spec.num)){
 
-                                        num=true};
+                                        num=true
+                                    };
 
 
                                 }else if(spec.num!==undefined&&!value){
