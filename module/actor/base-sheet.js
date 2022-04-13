@@ -192,7 +192,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
         let updateNmbr=Object.keys(this.updateObj).length;
         if(updateNmbr>0&&(!event.relatedTarget||($(event.relatedTarget).prop("class").indexOf("combat-resources") === -1))) {
-            console.log(this.updateObj);
+            
             await actor.update(this.updateObj);
             this.updateObj=undefined;
 

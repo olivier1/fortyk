@@ -351,13 +351,13 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
             weapon=weapon.data;
         }
+       
         const weaponID=event.currentTarget.value;
         const hand=event.currentTarget.dataset["hand"];
         const leftHand=document.getElementById("left");
         const rightHand=document.getElementById("right");
         var update=[];
         var previousWeaponID="";
-
         if(hand==="right"){
             previousWeaponID=data.secChar.wornGear.weapons[0].id;
             if(previousWeaponID){

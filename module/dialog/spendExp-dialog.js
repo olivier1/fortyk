@@ -474,7 +474,7 @@ export class SpendExpDialog extends Application {
     }
     async calculateSkillCost(aptitudes,training){
         training=parseInt(training);
-        console.log(training);
+       
         let splitAptitudes=aptitudes.toLowerCase().replace(/\s/g, '').split(",");
         let actorAptitudes=this.options.actor.data.data.aptitudes;
         let matchingAptitudes=0;
@@ -504,7 +504,7 @@ export class SpendExpDialog extends Application {
         let quality=document.getElementById("quality").value;
         let rarity=parseFloat(document.getElementById("rarity").value);
         let cost=0;
-        console.log(quality)
+        
         if(rarity>=-20){
             cost=200;  
         }else if(rarity>=-40){

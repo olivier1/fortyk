@@ -131,7 +131,7 @@ export class FortyKItemSheet extends ItemSheet {
         let flags=this.item.data.flags.fortyk;
 
         for(const flag in flags){
-            console.log(flag)
+           
             if(specials[flag]){
 
                 if(specials[flag].num!==undefined){

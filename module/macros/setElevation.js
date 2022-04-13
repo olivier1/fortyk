@@ -9,8 +9,6 @@ new Dialog({
 
                 for(let token of canvas.tokens.controlled){
                    
-                   console.log(token)
-
                     token.document.update({elevation: elevation});
                 }
 

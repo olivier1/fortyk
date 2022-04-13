@@ -158,17 +158,23 @@ export class FortyKItem extends Item {
                 if(actor.getFlag("fortyk","crushingblow")){
                     item.data.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
                 }
-                if(item.data.class.value==="Melee Two-handed"){
-                    item.data.twohanded.value=true;
+                if(!actor.getFlag("fortyk","irongrip")){
+                    if(item.data.class.value==="Melee Two-handed"){
+                        item.data.twohanded.value=true;
+                    }else{
+                        item.data.twohanded.value=false;
+                    }
                 }else{
-                    item.data.twohanded.value=false;
+                    item.data.twohanded.value=false; 
                 }
+
                 if(this.getFlag("fortyk","defensive")){
                     item.data.testMod.value-=10;
                 }
 
             }
             if(item.type==="rangedWeapon"){
+
                 let ammo=actor.getEmbeddedDocument("Item",item.data.ammo._id);
 
                 if(ammo!==undefined&&!ammo.data.data.default.value){
@@ -255,13 +261,20 @@ export class FortyKItem extends Item {
                     item.data.clip.consumption=3;
                 }
 
-                if(item.data.class.value==="Pistol"||item.data.class.value==="Thrown"){
+                if(!actor.getFlag("fortyk","irongrip")){
+                    if((actor.getFlag("fortyk","firmgrip")&&item.data.class.value!=="Heavy")||item.data.class.value==="Pistol"||item.data.class.value==="Thrown"){
+
+                        item.data.twohanded.value=false;
+
+                    }else{
+                        
+                        item.data.twohanded.value=true;
+                    }
+                }else{
 
                     item.data.twohanded.value=false;
-
-                }else{
-                    item.data.twohanded.value=true;
                 }
+
 
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){

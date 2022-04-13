@@ -134,7 +134,6 @@ export class FortyKActor extends Actor {
                     }else{
                         size= game.fortyk.FORTYK.size[newSize].size;
                     }
-                    console.log(size)
                     if ( this.isToken ) this.token.update({height: size, width: size});
                     else if ( !data["token.width"] && !hasProperty(data, "token.width") ) {
                         data["token.height"] = size;
@@ -212,6 +211,7 @@ export class FortyKActor extends Actor {
             data.carry.value=0;
             let forRaces=[];
             this.items.forEach((fortykItem,id,items)=>{
+                fortykItem.prepareData();
                 let item=fortykItem.data;
 
                 if(item.type==="skill"){
@@ -242,30 +242,11 @@ export class FortyKActor extends Actor {
 
 
                 }
-                //prepare melee weapons
-                if(item.type==="meleeWeapon"){
-
-                    if(item.data.class.value==="Melee Two-handed"){
-                        item.data.twohanded.value=true;
-                    }else{
-                        item.data.twohanded.value=false;
-                    }
-                }
-                //prepare ranged weapons
-                if(item.type==="rangedWeapon"){
-
-                    if(item.data.class.value==="Pistol"||item.data.class.value==="Thrown"){
-
-                        item.data.twohanded.value=false;
-
-                    }else{
-                        item.data.twohanded.value=true;
-                    }
-
-                }
+              
+               
                 //check if equipped
                 if((item.type==="meleeWeapon"||item.type==="rangedWeapon")&&item.data.isEquipped){
-
+                    
                     if(item.data.isEquipped.indexOf("right")!==-1){
                         data.secChar.wornGear.weapons[0]=fortykItem; 
 
@@ -380,19 +361,20 @@ export class FortyKActor extends Actor {
                 }else{
                     proceed=true;
                 }
-                //if item if equipped and/or not disabled
+                //if item is equipped and/or not disabled
                 if(proceed){
                     ae.data.changes.forEach(function(change,i){
 
                         let basevalue=parseInt(objectByString(actorData,change.key));
                         let newvalue=parseFloat(change.value);
+                        let path=change.key.split(".");
                         if(newvalue>=0){
                             newvalue=Math.ceil(newvalue);
                         }else{
                             newvalue=Math.floor(newvalue);
                         }
                         if(!isNaN(basevalue)&&!isNaN(newvalue)){
-                            let path=change.key.split(".");
+                            
 
                             let changedValue=0;
                             if(change.mode===0){}
@@ -413,11 +395,12 @@ export class FortyKActor extends Actor {
                                     changedValue=newvalue;
                                     setNestedKey(actorData,path,changedValue);
                                 }
-                            }else if(change.mode===5){
-                                changedValue=newvalue;
-                                setNestedKey(actorData,path,changedValue);
-                            }  
+                            } 
                         }
+                        if(change.mode===5){
+                           
+                            setNestedKey(actorData,path,change.value);
+                        }  
 
 
                     })
@@ -444,7 +427,7 @@ export class FortyKActor extends Actor {
     }
     /**
    * Prepare Character type specific data
-   * this only has light computation other more complex data that process items see prepare()
+   * 
    */
     _prepareCharacterData(actorData) {
         const data = actorData.data;
@@ -564,8 +547,8 @@ export class FortyKActor extends Actor {
         if(rightHandWeaponData!==undefined&&rightHandWeaponData.type!=="rangedWeapon"){
             data.characterHitLocations.rArm.shield= parseInt(rightHandWeaponData.data.shield.value);
             data.characterHitLocations.body.shield= parseInt(rightHandWeaponData.data.shield.value);
-            console.log(rightHandWeaponData,this)
-            if(rightHandWeaponData.flags.fortyk.bulwark&&this.getFlag("core","prone")){
+            
+            if(rightHandWeapon.getFlag("fortyk","bulwark")&&this.getFlag("core","prone")){
                 data.characterHitLocations.lArm.shield=parseInt(rightHandWeaponData.data.shield.value);
                 data.characterHitLocations.lLeg.shield=parseInt(rightHandWeaponData.data.shield.value);
                 data.characterHitLocations.rLeg.shield=parseInt(rightHandWeaponData.data.shield.value);
@@ -574,7 +557,7 @@ export class FortyKActor extends Actor {
         if(leftHandWeaponData!==undefined&&leftHandWeaponData.type!=="rangedWeapon"){
             data.characterHitLocations.lArm.shield= parseInt(leftHandWeaponData.data.shield.value);
             data.characterHitLocations.body.shield= parseInt(leftHandWeaponData.data.shield.value);
-            if(leftHandWeaponData.flags.fortyk.bulwark&&this.getFlag("core","prone")){
+            if(leftHandWeapon.getFlag("fortyk","bulwark")&&this.getFlag("core","prone")){
                 data.characterHitLocations.rArm.shield=parseInt(leftHandWeaponData.data.shield.value);
                 data.characterHitLocations.lLeg.shield=parseInt(leftHandWeaponData.data.shield.value);
                 data.characterHitLocations.rLeg.shield=parseInt(leftHandWeaponData.data.shield.value);

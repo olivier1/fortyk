@@ -481,7 +481,6 @@
                         
                         <option value="" {{#if data.secChar.wornGear.forceField.data}}selected{{/if}}>None</option>
                         {{#each actor.forceFields}}
-                        {{debug this}}
                         <option value="{{this._id}}" {{#if this.data.isEquipped}}selected{{/if}}>{{this.name}}</option>
                         {{/each}}
                     </select>

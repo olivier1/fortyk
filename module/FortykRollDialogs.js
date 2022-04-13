@@ -111,7 +111,7 @@ export class FortykRollDialogs{
         if(modifiers.elevation>0){
             templateOptions["options"].prone=true;
         }else if(modifiers.elevation<0){
-            console.log(modifiers.elevation)
+           
             templateOptions["options"].selfProne=true;
         }
         templateOptions["size"]=game.fortyk.FORTYK.size;
@@ -158,7 +158,7 @@ export class FortykRollDialogs{
                 }
             }
         }
-        console.log(templateOptions)
+       
         let renderedTemplate= await renderTemplate(template,templateOptions);
 
         new Dialog({
