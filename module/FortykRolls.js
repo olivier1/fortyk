@@ -485,6 +485,9 @@ returns the roll message*/
     }
     //handles forcefield tests
     static async fortykForcefieldTest(forcefield,actor,hits){
+        if(forcefield.data.data.broken.value){
+            return
+        }
         let data=forcefield.data.data;
         let rating=data.rating.value;
         let overload=data.rating.overload;
@@ -499,6 +502,7 @@ returns the roll message*/
         let template='systems/fortyk/templates/chat/chat-forcefield-test.html';
         var templateOptions={
             title:`${forcefield.name} Test`,
+            hits:hits,
             rating:rating,
             overload:overload,
             breakOnOverload:breakOnOverload
@@ -531,7 +535,6 @@ returns the roll message*/
             hitResults.push(result);
             i++;
         }
-        console.log(remainingHits)
         if(breakOnOverload&&overloaded){
             await forcefield.update({"data.broken.value":true});
             templateOptions.breaks=`${forcefield.name} breaks!`
