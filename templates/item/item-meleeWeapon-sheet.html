@@ -27,7 +27,7 @@
         </div>
         {{#if isGM}}
         <div class="flexcol">
-            <a class="modifier button">Modifiers</a>
+            <a class="modifier button">Active Effect</a>
         </div>
         {{/if}}
         <div class="flexcol">
@@ -103,6 +103,10 @@
             <label>Weight:</label>
             <input type="text" value="{{data.weight.value}}" name="data.weight.value">
         </div>
+        <div class="flexcol">
+                    <label>Test Mod:</label>
+                    <input type="text" value="{{data.testMod.value}}" name="data.testMod.value">
+                </div>
     </div>
     <div class="item-description">
         <label>Description:</label>

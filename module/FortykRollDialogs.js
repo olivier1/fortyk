@@ -193,7 +193,7 @@ export class FortykRollDialogs{
                         if(attackType==="called"){
 
                             update["data.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
-                            if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
+                            if(actor.getFlag("fortyk","fieldvivisection")&&actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
                                 
                                     
                                     update["data.secChar.lastHit.fieldPractice"]=$(html).find('select[name="fieldPracticeAmt"] option:selected').val();
@@ -501,7 +501,7 @@ export class FortykRollDialogs{
                         if(attackType==="called"){
 
                             update["data.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
-                            if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
+                            if(actor.getFlag("fortyk","fieldvivisection")&&actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
                                 
                                     
                                     update["data.secChar.lastHit.fieldPractice"]=$(html).find('select[name="fieldPracticeAmt"] option:selected').val();

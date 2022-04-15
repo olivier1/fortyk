@@ -413,7 +413,7 @@ returns the roll message*/
     //handles damage rolls and applies damage to the target, generates critical effects
     static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0, user=game.users.current, lastHit=null, targets=null){
 
-
+        console.log(fortykWeapon)
         let weapon=deepClone(fortykWeapon.data);
         let righteous=10;
         if(fortykWeapon.getFlag("fortyk","vengeful")){
@@ -431,7 +431,7 @@ returns the roll message*/
         var hammer=false;
         if(actor.getFlag("fortyk","hammerblow")&&lastHit.attackType==="allout"){
 
-            if(!fortykWeapon.getFlag("fortyk","concussive")>=0){
+            if(isNaN(parseInt(fortykWeapon.getFlag("fortyk","concussive")))){
                 hammer=true;
                 await fortykWeapon.setFlag("fortyk","concussive",2);
             }else{
@@ -669,6 +669,7 @@ returns the roll message*/
                                     toxic=1;
                                 }
                             }
+                            console.log(actor.getFlag("fortyk","ailments"))
                             if(actor.getFlag("fortyk","ailments")){
 
                                 let ailmentAmt=Math.ceil(actor.data.data.characteristics.int.bonus/2);
@@ -1242,7 +1243,8 @@ returns the roll message*/
                             }
                         } 
                         //snare weapon
-                        if(fortykWeapon.getFlag("fortyk","snare")>=0){
+                        
+                        if(!isNaN(parseInt(fortykWeapon.getFlag("fortyk","snare")))){
                             let snareMod=fortykWeapon.getFlag("fortyk","snare")*10;
                             let snare=await this.fortykTest("agi", "char", (tarActor.data.data.characteristics.agi.total-snareMod),tarActor, "Resist snare");
                             if(!snare.value){
@@ -1258,7 +1260,7 @@ returns the roll message*/
                             }
                         }
                         //concussive weapon
-                        if(fortykWeapon.getFlag("fortyk","concussive")>=0){
+                        if(!isNaN(parseInt(fortykWeapon.getFlag("fortyk","concussive")))){
                             let stunMod=parseInt(fortykWeapon.getFlag("fortyk","concussive"))*10;
                             let stun=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total-stunMod),tarActor, "Resist stun");
                             if(!stun.value){

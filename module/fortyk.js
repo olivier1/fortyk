@@ -276,8 +276,11 @@ Hooks.on("updateCombat", async (combat) => {
         //PAN CAMERA TO ACTIVE TOKEN
         canvas.animatePan({x:token.x,y:token.y});
         for(let activeEffect of actor.effects){
-            if(activeEffect.duration.type!=="none"){
-                let remaining=Math.ceil(activeEffect.duration.remaining);
+          
+            if(activeEffect.data.duration.rounds!==undefined){
+                
+                let remaining=Math.ceil(activeEffect.data.duration.rounds);
+                
                 if(remaining<1){remaining=0}
                 let content="";
                 if(remaining===0){
@@ -590,7 +593,7 @@ Hooks.once("dragRuler.ready", (Speedprovider) => {
             // Return the maximum of the costs
             let actor=token.actor;
             let cost=1;
-            if(actor.getFlag("fortyk","crawler")||actor.getFlag("fortyk","hoverer")||actor.getFlag("fortyk","flyer")){
+            if(actor.getFlag("fortyk","jump")||actor.getFlag("fortyk","crawler")||actor.getFlag("fortyk","hoverer")||actor.getFlag("fortyk","flyer")){
                 cost=1;
             }else{
                 cost=costs.reduce((max, current) => Math.max(max, current));

@@ -688,9 +688,7 @@ export class FortyKActor extends Actor {
         }else if(this.getFlag("fortyk","hoverer")){
             data.secChar.movement.half=Math.max(Math.ceil((parseInt(this.getFlag("fortyk","hoverer"))+data.secChar.size.movement+data.secChar.movement.mod)*parseFloat(data.secChar.movement.multi)),1);
         }else{
-            if(this.name==="Servitor X3N-00345"){
-                console.log(data.characteristics["agi"].bonus,data.secChar.size.movement,data.secChar.movement.mod,parseInt(data.secChar.movement.multi))
-            }
+            
            data.secChar.movement.half=Math.max(Math.ceil((data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseFloat(data.secChar.movement.multi)),1); 
         }
         
