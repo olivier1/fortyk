@@ -696,6 +696,11 @@
     background-image: "" !important;
     color: white !important;
 }
+.test-overload{
+    background-color: orangered!important;
+    background-image: "" !important;
+    color: white !important;
+}
 .power-push{
     border-color: red !important;
 }

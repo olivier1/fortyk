@@ -402,6 +402,40 @@
                             </div>
                         </div>
                         <div class="forcefield flexcol">
+
+                            <span class="section-title">FORCE FIELD</span>
+                            <div class="flexcol flex-group-center">
+                                <div class="flexrow">
+                                <select class="force-field" >
+
+                                    <option value="" {{#if data.secChar.wornGear.forceField.data}}selected{{/if}}>None</option>
+                                    {{#each actor.forceFields}}
+                                    <option value="{{this._id}}" {{#if this.data.isEquipped}}selected{{/if}}>{{this.name}}</option>
+                                    {{/each}}
+                                </select>
+                                
+                                {{#if data.secChar.wornGear.forceField._id}}
+                                <a class="item-edit" data-item-id="{{data.secChar.wornGear.forceField._id}}"data-type="forceField" title="Edit Forcefield"></a>
+                                <a class="item-delete minus-button" data-item-id="{{data.secChar.wornGear.forceField._id}}"data-type="forceField" title="Delete Forcefield"></a>
+                                </div>
+                                <div class="forcefield flexrow flex-group-center">
+                                    {{#unless data.secChar.wornGear.forceField.data.broken.value}}
+                                    <label>Overload: {{data.secChar.wornGear.forceField.data.rating.overload}}</label>
+                                    <label>Rating: </label> 
+
+                                    <span class="forcefield rollable button" data-roll-type="forcefield" data-id="{{data.secChar.wornGear.forceField._id}}">{{data.secChar.wornGear.forceField.data.rating.value}}</span>
+                                    {{else}}
+                                    <span class="forcefield repairForcefield button" data-id="{{data.secChar.wornGear.forceField._id}}" >Repair</span>
+                                    {{/unless}}
+                                    
+                                </div>
+                                {{else}}
+                                <a class="item-create plus-button" data-type="forceField" title="Add Forcefield"></a>
+                                </div>
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="forcefield flexcol">
                             <span class="section-title">ARMOR & ABSORBTION</span>
                             <div class="flexrow">
                                 <select class="armor-select" >
@@ -412,18 +446,16 @@
                                     <option value="{{this._id}}" {{#if this.data.isEquipped}}selected{{/if}}>{{this.name}}</option>
                                     {{/each}}
                                 </select>
-                                <a class="npc-armor-create plus-button" data-type="armor" title="Add Armor"></a>
+                                
                                 {{#if data.secChar.wornGear.armor._id}}
-
-                                <a class="npc-armor-delete minus-button" data-type="armor" title="Delete Armor"></a>
+                                <a class="item-edit" data-item-id="{{data.secChar.wornGear.armor._id}}"data-type="armor" title="Edit Armor"></a>
+                                <a class="item-delete minus-button" data-item-id="{{data.secChar.wornGear.armor._id}}"data-type="armor" title="Delete Armor"></a>
+                                {{else}}
+                                <a class="item-create plus-button" data-type="armor" title="Add Armor"></a>
                                 {{/if}}
-
+                                
                             </div>
-                            {{#if data.secChar.wornGear.armor._id}}
-                            <a class="npc-armor-edit button" data-type="armor" title="Edit Armor">Edit Armor</a>
 
-
-                            {{/if}}
 
                             <div class="flexcol">
                                 <span class="section-title">COVER</span>

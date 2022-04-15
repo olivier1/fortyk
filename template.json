@@ -997,6 +997,10 @@
                 "overload": 0,
                 "type": "Number"
             },
+            "overloadBreak":{
+                "value":true,
+                "type":"Boolean"
+            },
             "broken": {
                 "value": false,
                 "type": "Boolean"

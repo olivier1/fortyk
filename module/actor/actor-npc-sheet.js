@@ -45,10 +45,7 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
         if (!this.options.editable) return;
         
         html.find('.parse-tnt').click(this._onTntParse.bind(this));
-        html.find('.npc-armor-create').click(this._onArmorCreate.bind(this));
-        html.find('.npc-armor-delete').click(this._onArmorDelete.bind(this));
-         html.find('.npc-armor-edit').click(this._onArmorEdit.bind(this));
-
+       
 
     } 
     
@@ -77,30 +74,7 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
 
 
     }
-    async _onArmorCreate(event) {
-        event.preventDefault();
-        const header = event.currentTarget;
-        const type = header.dataset["type"];
-        const itemData = {
-            name: `new ${type}`,
-            type: type
-        };
-
-        let armor=await this.actor.createEmbeddedDocuments("Item",[itemData],{"renderSheet":true});
-        
-        let armorID=armor[0].id;
-        await this.actor.update({"data.secChar.wornGear.armor._id":armorID});
-    }
-    async _onArmorDelete(event){
-        await this.actor.items.get(this.actor.data.data.secChar.wornGear.armor._id).delete();
-        await this.actor.update({"data.secChar.wornGear.armor._id":""});
-    }
-    async _onArmorEdit(event){
-        event.preventDefault();
-        let itemId = this.actor.data.data.secChar.wornGear.armor._id;
-        const item = this.actor.items.find(i => i.data._id == itemId);
-        item.sheet.render(true);
-    }
+   
     async _onTntParse(event){
 
         let actor=this.actor;

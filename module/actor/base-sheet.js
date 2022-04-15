@@ -81,6 +81,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.buff-debuff').click(this._onBuffDebuff.bind(this));
         //autofcus modifier input
         html.find('.rollable').click(this._onRoll.bind(this));
+        //repair forcefield
+         html.find('.repairForcefield').click(this._onRepairForcefield.bind(this));
         //force damage roll
         html.find('.force-roll').click(this._onForceRoll.bind(this));
         //creating a tnt
@@ -596,7 +598,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
         var item=null;
         
-
+        console.log(testType)
 
         if(dataset["itemId"]){
             item=await this.actor.items.get(dataset["itemId"]);
@@ -605,7 +607,12 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 await item.prepareData();
             }
         }
-
+        if(testType==="forcefield"){
+            let forcefieldId=dataset["id"];
+            let forcefield=this.actor.getEmbeddedDocument("Item",forcefieldId);
+            await FortykRollDialogs.callForcefieldDialog(forcefield,this.actor);
+            return;
+        }
         if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
             await FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
             return;
@@ -748,6 +755,13 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             });
 
         }
+    }
+    //handles repairing broken forcefields
+    async _onRepairForcefield(event){
+         event.preventDefault();
+        let itemId = event.currentTarget.attributes["data-id"].value;
+        const item = this.actor.items.find(i => i.data._id == itemId);
+        await item.update({"data.broken.value":false});
     }
     //handles resetting cover values to zero
     async _onCoverReset(event){

@@ -50,6 +50,14 @@
         <label>Overload:</label>
         <input type="text" value="{{data.rating.overload}}" name="data.rating.overload">
     </div>
+    <div class="flexrow">
+            <label>Breaks on Overload:</label>
+            <input type="checkbox" name="data.overloadBreak.value" {{checked data.overloadBreak.value}}>
+        </div>
+    <div class="flexrow">
+            <label>Broken:</label>
+            <input type="checkbox" name="data.broken.value" {{checked data.broken.value}}>
+        </div>
     <div class="item-description">
         <label>Description:</label>
         {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}

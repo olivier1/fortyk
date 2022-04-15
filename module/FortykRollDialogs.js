@@ -595,6 +595,32 @@ export class FortykRollDialogs{
             width:200}
                   ).render(true);
     }
+    static async callForcefieldDialog(forcefield,actor,title="Enter number of hits"){
+        new Dialog({
+            title: title,
+            content: `<p><label>Number of Hits:</label> <input id="modifier" type="text" name="modifier" value="1" autofocus/></p>`,
+            buttons: {
+                submit: {
+                    label: 'OK',
+                    callback: (html) => {
+                        const hits = Number($(html).find('input[name="modifier"]').val());
+                        if(isNaN(hits)){
+                            this.callForcefieldDialog(forcefield,actor,"Invalid Number");
+                        }else{
+                           
+                            FortykRolls.fortykForcefieldTest(forcefield,actor,hits);
+                        }
+
+                    }
+
+                }
+            },
+            default: "submit",
+
+
+            width:100}
+                  ).render(true);
+    }
     //activate chatlisteners
     static chatListeners(html){
         html.on("mouseup",".reroll", this._onReroll.bind(this));

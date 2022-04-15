@@ -182,7 +182,7 @@ export class FortyKItemSheet extends ItemSheet {
                                     }else{
                                         number=parseFloat(number);
                                     }
-                                    if(number!==parseInt(spec.num)){
+                                    if(value||number!==parseInt(spec.num)){
 
                                         num=true
                                     };

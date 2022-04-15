@@ -330,6 +330,9 @@ export class FortyKActor extends Actor {
                 if(item.type==="armor"&&item.data.isEquipped){
                     data.secChar.wornGear.armor=item;
                 }
+                if(item.type==="forceField"&&item.data.isEquipped){
+                    data.secChar.wornGear.forceField=item;
+                }
             })
         }
 
@@ -936,6 +939,7 @@ export class FortyKActor extends Actor {
         const rangedWeapons=[];
         const talentsntraits=[];
         const armors=[];
+        const forceFields=[];
         //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
@@ -948,6 +952,9 @@ export class FortyKActor extends Actor {
             }
             if(item.type==="armor"){
                 armors.push(item);
+            }
+            if(item.type==="forceField"){
+                forceFields.push(item);
             }
             if(item.type==="psychicPower"){
 
@@ -971,7 +978,8 @@ export class FortyKActor extends Actor {
             meleeWeapons:meleeweapons,
             rangedWeapons:rangedWeapons,
             talentsntraits:talentsntraits,
-            armors:armors
+            armors:armors,
+            forceFields:forceFields
         };
         try{
             this._sortItems(preparedItems);

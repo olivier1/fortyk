@@ -410,10 +410,73 @@ returns the roll message*/
         }
         await ChatMessage.create(chatPhenom,{});
     }
+    //handles forcefield tests
+    static async fortykForcefieldTest(forcefield,actor,hits){
+        let data=forcefield.data.data;
+        let rating=data.rating.value;
+        let overload=data.rating.overload;
+        let breakOnOverload=data.overloadBreak.value;
+        let formula=`${hits}d100cs<=${rating}`;
+        let roll=new Roll(formula, {});
+        await roll.evaluate();
+        let overloaded=false;
+        
+        let remainingHits=hits;
+        let die=roll.dice[0].results;
+        let template='systems/fortyk/templates/chat/chat-forcefield-test.html';
+        var templateOptions={
+            title:`${forcefield.name} Test`,
+            rating:rating,
+            overload:overload,
+            breakOnOverload:breakOnOverload
+        }
+        let hitResults=[];
+        let i=0;
+        while(!(breakOnOverload&&overloaded)&&i<hits){
+            
+            let dice=die[i];
+            let roll1=dice.result;
+            let pass=dice.success;
+            overloaded=false;
+            let result={overload:false,roll:roll1,pass:pass,string:""};
+            if(roll1<=overload){
+                overloaded=true;
+                result.overload=overloaded;
+            }
+            console.log(overloaded)
+            let string="";
+            if(overloaded){
+                string=`Hit ${i+1} overloads with a roll of ${roll1}!`;
+                remainingHits--;
+            }else if(pass){
+                string=`Hit ${i+1} is deflected with a roll of ${roll1}!`;
+                remainingHits--;
+            }else{
+                string=`Hit ${i+1} goes through with a roll of ${roll1}!`;
+            }
+            result.string=string;
+            hitResults.push(result);
+            i++;
+        }
+        console.log(remainingHits)
+        if(breakOnOverload&&overloaded){
+            await forcefield.update({"data.broken.value":true});
+            templateOptions.breaks=`${forcefield.name} breaks!`
+        }
+        templateOptions.results=hitResults;
+        templateOptions.remainingHits=remainingHits;
+        let renderedTemplate= await renderTemplate(template,templateOptions);
+        await roll.toMessage({user: game.user._id,
+                              speaker:{actor,alias:actor.name},
+                              content:renderedTemplate,
+                              classes:["fortyk"],
+                              author:actor.name})
+        console.log(roll);
+    }
     //handles damage rolls and applies damage to the target, generates critical effects
     static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0, user=game.users.current, lastHit=null, targets=null){
 
-        
+
         let weapon=deepClone(fortykWeapon.data);
         let righteous=10;
         if(fortykWeapon.getFlag("fortyk","vengeful")){
@@ -440,7 +503,7 @@ returns the roll message*/
 
             weapon.data.pen.value=parseInt(weapon.data.pen.value)+Math.ceil(actor.data.data.characteristics.s.bonus/2);
         }
-        
+
         if(targets===null){
             targets=user.targets;
         }
@@ -606,7 +669,7 @@ returns the roll message*/
             roll._total=Math.ceil(roll._total);
 
             //HAYWIRE TABLE ROLL
-            if(fortykWeapon.getFlag("fortyk","haywire")){
+            if(!isNaN(parseInt(fortykWeapon.getFlag("fortyk","haywire")))){
                 let hayRoll=new Roll("1d5",{});
                 await hayRoll.roll();
                 let hayText=FORTYKTABLES.haywire[hayRoll._total-1];
@@ -673,7 +736,7 @@ returns the roll message*/
                                     toxic=1;
                                 }
                             }
-                          
+
                             if(actor.getFlag("fortyk","ailments")){
 
                                 let ailmentAmt=Math.ceil(actor.data.data.characteristics.int.bonus/2);
@@ -1150,13 +1213,16 @@ returns the roll message*/
                         if(armorSuit.getFlag("fortyk","impenetrable")){
                             damage=Math.ceil(damage/2);
                             chatDamage=Math.ceil(damage/2);
-                            let impOptions={user: user._id,
-                                            speaker:{actor,alias:tarActor.name},
-                                            content:"Impenetrable reduces damage taken by half!",
-                                            classes:["fortyk"],
-                                            flavor:`${armorSuit.name} is impenetrable`,
-                                            author:tarActor.name};
-                            await ChatMessage.create(impOptions,{});
+                            if(damage>0){
+                                let impOptions={user: user._id,
+                                                speaker:{actor,alias:tarActor.name},
+                                                content:"Impenetrable reduces damage taken by half!",
+                                                classes:["fortyk"],
+                                                flavor:`${armorSuit.name} is impenetrable!`,
+                                                author:tarActor.name};
+                                await ChatMessage.create(impOptions,{});
+                            }
+
                         }
                         //process horde damage for different weapon qualities
                         if(data.horde.value&&damage>0){
@@ -1229,10 +1295,10 @@ returns the roll message*/
                         if((isHorde)&&newWounds[tarNumbr]<=0){
 
                             await this.applyDead(tar,actor);
-                           
+
                         }else if(data.suddenDeath.value&&newWounds[tarNumbr]<=0){
                             await this.applyDead(tar,actor);
-                            
+
                         }else if(newWounds[tarNumbr]<0&&damage>0){
                             let crit=Math.abs(newWounds[tarNumbr])-1;
 
@@ -1247,7 +1313,7 @@ returns the roll message*/
                             }
                         } 
                         //snare weapon
-                        
+
                         if(!isNaN(parseInt(fortykWeapon.getFlag("fortyk","snare")))&&!isHorde){
                             let snareMod=fortykWeapon.getFlag("fortyk","snare")*10;
                             let snare=await this.fortykTest("agi", "char", (tarActor.data.data.characteristics.agi.total-snareMod),tarActor, "Resist snare");
@@ -2999,7 +3065,7 @@ returns the roll message*/
                 };
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("bleeding")]));
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[18]));
-                critActiveEffect[2].changes=[                                       {key:`data.characterHitLocations.head.armor`,value:0,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                critActiveEffect[2].changes=[                                       {key:`data.characterHitLocations.head.armorMod`,value:-99,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                 await this.applyActiveEffect(actorToken,critActiveEffect);
                 break;
             case 4:
@@ -3031,7 +3097,7 @@ returns the roll message*/
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("deaf")]));
                 }else{
                     critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[18]));
-                    critActiveEffect[1].changes=[                                       {key:`data.characterHitLocations.head.armor`,value:0,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                    critActiveEffect[1].changes=[                                       {key:`data.characterHitLocations.head.armorMod`,value:-99,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                 }
                 await this.applyActiveEffect(actorToken,critActiveEffect);
                 break;
