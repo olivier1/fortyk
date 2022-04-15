@@ -33,6 +33,7 @@ returns the roll message*/
         }else{
             weaponid=weapon._id;
         }
+
         let template='systems/fortyk/templates/chat/chat-test.html';
         var templateOptions={
             title:"",
@@ -147,6 +148,61 @@ returns the roll message*/
                 }
             }
         }
+        let attack=false;
+        if(templateOptions["success"]&&(type==="rangedAttack"||type==="meleeAttack"||type==="focuspower"&&(fortykWeapon.data.data.class.value==="Psychic Bolt"||fortykWeapon.data.data.class.value==="Psychic Barrage"||fortykWeapon.data.data.class.value==="Psychic Storm"||fortykWeapon.data.data.class.value==="Psychic Blast"))){
+            attack=true;
+        }
+        //determine number of hits
+        let hits=0;
+        if(attack){
+            hits=1;
+            let attackType=actor.data.data.secChar.lastHit.attackType;
+            if(type==="meleeAttack"){
+                console.log(attackType)
+                let wsBonus=actor.data.data.characteristics.ws.bonus;
+                if(attackType==="swift"){
+                    hits+=Math.min(wsBonus,Math.floor((testDos-1)/2))
+                }else if(attackType==="lightning"){
+                    hits=Math.min(testDos,wsBonus);
+                }
+                let attackTarget=game.user.targets.first();
+                if(attackTarget!==undefined){
+                    let horde=attackTarget.actor.data.data.horde.value;
+                    if(horde){
+                        hits+=Math.floor(testDos/2)
+                    }
+                }
+            }else if(type==="rangedAttack"){
+                if(fortykWeapon.getFlag("fortyk","twinlinked")&&testDos>=3){
+                    hits++
+                }
+                let rof=1;
+                if(attackType==="semi"){
+                    rof=weapon.data.rof[1].value;
+                    hits+=Math.min(rof,Math.floor((testDos-1)/2));
+                }else if(attackType==="full"){
+                    rof=weapon.data.rof[2].value;
+                    hits+=Math.min(rof,(testDos));
+                }
+                if(fortykWeapon.getFlag("fortyk","storm")){
+                    hits=hits*2;
+                }
+            }else if(type==="focuspower"){
+                let pr=weapon.data.curPR.value;
+                if(fortykWeapon.data.data.class.value==="Psychic Barrage"){
+                    hits+=Math.min(pr,Math.floor((testDos-1)/2))
+                }else if(fortykWeapon.data.data.class.value==="Psychic Storm"){
+                    hits=Math.min(pr,testDos);
+                }
+            }
+            templateOptions["numberHits"]=`The attack scores ${hits} hit`
+            if(hits>1){
+                templateOptions["numberHits"]+="s."
+            }else{
+                templateOptions["numberHits"]+="."
+            }
+
+        }
         //give the chat object options and stuff
         let renderedTemplate= await renderTemplate(template,templateOptions);
         await roll.toMessage({user: game.user._id,
@@ -159,7 +215,7 @@ returns the roll message*/
         let secondDigit=testRoll-firstDigit*10;
 
         //determine hitlocation if the attack is a success
-        if(templateOptions["success"]&&(type==="rangedAttack"||type==="meleeAttack"||type==="focuspower"&&(fortykWeapon.data.data.class.value==="Psychic Bolt"||fortykWeapon.data.data.class.value==="Psychic Barrage"||fortykWeapon.data.data.class.value==="Psychic Storm"||fortykWeapon.data.data.class.value==="Psychic Blast"))){
+        if(attack){
             //reverse roll to get hit location
             let inverted=parseInt(secondDigit*10+firstDigit);
             let hitlocation=FORTYKTABLES.hitLocations[inverted];
@@ -174,9 +230,7 @@ returns the roll message*/
                         flavor:"Hit location",
                         author:actor.name};
             await ChatMessage.create(chatOp,{});
-        }
-        //special traits
-        if((type==="focuspower"||type==="rangedAttack"||type==="meleeAttack")){
+
             //blast
             if((weapon.data.type==="Launcher"||weapon.data.type==="Grenade")&&fortykWeapon.getFlag("fortyk","blast")&&!testResult&&jam){
                 let fumbleRoll=new Roll("1d10");
@@ -227,6 +281,25 @@ returns the roll message*/
                                   author:actor.name};
                 await ChatMessage.create(chatOverheat,{});
             }
+        }
+        //if attack has target, check if target has forcefield and do forcefield tests if so
+        if(attack&&game.user.targets.size!==0){
+            console.log("hey")
+            if(game.user.isGM){
+                for(let tar of game.user.targets){
+                    let tarActor=tar.actor;
+                    let forcefield=tarActor.data.data.secChar.wornGear.forceField.document;
+                    if(forcefield){
+                        this.fortykForcefieldTest(forcefield,tarActor,hits);
+                    }
+                }
+            }else{
+                //if user isnt GM use socket to have gm roll the forcefield tests
+
+                let socketOp={type:"forcefieldRoll",package:{targets:game.user.targets.ids,hits:hits}}
+                await game.socket.emit("system.fortyk",socketOp);
+            }
+
         }
         //logic for psychic phenomena and perils of the warp
 
@@ -420,7 +493,7 @@ returns the roll message*/
         let roll=new Roll(formula, {});
         await roll.evaluate();
         let overloaded=false;
-        
+
         let remainingHits=hits;
         let die=roll.dice[0].results;
         let template='systems/fortyk/templates/chat/chat-forcefield-test.html';
@@ -433,7 +506,7 @@ returns the roll message*/
         let hitResults=[];
         let i=0;
         while(!(breakOnOverload&&overloaded)&&i<hits){
-            
+
             let dice=die[i];
             let roll1=dice.result;
             let pass=dice.success;
@@ -471,7 +544,7 @@ returns the roll message*/
                               content:renderedTemplate,
                               classes:["fortyk"],
                               author:actor.name})
-        console.log(roll);
+
     }
     //handles damage rolls and applies damage to the target, generates critical effects
     static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0, user=game.users.current, lastHit=null, targets=null){

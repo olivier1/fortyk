@@ -197,7 +197,10 @@ Hooks.once('ready', async function() {
             let id="";
             let actor=null;
             let token=null;
+            let targetIds=null;
             let value=0;
+            let targets=null;
+            let hits=null;
             switch(data.type){
                 case "damageRoll":
                     let user=await game.users.get(data.package.user);
@@ -207,12 +210,12 @@ Hooks.once('ready', async function() {
                     if(!fortykWeapon.data.data.isPrepared){
                         fortykWeapon.prepareData();
                     }
-                    let targetIds=data.package.targets;
+                    targetIds=data.package.targets;
                     let lastHit=data.package.lastHit;
-                    let hits=data.package.hits;
+                    hits=data.package.hits;
                     let magdamage=data.package.magdmg;
                     let extraPen=data.package.pen;
-                    let targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
+                    targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
                     targets=new Set(targets);
                     FortykRolls.damageRoll(formula,actor,fortykWeapon,hits, false, false,magdamage,extraPen, user, lastHit, targets);
                     break;
@@ -241,6 +244,22 @@ Hooks.once('ready', async function() {
                     options[path]=value;
                     await actor.update(options);
 
+                    break;
+                case "forcefieldRoll":
+                    console.log("hi")
+                    targetIds=data.package.targets;
+                    hits=data.package.hits
+                    targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
+                    console.log(targetIds,targets)
+                    targets=new Set(targets);
+                    for(let tar of targets){
+                        let tarActor=tar.actor;
+                        console.log(tarActor);
+                        let forcefield=tarActor.data.data.secChar.wornGear.forceField.document;
+                        if(forcefield){
+                           FortykRolls.fortykForcefieldTest(forcefield,tarActor,hits);
+                        }
+                    }
                     break;
                 case "critEffect":
                     id=data.package.token;
@@ -276,11 +295,11 @@ Hooks.on("updateCombat", async (combat) => {
         //PAN CAMERA TO ACTIVE TOKEN
         canvas.animatePan({x:token.x,y:token.y});
         for(let activeEffect of actor.effects){
-          
+
             if(activeEffect.data.duration.rounds!==undefined){
-                
+
                 let remaining=Math.ceil(activeEffect.data.duration.rounds);
-                
+
                 if(remaining<1){remaining=0}
                 let content="";
                 if(remaining===0){
@@ -587,9 +606,9 @@ Hooks.once("dragRuler.ready", (Speedprovider) => {
         getCostForStep(token, area, options={}) {
             // Lookup the cost for each square occupied by the token
             options.token = token;
-            
+
             const costs = area.map(space => terrainRuler.getCost(space.x, space.y, options));
-            
+
             // Return the maximum of the costs
             let actor=token.actor;
             let cost=1;
