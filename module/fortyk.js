@@ -257,7 +257,7 @@ Hooks.once('ready', async function() {
                         console.log(tarActor);
                         let forcefield=tarActor.data.data.secChar.wornGear.forceField.document;
                         if(forcefield){
-                           FortykRolls.fortykForcefieldTest(forcefield,tarActor,hits);
+                            FortykRolls.fortykForcefieldTest(forcefield,tarActor,hits);
                         }
                     }
                     break;
@@ -299,7 +299,7 @@ Hooks.on("updateCombat", async (combat) => {
             if(activeEffect.data.duration.rounds!==undefined){
                 console.log(activeEffect)
                 let remaining=Math.ceil(activeEffect.duration.remaining);
-                
+
                 if(remaining<1){remaining=0}
                 let content="";
                 if(remaining===0){
@@ -368,6 +368,24 @@ Hooks.on("updateCombat", async (combat) => {
                         let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
                         await actor.update({"data.secChar.fatigue.value":fatigue});
                     }
+                }
+                //check for cryo
+                if(activeEffect.data.flags.core.statusId==="cryogenic"){
+                    let cryoRoll=new Roll("2d10",{});
+                    await cryoRoll.roll();
+                    let tDmg=cryoRoll.result
+                    let cryoContent=`On round start, take ${tDmg} toughness damage!`;
+                    let cryoOptions={user: game.user._id,
+                                     speaker:{actor,alias:actor.name},
+                                     content:cryoContent,
+                                     classes:["fortyk"],
+                                     flavor:`Freezing`,
+                                     author:actor.name};
+                    let cryoMsg=await ChatMessage.create(cryoOptions,{});
+                    let ae=[]
+                    ae.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("t")]));
+                    ae[0].changes=[{key:`data.characteristics.t.value`,value:-1*tDmg,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
+                    await FortykRolls.applyActiveEffect(token,ae);
                 }
             }
 

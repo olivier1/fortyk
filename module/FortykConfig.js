@@ -251,6 +251,11 @@ FORTYK.weaponFlags={
         "label": "Crushing",
         "description": "This weapon is extremely weighty and impactful, as such it applies twice it's wielder's strength bonus in melee combat."
     },
+    "cryogenic": {
+        "value": false,
+        "label": "Cryogenic",
+        "description": "Targets who suffer damage from this weapon must pass a -40 toughness test or suffer 2d10 toughness damage per round for 1d5 rounds. Creatures reduced to 0 toughness by the grenade are frozen solid."
+    },
     "daemonbane": {
         "value": false,
         "label": "Daemonbane",
@@ -604,6 +609,12 @@ FORTYK.StatusEffects = [
         icon: "icons/svg/blood.svg",
         tint:"#8a0303",
         flags: { core: { statusId: "bleeding" } }
+    },
+    {
+        id: "cryogenic",
+        label: "Cryogenic",
+        icon: "systems/fortyk/icons/cryo.png",
+        flags: { core: { statusId: "cryogenic" } }
     },
     {
         id: "toxic",

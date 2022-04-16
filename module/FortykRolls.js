@@ -1146,7 +1146,33 @@ returns the roll message*/
                                 this._addFatigue(tarActor,newfatigue);
                             }
                         }
-                        
+                        //cryogenic weapon logic
+                        if(damage>0&&fortykWeapon.getFlag("fortyk","cryogenic")&&!isHordelike){
+                            let cryo=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total-40),tarActor, "Resist freezing");
+                            if(!cryo.value){
+                                let cryoRoll=new Roll("1d5",{});
+                                await cryoRoll.roll();
+                                let cryoDuration=parseInt(cryoRoll.result);
+                                console.log(cryoDuration)
+                                let cryoActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("cryogenic")]);
+                                cryoActiveEffect.transfer=false;
+                                
+                                cryoActiveEffect.duration={
+
+                                    rounds:cryoDuration
+                                };
+                                console.log(cryoActiveEffect)
+                                activeEffects.push(cryoActiveEffect);
+                                let cryoOptions={user: user._id,
+                                                 speaker:{tarActor,alias:tarActor.name},
+                                                 content:`${tarActor.name} is freezing for ${cryoRoll.result} rounds and will take 2d10 toughness damage per round, freezing if reaching 0 toughness!`,
+                                                 classes:["fortyk"],
+                                                 flavor:`Cryogenic`,
+                                                 author:actor.name};
+                                await ChatMessage.create(cryoOptions,{});
+                            }
+                        }
+
                         if(!isNaN(parseInt(fortykWeapon.getFlag("fortyk","hallucinogenic")))&&!isHordelike){
                             let halluMod=parseInt(fortykWeapon.getFlag("fortyk","hallucinogenic"))*10;
                             if(armorSuit.getFlag("fortyk","sealed")){
@@ -1165,11 +1191,11 @@ returns the roll message*/
                                 await halluRoll.roll();
                                 let halluText=FORTYKTABLES.hallucinogenic[halluRoll._total-1];
                                 let halluOptions={user: user._id,
-                                                speaker:{actor,alias:actor.name},
-                                                content:halluText,
-                                                classes:["fortyk"],
-                                                flavor:`Hallucinogenic Effect lasts for ${hallu.dos+1} rounds!`,
-                                                author:actor.name};
+                                                  speaker:{actor,alias:actor.name},
+                                                  content:halluText,
+                                                  classes:["fortyk"],
+                                                  flavor:`Hallucinogenic Effect lasts for ${hallu.dos+1} rounds!`,
+                                                  author:actor.name};
                                 await ChatMessage.create(halluOptions,{});
                             }
                         }
@@ -3414,7 +3440,7 @@ returns the roll message*/
                 break;
             case 7:
                 d10Roll.roll().then(roll=>{roll.toMessage({flavor:"Strength damage."})});
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[27]));
+                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("s")]));
                 critActiveEffect[0].changes=[{key:`data.characteristics.s.value`,value:-1*d10Roll._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("bleeding")]));
                 injury=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("arm")]);
@@ -3564,26 +3590,43 @@ returns the roll message*/
                 let aEs=[];
                 for(let index=0; index <effect.length;index++){
                     let dupp=false;
+                    let newAe=effect[index];
                     for(let ae of actor.effects){
                         if(ae.data.flags.core){
                             if(ae.data.flags.core.statusId!=="weakened"&&ae.data.flags.core.statusId!=="buff"&&ae.data.flags.core.statusId===effect[index].flags.core.statusId){
                                 dupp=true;
                                 let change=false;
                                 let upg=false;
+                                let changes=ae.data.changes
                                 for(let i=0;i<ae.data.changes.length;i++){
-                                    if(ae.data.changes[i].key===effect[index].changes[0].key){
-                                        ae.data.changes[i].value+=effect[index].changes[0].value;
-                                        upg=true;
-                                        change=true;
+
+                                    for(let z=0;z<newAe.changes.length;z++){
+
+                                        if(ae.data.changes[i].key===newAe.changes[z].key){
+                                            if(!isNaN(parseInt(newAe.changes[z].value))){
+                                                newAe.changes[z].value=parseInt(newAe.changes[z].value)+parseInt(ae.data.changes[i].value);
+                                            }else{
+                                                newAe.changes[z].value+=ae.data.changes[i].value;
+                                            }
+                                            
+                                            change=true;
+                                            upg=true;
+                                        } 
+
+
                                     }
+
+
                                 }
                                 if(effect[index].duration&&(effect[index].duration.rounds>ae.duration.remaining)){
                                     ae.data.duration.rounds=effect[index].duration.rounds;
                                     ae.data.duration.startRound=effect[index].duration.startRound;
                                     change=true;
                                 }
-                                if(effect[index].changes!==undefined&&!upg){ae.data.changes.push(effect[index].changes[0])}
-                                if(change){await ae.update(ae.data);}
+                                if(change||upg){
+                                    aEs.push(newAe);
+                                    await ae.delete();
+                                }
                             }
                         }
 
