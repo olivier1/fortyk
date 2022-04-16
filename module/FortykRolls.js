@@ -158,7 +158,6 @@ returns the roll message*/
             hits=1;
             let attackType=actor.data.data.secChar.lastHit.attackType;
             if(type==="meleeAttack"){
-                console.log(attackType)
                 let wsBonus=actor.data.data.characteristics.ws.bonus;
                 if(attackType==="swift"){
                     hits+=Math.min(wsBonus,Math.floor((testDos-1)/2))
@@ -283,6 +282,7 @@ returns the roll message*/
             }
         }
         //if attack has target, check if target has forcefield and do forcefield tests if so
+        /*
         if(attack&&game.user.targets.size!==0){
             console.log("hey")
             if(game.user.isGM){
@@ -300,7 +300,7 @@ returns the roll message*/
                 await game.socket.emit("system.fortyk",socketOp);
             }
 
-        }
+        }*/
         //logic for psychic phenomena and perils of the warp
 
         if(type==="focuspower"){
@@ -432,14 +432,6 @@ returns the roll message*/
                 await this.applyActiveEffect(token,ae);
             }
 
-        }else if(type==="forcefield"&&testRoll<=char){
-            let chatOverload={user: game.user._id,
-                              speaker:{actor,alias:actor.name},
-                              content:"The forcefield overloads and needs to be repaired!",
-                              classes:["fortyk"],
-                              flavor:"Gear malfunction",
-                              author:actor.name};
-            await ChatMessage.create(chatOverload,{});
         }
         let result={}
         result.dos=testDos;
@@ -520,7 +512,6 @@ returns the roll message*/
                 overloaded=true;
                 result.overload=overloaded;
             }
-            console.log(overloaded)
             let string="";
             if(overloaded){
                 string=`Hit ${i+1} overloads with a roll of ${roll1}!`;
@@ -787,9 +778,9 @@ returns the roll message*/
                     data=tar.actor.data.data; 
                     tarActor=tar.actor;
                     let armorSuit=data.secChar.wornGear.armor.document;
-                    let isHorde=false;
-                    if(data.horde||data.formation){
-                        isHorde=true;
+                    let isHordelike=false;
+                    if(data.horde.value||data.formation.value){
+                        isHordelike=true;
                     }
                     let tarRighteous=righteous;
                     let deathwatch=false;
@@ -1092,7 +1083,7 @@ returns the roll message*/
                         }
                         damage=damage-soak;
                         //corrosive weapon logic
-                        if(fortykWeapon.getFlag("fortyk","corrosive")&&!isHorde){
+                        if(fortykWeapon.getFlag("fortyk","corrosive")&&!isHordelike){
                             let corrosiveAmt=new Roll("1d10",{});
                             await corrosiveAmt.roll();
                             await corrosiveAmt.toMessage({
@@ -1116,7 +1107,7 @@ returns the roll message*/
                             }
                         }
                         //toxic weapon logic
-                        if(damage>0&&toxic&&!isHorde){
+                        if(damage>0&&toxic&&!tarActor.getFlag("fortyk","stuffofnightmares")&&!tarActor.getFlag("fortyk","undying")&&!isHordelike){
                             let toxicMod=toxic*10;
                             if(tarActor.getFlag("fortyk","resistance")&&tarActor.getFlag("fortyk","resistance").toLowerCase().includes("toxic")){
                                 toxicMod=-10;
@@ -1134,7 +1125,7 @@ returns the roll message*/
                         }
 
                         //shocking weapon logic
-                        if(damage>0&&fortykWeapon.getFlag("fortyk","shocking")&&!isHorde){
+                        if(damage>0&&fortykWeapon.getFlag("fortyk","shocking")&&!isHordelike){
                             let shock=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total),tarActor, "Resist shocking");
                             if(!shock.value){
                                 let stunActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]);
@@ -1155,8 +1146,35 @@ returns the roll message*/
                                 this._addFatigue(tarActor,newfatigue);
                             }
                         }
+                        
+                        if(!isNaN(parseInt(fortykWeapon.getFlag("fortyk","hallucinogenic")))&&!isHordelike){
+                            let halluMod=parseInt(fortykWeapon.getFlag("fortyk","hallucinogenic"))*10;
+                            if(armorSuit.getFlag("fortyk","sealed")){
+                                halluMod+=20;
+                            }
+                            let hallu=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total-halluMod),tarActor, "Resist hallucinogenic");
+                            if(!hallu.value){
+                                let halluActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("hallucinogenic")]);
+                                halluActiveEffect.transfer=false;
+                                halluActiveEffect.duration={
+
+                                    rounds:hallu.dos
+                                };
+                                activeEffects.push(halluActiveEffect);
+                                let halluRoll=new Roll("1d10",{});
+                                await halluRoll.roll();
+                                let halluText=FORTYKTABLES.hallucinogenic[halluRoll._total-1];
+                                let halluOptions={user: user._id,
+                                                speaker:{actor,alias:actor.name},
+                                                content:halluText,
+                                                classes:["fortyk"],
+                                                flavor:`Hallucinogenic Effect lasts for ${hallu.dos+1} rounds!`,
+                                                author:actor.name};
+                                await ChatMessage.create(halluOptions,{});
+                            }
+                        }
                         //crippling weapon logic
-                        if(damage>0&&fortykWeapon.getFlag("fortyk","crippling")&&!isHorde){
+                        if(damage>0&&fortykWeapon.getFlag("fortyk","crippling")&&!isHordelike){
                             let crippleActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("crippled")]);
                             crippleActiveEffect.location=curHit;
                             crippleActiveEffect.num=fortykWeapon.getFlag("fortyk","crippling");
@@ -1196,7 +1214,7 @@ returns the roll message*/
                         }
                         //Xenos Bane Logic #2
 
-                        if(crit&&deathwatch&actor.getFlag("fortyk","xenosbane")&&(actor.data.data.secChar.wounds.value>=curWounds)&&!isHorde){
+                        if(crit&&deathwatch&actor.getFlag("fortyk","xenosbane")&&(actor.data.data.secChar.wounds.value>=curWounds)&&!isHordelike){
                             let banetest=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total),tarActor, `Resist Xenos Bane intant death!`);
                             if(!banetest.value){
                                 this.applyDead(tarActor,actor);
@@ -1268,7 +1286,7 @@ returns the roll message*/
                         }
                         let chatDamage=damage;
                         // true grit!@!!@
-                        if(!data.suddenDeath.value&&!isHorde&&(damage>0)&&(newWounds[tarNumbr]-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
+                        if(!data.suddenDeath.value&&!isHordelike&&(damage>0)&&(newWounds[tarNumbr]-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
                             if(newWounds[tarNumbr]>=0){
                                 chatDamage=parseInt(newWounds[tarNumbr])+parseInt(Math.max(1,(chatDamage-newWounds[tarNumbr])-data.characteristics.t.bonus));
                                 damage=damage-newWounds[tarNumbr];
@@ -1368,7 +1386,7 @@ returns the roll message*/
 
 
                         //handle critical effects and death
-                        if((isHorde)&&newWounds[tarNumbr]<=0){
+                        if((isHordelike)&&newWounds[tarNumbr]<=0){
 
                             await this.applyDead(tar,actor);
 
@@ -1381,7 +1399,7 @@ returns the roll message*/
                             await this.critEffects(tar,crit+1,curHit.value,weapon.data.damageType.value,ignoreSON);
                         }
                         //flame weapon
-                        if(!armorSuit.getFlag("fortyk","flamerepellent")&&fortykWeapon.getFlag("fortyk","flame")&&!isHorde){
+                        if(!armorSuit.getFlag("fortyk","flamerepellent")&&fortykWeapon.getFlag("fortyk","flame")&&!isHordelike){
                             let fire=await this.fortykTest("agi", "char", tarActor.data.data.characteristics.agi.total,tarActor, "Resist fire");
                             if(!fire.value){
                                 let fireActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fire")]);
@@ -1390,7 +1408,7 @@ returns the roll message*/
                         } 
                         //snare weapon
 
-                        if(!isNaN(parseInt(fortykWeapon.getFlag("fortyk","snare")))&&!isHorde){
+                        if(!isNaN(parseInt(fortykWeapon.getFlag("fortyk","snare")))&&!isHordelike){
                             let snareMod=fortykWeapon.getFlag("fortyk","snare")*10;
                             let snare=await this.fortykTest("agi", "char", (tarActor.data.data.characteristics.agi.total-snareMod),tarActor, "Resist snare");
                             if(!snare.value){
@@ -1406,7 +1424,7 @@ returns the roll message*/
                             }
                         }
                         //concussive weapon
-                        if(!isNaN(parseInt(fortykWeapon.getFlag("fortyk","concussive")))&&!isHorde){
+                        if(!isNaN(parseInt(fortykWeapon.getFlag("fortyk","concussive")))&&!isHordelike){
                             let stunMod=parseInt(fortykWeapon.getFlag("fortyk","concussive"))*10;
                             let stun=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total-stunMod),tarActor, "Resist stun");
                             if(!stun.value){
@@ -1853,7 +1871,7 @@ returns the roll message*/
                     rounds:d10Roll._total
 
                 };
-                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[27]));
+                critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("s")]));
                 critActiveEffect[1].changes=[{key:`data.characteristics.s.value`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.MULTIPLY},
                                              {key:`data.characteristics.s.advance`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.MULTIPLY}];
                 critActiveEffect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("t")]));

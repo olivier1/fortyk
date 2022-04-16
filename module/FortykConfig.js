@@ -175,6 +175,11 @@ FORTYK.armorFlags={
         "label": "Rending Resistant",
         "description": "This armor is built to resist rending attacks, its armor value counts as double against rending damage."
     },
+    "sealed": {
+        "value": false,
+        "label": "Sealed",
+        "description": "This armor is sealed against vacuum and airborne toxins. It gives a +20 bonus to resist the hallucinogenic weapon quality and immunity to vacuum."
+    },
     "impact": {
         "value": false,
         "label": "Impact Resistant",
@@ -606,6 +611,7 @@ FORTYK.StatusEffects = [
         icon: "icons/svg/poison.svg",
         flags: { core: { statusId: "toxic" } }
     },
+    
     {
         id: "rad",
         label: "Radiation",
@@ -626,6 +632,12 @@ FORTYK.StatusEffects = [
             {key: "data.characteristics.int.value", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
             {key: "data.characteristics.fel.value", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}
         ]
+    },
+    {
+        id: "hallucinogenic",
+        label: "Hallucinogenic",
+        icon: "systems/fortyk/icons/spiral.png",
+        flags: { core: { statusId: "hallucinogenic" } }
     },
     {
         id: "buff",

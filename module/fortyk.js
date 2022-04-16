@@ -297,15 +297,15 @@ Hooks.on("updateCombat", async (combat) => {
         for(let activeEffect of actor.effects){
 
             if(activeEffect.data.duration.rounds!==undefined){
-
-                let remaining=Math.ceil(activeEffect.data.duration.rounds);
-
+                console.log(activeEffect)
+                let remaining=Math.ceil(activeEffect.duration.remaining);
+                
                 if(remaining<1){remaining=0}
                 let content="";
                 if(remaining===0){
                     content=`${activeEffect.data.label} expires.`;
                 }else{
-                    content=`${activeEffect.data.label} has ${remaining} turns remaining.`;
+                    content=`${activeEffect.data.label} has ${remaining} rounds remaining.`;
                 }
                 let activeEffectOptions={user: game.user._id,
                                          speaker:{actor,alias:actor.name},
