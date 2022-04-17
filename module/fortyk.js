@@ -12,6 +12,7 @@ import { FortyKItemSheet } from "./item/item-sheet.js";
 import { FortyKActiveEffect } from "./activeEffect/activeEffect.js";
 import { FortyKActiveEffectConfig } from "./activeEffect/activeEffectConfig.js";
 import { preloadHandlebarsTemplates } from "./utilities.js";
+import { parseHtmlForInline } from "./utilities.js";
 import { FortykRolls } from "./FortykRolls.js";
 import { FortykRollDialogs } from "./FortykRollDialogs.js";
 import { FortyKNPCSheet} from "./actor/actor-npc-sheet.js";
@@ -371,10 +372,8 @@ Hooks.on("updateCombat", async (combat) => {
                 }
                 //check for cryo
                 if(activeEffect.data.flags.core.statusId==="cryogenic"){
-                    let cryoRoll=new Roll("2d10",{});
-                    await cryoRoll.roll();
-                    let tDmg=cryoRoll.result
-                    let cryoContent=`On round start, take ${tDmg} toughness damage!`;
+                    
+                    let cryoContent=`<span>On round start, take [[2d10]]  toughness damage!</span>`;
                     let cryoOptions={user: game.user._id,
                                      speaker:{actor,alias:actor.name},
                                      content:cryoContent,
@@ -382,6 +381,10 @@ Hooks.on("updateCombat", async (combat) => {
                                      flavor:`Freezing`,
                                      author:actor.name};
                     let cryoMsg=await ChatMessage.create(cryoOptions,{});
+                    
+                    let inlineResults=parseHtmlForInline(cryoMsg.data.content);
+                    console.log(inlineResults);
+                    let tDmg=inlineResults[0];
                     let ae=[]
                     ae.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("t")]));
                     ae[0].changes=[{key:`data.characteristics.t.value`,value:-1*tDmg,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
@@ -392,7 +395,7 @@ Hooks.on("updateCombat", async (combat) => {
         }
         //check for regeneration
         if(actor.getFlag("fortyk","regeneration")){
-            let regen=await FortykRolls.fortykTest("t", "char", actor.data.data.characteristics.t.total,actor, "Regeneration Test");
+            let regen=await FortykRolls.fortykTest("t", "char", actor.data.data.characteristics.t.total,actor, "Regeneration");
             if(regen.value){
                 let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
                 let maxWounds=actor.data.data.secChar.wounds.max;

@@ -55,6 +55,16 @@ export const getActorToken=function(actor){
     }
     return t;
 }
+export const parseHtmlForInline=function(html){
+  let inlineStr=$(html).find(`a.inline-roll.inline-result`).text();
+    let resultArray=inlineStr.split(' ');
+    resultArray.shift();
+    let intArray=[];
+    for(let i=0;i<resultArray.length;i++){
+        intArray.push(parseInt(resultArray[i]));
+    }
+    return intArray;
+}
 export const tokenDistance=function(token1,token2){
     let gridRatio=canvas.dimensions.distance/canvas.dimensions.size;
     let token1x=token1.data.x;
