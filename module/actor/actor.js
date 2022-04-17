@@ -397,7 +397,7 @@ export class FortyKActor extends Actor {
                 //if item is equipped and/or not disabled
                 if(proceed){
                     ae.data.changes.forEach(function(change,i){
-                        
+
                         let basevalue=parseInt(objectByString(actorData,change.key));
                         let newvalue=parseFloat(change.value);
                         let path=change.key.split(".");
@@ -406,14 +406,13 @@ export class FortyKActor extends Actor {
                         }else{
                             newvalue=Math.floor(newvalue);
                         }
-                        if(change.mode===0||(!isNaN(basevalue)&&!isNaN(newvalue))){
+
+                        if((!isNaN(basevalue)&&!isNaN(newvalue))){
 
 
                             let changedValue=0;
-                            if(change.mode===0){
-                                setNestedKey(actorData,path,change.value);
-                            }
-                            else if(change.mode===1){
+
+                            if(change.mode===1){
                                 changedValue=basevalue*newvalue
                                 setNestedKey(actorData,path,changedValue);
 
@@ -430,12 +429,15 @@ export class FortyKActor extends Actor {
                                     changedValue=newvalue;
                                     setNestedKey(actorData,path,changedValue);
                                 }
-                            }else if(change.mode===5){
-
+                            }
+                        }else{
+                            if(change.mode===5){
                                 setNestedKey(actorData,path,newvalue);
-                            } 
+                            }else if(change.mode===0){
+                                setNestedKey(actorData,path,change.value);
+                            }
                         }
-                        
+
 
                     })
                 }
@@ -528,7 +530,7 @@ export class FortyKActor extends Actor {
         }
         //movement
         this.prepareMovement(data);
-        
+
         //add up all armor and stuff
 
         var armor= data.secChar.wornGear.armor;
@@ -617,7 +619,7 @@ export class FortyKActor extends Actor {
             }
         }
     }
-    
+
 
     _prepareNPCData(actorData){
 
@@ -648,7 +650,7 @@ export class FortyKActor extends Actor {
         data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
         //movement
 
-        
+
         this.prepareMovement(data);
         //total soak
         var armor= data.secChar.wornGear.armor;
@@ -691,10 +693,10 @@ export class FortyKActor extends Actor {
         }else if(this.getFlag("fortyk","hoverer")){
             data.secChar.movement.half=Math.max(Math.ceil((parseInt(this.getFlag("fortyk","hoverer"))+data.secChar.size.movement+data.secChar.movement.mod)*parseFloat(data.secChar.movement.multi)),1);
         }else{
-            
-           data.secChar.movement.half=Math.max(Math.ceil((data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseFloat(data.secChar.movement.multi)),1); 
+
+            data.secChar.movement.half=Math.max(Math.ceil((data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseFloat(data.secChar.movement.multi)),1); 
         }
-        
+
         data.secChar.movement.full=data.secChar.movement.half*2;
         data.secChar.movement.charge=data.secChar.movement.half*3;
         data.secChar.movement.run=data.secChar.movement.half*6;

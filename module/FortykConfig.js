@@ -608,7 +608,10 @@ FORTYK.StatusEffects = [
         label: "Bleeding",
         icon: "icons/svg/blood.svg",
         tint:"#8a0303",
-        flags: { core: { statusId: "bleeding" } }
+        flags: { core: { statusId: "bleeding" }},
+        changes:[
+            {key: "flags.fortyk.bleedStack", value: 1, mode:FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}            
+        ]
     },
     {
         id: "cryogenic",

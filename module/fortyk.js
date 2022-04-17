@@ -359,14 +359,22 @@ Hooks.on("updateCombat", async (combat) => {
                         }
                     }
                     if(bleed){
+                         let bleedStack=actor.getFlag("fortyk","bleedStack");
+                        
+                        let flavor
+                        if(bleedStack===1){
+                            flavor=`Bleeding, ${bleedStack} stack`
+                        }else{
+                            flavor=`Bleeding, ${bleedStack} stacks`
+                        }
                         let bleedingOptions={user: game.user._id,
                                              speaker:{actor,alias:actor.name},
-                                             content:"On round start gain 1 fatigue per stack of bleeding",
+                                             content:`On round start gain ${bleedStack} fatigue.`,
                                              classes:["fortyk"],
-                                             flavor:`Bleeding`,
+                                             flavor:flavor,
                                              author:actor.name};
                         await ChatMessage.create(bleedingOptions,{});
-                        let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
+                        let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+bleedStack;
                         await actor.update({"data.secChar.fatigue.value":fatigue});
                     }
                 }

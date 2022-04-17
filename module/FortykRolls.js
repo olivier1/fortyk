@@ -3542,6 +3542,7 @@ returns the roll message*/
         }
     };
     static async applyActiveEffect(token,effect,ignoreSON=false){
+        console.log(effect);
         if(effect.length>0){
 
             if(game.user.isGM||token.owner){
@@ -3550,9 +3551,10 @@ returns the roll message*/
                 for(let index=0; index <effect.length;index++){
                     let dupp=false;
                     let newAe=effect[index];
+                    console.log(newAe)
                     for(let ae of actor.effects){
                         if(ae.data.flags.core){
-                            if(ae.data.flags.core.statusId!=="weakened"&&ae.data.flags.core.statusId!=="buff"&&ae.data.flags.core.statusId===effect[index].flags.core.statusId){
+                            if(ae.data.flags.core.statusId!=="weakened"&&ae.data.flags.core.statusId!=="buff"&&ae.data.flags.core.statusId===newAe.flags.core.statusId){
                                 dupp=true;
                                 let change=false;
                                 let upg=false;
@@ -3567,8 +3569,7 @@ returns the roll message*/
                                             }else{
                                                 newAe.changes[z].value+=ae.data.changes[i].value;
                                             }
-                                            
-                                            
+                                           
                                             upg=true;
                                         } 
 
