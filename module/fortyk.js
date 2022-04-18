@@ -359,13 +359,13 @@ Hooks.on("updateCombat", async (combat) => {
                         }
                     }
                     if(bleed){
-                         let bleedStack=actor.getFlag("fortyk","bleedStack");
+                         let bleedStack=1;
                         
                         let flavor
                         if(bleedStack===1){
-                            flavor=`Bleeding, ${bleedStack} stack`
+                            flavor=`Blood loss`
                         }else{
-                            flavor=`Bleeding, ${bleedStack} stacks`
+                            flavor=`Blood loss`
                         }
                         let bleedingOptions={user: game.user._id,
                                              speaker:{actor,alias:actor.name},

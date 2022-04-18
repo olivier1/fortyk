@@ -3542,7 +3542,6 @@ returns the roll message*/
         }
     };
     static async applyActiveEffect(token,effect,ignoreSON=false){
-        console.log(effect);
         if(effect.length>0){
 
             if(game.user.isGM||token.owner){
