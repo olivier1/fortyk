@@ -37,6 +37,13 @@ export class FortykRollDialogs{
 
 
     }
+    static async _onTestPoppup(event){
+        event.preventDefault();
+        const dataset=event.currentTarget.dataset;
+        let poppupId=dataset["id"];
+        let poppup=document.getElementById(poppupId);
+        poppup.classList.toggle("show");
+    }
     static async callRollDialog(testChar, testType, testTarget, actor, testLabel, item, reroll, title=""){
 
         if(reroll){
@@ -625,5 +632,7 @@ export class FortykRollDialogs{
     static chatListeners(html){
         html.on("mouseup",".reroll", this._onReroll.bind(this));
         html.on("click",".overheat", this._onOverheat.bind(this));
+        html.on("click",".popup", this._onTestPoppup.bind(this));
     }
+    
 }

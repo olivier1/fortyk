@@ -95,7 +95,7 @@
     grid-template-columns: repeat(12, minmax(0, 1fr));
 }
 .fortyk .simple-grid3{
-    
+
     width:100%;
     height:100%;
     padding:3px;
@@ -279,7 +279,7 @@
 .fortyk nav.sheet-tabs {
     -webkit-box-flex: 1;
     margin-top: 0px;
-    
+
     font-weight:bold;
     font-style:bold;
     flex:auto;
@@ -777,12 +777,86 @@
     border: inset;
     padding-left: 5px;
     width: -webkit-fill-available;
-     text-align: center;
+    text-align: center;
 }
 .cost-header{
     border: groove;
     width: -webkit-fill-available;
     text-align: center;
     font-weight: bolder;
+}
+.dmg-descr{
+    font-size:14px;
+    font-style:italic;
+}
+.chat-crit{
+    color:green;
+}
+.chat-crit-fail{
+    color:darkred;
+}
+.chat-righteous{
+    font-size:18px;
+    font-style:italic; 
+    font-style:bold;
+    color:goldenrod;
+}
+/* Popup container - can be anything you want */
+.chat-line .popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* The actual popup */
+.chat-line .popup .popuptext {
+    visibility: hidden;
+    width: 200px;
+    background: url(../icons/parchment.jpg) repeat;
+    color: #060606;
+    text-align: center;
+    border-radius: 6px;
+    border-color: black;
+    border-style: inset;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+}
+
+/* Popup arrow */
+.chat-line .popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class - hide and show the popup */
+.chat-line .popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
 }
 [hidden] { display: none !important; }

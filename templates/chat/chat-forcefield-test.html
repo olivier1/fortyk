@@ -8,7 +8,6 @@
         <span class="chat-line">Overload {{overload}}</span>   
     </div>
     {{#each results}}
-    {{debug this}}
     {{#if this.overload}}
     <span class="chat-line test-overload">{{this.string}}</span>
     {{else if this.pass}}
@@ -18,7 +17,6 @@
     {{/if}}
     
     {{/each}}
-    {{debug this}}
     <span class="roll-result">Remaining Hits: {{remainingHits}}</span>
     {{#if breaks}}
     <span class="chat-line ">{{breaks}}</span>
