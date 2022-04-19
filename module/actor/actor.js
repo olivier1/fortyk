@@ -76,14 +76,8 @@ export class FortyKActor extends Actor {
                 }
                 if(newFatigue>=this.data.data.secChar.fatigue.max*2){
 
-                    let chatDead={user: game.user._id,
-                                  speaker:{actor,alias:actor.name},
-                                  content:`${actor.name} dies from fatigue!`,
-                                  classes:["fortyk"],
-                                  flavor:`Fatigue death`,
-                                  author:actor.name};
-                    await ChatMessage.create(chatDead,{});
-                    await game.fortyk.FortykRolls.applyDead(token,this);
+                    
+                    await game.fortyk.FortykRolls.applyDead(token,this,"fatigue");
                 }else if(!this.getFlag("core","frenzy")&&!this.getFlag("core","unconscious")&&newFatigue>=this.data.data.secChar.fatigue.max){
                     let effect=[];
                     effect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("unconscious")]));

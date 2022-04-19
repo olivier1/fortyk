@@ -796,7 +796,7 @@
     color:darkred;
 }
 .chat-righteous{
-    font-size:18px;
+    
     font-style:italic; 
     font-style:bold;
     color:goldenrod;
@@ -822,7 +822,7 @@
     border-radius: 6px;
     border-color: black;
     border-style: inset;
-    padding: 8px 0;
+    padding: 8px 3px;
     position: absolute;
     z-index: 1;
     bottom: 125%;

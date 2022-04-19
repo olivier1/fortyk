@@ -272,7 +272,8 @@ Hooks.once('ready', async function() {
                     id=data.package.token;
                     token=canvas.tokens.get(id);
                     actor=data.package.actor;
-                    FortykRolls.applyDead(token,actor);
+                    let cause=data.package.cause;
+                    FortykRolls.applyDead(token,actor,cause);
 
 
                     break;
@@ -548,14 +549,8 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
         if(newFatigue>=tokenActor.data.data.secChar.fatigue.max*2){
 
 
-            let chatDead={user: game.user._id,
-                          speaker:{tokenActor,alias:tokenActor.name},
-                          content:`${tokenActor.name} dies from fatigue!`,
-                          classes:["fortyk"],
-                          flavor:`Fatigue death`,
-                          author:tokenActor.name};
-            await ChatMessage.create(chatDead,{});
-            await game.fortyk.FortykRolls.applyDead(fullToken,tokenActor);
+            
+            await game.fortyk.FortykRolls.applyDead(fullToken,tokenActor,"fatigue");
         }else if(!tokenActor.getFlag("core","frenzy")&&!tokenActor.getFlag("core","unconscious")&&newFatigue>=tokenActor.data.data.secChar.fatigue.max){
             let effect=[];
             effect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("unconscious")]));
