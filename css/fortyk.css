@@ -138,7 +138,7 @@
     justify-content: center;
     text-align: center;
 }
-.fortyk .button{
+ .button{
     text-align:center;
     border-style:inset;
     border-color:dimgray;
@@ -802,7 +802,7 @@
     color:goldenrod;
 }
 /* Popup container - can be anything you want */
-.chat-line .popup {
+ .popup {
     position: relative;
     display: inline-block;
     cursor: pointer;
@@ -813,7 +813,7 @@
 }
 
 /* The actual popup */
-.chat-line .popup .popuptext {
+ .popup .popuptext {
     visibility: hidden;
     width: 200px;
     background: url(../icons/parchment.jpg) repeat;
@@ -826,12 +826,12 @@
     position: absolute;
     z-index: 1;
     bottom: 125%;
-    left: 50%;
+    left: 0%;
     margin-left: -60px;
 }
 
 /* Popup arrow */
-.chat-line .popup .popuptext::after {
+ .popup .popuptext::after {
     content: "";
     position: absolute;
     top: 100%;
@@ -843,7 +843,7 @@
 }
 
 /* Toggle this class - hide and show the popup */
-.chat-line .popup .show {
+ .popup .show {
     visibility: visible;
     -webkit-animation: fadeIn 1s;
     animation: fadeIn 1s;
