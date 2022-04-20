@@ -200,7 +200,8 @@
                         "label": "Body",
                         "dos": 1,
                         "type": "String",
-                        "aim":false
+                        "aim":false,
+                        "hits":1
                     },
                     "cover": {
                         "value": 0,

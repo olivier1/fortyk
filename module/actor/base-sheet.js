@@ -674,6 +674,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 dfa=true;
             }
             let options={dfa:dfa};
+            let hits=actor.data.data.secChar.lastHit.hits;
+            if(!hits){hits=1};
+            options.hits=hits;
             let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
             let formula=duplicate(weapon.data.damageFormula);
             renderedTemplate.then(content => {new Dialog({

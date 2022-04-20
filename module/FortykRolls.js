@@ -237,7 +237,7 @@ returns the roll message*/
             if(actor.data.data.secChar.lastHit.attackType==="called"){
                 hitlocation=FORTYKTABLES.hitLocations[actor.data.data.secChar.lastHit.called];
             }
-            await actor.update({"data.secChar.lastHit.value":hitlocation.name,"data.secChar.lastHit.label":hitlocation.label,"data.secChar.lastHit.dos":testDos});
+            await actor.update({"data.secChar.lastHit.value":hitlocation.name,"data.secChar.lastHit.label":hitlocation.label,"data.secChar.lastHit.dos":testDos,"data.secChar.lastHit.hits":hits});
             let chatOp={user: game.user._id,
                         speaker:{actor,alias:actor.name},
                         content:`Location: ${hitlocation.label}`,
@@ -452,6 +452,10 @@ returns the roll message*/
 
         result.dos=testDos;
         result.value=templateOptions["success"];
+        if(hits){
+           result.hits=hits; 
+        }
+        
         return result;
     }
     //rolls a result on the perils of the warp table, checks if the roll should be private or not
