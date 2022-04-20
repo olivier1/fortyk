@@ -1,16 +1,19 @@
 
 <div class="fortyk chat-message flexcol">
-    
-    <span class="chat-line">{{title}}</span>
+
+    <span class="chat-target">{{title}}</span>
     <div class="flexrow">
-        <span class="chat-line">{{rollResult}}</span>
-        <span class="chat-line">{{target}}</span>   
+        <span class="chat-target">{{rollResult}}</span>
+        <span class="chat-target">{{target}}</span>   
     </div>
-    <span class="chat-line {{#if success}}test-success{{else}}test-failure{{/if}}">{{pass}}</span>
-    <span class="roll-result">{{dos}}</span>
-    {{#if numberHits}}
-    <span class="chat-line">{{numberHits}}</span>
-    {{/if}}
+    <div class="flexcol chat-target">
+        <span class="chat-line {{#if success}}test-success{{else}}test-failure{{/if}}">{{pass}}</span>
+        <span class="roll-result">{{dos}}</span>
+        {{#if numberHits}}
+        <span class="chat-line">{{numberHits}}</span>
+        {{/if}}
+    </div>
+
     {{#unless reroll}}
     <a class="fortyk button reroll" data-actor="{{actor}}" data-char="{{char}}" data-roll-type="{{type}}" data-target="{{targetNumber}}" data-label="{{label}}" data-weapon="{{weapon}}" data-fire="{{fireRate}}">Reroll</a>
     {{/unless}}

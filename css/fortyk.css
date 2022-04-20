@@ -791,6 +791,12 @@
     font-size:14px;
     font-style:italic;
 }
+.chat-target{
+    
+    border: 1px solid var(--color-border-light-2);
+    border-radius: 3px;
+    box-shadow: 0 0 2px #fff inset;
+}
 .chat-crit{
     color:green;
 }
@@ -834,7 +840,6 @@
     z-index: 1;
     bottom: 125%;
     left: 0%;
-    margin-left: -60px;
      font-variant-caps:normal;
 }
 
