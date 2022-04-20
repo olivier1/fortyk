@@ -55,7 +55,11 @@ returns the roll message*/
             templateOptions["label"]=label;
         }
         //prepare chat output
-        if(reroll){
+        if(delayMsg){
+
+            templateOptions["title"]= label.charAt(0).toUpperCase() + string.slice(1)+" test.";
+
+        }else if(reroll){
             templateOptions["title"]="Rerolling "+label+" test.";
         }else{
             templateOptions["title"]="Rolling "+label+" test.";
@@ -1375,7 +1379,7 @@ returns the roll message*/
                                 damage+=2;
                                 chatDamage+=2;
                                 damageOptions.results.push(`Blast adds 2 damage.`);
-                                if(righteous){
+                                if(tens){
                                     damageOptions.results.push(`Blast adds ${fortykWeapon.getFlag("fortyk","blast")} further damage on righteous fury.`);
                                     damage+=fortykWeapon.getFlag("fortyk","blast");
                                     chatDamage+=fortykWeapon.getFlag("fortyk","blast");
@@ -1385,7 +1389,7 @@ returns the roll message*/
                                 damage+=1;
                                 chatDamage+=1;
                                 damageOptions.results.push(`Spray adds 1 damage.`);
-                                if(righteous){
+                                if(tens){
                                     damage+=1;
                                     chatDamage+=1;
                                     damageOptions.results.push(`Spray adds 1 extra damage on righteous fury.`);
@@ -1398,13 +1402,12 @@ returns the roll message*/
                         if(damage===0){
                             damageOptions.results.push(`<span>Damage is fully absorbed.</span>`);
                         }
-                        
+
                         let renderedDamageTemplate= await renderTemplate(damageTemplate,damageOptions);
-                        console.log(renderedDamageTemplate)
+
                         var txt = document.createElement("textarea");
                         txt.innerHTML = renderedDamageTemplate;
                         renderedDamageTemplate= txt.value;
-                        console.log(renderedDamageTemplate)
                         await roll.toMessage({user: game.user._id,
                                               speaker:{actor,alias:actor.name},
                                               content:renderedDamageTemplate,
@@ -1588,28 +1591,26 @@ returns the roll message*/
     static async _critMsg(hitLoc,mesHitLoc, mesRes, mesDmgType,actor,source=""){
         let rightMes=FORTYKTABLES.crits[mesDmgType][hitLoc][mesRes-1];
         let testStr=rightMes.match(/(?<=\#)(.*?)(?=\^)/g);
-        console.log(testStr)
+
         let tests=[]
         if(testStr!==null){
-        
+
             for(let i=0;i<testStr.length;i++){
-                console.log(i)
+
                 let testParam=testStr[i].split(";");
-                console.log(testParam);
+
                 let target=actor.data.data.characteristics[testParam[0]].total+parseInt(testParam[1]);
                 let test=await this.fortykTest(testParam[0], "char", (target),actor, testParam[2],null,false,"",true);
                 tests.push(test);
             }
-            console.log(tests)
             for(let i=0;i<tests.length;i++){
 
                 rightMes=rightMes.replace(/\#.*?\^/,tests[i].template) 
             }
         }
         var txt = document.createElement("textarea");
-                        txt.innerHTML = rightMes;
-                        rightMes= txt.value;
-        console.log(rightMes);
+        txt.innerHTML = rightMes;
+        rightMes= txt.value;
         let chatOptions={user: game.user._id,
                          speaker:{actor,alias:actor.name},
                          content:rightMes,
