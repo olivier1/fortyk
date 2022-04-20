@@ -687,14 +687,16 @@
     border-top: 1px solid #999;
 }
 .test-success{
-    background-color: green !important;
-    background-image: "" !important;
-    color: white !important;
+    font-weight:bolder;
+    color: green !important;
+    font-size: larger;
+    font-variant-caps: petite-caps;
 }
 .test-failure{
-    background-color: red !important;
-    background-image: "" !important;
-    color: white !important;
+    font-weight:bolder;
+    color: red !important;
+    font-size: larger;
+    font-variant-caps: petite-caps;
 }
 .test-overload{
     background-color: yellowgreen !important;
@@ -800,6 +802,11 @@
     font-style:italic; 
     font-style:bold;
     color:goldenrod;
+    font-variant-caps: petite-caps;
+}
+.discard{
+    filter: sepia(0.5) contrast(0.75) opacity(0.4);
+    background-color:lightgray;
 }
 /* Popup container - can be anything you want */
  .popup {
@@ -828,6 +835,7 @@
     bottom: 125%;
     left: 0%;
     margin-left: -60px;
+     font-variant-caps:normal;
 }
 
 /* Popup arrow */

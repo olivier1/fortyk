@@ -57,7 +57,7 @@ returns the roll message*/
         //prepare chat output
         if(delayMsg){
 
-            templateOptions["title"]= label.charAt(0).toUpperCase() + string.slice(1)+" test.";
+            templateOptions["title"]=label.charAt(0).toUpperCase()+label.slice(1)+" test.";
 
         }else if(reroll){
             templateOptions["title"]="Rerolling "+label+" test.";
@@ -839,11 +839,21 @@ returns the roll message*/
 
                     }
                     let tens=0;
-                    let dieResults=[]
+                    let dieResults=[];
+                    console.log(roll);
+                    let discards=[];
                     try{
-                        dieResults=roll.dice[0].values;
+                    
                         for ( let r of roll.dice[0].results ) {
+                            if(r.discarded){
+                                    discards.push(true);
+                                }else{
+                                    discards.push(false);
+                                }
+                            dieResults.push(r.result);
                             if(r.active){
+                                
+                                
                                 if(r.result>=tarRighteous){
                                     tens+=1;
                                 }
@@ -860,20 +870,24 @@ returns the roll message*/
                     }else{
                         let rollString=""
                         for(let i=0;i<dieResults.length;i++){
-                            if(dieResults[i]>=tarRighteous){
-                                let htmlString=`<span class="chat-crit">${dieResults[i]}</span>`
-
-
-                                rollString+=htmlString
-                            }else if(dieResults[i]===1){
-                                let htmlString=`<span class="chat-crit-fail">${dieResults[i]}</span>`
-
-
-                                rollString+=htmlString
-                            }else{
-                                rollString+=`${dieResults[i]}`
+                            let htmlString=`<span class="`
+                            if(discards[i]){
+                                htmlString+=`discard `
                             }
+                            if(dieResults[i]>=tarRighteous){
+                                htmlString+=`chat-righteous">${dieResults[i]}</span>`
 
+
+                                
+                            }else if(dieResults[i]===1){
+                                htmlString+=`chat-crit-fail">${dieResults[i]}</span>`
+
+
+                                
+                            }else{
+                                htmlString+=`">${dieResults[i]}</span>`
+                            }
+                            rollString+=htmlString
 
                             rollString+="+"
                         }
@@ -1633,6 +1647,7 @@ returns the roll message*/
                          author:actor.name};
         await ChatMessage.create(chatOptions,{});
     }
+
     //applies critical results to token/actor
     static async critEffects(token,num,hitLoc,type,ignoreSON,source=""){
         if(game.user.isGM||token.owner){
@@ -1767,8 +1782,8 @@ returns the roll message*/
                 break;
             case 7:
 
-                this._addFatigue(actor,roll[0]);
-                actor.createEmbeddedDocuments("Item",{name:"Permanently Blinded",type:"injury"});
+                this._addFatigue(actor,rolls.rolls[0]);
+                actor.createEmbeddedDocuments("Item",[{name:"Permanently Blinded",type:"injury"}]);
                 let critActiveEffect7=[];
                 critActiveEffect7.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("blind")]));
 
@@ -1795,7 +1810,7 @@ returns the roll message*/
         let tTest=false;
         let agiTest=false;
         let actorToken=getActorToken(actor);
-
+        let injury=null;
         if(num<9&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
             await this._sON(actor);
             return
@@ -3565,8 +3580,8 @@ returns the roll message*/
                                 for(let i=0;i<ae.data.changes.length;i++){
 
                                     for(let z=0;z<newAe.changes.length;z++){
-
-                                        if(ae.data.changes[i].key===newAe.changes[z].key){
+                                        
+                                        if((ae.data.changes[i].key===newAe.changes[z].key)&&ae.data.changes[i].mode===newAe.changes[z].mode){
                                             if(!isNaN(parseInt(newAe.changes[z].value))){
                                                 newAe.changes[z].value=parseInt(newAe.changes[z].value)+parseInt(ae.data.changes[i].value);
                                             }else{
