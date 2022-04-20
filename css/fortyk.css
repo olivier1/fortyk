@@ -796,6 +796,13 @@
     border: 1px solid var(--color-border-light-2);
     border-radius: 3px;
     box-shadow: 0 0 2px #fff inset;
+    padding-left: 2px;
+}
+.chat-target:empty{
+    display:none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: 0;
 }
 .chat-crit{
     color:green;

@@ -895,12 +895,12 @@ returns the roll message*/
 
                         damageString = rollString+damageString.substring(damageString.indexOf("+") + 1);
                     }
-
+                    damageOptions.results.push(`<div class="chat-target flexcol">`)
                     damageOptions.results.push(`Weapon damage roll: ${damageString}`)
                     if(tens){
                         damageOptions.results.push(`<span class="chat-righteous">Righteous Fury!</span>`)
                     }
-
+                       damageOptions.results.push(`</div>`)                         
                     if(!armorSuit){
                         armorSuit=await Item.create({type:"armor",name:"standin"},{temporary:true});
                     }
@@ -928,15 +928,17 @@ returns the roll message*/
                         //check if weapon ignores soak
                         if(!fortykWeapon.getFlag("fortyk","ignoreSoak")){
 
-
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
 
                             let pen=0;
                             //random pen logic
                             if(isNaN(weapon.data.pen.value)){
                                 let randomPen=new Roll(weapon.data.pen.value,{});
                                 await randomPen.roll();
+                             
 
                                 damageOptions.results.push(`Random weapon ${weapon.data.pen.value} penetration: ${randomPen._total}`);
+                           
                                 pen=randomPen._total;
                             }else{
                                 pen=parseInt(weapon.data.pen.value); 
@@ -946,14 +948,15 @@ returns the roll message*/
                             if(actor.getFlag("fortyk","smitetheunholy")&&tarActor.getFlag("fortyk","fear")&&weapon.type==="meleeWeapon"){
                                 if(!isNaN(tarActor.getFlag("fortyk","fear"))){
                                     pen+=parseInt(tarActor.getFlag("fortyk","fear"));
-
+                                    
                                     damageOptions.results.push(`Smite the unholy increases damage and penetration by ${tarActor.getFlag("fortyk","fear")} against the target.`);
+                                  
                                 }
                             }
                             //razor sharp weapons
                             if(fortykWeapon.getFlag("fortyk","razorsharp")&&lastHit.dos>=3){
                                 pen=pen*2;
-
+                              
                                 damageOptions.results.push(`Razor Sharp doubles penetration to ${pen}`);
                             }
                             //lance weapons
@@ -990,9 +993,9 @@ returns the roll message*/
                                 maxPen=armor;
                                 damageOptions.results.push(`Warp weapon is repelled by warded armor.`);
                             }
-
+                          
                             //handle cover
-
+                            
                             if(!self&&!fortykWeapon.getFlag("fortyk","ignoreCover")&&!fortykWeapon.getFlag("fortyk","spray")&&data.characterHitLocations[curHit.value].cover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
 
                                 let cover=parseInt(data.secChar.cover.value);
@@ -1021,6 +1024,7 @@ returns the roll message*/
                                     }
                                 }
                             }
+                            
                             if(fortykWeapon.getFlag("fortyk","felling")){
                                 let ut=parseInt(tarActor.data.data.characteristics.t.uB);
                                 let fel=Math.min(ut,fortykWeapon.getFlag("fortyk","felling"));
@@ -1040,10 +1044,11 @@ returns the roll message*/
                                     damageOptions.results.push(`The attack ignores ${daemonic} soak from the daemonic trait.`);
                                 }
                             }
+                            damageOptions.results.push(`</div>`) 
                         }
                         let damage=roll._total;
                         let chatDamage=damage;
-
+                        damageOptions.results.push(`<div class="chat-target flexcol">`)
                         //damage part of smite the unholy
                         if(actor.getFlag("fortyk","smitetheunholy")&&tarActor.getFlag("fortyk","fear")&&weapon.type==="meleeWeapon"){
                             if(!isNaN(tarActor.getFlag("fortyk","fear"))){
@@ -1114,9 +1119,11 @@ returns the roll message*/
                                 chatDamage+=corrosiveDamage;
                             }
                         }
+                        damageOptions.results.push(`</div>`) 
 
                         //toxic weapon logic
                         if(damage>0&&!isNaN(parseInt(toxic))&&!tarActor.getFlag("fortyk","stuffofnightmares")&&!tarActor.getFlag("fortyk","undying")&&!isHordelike){
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
                             let toxicMod=toxic*10;
                             if(tarActor.getFlag("fortyk","resistance")&&tarActor.getFlag("fortyk","resistance").toLowerCase().includes("toxic")){
                                 toxicMod=-10;
@@ -1131,10 +1138,12 @@ returns the roll message*/
                                 damage+=toxicDmg._total;
                                 chatDamage+=toxicDmg._total;
                             }
+                            damageOptions.results.push(`</div>`) 
                         }
                         let messages=[];
                         //shocking weapon logic
                         if(damage>0&&fortykWeapon.getFlag("fortyk","shocking")&&!isHordelike){
+                           damageOptions.results.push(`<div class="chat-target flexcol">`)
                             let shock=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total),tarActor, "Resist shocking",null,false,"",true);
                             damageOptions.results.push(shock.template);
                             if(!shock.value){
@@ -1152,9 +1161,11 @@ returns the roll message*/
                                 let newfatigue=1;
                                 this._addFatigue(tarActor,newfatigue);
                             }
+                            damageOptions.results.push(`</div>`) 
                         }
                         //cryogenic weapon logic
                         if(damage>0&&fortykWeapon.getFlag("fortyk","cryogenic")&&!isHordelike){
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
                             let cryo=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total-40),tarActor, "Resist freezing",null,false,"",true);
                             damageOptions.results.push(cryo.template);
                             if(!cryo.value){
@@ -1173,9 +1184,11 @@ returns the roll message*/
                                 let id=randomID(5);
                                 damageOptions.results.push(`<a class="popup" data-id="${id}"> Freezing for ${cryoRoll._total} rounds. <span class="popuptext" id="${id}">${tarActor.name} is freezing for ${cryoRoll.result} rounds and will take 2d10 toughness damage per round, freezing if reaching 0 toughness!</span></a>`)
                             }
+                            damageOptions.results.push(`</div>`) 
                         }
                         //hallucinogenic
                         if(!isNaN(parseInt(fortykWeapon.getFlag("fortyk","hallucinogenic")))&&!isHordelike){
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
                             let halluMod=parseInt(fortykWeapon.getFlag("fortyk","hallucinogenic"))*10;
                             if(armorSuit.getFlag("fortyk","sealed")){
                                 halluMod+=20;
@@ -1198,9 +1211,11 @@ returns the roll message*/
                                 damageOptions.results.push(`<a class="popup" data-id="${id}"> Hallucinating for ${hallu.dos+1} rounds. <span class="popuptext" id="${id}">${halluText}</span></a>`)
 
                             }
+                            damageOptions.results.push(`</div>`) 
                         }
                         //crippling weapon logic
                         if(damage>0&&fortykWeapon.getFlag("fortyk","crippling")&&!isHordelike){
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
                             let crippleActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("crippled")]);
                             crippleActiveEffect.location=curHit;
                             crippleActiveEffect.num=fortykWeapon.getFlag("fortyk","crippling");
@@ -1208,6 +1223,7 @@ returns the roll message*/
 
                             let id=randomID(5);
                             damageOptions.results.push(`<a class="popup" data-id="${id}"> ${tarActor.name} is crippled. <span class="popuptext" id="${id}">${tarActor.name} is crippled, they take ${fortykWeapon.getFlag("fortyk","crippling")} damage to the ${curHit.label} which ignores all soak, if they ever take more than a half action in a turn. This lasts until they are fully healed or until the end of the encounter.</span></a>`)
+                            damageOptions.results.push(`</div>`) 
                         }
 
 
@@ -1220,7 +1236,9 @@ returns the roll message*/
 
                         //NIDITUS WEAPON
                         if((fortykWeapon.getFlag("fortyk","niditus")&&damage)>0){
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
                             if(tarActor.data.data.psykana.pr.value>0){
+                                
                                 let stun=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total),tarActor, "Resist niditus stun",null,false,"",true);
                                 damageOptions.results.push(stun.template);
                                 if(!stun.value){
@@ -1234,8 +1252,9 @@ returns the roll message*/
 
                                     let id=randomID(5);
                                     damageOptions.results.push(`<a class="popup" data-id="${id}"> Stunned for ${stun.dos} rounds. <span class="popuptext" id="${id}">${tarActor.name} is stunned for ${stun.dos} rounds!</span></a>`)
-
+                                    
                                 }
+                                
                             }
                             if(tarActor.getFlag("fortyk","warpinstability")){
                                 let warpinst=await this.fortykTest("wp", "char", (tarActor.data.data.characteristics.wp.total-10),tarActor, "Warp instability niditus",null,false,"",true);
@@ -1254,9 +1273,11 @@ returns the roll message*/
                                     }
                                 }
                             }
+                            damageOptions.results.push(`</div>`) 
                         }
                         //flame weapon
                         if(!armorSuit.getFlag("fortyk","flamerepellent")&&fortykWeapon.getFlag("fortyk","flame")&&!isHordelike){
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
                             let fire=await this.fortykTest("agi", "char", tarActor.data.data.characteristics.agi.total,tarActor, "Resist fire",null,false,"",true);
                             damageOptions.results.push(fire.template);
                             if(!fire.value){
@@ -1265,10 +1286,12 @@ returns the roll message*/
                                 let id=randomID(5);
                                 damageOptions.results.push(`Catches fire!`)
                             }
+                            damageOptions.results.push(`</div>`) 
                         } 
                         //snare weapon
 
                         if(!isNaN(parseInt(fortykWeapon.getFlag("fortyk","snare")))&&!isHordelike){
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
                             let snareMod=fortykWeapon.getFlag("fortyk","snare")*10;
                             let snare=await this.fortykTest("agi", "char", (tarActor.data.data.characteristics.agi.total-snareMod),tarActor, "Resist snare",null,false,"",true);
                             damageOptions.results.push(snare.template);
@@ -1280,9 +1303,11 @@ returns the roll message*/
                                 let snareActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("snare")]);
                                 activeEffects.push(snareActiveEffect);
                             }
+                            damageOptions.results.push(`</div>`) 
                         }
                         //concussive weapon
                         if(!isNaN(parseInt(fortykWeapon.getFlag("fortyk","concussive")))&&!isHordelike){
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
                             let stunMod=parseInt(fortykWeapon.getFlag("fortyk","concussive"))*10;
                             let stun=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total-stunMod),tarActor, "Resist stun",null,false,"",true);
                             damageOptions.results.push(stun.template);
@@ -1306,7 +1331,9 @@ returns the roll message*/
 
                                 }
                             }
+                            damageOptions.results.push(`</div>`) 
                         }
+                        damageOptions.results.push(`<div class="chat-target flexcol">`)
                         //deathdealer
 
                         if(damage>newWounds[tarNumbr]&&actor.getFlag("fortyk","deathdealer")&&(weapon.type.toLowerCase().includes(actor.getFlag("fortyk","deathdealer").toLowerCase()))){
@@ -1320,7 +1347,7 @@ returns the roll message*/
                             chatDamage+=4;
                             damageOptions.results.push(`Peerless Killer increases critical damage by 4 on called shots.`);
                         }
-
+                        damageOptions.results.push(`</div>`) 
 
                         // true grit!@!!@
                         if(!data.suddenDeath.value&&!isHordelike&&(damage>0)&&(newWounds[tarNumbr]-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
@@ -1355,6 +1382,7 @@ returns the roll message*/
                             }
 
                         }
+                        damageOptions.results.push(`<div class="chat-target flexcol">`)
                         //process horde damage for different weapon qualities
                         if(data.horde.value&&damage>0){
                             damage=1+magdamage;
@@ -1410,13 +1438,15 @@ returns the roll message*/
                                 }
                             }
                         }
+                        damageOptions.results.push(`</div>`) 
+                        damageOptions.results.push(`<div class="chat-target flexcol">`)
                         newWounds[tarNumbr]=newWounds[tarNumbr]-damage;
                         newWounds[tarNumbr]=Math.max(wounds.min,newWounds[tarNumbr]);
                         damageOptions.results.push(`<span>Total Damage: ${chatDamage}.</span>`);
                         if(damage===0){
                             damageOptions.results.push(`<span>Damage is fully absorbed.</span>`);
                         }
-
+                        damageOptions.results.push(`</div>`) 
                         let renderedDamageTemplate= await renderTemplate(damageTemplate,damageOptions);
 
                         var txt = document.createElement("textarea");
