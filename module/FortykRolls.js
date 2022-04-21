@@ -111,7 +111,7 @@ returns the roll message*/
             templateOptions["dos"]="with "+testDos.toString()+" degree";
             if(testDos===1){}else{templateOptions["dos"]+="s";}
             templateOptions["dos"]+=" of success!";
-            templateOptions["pass"]="Pass!";
+            templateOptions["pass"]="Success!";
             templateOptions["success"]=true;
 
         }else{
@@ -1104,7 +1104,7 @@ returns the roll message*/
                             let corrosiveAmt=new Roll("1d10",{});
                             await corrosiveAmt.roll();
                             let id=randomID(5);
-                            damageOptions.results.push(`<a class="popup" data-id="${id}"> Corrosive Weapon armor damage: ${corrosiveAmt._total}. <span class="popuptext" id="${id}">Excess corrosion is transferred to damage.</span</a> `);
+                            damageOptions.results.push(`<label class="popup" data-id="${id}"> Corrosive Weapon armor damage: ${corrosiveAmt._total}. <span class="popuptext" id="${id}">Excess corrosion is transferred to damage.</span</label> `);
                             let corrosiveDamage=0;
                             let newArmor=Math.max(0,(armor-corrosiveAmt._total));
                             corrosiveDamage=Math.abs(Math.min(0,(armor-corrosiveAmt._total)));
@@ -1160,7 +1160,7 @@ returns the roll message*/
                                 activeEffects.push(stunActiveEffect);
 
                                 let id=randomID(5);
-                                damageOptions.results.push(`<a class="popup" data-id="${id}"> Stunned for ${shock.dos} rounds. <span class="popuptext" id="${id}">${tarActor.name} is stunned for ${shock.dos} rounds and takes 1 fatigue!</span></a>`)
+                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Stunned for ${shock.dos} rounds. <span class="popuptext" id="${id}">${tarActor.name} is stunned for ${shock.dos} rounds and takes 1 fatigue!</span></label>`)
 
                                 let newfatigue=1;
                                 this._addFatigue(tarActor,newfatigue);
@@ -1186,7 +1186,7 @@ returns the roll message*/
                                 activeEffects.push(cryoActiveEffect);
 
                                 let id=randomID(5);
-                                damageOptions.results.push(`<a class="popup" data-id="${id}"> Freezing for ${cryoRoll._total} rounds. <span class="popuptext" id="${id}">${tarActor.name} is freezing for ${cryoRoll.result} rounds and will take 2d10 toughness damage per round, freezing if reaching 0 toughness!</span></a>`)
+                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Freezing for ${cryoRoll._total} rounds. <span class="popuptext" id="${id}">${tarActor.name} is freezing for ${cryoRoll.result} rounds and will take 2d10 toughness damage per round, freezing if reaching 0 toughness!</span></label>`)
                             }
                             damageOptions.results.push(`</div>`) 
                         }
@@ -1212,7 +1212,7 @@ returns the roll message*/
                                 let halluText=FORTYKTABLES.hallucinogenic[halluRoll._total-1];
 
                                 let id=randomID(5);
-                                damageOptions.results.push(`<a class="popup" data-id="${id}"> Hallucinating for ${hallu.dos+1} rounds. <span class="popuptext" id="${id}">${halluText}</span></a>`)
+                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Hallucinating for ${hallu.dos+1} rounds. <span class="popuptext" id="${id}">${halluText}</span></label>`)
 
                             }
                             damageOptions.results.push(`</div>`) 
@@ -1226,7 +1226,7 @@ returns the roll message*/
                             activeEffects.push(crippleActiveEffect);
 
                             let id=randomID(5);
-                            damageOptions.results.push(`<a class="popup" data-id="${id}"> ${tarActor.name} is crippled. <span class="popuptext" id="${id}">${tarActor.name} is crippled, they take ${fortykWeapon.getFlag("fortyk","crippling")} damage to the ${curHit.label} which ignores all soak, if they ever take more than a half action in a turn. This lasts until they are fully healed or until the end of the encounter.</span></a>`)
+                            damageOptions.results.push(`<label class="popup" data-id="${id}"> ${tarActor.name} is crippled. <span class="popuptext" id="${id}">${tarActor.name} is crippled, they take ${fortykWeapon.getFlag("fortyk","crippling")} damage to the ${curHit.label} which ignores all soak, if they ever take more than a half action in a turn. This lasts until they are fully healed or until the end of the encounter.</span></label>`)
                             damageOptions.results.push(`</div>`) 
                         }
 
@@ -1255,7 +1255,7 @@ returns the roll message*/
                                     activeEffects.push(stunActiveEffect);
 
                                     let id=randomID(5);
-                                    damageOptions.results.push(`<a class="popup" data-id="${id}"> Stunned for ${stun.dos} rounds. <span class="popuptext" id="${id}">${tarActor.name} is stunned for ${stun.dos} rounds!</span></a>`)
+                                    damageOptions.results.push(`<label class="popup" data-id="${id}"> Stunned for ${stun.dos} rounds. <span class="popuptext" id="${id}">${tarActor.name} is stunned for ${stun.dos} rounds!</span></label>`)
 
                                 }
 
@@ -1302,7 +1302,7 @@ returns the roll message*/
                             if(!snare.value){
 
                                 let id=randomID(5);
-                                damageOptions.results.push(`<a class="popup" data-id="${id}"> Immobilised. <span class="popuptext" id="${id}">${tar.name} is immobilised. An Immobilised target can attempt no actions other than trying to escape the bonds. As a Full Action, he can make a (-${snareMod}) Strength or Agility test to break free.</span></a>`)
+                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Immobilised. <span class="popuptext" id="${id}">${tar.name} is immobilised. An Immobilised target can attempt no actions other than trying to escape the bonds. As a Full Action, he can make a (-${snareMod}) Strength or Agility test to break free.</span></label>`)
 
                                 let snareActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("snare")]);
                                 activeEffects.push(snareActiveEffect);
@@ -1318,7 +1318,7 @@ returns the roll message*/
                             if(!stun.value){
 
                                 let id=randomID(5);
-                                damageOptions.results.push(`<a class="popup" data-id="${id}"> Stunned for ${stun.dos} rounds. <span class="popuptext" id="${id}">${tar.name} is stunned for ${stun.dos} rounds!</span></a>`)
+                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Stunned for ${stun.dos} rounds. <span class="popuptext" id="${id}">${tar.name} is stunned for ${stun.dos} rounds!</span></label>`)
 
                                 let stunActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]);
                                 stunActiveEffect.duration={

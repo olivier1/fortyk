@@ -810,6 +810,13 @@
     background-repeat: round;
     background-position-y: bottom;
 }
+.chat-message{
+    background: url(../icons/impeagle.png);
+    background-repeat: no-repeat;
+    background-size:cover;
+    background-position-y: center;
+    background-position-x: center;
+}
 .chat-target:empty{
     display:none;
     border: 0;
