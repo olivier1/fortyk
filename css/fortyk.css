@@ -798,6 +798,11 @@
     box-shadow: 0 0 2px #fff inset;
     padding-left: 2px;
 }
+.chat-background{
+    background: url(../icons/impeagle.png);
+    background-repeat: round;
+    background-position-y: bottom;
+}
 .chat-target:empty{
     display:none;
     border: 0;
@@ -836,7 +841,6 @@
  .popup .popuptext {
     visibility: hidden;
     width: 200px;
-    background: url(../icons/parchment.jpg) repeat;
     color: #060606;
     text-align: center;
     border-radius: 6px;

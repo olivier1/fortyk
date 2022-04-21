@@ -453,9 +453,9 @@ returns the roll message*/
         result.dos=testDos;
         result.value=templateOptions["success"];
         if(hits){
-           result.hits=hits; 
+            result.hits=hits; 
         }
-        
+
         return result;
     }
     //rolls a result on the perils of the warp table, checks if the roll should be private or not
@@ -739,7 +739,7 @@ returns the roll message*/
             try{
                 for ( let r of roll.dice[0].results ) {
                     if(r.active){
-                        if(r.result>=tarRighteous){
+                        if(r.result>=righteous){
                             tenz+=1;
                         }
                     }
@@ -847,17 +847,17 @@ returns the roll message*/
                     console.log(roll);
                     let discards=[];
                     try{
-                    
+
                         for ( let r of roll.dice[0].results ) {
                             if(r.discarded){
-                                    discards.push(true);
-                                }else{
-                                    discards.push(false);
-                                }
+                                discards.push(true);
+                            }else{
+                                discards.push(false);
+                            }
                             dieResults.push(r.result);
                             if(r.active){
-                                
-                                
+
+
                                 if(r.result>=tarRighteous){
                                     tens+=1;
                                 }
@@ -882,12 +882,12 @@ returns the roll message*/
                                 htmlString+=`chat-righteous">${dieResults[i]}</span>`
 
 
-                                
+
                             }else if(dieResults[i]===1){
                                 htmlString+=`chat-crit-fail">${dieResults[i]}</span>`
 
 
-                                
+
                             }else{
                                 htmlString+=`">${dieResults[i]}</span>`
                             }
@@ -904,7 +904,7 @@ returns the roll message*/
                     if(tens){
                         damageOptions.results.push(`<span class="chat-righteous">Righteous Fury!</span>`)
                     }
-                       damageOptions.results.push(`</div>`)                         
+                    damageOptions.results.push(`</div>`)                         
                     if(!armorSuit){
                         armorSuit=await Item.create({type:"armor",name:"standin"},{temporary:true});
                     }
@@ -939,10 +939,10 @@ returns the roll message*/
                             if(isNaN(weapon.data.pen.value)){
                                 let randomPen=new Roll(weapon.data.pen.value,{});
                                 await randomPen.roll();
-                             
+
 
                                 damageOptions.results.push(`Random weapon ${weapon.data.pen.value} penetration: ${randomPen._total}`);
-                           
+
                                 pen=randomPen._total;
                             }else{
                                 pen=parseInt(weapon.data.pen.value); 
@@ -952,15 +952,15 @@ returns the roll message*/
                             if(actor.getFlag("fortyk","smitetheunholy")&&tarActor.getFlag("fortyk","fear")&&weapon.type==="meleeWeapon"){
                                 if(!isNaN(tarActor.getFlag("fortyk","fear"))){
                                     pen+=parseInt(tarActor.getFlag("fortyk","fear"));
-                                    
+
                                     damageOptions.results.push(`Smite the unholy increases damage and penetration by ${tarActor.getFlag("fortyk","fear")} against the target.`);
-                                  
+
                                 }
                             }
                             //razor sharp weapons
                             if(fortykWeapon.getFlag("fortyk","razorsharp")&&lastHit.dos>=3){
                                 pen=pen*2;
-                              
+
                                 damageOptions.results.push(`Razor Sharp doubles penetration to ${pen}`);
                             }
                             //lance weapons
@@ -997,9 +997,9 @@ returns the roll message*/
                                 maxPen=armor;
                                 damageOptions.results.push(`Warp weapon is repelled by warded armor.`);
                             }
-                          
+
                             //handle cover
-                            
+
                             if(!self&&!fortykWeapon.getFlag("fortyk","ignoreCover")&&!fortykWeapon.getFlag("fortyk","spray")&&data.characterHitLocations[curHit.value].cover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
 
                                 let cover=parseInt(data.secChar.cover.value);
@@ -1028,7 +1028,7 @@ returns the roll message*/
                                     }
                                 }
                             }
-                            
+
                             if(fortykWeapon.getFlag("fortyk","felling")){
                                 let ut=parseInt(tarActor.data.data.characteristics.t.uB);
                                 let fel=Math.min(ut,fortykWeapon.getFlag("fortyk","felling"));
@@ -1147,7 +1147,7 @@ returns the roll message*/
                         let messages=[];
                         //shocking weapon logic
                         if(damage>0&&fortykWeapon.getFlag("fortyk","shocking")&&!isHordelike){
-                           damageOptions.results.push(`<div class="chat-target flexcol">`)
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
                             let shock=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total),tarActor, "Resist shocking",null,false,"",true);
                             damageOptions.results.push(shock.template);
                             if(!shock.value){
@@ -1242,7 +1242,7 @@ returns the roll message*/
                         if((fortykWeapon.getFlag("fortyk","niditus")&&damage)>0){
                             damageOptions.results.push(`<div class="chat-target flexcol">`)
                             if(tarActor.data.data.psykana.pr.value>0){
-                                
+
                                 let stun=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total),tarActor, "Resist niditus stun",null,false,"",true);
                                 damageOptions.results.push(stun.template);
                                 if(!stun.value){
@@ -1256,9 +1256,9 @@ returns the roll message*/
 
                                     let id=randomID(5);
                                     damageOptions.results.push(`<a class="popup" data-id="${id}"> Stunned for ${stun.dos} rounds. <span class="popuptext" id="${id}">${tarActor.name} is stunned for ${stun.dos} rounds!</span></a>`)
-                                    
+
                                 }
-                                
+
                             }
                             if(tarActor.getFlag("fortyk","warpinstability")){
                                 let warpinst=await this.fortykTest("wp", "char", (tarActor.data.data.characteristics.wp.total-10),tarActor, "Warp instability niditus",null,false,"",true);
@@ -1625,9 +1625,9 @@ returns the roll message*/
         }else if(crit&&damage<1){
             let chatOptions={user: game.user._id,
                              speaker:{actor,alias:actor.name},
-                             content:"Righteous Fury does 1 damage through the soak!",
+                             content:`<span class="chat-righteous">Righteous Fury</span> does 1 damage through the soak!`,
                              classes:["fortyk"],
-                             flavor:`Righteous Fury!`,
+                             flavor:`<span class="chat-righteous">Righteous Fury</span>`,
                              author:actor.name};
             await ChatMessage.create(chatOptions,{});
             return true;
@@ -3614,7 +3614,7 @@ returns the roll message*/
                                 for(let i=0;i<ae.data.changes.length;i++){
 
                                     for(let z=0;z<newAe.changes.length;z++){
-                                        
+
                                         if((ae.data.changes[i].key===newAe.changes[z].key)&&ae.data.changes[i].mode===newAe.changes[z].mode){
                                             if(!isNaN(parseInt(newAe.changes[z].value))){
                                                 newAe.changes[z].value=parseInt(newAe.changes[z].value)+parseInt(ae.data.changes[i].value);
@@ -3728,11 +3728,14 @@ returns the roll message*/
         }
     }
     static async _createInjury(actor,injury,injuryAeData){
-        let injuryItem=await Item.create({type:"injury",name:injury},{temporary:true});
-        //injuryAeData.transfer=true;
+        if(actor.type!=="npc"){
+            let injuryItem=await Item.create({type:"injury",name:injury},{temporary:true});
+            //injuryAeData.transfer=true;
 
-        //await injuryItem.createEmbeddedDocuments("ActiveEffect",[injuryAeData]);
-        await actor.createEmbeddedDocuments("Item",[injuryItem.data]);
+            //await injuryItem.createEmbeddedDocuments("ActiveEffect",[injuryAeData]);
+            await actor.createEmbeddedDocuments("Item",[injuryItem.data]);
+        }
+
 
     };
 }
