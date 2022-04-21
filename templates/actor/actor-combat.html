@@ -82,7 +82,7 @@
     <div class="combat-weaponsarmor grid grid-2col">
         <div class="flexcol flex-group-center">
             {{#if (length favoritePowers)}}
-            <span class="section-title">POWERS</span>
+            <span class="section-title">Powers</span>
             {{#each favoritePowers}}
             <div class="list-item flexcol">
 
@@ -167,7 +167,7 @@
             </div>
             {{/each}}
             {{/if}}
-            <span class="section-title" title="This represents your wielded weapons, you can add additional wielded weapons if you have sub weapons or mechadentrites etc.">WEAPONS</span>
+            <span class="section-title" title="This represents your wielded weapons, you can add additional wielded weapons if you have sub weapons or mechadentrites etc.">Weapons</span>
             <div class="flexrow">
                 <a class="worn-item-plus plus-button" title="Add extra weapon"></a>
                 <a class="worn-item-minus minus-button" title="Delete extra weapon"></a>
@@ -431,7 +431,7 @@
 
         </div>
         <div class="flexcol flex-group-center">
-            <span class="section-title">SIZE</span>
+            <span class="section-title">Size</span>
             <select class="sizeSelect" name="data.secChar.size.value" data-dtype="Number">
                 {{#select data.secChar.size.value}}
 
@@ -442,7 +442,7 @@
                 {{/each}}
                 {{/select}}
             </select>
-            <span class="section-title">MOVEMENT</span>
+            <span class="section-title">Movement</span>
             <div class="flexrow">
                 <div class="movementbox flex-group-center">
                     <div class="movementlabel"> <label for="data.fatigue.value" class="movementcontent resource-label">Half Move</label></div>
@@ -475,7 +475,7 @@
             </div>
             <div class="forcefield flexcol">
 
-                <span class="section-title">FORCE FIELD</span>
+                <span class="section-title">Force Field</span>
                 <div class="flexcol flex-group-center">
                     <select class="force-field" >
 
@@ -501,7 +501,7 @@
                 </div>
             </div>
             <div class="forcefield flexcol" >
-                <span class="section-title">ARMOR & ABSORBTION</span>
+                <span class="section-title">Armor & Absorbtion</span>
                 <select class="armor-select" >
 
                     <option value="" {{#if data.secChar.wornGear.armor.data}}selected{{/if}}>None</option>
@@ -511,7 +511,7 @@
                     {{/each}}
                 </select>
                 <div class="flexcol">
-                    <span class="section-title">COVER</span>
+                    <span class="section-title">Cover</span>
                     <span class="cover-reset button">Reset Cover</span>
                     <input type="text"  title="cover" name="data.secChar.cover.value" value="{{data.secChar.cover.value}}" data-dtype="Number"/>
                     <div class="flexrow flex-group-center">

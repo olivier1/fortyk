@@ -1,25 +1,28 @@
 
 <div class="fortyk chat-background flexcol">
-    
-    <span class="chat-line">{{title}}</span>
-    <div class="flexrow">
-        <span class="chat-line">Hits: {{hits}}</span>
-        <span class="chat-line">Rating: {{rating}}</span>
-        <span class="chat-line">Overload {{overload}}</span>   
+    <div class="chat-target">
+        <span class="chat-line">{{title}}</span>
+        <div class="flexrow">
+            <span class="chat-target">Hits: {{hits}}</span>
+            <span class="chat-target">Rating: {{rating}}</span>
+            <span class="chat-target">Overload {{overload}}</span>   
+        </div>
     </div>
-    {{#each results}}
-    {{#if this.overload}}
-    <span class="chat-line test-overload">{{this.string}}</span>
-    {{else if this.pass}}
-    <span class="chat-line test-success">{{this.string}}</span>
-    {{else}}
-    <span class="chat-line test-failure">{{this.string}}</span>
-    {{/if}}
-    
-    {{/each}}
-    <span class="roll-result">Remaining Hits: {{remainingHits}}</span>
-    {{#if breaks}}
-    <span class="chat-line ">{{breaks}}</span>
-    {{/if}}
-    
+    <div class="chat-target">
+        {{#each results}}
+        {{#if this.overload}}
+        <span class="chat-line test-overload">{{this.string}}</span>
+        {{else if this.pass}}
+        <span class="chat-line test-success">{{this.string}}</span>
+        {{else}}
+        <span class="chat-line test-failure">{{this.string}}</span>
+        {{/if}}
+    </div>
+    <div class="chat-target">
+        {{/each}}
+        <span class="roll-result">Remaining Hits: {{remainingHits}}</span>
+        {{#if breaks}}
+        <span class="chat-line ">{{breaks}}</span>
+        {{/if}}
+    </div>
 </div>

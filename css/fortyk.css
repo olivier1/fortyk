@@ -212,14 +212,14 @@
     border: 1px solid #999;
     font-weight: bold;
     font-style:bold;
-    text-transform: uppercase;
+    font-variant-caps: petite-caps;
 
 }
 .fortyk .sheet-main .header-fields .creationOps{
     border:1px solid #999;
     font-weight:bold;
     font-style:bold;
-    text-transform: uppercase;
+    font-variant-caps: petite-caps;
     margin-top:0px;
     margin-bottom:2px;
 }
@@ -238,7 +238,7 @@
     border:1px solid #999;
     font-weight:bold;
     font-style:bold;
-    text-transform: uppercase;
+    font-variant-caps: petite-caps;
     padding-left: 10px;
 }
 
@@ -268,6 +268,7 @@
     border: 1px solid #999;
     justify-content: center;
     align-content: center;
+    text-transform:uppercase;
 
 }
 
@@ -279,10 +280,11 @@
 .fortyk nav.sheet-tabs {
     -webkit-box-flex: 1;
     margin-top: 0px;
-
+    font-variant-caps: petite-caps;
     font-weight:bold;
     font-style:bold;
     flex:auto;
+    font-size:17px;
 
 }
 .fortyk nav.sheet-tabs2 {
@@ -343,7 +345,7 @@
 .fortyk .resource-label {
     font-weight: bold;
     font-style:bold;
-    text-transform: uppercase;
+    font-variant-caps: petite-caps;
     text-align: center;
 }
 
@@ -477,7 +479,7 @@
 .fortyk .skills .skills-header .skill-group{
     font-weight: bold !important;
     font-style:bold;
-    text-transform: uppercase;
+    font-variant-caps: petite-caps;
 }
 
 .fortyk .skills .skills-header .skillSubItem{
@@ -596,6 +598,9 @@
     border-bottom: 2px solid #999;
     width:100%;
     font-weight: bold;
+    font-size:19px;
+    font-variant-caps: petite-caps;
+    
 }
 .fortyk .sheet-gear{
     align-items: start;
@@ -699,9 +704,10 @@
     font-variant-caps: petite-caps;
 }
 .test-overload{
-    background-color: yellowgreen !important;
-    background-image: "" !important;
-    color: black !important;
+    font-weight:bolder;
+    font-size: larger;
+    font-variant-caps: petite-caps;
+    color: goldenrod !important;
 }
 .power-push{
     border-color: red !important;
@@ -709,6 +715,7 @@
 .power-safe{
     border-color: green !important;
 }
+
 .special-list{
     display:flex;
     justify-self: flex-start;
