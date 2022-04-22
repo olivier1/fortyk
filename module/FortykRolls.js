@@ -177,16 +177,17 @@ returns the roll message*/
                     }
                 }
             }else if(type==="rangedAttack"){
-                if(fortykWeapon.getFlag("fortyk","twinlinked")&&testDos>=3){
-                    hits++
-                }
+                
                 let rof=1;
                 if(attackType==="semi"){
-                    rof=weapon.data.rof[1].value;
+                    rof=parseInt(weapon.data.rof[1].value);
                     hits+=Math.min(rof,Math.floor((testDos-1)/2));
                 }else if(attackType==="full"){
-                    rof=weapon.data.rof[2].value;
-                    hits+=Math.min(rof,(testDos));
+                    rof=parseInt(weapon.data.rof[2].value);
+                    hits=Math.min(rof,(testDos));
+                }
+                if(fortykWeapon.getFlag("fortyk","twinlinked")&&testDos>=3){
+                    hits++
                 }
                 if(fortykWeapon.getFlag("fortyk","storm")){
                     hits=hits*2;
@@ -714,8 +715,7 @@ returns the roll message*/
             }
             //spray and blast weapons always hit the body hit location
             if(fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","spray")){
-                curHit.value="body";
-                curHit.label="Body";
+                curHit={value:"body",label:"Body"};
             }
 
             //formations and hordes always get hit in the body
@@ -844,7 +844,6 @@ returns the roll message*/
                     }
                     let tens=0;
                     let dieResults=[];
-                    console.log(roll);
                     let discards=[];
                     try{
 
@@ -897,14 +896,15 @@ returns the roll message*/
                         }
                         damageString=roll.result.replace(/\s+/g, '')
 
-                        damageString = rollString+damageString.substring(damageString.indexOf("+") + 1);
+                        damageString =rollString+damageString.substring(damageString.indexOf("+") + 1);
                     }
                     damageOptions.results.push(`<div class="chat-target flexcol">`)
-                    damageOptions.results.push(`Weapon damage roll: ${damageString}`)
+                    damageOptions.results.push(`<div style="flex:none">Weapon damage roll: ${damageString}</div>`)
                     if(tens){
                         damageOptions.results.push(`<span class="chat-righteous">Righteous Fury!</span>`)
                     }
-                    damageOptions.results.push(`</div>`)                         
+                    damageOptions.results.push(`</div>`)   
+                    console.log(damageOptions)
                     if(!armorSuit){
                         armorSuit=await Item.create({type:"armor",name:"standin"},{temporary:true});
                     }
@@ -1085,7 +1085,7 @@ returns the roll message*/
                                 let accForm=accDice+"d10"
                                 let accRoll=new Roll(accForm,{});
                                 await accRoll.roll();
-
+                                console.log(accRoll.result);
                                 damageOptions.results.push(`Accurate extra damage: ${accRoll.result}`);
                                 damage+=accRoll._total;
                                 chatDamage+=accRoll._total;
@@ -1490,7 +1490,7 @@ returns the roll message*/
                             await this.applyDead(tar,actor,`${actor.name}`);
 
                         }else if(data.suddenDeath.value&&newWounds[tarNumbr]<=0){
-                            await this.applyDead(tar,actor`${actor.name}`);
+                            await this.applyDead(tar,actor,`${actor.name}`);
 
                         }else if(newWounds[tarNumbr]<0&&damage>0){
                             let crit=Math.abs(newWounds[tarNumbr])-1;

@@ -4,6 +4,7 @@ export class FortykRollDialogs{
     static async _onReroll(event){
         event.preventDefault();
         event.currentTarget.style.display = "none";
+        console.log(event.currentTarget.parentElement.classList.remove("chat-background"));
         const dataset=event.currentTarget.dataset;
 
         const actor=game.actors.get(dataset["actor"]);
