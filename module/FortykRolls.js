@@ -896,7 +896,7 @@ returns the roll message*/
                         }
                         damageString=roll.result.replace(/\s+/g, '')
 
-                        damageString =rollString+damageString.substring(damageString.indexOf("+") + 1);
+                        damageString ="("+rollString+")"+damageString.substring(damageString.indexOf("+") + 1);
                     }
                     damageOptions.results.push(`<div class="chat-target flexcol">`)
                     damageOptions.results.push(`<div style="flex:none">Weapon damage roll: ${damageString}</div>`)
@@ -1085,8 +1085,9 @@ returns the roll message*/
                                 let accForm=accDice+"d10"
                                 let accRoll=new Roll(accForm,{});
                                 await accRoll.roll();
-                                console.log(accRoll.result);
-                                damageOptions.results.push(`Accurate extra damage: ${accRoll.result}`);
+                                console.log(accRoll);
+                                
+                                damageOptions.results.push(`Accurate extra damage: ${accRoll.dice[0].values.join("+")}`);
                                 damage+=accRoll._total;
                                 chatDamage+=accRoll._total;
                             }
