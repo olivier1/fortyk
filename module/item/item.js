@@ -146,6 +146,7 @@ export class FortyKItem extends Item {
 
 
                 let weaponQuality=item.data.quality.value;
+                item.data.testMod.value=parseInt(item.data.testMod.value);
                 if(weaponQuality==="Poor"){
                     item.data.testMod.value+=-10;
                 }else if(weaponQuality==="Good"){
