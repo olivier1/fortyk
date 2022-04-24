@@ -1983,7 +1983,7 @@ returns the roll message*/
                 ae.changes=[{key:`data.characteristics.agi.value`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.MULTIPLY},
                             {key:`data.characteristics.agi.advance`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.MULTIPLY}];
                 activeEffects.push(ae);
-                aeduplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fel")]);
+                ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fel")]);
                 ae.changes=[{key:`data.characteristics.fel.value`,value:-1*rolls.rolls[1],mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                 activeEffects.push(ae);
                 break;
@@ -2784,7 +2784,7 @@ returns the roll message*/
                     ae.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                     activeEffects.push(ae);
                     await this._createInjury(actor,"Lost "+leg+" leg",injury);
-                    await this.applyActiveEffect(actorToken,critActiveEffect);
+                    
                 }
                 break;
             case 8:
@@ -3161,7 +3161,7 @@ returns the roll message*/
                     activeEffects.push(ae);
                     injury=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("arm")]);
                     await this._createInjury(actor,"Useless "+arm+" arm",injury);
-                    await this.applyActiveEffect(actorToken,critActiveEffect);
+                    
                 }
                 break;
             case 9:
@@ -3386,7 +3386,7 @@ returns the roll message*/
                 activeEffects.push(ae);
                 ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("bleeding")]);
                 activeEffects.push(ae);
-                ae=duplicate(game.fortyk.FORTYK.StatusEffects["target"]);
+                ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("target")]);
                 ae.changes=[{key:`data.characterHitLocations.head.armorMod`,value:-99,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                 activeEffects.push(ae);
 
