@@ -16,6 +16,9 @@ export class ActorDialogs{
         try{let input=document.getElementById("modifier")
         input.select();
            }catch(err){}
+        try{let input=document.getElementById("specInput")
+        input.select();
+           }catch(err){}
     }
     static _onTntDescrClick(event){
         event.preventDefault();

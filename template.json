@@ -7,7 +7,8 @@
             "owPC",
             "owComrade",
             "owRegiment",
-            "spaceship"
+            "spaceship",
+            "vehicle"
         ],
         "templates": {
             "sorting":{
@@ -201,7 +202,9 @@
                         "dos": 1,
                         "type": "String",
                         "aim":false,
-                        "hits":1
+                        "hits":1,
+                        "vehicleFacing":"",
+                        "vehicleHitLocation":""
                     },
                     "cover": {
                         "value": 0,
@@ -748,6 +751,100 @@
                 "profit":0,
                 "type":"Number"
             }
+        },
+        "vehicle":{
+            "templates": [
+
+                "sorting"                
+            ],
+            "name":{
+                "value":"",
+                "type":"String"
+            },
+            "type":{
+                "value":"",
+                "type":"String"
+            },
+            "secChar":{
+                "speed":{
+                    "tactical":0,
+                    "cruising":0
+                },
+                "manoeuvrability":{
+                    "value":0,
+                    "type":"Number"
+                },
+                "wounds":{
+                    "type": "Number",
+                    "min": -10,
+                    "value": 10,
+                    "max": 10
+                },
+                "size": {
+                    "value": 3,
+                    "mod": 0,
+                    "stealth": 0,
+                    "movement": 0,
+                    "label": "Average",
+                    "size":1
+                }
+            },
+            "globalMOD":{
+                "value": 0,
+                "type": "Number"
+            },
+            "facings": {
+                "front": {
+                    "value": 0,
+                    "armor": 0,
+                    "armorMod":0,
+                    "cover": false,
+                    "type": "Number",
+                    "label": "Front",
+                    "angle":90,
+                    "start":316,
+                    "end":45
+                },
+                "rSide": {
+                    "value": 0,
+                    "armor": 0,
+                    "armorMod":0,
+                    "cover": false,
+                    "type": "Number",
+                    "label": "Right Side",
+                    "angle":90,
+                    "start":46,
+                    "end":135
+                },
+                "rear": {
+                    "value": 0,
+                    "armor": 0,
+                    "armorMod":0,
+                    "cover": false,
+                    "type": "Number",
+                    "label": "Rear",
+                    "angle":90,
+                    "start":136,
+                    "end":225
+                },
+                "lSide": {
+                    "value": 0,
+                    "armor": 0,
+                    "armorMod":0,
+                    "cover": false,
+                    "type": "Number",
+                    "label": "Left Side",
+                    "angle":90,
+                    "start":226,
+                    "end":315
+                }
+            },
+            "crew":{
+                "value":"",
+                "capacity":"",
+                "type":"String"
+            }
+
         }
     },
     "Item": {
@@ -829,6 +926,14 @@
                 "twohanded": {
                     "value": false,
                     "type": "Boolean"
+                },
+                "facing":{
+                    "value":"",
+                    "type":"string"
+                },
+                "mounting":{
+                    "value":"",
+                    "type":""
                 }
             },
             "description": {

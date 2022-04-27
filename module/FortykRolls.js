@@ -238,7 +238,7 @@ returns the roll message*/
             if(actor.data.data.secChar.lastHit.attackType==="called"){
                 hitlocation=FORTYKTABLES.hitLocations[actor.data.data.secChar.lastHit.called];
             }
-            await actor.update({"data.secChar.lastHit.value":hitlocation.name,"data.secChar.lastHit.label":hitlocation.label,"data.secChar.lastHit.dos":testDos,"data.secChar.lastHit.hits":hits});
+            await actor.update({"data.secChar.lastHit.value":hitlocation.value,"data.secChar.lastHit.label":hitlocation.label,"data.secChar.lastHit.dos":testDos,"data.secChar.lastHit.hits":hits});
             let chatOp={user: game.user._id,
                         speaker:{actor,alias:actor.name},
                         content:`Location: ${hitlocation.label}`,
@@ -709,9 +709,14 @@ returns the roll message*/
         let hitNmbr=0;
         //loop for the number of hits
         for(let h=0;h<(hits);h++){
-            if(hitNmbr>5){hitNmbr=0}
             if(!self){
-                curHit=game.fortyk.FORTYK.extraHits[lastHit.value][hitNmbr];
+                if(h>0){
+                    let randomLocation=new Roll("1d100",{});
+                    await randomLocation.roll();
+                    
+                    curHit=game.fortyk.FORTYKTABLES.hitLocations[randomLocation._total];
+                }
+
             }
             //spray and blast weapons always hit the body hit location
             if(fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","spray")){
@@ -2784,7 +2789,7 @@ returns the roll message*/
                     ae.changes=[{key:`data.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                     activeEffects.push(ae);
                     await this._createInjury(actor,"Lost "+leg+" leg",injury);
-                    
+
                 }
                 break;
             case 8:
@@ -3161,7 +3166,7 @@ returns the roll message*/
                     activeEffects.push(ae);
                     injury=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("arm")]);
                     await this._createInjury(actor,"Useless "+arm+" arm",injury);
-                    
+
                 }
                 break;
             case 9:
@@ -3815,7 +3820,7 @@ returns the roll message*/
                     ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("bleeding")]);
                     activeEffects.push(ae);
                     ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]);
-                    
+
 
                     ae.duration={
 

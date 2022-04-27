@@ -3,12 +3,13 @@ import {isEmpty} from "../utilities.js";
 import {FORTYKTABLES} from "../FortykTables.js";
 import {objectByString} from "../utilities.js";
 import {setNestedKey} from "../utilities.js";
+import {radToDeg} from "../utilities.js";
 /**
  * Extend the base Actor entity by defining a custom roll data structure which is ideal for the Simple system.
  * @extends {Actor}
  */
 export class FortyKActor extends Actor {
-    //@Override the create function to add starting skills to a character
+    //@Override the create function to add starting skills to a character and setup token stuff
     static async create(data, options) {
         // If the created actor has items (only applicable to duplicated actors) bypass the new actor creation logic
         if (data.items)
@@ -18,35 +19,36 @@ export class FortyKActor extends Actor {
         data.items = [];
         //initialise starting skills
         let startingSkills= await getSkills();
-        if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship"){
+        if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship" && data.type!=="vehicle"){
             for(let s of startingSkills){
                 data.items.push(s);
             }
         }
-        if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship"){
+        if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship" && data.type!=="vehicle"){
             // Set wounds, fatigue, and display name visibility
             mergeObject(data,
-                        {"token.bar1" :{"attribute" : "secChar.wounds"},                 // Default Bar 1 to Wounds
-                         "token.bar2" :{"attribute" : "secChar.fatigue"},               // Default Bar 2 to Fatigue
-                         "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
-                         "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be always on
-                         "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
-                         "token.name" : data.name                                       // Set token name to actor name
+                        {"token.bar1" :{"attribute" : "secChar.wounds"},                
+                         "token.bar2" :{"attribute" : "secChar.fatigue"},               
+                         "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,   
+                         "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,   
+                         "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         
+                         "token.name" : data.name                                       
                         })
-            // Default characters to HasVision = true and Link Data = true
+            // Default non npcs to HasVision = true and Link Data = true
             if (data.type !== "npc")
             {
                 data.token.vision = true;
                 data.token.actorLink = true;
             }
         }else if(data.type==="spaceship"){
+            //spaceships have different attributes but same stuff
             mergeObject(data,
-                        {"token.bar1" :{"attribute" : "hullIntegrity"},                 // Default Bar 1 to Hull integrity
-                         "token.bar2" :{"attribute" : "crew"},               // Default Bar 2 to Crew %
-                         "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
-                         "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be always on
-                         "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
-                         "token.name" : data.name                                       // Set token name to actor name
+                        {"token.bar1" :{"attribute" : "hullIntegrity"},                 
+                         "token.bar2" :{"attribute" : "crew"},               
+                         "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    
+                         "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    
+                         "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         
+                         "token.name" : data.name                                       
                         })
         }
         //resume actor creation
@@ -76,7 +78,7 @@ export class FortyKActor extends Actor {
                 }
                 if(newFatigue>=this.data.data.secChar.fatigue.max*2){
 
-                    
+
                     await game.fortyk.FortykRolls.applyDead(token,this,"fatigue");
                 }else if(!this.getFlag("core","frenzy")&&!this.getFlag("core","unconscious")&&newFatigue>=this.data.data.secChar.fatigue.max){
                     let effect=[];
@@ -159,6 +161,8 @@ export class FortyKActor extends Actor {
         const data = actorData.data;
         if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC' || actorData.type === 'npc'){
             this._prepareCharacterBaseData(data);
+        }else if(actorData.type === 'vehicle'){
+            this._prepareVehicleBaseData(data);
         }
     }
     _prepareCharacterBaseData(data){
@@ -196,6 +200,45 @@ export class FortyKActor extends Actor {
                 data.skillmods[name]=0;
             }
         });
+    }
+    _prepareVehicleBaseData(data){
+        console.log(data)
+        //check if this is a token actor
+        let height;
+        let width;
+        if(this.token){
+            height=this.token.data.height;
+            width=this.token.data.width;
+        }else{
+            height=this.data.token.height;
+            width=this.data.token.width;
+        }
+        if(width!==height){
+            //calculate facing angle ranges for non square tokens
+            let angleFrontRear=2*(radToDeg(Math.atan((width/2)/(height/2))));
+            let angleSides=(360-angleFrontRear*2)/2;
+            angleFrontRear=Math.round(angleFrontRear);
+            angleSides=Math.round(angleSides);
+            console.log(angleFrontRear,angleSides)
+            let front=data.facings.front;
+            let lSide=data.facings.lSide;
+            let rear=data.facings.rear;
+            let rSide=data.facings.rSide;
+            front.angle=angleFrontRear;
+            lSide.angle=angleSides;
+            rear.angle=angleFrontRear;
+            rSide.angle=angleSides;
+            front.start=360-Math.floor(front.angle/2);
+            front.end=0+Math.ceil(front.angle/2);
+            rSide.start=front.end+1;
+            rSide.end=front.end+lSide.angle;
+            rear.start=rSide.end+1;
+            rear.end=rSide.end+rear.angle;
+            lSide.start=rear.end+1;
+            lSide.end=front.start-1;
+            console.log(data);
+        }
+
     }
     /*OVERRIDE
     *Prepare the sub documents and apply changes to the actor resulting*/

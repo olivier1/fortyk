@@ -114,17 +114,17 @@ export class FortykRollDialogs{
         if(!templateOptions["options"].blindfight){
             templateOptions["options"].selfBlind=modifiers.selfBlind;
         }
-        
+
         //elevation stuff
         if(modifiers.elevation>0){
             templateOptions["options"].prone=true;
         }else if(modifiers.elevation<0){
-           
+
             templateOptions["options"].selfProne=true;
         }
         templateOptions["size"]=game.fortyk.FORTYK.size;
-        
-        if(actor.data.data.formation.value){
+
+        if(actor.type!=="vehicle"&&actor.data.data.formation.value){
             let unitStr=actor.data.data.secChar.wounds.value;
             templateOptions["modifiers"].charge=Math.min((10+unitStr*5),60);
             templateOptions["modifiers"].standard=Math.min(unitStr*5,60);
@@ -134,39 +134,40 @@ export class FortykRollDialogs{
             let target=targets.values().next().value;
             let tarActor=target.actor;
             let tarData=tarActor.data;
-            if(tarData.data.horde.value){
-                let hordeSize=tarData.data.secChar.wounds.value;
-                if(hordeSize>=120){
-                    templateOptions["modifiers"].testMod+=60;
-                }else if(hordeSize>=90){
-                    templateOptions["modifiers"].testMod+=50;
-                }else if(hordeSize>=60){
-                    templateOptions["modifiers"].testMod+=40;
-                }else if(hordeSize>=30){
-                    templateOptions["modifiers"].testMod+=30;
-                }
-            }
-        }
-        if(actor.getFlag("fortyk","fieldvivisection")&&targets.size>0){
-
-            let targetIt=targets.values();
-            let target=targetIt.next().value;
-
-            let targetActor=target.actor;
-            var tarRace=targetActor.data.data.race.value.toLowerCase();
-            if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)){
-                templateOptions["modifiers"].called+=actor.data.data.fieldVivisection;
-                if(actor.getFlag("fortyk","fieldpractitioner")){
-                    let praticeArray=[];
-                    var practiceMax=Math.ceil(actor.data.data.characteristics.int.bonus/2);
-                    for(let i=1;i<=practiceMax;i++){
-                        praticeArray.push(i);
+            if(tarActor.type!=="vehicle"){
+                if(tarData.data.horde.value){
+                    let hordeSize=tarData.data.secChar.wounds.value;
+                    if(hordeSize>=120){
+                        templateOptions["modifiers"].testMod+=60;
+                    }else if(hordeSize>=90){
+                        templateOptions["modifiers"].testMod+=50;
+                    }else if(hordeSize>=60){
+                        templateOptions["modifiers"].testMod+=40;
+                    }else if(hordeSize>=30){
+                        templateOptions["modifiers"].testMod+=30;
                     }
-                    templateOptions.fieldPractice=praticeArray;
+                }
+
+
+
+                if(actor.getFlag("fortyk","fieldvivisection")){
+
+
+                    var tarRace=targetActor.data.data.race.value.toLowerCase();
+                    if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)){
+                        templateOptions["modifiers"].called+=actor.data.data.fieldVivisection;
+                        if(actor.getFlag("fortyk","fieldpractitioner")){
+                            let praticeArray=[];
+                            var practiceMax=Math.ceil(actor.data.data.characteristics.int.bonus/2);
+                            for(let i=1;i<=practiceMax;i++){
+                                praticeArray.push(i);
+                            }
+                            templateOptions.fieldPractice=praticeArray;
+                        }
+                    }
                 }
             }
         }
-       
         let renderedTemplate= await renderTemplate(template,templateOptions);
 
         new Dialog({
@@ -202,11 +203,11 @@ export class FortykRollDialogs{
 
                             update["data.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
                             if(actor.getFlag("fortyk","fieldvivisection")&&actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
-                                
-                                    
-                                    update["data.secChar.lastHit.fieldPractice"]=$(html).find('select[name="fieldPracticeAmt"] option:selected').val();
+
+
+                                update["data.secChar.lastHit.fieldPractice"]=$(html).find('select[name="fieldPracticeAmt"] option:selected').val();
                             }else{
-                            update["data.secChar.lastHit.fieldPractice"]=null;
+                                update["data.secChar.lastHit.fieldPractice"]=null;
                             }
                         }else{
                             update["data.secChar.lastHit.fieldPractice"]=null;
@@ -216,12 +217,12 @@ export class FortykRollDialogs{
                             addLabel=html.find('input[name="guarded"]')[0].attributes["label"].value+" "+addLabel;
                         } 
                         if(html.find('input[name="counter"]').is(':checked')){
-                           addLabel=  html.find('input[name="counter"]')[0].attributes["label"].value+" "+addLabel
+                            addLabel=  html.find('input[name="counter"]')[0].attributes["label"].value+" "+addLabel
                         }
                         testLabel=addLabel+" "+ testLabel;
                         if(isNaN(running)){running=0}
                         if(isNaN(guarded)){guarded=0}
-                         if(isNaN(counter)){counter=0}
+                        if(isNaN(counter)){counter=0}
                         if(isNaN(defensive)){defensive=0}
                         if(isNaN(prone)){prone=0}
                         if(isNaN(high)){high=0}
@@ -262,14 +263,14 @@ export class FortykRollDialogs{
         templateOptions["modifiers"].single=itemData.data.attackMods.single;
         templateOptions["modifiers"].aim=itemData.data.attackMods.aim;
         templateOptions["modifiers"].testMod=itemData.data.testMod.value;
-        
+
         if(actor.data.data.formation.value){
             let unitStr=actor.data.data.secChar.wounds.value;
             templateOptions["modifiers"].standard=Math.min(unitStr*5,60);
         }
         templateOptions["modifiers"].inaccurate=item.getFlag("fortyk","innacurate");
 
-       
+
         for (let [key, rng] of Object.entries(templateOptions.modifiers.range)){
             let wepMod=itemData.data.attackMods.range[key];
             templateOptions.modifiers.range[key]=Math.max(wepMod,rng);
@@ -363,7 +364,7 @@ export class FortykRollDialogs{
         templateOptions["options"].size=modifiers.size;
         templateOptions["options"].running=modifiers.running;
         templateOptions["options"].normal=true;
-         //elevation stuff
+        //elevation stuff
         if(modifiers.elevation>0){
             templateOptions["options"].high=true;
         }else if(modifiers.elevation<0){
@@ -499,7 +500,7 @@ export class FortykRollDialogs{
                             addLabel=html.find('input[name="guarded"]')[0].attributes["label"].value+" "+addLabel;
                         }
                         if(html.find('input[name="overwatch"]').is(':checked')){
-                           addLabel=  html.find('input[name="overwatch"]')[0].attributes["label"].value+" "+addLabel
+                            addLabel=  html.find('input[name="overwatch"]')[0].attributes["label"].value+" "+addLabel
                         }
                         testLabel=addLabel+" "+ testLabel;
 
@@ -510,11 +511,11 @@ export class FortykRollDialogs{
 
                             update["data.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
                             if(actor.getFlag("fortyk","fieldvivisection")&&actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
-                                
-                                    
-                                    update["data.secChar.lastHit.fieldPractice"]=$(html).find('select[name="fieldPracticeAmt"] option:selected').val();
+
+
+                                update["data.secChar.lastHit.fieldPractice"]=$(html).find('select[name="fieldPracticeAmt"] option:selected').val();
                             }else{
-                            update["data.secChar.lastHit.fieldPractice"]=null;
+                                update["data.secChar.lastHit.fieldPractice"]=null;
                             }
                         }else{
                             update["data.secChar.lastHit.fieldPractice"]=null;
@@ -615,7 +616,7 @@ export class FortykRollDialogs{
                         if(isNaN(hits)){
                             this.callForcefieldDialog(forcefield,actor,"Invalid Number");
                         }else{
-                           
+
                             FortykRolls.fortykForcefieldTest(forcefield,actor,hits);
                         }
 
@@ -635,5 +636,5 @@ export class FortykRollDialogs{
         html.on("click",".overheat", this._onOverheat.bind(this));
         html.on("click",".popup", this._onTestPoppup.bind(this));
     }
-    
+
 }

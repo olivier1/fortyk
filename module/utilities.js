@@ -37,7 +37,7 @@ export const preloadHandlebarsTemplates = async function() {
 export const sleep=function(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-//returns an actors token object, not the token document. Will search teh active canvas for the current token.
+//returns an actors token object, not the token document. Will search the active canvas for the current token.
 export const getActorToken=function(actor){
     if(actor.token!==null){
         return actor.token._object; 
@@ -168,6 +168,64 @@ export const isEmpty=function (obj) {
     }
     return true;
 }
+export const getVehicleFacing=function(vehicleToken,attackerToken){
+    //determine quadrant
+    let attackerx=attackerToken.data.x+Math.floor(attackerToken.data.width/2);//adjust to get middle of token
+    let attackery=attackerToken.data.y+Math.floor(attackerToken.data.height/2);//adjust to get middle of token
+    let vehiclex=vehicleToken.data.x+Math.floor(vehicleToken.data.width/2);//adjust to get middle of token
+    let vehicley=vehicleToken.data.y+Math.floor(vehicleToken.data.height/2);//adjust to get middle of token
+    let attackAngle=0;
+    if(vehiclex>attackerx){
+        //is on left of vehicle
+        if(vehicley<attackery){
+            //is under vehicle
+            attackAngle=Math.round(radToDeg(Math.atan((vehiclex-attackerx)/(attackery-vehicley))));
+        }else{
+            attackAngle=90+Math.round(radToDeg(Math.atan((vehicley-attackery)/(vehiclex-attackerx))));
+            //is above vehicle
+        }
+    }else{
+        //is on right of vehicle
+        if(vehicley>attackery){
+            //is above vehicle
+            attackAngle=180+Math.round(radToDeg(Math.atan((attackerx-vehiclex)/(vehicley-attackery))));
+        }else{
+            //is under vehicle
+            attackAngle=270+Math.round(radToDeg(Math.atan((attackery-vehicley)/(attackerx-vehiclex))));
+        }
+    }
+    //adjust for vehicle rotation
+    let vehicleRotation=vehicleToken.data.rotation;
+    attackAngle-=vehicleRotation;
+    if(attackAngle<0){
+        attackAngle=360+attackAngle;
+    }
+    let facings=vehicleToken.actor.data.data.facings;
+    let facing=null;
+    let split={};
+    for(const face in facings){
+        let f=facings[face];
+        //check for split facing  eg starts at 316 and ends at 45
+        if(f.end>f.start){
+            split=f;
+        }
+        if(attackAngle>f.start&&attackAngle<f.end){
+            facing=f;
+        }
+    }
+    //if facing is none of the facings it must be in the split facing
+    if(facing===null){
+        facing=split;
+    }
+    return facing;
+}
+export const degToRad=function (degrees) {
+  return degrees * (Math.PI / 180);
+};
+
+export const radToDeg=function (rad) {
+  return rad / (Math.PI / 180);
+};
 //
 //for looping through items to give them flags
 /*

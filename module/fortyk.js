@@ -7,6 +7,7 @@ import { FortyKOWActorSheet } from "./actor/actorOW-sheet.js";
 import { FortyKOWComradeSheet } from "./actor/comradeOW-sheet.js";
 import { FortyKOWRegimentSheet } from "./actor/regimentOW-sheet.js";
 import { FortyKSpaceshipSheet } from "./actor/spaceship-sheet.js";
+import { FortyKVehicleSheet } from "./actor/vehicle-sheet.js";
 import { FortyKItem } from "./item/item.js";
 import { FortyKItemSheet } from "./item/item-sheet.js";
 import { FortyKActiveEffect } from "./activeEffect/activeEffect.js";
@@ -27,7 +28,8 @@ Hooks.once('init', async function() {
         FortyKActor,
         FortyKItem,
         FortykRolls,
-        FORTYK
+        FORTYK,
+        FORTYKTABLES
     };
 
     //make a map with the indexes of the various status effects
@@ -80,6 +82,7 @@ Hooks.once('init', async function() {
     Actors.registerSheet("fortyk", FortyKOWRegimentSheet, { types:["owRegiment"], makeDefault: true });
     Actors.registerSheet("fortyk", FortyKSpaceshipSheet, { types:["spaceship"], makeDefault: true });
     Actors.registerSheet("fortyk", FortyKNPCSheet, { types: ["npc"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKVehicleSheet, { types:["vehicle"], makeDefault: true });
 
 
     Items.unregisterSheet("core", ItemSheet);

@@ -4,6 +4,7 @@ import {FortykRolls} from "../FortykRolls.js";
 import {objectByString} from "../utilities.js";
 import {setNestedKey} from "../utilities.js";
 import {tokenDistance} from "../utilities.js";
+import {getVehicleFacing} from "../utilities.js";
 import {FortyKItem} from "../item/item.js";
 export default class FortyKBaseActorSheet extends ActorSheet {
 
@@ -453,7 +454,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                         await actor.setFlag("fortyk",flag,true);
                                     }else{
                                         let chosenSpec=await Dialog.prompt({
-                                            title: "Choose specialisation",
+                                            title: `Choose specialisation for ${tnt.name}`,
                                             content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${tntData.specialisation.value}" autofocus/></p>`,
 
 
@@ -471,7 +472,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
                                             width:100}
                                                                           );
-                                        setTimeout(function() {document.getElementById('specInput').select();}, 50);
                                         await itemData.update({"data.specialisation.value": chosenSpec});
 
                                     }
@@ -626,7 +626,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let attacker=this.actor.getActiveTokens()[0];
             let targetActor=target.actor;
 
-
+            if(targetActor.type==="vehicle"){
+                attackOptions.vehicle=true;
+                attackOptions.facing=getVehicleFacing(target,attacker);
+            }
             attackOptions.prone=targetActor.getFlag("core","prone");
             attackOptions.stunned=targetActor.getFlag("core","stunned");
             attackOptions.totalDef=targetActor.getFlag("core","totalDef");
