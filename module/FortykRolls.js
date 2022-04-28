@@ -121,7 +121,12 @@ returns the roll message*/
             templateOptions["dos"]+=" of failure!";
             templateOptions["success"]=false;
             if(jam){
-                templateOptions["pass"]="Weapon jammed or overheated!";
+                if(fortykWeapon.getFlag("fortyk","overheats")){
+                    templateOptions["pass"]="Weapon overheated!"
+                }else{
+                    templateOptions["pass"]="Weapon jammed!";
+                }
+                
             }else if(testRoll>=96){
                 templateOptions["pass"]="96+ is an automatic failure!";
             }
@@ -154,12 +159,12 @@ returns the roll message*/
             }
         }
         let attack=false;
-        if(templateOptions["success"]&&(type==="rangedAttack"||type==="meleeAttack"||type==="focuspower"&&(fortykWeapon.data.data.class.value==="Psychic Bolt"||fortykWeapon.data.data.class.value==="Psychic Barrage"||fortykWeapon.data.data.class.value==="Psychic Storm"||fortykWeapon.data.data.class.value==="Psychic Blast"))){
+        if((type==="rangedAttack"||type==="meleeAttack"||type==="focuspower"&&(fortykWeapon.data.data.class.value==="Psychic Bolt"||fortykWeapon.data.data.class.value==="Psychic Barrage"||fortykWeapon.data.data.class.value==="Psychic Storm"||fortykWeapon.data.data.class.value==="Psychic Blast"))){
             attack=true;
         }
         //determine number of hits
         let hits=0;
-        if(attack){
+        if(attack&&templateOptions["success"]){
             hits=1;
             let attackType=actor.data.data.secChar.lastHit.attackType;
             if(type==="meleeAttack"){
@@ -231,7 +236,7 @@ returns the roll message*/
         let secondDigit=testRoll-firstDigit*10;
 
         //determine hitlocation if the attack is a success
-        if(attack){
+        if(attack&&templateOptions["success"]){
             //reverse roll to get hit location
             let inverted=parseInt(secondDigit*10+firstDigit);
             let hitlocation=FORTYKTABLES.hitLocations[inverted];
@@ -246,58 +251,58 @@ returns the roll message*/
                         flavor:"Hit location",
                         author:actor.name};
             await ChatMessage.create(chatOp,{});
-
-            //blast
-            if((weapon.data.type==="Launcher"||weapon.data.type==="Grenade")&&fortykWeapon.getFlag("fortyk","blast")&&!testResult&&jam){
-                let fumbleRoll=new Roll("1d10");
-                await fumbleRoll.roll();
-                await fumbleRoll.toMessage({
-                    speaker: ChatMessage.getSpeaker({ actor: actor }),
-                    flavor: "Rolling for fumble."
-                });
-                let content="";
-                let fumbleResult=fumbleRoll._total;
-                if(fumbleResult===10){
-                    content="The explosive detonates immediately on you! Launchers are destroyed by this result."
-                }else{
-                    content="The explosive is a dud."
-                }
-                let chatFumble={user: game.user._id,
-                                speaker:{actor,alias:actor.name},
-                                content:content,
-                                flavor:"Fumble or Dud!",
-                                author:actor.name};
-                await ChatMessage.create(chatFumble,{});
-            }else if(fortykWeapon.getFlag("fortyk","blast")&&!testResult){
-                let chatScatter={user: game.user._id,
-                                 speaker:{actor,alias:actor.name},
-                                 content:`The shot goes wild! <img class="fortyk" src="../systems/fortyk/icons/scatter.png">`,
-                                 flavor:"Shot Scatters!",
-                                 author:actor.name};
-                await ChatMessage.create(chatScatter,{});
-                let distanceRoll=new Roll("1d5");
-                await distanceRoll.roll();
-                await distanceRoll.toMessage({
-                    speaker: ChatMessage.getSpeaker({ actor: actor }),
-                    flavor: "Rolling for scatter distance."
-                });
-                let directionRoll=new Roll("1d10");
-                await directionRoll.roll();
-                await directionRoll.toMessage({
-                    speaker: ChatMessage.getSpeaker({ actor: actor }),
-                    flavor: "Rolling for scatter direction."
-                });
-            }
-            //overheats
-            if(fortykWeapon.getFlag("fortyk","overheats")&&jam){
-                let chatOverheat={user: game.user._id,
-                                  speaker:{actor,alias:actor.name},
-                                  content:`<div class="fortyk"><p>The weapon overheats!</p> <a class="button overheat" data-actor="${actor._id}"  data-weapon="${weaponid}">Take Damage</a></div>`,
-                                  flavor:"Weapon Overheat!",
-                                  author:actor.name};
-                await ChatMessage.create(chatOverheat,{});
-            }
         }
+        //blast
+        if(attack&&(weapon.data.type==="Launcher"||weapon.data.type==="Grenade")&&fortykWeapon.getFlag("fortyk","blast")&&!testResult&&jam){
+            let fumbleRoll=new Roll("1d10");
+            await fumbleRoll.roll();
+            await fumbleRoll.toMessage({
+                speaker: ChatMessage.getSpeaker({ actor: actor }),
+                flavor: "Rolling for fumble."
+            });
+            let content="";
+            let fumbleResult=fumbleRoll._total;
+            if(fumbleResult===10){
+                content="The explosive detonates immediately on you! Launchers are destroyed by this result."
+            }else{
+                content="The explosive is a dud."
+            }
+            let chatFumble={user: game.user._id,
+                            speaker:{actor,alias:actor.name},
+                            content:content,
+                            flavor:"Fumble or Dud!",
+                            author:actor.name};
+            await ChatMessage.create(chatFumble,{});
+        }else if(fortykWeapon.getFlag("fortyk","blast")&&!testResult){
+            let chatScatter={user: game.user._id,
+                             speaker:{actor,alias:actor.name},
+                             content:`The shot goes wild! <img class="fortyk" src="../systems/fortyk/icons/scatter.png">`,
+                             flavor:"Shot Scatters!",
+                             author:actor.name};
+            await ChatMessage.create(chatScatter,{});
+            let distanceRoll=new Roll("1d5");
+            await distanceRoll.roll();
+            await distanceRoll.toMessage({
+                speaker: ChatMessage.getSpeaker({ actor: actor }),
+                flavor: "Rolling for scatter distance."
+            });
+            let directionRoll=new Roll("1d10");
+            await directionRoll.roll();
+            await directionRoll.toMessage({
+                speaker: ChatMessage.getSpeaker({ actor: actor }),
+                flavor: "Rolling for scatter direction."
+            });
+        }
+        //overheats
+        if(attack&&fortykWeapon.getFlag("fortyk","overheats")&&jam){
+            let chatOverheat={user: game.user._id,
+                              speaker:{actor,alias:actor.name},
+                              content:`<div class="fortyk"><p>The weapon overheats!</p> <a class="button overheat" data-actor="${actor.id}"  data-weapon="${weaponid}">Take Damage</a></div>`,
+                              flavor:"Weapon Overheat!",
+                              author:actor.name};
+            await ChatMessage.create(chatOverheat,{});
+        }
+
         //if attack has target, check if target has forcefield and do forcefield tests if so
         /*
         if(attack&&game.user.targets.size!==0){
@@ -1617,10 +1622,10 @@ returns the roll message*/
             }
             let toxicTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total-toxicMod),actor, `Resist toxic ${toxic}`,null,false,"",false);
             if(!toxicTest.value){
-                
+
                 let toxicData={name:"Toxic",type:"meleeWeapon"}
                 let toxicWpn=await Item.create(toxicData, {temporary: true});
-                
+
                 toxicWpn.data.flags.fortyk={}
                 toxicWpn.data.flags.fortyk.ignoreSoak=true;
                 toxicWpn.data.data.damageType.value="Energy";

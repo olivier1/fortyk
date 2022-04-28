@@ -25,7 +25,7 @@ export class FortykRollDialogs{
     static async _onOverheat(event){
         event.preventDefault();
         const dataset=event.currentTarget.dataset;
-
+        console.log(dataset)
         const actor=game.actors.get(dataset["actor"]);
 
         const weapon=duplicate(actor.getEmbeddedDocument("Item",dataset["weapon"]));
