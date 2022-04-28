@@ -337,11 +337,10 @@ Hooks.on("updateCombat", async (combat) => {
                     await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "On Fire! Panic");
                     let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
                     await actor.update({"data.secChar.fatigue.value":fatigue});
-                    let flags= duplicate(game.fortyk.FORTYK.weaponFlags);
                     let fireData={name:"Fire",type:"rangedWeapon"}
                     let fire=await Item.create(fireData, {temporary: true});
 
-                    fire.data.flags.specials=flags;
+                    fire.data.flags.fortyk={};
                     fire.data.data.damageType.value="Energy";
                     fire.data.data.pen.value=99999;
                     await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire,1, true);

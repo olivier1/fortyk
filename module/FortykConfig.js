@@ -213,6 +213,11 @@ FORTYK.weaponFlags={
         "label": "Accurate",
         "description": "The weapon is crafted for precision attacks, with perfectly crafted las-lenses or finely honed barrels. This grants an additional bonus of +10 to the firer’s Ballistic Skill when used with an Aim action, in addition to the normal bonus granted from Aiming. When a character fires a single shot from a single Basic weapon with the Accurate quality while benefiting from the Aim action, the attack inflicts an additional 1d10 damage for every two degrees of success beyond the first (to a maximum of an extra Xd10, x is equal to 2 by default). These extra d10s cannot generate Righteous Fury. The accurate quality is only active while the target is further than 10m away."
     },
+    "abyssalDrain": {
+        "value": false,
+        "label": "Abyssal Drain",
+        "description": "The weapon drains the life force of the target. Characters who take damage from weapons with this quality must take a -20 toughness test or take 2d10 strength and toughness damage."
+    },
     "balanced": {
         "value": false,
         "label": "Balanced",

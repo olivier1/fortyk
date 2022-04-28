@@ -311,7 +311,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         var customBonus=await game.packs.get("fortyk.custom-bonus-and-drawbacks");
         tnts=tnts.concat(await customBonus.getDocuments());
         //load different packs depending on actor type
-        if(actor.data.type==="dhPC"){
+        if(actor.data.type==="dhPC"||actor.data.type==="npc"){
             var dh2CoreBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonuscore-dh2");
             tnts=tnts.concat(await dh2CoreBonus.getDocuments());
             var dh2EnemiesWithinBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-within");
@@ -320,12 +320,12 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             tnts=tnts.concat(await dh2EnemiesWithoutBonus.getDocuments());
             var dh2EnemiesBeyondBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-beyond");
             tnts=tnts.concat(await dh2EnemiesBeyondBonus.getDocuments());
-        }else if(actor.data.type==="dwPC"){
+        }else if(actor.data.type==="dwPC"||actor.data.type==="npc"){
             var dwBonus=await game.packs.get("fortyk.deathwatch-bonus-and-drawbacks");
             tnts=tnts.concat(await dwBonus.getDocuments());
             var dwTalents=await game.packs.get("fortyk.deathwatch-talents");
             tnts=tnts.concat(await dwTalents.getDocuments());
-        }else if(actor.data.type==="owPC"){
+        }else if(actor.data.type==="owPC"||actor.data.type==="npc"){
             var owCoreAbilities=await game.packs.get("fortyk.homeworld-and-specialty-abilities-core-ow");
             tnts=tnts.concat(await owCoreAbilities.getDocuments());
             var owHOTEAbilities=await game.packs.get("fortyk.homeworld-and-specialty-abilities-hammer-of-the-emperor");
@@ -488,7 +488,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 default: "submit"
             },options).render(true)
         });
-        setTimeout(function() {document.getElementById('tntfilter').select();}, 50);
     }
     //Edits the item that was clicked
     async _onItemEdit(event){

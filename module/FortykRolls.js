@@ -604,6 +604,7 @@ returns the roll message*/
             }else{
                 curHit=game.fortyk.FORTYK.extraHits["body"][0];
             }
+            targets.clear();
             targets.add(attackerToken);
         }else{
 
@@ -707,13 +708,14 @@ returns the roll message*/
             newWounds.push(false);
         }
         let hitNmbr=0;
+        let selfToxic=false;
         //loop for the number of hits
         for(let h=0;h<(hits);h++){
             if(!self){
                 if(h>0){
                     let randomLocation=new Roll("1d100",{});
                     await randomLocation.roll();
-                    
+
                     curHit=game.fortyk.FORTYKTABLES.hitLocations[randomLocation._total];
                 }
 
@@ -737,6 +739,7 @@ returns the roll message*/
             }
             let roll=new Roll(form,actor.data.data);
             let label = weapon.name ? `Rolling ${weapon.name} damage to ${curHit.label}.` : 'damage';
+            console.log(roll)
             await roll.roll();
             //calculate righteous for non targetted rolls
             let tenz=0;
@@ -1088,8 +1091,9 @@ returns the roll message*/
                             damageOptions.results.push(`<span>Graviton extra damage: ${gravitonDmg}</span>`);
                         }
                         //accurate weapon logic
+                        let distance=tokenDistance(attackerToken,tar);
                         if(fortykWeapon.getFlag("fortyk","accurate")&&lastHit.aim){
-                            let distance=tokenDistance(attackerToken,tar);
+
                             if(distance>10){
                                 let accDice=Math.min(fortykWeapon.getFlag("fortyk","accurate"),Math.ceil((lastHit.dos-1)/2));
                                 let accForm=accDice+"d10"
@@ -1110,12 +1114,19 @@ returns the roll message*/
                             damageOptions.results.push(`<span>Swarm enemies take reduced damage against non blast, spray, flame or scatter weapons.</span>`);
                         }
                         damage=damage-soak;
+                        //if righteous fury ensure attack deals atleast 1 dmg
+                        if(tens&&damage<=0){
+                            damage=1;
+                        }else if(damage<=0){
+                            damage=0;
+
+                        }
                         //corrosive weapon logic
                         if(fortykWeapon.getFlag("fortyk","corrosive")&&!isHordelike){
                             let corrosiveAmt=new Roll("1d10",{});
                             await corrosiveAmt.roll();
                             let id=randomID(5);
-                            damageOptions.results.push(`<label class="popup" data-id="${id}"> Corrosive Weapon armor damage: ${corrosiveAmt._total}. <span class="popuptext" id="${id}">Excess corrosion is transferred to damage.</span</label> `);
+                            damageOptions.results.push(`<label class="popup" data-id="${id}"> Corrosive Weapon armor damage: ${corrosiveAmt._total}. <span class="popuptext chat-background" id="${id}">Excess corrosion is transferred to damage.</span</label> `);
                             let corrosiveDamage=0;
                             let newArmor=Math.max(0,(armor-corrosiveAmt._total));
                             corrosiveDamage=Math.abs(Math.min(0,(armor-corrosiveAmt._total)));
@@ -1171,10 +1182,34 @@ returns the roll message*/
                                 activeEffects.push(stunActiveEffect);
 
                                 let id=randomID(5);
-                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Stunned for ${shock.dos} rounds. <span class="popuptext" id="${id}">${tarActor.name} is stunned for ${shock.dos} rounds and takes 1 fatigue!</span></label>`)
+                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Stunned for ${shock.dos} rounds. <span class="popuptext chat-background" id="${id}">${tarActor.name} is stunned for ${shock.dos} rounds and takes 1 fatigue!</span></label>`)
 
                                 let newfatigue=1;
                                 this._addFatigue(tarActor,newfatigue);
+                            }
+                            damageOptions.results.push(`</div>`) 
+                        }
+                        //abyssal drain weapon logic
+                        if(damage>0&&fortykWeapon.getFlag("fortyk","abyssalDrain")&&!isHordelike){
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
+                            let drain=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total-20),tarActor, "Resist abyssal drain",null,false,"",true);
+                            damageOptions.results.push(drain.template);
+                            if(!drain.value){
+                                let drainActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")]);
+                                drainActiveEffect.transfer=false;
+                                drainActiveEffect.changes=[];
+                                let strDmg=new Roll("2d10",{});
+                                await strDmg.roll();
+                                drainActiveEffect.changes.push({key:`data.characteristics.s.value`,value:-1*strDmg._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD})
+                                let tDmg=new Roll("2d10",{});
+                                await tDmg.roll();
+                                drainActiveEffect.changes.push({key:`data.characteristics.t.value`,value:-1*tDmg._total,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD})
+                                activeEffects.push(drainActiveEffect);
+
+                                let id=randomID(5);
+                                damageOptions.results.push(`Drained for ${strDmg.result} strength damage and ${tDmg.result} toughness damage!`)
+
+
                             }
                             damageOptions.results.push(`</div>`) 
                         }
@@ -1197,7 +1232,7 @@ returns the roll message*/
                                 activeEffects.push(cryoActiveEffect);
 
                                 let id=randomID(5);
-                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Freezing for ${cryoRoll._total} rounds. <span class="popuptext" id="${id}">${tarActor.name} is freezing for ${cryoRoll.result} rounds and will take 2d10 toughness damage per round, freezing if reaching 0 toughness!</span></label>`)
+                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Freezing for ${cryoRoll._total} rounds. <span class="popuptext chat-background" id="${id}">${tarActor.name} is freezing for ${cryoRoll.result} rounds and will take 2d10 toughness damage per round, freezing if reaching 0 toughness!</span></label>`)
                             }
                             damageOptions.results.push(`</div>`) 
                         }
@@ -1223,7 +1258,7 @@ returns the roll message*/
                                 let halluText=FORTYKTABLES.hallucinogenic[halluRoll._total-1];
 
                                 let id=randomID(5);
-                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Hallucinating for ${hallu.dos+1} rounds. <span class="popuptext" id="${id}">${halluText}</span></label>`)
+                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Hallucinating for ${hallu.dos+1} rounds. <span class="popuptext chat-background" id="${id}">${halluText}</span></label>`)
 
                             }
                             damageOptions.results.push(`</div>`) 
@@ -1237,17 +1272,12 @@ returns the roll message*/
                             activeEffects.push(crippleActiveEffect);
 
                             let id=randomID(5);
-                            damageOptions.results.push(`<label class="popup" data-id="${id}"> ${tarActor.name} is crippled. <span class="popuptext" id="${id}">${tarActor.name} is crippled, they take ${fortykWeapon.getFlag("fortyk","crippling")} damage to the ${curHit.label} which ignores all soak, if they ever take more than a half action in a turn. This lasts until they are fully healed or until the end of the encounter.</span></label>`)
+                            damageOptions.results.push(`<label class="popup" data-id="${id}"> ${tarActor.name} is crippled. <span class="popuptext chat-background" id="${id}">${tarActor.name} is crippled, they take ${fortykWeapon.getFlag("fortyk","crippling")} damage to the ${curHit.label} which ignores all soak, if they ever take more than a half action in a turn. This lasts until they are fully healed or until the end of the encounter.</span></label>`)
                             damageOptions.results.push(`</div>`) 
                         }
 
 
-                        if(tens&&damage<=0){
-                            damage=1;
-                        }else if(damage<=0){
-                            damage=0;
 
-                        }
 
                         //NIDITUS WEAPON
                         if((fortykWeapon.getFlag("fortyk","niditus")&&damage)>0){
@@ -1266,7 +1296,7 @@ returns the roll message*/
                                     activeEffects.push(stunActiveEffect);
 
                                     let id=randomID(5);
-                                    damageOptions.results.push(`<label class="popup" data-id="${id}"> Stunned for ${stun.dos} rounds. <span class="popuptext" id="${id}">${tarActor.name} is stunned for ${stun.dos} rounds!</span></label>`)
+                                    damageOptions.results.push(`<label class="popup" data-id="${id}"> Stunned for ${stun.dos} rounds. <span class="popuptext chat-background" id="${id}">${tarActor.name} is stunned for ${stun.dos} rounds!</span></label>`)
 
                                 }
 
@@ -1313,7 +1343,7 @@ returns the roll message*/
                             if(!snare.value){
 
                                 let id=randomID(5);
-                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Immobilised. <span class="popuptext" id="${id}">${tar.name} is immobilised. An Immobilised target can attempt no actions other than trying to escape the bonds. As a Full Action, he can make a (-${snareMod}) Strength or Agility test to break free.</span></label>`)
+                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Immobilised. <span class="popuptext chat-background" id="${id}">${tar.name} is immobilised. An Immobilised target can attempt no actions other than trying to escape the bonds. As a Full Action, he can make a (-${snareMod}) Strength or Agility test to break free.</span></label>`)
 
                                 let snareActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("snare")]);
                                 activeEffects.push(snareActiveEffect);
@@ -1329,7 +1359,7 @@ returns the roll message*/
                             if(!stun.value){
 
                                 let id=randomID(5);
-                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Stunned for ${stun.dos} rounds. <span class="popuptext" id="${id}">${tar.name} is stunned for ${stun.dos} rounds!</span></label>`)
+                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Stunned for ${stun.dos} rounds. <span class="popuptext chat-background" id="${id}">${tar.name} is stunned for ${stun.dos} rounds!</span></label>`)
 
                                 let stunActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]);
                                 stunActiveEffect.duration={
@@ -1351,18 +1381,18 @@ returns the roll message*/
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
                         //deathdealer
 
-                        if(damage>newWounds[tarNumbr]&&actor.getFlag("fortyk","deathdealer")&&(weapon.type.toLowerCase().includes(actor.getFlag("fortyk","deathdealer").toLowerCase()))){
+                        if(damage>0&&damage>newWounds[tarNumbr]&&actor.getFlag("fortyk","deathdealer")&&(weapon.type.toLowerCase().includes(actor.getFlag("fortyk","deathdealer").toLowerCase()))){
                             damage+=actor.data.data.characteristics.per.bonus;
                             chatDamage+=actor.data.data.characteristics.per.bonus;
                             damageOptions.results.push(`Deathdealer increases critical damage by ${actor.data.data.characteristics.per.bonus}.`);
                         }
                         //peerless killer
-                        if(actor.getFlag("fortyk","peerlesskiller")&&lastHit.attackType==="called"){
+                        if(damage>0&&damage>newWounds[tarNumbr]&&actor.getFlag("fortyk","peerlesskiller")&&lastHit.attackType==="called"){
                             damage+=4;
                             chatDamage+=4;
                             damageOptions.results.push(`Peerless Killer increases critical damage by 4 on called shots.`);
                         }
-                        damageOptions.results.push(`</div>`) 
+                        damageOptions.results.push(`</div>`); 
 
                         // true grit!@!!@
                         if(!data.suddenDeath.value&&!isHordelike&&(damage>0)&&(newWounds[tarNumbr]-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
@@ -1397,6 +1427,10 @@ returns the roll message*/
                                 messages.push(impOptions);
                             }
 
+                        }
+                        //check if target has toxic trait and if attacker dealt damage to it in melee range, sets flag if so
+                        if(tarActor.getFlag("fortyk","toxic")&&distance<=1&&damage>0){
+                            selfToxic=tarActor.getFlag("fortyk","toxic");
                         }
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
                         //process horde damage for different weapon qualities
@@ -1572,6 +1606,27 @@ returns the roll message*/
             }
 
 
+        }
+        //does the toxic test if the attacker attacked a toxic target in melee
+        if(selfToxic!==false&&selfToxic!==undefined&&!self){
+            let toxic=parseInt(selfToxic);
+
+            let toxicMod=toxic*10;
+            if(actor.getFlag("fortyk","resistance")&&actor.getFlag("fortyk","resistance").toLowerCase().includes("toxic")){
+                toxicMod=-10;
+            }
+            let toxicTest=await this.fortykTest("t", "char", (actor.data.data.characteristics.t.total-toxicMod),actor, `Resist toxic ${toxic}`,null,false,"",false);
+            if(!toxicTest.value){
+                
+                let toxicData={name:"Toxic",type:"meleeWeapon"}
+                let toxicWpn=await Item.create(toxicData, {temporary: true});
+                
+                toxicWpn.data.flags.fortyk={}
+                toxicWpn.data.flags.fortyk.ignoreSoak=true;
+                toxicWpn.data.data.damageType.value="Energy";
+                console.log(toxicWpn);
+                await this.damageRoll(toxicWpn.data.data.damageFormula,actor,toxicWpn,1, true);
+            }
         }
     }
     //reports damage to a target's owners
