@@ -170,7 +170,7 @@ returns the roll message*/
             if(type==="meleeAttack"){
                 let wsBonus=actor.data.data.characteristics.ws.bonus;
                 if(attackType==="swift"){
-                    hits+=Math.min(wsBonus,Math.floor((testDos-1)/2))
+                    hits+=Math.min(wsBonus-1,Math.floor((testDos-1)/2))
                 }else if(attackType==="lightning"){
                     hits=Math.min(testDos,wsBonus);
                 }
@@ -185,7 +185,7 @@ returns the roll message*/
 
                 let rof=1;
                 if(attackType==="semi"){
-                    rof=parseInt(weapon.data.rof[1].value);
+                    rof=parseInt(weapon.data.rof[1].value)-1;
                     hits+=Math.min(rof,Math.floor((testDos-1)/2));
                 }else if(attackType==="full"){
                     rof=parseInt(weapon.data.rof[2].value);
@@ -200,7 +200,7 @@ returns the roll message*/
             }else if(type==="focuspower"){
                 let pr=weapon.data.curPR.value;
                 if(fortykWeapon.data.data.class.value==="Psychic Barrage"){
-                    hits+=Math.min(pr,Math.floor((testDos-1)/2))
+                    hits+=Math.min(pr-1,Math.floor((testDos-1)/2))
                 }else if(fortykWeapon.data.data.class.value==="Psychic Storm"){
                     hits=Math.min(pr,testDos);
                 }
@@ -273,7 +273,7 @@ returns the roll message*/
                             flavor:"Fumble or Dud!",
                             author:actor.name};
             await ChatMessage.create(chatFumble,{});
-        }else if(fortykWeapon.getFlag("fortyk","blast")&&!testResult){
+        }else if(attack&&fortykWeapon.getFlag("fortyk","blast")&&!testResult){
             let chatScatter={user: game.user._id,
                              speaker:{actor,alias:actor.name},
                              content:`The shot goes wild! <img class="fortyk" src="../systems/fortyk/icons/scatter.png">`,
@@ -1421,7 +1421,6 @@ returns the roll message*/
                         //impenetrable armor logic
                         if(armorSuit.getFlag("fortyk","impenetrable")){
                             damage=Math.ceil(damage/2);
-                            chatDamage=Math.ceil(damage/2);
                             if(damage>0){
                                 let impOptions={user: user._id,
                                                 speaker:{actor,alias:tarActor.name},

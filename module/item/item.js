@@ -72,10 +72,10 @@ export class FortyKItem extends Item {
                 let flags=item.flags.fortyk;
                 for(const flag in flags){
                     let fl=flags[flag];
-                    
+
                     if(typeof fl=="string"){
                         if(fl.toLowerCase().indexOf("pr")!==-1){
-                            
+
                             flags[flag]=Math.ceil(eval(flags[flag]));
                         }
                     }
@@ -280,7 +280,7 @@ export class FortyKItem extends Item {
                         item.data.twohanded.value=false;
 
                     }else{
-                        
+
                         item.data.twohanded.value=true;
                     }
                 }else{
@@ -321,14 +321,11 @@ export class FortyKItem extends Item {
                     item.data.damageFormula.value=form;
 
                     let hordeSize=actor.data.data.secChar.wounds.value;
-                    if(hordeSize>=120){
-                        item.data.testMod.value+=60;
-                    }else if(hordeSize>=90){
-                        item.data.testMod.value+=50;
-                    }else if(hordeSize>=60){
-                        item.data.testMod.value+=40;
-                    }else if(hordeSize>=30){
-                        item.data.testMod.value+=30;
+                    
+                    if((actor.getFlag("fortyk","massAssault")&&item.type==="meleeWeapon")||(actor.getFlag("fortyk","focusedFire")&&item.type==="rangedWeapon")){
+                       
+                            item.data.testMod.value+=Math.min(30,hordeSize);
+                        
                     }
 
                 }
