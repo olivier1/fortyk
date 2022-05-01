@@ -2,7 +2,7 @@
     <div class="flexcol chat-target">
         <span class="">{{wpnName}} damage roll against {{target}}</span>
 
-        <span class="chat-line dmg-descr">{{dmgType}} {{hitLocation}} hit</span>
+        <span class="chat-line dmg-descr">{{dmgType}} {{hitLocation}} hit {{#if vehicle}} against {{facing}} armor{{/if}}</span>
     </div>
 
     {{#each results}}{{this}}{{/each}}

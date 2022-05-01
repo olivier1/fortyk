@@ -14,10 +14,9 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
             tabs: [{ navSelector: ".sheet-tabs2", contentSelector: ".sheet-content", initial: "components" }],
             default:null,
             scrollY: [
-                ".components",
-                ".spaceship-weapons",
-                ".cargo",
-                ".hangar"
+                ".vehicle-weapons",
+                ".crew-armor",
+                ".traits-upgrades"
             ]
 
 

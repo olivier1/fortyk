@@ -153,14 +153,14 @@ FORTYK.aptitudes=[{"key":"weaponskill","label":"Weapon Skill"}, {"key":"ballisti
 FORTYK.advancementTypes=["Custom","Characteristic Upgrade","Skill Upgrade","New Skill", "Talent"]
 //For costs put the number of matching aptitudes into the array, then whatever other parameter
 FORTYK.characteristicUpgradeCosts=[{"5":500,"10":750,"15":1000,"20":1500,"25":2500},
-                                  {"5":250,"10":500,"15":750,"20":1000,"25":1500},
-                                  {"5":100,"10":250,"15":500,"20":750,"25":1250}]
+                                   {"5":250,"10":500,"15":750,"20":1000,"25":1500},
+                                   {"5":100,"10":250,"15":500,"20":750,"25":1250}]
 FORTYK.skillUpgradeCosts=[{"0":300,"10":600,"20":900,"30":1200},
-                         {"0":200,"10":400,"20":600,"30":800},
-                         {"0":100,"10":200,"20":300,"30":400}]
+                          {"0":200,"10":400,"20":600,"30":800},
+                          {"0":100,"10":200,"20":300,"30":400}]
 FORTYK.talentCosts=[[600,900,1200],
-                   [300,450,600],
-                   [200,300,400]]
+                    [300,450,600],
+                    [200,300,400]]
 FORTYK.psykerTypes={"bound":{"push":2,"sustain":"+10 to Phenomena rolls, -1 to PR per power after the first","perils":0},"unbound":{"push":4,"sustain":"+10 to all rolls on Table 6–2: Psychic Phenomena (see page 196), decrease psy rating by 1 per power.","perils":5}, "daemon":{"push":3, "sustain":"+10 to all rolls on Table 6–2: Psychic Phenomena (see page 196), decrease psy rating by 1 per power. He is not affected by the result unless the result causes Perils of the Warp, though those around him might be.","perils":10},
                     "navigator":{"push":-1,"sustain":"N/A","perils":-1}}
 FORTYK.navigatorPowerTraining=["Novice","Adept","Master"]
@@ -315,7 +315,7 @@ FORTYK.weaponFlags={
         "label": "Haywire",
         "description": "A foul affront to the Omnissiah in the eyes of many Tech-Priests, devices with this quality seek to cripple machine spirits and make metal as weak as flesh. Everything within the field’s radius, indicated by the number in parentheses, is affected; Haywire (3), for example, would affect an area with a three metre radius. Roll 1d10 on Table 5–4: Haywire Field Effects (adding any modifiers from the weapon) to determine the strength of the effect. As the field slowly dissipates, the strength lessens one step in severity each round until it becomes Insignificant (i.e., a result of Major Disruption would become Minor Disruption the following round and then cease to have an effect the round after that). Additional Haywire attacks in the same area do not stack but instead create a new effect that is either ignored if lower than the current effect or replaces the old one if higher."
     },
-     "ignoreCover": {
+    "ignoreCover": {
         "value": false,
         "label": "Ignore Cover",
         "description": "Ranged weapons with this trait ignore the bonus from cover their targets receive."
@@ -510,6 +510,14 @@ FORTYK.weaponFlags={
         "description": "Creatures with this trait have weapons that are partially insubstantial, able to ignore such mundane things as armour or cover. Natural weapons and attacks made by a creature with this trait ignore physical armour, unless the armour is created from psychoactive materials or is somehow warded against the Warp. Force fields still work against these attacks normally."
     }
 }
+FORTYK.weaponFacings=[{value:"rear",label:"Rear"},{value:"front",label:"Front"},{value:"lSide",label:"Left Side"},{value:"rSide",label:"Left Side"}]
+FORTYK.weaponMounts=[
+    {value:"fixed",label:"Fixed",description:"Fixed weapons are embedded within the hull of a vehicle and do not possess the ability to turn. They might have a limited vertical traversal ability, but otherwise only fire in a direct straight line from the Facing the weapon is mounted. To turn the gun from left to right the vehicle must move. A Basilisk’s earthshaker cannon is an example of a Fixed Weapon Mounting."},
+    {value:"hull",label:"Hull",description:"Hull weapons are similar to Fixed weapons in that they have a limited range of movement, but benefit from being able to move from left to right as well as up and down. A Hull weapon has a 45-degree Fire Arc from the Facing the weapon is mounted. A Baneblade’s demolisher cannon is an example of a Hull Weapon Mounting in the Front Facing."},
+    {value:"turret",label:"Turret",description:"Turret-mounted weapons are often placed high on a vehicle on top of its hull to give them the greatest line of sight in as many directions as possible. They give the greatest tactical flexibility in their ability to point in almost every direction. A Turret weapon has a 360-degree Fire Arc, and only the vehicle itself can block this arc (e.g. a vehicle with multiple turrets would find that the Fire Arc of one turret blocks the other turret, or the vehicle itself, if the turret is mounted low enough, such as the lascannon turrets on a Baneblade). Turrets cannot turn to face directions instantaneously, and thus it takes a Half Action for every full 180-degrees that a turret needs to turn. The GM and the players should always be aware of which direction their turrets are facing, as this can be important for Critical Damage. Additionally, due to their heavier armour, turrets treat all hits as hits to the Front Facing, regardless of the direction the attack came from in relation to the turret’s current facing (see Table 8–24 Vehicle Hit Locations on page 275). A Leman Russ’ battle cannon is an example of a Turret Weapon Mounting."},
+    {value:"sponson",label:"Sponson",description:"Sponson-mounted weapons are often used defensively on the flanks and sometimes even the rear of a vehicle, whilst the vehicle’s main weapon continues its assault upon the enemy. A Sponson weapon has a 180-degree Fire Arc from the Facing the weapon is mounted (e.g. a Sponson-mounted Weapon on a vehicle’s Left Side Facing has a 180 degree Fire Arc to the left of the vehicle). Walkers, unless specified otherwise, treat all their weapons as Sponson-mounted, specifically a Sponson mounting that gives them a 180 degree Fire Arc to the Walker’s Front Facing. This is to represent the fact that most Walkers have the ability to twist their torsos or even move their arms independently of the Walker’s main body in much the same way as a regular infantryman. A Leman Russ’ left and right heavy bolters and a Sentinel’s multi-laser are examples of Sponson Weapon Mountings."},
+    {value:"coaxial",label:"Co-Axial",description:"Co-Axial weapons are specially designed to be linked with other (usually larger) weapons. This is done for a variety of reasons, but most commonly to act as a guide (via tracer rounds) for the other gun. A Co-Axial weapon has the same Fire Arc as the weapon it is attached to and, as an exception to the standard rules for making attacks, a Co-Axial weapon may be fired at the same time as the gun it is linked to as a Full Action. The player first works out the shot from the Co-Axial weapon, as well as any Damage. If the Co- Axial weapon missed, then the other weapon just fires as normal. If the Co-Axial weapon hit with any shots, then the other weapon it is linked to gains a further +20 to the Ballistic Skill Test (but only for that shot, not subsequent shots unless the Co-Axial weapon is used again). A Baneblade’s autocannon is an example of a Co- Axial Weapon mounting."},
+    {value:"pintle",label:"Pintle",description:"Pintle weapons are usually optional or additional weapons bolted onto turret rings or placed in areas where spare crew or even passengers can use them. They are usually comparatively light weapons, such as heavy stubbers, and are used to defend the vehicle in much the same way as sponson weaponry. Unlike the other weaponry mounted on a vehicle, Pintle weapons do not automatically have a crew member assigned to them. Instead, they may be fired by anyone who can realistically reach one during his Turn, or who reached one in a previous Turn. Even passengers may fire a Pintle weapon if they are able. Pintle weapons usually have a 360 degree Fire Arc, as they are often mounted on the highest point of a vehicle, but there are exceptions to this and the GM should be aware of what might block a Pintle weapon’s Fire Arc."}]
 FORTYK.lasModes=["normal","overcharge","overload"]
 FORTYK.itemQualities=["Poor","Common","Good","Best"]
 FORTYK.skillChars={"ws":{"name":"ws","caps":"WS"},"bs":{"name":"bs","caps":"BS"},"s":{"name":"s","caps":"S"},"t":{"name":"t","caps":"T"},"agi":{"name":"agi","caps":"AGI"},"int":{"name":"int","caps":"INT"},"per":{"name":"per","caps":"PER"},"wp":{"name":"wp","caps":"WP"},"fel":{"name":"fel","caps":"FEL"}}
@@ -627,7 +635,7 @@ FORTYK.StatusEffects = [
         icon: "icons/svg/poison.svg",
         flags: { core: { statusId: "toxic" } }
     },
-    
+
     {
         id: "rad",
         label: "Radiation",

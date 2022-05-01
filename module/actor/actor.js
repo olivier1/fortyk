@@ -202,7 +202,7 @@ export class FortyKActor extends Actor {
         });
     }
     _prepareVehicleBaseData(data){
-        console.log(data)
+        
         //check if this is a token actor
         let height;
         let width;
@@ -213,13 +213,14 @@ export class FortyKActor extends Actor {
             height=this.data.token.height;
             width=this.data.token.width;
         }
+        /*
+        not really useable until somone makes uneven tokens rotate
         if(width!==height){
             //calculate facing angle ranges for non square tokens
             let angleFrontRear=2*(radToDeg(Math.atan((width/2)/(height/2))));
             let angleSides=(360-angleFrontRear*2)/2;
             angleFrontRear=Math.round(angleFrontRear);
             angleSides=Math.round(angleSides);
-            console.log(angleFrontRear,angleSides)
             let front=data.facings.front;
             let lSide=data.facings.lSide;
             let rear=data.facings.rear;
@@ -236,7 +237,18 @@ export class FortyKActor extends Actor {
             rear.end=rSide.end+rear.angle;
             lSide.start=rear.end+1;
             lSide.end=front.start-1;
-            console.log(data);
+        }*/
+        //initialize armor
+        for(let [key, hitLoc] of Object.entries(data.facings)){
+
+            
+            hitLoc.value=hitLoc.armor;
+            let daemonic=this.getFlag("fortyk","daemonic");
+            if(daemonic){
+                if(!isNaN(daemonic)){
+                    hitLoc.value+=parseInt(daemonic);
+                }
+            }
         }
 
     }
@@ -747,6 +759,8 @@ export class FortyKActor extends Actor {
             mergeObject(preparedData, this.prepareNPCItems(preparedData));
         }else if(preparedData.type==="spaceship"){
             mergeObject(preparedData, this.prepareSpaceshipItems(preparedData));
+        }else if(preparedData.type==="vehicle"){
+            mergeObject(preparedData, this.prepareVehicleItems(preparedData));
         }
         return preparedData;
     }
@@ -1091,6 +1105,59 @@ export class FortyKActor extends Actor {
         return preparedItems
 
 
+    }
+    prepareVehicleItems(actorData){
+        let data=actorData.data;           
+        const meleeWeapons=[];
+        const rangedWeapons=[];
+        const talentsntraits=[];
+        const forceFields=[];
+        const upgrades=[];
+        //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
+        //apply logic to items that depends on actor data so that it updates readily when the actor is updated
+        //put all items in their respective containers and do some item logic
+        this.items.forEach((fortykItem,id,items)=>{
+            let item=fortykItem.data;
+            fortykItem.prepareData();
+            if(item.type==="talentntrait"){
+
+                talentsntraits.push(item);
+            }
+            if(item.type==="armor"){
+                armors.push(item);
+            }
+            if(item.type==="forceField"){
+                forceFields.push(item);
+            }
+            if(item.type==="meleeWeapon"){
+
+                meleeWeapons.push(item);
+            }
+            if(item.type==="rangedWeapon"){
+
+                rangedWeapons.push(item);
+
+            }
+            if(item.type==="upgrade"){
+
+                upgrades.push(item);
+
+            }
+            if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
+
+            }
+        })
+        let preparedItems={
+            upgrades:upgrades,
+            meleeWeapons:meleeWeapons,
+            rangedWeapons:rangedWeapons,
+            talentsntraits:talentsntraits,
+            forceFields:forceFields
+        };
+        try{
+            this._sortItems(preparedItems);
+        }catch(err){}
+        return preparedItems;
     }
     //function to sort the item containers for display
     _sortItems(itemContainers){

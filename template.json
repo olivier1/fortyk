@@ -203,6 +203,8 @@
                         "type": "String",
                         "aim":false,
                         "hits":1,
+                        "attackRange":"",
+                        "vehicle":false,
                         "vehicleFacing":"",
                         "vehicleHitLocation":""
                     },
@@ -780,6 +782,34 @@
                     "value": 10,
                     "max": 10
                 },
+                "attacks": {
+                    "standard": 10,
+                    "charge": 20,
+                    "allOut": 30,
+                    "stun": -20,
+                    "guarded": -10,
+                    "semi":0,
+                    "full":-10,
+                    "aim": {
+                        "half": 10,
+                        "full": 20
+                    },
+                    "swift": 0,
+                    "lightning": -10,
+                    "called": -20,
+                    "gangup": {
+                        "0": 0,
+                        "1": 10,
+                        "2": 20
+                    },
+                    "range": {
+                        "pointblank": 30,
+                        "short": 10,
+                        "standard": 0,
+                        "long": -10,
+                        "extreme": -30
+                    }
+                },
                 "size": {
                     "value": 3,
                     "mod": 0,
@@ -787,6 +817,26 @@
                     "movement": 0,
                     "label": "Average",
                     "size":1
+                },
+                "lastHit": {
+                    "value": "body",
+                    "label": "Body",
+                    "dos": 1,
+                    "type": "String",
+                    "aim":false,
+                    "hits":1,
+                    "attackRange":"",
+                    "vehicle":false,
+                    "vehicleFacing":"",
+                    "vehicleHitLocation":""
+                },
+                "cover": {
+                    "value": 0,
+                    "type": "String"
+                },
+                "initiative":{
+                    "value":0,
+                    "type":"Number"
                 }
             },
             "globalMOD":{
@@ -803,7 +853,8 @@
                     "label": "Front",
                     "angle":90,
                     "start":316,
-                    "end":45
+                    "end":45,
+                    "path":"front"
                 },
                 "rSide": {
                     "value": 0,
@@ -814,7 +865,8 @@
                     "label": "Right Side",
                     "angle":90,
                     "start":46,
-                    "end":135
+                    "end":135,
+                    "path":"rSide"
                 },
                 "rear": {
                     "value": 0,
@@ -825,7 +877,8 @@
                     "label": "Rear",
                     "angle":90,
                     "start":136,
-                    "end":225
+                    "end":225,
+                    "path":"rear"
                 },
                 "lSide": {
                     "value": 0,
@@ -836,13 +889,15 @@
                     "label": "Left Side",
                     "angle":90,
                     "start":226,
-                    "end":315
+                    "end":315,
+                    "path":"lSide"
                 }
             },
             "crew":{
                 "value":"",
                 "capacity":"",
-                "type":"String"
+                "type":"String",
+                "rating":30
             }
 
         }

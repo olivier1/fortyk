@@ -20,6 +20,17 @@
             </div>
 
             <div class="list-item flexcol"{{#unless single}} hidden{{/unless}}>
+                {{#if vehicle}}
+                <div class="flexrow">
+                    <input type="radio" name="attack-type" value="{{modifiers.called}}"index='0' label="Called Shot" attacktype="called"><label>Called Shot: {{modifiers.called}}</label>
+                    <select name="calledLoc">
+                        <option value="20">Motive System</option>
+                        <option value="60">Hull</option>
+                        <option value="80">Weapon</option>
+                        <option value="100">Turret</option>
+                    </select>
+                </div>
+                {{else}}
                 <div class="flexrow">
                     <input type="radio" name="attack-type" value="{{modifiers.called}}" index='0' label="Called Shot" attacktype="called"><label>Called Shot: {{modifiers.called}}</label>
                     <select name="calledLoc">
@@ -41,6 +52,7 @@
                     </select>
                 </div>
 
+                {{/if}}
                 {{/if}}
             </div>
             <div class="list-item flexrow">
@@ -150,16 +162,16 @@
 
             </div>
             <select class="size" name="size">
-              
+
                 {{#if options.size}}
                 {{#each size}}
                 <option value="{{this.mod}}" {{#if (equals @index ../options.size)}}selected{{/if}}>{{this.name}}</option>
-              
+
                 {{/each}}
                 {{else}}
                 {{#each size}}
                 <option value="{{this.mod}}" {{#if (contains this.name "average")}}selected{{/if}}>{{this.name}}</option>
-               
+
                 {{/each}}
                 {{/if}}
             </select>

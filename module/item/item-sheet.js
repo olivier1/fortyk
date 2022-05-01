@@ -49,6 +49,10 @@ export class FortyKItemSheet extends ItemSheet {
 
 
         }
+        console.log(this)
+        if(this.actor&&this.actor.type==="vehicle"){
+            data.vehicle=true;
+        }
         data.item=this.item.data;
         data.isGM=game.user.isGM;
         data.isOwner=this.item.isOwner;

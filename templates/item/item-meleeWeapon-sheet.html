@@ -68,6 +68,30 @@
                 {{/select}}
             </select>
         </div>
+        {{#if vehicle}}
+        <div class="flexcol">
+            <label>Mounting:</label>
+            <select class="mounting" name="data.mounting.value">
+
+                {{#select data.mounting.value}}
+                {{#each FORTYK.weaponMounts}}
+                <option value="{{label}}">{{label}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+        </div>
+        <div class="flexcol">
+            <label>Facing:</label>
+            <select class="facing" name="data.facing.value">
+
+                {{#select data.facing.value}}
+                {{#each FORTYK.weaponFacings}}
+                <option value="{{label}}">{{label}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+        </div>
+        {{/if}}
         <div class="flexcol">
             <label>Item Quality:</label>
 

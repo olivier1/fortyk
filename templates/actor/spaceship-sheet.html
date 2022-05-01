@@ -13,23 +13,23 @@
 
                             <div class="descrRow flexcol">
                                 <span class="descrSpan">Name:</span>
-                                <input type="text" class="combat-resources" data-target="name" value="{{name}}" data-dtype="Number"/>
+                                <input type="text" class="combat-resources" data-target="name" value="{{name}}" data-dtype="String"/>
                             </div>
 
                             <div class="descrRow flexcol">
                                 <span class="descrSpan">Class:</span>
-                                <input type="text" class="combat-resources" data-target="data.class.value" value="{{data.class.value}}" data-dtype="Number"/>
+                                <input type="text" class="combat-resources" data-target="data.class.value" value="{{data.class.value}}" data-dtype="String"/>
                             </div>
                             <div class="descrRow flexcol">
                                 <span class="descrSpan">Hull:</span>
-                                <input type="text" class="combat-resources" data-target="data.hull.value" value="{{data.hull.value}}" data-dtype="Number"/>
+                                <input type="text" class="combat-resources" data-target="data.hull.value" value="{{data.hull.value}}" data-dtype="String"/>
                             </div>
 
                         </div>
                         <div class="descrRow flexcol">
                             <div><span class="descrSpan">Complications/Past History:</span>
-                                <input type="text" class="combat-resources" data-target="data.complications.0" value="{{data.complications.[0]}}" data-dtype="Number"/>
-                                <input type="text" class="combat-resources" data-target="data.complications.1" value="{{data.complications.[1]}}" data-dtype="Number"/>
+                                <input type="text" class="combat-resources" data-target="data.complications.0" value="{{data.complications.[0]}}" data-dtype="String"/>
+                                <input type="text" class="combat-resources" data-target="data.complications.1" value="{{data.complications.[1]}}" data-dtype="String"/>
                             </div>
                             
                             
@@ -91,12 +91,12 @@
                 <div class="resource flex-group-center">
                     <label for="data.secChar.fatigue.value" class="resource-label">Crew</label>
                     <div class="resource-content flexrow flex-center flex-between">
-                        <input type="text" class="combat-resources" data-target="data.crew.value" value="{{data.crew.value}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" data-target="data.crew.value" value="{{data.crew.value}}" data-dtype="String"/>
                         <span> / </span>
-                        <input type="text" class="combat-resources" data-target="data.crew.max" value="{{data.crew.max}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" data-target="data.crew.max" value="{{data.crew.max}}" data-dtype="String"/>
                         
                     </div>
-                    <input type="text" class="combat-resources" data-target="data.crew.capacity" value="{{data.crew.capacity}}" placeholder="Crew capacity" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="data.crew.capacity" value="{{data.crew.capacity}}" placeholder="Crew capacity" data-dtype="String"/>
                 </div>
                 <div class="resource flex-group-center">
                     <label for="data.secChar.fatigue.value" class="resource-label">Morale</label>

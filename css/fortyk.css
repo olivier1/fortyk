@@ -138,7 +138,13 @@
     justify-content: center;
     text-align: center;
 }
- .button{
+.no-flex{
+    flex:none;
+}
+.margin-left{
+    margin-left: 5px;
+}
+.button{
     text-align:center;
     border-style:inset;
     border-color:dimgray;
@@ -242,7 +248,9 @@
     padding-left: 10px;
 }
 
-
+.vehicle-categories{
+    align-self:flex-start;
+}
 
 
 .fortyk  .characteristics{
@@ -600,7 +608,8 @@
     font-weight: bold;
     font-size:19px;
     font-variant-caps: petite-caps;
-    
+    margin-bottom: 3px
+
 }
 .fortyk .sheet-gear{
     align-items: start;
@@ -799,7 +808,7 @@
     font-style:italic;
 }
 .chat-target{
-    
+
     border: 1px solid var(--color-border-light-2);
     border-radius: 3px;
     box-shadow: 0 0 2px #fff inset;
@@ -830,7 +839,7 @@
     color:darkred;
 }
 .chat-righteous{
-    
+
     font-style:italic; 
     font-style:bold;
     color:goldenrod;
@@ -841,7 +850,7 @@
     background-color:lightgray;
 }
 /* Popup container - can be anything you want */
- .popup {
+.popup {
     position: relative;
     display: inline-block;
     cursor: pointer;
@@ -852,7 +861,7 @@
 }
 
 /* The actual popup */
- .popup .popuptext {
+.popup .popuptext {
     visibility: hidden;
     width: 200px;
     color: #060606;
@@ -865,11 +874,11 @@
     z-index: 1;
     bottom: 125%;
     left: 0%;
-     font-variant-caps:normal;
+    font-variant-caps:normal;
 }
 
 /* Popup arrow */
- .popup .popuptext::after {
+.popup .popuptext::after {
     content: "";
     position: absolute;
     top: 100%;
@@ -881,7 +890,7 @@
 }
 
 /* Toggle this class - hide and show the popup */
- .popup .show {
+.popup .show {
     visibility: visible;
     -webkit-animation: fadeIn 1s;
     animation: fadeIn 1s;

@@ -362,8 +362,8 @@ Hooks.on("updateCombat", async (combat) => {
                         }
                     }
                     if(bleed){
-                         let bleedStack=1;
-                        
+                        let bleedStack=1;
+
                         let flavor
                         if(bleedStack===1){
                             flavor=`Blood loss`
@@ -383,7 +383,7 @@ Hooks.on("updateCombat", async (combat) => {
                 }
                 //check for cryo
                 if(activeEffect.data.flags.core.statusId==="cryogenic"){
-                    
+
                     let cryoContent=`<span>On round start, take [[2d10]]  toughness damage!</span>`;
                     let cryoOptions={user: game.user._id,
                                      speaker:{actor,alias:actor.name},
@@ -392,7 +392,7 @@ Hooks.on("updateCombat", async (combat) => {
                                      flavor:`Freezing`,
                                      author:actor.name};
                     let cryoMsg=await ChatMessage.create(cryoOptions,{});
-                    
+
                     let inlineResults=parseHtmlForInline(cryoMsg.data.content);
                     console.log(inlineResults);
                     let tDmg=inlineResults[0];
@@ -551,7 +551,7 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
         if(newFatigue>=tokenActor.data.data.secChar.fatigue.max*2){
 
 
-            
+
             await game.fortyk.FortykRolls.applyDead(fullToken,tokenActor,"fatigue");
         }else if(!tokenActor.getFlag("core","frenzy")&&!tokenActor.getFlag("core","unconscious")&&newFatigue>=tokenActor.data.data.secChar.fatigue.max){
             let effect=[];
@@ -621,12 +621,22 @@ Hooks.once("dragRuler.ready", (Speedprovider) => {
                    {id:"run",default:0xFFFF00,name:"Run"}]
         }
         getRanges(token){
-            const movement=token.actor.data.data.secChar.movement;
-            const ranges=[
-                {range:movement.half,color:"half"},
-                {range:movement.full,color:"full"},
-                {range:movement.charge,color:"charge"},
-                {range:movement.run,color:"run"}]
+            let movement;
+            let ranges;
+            if(token.actor.type==="vehicle"){
+                movement=token.actor.data.data.secChar.speed;
+                ranges=[
+                    {range:movement.tactical,color:"full"},
+                    {range:movement.tactical*2,color:"run"}]
+            }else{
+                movement=token.actor.data.data.secChar.movement;
+                ranges=[
+                    {range:movement.half,color:"half"},
+                    {range:movement.full,color:"full"},
+                    {range:movement.charge,color:"charge"},
+                    {range:movement.run,color:"run"}]
+            }
+
             return ranges;
         }
         getCostForStep(token, area, options={}) {

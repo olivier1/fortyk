@@ -27,6 +27,17 @@
                 <input type="radio" name="attack-type" value="{{modifiers.stun}}" label="Stun"attacktype="stun"><label>Stun: {{modifiers.stun}}</label>
             </div>
             <div class="list-item flexcol">
+                {{#if vehicle}}
+                <div class="flexrow">
+                    <input type="radio" name="attack-type" value="{{modifiers.called}}" label="Called Shot" attacktype="called"><label>Called Shot: {{modifiers.called}}</label>
+                    <select name="calledLoc">
+                        <option value="20">Motive System</option>
+                        <option value="60">Hull</option>
+                        <option value="80">Weapon</option>
+                        <option value="100">Turret</option>
+                    </select>
+                </div>
+                {{else}}
                 <div class="flexrow">
                     <input type="radio" name="attack-type" value="{{modifiers.called}}" label="Called Shot" attacktype="called"><label>Called Shot: {{modifiers.called}}</label>
                     <select name="calledLoc">
@@ -49,6 +60,7 @@
                     </select>
                 </div>
 
+                {{/if}}
                 {{/if}}
             </div>
             <div class="list-item flexrow">

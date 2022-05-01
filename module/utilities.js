@@ -39,6 +39,7 @@ export const sleep=function(ms) {
 }
 //returns an actors token object, not the token document. Will search the active canvas for the current token.
 export const getActorToken=function(actor){
+    console.log(actor);
     if(actor.token!==null){
         return actor.token._object; 
     }
@@ -175,7 +176,8 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
     let vehiclex=vehicleToken.data.x+Math.floor(vehicleToken.data.width/2);//adjust to get middle of token
     let vehicley=vehicleToken.data.y+Math.floor(vehicleToken.data.height/2);//adjust to get middle of token
     let attackAngle=0;
-    if(vehiclex>attackerx){
+    console.log(`attackerx:${attackerx}`,`attackery:${attackery}`,`vehiclex:${vehiclex}`,`vehicley:${vehicley}`)
+    if(vehiclex>=attackerx){
         //is on left of vehicle
         if(vehicley<attackery){
             //is under vehicle
@@ -194,8 +196,10 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
             attackAngle=270+Math.round(radToDeg(Math.atan((attackery-vehicley)/(attackerx-vehiclex))));
         }
     }
+    console.log(attackAngle)
     //adjust for vehicle rotation
     let vehicleRotation=vehicleToken.data.rotation;
+    console.log(vehicleRotation);
     attackAngle-=vehicleRotation;
     if(attackAngle<0){
         attackAngle=360+attackAngle;
@@ -206,10 +210,11 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
     for(const face in facings){
         let f=facings[face];
         //check for split facing  eg starts at 316 and ends at 45
-        if(f.end>f.start){
+        if(f.end<f.start){
             split=f;
         }
         if(attackAngle>f.start&&attackAngle<f.end){
+            console.log(f)
             facing=f;
         }
     }

@@ -4,7 +4,6 @@ export class FortykRollDialogs{
     static async _onReroll(event){
         event.preventDefault();
         event.currentTarget.style.display = "none";
-        console.log(event.currentTarget.parentElement.classList.remove("chat-background"));
         const dataset=event.currentTarget.dataset;
 
         const actor=game.actors.get(dataset["actor"]);
@@ -86,6 +85,7 @@ export class FortykRollDialogs{
     }
     //handles the melee attack dialog WHEW
     static async callMeleeAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
+
         let itemData=item.data;
         let template="systems/fortyk/templates/actor/dialogs/melee-attack-dialog.html"
         let templateOptions={};
@@ -130,11 +130,16 @@ export class FortykRollDialogs{
             templateOptions["modifiers"].standard=Math.min(unitStr*5,60);
         }
         let targets=game.user.targets;
+        let vehicle=false;
         if(targets.size>0){
             let target=targets.values().next().value;
             let tarActor=target.actor;
             let tarData=tarActor.data;
-            if(tarActor.type!=="vehicle"){
+            if(tarActor.type==="vehicle"){
+                vehicle=true;
+                templateOptions.vehicle=true;
+            }
+            if(!vehicle){
                 if(tarData.data.horde.value){
                     let hordeSize=tarData.data.secChar.wounds.value;
                     if(hordeSize>=120){
@@ -150,7 +155,7 @@ export class FortykRollDialogs{
 
 
 
-                if(actor.getFlag("fortyk","fieldvivisection")){
+                if(!vehicle&&actor.getFlag("fortyk","fieldvivisection")){
 
 
                     var tarRace=targetActor.data.data.race.value.toLowerCase();
@@ -202,7 +207,7 @@ export class FortykRollDialogs{
                         if(attackType==="called"){
 
                             update["data.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
-                            if(actor.getFlag("fortyk","fieldvivisection")&&actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
+                            if(!vehicle&&actor.getFlag("fortyk","fieldvivisection")&&actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
 
 
                                 update["data.secChar.lastHit.fieldPractice"]=$(html).find('select[name="fieldPracticeAmt"] option:selected').val();
@@ -232,6 +237,8 @@ export class FortykRollDialogs{
 
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(counter)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
                         actor.data.data.secChar.lastHit.attackRange="melee";
+                        actor.data.data.secChar.lastHit.vehicle=vehicle;
+                        console.log(actor.data.data.secChar.lastHit.vehicle)
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
                     }
 
@@ -264,7 +271,7 @@ export class FortykRollDialogs{
         templateOptions["modifiers"].aim=itemData.data.attackMods.aim;
         templateOptions["modifiers"].testMod=itemData.data.testMod.value;
 
-        if(actor.data.data.formation.value){
+        if(actor.type!=="vehicle"&&actor.data.data.formation.value){
             let unitStr=actor.data.data.secChar.wounds.value;
             templateOptions["modifiers"].standard=Math.min(unitStr*5,60);
         }
@@ -372,12 +379,16 @@ export class FortykRollDialogs{
         }
         //target specific changes
         let targets=game.user.targets;
-
+        let vehicle=false;
         if(targets.size>0){
             let target=targets.values().next().value;
             let tarActor=target.actor;
             let tarData=tarActor.data;
-            if(tarData.data.horde.value){
+            if(tarActor.type==="vehicle"){
+                vehicle=true;
+                templateOptions.vehicle=true;
+            }
+            if(!vehicle&&tarData.data.horde.value){
                 let hordeSize=tarData.data.secChar.wounds.value;
                 if(hordeSize>=120){
                     templateOptions["modifiers"].testMod+=60;
@@ -396,18 +407,21 @@ export class FortykRollDialogs{
             let target=targetIt.next().value;
 
             let targetActor=target.actor;
-            var tarRace=targetActor.data.data.race.value.toLowerCase();
-            if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)){
-                templateOptions["modifiers"].called+=actor.data.data.fieldVivisection;
-                if(actor.getFlag("fortyk","fieldpractitioner")){
-                    let praticeArray=[];
-                    var practiceMax=Math.ceil(actor.data.data.characteristics.int.bonus/2);
-                    for(let i=1;i<=practiceMax;i++){
-                        praticeArray.push(i);
+            if(!vehicle){
+                var tarRace=targetActor.data.data.race.value.toLowerCase();
+                if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)){
+                    templateOptions["modifiers"].called+=actor.data.data.fieldVivisection;
+                    if(actor.getFlag("fortyk","fieldpractitioner")){
+                        let praticeArray=[];
+                        var practiceMax=Math.ceil(actor.data.data.characteristics.int.bonus/2);
+                        for(let i=1;i<=practiceMax;i++){
+                            praticeArray.push(i);
+                        }
+                        templateOptions.fieldPractice=praticeArray;
                     }
-                    templateOptions.fieldPractice=praticeArray;
                 }
             }
+
         }
         //distance shenanigans
         let attackRange="normal";
@@ -510,7 +524,7 @@ export class FortykRollDialogs{
                         if(attackType==="called"){
 
                             update["data.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
-                            if(actor.getFlag("fortyk","fieldvivisection")&&actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
+                            if(!vehicle&&actor.getFlag("fortyk","fieldvivisection")&&actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
 
 
                                 update["data.secChar.lastHit.fieldPractice"]=$(html).find('select[name="fieldPracticeAmt"] option:selected').val();
@@ -551,6 +565,7 @@ export class FortykRollDialogs{
                         if(isNaN(melee)){melee=0} 
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(overwatch)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(melee);
                         actor.data.data.secChar.lastHit.attackRange=attackRange;
+                        actor.data.data.secChar.lastHit.vehicle=vehicle;
                         await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType);
                         if(aimBonus>0){
                             await actor.update({"data.secChar.lastHit.aim":true});
