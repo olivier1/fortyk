@@ -93,8 +93,13 @@ returns the roll message*/
 
         if(charObj===undefined){charObj={"uB":0}}
         var testDos=0;
-        //calculate degrees of failure and success
+        //check for vehicle target and if attacker is vehicle
         let vehicle=actor.data.data.secChar.lastHit.vehicle;
+        let isVehicle=false;
+        if(actor.type==="vehicle"){
+            isVehicle=true;
+        }
+        //calculate degrees of failure and success
         if((testResult&&testRoll<96||testRoll===1)&&!jam){
             testDos=Math.floor(Math.abs(roll._total)/10)+1+Math.ceil(charObj.uB/2);
             //close quarter combat dos bonus
@@ -171,7 +176,14 @@ returns the roll message*/
             hits=1;
             let attackType=actor.data.data.secChar.lastHit.attackType;
             if(type==="meleeAttack"){
-                let wsBonus=actor.data.data.characteristics.ws.bonus;
+
+                let wsBonus
+                if(isVehicle){
+                    wsBonus=Math.floor(parseInt(actor.data.data.crew.rating)/10)
+                }else{
+                    wsBonus=actor.data.data.characteristics.ws.bonus;
+                }
+
                 if(attackType==="swift"){
                     hits+=Math.min(wsBonus-1,Math.floor((testDos-1)/2))
                 }else if(attackType==="lightning"){
@@ -250,6 +262,7 @@ returns the roll message*/
             }
             await actor.update({"data.secChar.lastHit.value":hitlocation.value,"data.secChar.lastHit.label":hitlocation.label,"data.secChar.lastHit.dos":testDos,"data.secChar.lastHit.hits":hits,"data.secChar.lastHit.vehicleHitLocation":vehicleHitlocation});
             let content="";
+            console.log(vehicle)
             if(vehicle){
                 content=`Location: ${vehicleHitlocation.label}`
             }else{
@@ -734,7 +747,7 @@ returns the roll message*/
         for(let h=0;h<(hits);h++){
             if(!self){
                 if(h>0){
-                    let randomLocation=new Roll("1d100",{});
+                    var randomLocation=new Roll("1d100",{});
                     await randomLocation.roll();
 
                     //curHit=game.fortyk.FORTYKTABLES.hitLocations[randomLocation._total];
@@ -869,8 +882,10 @@ returns the roll message*/
                             dmgType:weapon.data.damageType.value,
                             hitLocation:curHit.label,
                             results:[],
-                            vehicle:vehicle,
-                            facing:facing.label
+                            vehicle:vehicle
+                        }
+                        if(vehicle){
+                            damageOptions.facing=facing.label;
                         }
                         let damageTemplate='systems/fortyk/templates/chat/chat-damage.html';
                         let deathwatch=false;
@@ -1015,6 +1030,7 @@ returns the roll message*/
                         if(vehicle){
                             if(curHit.value==="turret"){
                                 armor=data.facings["front"].armor; 
+                               
                             }else{
 
                                 armor=facing.armor;
@@ -1084,7 +1100,14 @@ returns the roll message*/
                             }
                             let maxPen=Math.min(armor,pen);
                             if(vehicle){
-                                soak=facing.value;
+                                if(curHit.value==="turret"){
+                                    
+                                    soak=data.facings["front"].value; 
+                                   
+                                }else{
+
+                                    soak=facing.value;
+                                }
                             }else{
                                 soak=parseInt(data.characterHitLocations[curHit.value].value);
                             }
@@ -1536,8 +1559,25 @@ returns the roll message*/
                             }
 
                         }
+                        //reinforced armor
+                        if(vehicle&&damage>0&&damage>newWounds[tarNumbr]&&tarActor.getFlag("fortyk","reinforcedarmour")){
+                            let critDamage=0;
+                            if(newWounds[tarNumbr]<=0){
+                                critDamage=damage;
+                            }else{
+                                critDamage=damage-newWounds[tarNumbr];
+                            }
+                            damage=damage-(Math.floor(critDamage/2));
+                            let reinforcedOptions={user: user._id,
+                                                   speaker:{actor,alias:tarActor.name},
+                                                   content:"Reinforced armor reduces critical damage taken by half!",
+                                                   classes:["fortyk"],
+                                                   flavor:`Reinforced Armor`,
+                                                   author:tarActor.name};
+                            messages.push(reinforcedOptions);
+                        }
                         //check if target has toxic trait and if attacker dealt damage to it in melee range, sets flag if so
-                        if(actor.type!=="vehicle"&&tarActor.getFlag("fortyk","toxic")&&distance<=1&&damage>0){
+                        if(!vehicle&&tarActor.getFlag("fortyk","toxic")&&distance<=1&&damage>0){
                             selfToxic=tarActor.getFlag("fortyk","toxic");
                         }
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
@@ -1635,7 +1675,7 @@ returns the roll message*/
                         //handle critical effects and death
                         //Xenos Bane Logic #2
 
-                        if(tens&&deathwatch&actor.getFlag("fortyk","xenosbane")&&(actor.data.data.secChar.wounds.value>=curWounds)&&!isHordelike){
+                        if(!vehicle&&tens&&deathwatch&actor.getFlag("fortyk","xenosbane")&&(actor.data.data.secChar.wounds.value>=curWounds)&&!isHordelike){
                             let banetest=await this.fortykTest("t", "char", (tarActor.data.data.characteristics.t.total),tarActor, `Resist Xenos Bane intant death`,null,false,"",true);
 
                             if(!banetest.value){
@@ -1794,8 +1834,11 @@ returns the roll message*/
             return true;
         }
         if(crit&&damage>0){
-
-            let rightRoll=new Roll("1d5",actor.data.data);
+            let diceStr="1d5";
+            if(vehicle&&tar.actor.getFlag("fortyk","ramshackle")){
+                diceStr="1d10";    
+            }
+            let rightRoll=new Roll(diceStr,actor.data.data);
             await rightRoll.roll();
 
             let res=rightRoll._total;
@@ -1873,7 +1916,9 @@ returns the roll message*/
     //applies critical results to token/actor
     static async critEffects(token,num,hitLoc,type,ignoreSON,activeEffects=null,source=""){
         if(game.user.isGM||token.owner){
+
             let actor=token.actor;
+            console.log(actor)
             if(actor.type!=="vehicle"){
                 switch(type){
                     case "Energy":

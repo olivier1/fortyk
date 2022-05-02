@@ -220,6 +220,7 @@ export class FortyKActor extends Actor {
     }
     _prepareVehicleBaseData(data){
 
+        data.secChar.wornGear.forceField={};
         //check if this is a token actor
         let height;
         let width;
@@ -431,7 +432,18 @@ export class FortyKActor extends Actor {
             });
 
             data.shipPoints.remaining=parseInt(data.shipPoints.value)-data.shipPoints.spent;
+        }else if(actorData.type === "vehicle"){
+            this.items.forEach((fortykItem,id,items)=>{
+                let item=fortykItem.data;
+                let data=actorData.data;
+                if(item.type==="forceField"&&item.data.isEquipped){
+                    data.secChar.wornGear.forceField=item;
+                }
+            });
         }
+
+
+
 
     }
     //OVERRIDE

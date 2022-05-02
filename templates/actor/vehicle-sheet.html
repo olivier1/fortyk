@@ -283,65 +283,105 @@
                 </div>
                 <div class="flexcol no-flex">
                     <span class="section-title">Armor &amp; Size</span>
-                    <div class="flexrow flex-group-left">
-                        <span >Size</span>
-                        <select class="sizeSelect" name="data.secChar.size.value" data-dtype="Number">
-                            {{#select data.secChar.size.value}}
+                    <div class="flexrow">
 
-                            {{#each size}}
+                        <div class="flexcol flex-group-center">
+                            <div class="flexrow flex-group-left">
+                                <span >Size</span>
+                                <select class="sizeSelect" name="data.secChar.size.value" data-dtype="Number">
+                                    {{#select data.secChar.size.value}}
 
-                            <option value="{{@index}}">{{this.name}}</option>
+                                    {{#each size}}
 
-                            {{/each}}
-                            {{/select}}
-                        </select>
-                        <span >Cover</span>
+                                    <option value="{{@index}}">{{this.name}}</option>
 
-                        <input type="text" class="combat-resources" title="cover" data-target="data.secChar.cover.value" value="{{data.secChar.cover.value}}" data-dtype="Number"/>
-                        <span class="cover-reset button">Reset Cover</span>
-                    </div>
-
-                    <div class="forcefield flexcol">
+                                    {{/each}}
+                                    {{/select}}
+                                </select>
 
 
-
-                        <div class="flexcol">
-
-                            <div class="flexrow flex-group-center">
-                                <div class="armor flexcol flex-group-center">
-
-                                    <span>Front</span>
-                                    <input type="checkbox"  title="cover" name="data.facings.front.cover" {{checked data.facings.front.cover}}>
-                                    <input type="text" class="combat-resources" data-target="data.facings.front.armor" value="{{data.facings.front.armor}}" data-dtype="Number"/>
-                                </div>
-                                <div class="armor flexcol flex-group-center">
-
-                                    <span>Left Side</span>
-
-                                    <input type="checkbox"  title="cover" name="data.facings.lSide.cover" {{checked data.facings.lSide.cover}}>
-
-                                    <input type="text" class="combat-resources" data-target="data.facings.lSide.armor" value="{{data.facings.lSide.armor}}" data-dtype="Number"/>
-                                </div>
-                                <div class="armor flexcol flex-group-center">
-
-                                    <span>Right Side</span>
-                                    <input type="checkbox"  title="cover" name="data.facings.rSide.cover" {{checked data.facings.rSide.cover}}> 
-
-                                    <input type="text" class="combat-resources" data-target="data.facings.rSide.armor" value="{{data.facings.rSide.armor}}" data-dtype="Number"/>
-                                </div>
-                                <div class="armor flexcol flex-group-center">
-
-                                    <span>Rear</span>
-                                    <input type="checkbox"  title="cover" name="data.facings.rear.cover" {{checked data.facings.rear.cover}}>
-
-                                    <input type="text" class="combat-resources" data-target="data.facings.rear.armor" value="{{data.facings.rear.armor}}" data-dtype="Number"/>
-                                </div>
                             </div>
+                            <span >Cover</span>
+
+                            <input type="text" class="combat-resources" title="cover" data-target="data.secChar.cover.value" value="{{data.secChar.cover.value}}" data-dtype="Number"/>
+                            <span class="cover-reset button">Reset Cover</span>
 
                         </div>
+                        <div class="flexcol flex-group-center">
+                            <span >Force Field</span>
+                            <div class="flexrow">
+                                <select class="force-field" >
+
+                                    <option value="" {{#if data.secChar.wornGear.forceField.data}}selected{{/if}}>None</option>
+                                    {{#each actor.forceFields}}
+                                    <option value="{{this._id}}" {{#if this.data.isEquipped}}selected{{/if}}>{{this.name}}</option>
+                                    {{/each}}
+                                </select>
+
+                                {{#if data.secChar.wornGear.forceField._id}}
+                                <a class="item-edit" data-item-id="{{data.secChar.wornGear.forceField._id}}"data-type="forceField" title="Edit Forcefield"></a>
+                                <a class="item-delete minus-button" data-item-id="{{data.secChar.wornGear.forceField._id}}"data-type="forceField" title="Delete Forcefield"></a>
+                            </div>
+                            <div class="forcefield flexrow flex-group-center">
+                                {{#unless data.secChar.wornGear.forceField.data.broken.value}}
+                                <label>Overload: {{data.secChar.wornGear.forceField.data.rating.overload}}</label>
+                                <label>Rating: </label> 
+
+                                <span class="forcefield rollable button" data-roll-type="forcefield" data-id="{{data.secChar.wornGear.forceField._id}}">{{data.secChar.wornGear.forceField.data.rating.value}}</span>
+                                {{else}}
+                                <span class="forcefield repairForcefield button" data-id="{{data.secChar.wornGear.forceField._id}}" >Repair</span>
+                                {{/unless}}
+
+                            </div>
+                            {{else}}
+                            <a class="item-create plus-button" data-type="forceField" title="Add Forcefield"></a>
+                            {{/if}}
+                        </div>
+
                     </div>
+
+
                 </div>
 
+                <div class="forcefield flexcol">
+
+
+
+                    <div class="flexcol">
+
+                        <div class="flexrow flex-group-center">
+                            <div class="armor flexcol flex-group-center">
+
+                                <span>Front</span>
+                                <input type="checkbox"  title="cover" name="data.facings.front.cover" {{checked data.facings.front.cover}}>
+                                <input type="text" class="combat-resources" data-target="data.facings.front.armor" value="{{data.facings.front.armor}}" data-dtype="Number"/>
+                            </div>
+                            <div class="armor flexcol flex-group-center">
+
+                                <span>Left Side</span>
+
+                                <input type="checkbox"  title="cover" name="data.facings.lSide.cover" {{checked data.facings.lSide.cover}}>
+
+                                <input type="text" class="combat-resources" data-target="data.facings.lSide.armor" value="{{data.facings.lSide.armor}}" data-dtype="Number"/>
+                            </div>
+                            <div class="armor flexcol flex-group-center">
+
+                                <span>Right Side</span>
+                                <input type="checkbox"  title="cover" name="data.facings.rSide.cover" {{checked data.facings.rSide.cover}}> 
+
+                                <input type="text" class="combat-resources" data-target="data.facings.rSide.armor" value="{{data.facings.rSide.armor}}" data-dtype="Number"/>
+                            </div>
+                            <div class="armor flexcol flex-group-center">
+
+                                <span>Rear</span>
+                                <input type="checkbox"  title="cover" name="data.facings.rear.cover" {{checked data.facings.rear.cover}}>
+
+                                <input type="text" class="combat-resources" data-target="data.facings.rear.armor" value="{{data.facings.rear.armor}}" data-dtype="Number"/>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
                 <div class="tnt flexcol">
                     <span class="section-title">Traits</span>
                     <a class="tnt-create button" data-type="talentntrait" title="Add a new Talent or Trait">Add Trait</a>
@@ -362,9 +402,12 @@
                     </div>
 
                 </div>
-
             </div>
+
+
+
         </div>
+
 
 
 

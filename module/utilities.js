@@ -196,10 +196,9 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
             attackAngle=270+Math.round(radToDeg(Math.atan((attackery-vehicley)/(attackerx-vehiclex))));
         }
     }
-    console.log(attackAngle)
     //adjust for vehicle rotation
     let vehicleRotation=vehicleToken.data.rotation;
-    console.log(vehicleRotation);
+    
     attackAngle-=vehicleRotation;
     if(attackAngle<0){
         attackAngle=360+attackAngle;
@@ -213,8 +212,8 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
         if(f.end<f.start){
             split=f;
         }
-        if(attackAngle>f.start&&attackAngle<f.end){
-            console.log(f)
+        if(attackAngle>=f.start&&attackAngle<=f.end){
+          
             facing=f;
         }
     }

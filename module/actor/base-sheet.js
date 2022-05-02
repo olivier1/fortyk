@@ -83,7 +83,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         //autofcus modifier input
         html.find('.rollable').click(this._onRoll.bind(this));
         //repair forcefield
-         html.find('.repairForcefield').click(this._onRepairForcefield.bind(this));
+        html.find('.repairForcefield').click(this._onRepairForcefield.bind(this));
         //force damage roll
         html.find('.force-roll').click(this._onForceRoll.bind(this));
         //creating a tnt
@@ -176,13 +176,13 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let target=event.target.attributes["data-target"].value;
         let newAmt=event.target.value;
         let type=event.target.attributes["data-dtype"].value;
-            if(type==="Number"){
-                newAmt=parseFloat(newAmt);
-                if(isNaN(newAmt)){
-                    newAmt=0;
-                    event.target.value=0;
-                }
+        if(type==="Number"){
+            newAmt=parseFloat(newAmt);
+            if(isNaN(newAmt)){
+                newAmt=0;
+                event.target.value=0;
             }
+        }
         let oldValue=objectByString(actor.data,target);
 
         if((oldValue!=newAmt)){
@@ -195,7 +195,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
         let updateNmbr=Object.keys(this.updateObj).length;
         if(updateNmbr>0&&(!event.relatedTarget||($(event.relatedTarget).prop("class").indexOf("combat-resources") === -1))) {
-            
+
             await actor.update(this.updateObj);
             this.updateObj=undefined;
 
@@ -290,26 +290,33 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     async _onTntCreate(event){
         event.preventDefault();
         var actor=this.actor;
-        const dh2Talents=await game.packs.get("fortyk.talent-core-dh2");
-        let tnts=await dh2Talents.getDocuments();
-        var dh2Traits=await game.packs.get("fortyk.traits-core-dh2");
-        tnts=tnts.concat(await dh2Traits.getDocuments());
-        var dh2EnemyWithinTalents=await game.packs.get("fortyk.talents-enemies-within");
-        tnts=tnts.concat(await dh2EnemyWithinTalents.getDocuments());
-        var dh2EnemyWithoutTalents=await game.packs.get("fortyk.talents-enemies-without");
-        tnts=tnts.concat(await dh2EnemyWithoutTalents.getDocuments());
-        var dh2EnemyBeyondTalents=await game.packs.get("fortyk.talents-enemies-beyond");
-        tnts=tnts.concat(await dh2EnemyBeyondTalents.getDocuments());
-        var owCoreTalents=await game.packs.get("fortyk.talents-ow-core");
-        tnts=tnts.concat(await owCoreTalents.getDocuments());
-        var owHOTETalents=await game.packs.get("fortyk.talents-hammer-of-the-emperor");
-        tnts=tnts.concat(await owHOTETalents.getDocuments());
-        var owShieldOfHumanityTalents=await game.packs.get("fortyk.talents-shield-of-humanity");
-        tnts=tnts.concat(await owShieldOfHumanityTalents.getDocuments());
-        var customTalents=await game.packs.get("fortyk.custom-talents");
-        tnts=tnts.concat(await customTalents.getDocuments());
-        var customBonus=await game.packs.get("fortyk.custom-bonus-and-drawbacks");
-        tnts=tnts.concat(await customBonus.getDocuments());
+        let tnts
+        if(actor.data.type==="vehicle"){
+            var vehicleTraits=await game.packs.get("fortyk.vehicle-traits");
+            tnts=await vehicleTraits.getDocuments();
+        }else{
+            const dh2Talents=await game.packs.get("fortyk.talent-core-dh2");
+            tnts=await dh2Talents.getDocuments();
+            var dh2Traits=await game.packs.get("fortyk.traits-core-dh2");
+            tnts=tnts.concat(await dh2Traits.getDocuments());
+            var dh2EnemyWithinTalents=await game.packs.get("fortyk.talents-enemies-within");
+            tnts=tnts.concat(await dh2EnemyWithinTalents.getDocuments());
+            var dh2EnemyWithoutTalents=await game.packs.get("fortyk.talents-enemies-without");
+            tnts=tnts.concat(await dh2EnemyWithoutTalents.getDocuments());
+            var dh2EnemyBeyondTalents=await game.packs.get("fortyk.talents-enemies-beyond");
+            tnts=tnts.concat(await dh2EnemyBeyondTalents.getDocuments());
+            var owCoreTalents=await game.packs.get("fortyk.talents-ow-core");
+            tnts=tnts.concat(await owCoreTalents.getDocuments());
+            var owHOTETalents=await game.packs.get("fortyk.talents-hammer-of-the-emperor");
+            tnts=tnts.concat(await owHOTETalents.getDocuments());
+            var owShieldOfHumanityTalents=await game.packs.get("fortyk.talents-shield-of-humanity");
+            tnts=tnts.concat(await owShieldOfHumanityTalents.getDocuments());
+            var customTalents=await game.packs.get("fortyk.custom-talents");
+            tnts=tnts.concat(await customTalents.getDocuments());
+            var customBonus=await game.packs.get("fortyk.custom-bonus-and-drawbacks");
+            tnts=tnts.concat(await customBonus.getDocuments());
+        }
+
         //load different packs depending on actor type
         if(actor.data.type==="dhPC"||actor.data.type==="npc"){
             var dh2CoreBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonuscore-dh2");
@@ -441,6 +448,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                         break;
                                     case "fortyk.custom-bonus-and-drawbacks":
                                         tnt=await customBonus.getDocument(selectedIds[i]);
+                                        break;
+                                    case "fortyk.vehicle-traits":
+                                        tnt=await vehicleTraits.getDocument(selectedIds[i]);
                                         break;
                                 }
                                 let itemData=tnt.data;
@@ -596,7 +606,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             testTarget+=parseInt(rating);
         }
         var item=null;
-        
+
         console.log(testType)
 
         if(dataset["itemId"]){
@@ -763,7 +773,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     }
     //handles repairing broken forcefields
     async _onRepairForcefield(event){
-         event.preventDefault();
+        event.preventDefault();
         let itemId = event.currentTarget.attributes["data-id"].value;
         const item = this.actor.items.find(i => i.data._id == itemId);
         await item.update({"data.broken.value":false});
