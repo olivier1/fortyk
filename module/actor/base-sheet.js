@@ -295,7 +295,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             var vehicleTraits=await game.packs.get("fortyk.vehicle-traits");
             tnts=await vehicleTraits.getDocuments();
         }else{
-            const dh2Talents=await game.packs.get("fortyk.talent-core-dh2");
+            var dh2Talents=await game.packs.get("fortyk.talent-core-dh2");
             tnts=await dh2Talents.getDocuments();
             var dh2Traits=await game.packs.get("fortyk.traits-core-dh2");
             tnts=tnts.concat(await dh2Traits.getDocuments());

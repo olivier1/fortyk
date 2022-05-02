@@ -192,7 +192,7 @@ export class FortyKItemSheet extends ItemSheet {
                                     };
 
 
-                                }else if(spec.num!==undefined&&!value){
+                                }else if(spec.num!==undefined&&!value&&this.item.getFlag("fortyk",key)!==undefined){
                                     await this.item.setFlag("fortyk",key,false);
                                 }
 
