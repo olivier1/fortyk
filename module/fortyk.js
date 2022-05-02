@@ -327,23 +327,28 @@ Hooks.on("updateCombat", async (combat) => {
             if(activeEffect.data.flags.core){
                 //check for fire
                 if(activeEffect.data.flags.core.statusId==="fire"){
-                    let onFireOptions={user: game.user._id,
-                                       speaker:{actor,alias:actor.name},
-                                       content:"On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
-                                       classes:["fortyk"],
-                                       flavor:`On Fire!`,
-                                       author:actor.name};
-                    await ChatMessage.create(onFireOptions,{});
-                    await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "On Fire! Panic");
-                    let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
-                    await actor.update({"data.secChar.fatigue.value":fatigue});
-                    let fireData={name:"Fire",type:"rangedWeapon"}
-                    let fire=await Item.create(fireData, {temporary: true});
+                    if(actor.type!=="vehicle"){
+                        let onFireOptions={user: game.user._id,
+                                           speaker:{actor,alias:actor.name},
+                                           content:"On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
+                                           classes:["fortyk"],
+                                           flavor:`On Fire!`,
+                                           author:actor.name};
+                        await ChatMessage.create(onFireOptions,{});
+                        await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "On Fire! Panic");
+                        let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
+                        await actor.update({"data.secChar.fatigue.value":fatigue});
+                        let fireData={name:"Fire",type:"rangedWeapon"}
+                        let fire=await Item.create(fireData, {temporary: true});
 
-                    fire.data.flags.fortyk={};
-                    fire.data.data.damageType.value="Energy";
-                    fire.data.data.pen.value=99999;
-                    await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire,1, true);
+                        fire.data.flags.fortyk={};
+                        fire.data.data.damageType.value="Energy";
+                        fire.data.data.pen.value=99999;
+                        await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire,1, true);
+                    }else{
+                        
+                    }
+
                 }
                 //check for bleeding
                 if(activeEffect.data.flags.core.statusId==="bleeding"){

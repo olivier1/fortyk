@@ -129,6 +129,15 @@ export class FortykRollDialogs{
             templateOptions["modifiers"].charge=Math.min((10+unitStr*5),60);
             templateOptions["modifiers"].standard=Math.min(unitStr*5,60);
         }
+        if(actor.type!=="vehicle"&&actor.data.data.horde.value){
+            let hordeSize=actor.data.data.secChar.wounds.value;
+
+            if((actor.getFlag("fortyk","massAssault")&&item.type==="meleeWeapon")||(actor.getFlag("fortyk","focusedFire")&&item.type==="rangedWeapon")){
+
+                item.data.testMod.value+=Math.min(30,hordeSize);
+
+            }
+        }
         let targets=game.user.targets;
         let vehicle=false;
         if(targets.size>0){
@@ -270,10 +279,24 @@ export class FortykRollDialogs{
         templateOptions["modifiers"].single=itemData.data.attackMods.single;
         templateOptions["modifiers"].aim=itemData.data.attackMods.aim;
         templateOptions["modifiers"].testMod=itemData.data.testMod.value;
+        if(item.getFlag("fortyk","twinlinked")){
+
+            templateOptions["modifiers"].testMod+=20;
+        }
+
 
         if(actor.type!=="vehicle"&&actor.data.data.formation.value){
             let unitStr=actor.data.data.secChar.wounds.value;
             templateOptions["modifiers"].standard=Math.min(unitStr*5,60);
+        }
+        if(actor.type!=="vehicle"&&actor.data.data.horde.value){
+            let hordeSize=actor.data.data.secChar.wounds.value;
+
+            if((actor.getFlag("fortyk","massAssault")&&item.type==="meleeWeapon")||(actor.getFlag("fortyk","focusedFire")&&item.type==="rangedWeapon")){
+
+                item.data.testMod.value+=Math.min(30,hordeSize);
+
+            }
         }
         templateOptions["modifiers"].inaccurate=item.getFlag("fortyk","innacurate");
 

@@ -18,7 +18,16 @@
 
                             <div class="descrRow flexcol">
                                 <span class="descrSpan">Type:</span>
-                                <input type="text" class="combat-resources" data-target="data.type.value" value="{{data.type.value}}" data-dtype="String"/>
+                                <select class="typeSelect" name="data.type.value" data-dtype="String">
+                                    {{#select data.type.value}}
+                                    {{debug this}}
+                                    {{#each vehicleTypes}}
+
+                                    <option value="{{this}}">{{this}}</option>
+
+                                    {{/each}}
+                                    {{/select}}
+                                </select>
                             </div>
                             <div class="descrRow flexcol">
                                 <span class="descrSpan">Tactical Speed:</span>
@@ -35,9 +44,9 @@
                             <div class="descrRow flexcol">
                                 <label for="data.secChar.wounds.value" class="resource-label">Structural Integrity</label>
                                 <div class="resource-content flexrow flex-center flex-between">
-                                    <input type="text" class="combat-resources" data-target="data.hullIntegrity.value" value="{{data.hullIntegrity.value}}" data-dtype="Number"/>
+                                    <input type="text" class="combat-resources" data-target="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
                                     <span>/</span>
-                                    <input type="text" class="combat-resources" data-target="data.hullIntegrity.max" value="{{data.hullIntegrity.max}}" data-dtype="Number"/>
+                                    <input type="text" class="combat-resources" data-target="data.secChar.wounds.max" value="{{data.secChar.wounds.max}}" data-dtype="Number"/>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +73,7 @@
     {{!-- Sheet Body --}}
     <section class="sheet-content">
 
-        <div class="flexrow">
+        <div class="sub-sheet grid grid-2col">
             <div class="flexcol vehicle-categories no-flex">
                 <span class="section-title">Weapons</span>
                 <div class="flexrow no-flex">

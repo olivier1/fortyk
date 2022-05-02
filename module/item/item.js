@@ -70,7 +70,7 @@ export class FortyKItem extends Item {
 
 
                 let weaponQuality=item.data.quality.value;
-                item.data.testMod.value=parseInt(item.data.testMod.value);
+                item.data.testMod.value=parseInt(item._source.data.testMod.value);
                 if(weaponQuality==="Poor"){
                     item.data.testMod.value+=-10;
                 }else if(weaponQuality==="Good"){
@@ -85,7 +85,7 @@ export class FortyKItem extends Item {
             }
             if(item.type==="rangedWeapon"){
                 let ammo=actor.getEmbeddedDocument("Item",item.data.ammo._id);
-
+                
                 if(ammo!==undefined&&!ammo.data.data.default.value){
                     let ammoData=ammo.data;
                     item.data.damageType.value=ammoData.data.damageType.value;
@@ -108,8 +108,8 @@ export class FortyKItem extends Item {
                 }
                 if(item.data.damTyp===undefined){item.data.damTyp=item.data.damageType.value}
 
-
-
+                item.data.testMod.value=parseInt(item._source.data.testMod.value);
+                
                 item.data.clip.max=item.data.clip.formula;
                 if(this.getFlag("fortyk","accurate")){
                     item.data.attackMods.aim.half=20;
@@ -122,7 +122,7 @@ export class FortyKItem extends Item {
                 }
                 if(this.getFlag("fortyk","twinlinked")){
 
-                    item.data.testMod.value+=20;
+                    
                     item.data.clip.consumption=item.data.clip.consumption*2;
                 }
                 if(this.getFlag("fortyk","storm")){
@@ -329,13 +329,7 @@ export class FortyKItem extends Item {
                         form=newNum+form;
                         item.data.damageFormula.value=form;
 
-                        let hordeSize=actor.data.data.secChar.wounds.value;
-
-                        if((actor.getFlag("fortyk","massAssault")&&item.type==="meleeWeapon")||(actor.getFlag("fortyk","focusedFire")&&item.type==="rangedWeapon")){
-
-                            item.data.testMod.value+=Math.min(30,hordeSize);
-
-                        }
+                        
 
                     }
 

@@ -59,7 +59,7 @@ export class FortyKActor extends Actor {
 
         let actor=this;
         let actorData=actor.data;
-        if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC' || actorData.type === 'npc'){
+        if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC' || actorData.type === 'npc'|| actorData.type === 'vehicle'){
             //check for fatigue unconsciousness/death
 
             let newFatigue=false;
@@ -110,33 +110,50 @@ export class FortyKActor extends Actor {
             }catch(err){
                 size=false;
             }
-
-
-            if(wounds&&(this.data.data.horde.value||this.data.data.formation.value)||size){
-
-
-                if(this.data.data.horde.value||this.data.data.formation.value){
-                    newSize= data["data.secChar.wounds.value"];
-                    if(newSize<0){newSize=0}
-                }else{
-                    newSize= data["data.secChar.size.value"];
-                }
-
-                if ( (!this.data.data.horde.value&&!this.data.data.formation.value&&newSize && (newSize !== this.data.data.secChar.size.value))||((this.data.data.horde.value||this.data.data.formation.value)&&newSize!==undefined && (newSize !== this.data.data.secChar.wounds.value)) ) {
-
+            let vehicle=false;
+            if(actorData.type==='vehicle'){
+                vehicle=true
+            }
+            if(vehicle){
+                newSize= data["data.secChar.size.value"];
+                if(newSize && (newSize !== this.data.data.secChar.size.value)){
                     let size= 0;
-                    if(this.data.data.horde.value||this.data.data.formation.value){
-                        size= FORTYKTABLES.hordeSizes[newSize];
-                    }else{
-                        size= game.fortyk.FORTYK.size[newSize].size;
-                    }
+                    size= game.fortyk.FORTYK.size[newSize].size;
                     if ( this.isToken ) this.token.update({height: size, width: size});
                     else if ( !data["token.width"] && !hasProperty(data, "token.width") ) {
                         data["token.height"] = size;
                         data["token.width"] = size;
                     }
                 }
+            }else{
+                if(wounds&&(this.data.data.horde.value||this.data.data.formation.value)||size){
+
+
+                    if(this.data.data.horde.value||this.data.data.formation.value){
+                        newSize= data["data.secChar.wounds.value"];
+                        if(newSize<0){newSize=0}
+                    }else{
+                        newSize= data["data.secChar.size.value"];
+                    }
+
+                    if ( (!this.data.data.horde.value&&!this.data.data.formation.value&&newSize && (newSize !== this.data.data.secChar.size.value))||((this.data.data.horde.value||this.data.data.formation.value)&&newSize!==undefined && (newSize !== this.data.data.secChar.wounds.value)) ) {
+
+                        let size= 0;
+                        if(this.data.data.horde.value||this.data.data.formation.value){
+                            size= FORTYKTABLES.hordeSizes[newSize];
+                        }else{
+                            size= game.fortyk.FORTYK.size[newSize].size;
+                        }
+                        if ( this.isToken ) this.token.update({height: size, width: size});
+                        else if ( !data["token.width"] && !hasProperty(data, "token.width") ) {
+                            data["token.height"] = size;
+                            data["token.width"] = size;
+                        }
+                    }
+                }
             }
+
+
         }
 
         return super.update(data, options);
@@ -202,7 +219,7 @@ export class FortyKActor extends Actor {
         });
     }
     _prepareVehicleBaseData(data){
-        
+
         //check if this is a token actor
         let height;
         let width;
@@ -241,7 +258,7 @@ export class FortyKActor extends Actor {
         //initialize armor
         for(let [key, hitLoc] of Object.entries(data.facings)){
 
-            
+
             hitLoc.value=hitLoc.armor;
             let daemonic=this.getFlag("fortyk","daemonic");
             if(daemonic){

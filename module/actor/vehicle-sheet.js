@@ -11,13 +11,9 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
             template: "systems/fortyk/templates/actor/vehicle-sheet.html",
             width: 666,
             height: 660,
-            tabs: [{ navSelector: ".sheet-tabs2", contentSelector: ".sheet-content", initial: "components" }],
+            tabs: [],
             default:null,
-            scrollY: [
-                ".vehicle-weapons",
-                ".crew-armor",
-                ".traits-upgrades"
-            ]
+            scrollY: [".sheet-content"]
 
 
 
@@ -27,7 +23,7 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
     /** @override */
     getData() {
         const data = super.getData();
-
+        data.vehicleTypes=game.fortyk.FORTYK.vehicleTypes;
         
         return data;
     }

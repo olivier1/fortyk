@@ -223,6 +223,14 @@
             "path": "./packs/fortykmacros.db",
             "system": "fortyk",
             "module": "fortyk"
+        },
+        {
+            "label": "Vehicle Traits",
+            "type": "Item",
+            "name": "vehicle-traits",
+            "path": "./packs/vehicle-traits.db",
+            "system": "fortyk",
+            "entity": "Item"
         }
     ],
     "gridDistance": 1,
