@@ -179,7 +179,7 @@ returns the roll message*/
 
                 let wsBonus
                 if(isVehicle){
-                    wsBonus=Math.floor(parseInt(actor.data.data.crew.rating)/10)
+                    wsBonus=Math.floor(parseInt(actor.data.data.crew.ws)/10)
                 }else{
                     wsBonus=actor.data.data.characteristics.ws.bonus;
                 }
@@ -262,7 +262,6 @@ returns the roll message*/
             }
             await actor.update({"data.secChar.lastHit.value":hitlocation.value,"data.secChar.lastHit.label":hitlocation.label,"data.secChar.lastHit.dos":testDos,"data.secChar.lastHit.hits":hits,"data.secChar.lastHit.vehicleHitLocation":vehicleHitlocation});
             let content="";
-            console.log(vehicle)
             if(vehicle){
                 content=`Location: ${vehicleHitlocation.label}`
             }else{
