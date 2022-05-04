@@ -909,8 +909,14 @@
 				"value": "",
 				"capacity": "",
 				"type": "String",
-				"rating": 30
-			}
+				"rating": 30,
+                "ws": 30,
+                "bs": 30
+			},
+            "description":{
+                "value":"",
+                "type":"String"
+            }
 
 		}
 	},

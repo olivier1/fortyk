@@ -250,6 +250,7 @@
 
 .vehicle-categories{
     align-self:flex-start;
+    height: -webkit-fill-available;
 }
 
 

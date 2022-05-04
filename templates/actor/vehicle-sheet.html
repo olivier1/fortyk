@@ -91,7 +91,7 @@
 
                             <div class="list-item">
                                 <span>Attack: </span>
-                                <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../data.crew.rating}}" data-item-id="{{this._id}}" data-label="Melee Attack" data-char="ws">Roll</span>
+                                <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../data.crew.ws}}" data-item-id="{{this._id}}" data-label="Melee Attack" data-char="ws">Roll</span>
                             </div>
                             <div class="list-item">
                                 <span>Damage: </span>
@@ -159,7 +159,7 @@
 
                             <div class="list-item">
                                 <span>Attack: </span>
-                                <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../data.crew.rating}}" data-item-id="{{this._id}}" data-label="Ranged Attack" data-char="bs">Roll</span>
+                                <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../data.crew.bs}}" data-item-id="{{this._id}}" data-label="Ranged Attack" data-char="bs">Roll</span>
                             </div>
                             <div class="list-item">
                                 <span>Damage: </span>
@@ -266,18 +266,32 @@
                 <div class="flexcol no-flex">
                     <span class="section-title">Crew</span>
                     <input type="text" class="combat-resources" data-target="data.crew.value" value="{{data.crew.value}}" data-dtype="String"/>
+                    <span class="descrSpan">Carrying Capacity:</span>
+                    <input type="text" class="combat-resources" data-target="data.crew.capacity" value="{{data.crew.capacity}}" data-dtype="String"/>
                     <div class="flexrow">
-                        <div class="descrRow flexcol">
-                            <span class="char-total rollable button" data-roll-type="char" data-target="{{data.crew.rating}}" data-label="Crew Rating" data-char="">Crew Rating:</span>
-                            <span class="descrSpan"></span>
-                            <input type="text" class="combat-resources" data-target="data.crew.rating" value="{{data.crew.rating}}" data-dtype="Number"/>
+                        <div class="descrRow flexrow">
+                            <div class="flexcol">
+                                <span class="char-total rollable button" data-roll-type="char" data-target="{{data.crew.rating}}" data-label="Crew Rating" data-char="">Crew Rating:</span>
+                                <span class="descrSpan"></span>
+                                <input type="text" class="combat-resources" data-target="data.crew.rating" value="{{data.crew.rating}}" data-dtype="Number"/>
+                            </div>
+
+                            <div class="flexcol">
+                                <span class="char-total rollable button" data-roll-type="char" data-target="{{data.crew.ws}}" data-label="Crew WS" data-char="">Crew WS:</span>
+                                <span class="descrSpan"></span>
+                                <input type="text" class="combat-resources" data-target="data.crew.ws" value="{{data.crew.ws}}" data-dtype="Number"/>
+                            </div>
+
+                            <div class="flexcol">
+                                <span class="char-total rollable button" data-roll-type="char" data-target="{{data.crew.bs}}" data-label="Crew BS" data-char="">Crew BS:</span>
+                                <span class="descrSpan"></span>
+                                <input type="text" class="combat-resources" data-target="data.crew.bs" value="{{data.crew.bs}}" data-dtype="Number"/>
+                            </div>
+
 
                         </div>
 
-                        <div class="descrRow flexcol">
-                            <span class="descrSpan">Carrying Capacity:</span>
-                            <input type="text" class="combat-resources" data-target="data.crew.capacity" value="{{data.crew.capacity}}" data-dtype="String"/>
-                        </div>
+
                     </div>
 
                 </div>
@@ -402,9 +416,15 @@
                     </div>
 
                 </div>
+
             </div>
 
-
+            <div class="tnt flexcol">
+                <span class="section-title">Description</span>
+                <div class="item-description">
+                    {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable rollData=rollData}}
+                </div>
+            </div>
 
         </div>
 
