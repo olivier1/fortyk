@@ -1119,6 +1119,8 @@ returns the roll message*/
                             //warp weapon vs holy armor
                             if(fortykWeapon.getFlag("fortyk","warp")&&!armorSuit.getFlag("fortyk","holy")){
                                 maxPen=armor;
+                                damageOptions.results.push(`<span>Warp weapon bypasses armor.</span>`);
+                            }else if(fortykWeapon.getFlag("fortyk","warp")&&armorSuit.getFlag("fortyk","holy")){
                                 damageOptions.results.push(`<span>Warp weapon is repelled by warded armor.</span>`);
                             }
 

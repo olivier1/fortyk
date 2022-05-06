@@ -864,7 +864,7 @@
 					"type": "Number",
 					"label": "Front",
 					"angle": 90,
-					"start": 316,
+					"start": 315,
 					"end": 45,
 					"path": "front"
 				},
@@ -877,7 +877,7 @@
 					"label": "Right Side",
 					"angle": 90,
 					"start": 46,
-					"end": 135,
+					"end": 134,
 					"path": "rSide"
 				},
 				"rear": {
@@ -888,7 +888,7 @@
 					"type": "Number",
 					"label": "Rear",
 					"angle": 90,
-					"start": 136,
+					"start": 135,
 					"end": 225,
 					"path": "rear"
 				},
@@ -901,7 +901,7 @@
 					"label": "Left Side",
 					"angle": 90,
 					"start": 226,
-					"end": 315,
+					"end": 314,
 					"path": "lSide"
 				}
 			},
