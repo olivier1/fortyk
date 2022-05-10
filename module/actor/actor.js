@@ -879,7 +879,7 @@ export class FortyKActor extends Actor {
 
                 item.data.total.value+=parseInt(item.data.value)+parseInt(item.data.mod.value)+parseInt(data.characteristics[item.data.characteristic.value].total);
                 if(item.name==="Psyniscience"){
-                    psyniscience=item.data.total.value;
+                    data.psyniscience=item.data.total.value;
                 }
                 skills.push(item);
             }

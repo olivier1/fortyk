@@ -1082,7 +1082,7 @@ returns the roll message*/
                                 damageOptions.results.push(`<span>Lance increases penetration to ${pen}</span>`);
                             }
                             //handle melta weapons
-                            if(fortykWeapon.getFlag("fortyk","melta")){
+                            if(fortykWeapon.getFlag("fortyk","melta")&&!tarActor.getFlag("fortyk","ceramiteplating")){
 
                                 let shortRange=parseInt(weapon.data.range.value)/2
                                 if(distance<=shortRange){

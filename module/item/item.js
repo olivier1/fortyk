@@ -159,6 +159,7 @@ export class FortyKItem extends Item {
 
             if(actor.type!=="vehicle"){
                 if(item.type==="psychicPower"){
+                    let psyniscience=actor.data.data.psyniscience;
                     let pr=parseInt(item.data.curPR.value);
                     //iterate through item flags to evaluate PR strings
                     let flags=item.flags.fortyk;
