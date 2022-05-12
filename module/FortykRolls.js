@@ -1117,7 +1117,7 @@ returns the roll message*/
                                 damageOptions.results.push(`<span>Armor is resistant against this damage type.</span>`);
                             }
                             //warp weapon vs holy armor
-                            if(fortykWeapon.getFlag("fortyk","warp")&&!armorSuit.getFlag("fortyk","holy")){
+                            if(fortykWeapon.getFlag("fortyk","warp")&&!armorSuit.getFlag("fortyk","holy")&&!vehicle){
                                 maxPen=armor;
                                 damageOptions.results.push(`<span>Warp weapon bypasses armor.</span>`);
                             }else if(fortykWeapon.getFlag("fortyk","warp")&&armorSuit.getFlag("fortyk","holy")){
