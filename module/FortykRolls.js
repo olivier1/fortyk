@@ -874,7 +874,6 @@ returns the roll message*/
                             }
                         }
 
-                        console.log(curHit)
                         let damageOptions={
                             wpnName:fortykWeapon.name,
                             target:tarActor.name,
@@ -883,9 +882,55 @@ returns the roll message*/
                             results:[],
                             vehicle:vehicle
                         }
+
                         if(vehicle){
-                            damageOptions.facing=facing.label;
+                            //check if hitting a weapon, weapons count as the same facing as the facing they are mounted on
+                            if(curHit.value==="weapon"){
+                                let facingWeapons=[]
+                                let facingString=facing.label;
+                                let newFacingString="";
+                                console.log(data)
+                                if(facing.path==="front"){
+                                    facingWeapons=data.frontWeapons;
+                                }else if(facing.path==="rear"){
+                                    facingWeapons=data.rearWeapons;
+                                }else if(facing.path==="lSide"){
+                                    facingWeapons=data.leftSideWeapons;
+                                }else if(facing.path==="rSide"){
+                                    facingWeapons=data.rightSideWeapons;
+                                }
+                                console.log(facingWeapons)
+                                //if there are weapons proceed to randomly select one, if not proceed with normal armor facing
+                                if(facingWeapons.length>0){
+                                    let wpnnmbr=facingWeapons.length;
+                                    let wpnRoll=new Roll(`1d${wpnnmbr}-1`,{});
+
+                                    await wpnRoll.roll();
+                                    let targetWpn=facingWeapons[wpnRoll._total];
+                                    console.log("Target Weapon:",targetWpn)
+                                    newFacingString=targetWpn.name;
+                                    if(targetWpn.data.mounting.value==="Turret"){
+                                        facing=data.facings["front"];
+
+                                    }else if(targetWpn.data.facing.value==="Front"){
+                                        facing=data.facings["front"];
+                                    }else if(targetWpn.data.facing.value==="Rear"){
+                                        facing=data.facings["rear"];
+                                    }else if(targetWpn.data.facing.value==="Left Side"){
+                                        facing=data.facings["lSide"];
+                                    }else if(targetWpn.data.facing.value==="Right Side"){
+                                        facing=data.facings["rSide"];
+                                    }
+                                    damageOptions.facing=newFacingString;
+                                }else{
+                                    damageOptions.facing=facing.label;
+                                }
+
+                            }else{
+                                damageOptions.facing=facing.label; 
+                            }
                         }
+                        console.log(facing)
                         let damageTemplate='systems/fortyk/templates/chat/chat-damage.html';
                         let deathwatch=false;
                         var toxic=fortykWeapon.getFlag("fortyk","toxic");
@@ -1026,10 +1071,11 @@ returns the roll message*/
                         }
                         let soak=0;
                         let armor
+                        console.log(facing)
                         if(vehicle){
                             if(curHit.value==="turret"){
                                 armor=data.facings["front"].armor; 
-                               
+
                             }else{
 
                                 armor=facing.armor;
@@ -1100,9 +1146,9 @@ returns the roll message*/
                             let maxPen=Math.min(armor,pen);
                             if(vehicle){
                                 if(curHit.value==="turret"){
-                                    
+
                                     soak=data.facings["front"].value; 
-                                   
+
                                 }else{
 
                                     soak=facing.value;
@@ -1237,13 +1283,7 @@ returns the roll message*/
                             damageOptions.results.push(`<span>Swarm enemies take reduced damage against non blast, spray, flame or scatter weapons.</span>`);
                         }
                         damage=damage-soak;
-                        //if righteous fury ensure attack deals atleast 1 dmg
-                        if(tens&&damage<=0){
-                            damage=1;
-                        }else if(damage<=0){
-                            damage=0;
 
-                        }
                         //corrosive weapon logic
                         if(fortykWeapon.getFlag("fortyk","corrosive")&&!isHordelike){
                             let corrosiveAmt=new Roll("1d10",{});
@@ -1590,24 +1630,24 @@ returns the roll message*/
                                 if(weapon.data.damageType.value==="Explosive"){
                                     damage+=1;
                                     chatDamage+=1;
-                                    damageOptions.results.push(`Explosive adds 1 damage.`);
+                                    damageOptions.results.push(`<span>Explosive adds 1 damage.</span>`);
                                 }
                                 if(fortykWeapon.getFlag("fortyk","powerfield")){
                                     damage+=1;
                                     chatDamage+=1;
-                                    damageOptions.results.push(`Power field adds 1 damage.`);
+                                    damageOptions.results.push(`<span>Power field adds 1 damage.</span>`);
                                 }
                                 if(fortykWeapon.getFlag("fortyk","blast")){
                                     damage+=fortykWeapon.getFlag("fortyk","blast");
                                     chatDamage+=fortykWeapon.getFlag("fortyk","blast");
-                                    damageOptions.results.push(`Blast adds ${fortykWeapon.getFlag("fortyk","blast")} damage.`);
+                                    damageOptions.results.push(`<span>Blast adds ${fortykWeapon.getFlag("fortyk","blast")} damage.</span>`);
                                 }
                                 if(fortykWeapon.getFlag("fortyk","spray")){
                                     let additionalHits=parseInt(weapon.data.range.value);
                                     additionalHits=Math.ceil(additionalHits/4);
                                     let addHits=new Roll("1d5");
                                     await addHits.roll();
-                                    damageOptions.results.push(`Spray adds 1d5 damage: ${addHits.total}.`)
+                                    damageOptions.results.push(`<span>Spray adds 1d5 damage: ${addHits.total}.</span>`)
                                     additionalHits+=addHits.total;
                                     damage+=additionalHits;
                                     chatDamage+=additionalHits;
@@ -1620,9 +1660,9 @@ returns the roll message*/
                                 if(fortykWeapon.getFlag("fortyk","blast")){
                                     damage+=2;
                                     chatDamage+=2;
-                                    damageOptions.results.push(`Blast adds 2 damage.`);
+                                    damageOptions.results.push(`<span>Blast adds 2 damage.</span>`);
                                     if(tens){
-                                        damageOptions.results.push(`Blast adds ${fortykWeapon.getFlag("fortyk","blast")} further damage on righteous fury.`);
+                                        damageOptions.results.push(`<span>Blast adds ${fortykWeapon.getFlag("fortyk","blast")} further damage on righteous fury.</span>`);
                                         damage+=fortykWeapon.getFlag("fortyk","blast");
                                         chatDamage+=fortykWeapon.getFlag("fortyk","blast");
                                     }
@@ -1630,11 +1670,11 @@ returns the roll message*/
                                 if(fortykWeapon.getFlag("fortyk","spray")){
                                     damage+=1;
                                     chatDamage+=1;
-                                    damageOptions.results.push(`Spray adds 1 damage.`);
+                                    damageOptions.results.push(`<span>Spray adds 1 damage.</span>`);
                                     if(tens){
                                         damage+=1;
                                         chatDamage+=1;
-                                        damageOptions.results.push(`Spray adds 1 extra damage on righteous fury.`);
+                                        damageOptions.results.push(`<span>Spray adds 1 extra damage on righteous fury.</span>`);
                                     }
                                 }
                             }
@@ -1642,8 +1682,6 @@ returns the roll message*/
 
                         damageOptions.results.push(`</div>`) 
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
-                        newWounds[tarNumbr]=newWounds[tarNumbr]-damage;
-                        newWounds[tarNumbr]=Math.max(wounds.min,newWounds[tarNumbr]);
                         damageOptions.results.push(`<span>Total Damage: ${chatDamage}.</span>`);
                         if(damage===0){
                             damageOptions.results.push(`<span>Damage is fully absorbed.</span>`);
@@ -1668,6 +1706,16 @@ returns the roll message*/
 
                         //check for righteous fury
                         let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar,ignoreSON,activeEffects);
+                        //if righteous fury ensure attack deals atleast 1 dmg
+                        if(tens&&damage<=0){
+                            damage=1;
+                        }else if(damage<=0){
+                            damage=0;
+
+                        }
+                        //set new hp of target
+                        newWounds[tarNumbr]=newWounds[tarNumbr]-damage;
+                        newWounds[tarNumbr]=Math.max(wounds.min,newWounds[tarNumbr]);
                         //apply field practitioner critical
                         if(lastHit.fieldPractice&&damage>0){
 

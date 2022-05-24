@@ -432,12 +432,43 @@ export class FortyKActor extends Actor {
             });
 
             data.shipPoints.remaining=parseInt(data.shipPoints.value)-data.shipPoints.spent;
-        }else if(actorData.type === "vehicle"){
+        }
+        else if(actorData.type === "vehicle"){
+            let data=actorData.data;
+            data.rightSideWeapons=[];
+            data.leftSideWeapons=[];
+            data.frontWeapons=[];
+            data.rearWeapons=[];
             this.items.forEach((fortykItem,id,items)=>{
                 let item=fortykItem.data;
-                let data=actorData.data;
+
                 if(item.type==="forceField"&&item.data.isEquipped){
                     data.secChar.wornGear.forceField=item;
+                }
+                if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
+                    console.log(item)
+                    if(item.data.mounting.value==="Turret"){
+                        data.rightSideWeapons.push(item); 
+                        data.leftSideWeapons.push(item); 
+                        data.frontWeapons.push(item); 
+                        data.rearWeapons.push(item); 
+                    }else if(item.data.facing.value==="Front"){
+                        data.rightSideWeapons.push(item); 
+                        data.leftSideWeapons.push(item); 
+                        data.frontWeapons.push(item); 
+                    }else if(item.data.facing.value==="Left Side"){
+                        data.leftSideWeapons.push(item); 
+                        data.frontWeapons.push(item);
+                        data.rearWeapons.push(item); 
+                    }else if(item.data.facing.value==="Right Side"){
+                        data.rightSideWeapons.push(item); 
+                        data.frontWeapons.push(item);
+                        data.rearWeapons.push(item); 
+                    }else if(item.data.facing.value==="Rear"){
+                        data.leftSideWeapons.push(item); 
+                        data.rightSideWeapons.push(item);
+                        data.rearWeapons.push(item); 
+                    }
                 }
             });
         }

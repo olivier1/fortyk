@@ -171,10 +171,10 @@ export const isEmpty=function (obj) {
 }
 export const getVehicleFacing=function(vehicleToken,attackerToken){
     //determine quadrant
-    let attackerx=attackerToken.data.x+Math.floor(attackerToken.data.width/2)*100;//adjust to get middle of token
-    let attackery=attackerToken.data.y+Math.floor(attackerToken.data.height/2)*100;//adjust to get middle of token
-    let vehiclex=vehicleToken.data.x+Math.floor(vehicleToken.data.width/2)*100;//adjust to get middle of token
-    let vehicley=vehicleToken.data.y+Math.floor(vehicleToken.data.height/2)*100;//adjust to get middle of token
+    let attackerx=attackerToken.data.x+(attackerToken.data.width/2)*100;//adjust to get middle of token
+    let attackery=attackerToken.data.y+(attackerToken.data.height/2)*100;//adjust to get middle of token
+    let vehiclex=vehicleToken.data.x+(vehicleToken.data.width/2)*100;//adjust to get middle of token
+    let vehicley=vehicleToken.data.y+(vehicleToken.data.height/2)*100;//adjust to get middle of token
     console.log(vehiclex,vehicley)
     let attackAngle=0;
     console.log(`attackerx:${attackerx}`,`attackery:${attackery}`,`vehiclex:${vehiclex}`,`vehicley:${vehicley}`)

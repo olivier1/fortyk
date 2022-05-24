@@ -641,13 +641,14 @@
 .fortyk .item-description{
     flex-grow:10;
     height: 300px;
+    min-height: 300px;
 }
 .fortyk .actor-background{
     flex-grow:10;
     height: 100%;
 }
 .fortyk .backgroundandnotes{
-    height:100%
+    height:100%;
 }
 .fortyk .editor{
     height:100%;
