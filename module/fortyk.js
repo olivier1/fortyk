@@ -525,7 +525,18 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
 Hooks.on("preCreateActor", (createData) =>{
 
 })
-Hooks.on("preCreateToken", (createData) =>{
+Hooks.on("preCreateToken", async (document, data, options, userId) =>{
+    //modify token dimensions if scene ratio isnt 1
+    
+    console.log(document,data)
+    let gridRatio=canvas.dimensions.distance;
+    console.log(gridRatio)
+    let newHeight=Math.max(1,document.data.height/gridRatio);
+    let newWidth=Math.max(1,document.data.width/gridRatio);
+    console.log(newHeight,newWidth)
+    await document.data.update({"height":newHeight,"width":newWidth});
+    
+    console.log(document)
 });
 Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
 

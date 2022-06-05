@@ -603,7 +603,8 @@ export class FortyKActor extends Actor {
         }
         if(!this.getFlag("core","frenzy")){
             for (let [key,char] of Object.entries(data.characteristics)){
-                if(char.bonus*fatigueMult<data.secChar.fatigue.value){
+                if(key!=="inf"&&char.bonus*fatigueMult<data.secChar.fatigue.value){
+                   
                     char.total=Math.ceil(char.total/2);
                 }
             }  
@@ -613,7 +614,10 @@ export class FortyKActor extends Actor {
         }
         //parse skill modifiers from active effects
         for (let [key, char] of Object.entries(data.skillmods)){
+
             char=parseInt(char);
+
+
         }
 
 

@@ -175,9 +175,9 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
     let attackery=attackerToken.data.y+(attackerToken.data.height/2)*100;//adjust to get middle of token
     let vehiclex=vehicleToken.data.x+(vehicleToken.data.width/2)*100;//adjust to get middle of token
     let vehicley=vehicleToken.data.y+(vehicleToken.data.height/2)*100;//adjust to get middle of token
-    console.log(vehiclex,vehicley)
+   
     let attackAngle=0;
-    console.log(`attackerx:${attackerx}`,`attackery:${attackery}`,`vehiclex:${vehiclex}`,`vehicley:${vehicley}`)
+   
     if(vehiclex>=attackerx){
         //is on left of vehicle
         if(vehicley<attackery){
