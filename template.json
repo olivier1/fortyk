@@ -1503,6 +1503,7 @@
         "knightCore":{
             "templates":[
                 "description",
+                "physicalProp",
                 "equippable"
             ],
             "name":{
@@ -1518,7 +1519,7 @@
                 "type":"Number"
             },
             "space":{
-                "value":"",
+                "value":0,
                 "type":"Number"
 
             }
@@ -1552,7 +1553,7 @@
             },
             "space":{
                 "taken":0,
-                "maxMod":1,
+                "maxMod":1
             },
             "SI":{
                 "mod":0

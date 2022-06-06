@@ -255,7 +255,21 @@ returns the roll message*/
             //reverse roll to get hit location
             let inverted=parseInt(secondDigit*10+firstDigit);
             let hitlocation=FORTYKTABLES.hitLocations[inverted];
-            let vehicleHitlocation=FORTYKTABLES.vehicleHitLocations[inverted];
+            let vehicleHitlocation
+            let attackTarget=game.user.targets.first();
+            //vehicles without turrets get hit in the hull instead
+            if(attackTarget!==undefined&&attackTarget.actor.type==="vehicle"){
+                if(!attackTarget.actor.data.data.hasTurret.value){
+                    if(inverted>=81){
+                        vehicleHitlocation= FORTYKTABLES.vehicleHitLocations[59];
+                    }else{
+                        vehicleHitlocation= FORTYKTABLES.vehicleHitLocations[inverted];
+                    }
+                }else{
+                    vehicleHitlocation= FORTYKTABLES.vehicleHitLocations[inverted];
+                } 
+            }
+
             if(actor.data.data.secChar.lastHit.attackType==="called"){
                 hitlocation=FORTYKTABLES.hitLocations[actor.data.data.secChar.lastHit.called];
                 vehicleHitlocation=FORTYKTABLES.vehicleHitLocations[actor.data.data.secChar.lastHit.called];
@@ -868,9 +882,20 @@ returns the roll message*/
                                 curHit.value=game.fortyk.FORTYKTABLES.hitLocations[randomLocation._total].value;
                                 curHit.label=game.fortyk.FORTYKTABLES.hitLocations[randomLocation._total].label;
                             }else{
+                                if(!data.hasTurret.value){
+                                    if(randomLocation._total>=81){
+                                        curHit.value=FORTYKTABLES.vehicleHitLocations[59];
+                                        curHit.value=FORTYKTABLES.vehicleHitLocations[59];
+                                    }else{
+                                        curHit.value=game.fortyk.FORTYKTABLES.vehicleHitLocations[randomLocation._total].value;
+                                        curHit.label=game.fortyk.FORTYKTABLES.vehicleHitLocations[randomLocation._total].label;
+                                    }
+                                }else{
+                                    curHit.value=game.fortyk.FORTYKTABLES.vehicleHitLocations[randomLocation._total].value;
+                                    curHit.label=game.fortyk.FORTYKTABLES.vehicleHitLocations[randomLocation._total].label;
+                                } 
 
-                                curHit.value=game.fortyk.FORTYKTABLES.vehicleHitLocations[randomLocation._total].value;
-                                curHit.label=game.fortyk.FORTYKTABLES.vehicleHitLocations[randomLocation._total].label;
+
                             }
                         }
 

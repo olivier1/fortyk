@@ -322,6 +322,12 @@
 
                         </div>
                         <div class="flexcol flex-group-center">
+                            <div class="resource flex-group-center">
+                                <label  class="resource-label">Has Turret</label>
+                                <div class="resource-content flex-group-center">
+                                    <input type="checkbox" name="data.hasTurret.value" {{checked data.hasTurret.value}}>
+                                </div>
+                            </div>
                             <span >Force Field</span>
                             <div class="flexrow">
                                 <select class="force-field" >
@@ -349,80 +355,81 @@
                             </div>
                             {{else}}
                             <a class="item-create plus-button" data-type="forceField" title="Add Forcefield"></a>
-                            {{/if}}
                         </div>
-
+                        {{/if}}
                     </div>
-
 
                 </div>
 
-                <div class="forcefield flexcol">
+
+            </div>
+
+            <div class="forcefield flexcol">
 
 
 
-                    <div class="flexcol">
+                <div class="flexcol">
 
-                        <div class="flexrow flex-group-center">
-                            <div class="armor flexcol flex-group-center">
+                    <div class="flexrow flex-group-center">
+                        <div class="armor flexcol flex-group-center">
 
-                                <span>Front</span>
-                                <input type="checkbox"  title="cover" name="data.facings.front.cover" {{checked data.facings.front.cover}}>
-                                <input type="text" class="combat-resources" data-target="data.facings.front.armor" value="{{data.facings.front.armor}}" data-dtype="Number"/>
-                            </div>
-                            <div class="armor flexcol flex-group-center">
-
-                                <span>Left Side</span>
-
-                                <input type="checkbox"  title="cover" name="data.facings.lSide.cover" {{checked data.facings.lSide.cover}}>
-
-                                <input type="text" class="combat-resources" data-target="data.facings.lSide.armor" value="{{data.facings.lSide.armor}}" data-dtype="Number"/>
-                            </div>
-                            <div class="armor flexcol flex-group-center">
-
-                                <span>Right Side</span>
-                                <input type="checkbox"  title="cover" name="data.facings.rSide.cover" {{checked data.facings.rSide.cover}}> 
-
-                                <input type="text" class="combat-resources" data-target="data.facings.rSide.armor" value="{{data.facings.rSide.armor}}" data-dtype="Number"/>
-                            </div>
-                            <div class="armor flexcol flex-group-center">
-
-                                <span>Rear</span>
-                                <input type="checkbox"  title="cover" name="data.facings.rear.cover" {{checked data.facings.rear.cover}}>
-
-                                <input type="text" class="combat-resources" data-target="data.facings.rear.armor" value="{{data.facings.rear.armor}}" data-dtype="Number"/>
-                            </div>
+                            <span>Front</span>
+                            <input type="checkbox"  title="cover" name="data.facings.front.cover" {{checked data.facings.front.cover}}>
+                            <input type="text" class="combat-resources" data-target="data.facings.front.armor" value="{{data.facings.front.armor}}" data-dtype="Number"/>
                         </div>
+                        <div class="armor flexcol flex-group-center">
 
+                            <span>Left Side</span>
+
+                            <input type="checkbox"  title="cover" name="data.facings.lSide.cover" {{checked data.facings.lSide.cover}}>
+
+                            <input type="text" class="combat-resources" data-target="data.facings.lSide.armor" value="{{data.facings.lSide.armor}}" data-dtype="Number"/>
+                        </div>
+                        <div class="armor flexcol flex-group-center">
+
+                            <span>Right Side</span>
+                            <input type="checkbox"  title="cover" name="data.facings.rSide.cover" {{checked data.facings.rSide.cover}}> 
+
+                            <input type="text" class="combat-resources" data-target="data.facings.rSide.armor" value="{{data.facings.rSide.armor}}" data-dtype="Number"/>
+                        </div>
+                        <div class="armor flexcol flex-group-center">
+
+                            <span>Rear</span>
+                            <input type="checkbox"  title="cover" name="data.facings.rear.cover" {{checked data.facings.rear.cover}}>
+
+                            <input type="text" class="combat-resources" data-target="data.facings.rear.armor" value="{{data.facings.rear.armor}}" data-dtype="Number"/>
+                        </div>
                     </div>
-                </div>
-                <div class="tnt flexcol">
-                    <span class="section-title">Traits</span>
-                    <a class="tnt-create button" data-type="talentntrait" title="Add a new Talent or Trait">Add Trait</a>
-                    <div class="list list3col grid grid-3col">
-                        <span class="list-item">Name</span>
-                        <span class="list-button"></span>
-                        <span class="list-button"></span>
-                        {{#each actor.talentsntraits as |t key|}}
 
-                        <a class="item-descr list-item" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}{{#unless (compareString "N/A" t.data.specialisation.value)}} ({{t.data.specialisation.value}}){{/unless}} </a>
-                        <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
-                        <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
-
-
-
-                        {{/each}}
-
-                    </div>
-
-                </div>
-                <div class="tnt flexcol">
-                    <span class="section-title">Description</span>
-                    <div class="item-description">
-                        {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable rollData=rollData}}
-                    </div>
                 </div>
             </div>
+            <div class="tnt flexcol">
+                <span class="section-title">Traits</span>
+                <a class="tnt-create button" data-type="talentntrait" title="Add a new Talent or Trait">Add Trait</a>
+                <div class="list list3col grid grid-3col">
+                    <span class="list-item">Name</span>
+                    <span class="list-button"></span>
+                    <span class="list-button"></span>
+                    {{#each actor.talentsntraits as |t key|}}
+
+                    <a class="item-descr list-item" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}{{#unless (compareString "N/A" t.data.specialisation.value)}} ({{t.data.specialisation.value}}){{/unless}} </a>
+                    <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
+                    <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
+
+
+
+                    {{/each}}
+
+                </div>
+
+            </div>
+            <div class="tnt flexcol">
+                <span class="section-title">Description</span>
+                <div class="item-description">
+                    {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable rollData=rollData}}
+                </div>
+            </div>
+        </div>
 
 
 
