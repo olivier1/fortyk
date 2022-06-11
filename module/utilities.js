@@ -96,7 +96,8 @@ export const tokenDistance=function(token1,token2){
         let distancePx=Math.sqrt((Math.pow(token1x-token2x),2)+Math.pow((token1y-token2y),2)+Math.pow((token1.data.elevation-token2.data.elevation),2))
         return distancePx*gridRatio
     }
-    if(canvas.scene.data.gridType===1){
+    console.log("Grid type:",canvas.scene.data.gridType)
+    if(canvas.scene.data.gridType>=1){
 
         let xDistance=Math.abs(gridRatio*(token1x-token2x));
         let yDistance=Math.abs(gridRatio*(token1y-token2y));

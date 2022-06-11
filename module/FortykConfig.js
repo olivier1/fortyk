@@ -238,7 +238,7 @@ FORTYK.weaponFlags={
         "value": false,
         "num": -1,
         "label": "Concussive",
-        "description": "Concussive weapons strike with a powerful impact strong enough to temporarily knock a foe senseless. When a target is struck by a Concussive weapon, he must take a Toughness test with a penalty equal to 10 times the number in parentheses (X). For example, a weapon with Concussive (2) would impose a –20 on this Toughness test and Concussive (0) would cause a test with no penalty. If he fails, the target is Stunned for 1 round per degree of failure. If the attack also inflicted an amount of damage greater than the target’s Strength bonus, the target is knocked Prone."
+        "description": "Concussive weapons strike with a powerful impact strong enough to temporarily knock a foe senseless. When a target is struck by a Concussive weapon, he must take a Toughness test with a penalty equal to 10 times the number in parentheses (X). For example, a weapon with Concussive (2) would impose a –20 on this Toughness test and Concussive (0) would cause a test with no penalty. If he fails, the target is Stunned for 1 round per degree of failure. If the attack also inflicted an amount of damage greater than the target’s Strength bonus, the target is knocked Prone. When dealing damage to a vehicle with the walker trait, concussive weapons make the pilot of the vehicle have to pass a +60 operate test modified by the manoeuvrability of the walker, minus 10 times X, minus the damage taken. If the test is failed the walker is knocked down."
     },
     "corrosive": {
         "value": false,

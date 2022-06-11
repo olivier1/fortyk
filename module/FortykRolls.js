@@ -165,6 +165,7 @@ returns the roll message*/
         if(attack&&templateOptions["success"]){
             hits=1;
             let attackType=actor.data.data.secChar.lastHit.attackType;
+            let attackTarget=game.user.targets.first();
             if(type==="meleeAttack"){
                 let wsBonus
                 if(isVehicle){
@@ -177,7 +178,7 @@ returns the roll message*/
                 }else if(attackType==="lightning"){
                     hits=Math.min(testDos,wsBonus);
                 }
-                let attackTarget=game.user.targets.first();
+
                 if(attackTarget!==undefined&&attackTarget.actor.type!=="vehicle"){
                     let horde=attackTarget.actor.data.data.horde.value;
                     if(horde){
@@ -202,6 +203,20 @@ returns the roll message*/
                 if(fortykWeapon.getFlag("fortyk","storm")){
                     hits=hits*2;
                 }
+                //scatter weapon logic
+                if(fortykWeapon.getFlag("fortyk","scatter")){
+                    if(attackTarget!==undefined){
+                        let attackerToken=getActorToken(actor);
+                        console.log(attackerToken, attackTarget)
+                        let distance=tokenDistance(attackerToken,attackTarget);
+                        console.log(attackerToken,distance)
+                        if(distance<=2||distance<=2*canvas.dimensions.distance){
+                            hits+=testDos;
+                        }else if(distance>=parseInt(weapon.data.range.value)/2){
+                            hits+=Math.floor(testDos/2);
+                        }
+                    }
+                }
             }else if(type==="focuspower"){
                 let pr=weapon.data.curPR.value;
                 if(fortykWeapon.data.data.class.value==="Psychic Barrage"){
@@ -210,6 +225,7 @@ returns the roll message*/
                     hits=Math.min(pr,testDos);
                 }
             }
+
             templateOptions["numberHits"]=`The attack scores ${hits} hit`
             if(hits>1){
                 templateOptions["numberHits"]+="s."
@@ -629,19 +645,7 @@ returns the roll message*/
         if(actor.getFlag("fortyk","peerlesskiller")&&lastHit.attackType==="called"){
             form+="+2";
         }
-        //scatter weapon logic
-        if(fortykWeapon.getFlag("fortyk","scatter")){
-            if(targets.size>0){
-                let targetIt=targets.values();
-                let target=targetIt.next().value;
-                let distance=tokenDistance(attackerToken,target);
-                if(distance<=2||distance<=2*canvas.dimensions.distance){
-                    form+="+3";
-                }else if(distance>=parseInt(weapon.data.range.value)/2){
-                    form+="-3";
-                }
-            }
-        }
+
         //change formula for d5 weapons
         form=form.replace("d5","d10/2");
         //change formula for tearing weapons 
@@ -994,6 +998,20 @@ returns the roll message*/
                         }else{
                             armor=parseInt(data.characterHitLocations[curHit.value].armor); 
                         }
+                        //scatter weapon logic
+
+                        if(fortykWeapon.getFlag("fortyk","scatter")){
+
+
+
+                            if(distance>=parseInt(weapon.data.range.value)/2){
+                                damageOptions.results.push(`<div class="chat-target flexcol">`);
+                                damageOptions.results.push(`<span> Armor is doubled against Scatter weapon at this distance!</span>`);
+                                armor=armor*2;
+                                damageOptions.results.push(`</div>`);
+                            }
+                        }
+
                         //check if weapon ignores soak
                         if(!fortykWeapon.getFlag("fortyk","ignoreSoak")){
                             damageOptions.results.push(`<div class="chat-target flexcol">`)
@@ -1368,7 +1386,7 @@ returns the roll message*/
                                 let snareActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("snare")]);
                                 activeEffects.push(snareActiveEffect);
                             }
-                            damageOptions.results.push(`</div>`) 
+                            damageOptions.results.push(`</div>`);
                         }
                         //concussive weapon
                         if(!vehicle&&!isNaN(parseInt(fortykWeapon.getFlag("fortyk","concussive")))&&!isHordelike){
@@ -1387,10 +1405,22 @@ returns the roll message*/
                                 if(damage>tarActor.data.data.characteristics.s.bonus){
                                     let proneActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("prone")]);
                                     activeEffects.push(proneActiveEffect);
-                                    damageOptions.results.push(`Knocked down.`)
+                                    damageOptions.results.push(`<span>Knocked down.</span>`)
                                 }
                             }
                             damageOptions.results.push(`</div>`) 
+                        }else if(vehicle&&tarActor.getFlag("fortyk","walker")&&fortykWeapon.getFlag("fortyk","concussive")&&damage>0){
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
+                            let difficulty=60-damage+data.crew.rating-10*parseInt(fortykWeapon.getFlag("fortyk","concussive"));
+                            let knockdown=await this.fortykTest("", "crew", (difficulty),tarActor, "Resist knockdown",null,false,"",true);
+                            damageOptions.results.push(knockdown.template);
+                            if(!knockdown.value){
+                                let proneActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("prone")]);
+                                activeEffects.push(proneActiveEffect);
+                                damageOptions.results.push(`<span>Knocked down.</span>`)
+                            }
+                            damageOptions.results.push(`</div>`);
+
                         }
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
                         //deathdealer
@@ -3701,7 +3731,7 @@ returns the roll message*/
     static async applyActiveEffect(token,effect,ignoreSON=false){
         if(effect.length>0){
             if(game.user.isGM||token.owner){
-                
+
                 let actor
                 console.log(token)
                 if(token instanceof Token){

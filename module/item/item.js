@@ -115,11 +115,14 @@ export class FortyKItem extends Item {
                     item.data.attackMods.aim.half=20;
                     item.data.attackMods.aim.full=30;
                 }
+                /*
+                *removed for new scatter bonus
                 if(this.getFlag("fortyk","scatter")){
                     item.data.attackMods.range.pointblank=40;
                     item.data.attackMods.range.short=20;
 
                 }
+                */
                 if(this.getFlag("fortyk","twinlinked")){
 
                     
