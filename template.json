@@ -476,6 +476,14 @@
             "description": {
                 "value": "",
                 "type": "String"
+            },
+            "parry":{
+                "mod":0,
+                "total":0
+            },
+            "dodge":{
+                "mod":0,
+                "total":0
             }
         },
         "dhPC": {
@@ -789,7 +797,13 @@
                     "type": "Number",
                     "min": -10,
                     "value": 10,
-                    "max": 10
+                    "max": 10,
+                    "thresholds":{
+                        "1":0,
+                        "2":0,
+                        "3":0,
+                        "4":0
+                    }
                 },
                 "attacks": {
                     "standard": 10,

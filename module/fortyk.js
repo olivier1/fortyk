@@ -31,28 +31,22 @@ Hooks.once('init', async function() {
         FORTYK,
         FORTYKTABLES
     };
-
     //make a map with the indexes of the various status effects
     game.fortyk.FORTYK.StatusEffectsIndex=(function(){
-
         let statusMap= new Map(); 
         for(let i=0;i<FORTYK.StatusEffects.length;i++){
-
             statusMap.set(game.fortyk.FORTYK.StatusEffects[i].id,i)
         }
         return statusMap;
     })();
     //make an object that is used to reset status flags on tokens, this wouldnt need to be done if adding active effects to a token would trigger createAtiveEffect
     game.fortyk.FORTYK.StatusFlags=(function(){
-
         let statusFlags={}; 
         for(let i=0;i<FORTYK.StatusEffects.length;i++){
-
             statusFlags[FORTYK.StatusEffects[i].id]=false;
         }
         return statusFlags;
     })();
-
     /**
    * Set an initiative formula for the system
    * @type {String}
@@ -83,8 +77,6 @@ Hooks.once('init', async function() {
     Actors.registerSheet("fortyk", FortyKSpaceshipSheet, { types:["spaceship"], makeDefault: true });
     Actors.registerSheet("fortyk", FortyKNPCSheet, { types: ["npc"], makeDefault: true });
     Actors.registerSheet("fortyk", FortyKVehicleSheet, { types:["vehicle"], makeDefault: true });
-
-
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });
     //setup handcards
@@ -108,7 +100,6 @@ Hooks.once('init', async function() {
         return value !== undefined;
     });
     Handlebars.registerHelper('isnumber', function (value) {
-
         return !isNaN(parseInt(value));
     });
     Handlebars.registerHelper('compareString', function (str1, str2="") {
@@ -127,7 +118,6 @@ Hooks.once('init', async function() {
         }catch(err){
             return false;
         }
-
     });
     Handlebars.registerHelper("debug", function(optionalValue) {
         console.log("Current Context");
@@ -140,7 +130,6 @@ Hooks.once('init', async function() {
         }
     });
     Handlebars.registerHelper("contains", function(str1, str2) {
-
         if(str1===undefined){return false};
         if(str1===null){return false};
         if(!str1){return false};
@@ -167,16 +156,13 @@ Hooks.once('init', async function() {
         var doc = new DOMParser().parseFromString(text, "text/html");
         return doc.documentElement.textContent;
     });
-
 });
 Hooks.once("setup", function() {
 });
 //HOOKS
 Hooks.once('ready', async function() {
-
     //SOCKET used to update actors via the damage scripts
     game.socket.on("system.fortyk",async(data) => {
-
         if(data.type==="cardSplash"){
             var options = {
                 width: "auto",
@@ -233,10 +219,8 @@ Hooks.once('ready', async function() {
                 case "applyActiveEffect":
                     id=data.package.token;
                     token=canvas.tokens.get(id);
-
                     let aeffect=data.package.effect;
                     await FortykRolls.applyActiveEffect(token,aeffect);
-
                     break;
                 case "updateValue":
                     id=data.package.token;
@@ -247,7 +231,6 @@ Hooks.once('ready', async function() {
                     let options={}
                     options[path]=value;
                     await actor.update(options);
-
                     break;
                 case "forcefieldRoll":
                     console.log("hi")
@@ -269,7 +252,6 @@ Hooks.once('ready', async function() {
                     id=data.package.token;
                     token=canvas.tokens.get(id);
                     await FortykRolls.critEffects(token,data.package.num,data.package.hitLoc,data.package.type,data.package.ignoreSON);
-
                     break;
                 case "applyDead":
                     id=data.package.token;
@@ -277,16 +259,12 @@ Hooks.once('ready', async function() {
                     actor=data.package.actor;
                     let cause=data.package.cause;
                     FortykRolls.applyDead(token,actor,cause);
-
-
                     break;
                 case "perilsRoll":
                     let ork=data.package.ork;
                     FortykRolls.perilsOfTheWarp(ork);
                     break;
-
             }
-
         }
     })
 });
@@ -300,28 +278,32 @@ Hooks.on("updateCombat", async (combat) => {
         //PAN CAMERA TO ACTIVE TOKEN
         canvas.animatePan({x:token.x,y:token.y});
         for(let activeEffect of actor.effects){
-
             if(activeEffect.data.duration.rounds!==undefined){
+
                 console.log(activeEffect)
                 let remaining=Math.ceil(activeEffect.duration.remaining);
-
                 if(remaining<1){remaining=0}
                 let content="";
-                if(remaining===0){
-                    content=`${activeEffect.data.label} expires.`;
-                }else{
-                    content=`${activeEffect.data.label} has ${remaining} rounds remaining.`;
+                if(activeEffect.data.label!=="Evasion"){
+                    if(remaining===0){
+                        content=`${activeEffect.data.label} expires.`;
+                    }else{
+                        content=`${activeEffect.data.label} has ${remaining} rounds remaining.`;
+                    }
+
+                    let activeEffectOptions={user: game.user._id,
+                                             speaker:{actor,alias:actor.name},
+                                             content:content,
+                                             classes:["fortyk"],
+                                             flavor:`${activeEffect.data.label} duration.`,
+                                             author:actor.name};
+                    await ChatMessage.create(activeEffectOptions,{});
                 }
-                let activeEffectOptions={user: game.user._id,
-                                         speaker:{actor,alias:actor.name},
-                                         content:content,
-                                         classes:["fortyk"],
-                                         flavor:`${activeEffect.data.label} duration.`,
-                                         author:actor.name};
-                await ChatMessage.create(activeEffectOptions,{});
                 if(activeEffect.duration.remaining<=0){
                     activeEffect.delete({});
                 }
+
+
             }
             //check for flags
             if(activeEffect.data.flags.core){
@@ -340,15 +322,12 @@ Hooks.on("updateCombat", async (combat) => {
                         await actor.update({"data.secChar.fatigue.value":fatigue});
                         let fireData={name:"Fire",type:"rangedWeapon"}
                         let fire=await Item.create(fireData, {temporary: true});
-
                         fire.data.flags.fortyk={};
                         fire.data.data.damageType.value="Energy";
                         fire.data.data.pen.value=99999;
                         await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire,1, true);
                     }else{
-                        
                     }
-
                 }
                 //check for bleeding
                 if(activeEffect.data.flags.core.statusId==="bleeding"){
@@ -368,7 +347,6 @@ Hooks.on("updateCombat", async (combat) => {
                     }
                     if(bleed){
                         let bleedStack=1;
-
                         let flavor
                         if(bleedStack===1){
                             flavor=`Blood loss`
@@ -388,7 +366,6 @@ Hooks.on("updateCombat", async (combat) => {
                 }
                 //check for cryo
                 if(activeEffect.data.flags.core.statusId==="cryogenic"){
-
                     let cryoContent=`<span>On round start, take [[2d10]]  toughness damage!</span>`;
                     let cryoOptions={user: game.user._id,
                                      speaker:{actor,alias:actor.name},
@@ -397,7 +374,6 @@ Hooks.on("updateCombat", async (combat) => {
                                      flavor:`Freezing`,
                                      author:actor.name};
                     let cryoMsg=await ChatMessage.create(cryoOptions,{});
-
                     let inlineResults=parseHtmlForInline(cryoMsg.data.content);
                     console.log(inlineResults);
                     let tDmg=inlineResults[0];
@@ -407,7 +383,6 @@ Hooks.on("updateCombat", async (combat) => {
                     await FortykRolls.applyActiveEffect(token,ae);
                 }
             }
-
         }
         //check for regeneration
         if(actor.getFlag("fortyk","regeneration")){
@@ -433,15 +408,12 @@ Hooks.on("preDeleteCombat", async (combat,options,id) =>{
     }
 })
 Hooks.on("preUpdateActor", (data, updatedData) =>{
-
 })
 //add listeners to the chatlog for dice rolls
 Hooks.on('renderChatLog', (log, html, data) => FortykRollDialogs.chatListeners(html));
 //add listeners to dialogs to allow searching and the like
 Hooks.on('renderDialog', (dialog, html, data) => ActorDialogs.chatListeners(html));
-
 Hooks.on('preCreateItem', (actor, data,options) =>{
-
 });
 //set flags on the actor when adding an active effect if it should activate a flag
 Hooks.on('createActiveEffect',async (ae,options,id)=>{
@@ -453,9 +425,7 @@ Hooks.on('createActiveEffect',async (ae,options,id)=>{
                 await actor.setFlag("core",flag,true);
             } 
         }
-
     }
-
 });
 //unset flags on the actor when removing an active effect if it had a flag
 Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
@@ -467,7 +437,6 @@ Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
                 await actor.setFlag("core",flag,false);
             }
         }
-
     }
 });
 /**
@@ -480,19 +449,16 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
         button.icon="fas fa-asterisk";
         button.label="Manage AEs";
         button.onclick=() =>{
-
             let actor=sheet.actor;
             if(sheet.token){
                 actor=sheet.token.actor;
             }
             let templateOptions={actor:actor};
-
             let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html', templateOptions);
             var options = {
                 classes:["systems/fortyk/css/fortyk.css"],
                 id:"aeDialog"
             };
-
             renderedTemplate.then(content => { 
                 var d=new ActiveEffectDialog({
                     title: "Active Effects",
@@ -501,11 +467,9 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
                         button:{
                             label:"Ok",
                             callback: async html => {
-
                                 sheet.actor.dialog=undefined;
                             }
                         },
-
                     },
                     close:function(){
                         sheet.actor.dialog=undefined;
@@ -513,33 +477,22 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
                 },options).render(true)
                 sheet.actor.dialog=d;
             });
-
         }
         let close=buttons.pop();
         buttons.push(button);
         buttons.push(close);
     }
-
-
 })
 Hooks.on("preCreateActor", (createData) =>{
-
 })
 Hooks.on("preCreateToken", async (document, data, options, userId) =>{
     //modify token dimensions if scene ratio isnt 1
-    
-    console.log(document,data)
     let gridRatio=canvas.dimensions.distance;
-    console.log(gridRatio)
     let newHeight=Math.max(1,document.data.height/gridRatio);
     let newWidth=Math.max(1,document.data.width/gridRatio);
-    console.log(newHeight,newWidth)
     await document.data.update({"height":newHeight,"width":newWidth});
-    
-    console.log(document)
 });
 Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
-
     let effects=null;
     let data=null;
     if(changes.actorData!==undefined){
@@ -549,7 +502,6 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
         effects=changes.effects;
         data=changes;
     }
-
     if(effects){
         let flags={core:duplicate(game.fortyk.FORTYK.StatusFlags)};
         effects.forEach((effect)=>{
@@ -557,17 +509,11 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
         });
         data.flags=flags;
     }
-
     let fullToken=await canvas.tokens.get(token._id);
     let tokenActor=fullToken.actor;
-
     try{
         let newFatigue=data.data.secChar.fatigue.value;
-
         if(newFatigue>=tokenActor.data.data.secChar.fatigue.max*2){
-
-
-
             await game.fortyk.FortykRolls.applyDead(fullToken,tokenActor,"fatigue");
         }else if(!tokenActor.getFlag("core","frenzy")&&!tokenActor.getFlag("core","unconscious")&&newFatigue>=tokenActor.data.data.secChar.fatigue.max){
             let effect=[];
@@ -582,10 +528,8 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
             await game.fortyk.FortykRolls.applyActiveEffect(fullToken,effect);
         }
     }catch(err){}
-
     // Apply changes in Actor size to Token width/height
     let newSize= 0;
-
     let wounds=false;
     try{
         wounds=data.data.secChar.wounds.value;
@@ -598,20 +542,14 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
     }catch(err){
         size=false;
     }
-
-
     if(wounds&&(tokenActor.data.data.horde.value||tokenActor.data.data.formation.value)||size){
-
-
         if(tokenActor.data.data.horde.value||tokenActor.data.data.formation.value){
             newSize= data.data.secChar.wounds.value;
             if(newSize<0){newSize=0}
         }else{
             newSize= data.data.secChar.size.value;
         }
-
         if ( (!tokenActor.data.data.horde.value&&!tokenActor.data.data.formation.value&&newSize && (newSize !== tokenActor.data.data.secChar.size.value))||((tokenActor.data.data.horde.value||tokenActor.data.data.formation.value)&&newSize!==undefined && (newSize !== tokenActor.data.data.secChar.wounds.value)) ) {
-
             let size= 0;
             if(tokenActor.data.data.horde.value||tokenActor.data.data.formation.value){
                 size= FORTYKTABLES.hordeSizes[newSize];
@@ -626,7 +564,6 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
         }
     }
 });
-
 //drag ruler integration
 Hooks.once("dragRuler.ready", (Speedprovider) => {
     class FortykSpeedProvider extends Speedprovider{
@@ -652,15 +589,12 @@ Hooks.once("dragRuler.ready", (Speedprovider) => {
                     {range:movement.charge,color:"charge"},
                     {range:movement.run,color:"run"}]
             }
-
             return ranges;
         }
         getCostForStep(token, area, options={}) {
             // Lookup the cost for each square occupied by the token
             options.token = token;
-
             const costs = area.map(space => terrainRuler.getCost(space.x, space.y, options));
-
             // Return the maximum of the costs
             let actor=token.actor;
             let cost=1;

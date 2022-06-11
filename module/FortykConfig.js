@@ -420,6 +420,11 @@ FORTYK.weaponFlags={
         "label": "Scatter",
         "description": "The standard ammunition of these weapons spreads out when fired, ripping apart targets at close range but inflicting considerably less harm from afar. When fired at Point Blank range, this weapon gains +10 to hit and deals +3 damage. When fired at Short range, it gains +10 to hit. At any longer ranges, it suffers –3 damage."
     },
+    "shieldbreaker": {
+        "value": false,
+        "label": "Shieldbreaker",
+        "description": "Shieldbreaker weapons ignore force fields."
+    },
     "shocking": {
         "value": false,
         "label": "Shocking",
@@ -456,6 +461,11 @@ FORTYK.weaponFlags={
         "value": false,
         "label": "Storm",
         "description": "A weapon with the Storm Quality unleashes shots at rapid speed, often through use of a double-barrelled design. This Quality doubles the number of hits inflicted on the target and the amount of ammunition expended. For example, when firing a weapon with the Storm Quality in fully automatic mode, each degree of success yields two additional hits (to a maximum of twice the weapon’s Full Automatic rate of fire). When evading hits from a weapon with the storm quality, 2 hits are evaded per degree of success."
+    },
+    "sweeping": {
+        "value": false,
+        "label": "Sweeping",
+        "description": "Sweeping weapons allow the character to make sweeping attacks. A sweeping attack is a +30 weapon skill test as a full action. If successful the character hits every enemy character of 2 lower size categories or smaller that is within reach of the weapon. Sweeping attacks count as an all out attack in that they consume a reaction. Sweeping weapons also inflict additional hits to hordes in melee combat. A sweeping weapon gets a number of additional hits equal to 3 times DoS against hordes."
     },
     "tainted": {
         "value": false,

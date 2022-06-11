@@ -82,6 +82,10 @@
                         <input type="checkbox" name="data.suddenDeath.value" {{checked data.suddenDeath.value}}>
                     </div>
                 </div>
+                <div class="resource flexcol">
+                    <span class="char-total rollable button" data-roll-type="skill" data-target="{{data.parry.total}}" data-label="Parry" data-char="ws" >Parry</span>
+                    <span class="char-total rollable button" data-roll-type="skill" data-target="{{data.dodge.total}}" data-label="Dodge" data-char="agi" >Dodge</span>
+                </div>
             </div>
         </div>
     </div>
@@ -362,6 +366,16 @@
                     </div>
                 </div>
                 <div class="flexcol">
+                    <div class="flex-group-center flexrow">
+                        <div class="flexcol">
+                            <span class="section-title">Parry Modifier</span>
+                            <input type="text" class="combat-resources" data-target="data.parry.mod" value="{{data.parry.mod}}" data-dtype="Number"/>
+                        </div>
+                        <div class="flexcol">
+                            <span class="section-title">Dodge Modifier</span>
+                            <input type="text" class="combat-resources" data-target="data.dodge.mod" value="{{data.dodge.mod}}" data-dtype="Number"/>
+                        </div>
+                    </div>
                     <span class="section-title">SIZE</span>
                     <select class="sizeSelect" name="data.secChar.size.value" data-dtype="Number">
                         {{#select data.secChar.size.value}}

@@ -165,12 +165,12 @@
 
                 {{#if options.size}}
                 {{#each size}}
-                <option value="{{this.mod}}" {{#if (equals @index ../options.size)}}selected{{/if}}>{{this.name}}</option>
+                <option value="{{@index}}" {{#if (equals @index ../options.size)}}selected{{/if}}>{{this.name}}</option>
 
                 {{/each}}
                 {{else}}
                 {{#each size}}
-                <option value="{{this.mod}}" {{#if (contains this.name "average")}}selected{{/if}}>{{this.name}}</option>
+                <option value="{{@index}}" {{#if (contains this.name "average")}}selected{{/if}}>{{this.name}}</option>
 
                 {{/each}}
                 {{/if}}

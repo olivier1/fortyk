@@ -330,6 +330,25 @@ FORTYKTABLES.vehicleCrits={
           "<span>The hit tears through the vehicle’s armour, leaving only useless shards of metal. Reduce the Armour points of the facing struck by the attack by half (rounding up) until the vehicle is repaired. If the hit came from a ranged attack, roll 1d10 for each crewmember. For each result of 1 or 2, the affected crewmember is hit by a single hit with the same damage type as the hit that caused this effect, for an amount of damage equal to one quarter of the original damage (rounded up). In addition, the vehicle suddenly gains the Open Topped Vehicle trait, which could be a problem if the vehicle is in a poisonous atmosphere, underwater, or in a vacuum. The vehicle also catches fire! Refer to the On Fire! sidebar on page 263.</span>",
           "<span>A short, sharp explosion flares outward from the vehicle. Armour panels fall off, weapons are blasted free, and the vehicle’s drive mechanisms are ruined, causing it to stop dead. The vehicle is now a shattered hulk and suffers the Vehicle Destroyed damage condition (see page 262). Roll 1d10 for each remaining weapon on the vehicle; on a result of 5 or lower, the weapon in question suffers the Weapon Destroyed damage condition (see page 263). Each character inside of the vehicle suffers [[1d10+6]] Explosive damage to a randomly determined Hit Location, and must make a Difficult (–10) Toughness test or become Stunned for [[1d10]] rounds. Skimmers automatically crash as per page 256.</span>",
           "<span>The vehicle’s ammo supply, reactor or fuel supply takes a direct hit, and the vehicle erupts from within. Shards of molten metal are sent flying in every direction as the vehicle is reduced to a smoking crater. The vehicle is destroyed and cannot be repaired. No equipment from within the vehicle can be salvaged. Each character inside suffers [[2d10+18]] Explosive damage to a randomly determined Hit Location. Anyone within [[2d10]] metres of the vehicle suffers [[1d10+6]] Explosive damage from the blast. If the Vehicle has the Open-Topped or Bike vehicle trait, passengers or crew may make a Challenging (+0) Dodge test to bail out at the last second. Anyone who succeeds at this test instead suffers the [[1d10+6]] damage from the vehicle’s explosion.</span>"]}
+FORTYKTABLES.thresholdCrits={
+    "hull":["Every crewmember must test Toughness(+10) or be stunned for 1 round.",
+           "A random component is damaged.",
+           "The facing loses [[2d10]] armor.",
+           "A random component is destroyed."],
+    "weapon":["The weapon is disabled for 1 round.",
+             "The weapon’s targeting is damaged, giving a -20 to tests.",
+             "The weapon is damaged and cannot fire.",
+             "The weapon is destroyed, its ammunition explodes, the Super heavy takes an additional [[2d10]] damage ignoring armor."],
+    "motiveSystem":["The vehicle is shaken so badly, the pilot has to pass an Operate test or change the facing to a random one(roll for scatter). If the vehicle is a walker and the test fails, it falls over.",
+                   "The motive system is slightly damaged, the vehicle loses half its tactical speed on the next round.",
+                   "The engine takes a glancing hit, the tactical speed of the vehicle is reduced by [[1d10]] until repaired.",
+                   "The motive system is crippled, reducing tactical speed by half. In addition the pilot has to pass an Operate test or change the facing to a random one(roll for scatter). If the vehicle is a walker and the test fails, it falls over."],
+    "turret":["The turret’s weapon is jammed.",
+             "The turret’s rotation is locked.",
+             "The turret’s weapon is damaged and cannot fire.",
+             "The turret is destroyed, ammunition explodes dealing an additional 2d10 damage ignoring armor."]
+    
+}
 FORTYKTABLES.haywire=[
     "Insignificant: Though some machine spirits are unsettled, there is no noticeable effect on nearby technology.",
     "Minor Disruption: All actions utilising powered technology, including firing ranged weapons without the Primitive quality, Tech-Use tests, and any physical actions attempted while wearing power armour or employing cybernetics, suffer a –10 penalty. The base movement of anyone in power armour is reduced by 1.",

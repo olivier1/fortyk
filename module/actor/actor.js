@@ -564,6 +564,7 @@ export class FortyKActor extends Actor {
         // things organized.
         if (actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC') {this._prepareCharacterData(actorData)}
         else if (actorData.type === 'npc') {this._prepareNPCData(actorData)}
+        else if (actorData.type === 'vehicle') {this._prepareVehicleData(actorData)}
         else if (actorData.type === 'owRegiment'){this._prepareRegimentData(actorData)};
     }
     _prepareRegimentData(actorData){
@@ -758,6 +759,9 @@ export class FortyKActor extends Actor {
                 char.total=Math.ceil(char.value/2);
             }
         }
+        //prepare parry/dodge
+        data.parry.total=data.characteristics.ws.total+parseInt(data.parry.mod);
+        data.dodge.total=data.characteristics.agi.total+parseInt(data.dodge.mod);
         //prepare psyker stuff
         data.psykana.pr.effective=parseInt(data .psykana.pr.value)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
         data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
@@ -793,6 +797,21 @@ export class FortyKActor extends Actor {
                     hitLoc.value+=parseInt(daemonic);
                 }
             }
+        }
+    }
+    _prepareVehicleData(actorData){
+        const data=actorData.data;
+        data.crew.ratingTotal=data.crew.rating+data.secChar.manoeuvrability.value;
+        //calculate thresholds for superheavies and set min wounds
+        if(this.getFlag("fortyk","superheavy")){
+            let max=data.secChar.wounds.max
+            let thresholdSize=Math.ceil(max/4);
+            console.log(data.secChar)
+            data.secChar.wounds.thresholds["1"]=max-thresholdSize;
+            data.secChar.wounds.thresholds["2"]=max-2*thresholdSize;
+            data.secChar.wounds.thresholds["3"]=max-3*thresholdSize;
+            data.secChar.wounds.thresholds["4"]=0;
+            data.secChar.wounds.min=-100;
         }
     }
     prepareMovement(data) {

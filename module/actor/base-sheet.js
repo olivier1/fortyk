@@ -607,8 +607,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
         var item=null;
 
-        console.log(testType)
 
+        
         if(dataset["itemId"]){
             item=await this.actor.items.get(dataset["itemId"]);
 

@@ -50,6 +50,7 @@ export class FortykRollDialogs{
             title+=`${testLabel} `+"Reroll";
         }else{
             title+=`${testLabel} `+"Test";
+
         }
         new Dialog({
             title: title,
@@ -67,6 +68,27 @@ export class FortykRollDialogs{
                                 testTarget+=parseInt(actor.data.data.secChar.fearMod);
                                 if(actor.getFlag("fortyk","resistance")&&actor.getFlag("fortyk","resistance").toLowerCase().includes("fear")){
                                     testTarget+=10;
+                                }
+                            }
+                            if(!reroll){
+                                if(testLabel==="Dodge"||testLabel==="Parry"){
+                                    let aeData={};
+                                    aeData.id="evasion";
+                                    aeData.label= "Evasion";
+                                    if(actor.getFlag("core","evasion")){
+                                        aeData.icon= "systems/fortyk/icons/evasion2.png";
+                                    }else{
+                                        aeData.icon= "systems/fortyk/icons/evasion.png"; 
+                                    }
+
+
+                                    aeData.flags= { core: { statusId: "evasion" } }
+                                    aeData.duration={
+
+                                        rounds:0
+                                    };
+                                    FortykRolls.applyActiveEffect(actor,[aeData]);
+
                                 }
                             }
                             FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, reroll);
@@ -139,9 +161,10 @@ export class FortykRollDialogs{
             }
         }
         let targets=game.user.targets;
+        let target=targets.values().next().value;
         let vehicle=false;
         if(targets.size>0){
-            let target=targets.values().next().value;
+
             let tarActor=target.actor;
             let tarData=tarActor.data;
             if(tarActor.type==="vehicle"){
@@ -206,7 +229,16 @@ export class FortykRollDialogs{
                         let surprised = Number($(html).find('input[name="surprised"]:checked').val());
                         let stunned = Number($(html).find('input[name="stunned"]:checked').val());
                         let running= Number($(html).find('input[name="running"]:checked').val());
-                        const size = Number($(html).find('select[name="size"]').val());
+                        let size = Number($(html).find('select[name="size"]').val());
+                        //adjust size penalty
+                        size=(size-actor.data.data.secChar.size.value)*10;
+                        if(actor.getFlag("fortyk","preysense")){
+
+                            if(size<0){
+                                let preysense=parseInt(actor.getFlag("fortyk","preysense"))*10
+                                size=Math.min(0,size+preysense)
+                            }
+                        }
                         let other = Number($(html).find('input[name="other"]').val());
                         let addLabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
 
@@ -527,7 +559,16 @@ export class FortykRollDialogs{
                         let surprised = Number($(html).find('input[name="surprised"]:checked').val());
                         let running= Number($(html).find('input[name="running"]:checked').val());
                         let stunned = Number($(html).find('input[name="stunned"]:checked').val());
-                        const size = Number($(html).find('select[name="size"]').val());
+                        let size = Number($(html).find('select[name="size"]').val());
+                        //adjust size penalty
+                        size=(size-actor.data.data.secChar.size.value)*10;
+                        if(actor.getFlag("fortyk","preysense")){
+
+                            if(size<0){
+                                let preysense=parseInt(actor.getFlag("fortyk","preysense"))*10
+                                size=Math.min(0,size+preysense)
+                            }
+                        }
                         let other = Number($(html).find('input[name="other"]').val());
                         let melee = Number($(html).find('input[name="melee"]:checked').val());
                         //get attack type name for title
