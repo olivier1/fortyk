@@ -162,14 +162,17 @@ export class FortyKActor extends Actor {
    * Augment the basic actor data with additional dynamic data.
    */
     prepareData(){
+       
+            if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
+            if ( !this.data.name ) this.data.name = "New " + this.entity;
+            this.data.reset();
+            this.prepareBaseData();
 
-        if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
-        if ( !this.data.name ) this.data.name = "New " + this.entity;
-        this.data.reset();
-        this.prepareBaseData();
+            this.prepareEmbeddedEntities();
+            this.prepareDerivedData();
+            this.data.isPrepared=true;
+        
 
-        this.prepareEmbeddedEntities();
-        this.prepareDerivedData();
     }
     prepareBaseData(){
 
@@ -605,7 +608,7 @@ export class FortyKActor extends Actor {
         if(!this.getFlag("core","frenzy")){
             for (let [key,char] of Object.entries(data.characteristics)){
                 if(key!=="inf"&&char.bonus*fatigueMult<data.secChar.fatigue.value){
-                   
+
                     char.total=Math.ceil(char.total/2);
                 }
             }  

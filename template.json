@@ -8,7 +8,8 @@
             "owComrade",
             "owRegiment",
             "spaceship",
-            "vehicle"
+            "vehicle",
+            "knightHouse"
         ],
         "templates": {
             "sorting": {
@@ -920,7 +921,7 @@
                 }
             },
             "hasTurret":{
-               "value":false,
+                "value":false,
                 "type":"Boolean"
             },
             "crew": {
@@ -937,6 +938,21 @@
                 "type":"String"
             }
 
+        },
+        "knightHouse":{
+            "wealth":{
+                "value":0,
+                "rating":0,
+                "income":0,
+                "type":"Number"
+            },
+            "alliances":{
+                "houseType":"",
+                "recentAlliance":"",
+                "navigatorAlliance":"",
+                "highKing":""
+            },
+            "knights":[]
         }
     },
     "Item": {
@@ -966,7 +982,10 @@
             "knightCore",
             "knightArmor",
             "knightStructure",
-            "knightComponent"
+            "knightComponent",
+            "cadetHouse",
+            "repairEntry",
+            "outpost"
         ],
         "templates": {
             "weapon": {
@@ -1582,6 +1601,39 @@
             "space":{
                 "value":0,
                 "type":"Number"
+            }
+        },
+        "cadetHouse":{
+            "templates":[
+                "description"
+            ],
+            "location":{
+                "value":"",
+                "type":"String"
+            },
+            "houseHead":{
+                "value":"",
+                "type":"String"
+            }
+        },
+        "repairEntry":{
+            "time":{
+                "value":0,
+                "type":"Number"
+            },
+            "active":{
+                "value":false,
+                "type":"Boolean"
+            }
+        },
+        "outpost":{
+            "location":{
+                "value":"",
+                "type":"String"
+            },
+            "type":{
+                "value":"",
+                "type":"String"
             }
         }
     }

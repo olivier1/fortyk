@@ -418,7 +418,7 @@ FORTYK.weaponFlags={
     "scatter": {
         "value": false,
         "label": "Scatter",
-        "description": "The standard ammunition of these weapons spreads out when fired, ripping apart targets at close range but inflicting considerably less harm from afar. When fired at Point Blank range, this weapon gains +10 to hit and deals +3 damage. When fired at Short range, it gains +10 to hit. At any longer ranges, it suffers –3 damage."
+        "description": "Scatter weapons are more deadly in shorter ranges. When firing at point blank range a scatter weapon scores an extra hit for every degree of success, when firing at short range the weapon scores an extra hit for every two degrees of success. Firing at any range greater than short range causes the armor of the opponent to count as double."
     },
     "shieldbreaker": {
         "value": false,

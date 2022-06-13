@@ -8,6 +8,8 @@ import { FortyKOWComradeSheet } from "./actor/comradeOW-sheet.js";
 import { FortyKOWRegimentSheet } from "./actor/regimentOW-sheet.js";
 import { FortyKSpaceshipSheet } from "./actor/spaceship-sheet.js";
 import { FortyKVehicleSheet } from "./actor/vehicle-sheet.js";
+import { FortyKKnightHouseSheet } from "./actor/knightHouse-sheet.js";
+import { FortyKKnightSheet } from "./actor/knight-sheet.js";
 import { FortyKItem } from "./item/item.js";
 import { FortyKItemSheet } from "./item/item-sheet.js";
 import { FortyKActiveEffect } from "./activeEffect/activeEffect.js";
@@ -69,14 +71,16 @@ Hooks.once('init', async function() {
     //CONFIG.ActiveEffect.entityClass = FortyKActiveEffect;
     // Register sheet application classes
     Actors.unregisterSheet("core", ActorSheet);
-    Actors.registerSheet("fortyk", FortyKDWActorSheet, { types:["dwPC"], makeDefault: true });
-    Actors.registerSheet("fortyk", FortyKDHActorSheet, { types:["dhPC"], makeDefault: true });
-    Actors.registerSheet("fortyk", FortyKOWActorSheet, { types:["owPC"], makeDefault: true });
-    Actors.registerSheet("fortyk", FortyKOWComradeSheet, { types:["owComrade"], makeDefault: true });
-    Actors.registerSheet("fortyk", FortyKOWRegimentSheet, { types:["owRegiment"], makeDefault: true });
-    Actors.registerSheet("fortyk", FortyKSpaceshipSheet, { types:["spaceship"], makeDefault: true });
-    Actors.registerSheet("fortyk", FortyKNPCSheet, { types: ["npc"], makeDefault: true });
-    Actors.registerSheet("fortyk", FortyKVehicleSheet, { types:["vehicle"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKDWActorSheet, { label:"Deathwatch Sheet",types:["dwPC"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKDHActorSheet, { label:"Dark Heresy Sheet",types:["dhPC"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKOWActorSheet, { label:"Only War Sheet",types:["owPC"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKOWComradeSheet, { label:"Only War Comrade Sheet",types:["owComrade"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKOWRegimentSheet, { label:"Only War Regiment Sheet",types:["owRegiment"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKSpaceshipSheet, { label:"Spaceship Sheet",types:["spaceship"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKNPCSheet, {label:"NPC Sheet", types: ["npc"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKVehicleSheet, { label:"Vehicle Sheet",types:["vehicle"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKKnightSheet, { label:"Imperial Knight Sheet",types:["vehicle"], makeDefault: false });
+     Actors.registerSheet("fortyk", FortyKKnightHouseSheet, { label:"Knight House Sheet",types:["knightHouse"], makeDefault: true });
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });
     //setup handcards
