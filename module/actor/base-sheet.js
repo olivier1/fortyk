@@ -39,6 +39,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.psyDisciplines=game.fortyk.FORTYK.psychicDisciplines;
         data.editable = this.options.editable;
         data.money=game.settings.get("fortyk","dhMoney");
+        console.log(data)
+        
+        console.log(data)
         return data;
     }
     /** @override */
@@ -113,6 +116,56 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         event.preventDefault();
 
     }
+
+    async _onDropListItem(event){
+
+        let draggedId=event.dataTransfer.getData("text");
+        console.log(event.target)
+        let targetId=event.target.dataset["id"];
+        if(draggedId!==targetId){
+            let draggedItem=await this.actor.items.get(draggedId);
+
+            let targetItem=await this.actor.items.get(targetId);
+
+            let sortDrag=draggedItem.data.sort;
+            let sortTarget=targetItem.data.sort;
+            if(sortTarget>sortDrag){
+
+                sortDrag=sortTarget;
+                sortTarget-=1;
+            }else{
+                sortDrag=sortTarget;
+                sortTarget+=1;
+            }
+            let itemType=draggedItem.type;
+            let items=this.actor.itemTypes[itemType].sort(function(a,b){
+            return a.data.sort-b.data.sort});
+            console.log(items)
+            /*data.items=*/
+            let previous=null;
+            let update=[];
+            update.push({"_id":draggedId,"sort":sortDrag});
+            update.push({"_id":targetId,"sort":sortTarget});
+            items.forEach((value,key)=>{
+                let sort=value.data.sort;
+                if(value.id===draggedId){
+                    sort=sortDrag;
+                }else if(value.id===targetId){
+                    sort=sortTarget;
+                }
+                if(sort===previous){
+                    sort++
+                   update.push({"_id":value.id,"sort":sort}) 
+                }
+                previous=sort;
+            });
+            await this.actor.updateEmbeddedDocuments("Item",update);
+
+        }
+
+
+
+    }
     _onImgRightClick(event){
 
         event = event || window.event;
@@ -135,32 +188,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             default: "submit",
         }, options);
         dlg.render(true);
-
-
-    }
-    async _onDropListItem(event){
-
-        let draggedId=event.dataTransfer.getData("text");
-        let targetId=event.target.dataset["id"];
-        if(draggedId!==targetId){
-            let draggedItem=await this.actor.items.get(draggedId);
-
-            let targetItem=await this.actor.items.get(targetId);
-
-            let sortDrag=draggedItem.data.sort;
-            let sortTarget=targetItem.data.sort;
-            if(sortTarget>sortDrag){
-
-                sortDrag=sortTarget;
-                sortTarget-=1;
-            }else{
-                sortDrag=sortTarget;
-                sortTarget+=1;
-            }
-            await this.actor.updateEmbeddedDocuments("Item",[{"_id":draggedId,"sort":sortDrag},{"_id":targetId,"sort":sortTarget}]);
-
-        }
-
 
 
     }
@@ -278,9 +305,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         event.preventDefault();
         const header = event.currentTarget;
         const type = header.dataset["type"];
+        const sort = this.actor.itemTypes[type].length;
         const itemData = {
             name: `new ${type}`,
-            type: type
+            type: type,
+            sort: sort
         };
         let item=await FortyKItem.create(itemData,{temporary:true});
         await this.actor.createEmbeddedDocuments("Item",[item.data],{"renderSheet":true});
@@ -608,7 +637,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         var item=null;
 
 
-        
+
         if(dataset["itemId"]){
             item=await this.actor.items.get(dataset["itemId"]);
 

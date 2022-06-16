@@ -19,12 +19,12 @@ export class FortyKActor extends Actor {
         data.items = [];
         //initialise starting skills
         let startingSkills= await getSkills();
-        if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship" && data.type!=="vehicle"){
+        if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship" && data.type!=="vehicle" && data.type!=="knightHouse"){
             for(let s of startingSkills){
                 data.items.push(s);
             }
         }
-        if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship" && data.type!=="vehicle"){
+        if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship" && data.type!=="vehicle" && data.type!=="knightHouse"){
             // Set wounds, fatigue, and display name visibility
             mergeObject(data,
                         {"token.bar1" :{"attribute" : "secChar.wounds"},                
@@ -568,7 +568,8 @@ export class FortyKActor extends Actor {
         if (actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC') {this._prepareCharacterData(actorData)}
         else if (actorData.type === 'npc') {this._prepareNPCData(actorData)}
         else if (actorData.type === 'vehicle') {this._prepareVehicleData(actorData)}
-        else if (actorData.type === 'owRegiment'){this._prepareRegimentData(actorData)};
+        else if (actorData.type === 'owRegiment'){this._prepareRegimentData(actorData)}
+        else if(actorData.type === 'knightHouse'){this._prepareHouseData(actorData)};
     }
     _prepareRegimentData(actorData){
         const data=actorData.data;
@@ -816,6 +817,11 @@ export class FortyKActor extends Actor {
             data.secChar.wounds.thresholds["4"]=0;
             data.secChar.wounds.min=-100;
         }
+    }
+    _prepareHouseData(actorData){
+        const data=actorData.data;
+        //income
+        data.wealth.income=parseInt(data.wealth.rating)*50;
     }
     prepareMovement(data) {
         let size=data.secChar.size.value;

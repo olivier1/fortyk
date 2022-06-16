@@ -952,6 +952,10 @@
                 "navigatorAlliance":"",
                 "highKing":""
             },
+            "repairBays":{
+                "value":0,
+                "type":"Number"
+            },
             "knights":[]
         }
     },
@@ -1617,16 +1621,22 @@
             }
         },
         "repairEntry":{
+            "templates":[
+                "description"
+            ],
             "time":{
                 "value":0,
                 "type":"Number"
             },
-            "active":{
-                "value":false,
-                "type":"Boolean"
+            "knight":{
+                "value":"",
+                "type":"String"
             }
         },
         "outpost":{
+            "templates":[
+                "description"
+            ],
             "location":{
                 "value":"",
                 "type":"String"
