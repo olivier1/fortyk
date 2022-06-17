@@ -49,7 +49,7 @@ export class FortyKItemSheet extends ItemSheet {
 
 
         }
-        if(this.actor.type==="repairEntry"){
+        if(this.actor!==null&&this.actor.type==="repairEntry"){
             data.knights=this.actor.data.data.knights;
         }
         console.log(this)
