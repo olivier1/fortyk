@@ -1,0 +1,233 @@
+<div class="flexrow mechlab-wrapper">
+    <div class="left-mechbay">
+        <div>
+            <img class="knight-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
+            <div class="flexcol">
+                <span class="descrSpan">Name:</span>
+                <input type="text" class="combat-resources" data-target="name" value="{{actor.name}}" data-dtype="String"/>
+
+            </div>
+            <div class="flexcol">
+                <span class="descrSpan">Chassis:</span>
+
+                <select class="typeSelect" name="data.chassis.id" data-dtype="String">
+                    <option value="">Select a Chassis</option>
+                    {{#select data.chassis.id}}
+
+                    {{#each chassis}}
+
+                    <option value="{{this.id}}">{{this}}</option>
+
+                    {{/each}}
+                    {{/select}}
+                </select>
+
+            </div>
+            <div class="flexcol">
+                <span class="descrSpan">House:</span>
+
+                <select class="typeSelect" name="data.house.id" data-dtype="String">
+                    <option value="">Select a House</option>
+                    {{#select data.house.id}}
+
+                    {{#each house}}
+
+                    <option value="{{this.id}}">{{this}}</option>
+
+                    {{/each}}
+                    {{/select}}
+                </select>
+
+            </div>
+            <div class="flexcol">
+                <span class="descrSpan">Pilot:</span>
+
+                <select class="typeSelect" name="data.pilot.id" data-dtype="String">
+                    <option value="">Select a Pilot</option>
+                    {{#select data.pilot.id}}
+
+                    {{#each pilots}}
+
+                    <option value="{{this.id}}">{{this}}</option>
+
+                    {{/each}}
+                    {{/select}}
+                </select>
+
+            </div>
+        </div>
+        <div class="flexcol">
+            <nav class="mechTabs tabs grid grid-3col" data-group="secondary">
+
+                <a class="item mechBat active2" data-tab="all">All</a>
+                <a class="item mechBat" data-tab="weapons">Weapons</a>
+                <a class="item mechBat" data-tab="components">Components</a>
+                <a class="item mechBat" data-tab="cores">Cores</a>
+
+                <a class="item mechBat" data-tab="structures">Structures</a>
+                <a class="item mechBat" data-tab="armors">Armors</a>
+
+
+
+
+            </nav>
+            <div id="mechInventory">
+                <div class="mechTab all" name="mechInventoryTab" data-group="secondary" data-tab="all">
+                    <div class="list grid list4col2">
+                        <span class="list-item-header">Name</span>
+                        <span class="list-item-header">A</span>
+                        <span class="list-item-header">T</span>
+                        <span class="list-item-header">S</span>
+                        <span class="mechbay-grid-section list-item-header4" name="rangedWeapons">Ranged Weapons</span>
+                        {{#each rangedWeapons}}
+                        <span class="list-item" name="rangedWeapons">{{this.name}}</span>
+                        <span class="list-item" name="rangedWeapons">{{this.data.data.amount.left}}</span>
+                        <span class="list-item" name="rangedWeapons">{{this.data.data.weight.value}}</span>
+                        <span class="list-item" name="rangedWeapons">{{this.data.data.space.value}}</span>
+                        {{/each}}
+                        <span class="mechbay-grid-section list-item-header4" name="ammunition">Ammunition</span>
+                        {{#each ammunition}}
+                        <span class="list-item" name="ammunition">{{this.name}}</span>
+                        <span class="list-item" name="ammunition">{{this.data.data.amount.left}}</span>
+                        <span class="list-item" name="ammunition">{{this.data.data.weight.value}}</span>
+                        <span class="list-item" name="ammunition">{{this.data.data.space.value}}</span>
+                        {{/each}}
+                        <span class="mechbay-grid-section list-item-header4" name="meleeWeapons">Melee Weapons</span>
+                        {{#each meleeWeapons}}
+                        <span class="list-item" name="meleeWeapons">{{this.name}}</span>
+                        <span class="list-item" name="meleeWeapons">{{this.data.data.amount.left}}</span>
+                        <span class="list-item" name="meleeWeapons">{{this.data.data.weight.value}}</span>
+                        <span class="list-item" name="meleeWeapons">{{this.data.data.space.value}}</span>
+                        {{/each}}
+                        <span class="mechbay-grid-section list-item-header4" name="components">Components</span>
+                        {{#each components}}
+                        <span class="list-item" name="components">{{this.name}}</span>
+                        <span class="list-item" name="components">{{this.data.data.amount.left}}</span>
+                        <span class="list-item" name="components">{{this.data.data.weight.value}}</span>
+                        <span class="list-item" name="components">{{this.data.data.space.value}}</span>
+                        {{/each}}
+                        <span class="mechbay-grid-section list-item-header4" name="cores">Cores</span>
+                        {{#each cores}}
+                        <span class="list-item" name="cores">{{this.name}}</span>
+                        <span class="list-item" name="cores">{{this.data.data.amount.left}}</span>
+                        <span class="list-item" name="cores">{{this.data.data.weight.value}}</span>
+                        <span class="list-item" name="cores">{{this.data.data.space.value}}</span>
+                        {{/each}}
+                        <span class="mechbay-grid-section list-item-header4" name="armors">Armors</span>
+                        {{#each cores}}
+                        <span class="list-item" name="armors">{{this.name}}</span>
+                        <span class="list-item" name="armors">{{this.data.data.amount.left}}</span>
+                        <span class="list-item" name="armors">{{this.data.data.weight.value}}</span>
+                        <span class="list-item" name="armors">{{this.data.data.space.value}}</span>
+                        {{/each}}
+                        <span class="mechbay-grid-section list-item-header4" name="structures">Structures</span>
+                        {{#each structures}}
+                        <span class="list-item" name="structures">{{this.name}}</span>
+                        <span class="list-item" name="structures">{{this.data.data.amount.left}}</span>
+                        <span class="list-item" name="structures">{{this.data.data.weight.value}}</span>
+                        <span class="list-item" name="structures">{{this.data.data.space.value}}</span>
+                        {{/each}}
+                    </div>
+
+                </div>
+                <div class="mechTab weapons" name="mechInventoryTab" style="display: none" data-group="secondary" data-tab="weapons">
+                    <div class="grid list-4col2">
+                        <span class="list-item-header">Name</span>
+                        <span class="list-item-header">A</span>
+                        <span class="list-item-header">T</span>
+                        <span class="list-item-header">S</span>
+                        <span class="mechbay-grid-section list-item-header4" name="rangedWeapons">Ranged Weapons</span>
+                        {{#each rangedWeapons}}
+                        <span class="list-item" name="rangedWeapons">{{this.name}}</span>
+                        <span class="list-item" name="rangedWeapons">{{this.data.data.amount.left}}</span>
+                        <span class="list-item" name="rangedWeapons">{{this.data.data.weight.value}}</span>
+                        <span class="list-item" name="rangedWeapons">{{this.data.data.space.value}}</span>
+                        {{/each}}
+                        <span class="mechbay-grid-section list-item-header4" name="ammunition">Ammunition</span>
+                        {{#each ammunition}}
+                        <span class="list-item" name="ammunition">{{this.name}}</span>
+                        <span class="list-item" name="ammunition">{{this.data.data.amount.left}}</span>
+                        <span class="list-item" name="ammunition">{{this.data.data.weight.value}}</span>
+                        <span class="list-item" name="ammunition">{{this.data.data.space.value}}</span>
+                        {{/each}}
+                        <span class="mechbay-grid-section list-item-header4" name="meleeWeapons">Melee Weapons</span>
+                        {{#each meleeWeapons}}
+                        <span class="list-item" name="meleeWeapons">{{this.name}}</span>
+                        <span class="list-item" name="meleeWeapons">{{this.data.data.amount.left}}</span>
+                        <span class="list-item" name="meleeWeapons">{{this.data.data.weight.value}}</span>
+                        <span class="list-item" name="meleeWeapons">{{this.data.data.space.value}}</span>
+                        {{/each}}
+                    </div>
+                </div>
+                <div class="mechTab components" name="mechInventoryTab" style="display: none" data-group="secondary" data-tab="components">
+                    <div class="grid list-4col2">
+                        <span class="list-item-header">Name</span>
+                        <span class="list-item-header">A</span>
+                        <span class="list-item-header">T</span>
+                        <span class="list-item-header">S</span>
+                        <span class="mechbay-grid-section list-item-header4" name="components">Components</span>
+                        {{#each components}}
+                        <span class="list-item" name="components">{{this.name}}</span>
+                        <span class="list-item" name="components">{{this.data.data.amount.left}}</span>
+                        <span class="list-item" name="components">{{this.data.data.weight.value}}</span>
+                        <span class="list-item" name="components">{{this.data.data.space.value}}</span>
+                        {{/each}}
+                    </div>
+
+                </div>
+                <div class="mechTab cores" name="mechInventoryTab" style="display: none" data-group="secondary" data-tab="cores">
+                    <div class="grid list-4col2">
+                        <span class="list-item-header">Name</span>
+                        <span class="list-item-header">A</span>
+                        <span class="list-item-header">T</span>
+                        <span class="list-item-header">S</span>
+                        <span class="mechbay-grid-section list-item-header4" name="cores">Cores</span>
+                        {{#each cores}}
+                        <span class="list-item" name="cores">{{this.name}}</span>
+                        <span class="list-item" name="cores">{{this.data.data.amount.left}}</span>
+                        <span class="list-item" name="cores">{{this.data.data.weight.value}}</span>
+                        <span class="list-item" name="cores">{{this.data.data.space.value}}</span>
+                        {{/each}}
+                    </div>
+                </div>
+                <div class="mechTab structures" name="mechInventoryTab" style="display: none" data-group="secondary" data-tab="structures">
+                    <div class="grid list-4col2">
+                        <span class="list-item-header">Name</span>
+                        <span class="list-item-header">A</span>
+                        <span class="list-item-header">T</span>
+                        <span class="list-item-header">S</span>
+                        <span class="mechbay-grid-section list-item-header4" name="armors">Armors</span>
+                        {{#each cores}}
+                        <span class="list-item" name="armors">{{this.name}}</span>
+                        <span class="list-item" name="armors">{{this.data.data.amount.left}}</span>
+                        <span class="list-item" name="armors">{{this.data.data.weight.value}}</span>
+                        <span class="list-item" name="armors">{{this.data.data.space.value}}</span>
+                        {{/each}}
+                    </div>
+
+                </div>
+                <div class="mechTab armors" name="mechInventoryTab" style="display: none" data-group="secondary" data-tab="armors">
+                    <div class="grid list-4col2">
+                        <span class="list-item-header">Name</span>
+                        <span class="list-item-header">A</span>
+                        <span class="list-item-header">T</span>
+                        <span class="list-item-header">S</span>
+                        <span class="mechbay-grid-section list-item-header4" name="structures">Structures</span>
+                        {{#each structures}}
+                        <span class="list-item" name="structures">{{this.name}}</span>
+                        <span class="list-item" name="structures">{{this.data.data.amount.left}}</span>
+                        <span class="list-item" name="structures">{{this.data.data.weight.value}}</span>
+                        <span class="list-item" name="structures">{{this.data.data.space.value}}</span>
+                        {{/each}}
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="right-mechbay flexcol">
+
+    </div>
+
+</div>

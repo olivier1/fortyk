@@ -1,6 +1,8 @@
 import {FortykRollDialogs} from "../FortykRollDialogs.js";
 import {FortykRolls} from "../FortykRolls.js";
 import FortyKBaseActorSheet from "./base-sheet.js";
+import {FORTYK} from "../FortykConfig.js";
+import {FortyKItem} from "../item/item.js";
 export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
 
     /** @override */
@@ -29,7 +31,18 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         console.log(this)
         data.outposts=actor.itemTypes.outpost;
         data.cadetHouses=actor.itemTypes.cadetHouse;
+        data.weapons=actor.itemTypes.rangedWeapon.concat(actor.itemTypes.meleeWeapon,actor.itemTypes.ammunition);
+        data.knightComponents=actor.itemTypes.knightComponent;
+        data.knightCores=actor.itemTypes.knightCore;
+        data.knightArmors=actor.itemTypes.knightArmor;
+        data.knightStructures=actor.itemTypes.knightStructure;
+        data.components=data.weapons.concat(data.knightComponents,data.knightCores,data.knightArmors,data.knightStructures)
+        for(let i=0;i<data.components.length;i++){
+            data.components[i].prepareData();
+        }
         data.repairEntries=actor.itemTypes.repairEntry.sort(function(a,b){return a.data.sort-b.data.sort});
+        data.knightComponentTypes=FORTYK.knightComponentTypes;
+        
         return data;
     }
     /** @override */
@@ -38,26 +51,63 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         // Everything below here is only needed if the sheet is editable
         html.find('.addIncome').click(this._onAddIncome.bind(this));
         html.find('.passTime').click(this._onPassTime.bind(this));
+        html.find('.knightComponent-create').click(this._onComponentCreate.bind(this));
+        html.find('.component-select').change(this._onComponentCategoryChange.bind(this));
     }
-    /**
-   * Handle clickable rolls.
-   * @param {Event} event   The originating click event
-   * @private
-   */
-    async _onRoll(event) {
+    _onComponentCategoryChange(event){
+        let components=document.getElementsByName("component");
+        let type=event.currentTarget.value;
+        console.log(type)
+        for(let i=0;i<components.length;i++){
+            let component=components[i];
+            let componentType=component.attributes["type"].value;
+            console.log(componentType)
+            if(type==="All"){
+                component.style.display="";
+            }else if(componentType===type){
+                component.style.display="";
+            }else if(componentType!==type){
+                component.style.display="none";
+            }
+        }
+    }
+   async _onComponentCreate(event){
         event.preventDefault();
-        const element=event.currentTarget;
-        const dataset=element.dataset;
-        let testType=dataset["rollType"];
-        var testTarget=parseInt(dataset["target"]);
-        var testLabel=dataset["label"];
-        var testChar=dataset["char"];
-        var item=null;
+        let templateOptions={"type":[{"name":"knightComponent","label":"Component"},{"name":"rangedWeapon","label":"Ranged Weapon"},{"name":"meleeWeapon","label":"Melee Weapon"},{"name":"ammunition","label":"Ammunition"},{"name":"knightArmor","label":"Armor"},{"name":"knightStructure","label":"Structure"},{"name":"knightCore","label":"Core"}]};
+
+        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/select-wargear-type-dialog.html', templateOptions);
+
+        renderedTemplate.then(content => { 
+            new Dialog({
+                title: "New Component Type",
+                content: content,
+                buttons:{
+                    submit:{
+                        label:"Yes",
+                        callback: async html => {
+                            const type = html.find('select[name="wargear-type"]').val();
+                            const itemData = {
+                                name: `new ${type}`,
+                                type: type
+                            };
+
+                            let item=await FortyKItem.create(itemData,{temporary:true});
+                            await this.actor.createEmbeddedDocuments("Item",[item.data],{"renderSheet":true});
 
 
-        FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
 
-        //autofocus the input after it is rendered.
+
+
+                        }
+                    },
+                    cancel:{
+                        label: "No",
+                        callback: null
+                    }
+                },
+                default: "submit"
+            }).render(true)
+        });
     }
     _onAddIncome(event){
         let bonds=parseInt(this.actor.data.data.wealth.value);

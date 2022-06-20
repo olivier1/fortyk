@@ -1,6 +1,7 @@
 import {FortykRollDialogs} from "../FortykRollDialogs.js";
 import {FortykRolls} from "../FortykRolls.js";
-export class FortyKKnightSheet extends ActorSheet {
+import FortyKBaseActorSheet from "./base-sheet.js";
+export class FortyKKnightSheet extends FortyKBaseActorSheet {
     
     /** @override */
     static get defaultOptions() {
@@ -9,7 +10,7 @@ export class FortyKKnightSheet extends ActorSheet {
             template: "systems/fortyk/templates/actor/knight-sheet.html",
             width: 666,
             height: 660,
-            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "main" }],
+            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "mechbay" }],
             default:null,
             scrollY: [
                 
@@ -30,6 +31,34 @@ export class FortyKKnightSheet extends ActorSheet {
         super.activateListeners(html);
         // Everything below here is only needed if the sheet is editable
          html.find('.rollable').click(this._onRoll.bind(this));
+        html.find('.mechBat').click(this._onMechbayTabClick.bind(this));
+    }
+    
+    _onMechbayTabClick(event){
+        let tab=event.currentTarget;
+        let tabClasses=tab.classList;
+        let tabs=document.getElementsByClassName("mechBat");
+        
+        if(!tabClasses.contains("active2")){
+            for(let i=0;i<tabs.length;i++){
+                if(tabs[i].classList.contains("active2")){
+                     tabs[i].classList.remove("active2");
+                }
+               
+            }
+            let category=tab.dataset["tab"];
+            tabClasses.add("active2");
+            let lists=document.getElementsByName("mechInventoryTab");
+            for(let i=0;i<lists.length;i++){
+                let list=lists[i];
+                let cat=list.dataset["tab"];
+                if(cat===category){
+                    list.style.display="";
+                }else{
+                    list.style.display="none";
+                }
+            }
+        }
     }
     /**
    * Handle clickable rolls.

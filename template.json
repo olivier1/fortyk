@@ -1076,11 +1076,17 @@
                 },
                 "amount": {
                     "value": 1,
+                    "taken":0,
+                    "left":0,
                     "type": "Number"
                 },
                 "quality": {
                     "value": "Common",
                     "type": "String"
+                },
+                "space":{
+                    "value":0,
+                    "type":"Number"
                 }
             },
             "tableEntry": {

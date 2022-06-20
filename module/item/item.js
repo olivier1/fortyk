@@ -62,6 +62,19 @@ export class FortyKItem extends Item {
             const data = this.actor.data.data;
             let actor=this.actor;
             item.data.isPrepared=true;
+            if(actor.type==="knightHouse"){
+                if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="ammunition"){
+                    item.data.knightComponentType="Weapons";
+                }else if(item.type==="knightComponent"){
+                     item.data.knightComponentType="Components";
+                }else if(item.type==="knightArmor"){
+                     item.data.knightComponentType="Armors";
+                }else if(item.type==="knightCore"){
+                     item.data.knightComponentType="Cores";
+                }else if(item.type==="knightStructure"){
+                     item.data.knightComponentType="Structures";
+                }
+            }
             if(item.type==="meleeWeapon"){
                 item.data.damageFormula.value=item.data.damageFormula.formula;
                 item.data.range.value=item.data.range.formula;
@@ -160,7 +173,7 @@ export class FortyKItem extends Item {
                 }
             }
 
-            if(actor.type!=="vehicle"){
+            if(actor.type!=="vehicle"&&actor.type!=="knightHouse"){
                 if(item.type==="psychicPower"){
                     let psyniscience=actor.data.data.psyniscience;
                     let pr=parseInt(item.data.curPR.value);
