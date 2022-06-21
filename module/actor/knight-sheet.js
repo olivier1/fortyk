@@ -21,9 +21,16 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
      /** @override */
     getData() {
         const data = super.getData();
+        const actor=this.actor;
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
-        
+        data.meleeWeapons=actor.itemTypes.meleeWeapon;
+        data.rangedWeapons=actor.itemTypes.rangedWeapon;
+        data.ammunition=actor.itemTypes.ammunition;
+        data.components=actor.itemTypes.knightComponent;
+        data.armors=actor.itemTypes.knightArmor;
+        data.cores=actor.itemTypes.knightCore;
+        data.structures=actor.itemTypes.knightStructure;
         return data;
     }
     /** @override */

@@ -936,6 +936,19 @@
             "description":{
                 "value":"",
                 "type":"String"
+            },
+            "knight":{
+                "house":"",
+                "chassis":"",
+                "plating":"",
+                "sensor":"",
+                "coreMod":"",
+                "core":"",
+                "structure":"",
+                "armor":"",
+                "armActuator":"",
+                "legActuator":"",
+                "throneMod":""
             }
 
         },
@@ -987,6 +1000,7 @@
             "knightArmor",
             "knightStructure",
             "knightComponent",
+            "knightChassis",
             "cadetHouse",
             "repairEntry",
             "outpost"
@@ -1611,6 +1625,54 @@
             "space":{
                 "value":0,
                 "type":"Number"
+            }
+        },
+        "knightChassis":{
+            "structuralIntegrity":{
+                "value":0,
+                "type":"Number"
+            },
+            "tonnage":{
+                "value":0,
+                "type":"Number"
+            },
+            "armor":{
+                "value":0,
+                "type":"Number"
+            },
+            "speed":{
+                "value":0,
+                "type":"Number"
+            },
+            "manoeuvrability":{
+                "value":0,
+                "type":"Number"
+            },
+            "space":{
+                "value":0,
+                "type":"Number"
+            },
+            "hardPoints":{
+                "carapace":{
+                    "titanicArtillery":[],
+                    "titanicRanged":[],
+                    "auxiliary":[]
+                },
+                "leftArm":{
+                    "titanicRanged":[],
+                    "titanicMelee":[],
+                    "auxiliary":[]
+                },
+                "torso":{
+                    "titanicRanged":[],
+                    "titanicMelee":[],
+                    "auxiliary":[]
+                },
+                "rightArm":{
+                    "titanicRanged":[],
+                    "titanicMelee":[],
+                    "auxiliary":[]
+                }
             }
         },
         "cadetHouse":{

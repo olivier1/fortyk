@@ -10,9 +10,9 @@
             <div class="flexcol">
                 <span class="descrSpan">Chassis:</span>
 
-                <select class="typeSelect" name="data.chassis.id" data-dtype="String">
+                <select class="typeSelect" name="data.knight.chassis" data-dtype="String">
                     <option value="">Select a Chassis</option>
-                    {{#select data.chassis.id}}
+                    {{#select data.knight.chassis}}
 
                     {{#each chassis}}
 
@@ -26,9 +26,9 @@
             <div class="flexcol">
                 <span class="descrSpan">House:</span>
 
-                <select class="typeSelect" name="data.house.id" data-dtype="String">
+                <select class="typeSelect" name="data.knight.house" data-dtype="String">
                     <option value="">Select a House</option>
-                    {{#select data.house.id}}
+                    {{#select data.knight.house}}
 
                     {{#each house}}
 
@@ -42,9 +42,9 @@
             <div class="flexcol">
                 <span class="descrSpan">Pilot:</span>
 
-                <select class="typeSelect" name="data.pilot.id" data-dtype="String">
+                <select class="typeSelect" name="data.crew.pilotID" data-dtype="String">
                     <option value="">Select a Pilot</option>
-                    {{#select data.pilot.id}}
+                    {{#select data.crew.pilotID}}
 
                     {{#each pilots}}
 
@@ -78,49 +78,50 @@
                         <span class="list-item-header">A</span>
                         <span class="list-item-header">T</span>
                         <span class="list-item-header">S</span>
-                        <span class="mechbay-grid-section list-item-header4" name="rangedWeapons">Ranged Weapons</span>
+                        <a class="mechbay-grid-section list-item-header4" name="rangedWeapons">Ranged Weapons</a>
                         {{#each rangedWeapons}}
                         <span class="list-item" name="rangedWeapons">{{this.name}}</span>
                         <span class="list-item" name="rangedWeapons">{{this.data.data.amount.left}}</span>
                         <span class="list-item" name="rangedWeapons">{{this.data.data.weight.value}}</span>
                         <span class="list-item" name="rangedWeapons">{{this.data.data.space.value}}</span>
                         {{/each}}
-                        <span class="mechbay-grid-section list-item-header4" name="ammunition">Ammunition</span>
+                        <a class="mechbay-grid-section list-item-header4" name="ammunition">Ammunition</a>
                         {{#each ammunition}}
                         <span class="list-item" name="ammunition">{{this.name}}</span>
                         <span class="list-item" name="ammunition">{{this.data.data.amount.left}}</span>
                         <span class="list-item" name="ammunition">{{this.data.data.weight.value}}</span>
                         <span class="list-item" name="ammunition">{{this.data.data.space.value}}</span>
                         {{/each}}
-                        <span class="mechbay-grid-section list-item-header4" name="meleeWeapons">Melee Weapons</span>
+                        <a class="mechbay-grid-section list-item-header4" name="meleeWeapons">Melee Weapons</a>
                         {{#each meleeWeapons}}
+                        {{debug this}}
                         <span class="list-item" name="meleeWeapons">{{this.name}}</span>
                         <span class="list-item" name="meleeWeapons">{{this.data.data.amount.left}}</span>
                         <span class="list-item" name="meleeWeapons">{{this.data.data.weight.value}}</span>
                         <span class="list-item" name="meleeWeapons">{{this.data.data.space.value}}</span>
                         {{/each}}
-                        <span class="mechbay-grid-section list-item-header4" name="components">Components</span>
+                        <a class="mechbay-grid-section list-item-header4" name="components">Components</a>
                         {{#each components}}
                         <span class="list-item" name="components">{{this.name}}</span>
                         <span class="list-item" name="components">{{this.data.data.amount.left}}</span>
                         <span class="list-item" name="components">{{this.data.data.weight.value}}</span>
                         <span class="list-item" name="components">{{this.data.data.space.value}}</span>
                         {{/each}}
-                        <span class="mechbay-grid-section list-item-header4" name="cores">Cores</span>
+                        <a class="mechbay-grid-section list-item-header4" name="cores">Cores</a>
                         {{#each cores}}
                         <span class="list-item" name="cores">{{this.name}}</span>
                         <span class="list-item" name="cores">{{this.data.data.amount.left}}</span>
                         <span class="list-item" name="cores">{{this.data.data.weight.value}}</span>
                         <span class="list-item" name="cores">{{this.data.data.space.value}}</span>
                         {{/each}}
-                        <span class="mechbay-grid-section list-item-header4" name="armors">Armors</span>
+                        <a class="mechbay-grid-section list-item-header4" name="armors">Armors</a>
                         {{#each cores}}
                         <span class="list-item" name="armors">{{this.name}}</span>
                         <span class="list-item" name="armors">{{this.data.data.amount.left}}</span>
                         <span class="list-item" name="armors">{{this.data.data.weight.value}}</span>
                         <span class="list-item" name="armors">{{this.data.data.space.value}}</span>
                         {{/each}}
-                        <span class="mechbay-grid-section list-item-header4" name="structures">Structures</span>
+                        <a class="mechbay-grid-section list-item-header4" name="structures">Structures</a>
                         {{#each structures}}
                         <span class="list-item" name="structures">{{this.name}}</span>
                         <span class="list-item" name="structures">{{this.data.data.amount.left}}</span>
@@ -131,26 +132,26 @@
 
                 </div>
                 <div class="mechTab weapons" name="mechInventoryTab" style="display: none" data-group="secondary" data-tab="weapons">
-                    <div class="grid list-4col2">
+                    <div class="grid list4col2">
                         <span class="list-item-header">Name</span>
                         <span class="list-item-header">A</span>
                         <span class="list-item-header">T</span>
                         <span class="list-item-header">S</span>
-                        <span class="mechbay-grid-section list-item-header4" name="rangedWeapons">Ranged Weapons</span>
+                        <a class="mechbay-grid-section list-item-header4" name="rangedWeapons">Ranged Weapons</a>
                         {{#each rangedWeapons}}
                         <span class="list-item" name="rangedWeapons">{{this.name}}</span>
                         <span class="list-item" name="rangedWeapons">{{this.data.data.amount.left}}</span>
                         <span class="list-item" name="rangedWeapons">{{this.data.data.weight.value}}</span>
                         <span class="list-item" name="rangedWeapons">{{this.data.data.space.value}}</span>
                         {{/each}}
-                        <span class="mechbay-grid-section list-item-header4" name="ammunition">Ammunition</span>
+                        <a class="mechbay-grid-section list-item-header4" name="ammunition">Ammunition</a>
                         {{#each ammunition}}
                         <span class="list-item" name="ammunition">{{this.name}}</span>
                         <span class="list-item" name="ammunition">{{this.data.data.amount.left}}</span>
                         <span class="list-item" name="ammunition">{{this.data.data.weight.value}}</span>
                         <span class="list-item" name="ammunition">{{this.data.data.space.value}}</span>
                         {{/each}}
-                        <span class="mechbay-grid-section list-item-header4" name="meleeWeapons">Melee Weapons</span>
+                        <a class="mechbay-grid-section list-item-header4" name="meleeWeapons">Melee Weapons</a>
                         {{#each meleeWeapons}}
                         <span class="list-item" name="meleeWeapons">{{this.name}}</span>
                         <span class="list-item" name="meleeWeapons">{{this.data.data.amount.left}}</span>
@@ -160,12 +161,12 @@
                     </div>
                 </div>
                 <div class="mechTab components" name="mechInventoryTab" style="display: none" data-group="secondary" data-tab="components">
-                    <div class="grid list-4col2">
+                    <div class="grid list4col2">
                         <span class="list-item-header">Name</span>
                         <span class="list-item-header">A</span>
                         <span class="list-item-header">T</span>
                         <span class="list-item-header">S</span>
-                        <span class="mechbay-grid-section list-item-header4" name="components">Components</span>
+                        <a class="mechbay-grid-section list-item-header4" name="components">Components</a>
                         {{#each components}}
                         <span class="list-item" name="components">{{this.name}}</span>
                         <span class="list-item" name="components">{{this.data.data.amount.left}}</span>
@@ -176,12 +177,12 @@
 
                 </div>
                 <div class="mechTab cores" name="mechInventoryTab" style="display: none" data-group="secondary" data-tab="cores">
-                    <div class="grid list-4col2">
+                    <div class="grid list4col2">
                         <span class="list-item-header">Name</span>
                         <span class="list-item-header">A</span>
                         <span class="list-item-header">T</span>
                         <span class="list-item-header">S</span>
-                        <span class="mechbay-grid-section list-item-header4" name="cores">Cores</span>
+                        <a class="mechbay-grid-section list-item-header4" name="cores">Cores</a>
                         {{#each cores}}
                         <span class="list-item" name="cores">{{this.name}}</span>
                         <span class="list-item" name="cores">{{this.data.data.amount.left}}</span>
@@ -191,12 +192,12 @@
                     </div>
                 </div>
                 <div class="mechTab structures" name="mechInventoryTab" style="display: none" data-group="secondary" data-tab="structures">
-                    <div class="grid list-4col2">
+                    <div class="grid list4col2">
                         <span class="list-item-header">Name</span>
                         <span class="list-item-header">A</span>
                         <span class="list-item-header">T</span>
                         <span class="list-item-header">S</span>
-                        <span class="mechbay-grid-section list-item-header4" name="armors">Armors</span>
+                        <a class="mechbay-grid-section list-item-header4" name="armors">Armors</a>
                         {{#each cores}}
                         <span class="list-item" name="armors">{{this.name}}</span>
                         <span class="list-item" name="armors">{{this.data.data.amount.left}}</span>
@@ -207,12 +208,12 @@
 
                 </div>
                 <div class="mechTab armors" name="mechInventoryTab" style="display: none" data-group="secondary" data-tab="armors">
-                    <div class="grid list-4col2">
+                    <div class="grid list4col2">
                         <span class="list-item-header">Name</span>
                         <span class="list-item-header">A</span>
                         <span class="list-item-header">T</span>
                         <span class="list-item-header">S</span>
-                        <span class="mechbay-grid-section list-item-header4" name="structures">Structures</span>
+                        <a class="mechbay-grid-section list-item-header4" name="structures">Structures</a>
                         {{#each structures}}
                         <span class="list-item" name="structures">{{this.name}}</span>
                         <span class="list-item" name="structures">{{this.data.data.amount.left}}</span>
@@ -227,7 +228,73 @@
         </div>
     </div>
     <div class="right-mechbay flexcol">
+        <div class="mechgrid ">
+            <div class="info1 mechgrid-child flexcol flex-group-center">
 
+                <div class="flexrow">
+                    <span>Speed: </span>
+                </div>
+
+                <div class="flexrow">
+                    <span>Stuctural integrity: </span> <input type="text" class="combat-resources" data-target="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>/{{data.secChar.wounds.max}}
+                </div>
+                <span>Armor: 0/0</span>
+
+            </div>
+            <div class="missile-weapon mechgrid-child flex-group-center">
+                <span>Missile Weapon Slot</span>
+            </div>
+            <div class="info2 mechgrid-child flexcol flex-group-center">
+                <span>Tonnage:0/0</span>
+                <span>Space: 0/0</span>
+                <span>Core Overload: 0%</span>
+            </div>
+            <div class="left-weapon mechgrid-child flex-group-center">
+                <span>Weapon Slot</span>
+            </div>
+            <div class="center mechgrid-child flexcol flex-group-center">
+                <span>Throne Mod</span>
+                <span>Core</span>
+                <span>Armor</span>
+                <span>Structure</span>
+                <span>Sensor</span>
+                <span>Plating</span>
+                <span>Core Mod</span>
+                <span>Arm Actuator</span>
+                <span>Leg Actuator</span>
+                <span>Other Components</span>
+                <span>Other Components</span>
+                <span>Other Components</span>
+                <span>Other Components</span>
+                <span>Other Components</span>
+                <span>Other Components</span>
+                <span>Other Components</span>
+            </div>
+            <div class="right-weapon mechgrid-child flex-group-center">
+                <span>Weapon Slot</span>
+            </div>
+            <div class="info3 mechgrid-child flexcol">
+                <div class="flexrow flex-group-center">
+                    <span>Front Armor: </span><input type="text" class="combat-resources" data-target="data.facings.front.armor" value="{{data.facings.front.armor}}" data-dtype="Number"/><span>/50</span>
+                </div>
+
+                <div class="flexrow flex-group-center">
+                    <span>Left Side Armor: </span><input type="text" class="combat-resources" data-target="data.facings.lSide.armor" value="{{data.facings.lSide.armor}}" data-dtype="Number"/><span>/50</span>
+                </div>
+
+                <div class="flexrow flex-group-center">
+                    <span>Right Side Armor: </span> <input type="text" class="combat-resources" data-target="data.facings.rSide.armor" value="{{data.facings.rSide.armor}}" data-dtype="Number"/><span>/50</span>
+                </div>
+
+                <div class="flexrow flex-group-center">
+                    <span>Rear Armor: </span><input type="text" class="combat-resources" data-target="data.facings.rear.armor" value="{{data.facings.rear.armor}}" data-dtype="Number"/><span>/50</span>
+                </div>
+                <div class="flexrow flex-group-center">
+                    <span>Armor Weight: 0</span>
+                </div>
+            </div>
+            <div class="info4 mechgrid-child"></div>
+        </div>
     </div>
 
 </div>
