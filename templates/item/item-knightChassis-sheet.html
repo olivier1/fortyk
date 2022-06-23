@@ -1,0 +1,117 @@
+<form class="{{cssClass}} item-sheet flexcol">
+    <header class="sheet-header">
+
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
+
+    </header>
+    <div class="flexcol">
+        <label>Name:</label>
+        <input type="text" value="{{name}}" name="name">
+    </div>
+    <div class="flexcol">
+        <label>Tonnage:</label>
+        <input type="text" value="{{data.tonnage.value}}" name="data.tonnage.value">
+    </div>
+    <div class="flexcol">
+        <label>Space:</label>
+        <input type="text" value="{{data.space.value}}" name="data.space.value">
+    </div>
+     <div class="flexcol">
+        <label>Structural Integrity:</label>
+        <input type="text" value="{{data.structuralIntegrity.value}}" name="data.structuralIntegrity.value">
+    </div>
+     <div class="flexcol">
+        <label>Max Armor:</label>
+        <input type="text" value="{{data.armor.value}}" name="data.armor.value">
+    </div>
+     <div class="flexcol">
+        <label>Base Speed:</label>
+        <input type="text" value="{{data.speed.value}}" name="data.speed.value">
+    </div>
+     <div class="flexcol">
+        <label>Manoeuvrability:</label>
+        <input type="text" value="{{data.manoeuvrability.value}}" name="data.manoeuvrability.value">
+    </div>
+    <div class="flexcol">
+        <label>Carapace Hard points:</label>
+        <label>Titanic Artillery</label>
+        <input type="text" class="knight-Hardpoint" value="{{data.hardPoints.carapace.titanicArtillery.length}}" data-location="carapace" data-type="titanicArtillery">
+        <label>Titanic Ranged</label>
+        <input type="text" class="knight-Hardpoint" value="{{data.hardPoints.carapace.titanicRanged.length}}" data-location="carapace" data-type="titanicRanged">
+        <label>Auxiliary</label>
+        <input type="text" class="knight-Hardpoint" value="{{data.hardPoints.carapace.auxiliary.length}}" data-location="carapace" data-type="auxiliary">
+        <label>Left Arm Hard points:</label>
+        <label>Titanic Melee</label>
+        <input type="text" class="knight-Hardpoint" value="{{data.hardPoints.leftArm.titanicMelee.length}}" data-location="leftArm" data-type="titanicMelee">
+        <label>Titanic Ranged</label>
+        <input type="text" class="knight-Hardpoint" value="{{data.hardPoints.leftArm.titanicRanged.length}}" data-location="leftArm" data-type="titanicRanged">
+        <label>Auxiliary</label>
+        <input type="text" class="knight-Hardpoint" value="{{data.hardPoints.leftArm.auxiliary.length}}" data-location="leftArm" data-type="auxiliary">
+        <label>Right Arm Hard points:</label>
+        <label>Titanic Melee</label>
+        <input type="text" class="knight-Hardpoint" value="{{data.hardPoints.rightArm.titanicMelee.length}}" data-location="rightArm" data-type="titanicMelee">
+        <label>Titanic Ranged</label>
+        <input type="text" class="knight-Hardpoint" value="{{data.hardPoints.rightArm.titanicRanged.length}}" data-location="rightArm" data-type="titanicRanged">
+        <label>Auxiliary</label>
+        <input type="text" class="knight-Hardpoint" value="{{data.hardPoints.rightArm.auxiliary.length}}" data-location="rightArm" data-type="auxiliary">
+        <label>Torso Hard points:</label>
+        <label>Titanic Melee</label>
+        <input type="text" class="knight-Hardpoint" value="{{data.hardPoints.torso.titanicMelee.length}}" data-location="torso" data-type="titanicMelee">
+        <label>Titanic Ranged</label>
+        <input type="text" class="knight-Hardpoint" value="{{data.hardPoints.torso.titanicRanged.length}}" data-location="torso" data-type="titanicRanged">
+        <label>Auxiliary</label>
+        <input type="text" class="knight-Hardpoint" value="{{data.hardPoints.torso.auxiliary.length}}" data-location="torso" data-type="auxiliary">
+    </div>
+    
+    {{#if isGM}}
+    <div class="flexcol">
+        <a class="modifier button">Active Effect</a>
+    </div>
+    {{/if}}
+    <div class="item-description">
+        <label>Description:</label>
+        {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+    </div>
+</form>
+"structuralIntegrity":{
+                "value":0,
+                "type":"Number"
+            },
+            "tonnage":{
+                "value":0,
+                "type":"Number"
+            },
+            "armor":{
+                "value":0,
+                "type":"Number"
+            },
+            "speed":{
+                "value":0,
+                "type":"Number"
+            },
+            "manoeuvrability":{
+                "value":0,
+                "type":"Number"
+            },
+            "hardPoints":{
+                "carapace":{
+                    "titanicArtillery":[],
+                    "titanicRanged":[],
+                    "auxiliary":[]
+                },
+                "leftArm":{
+                    "titanicRanged":[],
+                    "titanicMelee":[],
+                    "auxiliary":[]
+                },
+                "torso":{
+                    "titanicRanged":[],
+                    "titanicMelee":[],
+                    "auxiliary":[]
+                },
+                "rightArm":{
+                    "titanicRanged":[],
+                    "titanicMelee":[],
+                    "auxiliary":[]
+                }
+            }

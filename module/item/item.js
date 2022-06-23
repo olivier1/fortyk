@@ -57,12 +57,16 @@ export class FortyKItem extends Item {
         item["FORTYK"]=game.fortyk.FORTYK;
 
         //ensure this is an owned item
-
+        
         if(this.actor!==null&&this.actor.data!==undefined){
             const data = this.actor.data.data;
             let actor=this.actor;
             item.data.isPrepared=true;
             if(actor.type==="knightHouse"){
+                if(item.type!=="repairEntry"&&item.type!=="cadetHouse"&&item.type!=="outpost"){
+                   item.data.amount.left=item.data.amount.value-item.data.amount.taken; 
+                }
+                
                 if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="ammunition"){
                     item.data.knightComponentType="Weapons";
                 }else if(item.type==="knightComponent"){

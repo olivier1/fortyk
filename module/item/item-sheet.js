@@ -52,7 +52,6 @@ export class FortyKItemSheet extends ItemSheet {
         if(this.actor!==null&&this.actor.type==="repairEntry"){
             data.knights=this.actor.data.data.knights;
         }
-        console.log(this)
         if(this.actor&&this.actor.type==="vehicle"){
             data.vehicle=true;
         }
@@ -88,6 +87,8 @@ export class FortyKItemSheet extends ItemSheet {
         html.find('.skill-children').click(this._onChildrenClick.bind(this));
         html.find('.special').click(this._onSpecialClick.bind(this));
         html.find('.modifier').click(this._onModifierClick.bind(this));
+        html.find('.knight-Hardpoint').keydown(this._onHardpointEnter.bind(this));
+        html.find('.knight-Hardpoint').focusout(this._onHardpointEdit.bind(this));
         // Autoselect entire text 
         $("input[type=text]").focusin(function() {
             $(this).select();
@@ -249,6 +250,91 @@ export class FortyKItemSheet extends ItemSheet {
         let value=event.currentTarget.checked;
         if(value){
             await this.item.update({'data.parent.value':""});
+        }
+    }
+    async _onHardpointEdit(event){
+        event.preventDefault();
+        if(!this.updateObj){
+            this.updateObj={};
+        }
+        let item=this.item;
+        let location=event.target.attributes["data-location"].value;
+        let type=event.target.attributes["data-type"].value;
+        let newAmt=event.target.value;
+
+        newAmt=parseFloat(newAmt);
+        if(isNaN(newAmt)){
+            return;
+        }
+        let target=`data.hardPoints.${location}.${type}`;
+        let oldValue=item.data.data.hardPoints[location][type].length;
+        let oldArray=item.data.data.hardPoints[location][type];
+
+
+        if((newAmt>oldValue)){
+            for(let i=oldValue;i<newAmt;i++){
+                oldArray.push("");
+            }
+            this.updateObj[target]=oldArray;
+
+
+
+
+        }else if(oldValue>newAmt){
+            for(let i=oldValue;i>newAmt;i--){
+                oldArray.pop();
+            }
+            this.updateObj[target]=oldArray;
+        }
+        let updateNmbr=Object.keys(this.updateObj).length;
+        if(updateNmbr>0&&(!event.relatedTarget||($(event.relatedTarget).prop("class").indexOf("knight-Hardpoint") === -1))) {
+
+            await item.update(this.updateObj);
+            this.updateObj=undefined;
+
+        }
+    }
+    async _onHardpointEnter(event){
+        if (event.keyCode == 13){
+            if(!this.updateObj){
+                this.updateObj={};
+            }
+            let item=this.item;
+            let location=event.target.attributes["data-location"].value;
+            let type=event.target.attributes["data-type"].value;
+            let newAmt=event.target.value;
+
+            newAmt=parseFloat(newAmt);
+            if(isNaN(newAmt)){
+                return;
+            }
+            let target=`data.hardPoints.${location}.${type}`;
+            let oldValue=item.data.data.hardPoints[location][type].length;
+            let oldArray=item.data.data.hardPoints[location][type];
+            console.log(oldValue)
+
+            if((newAmt>oldValue)){
+                for(let i=oldValue;i<newAmt;i++){
+                    oldArray.push("");
+                }
+                this.updateObj[target]=oldArray;
+
+
+
+
+                await item.update(this.updateObj);
+                this.updateObj=undefined;
+
+
+
+            }else if(oldValue>newAmt){
+                for(let i=oldValue;i>newAmt;i--){
+                    oldArray.pop();
+                }
+                this.updateObj[target]=oldArray;
+                await item.update(this.updateObj);
+                this.updateObj=undefined;
+            }
         }
     }
 }

@@ -530,6 +530,9 @@
     margin-left:3px;
     display:inherit;
 }
+.delete-weapon,
+.delete-component,
+.delete-chassis, 
 .item-delete{
     background-image: url("../icons/deleteicon.png") !important; 
     background-size: contain;
@@ -977,7 +980,10 @@
     grid-column:3;
     grid-row:3;
 }
-.missile-weapon{
+.mechbay-component{
+    
+}
+.carapace{
     grid-column:2;
     grid-row:1;
 }
@@ -989,9 +995,64 @@
     grid-column:3;
     grid-row:2;
 }
-.center{
+.torso{
     grid-column:2;
     grid-row:2 / span 2;    
 
+}
+.artillery-slot{
+    border: ridge;
+    background-color: #a9a9a996; 
+}
+.artillery-weapon{
+    border: outset;
+    background-color: #a9a9a996;
+    display: flex;
+    justify-content: center;
+}
+.ranged-slot{
+    border: ridge;
+    background-color: #8fbc8f9e; 
+    min-width: -webkit-fill-available;
+
+}
+.ranged-weapon{
+    border: outset;
+    background-color: #8fbc8f9e;
+    display: flex;
+    justify-content: center;
+    min-width: -webkit-fill-available;
+
+}
+.melee-slot{
+   border: ridge;
+    background-color: #f4a4607a;  
+    min-width: -webkit-fill-available;
+}
+}
+.melee-weapon{
+    border: outset;
+    background-color: #f4a4607a;
+    display: flex;
+    justify-content: center;
+     min-width: -webkit-fill-available;
+}
+.auxiliary-slot{
+   border: ridge;
+    background-color: #f0f8ffa6;  
+    min-width: -webkit-fill-available;
+}
+}
+.auxiliary-weapon{
+    border: outset;
+    background-color: #f0f8ffa6;
+    display: flex;
+    justify-content: center;
+     min-width: -webkit-fill-available;
+}
+.highlight-slot{
+    color: #000;
+    text-shadow: 0 0 10px red;
+    border: dotted;
 }
 [hidden] { display: none !important; }

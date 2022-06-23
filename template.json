@@ -1078,6 +1078,9 @@
             "equippable": {
                 "isEquipped": false
             },
+            "loanable":{
+                "originalId":""
+            },
             "physicalProp": {
                 "weight": {
                     "value": 0,
@@ -1119,7 +1122,8 @@
                 "weapon",
                 "description",
                 "physicalProp",
-                "equippable"
+                "equippable",
+                "loanable"
             ],
             "mods": [],
             "shield": {
@@ -1132,7 +1136,8 @@
                 "weapon",
                 "description",
                 "physicalProp",
-                "equippable"
+                "equippable",
+                "loanable"
             ],
             "rof": [{
                 "value": "s",
@@ -1167,7 +1172,8 @@
             "templates": [
                 "weapon",
                 "description",
-                "physicalProp"
+                "physicalProp",
+                "loanable"
             ],
             "currentClip": {
                 "value": 0,
@@ -1561,7 +1567,8 @@
             "templates":[
                 "description",
                 "physicalProp",
-                "equippable"
+                "equippable",
+                "loanable"
             ],
             "name":{
                 "value":"",
@@ -1574,17 +1581,14 @@
             "overload":{
                 "value":0,
                 "type":"Number"
-            },
-            "space":{
-                "value":0,
-                "type":"Number"
-
             }
         },
         "knightArmor":{
             "templates":[
                 "description",
-                "equippable"
+                "physicalProp",
+                "equippable",
+                "loanable"
             ],
             "name":{
                 "value":"",
@@ -1593,24 +1597,18 @@
             "weightRatio":{
                 "value":0,
                 "type":"Number"
-            },
-            "space":{
-                "value":0,
-                "type":"Number"
             }
         },
         "knightStructure":{
             "templates":[
                 "description",
-                "equippable"
+                "physicalProp",
+                "equippable",
+                "loanable"
             ],
             "name":{
                 "value":"",
                 "type":"String"
-            },
-            "space":{
-                "taken":0,
-                "maxMod":1
             },
             "SI":{
                 "mod":0
@@ -1620,19 +1618,24 @@
             "templates":[
                 "description",
                 "physicalProp",
-                "equippable"
-            ],
-            "space":{
-                "value":0,
-                "type":"Number"
-            }
+                "equippable",
+                "loanable"
+            ]
         },
         "knightChassis":{
+             "templates":[
+                "description",
+                 "equippable"
+            ],
             "structuralIntegrity":{
                 "value":0,
                 "type":"Number"
             },
             "tonnage":{
+                "value":0,
+                "type":"Number"
+            },
+            "space":{
                 "value":0,
                 "type":"Number"
             },
@@ -1645,10 +1648,6 @@
                 "type":"Number"
             },
             "manoeuvrability":{
-                "value":0,
-                "type":"Number"
-            },
-            "space":{
                 "value":0,
                 "type":"Number"
             },

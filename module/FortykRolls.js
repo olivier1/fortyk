@@ -109,6 +109,10 @@ returns the roll message*/
             if((type==="rangedAttack"||type==="meleeAttack")&&actor.getFlag("fortyk","weaponinstinct")&&fortykWeapon&&weapon.data.type.value==="Exotic"){
                 testDos+=1;
             }
+            //void strike extra dos
+            if((type==="rangedAttack"||type==="meleeAttack")&&fortykWeapon&&fortykWeapon.getFlag("fortyk","voidstrike")){
+                testDos+=1;
+            }
             templateOptions["dos"]="with "+testDos.toString()+" degree";
             if(testDos===1){}else{templateOptions["dos"]+="s";}
             templateOptions["dos"]+=" of success!";

@@ -1,0 +1,17 @@
+<div class="tntselect flexcol">
+    <div class="tntgrid grid grid-4col">
+        <span class="tntcheckbox tntheaderitem">Pick</span>
+        <span class="tntname tntheaderitem">Name</span>
+       
+        {{#each chassis}}
+            <input type="radio" class="tntcheckbox" name="chassis-choice"  data-compendium="{{pack}}" value="{{this.id}}">
+            
+            <span name="tntEntry" class="tntname tntitem" >{{this.name}}</span>
+         
+        
+
+
+
+        {{/each}}
+    </div>
+</div>

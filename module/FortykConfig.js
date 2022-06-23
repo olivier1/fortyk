@@ -139,7 +139,7 @@ FORTYK.extraHits={
 FORTYK.damageTypes=["Explosive","Rending","Impact","Energy"]
 FORTYK.meleeWeaponTypes=["Chain", "Force", "Power", "Shock", "Low-tech", "Exotic"]
 FORTYK.rangedWeaponTypes=["Bolt","Grenade", "Flame", "Las", "Melta", "Plasma", "Solid projectile", "Launcher", "Low-tech", "Exotic"]
-FORTYK.rangedWeaponClasses=[ "Basic","Pistol", "Heavy", "Thrown", "Titanic Ranged Weapon", "Titanic Missile Weapon"]
+FORTYK.rangedWeaponClasses=[ "Basic","Pistol", "Heavy", "Thrown", "Titanic Ranged Weapon", "Titanic Artillery Weapon"]
 FORTYK.meleeWeaponClasses=["Melee", "Melee Two-handed", "Shield", "Titanic Melee Weapon"]
 FORTYK.psychicPowerTypes=["Psychic Bolt", "Psychic Barrage", "Psychic Storm", "Psychic Blast", "Buff/Debuff", "Other"]
 FORTYK.psychicDisciplines=["Biomancy","Divination","Pyromancy","Telekinesis","Telepathy","Sanctic Daemonology","Malefic Daemonology","Tzeench","Slaanesh","Nurgle","Chapter","WAAAGH!","Navigator"]
@@ -514,6 +514,11 @@ FORTYK.weaponFlags={
         "value": false,
         "label": "Volkite",
         "description": "Damage rolls of 10 add another d10 to the damage, extra d10s do not generate further d10s."
+    },
+     "voidstrike": {
+        "value": false,
+        "label": "Voidstrike",
+        "description": "Weapons with the Voidstrike quality score an additional degree of success on a successful attack roll."
     },
     "warp": {
         "value": false,

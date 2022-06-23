@@ -231,6 +231,16 @@
             "path": "./packs/vehicle-traits.db",
             "system": "fortyk",
             "entity": "Item"
+        },
+        {
+            "label": "Knight Chassis",
+            "type": "Item",
+            "name": "knight-chassis",
+            "path": "packs/knight-chassis.db",
+            "system": "fortyk",
+            "package": "system",
+            "entity": "Item",
+            "private": false
         }
     ],
     "gridDistance": 1,

@@ -159,9 +159,9 @@
                 <span class="list-item-header">Entry</span>
                 <span class="list-item-header">Knight</span>
                 <span class="list-item-header">Time Left</span>
-                {{debug this}}
+              
                 {{#each repairEntries}}
-                {{debug ../data}}
+              
                 <div class=" drag {{#if (greaterThan ../data.repairBays.value @index)}}list-emphasis{{else}}list-item{{/if}}"  data-id="{{this.id}}">
 
                     <span data-id="{{this.id}}">{{name}}</span>

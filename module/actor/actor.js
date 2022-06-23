@@ -162,16 +162,16 @@ export class FortyKActor extends Actor {
    * Augment the basic actor data with additional dynamic data.
    */
     prepareData(){
-       
-            if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
-            if ( !this.data.name ) this.data.name = "New " + this.entity;
-            this.data.reset();
-            this.prepareBaseData();
 
-            this.prepareEmbeddedEntities();
-            this.prepareDerivedData();
-            this.data.isPrepared=true;
-        
+        if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
+        if ( !this.data.name ) this.data.name = "New " + this.entity;
+        this.data.reset();
+        this.prepareBaseData();
+
+        this.prepareEmbeddedEntities();
+        this.prepareDerivedData();
+        this.data.isPrepared=true;
+
 
     }
     prepareBaseData(){
@@ -259,6 +259,24 @@ export class FortyKActor extends Actor {
             lSide.start=rear.end+1;
             lSide.end=front.start-1;
         }*/
+        //prepare base stats for imperial knights if they have a chassis selected
+        if(data.knight.chassis){
+            data.chassis=this.getEmbeddedDocument("Item",data.knight.chassis);
+            let chassis=data.chassis.data.data;
+            data.secChar.wounds.max=parseInt(chassis.structuralIntegrity.value);
+            data.secChar.manoeuvrability.value=parseInt(chassis.structuralIntegrity.value);
+            data.secChar.speed.tactical=parseInt(chassis.speed.value);
+            data.knight.armor={};
+            data.knight.armor.value=0;
+            data.knight.armor.max=parseInt(chassis.armor.value);
+            data.knight.space={};
+            data.knight.space.max=parseInt(chassis.space.value);
+            data.knight.space.value=0;
+            data.knight.tonnage={};
+            data.knight.tonnage.max=parseInt(chassis.tonnage.value);
+            data.knight.tonnage.value=0;
+
+        }
         //initialize armor
         for(let [key, hitLoc] of Object.entries(data.facings)){
 
@@ -473,6 +491,13 @@ export class FortyKActor extends Actor {
                         data.rearWeapons.push(item); 
                     }
                 }
+            });
+        }else if(actorData.type === "knightHouse"){
+            this.items.forEach((fortykItem,id,items)=>{
+                let item=fortykItem.data;
+
+                fortykItem.prepareData();
+
             });
         }
 
@@ -805,18 +830,22 @@ export class FortyKActor extends Actor {
     }
     _prepareVehicleData(actorData){
         const data=actorData.data;
+        console.log(data);
+
         data.crew.ratingTotal=data.crew.rating+data.secChar.manoeuvrability.value;
+
         //calculate thresholds for superheavies and set min wounds
         if(this.getFlag("fortyk","superheavy")){
             let max=data.secChar.wounds.max
             let thresholdSize=Math.ceil(max/4);
-            console.log(data.secChar)
+
             data.secChar.wounds.thresholds["1"]=max-thresholdSize;
             data.secChar.wounds.thresholds["2"]=max-2*thresholdSize;
             data.secChar.wounds.thresholds["3"]=max-3*thresholdSize;
             data.secChar.wounds.thresholds["4"]=0;
             data.secChar.wounds.min=-100;
         }
+
     }
     _prepareHouseData(actorData){
         const data=actorData.data;
