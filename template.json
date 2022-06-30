@@ -948,7 +948,8 @@
                 "armor":"",
                 "armActuator":"",
                 "legActuator":"",
-                "throneMod":""
+                "throneMod":"",
+                "components":[""]
             }
 
         },
@@ -1620,7 +1621,11 @@
                 "physicalProp",
                 "equippable",
                 "loanable"
-            ]
+            ],
+            "type":{
+                "value":"",
+                "type":"String"
+            }
         },
         "knightChassis":{
              "templates":[

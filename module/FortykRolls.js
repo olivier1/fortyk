@@ -1052,7 +1052,7 @@ returns the roll message*/
                             if(fortykWeapon.getFlag("fortyk","melta")&&!tarActor.getFlag("fortyk","ceramiteplating")){
                                 let shortRange=parseInt(weapon.data.range.value)/2
                                 if(distance<=shortRange){
-                                    pen=pen*2;
+                                    pen=pen*3;
                                     damageOptions.results.push(`<span>Melta range increases penetration to ${pen}</span>`);
                                 }
                             }
@@ -3734,10 +3734,9 @@ returns the roll message*/
     }
     static async applyActiveEffect(token,effect,ignoreSON=false){
         if(effect.length>0){
-            if(game.user.isGM||token.owner){
+            if(game.user.isGM||token.isOwner){
 
                 let actor
-                console.log(token)
                 if(token instanceof Token){
                     actor=token.actor;
                 }else{

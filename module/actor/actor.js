@@ -266,9 +266,9 @@ export class FortyKActor extends Actor {
             data.secChar.wounds.max=parseInt(chassis.structuralIntegrity.value);
             data.secChar.manoeuvrability.value=parseInt(chassis.structuralIntegrity.value);
             data.secChar.speed.tactical=parseInt(chassis.speed.value);
-            data.knight.armor={};
-            data.knight.armor.value=0;
-            data.knight.armor.max=parseInt(chassis.armor.value);
+            data.knight.armorValues={};
+            data.knight.armorValues.value=0;
+            data.knight.armorValues.max=parseInt(chassis.armor.value);
             data.knight.space={};
             data.knight.space.max=parseInt(chassis.space.value);
             data.knight.space.value=0;

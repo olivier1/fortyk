@@ -154,200 +154,293 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         let component=house.getEmbeddedDocument("Item",draggedId);
         let chassis=actor.getEmbeddedDocument("Item",data.knight.chassis);
 
-        let amtTaken=component.data.data.amount.taken;
-        let newAmt=amtTaken+1;
+        let ok=this._authorizeComponent(component,event.target.className);
+        if(ok){
+            let amtTaken=component.data.data.amount.taken;
+            let newAmt=amtTaken+1;
 
 
-        let componentBase=component.data
-        componentBase.data.originalId=component.id;
-        console.log(componentBase)
-        component.update({"data.amount.taken":newAmt});
-        let newComponent=await actor.createEmbeddedDocuments("Item",[componentBase]);
-        await newComponent[0].update({"data.originalId":component.id})
-        let array=objectByString(chassis.data,path);
-        array[index]=newComponent[0].id;
-        console.log(newComponent)
-        let chassisUpdate={};
-       chassisUpdate[path]=array;
+            let componentBase=component.data
+            componentBase.data.originalId=component.id;
+            console.log(componentBase)
+            component.update({"data.amount.taken":newAmt});
+            let newComponent=await actor.createEmbeddedDocuments("Item",[componentBase]);
+            await newComponent[0].update({"data.originalId":component.id})
+            let array=objectByString(chassis.data,path);
+            array[index]=newComponent[0].id;
+            console.log(newComponent)
+            let chassisUpdate={};
+            chassisUpdate[path]=array;
 
-       chassis.update(chassisUpdate);
+            chassis.update(chassisUpdate);
+        }
+
     }
 
-
-
-
-    _onMechbayTabClick(event){
-        let tab=event.currentTarget;
-        let tabClasses=tab.classList;
-        let tabs=document.getElementsByClassName("mechBat");
-
-        if(!tabClasses.contains("active2")){
-            for(let i=0;i<tabs.length;i++){
-                if(tabs[i].classList.contains("active2")){
-                    tabs[i].classList.remove("active2");
-                }
-
+    _authorizeComponent(component,slotType){
+        let componentType=component.type;
+        if(componentType==="meleeWeapon"){
+            if(slotType.indexOf("melee-slot")!==-1){
+                return true;
             }
-            let category=tab.dataset["tab"];
-            tabClasses.add("active2");
-            let lists=document.getElementsByName("mechInventoryTab");
-            for(let i=0;i<lists.length;i++){
-                let list=lists[i];
-                let cat=list.dataset["tab"];
-                if(cat===category){
-                    list.style.display="";
-                }else{
-                    list.style.display="none";
+        }
+        if(componentType==="rangedWeapon"){
+            let weaponClass=component.data.data.class.value;
+            if(weaponClass==="Titanic Ranged Weapon"){
+                if(slotType.indexOf("ranged-slot")!==-1){
+                    return true;
+                }
+            }else if(weaponClass==="Titanic Artillery Weapon"){
+                if(slotType.indexOf("artillery-slot")!==-1){
+                    return true;
+                }
+            }else{
+                if(slotType.indexOf("auxiliary-slot")!==-1){
+                    return true;
                 }
             }
         }
+        if(componentType==="knightCore"){
+            if(slotType.indexOf("core-slot")!==-1){
+                return true;
+            }
+        }
+        if(componentType==="knightArmor"){
+            if(slotType.indexOf("armor-slot")!==-1){
+                return true;
+            }
+        }
+        if(componentType==="knightStructure"){
+            if(slotType.indexOf("structure-slot")!==-1){
+                return true;
+            }
+        }
+        if(componentType==="knightComponent"){
+            let componentSubType=component.data.data.type.value;
+            if(componentSubType==="Other"){
+                if(slotType.indexOf("other-slot")!==-1){
+                    return true;
+                }                
+
+            }
+            if(componentSubType==="Core Mod"){
+                if(slotType.indexOf("core-slot")!==-1){
+                    return true;
+                }                
+
+            }
+            if(componentSubType==="Throne Mod"){
+                if(slotType.indexOf("throne-slot")!==-1){
+                    return true;
+                }                
+
+            }
+            if(componentSubType==="Plating"){
+                if(slotType.indexOf("plating-slot")!==-1){
+                    return true;
+                }                
+
+            }
+            if(componentSubType==="sensor"){
+                if(slotType.indexOf("sensor-slot")!==-1){
+                    return true;
+                }                
+
+            }
+            if(componentSubType==="Arm Actuator"){
+                if(slotType.indexOf("arm-actuator-slot")!==-1){
+                    return true;
+                }                
+
+            }
+            if(componentSubType==="Leg Actuator"){
+                if(slotType.indexOf("leg-actuator-slot")!==-1){
+                    return true;
+                }                
+
+            }
+        }
+        if(componentType==="ammunition"){
+            if(slotType.indexOf("other-slot")!==-1){
+                return true;
+            }   
+        }
+        return false;
     }
-    /**
+   
+
+_onMechbayTabClick(event){
+    let tab=event.currentTarget;
+    let tabClasses=tab.classList;
+    let tabs=document.getElementsByClassName("mechBat");
+
+    if(!tabClasses.contains("active2")){
+        for(let i=0;i<tabs.length;i++){
+            if(tabs[i].classList.contains("active2")){
+                tabs[i].classList.remove("active2");
+            }
+
+        }
+        let category=tab.dataset["tab"];
+        tabClasses.add("active2");
+        let lists=document.getElementsByName("mechInventoryTab");
+        for(let i=0;i<lists.length;i++){
+            let list=lists[i];
+            let cat=list.dataset["tab"];
+            if(cat===category){
+                list.style.display="";
+            }else{
+                list.style.display="none";
+            }
+        }
+    }
+}
+/**
    * Handle clickable rolls.
    * @param {Event} event   The originating click event
    * @private
    */
-    async _onRoll(event) {
-        event.preventDefault();
-        const element = event.currentTarget;
-        const dataset = element.dataset;
-        let testType=dataset["rollType"];
-        var testTarget=parseInt(dataset["target"]);
-        var testLabel=dataset["label"];
-        var testChar=dataset["char"];
-        var item=null;
+async _onRoll(event) {
+    event.preventDefault();
+    const element = event.currentTarget;
+    const dataset = element.dataset;
+    let testType=dataset["rollType"];
+    var testTarget=parseInt(dataset["target"]);
+    var testLabel=dataset["label"];
+    var testChar=dataset["char"];
+    var item=null;
 
 
-        FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
+    FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
 
-        //autofocus the input after it is rendered.
-    }
-    async _onChassisPick(event){
-        var chassisPack=await game.packs.get("fortyk.knight-chassis");
-        let chassis=await chassisPack.getDocuments();
-        let templateOptions={"chassis":chassis};
-        let actor=this.actor;
-        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/knight-chassis-dialog.html', templateOptions);
-        var options = {
-            width: 666,
-            height: 600,
-            classes:["systems/fortyk/css/fortyk.css"]
-        };
+    //autofocus the input after it is rendered.
+}
+async _onChassisPick(event){
+    var chassisPack=await game.packs.get("fortyk.knight-chassis");
+    let chassis=await chassisPack.getDocuments();
+    let templateOptions={"chassis":chassis};
+    let actor=this.actor;
+    let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/knight-chassis-dialog.html', templateOptions);
+    var options = {
+        width: 666,
+        height: 600,
+        classes:["systems/fortyk/css/fortyk.css"]
+    };
 
-        renderedTemplate.then(content => { 
-            new Dialog({
-                title: "Pick a Chassis",
-                content: content,
-                buttons:{
-                    submit:{
-                        label:"Add selected to Character",
-                        callback: async html => {
-                            let selectedId= $(html).find('input:checked').val();
-
-
-                            console.log(selectedId);
+    renderedTemplate.then(content => { 
+        new Dialog({
+            title: "Pick a Chassis",
+            content: content,
+            buttons:{
+                submit:{
+                    label:"Add selected to Character",
+                    callback: async html => {
+                        let selectedId= $(html).find('input:checked').val();
 
 
-                            let chassisDoc=await chassisPack.getDocument(selectedId);
-                            console.log(chassisDoc)
+                        console.log(selectedId);
+
+
+                        let chassisDoc=await chassisPack.getDocument(selectedId);
+                        console.log(chassisDoc)
 
 
 
-                            let createdChassis=await actor.createEmbeddedDocuments("Item",[chassisDoc.data]);
-                            console.log(createdChassis)
-                            let id=createdChassis[0].id;
-                            actor.update({"data.knight.chassis":id});
-                            this.render(true);
-                        }
+                        let createdChassis=await actor.createEmbeddedDocuments("Item",[chassisDoc.data]);
+                        console.log(createdChassis)
+                        let id=createdChassis[0].id;
+                        actor.update({"data.knight.chassis":id});
+                        this.render(true);
+                    }
+                }
+            },
+            default: "submit"
+        },options).render(true)
+    });
+}
+async _onDeleteChassis(event){
+    //deletes the selected item from the actor
+
+    event.preventDefault();
+    let itemId = event.currentTarget.attributes["data-item-id"].value;
+    let item=await this.actor.getEmbeddedDocument("Item",itemId);
+
+    let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
+    renderedTemplate.then(content => {
+        new Dialog({
+            title: "Deletion Confirmation",
+            content: content,
+            buttons:{
+                submit:{
+                    label:"Yes",
+                    callback: async dlg => { 
+
+                        await this.actor.deleteEmbeddedDocuments("Item",[itemId]);
+                        await this.actor.update({"data.knight.chassis":""});
+                        this.render(true);
                     }
                 },
-                default: "submit"
-            },options).render(true)
-        });
-    }
-    async _onDeleteChassis(event){
-        //deletes the selected item from the actor
+                cancel:{
+                    label: "No",
+                    callback: null
+                }
+            },
+            default: "submit"
+        }).render(true)
+    });
 
-        event.preventDefault();
-        let itemId = event.currentTarget.attributes["data-item-id"].value;
-        let item=await this.actor.getEmbeddedDocument("Item",itemId);
+}
+async _onDeleteWeapon(event){
+    event.preventDefault();
+    let itemId = event.currentTarget.attributes["data-item-id"].value;
+    let item=await this.actor.getEmbeddedDocument("Item",itemId);
 
-        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
-        renderedTemplate.then(content => {
-            new Dialog({
-                title: "Deletion Confirmation",
-                content: content,
-                buttons:{
-                    submit:{
-                        label:"Yes",
-                        callback: async dlg => { 
+    let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
+    renderedTemplate.then(content => {
+        new Dialog({
+            title: "Deletion Confirmation",
+            content: content,
+            buttons:{
+                submit:{
+                    label:"Yes",
+                    callback: async dlg => { 
+                        let index=parseInt(event.target.dataset["index"]);
+                        let path=event.target.dataset["path"];
+                        let actor=this.actor;
+                        let data=actor.data.data;
+                        let house=await game.actors.get(data.knight.house);
 
-                            await this.actor.deleteEmbeddedDocuments("Item",[itemId]);
-                            await this.actor.update({"data.knight.chassis":""});
-                            this.render(true);
-                        }
-                    },
-                    cancel:{
-                        label: "No",
-                        callback: null
+                        let component=await house.getEmbeddedDocument("Item",item.data.data.originalId);
+                        let chassis=await actor.getEmbeddedDocument("Item",data.knight.chassis);
+                        console.log(item,component,house,chassis)
+                        let amtTaken=component.data.data.amount.taken;
+                        let newAmt=amtTaken-1;
+
+
+
+
+
+
+                        let array=objectByString(chassis.data,path);
+                        array[index]="";
+
+                        let chassisUpdate={};
+                        chassisUpdate[path]=array;
+                        component.update({"data.amount.taken":newAmt});
+                        chassis.update(chassisUpdate);
+
+                        await actor.deleteEmbeddedDocuments("Item",[itemId]);
+
+                        this.render(true);
                     }
                 },
-                default: "submit"
-            }).render(true)
-        });
-
-    }
-    async _onDeleteWeapon(event){
-        event.preventDefault();
-        let itemId = event.currentTarget.attributes["data-item-id"].value;
-        let item=await this.actor.getEmbeddedDocument("Item",itemId);
-
-        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
-        renderedTemplate.then(content => {
-            new Dialog({
-                title: "Deletion Confirmation",
-                content: content,
-                buttons:{
-                    submit:{
-                        label:"Yes",
-                        callback: async dlg => { 
-                            let index=parseInt(event.target.dataset["index"]);
-                            let path=event.target.dataset["path"];
-                            let actor=this.actor;
-                            let data=actor.data.data;
-                            let house=await game.actors.get(data.knight.house);
-
-                            let component=await house.getEmbeddedDocument("Item",item.data.data.originalId);
-                            let chassis=await actor.getEmbeddedDocument("Item",data.knight.chassis);
-                            console.log(item,component,house,chassis)
-                            let amtTaken=component.data.data.amount.taken;
-                            let newAmt=amtTaken-1;
-
-
-
-
-
-
-                            let array=objectByString(chassis.data,path);
-                            array[index]="";
-
-                            let chassisUpdate={};
-                            chassisUpdate[path]=array;
-                            component.update({"data.amount.taken":newAmt});
-                            chassis.update(chassisUpdate);
-
-                            await actor.deleteEmbeddedDocuments("Item",[itemId]);
-                            
-                            this.render(true);
-                        }
-                    },
-                    cancel:{
-                        label: "No",
-                        callback: null
-                    }
-                },
-                default: "submit"
-            }).render(true)
-        });
-    }
+                cancel:{
+                    label: "No",
+                    callback: null
+                }
+            },
+            default: "submit"
+        }).render(true)
+    });
+}
 }

@@ -208,7 +208,7 @@
     place-items: center stretch;
     margin-top: 0px;
     margin-bottom:5px;
-    
+
 }
 .fortyk .descr .descrRow{
     width:100%;
@@ -386,7 +386,7 @@
     border: 3px solid #999;
 }
 .fortyk .list{
-    border: 1px solid #999;
+    border-top: 1px solid #999;
     flex:none;
     justify-items: stretch;
     align-items: stretch;
@@ -402,7 +402,7 @@
 }
 .fortyk .list4col2{
     grid-gap: 0px;
-    grid-template-columns: auto 2em 1em 1em;
+    grid-template-columns: auto 1em 1em 1em;
 }
 .fortyk .list4col{
     grid-gap: 0px;
@@ -421,44 +421,84 @@
     grid-template-columns: 40% auto auto auto auto 30px 30px;
 }
 .fortyk .list-item{
-    border: 1px solid #999;
+    border-top: 1px solid #999;
     width:100%;
     height:100%;
     padding:3px;
 }
 .fortyk .list-item2{
-    border: 1px solid #999;
+    border-top: 1px solid #999;
     width:100%;
     height:100%;
     padding:3px;
     grid-column-end :span 2;
 }
 .fortyk .list-item-header{
-    border: 3px solid #999;
+    border-top: 3px solid #999;
     width:100%;
     height:100%;
     padding:3px;
 }
 .fortyk .list-item-header2{
-    border: 3px solid #999;
+    border-top: 3px solid #999;
     width:100%;
     height:100%;
     padding:3px;
     grid-column-end :span 2;
 }
 .fortyk .list-item-header3{
-    border: 3px solid #999;
+    border-top: 3px solid #999;
     width:100%;
     height:100%;
     padding:3px;
     grid-column-end :span 3;
 }
 .fortyk .list-item-header4{
-    border: 3px solid #999;
+    border-top: 3px solid #999;
     width:100%;
     height:100%;
     padding:3px;
     grid-column-end :span 4;
+}
+@media (min-width: 768px) {
+    .list-item {
+        border-top: 1px solid #999;
+        border-left: 1px solid #999;
+        
+    }
+    .list-item:nth-child(n+4){
+        border-right: 1px solid #999;
+    }
+    .fortyk .list-item2{
+        border-top: 1px solid #999;
+        border-left: 1px solid #999;
+        
+    }
+    .fortyk .list-item-header{
+        border-top: 3px solid #999;
+        border-left: 3px solid #999;
+
+    }
+    .list-item-header:nth-child(4){
+        border-right: 3px solid #999;
+    }
+   
+    .fortyk .list-item-header2{
+        border-top: 3px solid #999;
+        border-left: 3px solid #999;
+       
+    }
+    .fortyk .list-item-header3{
+        border-top: 3px solid #999;
+        border-left: 3px solid #999;
+       
+    }
+    .fortyk .list-item-header4{
+        border-top: 3px solid #999;
+        border-left: 3px solid #999;
+        border-right: 3px solid #999;
+        
+    }
 }
 .fortyk .list-button{
     flex:none;
@@ -952,8 +992,8 @@
     height: 100%;
 }
 .right-mechbay{
-   flex:3; 
-     background: url(../icons/impknightoutline.jpg);
+    flex:3; 
+    background: url(../icons/impknightoutline.jpg);
     background-repeat: no-repeat;
     background-size:cover;
     background-position-y: center;
@@ -981,7 +1021,7 @@
     grid-row:3;
 }
 .mechbay-component{
-    
+
 }
 .carapace{
     grid-column:2;
@@ -1025,30 +1065,28 @@
 
 }
 .melee-slot{
-   border: ridge;
+    border: ridge;
     background-color: #f4a4607a;  
     min-width: -webkit-fill-available;
-}
 }
 .melee-weapon{
     border: outset;
     background-color: #f4a4607a;
     display: flex;
     justify-content: center;
-     min-width: -webkit-fill-available;
-}
-.auxiliary-slot{
-   border: ridge;
-    background-color: #f0f8ffa6;  
     min-width: -webkit-fill-available;
 }
+.auxiliary-slot{
+    border: ridge;
+    background-color: #f0f8ffa6;  
+    min-width: -webkit-fill-available;
 }
 .auxiliary-weapon{
     border: outset;
     background-color: #f0f8ffa6;
     display: flex;
     justify-content: center;
-     min-width: -webkit-fill-available;
+    min-width: -webkit-fill-available;
 }
 .highlight-slot{
     color: #000;

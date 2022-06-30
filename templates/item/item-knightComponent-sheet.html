@@ -9,6 +9,23 @@
         <input type="text" value="{{name}}" name="name">
     </div>
     <div class="flexcol">
+        <label>Type:</label>
+        <select class="power-type" name="data.type.value">
+            {{#select data.type.value}}
+            <option value="Other">Other</option>
+            <option value="Throne Mod">Throne Mod</option>  
+            <option value="Core Mod">Core Mod</option>
+            <option value="Plating">Plating</option> 
+            <option value="Sensor">Sensor</option>
+            <option value="Arm Actuator">Arm Actuator</option> 
+            <option value="Leg Actuator">Leg Actuator</option>
+            
+
+
+            {{/select}}
+        </select>
+    </div>
+    <div class="flexcol">
         <label>Tonnage:</label>
         <input type="text" value="{{data.weight.value}}" name="data.weight.value">
     </div>

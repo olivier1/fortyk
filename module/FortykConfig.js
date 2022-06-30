@@ -362,7 +362,7 @@ FORTYK.weaponFlags={
     "melta": {
         "value": false,
         "label": "Melta",
-        "description": "These weapons rely on intense heat to negate protective armour, turning even the thickest to steaming liquid. This weapon doubles its penetration when firing at Short range or closer."
+        "description": "These weapons rely on intense heat to negate protective armour, turning even the thickest to steaming liquid. This weapon triples its penetration when firing at Short range or closer."
     },
     "niditus": {
         "value": false,
