@@ -214,8 +214,10 @@
                     <span >{{name}}</span>
                 </div>
 
-                <div class="list-item" name="component" type="{{data.data.knightComponentType}}">
-
+                <div class="list-item flexrow" name="component" type="{{data.data.knightComponentType}}">
+                    {{#if ../isGM}}
+                    <input type="text" class="item-text-input list-item" data-target="data.amount.taken" value="{{data.data.amount.taken}}" data-item-id="{{this.id}}" data-dtype="Number">
+                    {{/if}}
                     <input type="text" class="item-text-input list-item" data-target="data.amount.value" value="{{data.data.amount.value}}" data-item-id="{{this.id}}" data-dtype="Number">
                 </div>
 

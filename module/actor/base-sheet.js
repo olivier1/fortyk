@@ -39,9 +39,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.psyDisciplines=game.fortyk.FORTYK.psychicDisciplines;
         data.editable = this.options.editable;
         data.money=game.settings.get("fortyk","dhMoney");
-        console.log(data)
         
-        console.log(data)
         return data;
     }
     /** @override */

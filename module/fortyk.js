@@ -80,7 +80,7 @@ Hooks.once('init', async function() {
     Actors.registerSheet("fortyk", FortyKNPCSheet, {label:"NPC Sheet", types: ["npc"], makeDefault: true });
     Actors.registerSheet("fortyk", FortyKVehicleSheet, { label:"Vehicle Sheet",types:["vehicle"], makeDefault: true });
     Actors.registerSheet("fortyk", FortyKKnightSheet, { label:"Imperial Knight Sheet",types:["vehicle"], makeDefault: false });
-     Actors.registerSheet("fortyk", FortyKKnightHouseSheet, { label:"Knight House Sheet",types:["knightHouse"], makeDefault: true });
+    Actors.registerSheet("fortyk", FortyKKnightHouseSheet, { label:"Knight House Sheet",types:["knightHouse"], makeDefault: true });
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });
     //setup handcards
@@ -187,6 +187,20 @@ Hooks.once('ready', async function() {
                 default: "submit",
             }, options);
             dlg.render(true); 
+        }
+        if(data.type==="renderSheets"){
+            let actors=data.package.actors;
+            console.log(actors);
+            for(let i=0;i<actors.length;i++){
+                let actor=await game.actors.get(actors[i]);
+                if(actor){
+                    let apps=actor.apps;
+                    Object.values(apps).forEach(app => {
+                        app.render(true);
+                    }); 
+                }
+
+            }
         }
         if(game.user.isGM){
             let id="";

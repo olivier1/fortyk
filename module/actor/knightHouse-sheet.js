@@ -136,7 +136,6 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
             }
 
         }
-        console.log(repairBays)
         let repairsDone=false;
         let index=0;
         do{

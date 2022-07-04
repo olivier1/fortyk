@@ -1,7 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Martel:wght@400;800&family=Roboto:wght@300;400;500&display=swap");
 /* Global styles */
-
-
 @font-face {
     font-family: "CaslonAntique";
     src: url('../fonts/CaslonAntique.ttf');
@@ -19,18 +17,12 @@
 .fortyk{
     font-size:16px;
     font-family: "CaslonAntique";
-
-
 }
-
-
 .button:hover, .button:focus {
     color: #000;
     text-shadow: 0 0 10px red;
     cursor: pointer;
 }
-
-
 .grid,
 .grid-2col {
     display: grid;
@@ -42,60 +34,48 @@
     margin: 10px 0;
     padding: 0;
     place-items: center;
-
 }
-
 .grid-3col {
     grid-column: span 3 / span 3;
     grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-
 .grid-4col {
     grid-column: span 4 / span 4;
     grid-template-columns: repeat(4, minmax(0, 1fr));
 }
-
 .grid-5col {
     grid-column: span 5 / span 5;
     grid-template-columns: repeat(5, minmax(0, 1fr));
 }
-
 .grid-6col {
     grid-column: span 6 / span 6;
     grid-template-columns: repeat(6, minmax(0, 1fr));
 }
-
 .grid-7col {
     grid-column: span 7 / span 7;
     grid-template-columns: repeat(7, minmax(0, 1fr));
 }
-
 .grid-8col {
     grid-column: span 8 / span 8;
     grid-template-columns: repeat(8, minmax(0, 1fr));
 }
-
 .grid-9col {
     grid-column: span 9 / span 9;
     grid-template-columns: repeat(9, minmax(0, 1fr));
 }
-
 .grid-10col {
     grid-column: span 10 / span 10;
     grid-template-columns: repeat(10, minmax(0, 1fr));
 }
-
 .grid-11col {
     grid-column: span 11 / span 11;
     grid-template-columns: repeat(11, minmax(0, 1fr));
 }
-
 .grid-12col {
     grid-column: span 12 / span 12;
     grid-template-columns: repeat(12, minmax(0, 1fr));
 }
 .fortyk .simple-grid3{
-
     width:100%;
     height:100%;
     padding:3px;
@@ -114,21 +94,18 @@
     padding: 5px;
     border: 1px solid #999;
 }
-
 .flex-group-left {
     -webkit-box-pack: start;
     -ms-flex-pack: start;
     justify-content: flex-start;
     text-align: left;
 }
-
 .flex-group-right {
     -webkit-box-pack: end;
     -ms-flex-pack: end;
     justify-content: flex-end;
     text-align: right;
 }
-
 .flex-center {
     -webkit-box-align: center;
     -ms-flex-align: center;
@@ -152,13 +129,11 @@
     padding:5px;
     display:grid;
 }
-
 .flex-between {
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
 }
-
 /* Styles limited to fortyk sheets */
 .underline{
     text-decoration:underline;
@@ -188,7 +163,6 @@
     justify-content: flex-start;
     margin-bottom: 0px;
 }
-
 .fortyk .sheet-header .profile-img {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 100px;
@@ -208,7 +182,6 @@
     place-items: center stretch;
     margin-top: 0px;
     margin-bottom:5px;
-
 }
 .fortyk .descr .descrRow{
     width:100%;
@@ -221,7 +194,6 @@
     font-style:bold;
     font-variant-caps: petite-caps;
     place-self: flex-start;
-
 }
 .fortyk .sheet-main .header-fields .creationOps{
     border:1px solid #999;
@@ -249,27 +221,20 @@
     font-variant-caps: petite-caps;
     padding-left: 10px;
 }
-
 .vehicle-categories{
     align-self:flex-start;
     height: -webkit-fill-available;
 }
-
-
 .fortyk  .characteristics{
     margin-top:5px;
 }
 .fortyk  .characteristics  span.characteristicsSpan{
     font-weight: bold;
     font-style:bold;
-
-
 }
 .fortyk .charSelect{
     width:100%;
-
 }
-
 .fortyk .sheet-main .header-fields .char{
     width: 100%;
 }
@@ -280,14 +245,11 @@
     justify-content: center;
     align-content: center;
     text-transform:uppercase;
-
 }
-
 .char-total{
     width:100%;
     height:100%;
 }
-
 .fortyk nav.sheet-tabs {
     -webkit-box-flex: 1;
     margin-top: 0px;
@@ -296,7 +258,6 @@
     font-style:bold;
     flex:auto;
     font-size:17px;
-
 }
 .fortyk nav.sheet-tabs2 {
     -webkit-box-flex: 1;
@@ -305,7 +266,6 @@
     font-weight:bold;
     font-style:bold;
     flex:auto;
-
 }
 .fortyk nav.sheet-tabs.npc {
     -webkit-box-flex: 1;
@@ -314,12 +274,9 @@
     font-weight:bold;
     font-style:bold;
     flex:none;
-
 }
-
 .fortyk .sheet-content,
 .fortyk .sheet-content .tab,
-
 .fortyk .sheet-content .tab .editor {
     height: 100%;
     overflow: auto;
@@ -338,42 +295,32 @@
     flex: 10;
     overflow:visible;
 }
-
-
 .fortyk .tox .tox-editor-container {
     background: #fff;
 }
-
 .fortyk .tox .tox-edit-area {
     padding: 0 8px;
 }
 .fortyk .resource{
     width:100%;
     height:100%;
-
 }
-
 .fortyk .resource-label {
     font-weight: bold;
     font-style:bold;
     font-variant-caps: petite-caps;
     text-align: center;
 }
-
 .fortyk .tabs {
     border-top: 1px solid #AAA;
     border-bottom: 1px solid #AAA;
-
 }
-
 .fortyk .tabs .item {
     line-height: 12px;
     height:50px;
     width:100%;
     border: 1px solid #999;
-
     padding-top:1em;
-
 }
 .fortyk .tabs .item.active {
     text-decoration: underline;
@@ -464,7 +411,6 @@
     .list-item {
         border-top: 1px solid #999;
         border-left: 1px solid #999;
-        
     }
     .list-item:nth-child(n+4){
         border-right: 1px solid #999;
@@ -472,32 +418,26 @@
     .fortyk .list-item2{
         border-top: 1px solid #999;
         border-left: 1px solid #999;
-        
     }
     .fortyk .list-item-header{
         border-top: 3px solid #999;
         border-left: 3px solid #999;
-
     }
     .list-item-header:nth-child(4){
         border-right: 3px solid #999;
     }
-   
     .fortyk .list-item-header2{
         border-top: 3px solid #999;
         border-left: 3px solid #999;
-       
     }
     .fortyk .list-item-header3{
         border-top: 3px solid #999;
         border-left: 3px solid #999;
-       
     }
     .fortyk .list-item-header4{
         border-top: 3px solid #999;
         border-left: 3px solid #999;
         border-right: 3px solid #999;
-        
     }
 }
 .fortyk .list-button{
@@ -507,10 +447,7 @@
     width:100%;
 }
 .fortyk .skills{
-
     border: 1px solid #AAA;
-
-
 }
 .fortyk .skills .skills-header{
     border: 1px solid #AAA;
@@ -519,8 +456,6 @@
     grid-template-columns: 25% 15% 20% 14% 16% 5% 5% ;
     place-items: start stretch;
     margin:0px;
-
-
 }
 .fortyk .skills .skills-header .gap{
     background-image:"" !important;
@@ -535,28 +470,24 @@
     font-weight:bold;
     font-style:bold;
     padding:3px;
-
 }
 .fortyk .skills .skills-header a{
     border: 1px solid #AAA;
     font-weight:bold;
     font-style:bold;
     padding:3px;
-
 }
 .fortyk .skills .skillItem{
     flex:1;
     grid-column:initial;
     width:100%;
     height:100%;
-
 }
 .fortyk .skills .skills-header .skill-group{
     font-weight: bold !important;
     font-style:bold;
     font-variant-caps: petite-caps;
 }
-
 .fortyk .skills .skills-header .skillSubItem{
     padding-left:10px !important;
     height:100%;
@@ -565,20 +496,21 @@
     background-image: url("../icons/editicon.png") !important;
     background-size: contain;
     background-repeat: no-repeat;
-    width:30px !important; 
-    height:30px !important;
+    width:20px !important; 
+    height:20px !important;
     margin-left:3px;
     display:inherit;
 }
 .delete-weapon,
 .delete-component,
 .delete-chassis, 
+.delete-other-component,
 .item-delete{
     background-image: url("../icons/deleteicon.png") !important; 
     background-size: contain;
     background-repeat: no-repeat;
-    width:30px !important;
-    height:30px !important;
+    width:20px !important;
+    height:20px !important;
     margin-left:3px;
     display:inherit;
 }
@@ -613,42 +545,34 @@
     margin-left:3px;
     display:inherit;
 }
-
 .fortyk .items-list {
     list-style: none;
     margin: 7px 0;
     padding: 0;
     overflow-y: auto;
 }
-
 .fortyk .items-list .item-header {
     font-weight: bold;
     font-style:bold;
 }
-
 .fortyk .items-list .item {
     height: 30px;
     line-height: 24px;
     padding: 3px 0;
     border-bottom: 1px solid #BBB;
-
 }
-
 .fortyk .items-list .item .item-image {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 24px;
     flex: 0 0 24px;
     margin-right: 5px;
 }
-
 .fortyk .items-list .item img {
     display: block;
 }
-
 .fortyk .items-list .item-name {
     margin: 0;
 }
-
 .fortyk .items-list .item-controls {
     -webkit-box-flex: 0;
     -ms-flex: 0 0 86px;
@@ -670,7 +594,6 @@
     flex:none;
     margin-bottom: 5px;
 }
-
 .fortyk .section-title{
     text-align: center;
     border-bottom: 2px solid #999;
@@ -679,13 +602,11 @@
     font-size:19px;
     font-variant-caps: petite-caps;
     margin-bottom: 3px
-
 }
 .fortyk .sheet-gear{
     align-items: start;
 }
 .fortyk .cyber{
-
     margin-right: 3px;
 }
 .fortyk .combat-weaponsarmor{
@@ -694,9 +615,7 @@
 .fortyk .forcefield{
     width:100%;
 }
-.fortyk .armor{
-    border: 1px solid #999;
-}
+
 .fortyk .armor-select{
     flex:16;
 }
@@ -705,7 +624,6 @@
 }
 .fortyk .item-sheet{
     flex: 1;
-
 }
 .fortyk .item-description{
     flex-grow:10;
@@ -748,7 +666,6 @@
     height: 150px !important;
 }
 .fortyk .npcheader{
-
     display:grid;
     grid-template-columns: auto auto;
 }
@@ -799,7 +716,6 @@
 .power-safe{
     border-color: green !important;
 }
-
 .special-list{
     display:flex;
     justify-self: flex-start;
@@ -818,9 +734,6 @@
     height:100%;
     display:block;
 }
-
-
-
 .attack-section input{
     flex:1;
 }
@@ -883,7 +796,6 @@
     font-style:italic;
 }
 .chat-target{
-
     border: 1px solid var(--color-border-light-2);
     border-radius: 3px;
     box-shadow: 0 0 2px #fff inset;
@@ -914,7 +826,6 @@
     color:darkred;
 }
 .chat-righteous{
-
     font-style:italic; 
     font-style:bold;
     color:goldenrod;
@@ -934,7 +845,6 @@
     -ms-user-select: none;
     user-select: none;
 }
-
 /* The actual popup */
 .popup .popuptext {
     visibility: hidden;
@@ -951,7 +861,6 @@
     left: 0%;
     font-variant-caps:normal;
 }
-
 /* Popup arrow */
 .popup .popuptext::after {
     content: "";
@@ -963,20 +872,17 @@
     border-style: solid;
     border-color: #555 transparent transparent transparent;
 }
-
 /* Toggle this class - hide and show the popup */
 .popup .show {
     visibility: visible;
     -webkit-animation: fadeIn 1s;
     animation: fadeIn 1s;
 }
-
 /* Add animation (fade in the popup) */
 @-webkit-keyframes fadeIn {
     from {opacity: 0;} 
     to {opacity: 1;}
 }
-
 @keyframes fadeIn {
     from {opacity: 0;}
     to {opacity:1 ;}
@@ -999,10 +905,18 @@
     background-position-y: center;
     background-position-x: center;
 }
+.mechbay-grid-section{
+    display:flex;
+}
+.componentgrid{
+    display:grid;
+    grid-template-columns: 40% auto auto auto;
+    overflow-wrap: break-word;
+}
 .mechgrid{
     display:grid;
-    grid-template-columns: 40% auto 25%;
-    grid-template-rows: 15% auto 50%;
+    grid-template-columns: 33% auto 33%;
+    grid-template-rows: 15% auto 70%;
 }
 .info1{
     grid-column:1;
@@ -1021,7 +935,6 @@
     grid-row:3;
 }
 .mechbay-component{
-
 }
 .carapace{
     grid-column:2;
@@ -1038,55 +951,60 @@
 .torso{
     grid-column:2;
     grid-row:2 / span 2;    
-
 }
-.artillery-slot{
+.component-slot{
     border: ridge;
+    min-width: -webkit-fill-available;
+    justify-content: center;
+    display: flex;
+}
+.filled-slot{
+    border: outset; 
+    display: flex;
+    justify-content: flex-end;
+    min-width: -webkit-fill-available;
+}
+.artillery{
     background-color: #a9a9a996; 
 }
-.artillery-weapon{
-    border: outset;
-    background-color: #a9a9a996;
-    display: flex;
-    justify-content: center;
-}
-.ranged-slot{
-    border: ridge;
+.ranged{
     background-color: #8fbc8f9e; 
-    min-width: -webkit-fill-available;
-
 }
-.ranged-weapon{
-    border: outset;
-    background-color: #8fbc8f9e;
-    display: flex;
-    justify-content: center;
-    min-width: -webkit-fill-available;
-
-}
-.melee-slot{
-    border: ridge;
+.melee{
     background-color: #f4a4607a;  
-    min-width: -webkit-fill-available;
 }
-.melee-weapon{
-    border: outset;
-    background-color: #f4a4607a;
-    display: flex;
-    justify-content: center;
-    min-width: -webkit-fill-available;
-}
-.auxiliary-slot{
-    border: ridge;
+.auxiliary{
     background-color: #f0f8ffa6;  
-    min-width: -webkit-fill-available;
 }
-.auxiliary-weapon{
-    border: outset;
-    background-color: #f0f8ffa6;
-    display: flex;
-    justify-content: center;
-    min-width: -webkit-fill-available;
+.core-color{
+    background-color:#5f9ea0b8;
+}
+.structure-color{
+    background-color: #ed143da6;
+}
+.armor-color{
+    background-color: #87ceebad; 
+}
+.throne-mod-color{
+    background-color: #faebd78c;
+}
+.sensor-color{
+    background-color: #8a2be2a3;
+}
+.plating-color{
+    background-color: #008b8ba6;
+}
+.core-mod-color{
+    background-color: #1e90ffb8;
+}
+.arm-actuator-color{
+    background-color: #ba55d3d4; 
+}
+.leg-actuator-color{
+    background-color: #ffff0063; 
+}
+.other-component-color{
+    background-color: #d2b48cbf;
 }
 .highlight-slot{
     color: #000;

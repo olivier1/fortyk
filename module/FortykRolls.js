@@ -187,7 +187,7 @@ returns the roll message*/
                     let horde=attackTarget.actor.data.data.horde.value;
                     if(horde){
                         hits+=Math.floor(testDos/2)
-                        if(weapon.getFlag("fortyk","sweeping")){
+                        if(fortykWeapon.getFlag("fortyk","sweeping")){
                             hits+=testDos*3;
                         }
                     }
