@@ -9,7 +9,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         return mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/knight-sheet.html",
-            width: 666,
+            width: 980,
             height: 660,
             tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "mechbay" }],
             default:null,
@@ -331,7 +331,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 await this.actor.update(knightUpdate);
             }
 
-            this._updateHouse();
         }
 
     }
@@ -545,6 +544,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let update={};
                             update["data.knight.chassis"]=id;
                             update["data.secChar.wounds.value"]=createdChassis[0].data.data.structuralIntegrity.value;
+                            update["data.secChar.size.value"]=8;
                             actor.update(update);
                             this.render(true);
                         }
@@ -570,9 +570,9 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                     submit:{
                         label:"Yes",
                         callback: async dlg => { 
-
-                            await this.actor.deleteEmbeddedDocuments("Item",[itemId]);
                             await this.actor.update({"data.knight.chassis":""});
+                            await this.actor.deleteEmbeddedDocuments("Item",[itemId]);
+                            
                             this.render(true);
                         }
                     },
@@ -628,7 +628,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             await actor.deleteEmbeddedDocuments("Item",[itemId]);
 
                             this.render(true);
-                            this._updateHouse();
                         }
                     },
                     cancel:{
@@ -680,7 +679,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
                             this.render(true);
 
-                            this._updateHouse();
                         }
                     },
                     cancel:{
@@ -718,7 +716,9 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let newAmt=amtTaken-1;
 
                             let array=objectByString(this.actor.data,path);
-                            array=array.splice(index,1);
+                            console.log(array, index)
+                            array.splice(index,1);
+                            console.log(array)
 
 
 
@@ -732,7 +732,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             await actor.deleteEmbeddedDocuments("Item",[itemId]);
 
                             this.render(true);
-                            this._updateHouse();
                         }
                     },
                     cancel:{

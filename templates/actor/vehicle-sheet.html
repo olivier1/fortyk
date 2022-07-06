@@ -20,7 +20,7 @@
                                 <span class="descrSpan">Type:</span>
                                 <select class="typeSelect" name="data.type.value" data-dtype="String">
                                     {{#select data.type.value}}
-                                   
+
                                     {{#each vehicleTypes}}
 
                                     <option value="{{this}}">{{this}}</option>
@@ -317,8 +317,13 @@
                             </div>
                             <span >Cover</span>
 
-                            <input type="text" class="combat-resources" title="cover" data-target="data.secChar.cover.value" value="{{data.secChar.cover.value}}" data-dtype="Number"/>
-                            <span class="cover-reset button">Reset Cover</span>
+                            <select class="cover"  name="data.secChar.cover.value">
+                                {{#select data.secChar.cover.value}}
+                                {{#each coverTypes}}
+                                <option value="{{value}}">{{label}}</option>
+                                {{/each}}
+                                {{/select}}
+                            </select>
 
                         </div>
                         <div class="flexcol flex-group-center">
@@ -374,28 +379,24 @@
                         <div class="armor flexcol flex-group-center">
 
                             <span>Front</span>
-                            <input type="checkbox"  title="cover" name="data.facings.front.cover" {{checked data.facings.front.cover}}>
                             <input type="text" class="combat-resources" data-target="data.facings.front.armor" value="{{data.facings.front.armor}}" data-dtype="Number"/>
                         </div>
                         <div class="armor flexcol flex-group-center">
 
                             <span>Left Side</span>
 
-                            <input type="checkbox"  title="cover" name="data.facings.lSide.cover" {{checked data.facings.lSide.cover}}>
 
                             <input type="text" class="combat-resources" data-target="data.facings.lSide.armor" value="{{data.facings.lSide.armor}}" data-dtype="Number"/>
                         </div>
                         <div class="armor flexcol flex-group-center">
 
                             <span>Right Side</span>
-                            <input type="checkbox"  title="cover" name="data.facings.rSide.cover" {{checked data.facings.rSide.cover}}> 
 
                             <input type="text" class="combat-resources" data-target="data.facings.rSide.armor" value="{{data.facings.rSide.armor}}" data-dtype="Number"/>
                         </div>
                         <div class="armor flexcol flex-group-center">
 
                             <span>Rear</span>
-                            <input type="checkbox"  title="cover" name="data.facings.rear.cover" {{checked data.facings.rear.cover}}>
 
                             <input type="text" class="combat-resources" data-target="data.facings.rear.armor" value="{{data.facings.rear.armor}}" data-dtype="Number"/>
                         </div>

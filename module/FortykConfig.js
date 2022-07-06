@@ -54,17 +54,17 @@ FORTYK.size=[
      "mod":40,
      "stealth":-40,
      "movement":4,
-     "size":7},
+     "size":8},
     {"name":"Monumental",
      "mod":50,
      "stealth":-50,
      "movement":5,
-     "size":9},
+     "size":10},
     {"name":"Titanic",
      "mod":60,
      "stealth":-60,
      "movement":6,
-     "size":12}]
+     "size":15}]
 FORTYK.carry=[
     {"carry":0.9,
      "lift":2.25,
@@ -129,6 +129,7 @@ FORTYK.carry=[
     {"carry":2250,
      "lift":4500,
      "push":9000}]
+FORTYK.coverTypes=[{"value":0,"label":"None"},{"value":0.25,"label":"Light Cover"},{"value":0.5,"label":"Medium Cover"},{"value":0.75,"label":"Heavy Cover"}]
 FORTYK.extraHits={ 
     "head":[{"value":"head","label":"Head"},{"value":"head","label":"Head"},{"value":"rArm","label":"Right Arm"},{"value":"body","label":"Body"},{"value":"lArm","label":"Left Arm"},{"value":"body","label":"Body"}],
     "rArm":[{"value":"rArm","label":"Right Arm"},{"value":"rArm","label":"Right Arm"},{"value":"body","label":"Body"},{"value":"head","label":"Head"},{"value":"body","label":"Body"},{"value":"lArm","label":"Left Arm"}],

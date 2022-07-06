@@ -144,7 +144,7 @@ Hooks.once('init', async function() {
         }
     });
     Handlebars.registerHelper("greaterThan", function(num1,num2){
-        console.log(num1,num2)
+        
         return num1>num2;
     });
     Handlebars.registerHelper("equals", function(num1,num2){

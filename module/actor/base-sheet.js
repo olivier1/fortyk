@@ -39,6 +39,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.psyDisciplines=game.fortyk.FORTYK.psychicDisciplines;
         data.editable = this.options.editable;
         data.money=game.settings.get("fortyk","dhMoney");
+        data.coverTypes=game.fortyk.FORTYK.coverTypes;
         
         return data;
     }
@@ -71,11 +72,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.maximal').click(this._onMaximalClick.bind(this));
         //handles lasmode select
         html.find('.lasMode').change(this._onLasModeChange.bind(this));
-        //reset cover fields
-        html.find('.cover-reset').click(this._onCoverReset.bind(this));
-        //reset cover fields
+       
+        //handles chaning armor
         html.find('.armor-select').change(this._onArmorChange.bind(this));
-        //reset cover fields
+        //handles changing forcefield
         html.find('.force-field').change(this._onForceFieldChange.bind(this));
         //Damage rolls
         html.find('.damage-roll').click(this._onDamageRoll.bind(this));
@@ -805,19 +805,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const item = this.actor.items.find(i => i.data._id == itemId);
         await item.update({"data.broken.value":false});
     }
-    //handles resetting cover values to zero
-    async _onCoverReset(event){
-        let actor=this.actor;
-        let data=duplicate(actor.data);
-        data.data.secChar.cover.value=0;
-        data.data.characterHitLocations.head.cover=false;
-        data.data.characterHitLocations.body.cover=false;
-        data.data.characterHitLocations.rArm.cover=false;
-        data.data.characterHitLocations.lArm.cover=false;
-        data.data.characterHitLocations.rLeg.cover=false;
-        data.data.characterHitLocations.lLeg.cover=false;
-        actor.update(data);
-    }
+    
     //handle enabling and disabling active effects associated with armor
     async _onArmorChange(event){
         let actor=this.actor;

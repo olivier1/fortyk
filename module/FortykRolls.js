@@ -1083,39 +1083,7 @@ returns the roll message*/
                             }else if(fortykWeapon.getFlag("fortyk","warp")&&armorSuit.getFlag("fortyk","holy")){
                                 damageOptions.results.push(`<span>Warp weapon is repelled by warded armor.</span>`);
                             }
-                            //handle cover
-                            let isCover
-                            if(vehicle){
-                                isCover=facing.cover;
-                            }else{
-                                isCover=data.characterHitLocations[curHit.value].cover;
-                            }
-                            if(!self&&!fortykWeapon.getFlag("fortyk","ignoreCover")&&!fortykWeapon.getFlag("fortyk","spray")&&isCover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
-                                let cover=parseInt(data.secChar.cover.value);
-                                soak=soak+cover;
-                                //reduce cover if damage is greater than cover AP
-                                if(roll._total>cover&&cover!==0){
-                                    let coverDmg=1;
-                                    if(actor.getFlag("fortyk","nowheretohide")){
-                                        coverDmg+=lastHit.dos;
-                                    }
-                                    cover=Math.max(0,(cover-coverDmg));
-                                    if(cover!==data.secChar.cover.value){
-                                        let path="data.secChar.cover.value"
-                                        let pack={}
-                                        pack[path]=cover;
-                                        if(game.user.isGM){
-                                            await tarActor.update(pack); 
-                                        }else{
-                                            //if user isnt GM use socket to have gm update the actor
-                                            let tokenId=tar.data._id;
-                                            let socketOp={type:"updateValue",package:{token:tokenId,value:cover,path:path}}
-                                            await game.socket.emit("system.fortyk",socketOp);
-                                        }
-                                        damageOptions.results.push(`<span>Cover is lowered by ${coverDmg}</span>`);
-                                    }
-                                }
-                            }
+
                             if(!vehicle&&fortykWeapon.getFlag("fortyk","felling")&&parseInt(tarActor.data.data.characteristics.t.uB)){
                                 let ut=parseInt(tarActor.data.data.characteristics.t.uB);
                                 let fel=Math.min(ut,fortykWeapon.getFlag("fortyk","felling"));
@@ -1135,7 +1103,9 @@ returns the roll message*/
                             damageOptions.results.push(`</div>`) 
                         }
                         let damage=roll._total;
+
                         let chatDamage=damage;
+                        
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
                         //damage part of smite the unholy
                         if(actor.getFlag("fortyk","smitetheunholy")&&tarActor.getFlag("fortyk","fear")&&weapon.type==="meleeWeapon"){
@@ -1177,6 +1147,16 @@ returns the roll message*/
                                 damage+=accRoll._total;
                                 chatDamage+=accRoll._total;
                             }
+                        }
+                        //handle cover
+                        let cover=parseFloat(data.secChar.cover.value);
+
+                        if(!self&&!fortykWeapon.getFlag("fortyk","ignoreCover")&&!fortykWeapon.getFlag("fortyk","spray")&&cover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
+
+                            let coverReduction=1-cover;
+                            damage=Math.ceil(coverReduction*damage);
+                            damageOptions.results.push(`<span>Cover reduces ranged damage by ${cover*100}%</span>`);
+                            
                         }
                         //logic against swarm enemies
                         if(tarActor.getFlag("fortyk","swarm")&&!(fortykWeapon.getFlag("fortyk","spray")||fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","flame")||fortykWeapon.getFlag("fortyk","scatter"))){

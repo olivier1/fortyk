@@ -400,6 +400,7 @@ export class FortyKActor extends Actor {
             data.frontWeapons=[];
             data.rearWeapons=[];
             this.items.forEach((fortykItem,id,items)=>{
+                fortykItem.prepareData();
                 let item=fortykItem.data;
                 if(item.type==="forceField"&&item.data.isEquipped){
                     data.secChar.wornGear.forceField=item;
@@ -426,6 +427,10 @@ export class FortyKActor extends Actor {
                         data.leftSideWeapons.push(item); 
                         data.rightSideWeapons.push(item);
                         data.rearWeapons.push(item); 
+                    }
+                    if(data.knight.chassis){
+                        data.knight.space.value+=parseFloat(item.data.space.value);
+                        data.knight.tonnage.value+=parseFloat(item.data.weight.value);
                     }
                 }
             });
@@ -729,45 +734,73 @@ export class FortyKActor extends Actor {
         }
         let knight=data.knight;
         var armorRatio=1;
-        if(knight.core){
-            data.knight.core=this.getEmbeddedDocument("Item",knight.core);
-            data.knight.overload=data.knight.core.data.data.overload.value;
-        }
-        if(knight.armor){
-            data.knight.armor=this.getEmbeddedDocument("Item",knight.armor);
-            armorRatio=data.knight.armor.data.data.weightRatio.value;
-            data.knight.tonnage.armor=0;
-            data.knight.totalArmor=0;
-        }
-        if(knight.structure){
-            data.knight.structure=this.getEmbeddedDocument("Item",knight.structure);
-        }
-        if(knight.coreMod){
-            data.knight.coreMod=this.getEmbeddedDocument("Item",knight.coreMod);
-        }
-        if(knight.armActuator){
-            data.knight.armActuator=this.getEmbeddedDocument("Item",knight.armActuator);
-        }
-        if(knight.legActuator){
-            data.knight.legActuator=this.getEmbeddedDocument("Item",knight.legActuator);
-        }
-        if(knight.plating){
-            data.knight.plating=this.getEmbeddedDocument("Item",knight.plating);
-        }
-        if(knight.sensor){
-            data.knight.sensor=this.getEmbeddedDocument("Item",knight.sensor);
-        }
-        if(knight.throneMod){
-            data.knight.throneMod=this.getEmbeddedDocument("Item",knight.throneMod);
-        }
-        data.knight.instancedComponents=[];
-        for(let i=0;i<knight.components.length;i++){
-            let component=knight.components[i];
+        if(knight.chassis){
+            if(knight.core){
+                data.knight.core=this.getEmbeddedDocument("Item",knight.core);
+                data.knight.overload=data.knight.core.data.data.overload.value;
+                data.knight.space.value+=parseFloat(data.knight.core.data.data.space.value);
+                data.knight.tonnage.value+=parseFloat(data.knight.core.data.data.weight.value);
+                data.secChar.speed.tactical+=parseInt(data.knight.core.data.data.speed.value);
+            }
+            if(knight.armor){
+                data.knight.armor=this.getEmbeddedDocument("Item",knight.armor);
+                armorRatio=data.knight.armor.data.data.weightRatio.value;
+                data.knight.tonnage.armor=0;
+                data.knight.totalArmor=0;
+                data.knight.space.value+=Math.ceil(parseFloat(data.knight.armor.data.data.space.value)*parseFloat(data.knight.space.max));
+                data.knight.armorValues.max=Math.ceil(data.knight.armorValues.max*parseFloat(data.knight.armor.data.data.armor.mod));
+            }
+            if(knight.structure){
+                data.knight.structure=this.getEmbeddedDocument("Item",knight.structure);
+                data.knight.space.value+=Math.ceil(parseFloat(data.knight.structure.data.data.space.value)*parseInt(data.knight.space.max));
+                data.knight.tonnage.value+=parseFloat(data.knight.structure.data.data.weight.value);
+                data.secChar.wounds.max=Math.ceil(parseInt(data.secChar.wounds.max)*parseFloat(data.knight.structure.data.data.SI.mod));
+                data.knight.space.max=Math.ceil(parseInt(data.knight.space.max)*parseFloat(data.knight.structure.data.data.space.mod));
+            }
+            if(knight.coreMod){
+                data.knight.coreMod=this.getEmbeddedDocument("Item",knight.coreMod);
+                data.knight.space.value+=parseFloat(data.knight.coreMod.data.data.space.value);
+                data.knight.tonnage.value+=parseFloat(data.knight.coreMod.data.data.weight.value);
+            }
+            if(knight.armActuator){
+                data.knight.armActuator=this.getEmbeddedDocument("Item",knight.armActuator);
+                data.knight.space.value+=parseFloat(data.knight.armActuator.data.data.space.value);
+                data.knight.tonnage.value+=parseFloat(data.knight.armActuator.data.data.weight.value);
+            }
+            if(knight.legActuator){
+                data.knight.legActuator=this.getEmbeddedDocument("Item",knight.legActuator);
+                data.knight.space.value+=parseFloat(data.knight.legActuator.data.data.space.value);
+                data.knight.tonnage.value+=parseFloat(data.knight.legActuator.data.data.weight.value);
+            }
+            if(knight.plating){
+                data.knight.plating=this.getEmbeddedDocument("Item",knight.plating);
+                data.knight.space.value+=parseFloat(data.knight.plating.data.data.space.value);
+                data.knight.tonnage.value+=parseFloat(data.knight.plating.data.data.weight.value);
+            }
+            if(knight.sensor){
+                data.knight.sensor=this.getEmbeddedDocument("Item",knight.sensor);
+                data.knight.space.value+=parseFloat(data.knight.sensor.data.data.space.value);
+                data.knight.tonnage.value+=parseFloat(data.knight.sensor.data.data.weight.value);
+            }
+            if(knight.throneMod){
+                data.knight.throneMod=this.getEmbeddedDocument("Item",knight.throneMod);
+                data.knight.space.value+=parseFloat(data.knight.throneMod.data.data.space.value);
+                data.knight.tonnage.value+=parseFloat(data.knight.throneMod.data.data.weight.value);
+            }
+            data.knight.instancedComponents=[];
+            for(let i=0;i<knight.components.length;i++){
+                let component=knight.components[i];
+                let instancedComponent=this.getEmbeddedDocument("Item",component);
 
-            knight.instancedComponents.push(this.getEmbeddedDocument("Item",component));
+                if(instancedComponent){
+                    data.knight.space.value+=parseFloat(instancedComponent.data.data.space.value);
+                    data.knight.tonnage.value+=parseFloat(instancedComponent.data.data.weight.value);
+                }
 
+                knight.instancedComponents.push(instancedComponent);
+
+            }
         }
-
         //initialize armor
         for(let [key, hitLoc] of Object.entries(data.facings)){
             hitLoc.value=hitLoc.armor;
@@ -784,6 +817,7 @@ export class FortyKActor extends Actor {
         }
         if(data.knight.chassis){
             data.knight.tonnage.armor=data.knight.armorValues.value*armorRatio;
+            data.knight.tonnage.value+=data.knight.tonnage.armor;
         }
         data.crew.ratingTotal=data.crew.rating+data.secChar.manoeuvrability.value;
     }
@@ -1258,6 +1292,7 @@ export class FortyKActor extends Actor {
         super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
     }
     _onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId){
+        
         if(this.dialog){
             this.dialog.updateDialog(this);
         }

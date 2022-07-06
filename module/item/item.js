@@ -57,26 +57,37 @@ export class FortyKItem extends Item {
         item["FORTYK"]=game.fortyk.FORTYK;
 
         //ensure this is an owned item
-        
+
         if(this.actor!==null&&this.actor.data!==undefined){
             const data = this.actor.data.data;
             let actor=this.actor;
             item.data.isPrepared=true;
             if(actor.type==="knightHouse"){
                 if(item.type!=="repairEntry"&&item.type!=="cadetHouse"&&item.type!=="outpost"){
-                   item.data.amount.left=item.data.amount.value-item.data.amount.taken; 
+                    item.data.amount.left=item.data.amount.value-item.data.amount.taken; 
                 }
-                
+
                 if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="ammunition"){
                     item.data.knightComponentType="Weapons";
                 }else if(item.type==="knightComponent"){
-                     item.data.knightComponentType="Components";
+                    item.data.knightComponentType="Components";
                 }else if(item.type==="knightArmor"){
-                     item.data.knightComponentType="Armors";
+                    item.data.knightComponentType="Armors";
                 }else if(item.type==="knightCore"){
-                     item.data.knightComponentType="Cores";
+                    item.data.knightComponentType="Cores";
                 }else if(item.type==="knightStructure"){
-                     item.data.knightComponentType="Structures";
+                    item.data.knightComponentType="Structures";
+                }
+            }
+            if(actor.type==="vehicle"&&data.knight.chassis){
+                if(item.type==="rangedWeapon"&&(item.data.class.value==="Heavy")){
+
+                    item.data.space.value=2;
+                    item.data.weight.value=2;
+
+                }else if(item.type==="rangedWeapon"&&(item.data.class.value==="Titanic Artillery Weapon"||item.data.class.value==="Titanic Ranged Weapon")){
+                    item.data.space.value=1;
+                    item.data.weight.value=1;
                 }
             }
             if(item.type==="meleeWeapon"){
@@ -102,7 +113,7 @@ export class FortyKItem extends Item {
             }
             if(item.type==="rangedWeapon"){
                 let ammo=actor.getEmbeddedDocument("Item",item.data.ammo._id);
-                
+
                 if(ammo!==undefined&&!ammo.data.data.default.value){
                     let ammoData=ammo.data;
                     item.data.damageType.value=ammoData.data.damageType.value;
@@ -126,7 +137,7 @@ export class FortyKItem extends Item {
                 if(item.data.damTyp===undefined){item.data.damTyp=item.data.damageType.value}
 
                 item.data.testMod.value=parseInt(item._source.data.testMod.value);
-                
+
                 item.data.clip.max=item.data.clip.formula;
                 if(this.getFlag("fortyk","accurate")){
                     item.data.attackMods.aim.half=20;
@@ -142,7 +153,7 @@ export class FortyKItem extends Item {
                 */
                 if(this.getFlag("fortyk","twinlinked")){
 
-                    
+
                     item.data.clip.consumption=item.data.clip.consumption*2;
                 }
                 if(this.getFlag("fortyk","storm")){
@@ -350,7 +361,7 @@ export class FortyKItem extends Item {
                         form=newNum+form;
                         item.data.damageFormula.value=form;
 
-                        
+
 
                     }
 
