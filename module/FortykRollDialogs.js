@@ -72,7 +72,7 @@ export class FortykRollDialogs{
                             }
                             if(!reroll){
                                
-                                if(testLabel==="Dodge"||testLabel==="Parry"){
+                                if(testLabel==="Dodge"||testLabel==="Parry"||testLabel==="Jink"){
                                    
                                     let aeData={};
                                     aeData.id="evasion";
@@ -122,7 +122,13 @@ export class FortykRollDialogs{
         templateOptions["options"].selfProne=modifiers.selfProne;
         templateOptions["options"].stunned=modifiers.stunned;
         templateOptions["options"].helpless=modifiers.helpless;
-        templateOptions["options"].size=modifiers.size;
+        if(modifiers.size){
+           templateOptions["options"].size=modifiers.size; 
+        }else{
+            templateOptions["options"].size=actor.data.data.secChar.size.value;
+        }
+        
+        
         templateOptions["options"].blindfight=actor.getFlag("fortyk","blindfight");
         templateOptions["options"].counter=actor.getFlag("fortyk","counterattack");
         templateOptions["options"].running=modifiers.running;
@@ -425,7 +431,12 @@ export class FortykRollDialogs{
         templateOptions["options"].prone=modifiers.prone;
         templateOptions["options"].stunned=modifiers.stunned;
         templateOptions["options"].helpless=modifiers.helpless;
-        templateOptions["options"].size=modifiers.size;
+        if(modifiers.size){
+           templateOptions["options"].size=modifiers.size; 
+        }else{
+            templateOptions["options"].size=actor.data.data.secChar.size.value;
+        }
+        
         templateOptions["options"].running=modifiers.running;
         templateOptions["options"].normal=true;
         //elevation stuff
@@ -569,6 +580,11 @@ export class FortykRollDialogs{
                             if(size<0){
                                 let preysense=parseInt(actor.getFlag("fortyk","preysense"))*10
                                 size=Math.min(0,size+preysense)
+                            }
+                        }
+                        if(item.getFlag("fortyk","scatter")){
+                            if(size<0){
+                                size=0;
                             }
                         }
                         let other = Number($(html).find('input[name="other"]').val());

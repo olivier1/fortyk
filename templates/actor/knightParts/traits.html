@@ -1,0 +1,17 @@
+<span class="section-title">Traits</span>
+<a class="tnt-create button" data-type="talentntrait" title="Add a new Talent or Trait">Add Trait</a>
+<div class="list list3col grid grid-3col">
+    <span class="list-item">Name</span>
+    <span class="list-button"></span>
+    <span class="list-button"></span>
+    {{#each actor.talentsntraits as |t key|}}
+
+    <a class="item-descr list-item" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}{{#unless (compareString "N/A" t.data.specialisation.value)}} ({{t.data.specialisation.value}}){{/unless}} </a>
+    <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
+    <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
+
+
+
+    {{/each}}
+
+</div>

@@ -422,6 +422,9 @@
                 "formation": {
                     "value": false,
                     "type": "Boolean"
+                },
+                "riding":{
+                    "id":""
                 }
             },
             "player": {
@@ -937,10 +940,12 @@
                 "overload":0,
                 "structure":"",
                 "armor":"",
+                "forceField":"",
                 "armActuator":"",
                 "legActuator":"",
                 "throneMod":"",
-                "components":[""]
+                "components":[""],
+                "spirit":""
             }
 
         },
@@ -999,7 +1004,8 @@
             "knightChassis",
             "cadetHouse",
             "repairEntry",
-            "outpost"
+            "outpost",
+            "knightSpirit"
         ],
         "templates": {
             "weapon": {
@@ -1169,6 +1175,7 @@
                 "weapon",
                 "description",
                 "physicalProp",
+                "equippable",
                 "loanable"
             ],
             "currentClip": {
@@ -1178,7 +1185,8 @@
             "default": {
                 "value": true,
                 "type": "Boolean"
-            }
+            },
+            "isFresh":true
         },
         "wargear": {
             "templates": [
@@ -1237,7 +1245,8 @@
             "templates": [
                 "description",
                 "physicalProp",
-                "equippable"
+                "equippable",
+                "loanable"
             ],
             "rating": {
                 "value": 0,
@@ -1715,6 +1724,21 @@
                 "type":"String"
             },
             "type":{
+                "value":"",
+                "type":"String"
+            }
+        },
+        "knightSpirit":{
+            "templates":["description"],
+            "failure":{
+                "value":"",
+                "type":"String"
+            },
+            "meldMod":{
+                "value":0,
+                "type":"Number"
+            },
+            "meldBonus":{
                 "value":"",
                 "type":"String"
             }

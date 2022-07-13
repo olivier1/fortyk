@@ -14,11 +14,31 @@
                 <div class="flexrow">
 
                     <span class="descrSpan">{{data.chassis.name}}</span>
+                    {{#if isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{data.knight.chassis}}"></a>
                     <a class="list-button delete-chassis" title="Delete" data-item-id="{{data.knight.chassis}}"></a>
+                    {{/if}}
                 </div>
                 {{else}}
                 <a class="pick-chassis button" title="Pick Chassis">Select a Chassis</a>
+                {{/if}}
+
+
+            </div>
+            <div class="flexcol">
+                <span class="descrSpan">Machine Spirit:</span>
+
+                {{#if data.knight.spirit}}
+                <div class="flexrow">
+
+                    <span class="descrSpan">{{data.spirit.name}}</span>
+                    {{#if isGM}}
+                    <a class="list-button item-edit" title="Edit" data-item-id="{{data.knight.spirit}}"></a>
+                    <a class="list-button delete-chassis" title="Delete" data-item-id="{{data.knight.spirit}}"></a>
+                    {{/if}}
+                </div>
+                {{else}}
+                <a class="pick-spirit button" title="Pick Machine Spirit">Select a Machine Spirit</a>
                 {{/if}}
 
 
@@ -42,13 +62,13 @@
             <div class="flexcol">
                 <span class="descrSpan">Pilot:</span>
 
-                <select class="typeSelect" name="data.crew.pilotID" data-dtype="String">
+                <select class="pilotSelect" name="data.crew.pilotID" data-dtype="String">
                     <option value="">Select a Pilot</option>
                     {{#select data.crew.pilotID}}
 
                     {{#each pilots}}
 
-                    <option value="{{this.id}}">{{this}}</option>
+                    <option value="{{this.id}}">{{this.name}}</option>
 
                     {{/each}}
                     {{/select}}
@@ -142,6 +162,13 @@
                         <span class="list-item structures1" {{#unless ../structures1}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
                         <span class="list-item structures1" {{#unless ../structures1}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
                         <span class="list-item structures1" {{#unless ../structures1}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        {{/each}}
+                        <a class="mechbay-grid-section forceField-color list-item-header4" name="forceFields1"><span class="{{#unless forceFields1}}plus-button{{else}}minus-button{{/unless}}"></span>Force Fields</a>
+                        {{#each forceFields}}
+                        <span class="list-item mechbay-component forceFields1" {{#unless ../forceFields1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="forceField-slot">{{this.name}}</span>
+                        <span class="list-item forceFields1" {{#unless ../forceFields1}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
+                        <span class="list-item forceFields1" {{#unless ../forceFields1}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
+                        <span class="list-item forceFields1" {{#unless ../forceFields1}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
                         {{/each}}
                     </div>
 
@@ -276,6 +303,13 @@
                         <span class="list-item armors2" {{#unless ../armors2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
                         <span class="list-item armors2" {{#unless ../armors2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
                         {{/each}}
+                        <a class="mechbay-grid-section forceField-color list-item-header4" name="forceFields2"><span class="{{#unless forceFields2}}plus-button{{else}}minus-button{{/unless}}"></span>Force Fields</a>
+                        {{#each forceFields}}
+                        <span class="list-item mechbay-component forceFields2" {{#unless ../forceFields1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="forceField-slot">{{this.name}}</span>
+                        <span class="list-item forceFields2" {{#unless ../forceFields2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
+                        <span class="list-item forceFields2" {{#unless ../forceFields2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
+                        <span class="list-item forceFields2" {{#unless ../forceFields2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        {{/each}}
                     </div>
 
                 </div>
@@ -343,7 +377,7 @@
                 <div class="ranged-weapon ranged filled-slot">
                     <span>{{this.name}}</span>
                     {{#if ../isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{this._id}}"></a>
+                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
                     {{/if}}
                     <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="data.hardPoints.leftArm.titanicRanged" data-index="{{@index}}"></a>
                 </div>
@@ -359,7 +393,7 @@
                 <div class="melee-weapon melee filled-slot">
                     <span>{{this.name}}</span>
                     {{#if ../isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{this._id}}"></a>
+                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
                     {{/if}}
                     <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="data.hardPoints.leftArm.titanicMelee" data-index="{{@index}}"></a>
                 </div>
@@ -375,7 +409,7 @@
                 <div class="auxiliary-weapon auxilary filled-slot">
                     <span>{{this.name}}</span>
                     {{#if ../isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{this._id}}"></a>
+                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
                     {{/if}}
                     <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="data.hardPoints.leftArm.auxiliary" data-index="{{@index}}"></a>
                 </div>
@@ -429,7 +463,20 @@
                     Armor Slot
                 </div>
                 {{/if}}
+                {{#if data.knight.forceField}}
 
+                <div class="forceField forceField-color filled-slot">
+                    <span>{{data.knight.forceField.name}}</span>
+                    {{#if isGM}}
+                    <a class="list-button item-edit" title="Edit" data-item-id="{{data.knight.forceField.id}}"></a>
+                    {{/if}}
+                    <a class="list-button delete-component" title="Delete" data-item-id="{{data.knight.forceField.id}}" data-path="data.knight.forceField" ></a>
+                </div>
+                {{else}}
+                <div class="forceField-slot forceField-color component-slot" data-index="{{@index}}" data-path="data.knight.forceField">
+                    Force Field Slot
+                </div>
+                {{/if}}
                 {{#each torsoHardPoints.auxiliary}}
                 {{#if this}}
 
@@ -588,11 +635,11 @@
                 </div>
 
                 <div class="flexrow flex-group-center">
-                    <span>Left Side Armor: </span><input type="text" class="combat-resources" data-target="data.facings.lSide.armor" value="{{data.facings.lSide.armor}}" data-dtype="Number"/><span>/50</span>
+                    <span>Left Side Armor: </span><input type="text" class="combat-resources" data-target="data.facings.lSide.armor" value="{{data.facings.lSide.armor}}" data-dtype="Number"/><span>{{#if data.facings.lSide.shield}}+{{data.facings.lSide.shield}}{{/if}}/50</span>
                 </div>
 
                 <div class="flexrow flex-group-center">
-                    <span>Right Side Armor: </span> <input type="text" class="combat-resources" data-target="data.facings.rSide.armor" value="{{data.facings.rSide.armor}}" data-dtype="Number"/><span>/50</span>
+                    <span>Right Side Armor: </span> <input type="text" class="combat-resources" data-target="data.facings.rSide.armor" value="{{data.facings.rSide.armor}}" data-dtype="Number"/><span>{{#if data.facings.rSide.shield}}+{{data.facings.rSide.shield}}{{/if}}/50</span>
                 </div>
 
                 <div class="flexrow flex-group-center">

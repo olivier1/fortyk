@@ -410,11 +410,11 @@
 }
 @media (min-width: 768px) {
     .list-item {
-        border-top: 1px solid #999;
-        border-left: 1px solid #999;
-    }
-    .list-item:nth-child(n+4){
+        border-bottom: 1px solid #999;
         border-right: 1px solid #999;
+    }
+    .list-item:nth-child(n){
+        border-left: 1px solid #999;
     }
     .fortyk .list-item2{
         border-top: 1px solid #999;
@@ -422,22 +422,28 @@
     }
     .fortyk .list-item-header{
         border-top: 3px solid #999;
+        border-bottom: 3px solid #999;
         border-left: 3px solid #999;
     }
-    .list-item-header:nth-child(4){
-        border-right: 3px solid #999;
+    .list-item-header:nth-child(n){
+        border-left: 3px solid #999;
     }
     .fortyk .list-item-header2{
         border-top: 3px solid #999;
-        border-left: 3px solid #999;
+        border-bottom: 3px solid #999;
+       
+        border-right: 3px solid #999;
     }
     .fortyk .list-item-header3{
         border-top: 3px solid #999;
-        border-left: 3px solid #999;
+        border-bottom: 3px solid #999;
+        
+        border-right: 3px solid #999;
     }
     .fortyk .list-item-header4{
         border-top: 3px solid #999;
         border-left: 3px solid #999;
+        border-bottom: 3px solid #999;
         border-right: 3px solid #999;
     }
 }
@@ -612,6 +618,9 @@
 }
 .fortyk .combat-weaponsarmor{
     align-items: start;
+}
+.combat2{
+    overflow: hidden !important;
 }
 .fortyk .forcefield{
     width:100%;
@@ -985,6 +994,9 @@
 }
 .armor-color{
     background-color: #87ceebad; 
+}
+.forceField-color{
+    background-color: #ffd70085;
 }
 .throne-mod-color{
     background-color: #faebd78c;

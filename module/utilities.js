@@ -26,7 +26,10 @@ export const preloadHandlebarsTemplates = async function() {
         "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/signature-wargear.html",
         //knight sheet parts
         "systems/fortyk/templates/actor/knightParts/mech-bay.html",
-        "systems/fortyk/templates/actor/knightParts/combat.html"
+        "systems/fortyk/templates/actor/knightParts/combat.html",
+        "systems/fortyk/templates/actor/knightParts/traits.html",
+        "systems/fortyk/templates/actor/knightParts/melee-weapon-template.html",
+        "systems/fortyk/templates/actor/knightParts/ranged-weapon-template.html"
 
 
 

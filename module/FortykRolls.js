@@ -67,15 +67,26 @@ returns the roll message*/
         let jam=false;
         if(type==="rangedAttack"){
             if(weapon.data.quality.value==="Best"){
-            }else if(((weapon.data.quality.value==="Good"&&!fortykWeapon.getFlag("fortyk","unreliable"))||fortykWeapon.getFlag("fortyk","reliable"))&&testRoll===100){
-                jam=true;
+            }else if(fortykWeapon.getFlag("fortyk","reliable")){
+                if(testRoll===100){
+                   jam=true; 
+                }
+            }else if(fortykWeapon.getFlag("fortyk","unreliable")||weapon.data.quality.value==="Poor"){
+                if(testRoll>=91){
+                   jam=true; 
+                }
+                if(weapon.data.quality.value==="Poor"){
+                    if(testRoll>target){
+                        jam=true;
+                    }
+                }
+            }else if(fortykWeapon.getFlag("fortyk","overheats")){
+                if(testRoll>=91){
+                   jam=true; 
+                }
             }else if(testRoll>=96){
                 jam=true;
             }else if((fireRate==="full"||fireRate==="semi")&&testRoll>=94){
-                jam=true;
-            }else if(fortykWeapon.getFlag("fortyk","unreliable")&&weapon.data.quality.value==="Good"&&testRoll>=96){
-                jam=true;
-            }else if(((!weapon.data.quality.value==="Good"&&fortykWeapon.getFlag("fortyk","unreliable"))||fortykWeapon.getFlag("fortyk","overheats"))&&testRoll>=91){
                 jam=true;
             }
         }
@@ -211,12 +222,12 @@ returns the roll message*/
                 if(fortykWeapon.getFlag("fortyk","scatter")){
                     if(attackTarget!==undefined){
                         let attackerToken=getActorToken(actor);
-                        console.log(attackerToken, attackTarget)
                         let distance=tokenDistance(attackerToken,attackTarget);
-                        console.log(attackerToken,distance)
+                        console.log(parseInt(weapon.data.range.value)/2)
                         if(distance<=2||distance<=2*canvas.dimensions.distance){
                             hits+=testDos;
-                        }else if(distance>=parseInt(weapon.data.range.value)/2){
+                        }else if(distance<=parseInt(weapon.data.range.value)/2){
+                            console.log(Math.floor(testDos/2))
                             hits+=Math.floor(testDos/2);
                         }
                     }
@@ -305,6 +316,7 @@ returns the roll message*/
             await ChatMessage.create(chatOp,{});
         }
         //blast
+        console.log(weapon)
         if(attack&&(weapon.data.type==="Launcher"||weapon.data.type==="Grenade")&&fortykWeapon.getFlag("fortyk","blast")&&!testResult&&jam){
             let fumbleRoll=new Roll("1d10");
             await fumbleRoll.roll();
@@ -2024,6 +2036,8 @@ returns the roll message*/
                 ae.duration={
                     rounds:rolls.rolls[1]
                 }
+                activeEffects.push(ae);
+                ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("prone")]);
                 activeEffects.push(ae);
                 agiTest=rolls.tests[0]
                 if(!agiTest.value){

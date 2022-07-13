@@ -1,0 +1,180 @@
+<form class="{{cssClass}} charSheet flexcol" autocomplete="off">
+
+    {{!-- Sheet Header --}}
+    <header class=" no-flex">
+
+
+
+        <div class="descr grid grid-7col">
+
+
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Tactical Speed: {{data.secChar.speed.tactical}}m</span>
+                <span class="descrSpan">Cruising Speed: {{data.secChar.speed.cruising}}kph</span>
+
+            </div>
+
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Manoeuvrability:</span>
+                <input type="text" class="combat-resources" data-target="data.secChar.manoeuvrability.value" value="{{data.secChar.manoeuvrability.value}}" data-dtype="Number"/>
+            </div>
+
+            <div class="descrRow flexcol">
+
+                <span>Cover:</span>
+
+                <select class="cover"  name="data.secChar.cover.value">
+                    {{#select data.secChar.cover.value}}
+                    {{#each coverTypes}}
+                    <option value="{{value}}">{{label}}</option>
+                    {{/each}}
+                    {{/select}}
+                </select>
+
+            </div>
+
+
+
+            <div class="descrRow flexcol">
+                <label for="data.secChar.wounds.value" class="resource-label">Structural Integrity</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" class="combat-resources" data-target="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
+                    <span>/</span>
+                    <input type="text" class="combat-resources" data-target="data.secChar.wounds.max" value="{{data.secChar.wounds.max}}" data-dtype="Number" disabled/>
+                </div>
+            </div>
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Operate:</span>
+                <span class="char-total rollable button" data-roll-type="char" data-target="{{data.crew.ratingTotal}}" data-label="Operate" data-char="">{{data.crew.rating}}</span>
+
+            </div>
+
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Jink:</span>
+                <span class="char-total rollable button" data-roll-type="dodge" data-target="{{data.crew.rating}}" data-label="Jink" data-char="">{{data.crew.rating}}</span>
+
+
+            </div>
+
+            <div class="flexcol descrRow">
+
+                <span >Force Field:</span>
+
+                {{#if data.knight.forceField}}
+                {{#unless data.knight.forceField.data.data.broken.value}}
+
+
+                <span class="forcefield rollable button" data-roll-type="forcefield" data-id="{{data.knight.forceField.id}}">{{data.knight.forceField.data.data.rating.value}}</span>
+                {{else}}
+                <span class="forcefield repairForcefield button" data-id="{{data.knight.forceField.id}}" >Repair</span>
+                {{/unless}}
+
+
+                {{else}}
+                 <span class=" button" >Install Forcefield</span>
+                
+                {{/if}}
+            </div>
+
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </header>
+
+
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-content">
+
+        <div class="sub-sheet grid grid-3col">
+            <div class="flexcol vehicle-categories no-flex">
+                <span class="section-title">Left Side Weapons</span>
+                <div class="flexcol">
+                    {{#each leftArmHardPoints}}
+
+                    {{#each this}}
+                    {{#if (compareString this.type "meleeWeapon")}}
+                    {{> "systems/fortyk/templates/actor/knightParts/melee-weapon-template.html"}}
+                    {{else if (compareString this.type "rangedWeapon")}}
+                    {{> "systems/fortyk/templates/actor/knightParts/ranged-weapon-template.html"}}
+                    {{/if}}
+                    {{/each}}
+                    {{/each}}
+
+                </div>
+            </div>
+            <div class="flexcol vehicle-categories no-flex">
+                <span class="section-title">Front Weapons</span>
+                <div class="flexcol">
+                    {{#each carapaceHardPoints}}
+
+                    {{#each this}}
+                    {{#if (compareString this.type "meleeWeapon")}}
+                    {{> "systems/fortyk/templates/actor/knightParts/melee-weapon-template.html"}}
+                    {{else if (compareString this.type "rangedWeapon")}}
+                    {{> "systems/fortyk/templates/actor/knightParts/ranged-weapon-template.html"}}
+                    {{/if}}
+                    {{/each}}
+                    {{/each}}
+                    {{#each torsoHardPoints}}
+
+                    {{#each this}}
+                    {{#if (compareString this.type "meleeWeapon")}}
+                    {{> "systems/fortyk/templates/actor/knightParts/melee-weapon-template.html"}}
+                    {{else if (compareString this.type "rangedWeapon")}}
+                    {{> "systems/fortyk/templates/actor/knightParts/ranged-weapon-template.html"}}
+                    {{/if}}
+                    {{/each}}
+                    {{/each}}
+
+                </div>
+            </div>
+            <div class="flexcol vehicle-categories no-flex">
+                <span class="section-title">Right Side Weapons</span>
+                <div class="flexcol">
+                    {{#each rightArmHardPoints}}
+
+                    {{#each this}}
+                    {{#if (compareString this.type "meleeWeapon")}}
+                    {{> "systems/fortyk/templates/actor/knightParts/melee-weapon-template.html"}}
+                    {{else if (compareString this.type "rangedWeapon")}}
+                    {{> "systems/fortyk/templates/actor/knightParts/ranged-weapon-template.html"}}
+                    {{/if}}
+                    {{/each}}
+                    {{/each}}
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+    </section>
+</form>

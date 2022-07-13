@@ -26,6 +26,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
         data.houses=Array.from(game.actors.values()).filter(actor=>actor.isOwner&&actor.type==="knightHouse");
+        data.pilots=Array.from(game.actors.values()).filter(actor=>actor.isOwner&&actor.type==="dhPC");
         if(data.mechtab===undefined){
             data.mechtab="all";
         }
@@ -80,6 +81,12 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         if(data.armors2===undefined){
             data.armors2=true;
         }
+        if(data.forceFields1===undefined){
+            data.forceFields1=true;
+        }
+        if(data.forceFields2===undefined){
+            data.forceFields2=true;
+        }
         if(data.structures1===undefined){
             data.structures1=true;
         }
@@ -101,6 +108,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         if(data.others2===undefined){
             data.others2=true;
         }
+
         if(data.data.knight.house){
             let house=game.actors.get(data.data.knight.house);
             data.meleeWeapons=house.itemTypes.meleeWeapon;
@@ -110,6 +118,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             data.ammunition=house.itemTypes.ammunition;
             data.components=house.itemTypes.knightComponent;
             data.armors=house.itemTypes.knightArmor;
+            data.forceFields=house.itemTypes.forceField;
             data.cores=house.itemTypes.knightCore;
             data.structures=house.itemTypes.knightStructure;
             data.sensors=house.itemTypes.knightComponent.filter(component=>component.data.data.type.value==="sensor");
@@ -129,30 +138,43 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
+                        if(wpnType[i].type==="rangedWeapon"){
+                            wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
+                        }
                     }
                 }
             }
-            data.leftArmHardPoints=data.data.chassis.data.data.hardPoints.leftArm;
+            data.leftArmHardPoints=duplicate(data.data.chassis.data.data.hardPoints.leftArm);
             for (let [key, wpnType] of Object.entries(data.leftArmHardPoints)){
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
+                        if(wpnType[i].type==="rangedWeapon"){
+                            wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
+                        }
                     }
                 }
             }
-            data.torsoHardPoints=data.data.chassis.data.data.hardPoints.torso;
+            data.torsoHardPoints=duplicate(data.data.chassis.data.data.hardPoints.torso);
             for (let [key, wpnType] of Object.entries(data.torsoHardPoints)){
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
+                        console.log(wpnType)
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
+                        if(wpnType[i].type==="rangedWeapon"){
+                            wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
+                        }
                     }
                 }
             }
-            data.rightArmHardPoints=data.data.chassis.data.data.hardPoints.rightArm;
+            data.rightArmHardPoints=duplicate(data.data.chassis.data.data.hardPoints.rightArm);
             for (let [key, wpnType] of Object.entries(data.rightArmHardPoints)){
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
+                        if(wpnType[i].type==="rangedWeapon"){
+                            wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
+                        }
                     }
                 }
             }
@@ -165,15 +187,21 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
     activateListeners(html) {
         super.activateListeners(html);
         // Everything below here is only needed if the sheet is editable
-        html.find('.rollable').click(this._onRoll.bind(this));
+        //html.find('.rollable').click(this._onRoll.bind(this));
         html.find('.mechBat').click(this._onMechbayTabClick.bind(this));
         html.find('.pick-chassis').click(this._onChassisPick.bind(this));
+        html.find('.pick-spirit').click(this._onSpiritPick.bind(this));
         html.find('.delete-chassis').click(this._onDeleteChassis.bind(this));
         html.find('.delete-weapon').click(this._onDeleteWeapon.bind(this));
         html.find('.delete-component').click(this._onDeleteComponent.bind(this));
         html.find('.delete-other-component').click(this._onDeleteOtherComponent.bind(this));
         html.find('.mechbay-grid-section').click(this._onToggleComponentLists.bind(this));
         html.find('.houseSelect').change(this._onHouseChange.bind(this));
+        html.find('.pilotSelect').change(this._onPilotChange.bind(this));
+        //handles changing ammo type
+        html.find('.weapon-ammo').change(this._onAmmoChange.bind(this));
+        //handles reloading a ranged weapon
+        html.find('.weapon-reload').click(this._onWeaponReload.bind(this));
         $(document).on('click', '.minus-button', function (e) {
             e.stopImmediatePropagation();
         });
@@ -259,8 +287,10 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             component.update({"data.amount.taken":newAmt});
             let newComponent=await actor.createEmbeddedDocuments("Item",[componentBase]);
             let newComUpdate={};
-            if(newComponent.type==="rangedWeapon"||newComponent.type==="meleeWeapon"){
+            console.log(newComponent)
+            if(newComponent[0].type==="rangedWeapon"||newComponent[0].type==="meleeWeapon"){
                 let facing=event.target.dataset["facing"];
+                console.log(facing)
                 newComUpdate["data.facing.value"]=facing;
 
 
@@ -273,6 +303,8 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             if(componentType==="knightCore"){
                 knightUpdate[path]=newComponent[0].id;
             }else if(componentType==="knightArmor"){
+                knightUpdate[path]=newComponent[0].id;
+            }else if(componentType==="forceField"){
                 knightUpdate[path]=newComponent[0].id;
             }else if(componentType==="knightStructure"){
                 knightUpdate[path]=newComponent[0].id;
@@ -317,7 +349,9 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
                 knightUpdate[path]=componentArray;  
             }else{
+
                 let array=objectByString(chassis.data,path);
+                console.log(index,path,array);
                 array[index]=newComponent[0].id;
 
 
@@ -370,6 +404,11 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         }
         if(componentType==="knightStructure"){
             if(slotType.indexOf("structure-slot")!==-1){
+                return true;
+            }
+        }
+        if(componentType==="forceField"){
+            if(slotType.indexOf("forceField-slot")!==-1){
                 return true;
             }
         }
@@ -473,7 +512,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             button.classList.remove("plus-button");
             expand=true;
         }
-        
+
         let type=header.attributes["name"].value 
         this.document.data[type]=expand;
         let components=document.getElementsByClassName(type);
@@ -487,26 +526,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
         }
     }
-    /**
-   * Handle clickable rolls.
-   * @param {Event} event   The originating click event
-   * @private
-   */
-    async _onRoll(event) {
-        event.preventDefault();
-        const element = event.currentTarget;
-        const dataset = element.dataset;
-        let testType=dataset["rollType"];
-        var testTarget=parseInt(dataset["target"]);
-        var testLabel=dataset["label"];
-        var testChar=dataset["char"];
-        var item=null;
 
-
-        FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
-
-        //autofocus the input after it is rendered.
-    }
     async _onChassisPick(event){
         var chassisPack=await game.packs.get("fortyk.knight-chassis");
         let chassis=await chassisPack.getDocuments();
@@ -545,6 +565,52 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             update["data.knight.chassis"]=id;
                             update["data.secChar.wounds.value"]=createdChassis[0].data.data.structuralIntegrity.value;
                             update["data.secChar.size.value"]=8;
+                            update["data.manoeuvrability.value"]=createdChassis[0].data.data.manoeuvrability.value;
+                            actor.update(update);
+                            this.render(true);
+                        }
+                    }
+                },
+                default: "submit"
+            },options).render(true)
+        });
+    }
+    async _onSpiritPick(event){
+        var spiritPack=await game.packs.get("fortyk.knight-spirits");
+        let spirit=await spiritPack.getDocuments();
+        let templateOptions={"spirit":spirit};
+        let actor=this.actor;
+        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/knight-spirit-dialog.html', templateOptions);
+        var options = {
+            width: 666,
+            height: 600,
+            classes:["systems/fortyk/css/fortyk.css"]
+        };
+
+        renderedTemplate.then(content => { 
+            new Dialog({
+                title: "Pick a Machine Spirit",
+                content: content,
+                buttons:{
+                    submit:{
+                        label:"Add selected to Character",
+                        callback: async html => {
+                            let selectedId= $(html).find('input:checked').val();
+
+
+                            console.log(selectedId);
+
+
+                            let spiritDoc=await spiritPack.getDocument(selectedId);
+
+
+
+
+                            let createdSpirit=await actor.createEmbeddedDocuments("Item",[spiritDoc.data]);
+
+                            let id=createdSpirit[0].id;
+                            let update={};
+                            update["data.knight.spirit"]=id;
                             actor.update(update);
                             this.render(true);
                         }
@@ -572,7 +638,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                         callback: async dlg => { 
                             await this.actor.update({"data.knight.chassis":""});
                             await this.actor.deleteEmbeddedDocuments("Item",[itemId]);
-                            
+
                             this.render(true);
                         }
                     },
@@ -763,6 +829,98 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
     }
+    //handles when swapping ammo type in a ranged weapon
+    async _onAmmoChange(event){
+
+        event.preventDefault;
+        const dataset=event.currentTarget.dataset;
+        const weapon=this.actor.getEmbeddedDocument("Item",dataset["weapon"]);
+        if(!weapon){return};
+
+        let weaponData=weapon.data;
+        const previousAmmo=this.actor.getEmbeddedDocument("Item",dataset["previous"]);
+        const ammoID=event.currentTarget.value;
+        const ammo=this.actor.getEmbeddedDocument("Item",ammoID);
+        let weaponUpdate={}
+        weaponUpdate["data.ammo._id"]=ammoID;
+
+
+
+
+        if(previousAmmo!==undefined&&previousAmmo.data.data!==undefined){
+
+
+
+            previousAmmo.update({"data.currentClip.value":weaponData.data.clip.value,"data.isEquipped":false});
+        }
+        if(ammo!==undefined){
+            let ammoUpdate={};
+            if(ammo.data.data.isFresh){
+                ammoUpdate["data.isFresh"]=false;
+                ammoUpdate["data.currentClip.value"]=weapon.data.data.clip.max;
+                weaponUpdate["data.clip.value"]=weapon.data.data.clip.max;
+            }else{
+                weaponUpdate["data.clip.value"]=ammo.data.data.currentClip.value;
+            }
+            ammoUpdate["data.isEquipped"]=weapon.id;
+
+            ammo.update(ammoUpdate);
+        }else{
+            weaponUpdate["data.clip.value"]=0;
+        }
+
+
+
+        weapon.update(weaponUpdate);
+
+
+
+    }
+    //handles reloading a ranged weapon
+    async _onWeaponReload(event){
+        event.preventDefault;
+        const dataset=event.currentTarget.dataset;
+        let actor=this.actor;
+        let data=actor.data.data;
+        let weapon=this.actor.getEmbeddedDocument("Item",dataset.weapon);
+        let house=await game.actors.get(data.knight.house);
+        
+        let ammo=actor.getEmbeddedDocument("Item",weapon.data.data.ammo._id);
+
+        let update={};
+        let weaponUpdate={};
+        let ammoUpdate={};
+        let houseUpdate={};
+        weaponUpdate["data.ammo._id"]="";
+        weapon.update(weaponUpdate);
+        let components=actor.data.data.knight.components.filter(component=>component!==ammo.id);
+        actor.update({"data.knight.components":components});
+        let originalAmmo=house.getEmbeddedDocument("Item",ammo.data.data.originalId);
+        originalAmmo.update({"data.amount.taken":originalAmmo.data.data.amount.taken-1,"data.amount.value":parseInt(originalAmmo.data.data.amount.value)-1});
+        ammo.delete();
+
+
+
+    }
+
+    async _onPilotChange(event){
+
+        let newPilot=await game.actors.get(event.currentTarget.value);
+        let oldPilot=await game.actors.get(this.actor.data.data.crew.pilotID);
+
+
+        if(newPilot){
+
+
+            newPilot.update({"data.riding.id":this.actor.id}); 
+        }
+        if(oldPilot){
+
+            oldPilot.update({"data.riding.id":""});
+        }
+
+
+    }
     async _updateHouse(){
         let data=this.actor.data.data;
         let house=await game.actors.get(data.knight.house);
@@ -776,12 +934,33 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
         }
     }
-   /* async _render(force, options){
-        
+    getValidAmmo(weapon){
+        let ammos=this.actor.itemTypes.ammunition;
+        let validAmmos=[];
+        let wpnClass=weapon.data.data.class.value;
+        let wpnType=weapon.data.data.type.value;
+        for(let i=0;i<ammos.length;i++){
+            let ammo=ammos[i];
+            let ammoClass=ammo.data.data.class.value;
+            let ammoType=ammo.data.data.type.value;
+
+            if(ammoClass===wpnClass&&ammoType===wpnType){
+                if(!ammo.data.data.isEquipped){
+                    validAmmos.push(ammo);
+                }else if(ammo.data.data.isEquipped===weapon.id){
+                    validAmmos.push(ammo);
+                }
+
+            }
+        }
+        return validAmmos;
+    }
+    /* async _render(force, options){
+
         console.log(this)
         if(this.mechtab){
 
-            
+
 
 
             let category=this.mechtab;
@@ -793,9 +972,9 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 let cat=list.dataset["tab"];
                 if(cat===category){
                     list.style.display="";
-                    
+
                 }else{
-                    
+
                     list.style.display="none";
                 }
             }

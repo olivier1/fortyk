@@ -79,17 +79,7 @@ export class FortyKItem extends Item {
                     item.data.knightComponentType="Structures";
                 }
             }
-            if(actor.type==="vehicle"&&data.knight.chassis){
-                if(item.type==="rangedWeapon"&&(item.data.class.value==="Heavy")){
-
-                    item.data.space.value=2;
-                    item.data.weight.value=2;
-
-                }else if(item.type==="rangedWeapon"&&(item.data.class.value==="Titanic Artillery Weapon"||item.data.class.value==="Titanic Ranged Weapon")){
-                    item.data.space.value=1;
-                    item.data.weight.value=1;
-                }
-            }
+            
             if(item.type==="meleeWeapon"){
                 item.data.damageFormula.value=item.data.damageFormula.formula;
                 item.data.range.value=item.data.range.formula;
@@ -118,6 +108,7 @@ export class FortyKItem extends Item {
                     let ammoData=ammo.data;
                     item.data.damageType.value=ammoData.data.damageType.value;
                     item.data.range.value=ammoData.data.range.formula;
+                    item.data.range.formula=ammoData.data.range.formula;
                     item.data.pen.value=ammoData.data.pen.formula;
                     item.data.damageFormula.value=ammoData.data.damageFormula.formula;
                     item.flags=ammoData.flags;
@@ -190,7 +181,7 @@ export class FortyKItem extends Item {
 
             if(actor.type!=="vehicle"&&actor.type!=="knightHouse"){
                 if(item.type==="psychicPower"){
-                    let psyniscience=actor.data.data.psyniscience;
+                    let psyniscience=actor.data.data.skills.psyniscience;
                     let pr=parseInt(item.data.curPR.value);
                     //iterate through item flags to evaluate PR strings
                     let flags=item.flags.fortyk;

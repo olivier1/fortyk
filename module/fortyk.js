@@ -144,7 +144,7 @@ Hooks.once('init', async function() {
         }
     });
     Handlebars.registerHelper("greaterThan", function(num1,num2){
-        
+
         return num1>num2;
     });
     Handlebars.registerHelper("equals", function(num1,num2){
@@ -166,6 +166,12 @@ Hooks.once("setup", function() {
 });
 //HOOKS
 Hooks.once('ready', async function() {
+    //search for vehicles with pilots to assign them their stats
+    let vehicles=Array.from(game.actors.values()).filter(actor=>actor.type==="vehicle");
+    for(let i=0;i<vehicles.length;i++){
+        let vehicle=vehicles[i];
+        vehicle.preparePilot();
+    }
     //SOCKET used to update actors via the damage scripts
     game.socket.on("system.fortyk",async(data) => {
         if(data.type==="cardSplash"){

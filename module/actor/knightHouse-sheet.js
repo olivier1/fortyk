@@ -36,7 +36,8 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         data.knightCores=actor.itemTypes.knightCore;
         data.knightArmors=actor.itemTypes.knightArmor;
         data.knightStructures=actor.itemTypes.knightStructure;
-        data.components=data.weapons.concat(data.knightComponents,data.knightCores,data.knightArmors,data.knightStructures)
+        data.forceFields=actor.itemTypes.forceField;
+        data.components=data.weapons.concat(data.knightComponents,data.knightCores,data.knightArmors,data.knightStructures,data.forceFields)
         for(let i=0;i<data.components.length;i++){
             data.components[i].prepareData();
         }
@@ -73,7 +74,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
     }
    async _onComponentCreate(event){
         event.preventDefault();
-        let templateOptions={"type":[{"name":"knightComponent","label":"Component"},{"name":"rangedWeapon","label":"Ranged Weapon"},{"name":"meleeWeapon","label":"Melee Weapon"},{"name":"ammunition","label":"Ammunition"},{"name":"knightArmor","label":"Armor"},{"name":"knightStructure","label":"Structure"},{"name":"knightCore","label":"Core"}]};
+        let templateOptions={"type":[{"name":"knightComponent","label":"Component"},{"name":"rangedWeapon","label":"Ranged Weapon"},{"name":"meleeWeapon","label":"Melee Weapon"},{"name":"ammunition","label":"Ammunition"},{"name":"knightArmor","label":"Armor"},{"name":"knightStructure","label":"Structure"},{"name":"knightCore","label":"Core"},{"name":"forceField","label":"Force Field"}]};
 
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/select-wargear-type-dialog.html', templateOptions);
 

@@ -626,6 +626,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const dataset = element.dataset;
         let testType=dataset["rollType"];
         var testTarget=parseInt(dataset["target"]);
+        console.log(testTarget)
         var testLabel=dataset["label"];
         var testChar=dataset["char"];
         let rating=dataset["rating"];
@@ -638,7 +639,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
         if(dataset["itemId"]){
             item=await this.actor.items.get(dataset["itemId"]);
-
+            console.log(item)
             if(!item.data.data.isPrepared){
                 await item.prepareData();
             }

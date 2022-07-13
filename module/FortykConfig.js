@@ -420,7 +420,7 @@ FORTYK.weaponFlags={
     "scatter": {
         "value": false,
         "label": "Scatter",
-        "description": "Scatter weapons are more deadly in shorter ranges. When firing at point blank range a scatter weapon scores an extra hit for every degree of success, when firing at short range the weapon scores an extra hit for every two degrees of success. Firing at any range greater than short range causes the armor of the opponent to count as double."
+        "description": "Scatter weapons are more deadly in shorter ranges. When firing at point blank range a scatter weapon scores an extra hit for every degree of success, when firing at short range the weapon scores an extra hit for every two degrees of success. Firing at any range greater than short range causes the armor of the opponent to count as double. Scatter weapons ignore hit penalties due to size."
     },
     "shieldbreaker": {
         "value": false,
