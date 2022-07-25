@@ -4,16 +4,15 @@
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
 
     </header>
+    {{#if isGM}}
+    <label class="button clone">Copy Item</label>
+    {{/if}}
     <div class="flexcol">
         <label>Name:</label>
         <input type="text" value="{{name}}" name="name">
     </div>
     <div class="flexcol">
-        <label>Tonnage:</label>
-        <input type="text" value="{{data.weight.value}}" name="data.weight.value">
-    </div>
-    <div class="flexcol">
-        <label>Space:</label>
+        <label>Space %(0.%):</label>
         <input type="text" value="{{data.space.value}}" name="data.space.value">
     </div>
     <div class="flexcol">

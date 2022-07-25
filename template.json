@@ -1,4 +1,4 @@
-{
+    {
     "Actor": {
         "types": [
             "npc",
@@ -945,7 +945,8 @@
                 "legActuator":"",
                 "throneMod":"",
                 "components":[""],
-                "spirit":""
+                "spirit":"",
+                "operate":"operate:titanicwalker"
             }
 
         },

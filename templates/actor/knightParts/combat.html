@@ -1,11 +1,11 @@
 <form class="{{cssClass}} charSheet flexcol" autocomplete="off">
 
     {{!-- Sheet Header --}}
-    <header class=" no-flex">
+    <header class="header-knight no-flex">
 
 
 
-        <div class="descr grid grid-7col">
+        <div class="descr grid grid-9col">
 
 
             <div class="descrRow flexcol">
@@ -44,7 +44,19 @@
                 </div>
             </div>
             <div class="descrRow flexcol">
-                <span class="descrSpan">Operate:</span>
+                <label for="data.secChar.wounds.value" class="resource-label">Thresholds</label>
+                <span class="descrSpan">{{data.secChar.wounds.thresholds.[1]}}/{{data.secChar.wounds.thresholds.[2]}}/{{data.secChar.wounds.thresholds.[3]}}/{{data.secChar.wounds.thresholds.[4]}}</span>
+                <label for="data.secChar.wounds.value" class="resource-label">Current Threshold: {{threshold}}</label>
+
+            </div>
+            <div class="descrRow flexcol">
+                <select class="cover"  name="data.knight.operate">
+                    {{#select data.knight.operate}}
+
+                    <option value="operate:titanicwalker">Operate</option>
+                    <option value="melding">Melding</option>
+                    {{/select}}
+                </select>
                 <span class="char-total rollable button" data-roll-type="char" data-target="{{data.crew.ratingTotal}}" data-label="Operate" data-char="">{{data.crew.rating}}</span>
 
             </div>
@@ -71,12 +83,17 @@
 
 
                 {{else}}
-                 <span class=" button" >Install Forcefield</span>
-                
+                <span class=" button" >Install Forcefield</span>
+
                 {{/if}}
             </div>
 
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Titanic Feet:</span>
+                <span class="stomp button" data-formula="1d10+{{stomp}}" >1d10+{{stomp}}</span>
 
+
+            </div>
 
 
 
@@ -102,7 +119,7 @@
 
 
     {{!-- Sheet Body --}}
-    <section class="sheet-content">
+    <section class="sheet-content-knight">
 
         <div class="sub-sheet grid grid-3col">
             <div class="flexcol vehicle-categories no-flex">

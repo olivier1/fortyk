@@ -49,8 +49,20 @@ export class FortyKItemSheet extends ItemSheet {
 
 
         }
-        if(this.actor!==null&&this.actor.type==="repairEntry"){
-            data.knights=this.actor.data.data.knights;
+        if(this.actor&&item.type==="repairEntry"){
+            
+            data.knights=[];
+            let knights=this.actor.data.data.knights;
+            console.log(knights)
+            for(let i=0;i<knights.length;i++){
+                let actor=game.actors.get(knights[i]);
+                console.log(actor);
+                if(actor){
+                    
+                    data.knights.push(actor.name);
+                }
+
+            }
         }
         if(this.actor&&this.actor.type==="vehicle"){
             data.vehicle=true;
@@ -87,6 +99,7 @@ export class FortyKItemSheet extends ItemSheet {
         html.find('.skill-children').click(this._onChildrenClick.bind(this));
         html.find('.special').click(this._onSpecialClick.bind(this));
         html.find('.modifier').click(this._onModifierClick.bind(this));
+        html.find('.clone').click(this._onCloneClick.bind(this));
         html.find('.knight-Hardpoint').keydown(this._onHardpointEnter.bind(this));
         html.find('.knight-Hardpoint').focusout(this._onHardpointEdit.bind(this));
         // Autoselect entire text 
@@ -95,6 +108,10 @@ export class FortyKItemSheet extends ItemSheet {
         });
 
 
+    }
+    _onCloneClick(event){
+        console.log("hey")
+        this.item.clone({},{save:true});
     }
     async _onModifierClick(event){
         let item=this.item;

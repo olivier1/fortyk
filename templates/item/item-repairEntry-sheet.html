@@ -3,6 +3,9 @@
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
 
     </header>
+    {{#if isGM}}
+    <label class="button clone">Copy Item</label>
+    {{/if}}
     <div class="flexcol">
         <label>Entry:</label>
         <input type="text" value="{{name}}" name="name">
@@ -15,6 +18,7 @@
         <label>Knight:</label>
         <select class="quality"  name="data.knight.value">
             {{#select data.knight.value}}
+            <option value="">Select Knight</option>
             {{#each knights}}
             <option value="{{this}}">{{this}}</option>
             {{/each}}

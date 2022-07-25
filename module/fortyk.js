@@ -196,7 +196,7 @@ Hooks.once('ready', async function() {
         }
         if(data.type==="renderSheets"){
             let actors=data.package.actors;
-            console.log(actors);
+            
             for(let i=0;i<actors.length;i++){
                 let actor=await game.actors.get(actors[i]);
                 if(actor){

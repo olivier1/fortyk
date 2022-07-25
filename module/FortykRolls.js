@@ -344,6 +344,20 @@ returns the roll message*/
                              flavor:"Shot Scatters!",
                              author:actor.name}
             await ChatMessage.create(chatScatter,{});
+            let scatterDice="1d5";
+            if(attackTarget!==undefined){
+                        let attackerToken=getActorToken(actor);
+                        let distance=tokenDistance(attackerToken,attackTarget);
+                        console.log(parseInt(weapon.data.range.value)/2)
+                        let weaponRng=parseInt(weapon.data.range.value);
+                        if(distance<=2*weaponRng){
+                            scatterDice="1d10";
+                        }else if(distance<=weaponRng*3){
+                             scatterDice="2d10";
+                        }else if(distance<=weaponRng*4){
+                             scatterDice="3d10";
+                        }
+                    }
             let distanceRoll=new Roll("1d5");
             await distanceRoll.roll();
             await distanceRoll.toMessage({

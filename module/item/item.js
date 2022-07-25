@@ -68,15 +68,21 @@ export class FortyKItem extends Item {
                 }
 
                 if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="ammunition"){
-                    item.data.knightComponentType="Weapons";
+                    if(item.type==="rangedWeapon"){
+                        if(item.data.class.value.indexOf("Titanic")===-1){
+                          item.data.knightComponentType="auxiliaryWeapon";  
+                        }else{
+                             item.data.knightComponentType=item.type;
+                        }
+                    }else{
+                         item.data.knightComponentType=item.type;
+                    }
+                   
                 }else if(item.type==="knightComponent"){
-                    item.data.knightComponentType="Components";
-                }else if(item.type==="knightArmor"){
-                    item.data.knightComponentType="Armors";
-                }else if(item.type==="knightCore"){
-                    item.data.knightComponentType="Cores";
-                }else if(item.type==="knightStructure"){
-                    item.data.knightComponentType="Structures";
+                    item.data.knightComponentType=item.data.type.value;
+                    console.log(item.data.type.value)
+                }else{
+                    item.data.knightComponentType=item.type;
                 }
             }
             

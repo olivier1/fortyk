@@ -3,6 +3,9 @@
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
 
     </header>
+    {{#if isGM}}
+    <label class="button clone">Copy Item</label>
+    {{/if}}
     <span>You will have to create an ammunition item in order to fire your ranged weapon, unless it is a thrown weapon in which case it will use the amount of the weapon as ammo.</span>
     <div class="grid grid-3col">
         <div class="flexcol">
@@ -141,6 +144,10 @@
         <div class="flexcol">
             <label>Weight:</label>
             <input type="text" value="{{data.weight.value}}" name="data.weight.value">
+        </div>
+        <div class="flexcol">
+            <label>Space:</label>
+            <input type="text" value="{{data.space.value}}" name="data.space.value">
         </div>
         
         <div class="flexcol simple-grid3">

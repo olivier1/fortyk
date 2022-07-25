@@ -354,7 +354,7 @@
                 <div class="artillery-weapon artillery filled-slot">
                     <span>{{this.name}}</span>
                     {{#if ../isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{this._id}}"></a>
+                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
                     {{/if}}
                     <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="data.hardPoints.carapace.titanicArtillery" data-index="{{@index}}"></a>
                 </div>
@@ -406,7 +406,7 @@
                 {{#each leftArmHardPoints.auxiliary}}
                 {{#if this}}
 
-                <div class="auxiliary-weapon auxilary filled-slot">
+                <div class="auxiliary-weapon auxiliary filled-slot">
                     <span>{{this.name}}</span>
                     {{#if ../isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>

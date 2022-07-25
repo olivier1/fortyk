@@ -256,6 +256,10 @@ export class FortyKActor extends Actor {
         if(data.knight.spirit){
             data.spirit=this.getEmbeddedDocument("Item",data.knight.spirit);
         }
+        if(this.getFlag("fortyk","longrangetargetters")){
+            data.secChar.attacks.range.long=0;
+            data.secChar.attacks.range.extreme=0;
+        }
 
     }
     /*OVERRIDE
@@ -796,9 +800,9 @@ export class FortyKActor extends Actor {
                 data.knight.space.value+=parseFloat(data.knight.throneMod.data.data.space.value);
                 data.knight.tonnage.value+=parseFloat(data.knight.throneMod.data.data.weight.value);
             }
-            
+
             let chassis=this.getEmbeddedDocument("Item",knight.chassis);
-            
+
             let hardPoints=chassis.data.data.hardPoints;
             var rightShield=0;
             var leftShield=0;
@@ -868,6 +872,7 @@ export class FortyKActor extends Actor {
         const data=actorData.data;
         //income
         data.wealth.income=parseInt(data.wealth.rating)*50;
+
     }
     preparePilot(){
         let data=this.data.data;
@@ -880,7 +885,7 @@ export class FortyKActor extends Actor {
                 }
                 data.crew.ws=parseInt(pilot.data.data.characteristics.ws.total);
                 data.crew.bs=parseInt(pilot.data.data.characteristics.bs.total);
-                let operate=parseInt(pilot.data.data.skills['operate:titanicwalker']);
+                let operate=parseInt(pilot.data.data.skills[data.knight.operate]);
                 if(isNaN(operate)){
                     operate=0;
                 }
@@ -890,6 +895,23 @@ export class FortyKActor extends Actor {
         }
     }
     prepareSkills(data){
+        //get worn weapon ids into an array so that they can be accessed by the sheet easily
+        let wornWeapons=data.secChar.wornGear.weapons;
+        if(!Array.isArray(data.secChar.wornGear.weapons)){
+            wornWeapons=Object.values(data.secChar.wornGear.weapons);
+        }
+        try{
+            var rightHandWeapon= data.secChar.wornGear.weapons[0];
+        }
+        catch(err){var rightHandWeapon= undefined;}
+        try{
+            var leftHandWeapon= data.secChar.wornGear.weapons[1];
+        }
+        catch(err){var leftHandWeapon= undefined;}
+        //figure out parry bonus from equipped weapons
+        let leftParry=this.weaponParry(leftHandWeapon);
+        let rightParry=this.weaponParry(rightHandWeapon);
+        let parry=Math.max(leftParry,rightParry);
         let skills=this.itemTypes.skill;
         data.skills={};
         for(let i=0;i<skills.length;i++){
@@ -911,6 +933,11 @@ export class FortyKActor extends Actor {
                 item.data.mod.value+=data.secChar.size.stealth;  
             }
 
+            if(item.name==="Parry"){
+                if(parry){
+                    item.data.mod.value+=parry;
+                } 
+            }
 
             if(this.getFlag("fortyk","fieldvivisection")&&item.name==="Medicae"){
                 data.fieldVivisection=parseInt(item.data.value)+parseInt(item.data.mod.value);
@@ -976,23 +1003,7 @@ export class FortyKActor extends Actor {
         const favoritePowers=[];
         const wornGear={weapons:[],"armor":"","forceField":""};
         let unrelenting=false;
-        //get worn weapon ids into an array so that they can be accessed by the sheet easily
-        let wornWeapons=data.secChar.wornGear.weapons;
-        if(!Array.isArray(data.secChar.wornGear.weapons)){
-            wornWeapons=Object.values(data.secChar.wornGear.weapons);
-        }
-        try{
-            var rightHandWeapon= data.secChar.wornGear.weapons[0];
-        }
-        catch(err){var rightHandWeapon= undefined;}
-        try{
-            var leftHandWeapon= data.secChar.wornGear.weapons[1];
-        }
-        catch(err){var leftHandWeapon= undefined;}
-        //figure out parry bonus from equipped weapons
-        let leftParry=this.weaponParry(leftHandWeapon);
-        let rightParry=this.weaponParry(rightHandWeapon);
-        let parry=Math.max(leftParry,rightParry);
+
         let psyniscience=0;
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
@@ -1009,11 +1020,9 @@ export class FortyKActor extends Actor {
                 wornGear["forceField"]=item;
             }
             if(item.type=="skill"){
-                if(item.name==="Parry"){
-                    if(parry){
-                        item.data.mod.value+=parry;
-                    } 
-                }
+               
+
+
                 skills.push(item);
             }
             if(item.type==="malignancy"){

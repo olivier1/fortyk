@@ -3,6 +3,9 @@
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
         
     </header>
+    {{#if isGM}}
+    <label class="button clone">Copy Item</label>
+    {{/if}}
     <div class="flexcol">
         <label>Name:</label>
         <input type="text" value="{{name}}" name="name">

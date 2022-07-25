@@ -897,6 +897,10 @@
     from {opacity: 0;}
     to {opacity:1 ;}
 }
+.cadetHouse-img{
+    height:75px;
+    width:75px;
+}
 .mechlab-wrapper{
     height:100%;
     overflow:hidden;
@@ -943,6 +947,7 @@
 .info4{
     grid-column:3;
     grid-row:3;
+    overflow:scroll;
 }
 .mechbay-component{
 }
@@ -1023,5 +1028,12 @@
     color: #000;
     text-shadow: 0 0 10px red;
     border: dotted;
+}
+.sheet-content-knight{
+    height:84%;
+    overflow: scroll;
+}
+.header-knight{
+    height:16%;
 }
 [hidden] { display: none !important; }

@@ -14,7 +14,9 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "mechbay" }],
             default:null,
             scrollY: [
-                ".left-mechbay"
+                ".left-mechbay",
+                ".info4",
+                ".sheet-content"
             ]
 
         });
@@ -132,6 +134,19 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         }
 
         if(data.data.knight.chassis){
+            let thresholds=data.data.secChar.wounds.thresholds;
+            let wounds=parseInt(data.data.secChar.wounds.value);
+            if(wounds>thresholds["1"]){
+                data.threshold="1st";
+            }else if(wounds>thresholds["2"]){
+                data.threshold="2nd";
+            }else if(wounds>thresholds["3"]){
+                data.threshold="3rd";
+            }else if(wounds>thresholds["4"]){
+                data.threshold="4th";
+            }else{
+                data.threshold="Crit";
+            }
             data.carapaceHardPoints=duplicate(data.data.chassis.data.data.hardPoints.carapace);
 
             for (let [key, wpnType] of Object.entries(data.carapaceHardPoints)){
@@ -179,6 +194,8 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 }
             }
         }
+        let frontArmor=actor.data.data.facings.front.value;
+        data.stomp=Math.ceil(frontArmor/2);
 
 
         return data;
@@ -196,6 +213,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         html.find('.delete-component').click(this._onDeleteComponent.bind(this));
         html.find('.delete-other-component').click(this._onDeleteOtherComponent.bind(this));
         html.find('.mechbay-grid-section').click(this._onToggleComponentLists.bind(this));
+        html.find('.stomp').click(this._onStomp.bind(this));
         html.find('.houseSelect').change(this._onHouseChange.bind(this));
         html.find('.pilotSelect').change(this._onPilotChange.bind(this));
         //handles changing ammo type
@@ -263,7 +281,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
     async _onDropComponent(event){
 
         let draggedId=event.dataTransfer.getData("text");
-        console.log(event)
+
 
         let index=parseInt(event.target.dataset["index"]);
         let path=event.target.dataset["path"];
@@ -275,7 +293,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         let chassis=actor.getEmbeddedDocument("Item",data.knight.chassis);
 
         let ok=this._authorizeComponent(component,event.target.className);
-        console.log(path)
+
         if(ok){
             let amtTaken=component.data.data.amount.taken;
             let newAmt=amtTaken+1;
@@ -287,11 +305,13 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             component.update({"data.amount.taken":newAmt});
             let newComponent=await actor.createEmbeddedDocuments("Item",[componentBase]);
             let newComUpdate={};
-            console.log(newComponent)
             if(newComponent[0].type==="rangedWeapon"||newComponent[0].type==="meleeWeapon"){
                 let facing=event.target.dataset["facing"];
-                console.log(facing)
+
                 newComUpdate["data.facing.value"]=facing;
+                if(path.indexOf("Arm")!==-1&&path.indexOf("auxiliary")!==-1){
+                    newComUpdate["data.space.value"]=0;
+                }
 
 
             }
@@ -884,7 +904,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         let data=actor.data.data;
         let weapon=this.actor.getEmbeddedDocument("Item",dataset.weapon);
         let house=await game.actors.get(data.knight.house);
-        
+
         let ammo=actor.getEmbeddedDocument("Item",weapon.data.data.ammo._id);
 
         let update={};
@@ -921,41 +941,86 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
     }
-    async _updateHouse(){
-        let data=this.actor.data.data;
-        let house=await game.actors.get(data.knight.house);
-        if(house){
-            let actors=[];
-            actors.push(data.knight.house);
-            console.log(house);
-            actors=actors.concat(house.data.data.knights);
-            let socketOp={type:"renderSheets",package:{actors:actors}}
-            await game.socket.emit("system.fortyk",socketOp);
+    async _onStomp(event){
 
-        }
-    }
-    getValidAmmo(weapon){
-        let ammos=this.actor.itemTypes.ammunition;
-        let validAmmos=[];
-        let wpnClass=weapon.data.data.class.value;
-        let wpnType=weapon.data.data.type.value;
-        for(let i=0;i<ammos.length;i++){
-            let ammo=ammos[i];
-            let ammoClass=ammo.data.data.class.value;
-            let ammoType=ammo.data.data.type.value;
+        event.preventDefault();
+        const element = event.currentTarget;
+        const dataset = element.dataset;
 
-            if(ammoClass===wpnClass&&ammoType===wpnType){
-                if(!ammo.data.data.isEquipped){
-                    validAmmos.push(ammo);
-                }else if(ammo.data.data.isEquipped===weapon.id){
-                    validAmmos.push(ammo);
+
+        let actor=this.actor;
+
+        let options={};
+        let hits=1;
+        if(!hits){hits=1};
+        options.hits=hits;
+        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
+        let formula=dataset['formula'];
+        renderedTemplate.then(content => {new Dialog({
+            title: `Number of Hits & Bonus Damage`,
+            content: content,
+            buttons: {
+                submit: {
+                    label: 'OK',
+                    callback: async (el) => {
+                        const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
+                        const dmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
+                        const pen = parseInt(Number($(el).find('input[name="pen"]').val()));
+                        const magdmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
+                        if(dmg>0){
+                            formula+=`+${dmg}`
+                        }
+                        let stompData={name:"Titanic Feet",type:"meleeWeapon"}
+                        let stomp=await Item.create(stompData, {temporary: true});
+                        stomp.data.flags.fortyk={"blast":3};
+                        stomp.data.data.damageType.value="Impact";
+                        stomp.data.data.pen.value=0;
+                        stomp.data.data.damageFormula.value=formula;
+                        await FortykRolls.damageRoll(stomp.data.data.damageFormula,actor,stomp,1);
+
+                    }
                 }
-
-            }
-        }
-        return validAmmos;
+            },
+            default: "submit",
+            width:100}).render(true)
+                                         });
     }
-    /* async _render(force, options){
+
+async _updateHouse(){
+    let data=this.actor.data.data;
+    let house=await game.actors.get(data.knight.house);
+    if(house){
+        let actors=[];
+        actors.push(data.knight.house);
+        console.log(house);
+        actors=actors.concat(house.data.data.knights);
+        let socketOp={type:"renderSheets",package:{actors:actors}}
+        await game.socket.emit("system.fortyk",socketOp);
+
+    }
+}
+getValidAmmo(weapon){
+    let ammos=this.actor.itemTypes.ammunition;
+    let validAmmos=[];
+    let wpnClass=weapon.data.data.class.value;
+    let wpnType=weapon.data.data.type.value;
+    for(let i=0;i<ammos.length;i++){
+        let ammo=ammos[i];
+        let ammoClass=ammo.data.data.class.value;
+        let ammoType=ammo.data.data.type.value;
+
+        if(ammoClass===wpnClass&&ammoType===wpnType){
+            if(!ammo.data.data.isEquipped){
+                validAmmos.push(ammo);
+            }else if(ammo.data.data.isEquipped===weapon.id){
+                validAmmos.push(ammo);
+            }
+
+        }
+    }
+    return validAmmos;
+}
+/* async _render(force, options){
 
         console.log(this)
         if(this.mechtab){

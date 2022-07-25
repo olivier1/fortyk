@@ -28,10 +28,17 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         let actor=this.actor;
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
-        console.log(this)
+        console.log(data.inventoryFilter)
+       if(data.inventoryFilter===undefined){
+           data.inventoryFilter="all";
+       }
+        console.log(data.inventoryFilter)
         data.outposts=actor.itemTypes.outpost;
         data.cadetHouses=actor.itemTypes.cadetHouse;
         data.weapons=actor.itemTypes.rangedWeapon.concat(actor.itemTypes.meleeWeapon,actor.itemTypes.ammunition);
+        data.rangedWeapons=actor.itemTypes.rangedWeapon;
+        data.meleeWeapons=actor.itemTypes.meleeWeapon;
+        data.ammunition=actor.itemTypes.ammunition;
         data.knightComponents=actor.itemTypes.knightComponent;
         data.knightCores=actor.itemTypes.knightCore;
         data.knightArmors=actor.itemTypes.knightArmor;
@@ -43,7 +50,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         }
         data.repairEntries=actor.itemTypes.repairEntry.sort(function(a,b){return a.data.sort-b.data.sort});
         data.knightComponentTypes=FORTYK.knightComponentTypes;
-        
+       
         return data;
     }
     /** @override */
@@ -58,12 +65,13 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
     _onComponentCategoryChange(event){
         let components=document.getElementsByName("component");
         let type=event.currentTarget.value;
+        this.document.data.inventoryFilter=type;
         console.log(type)
         for(let i=0;i<components.length;i++){
             let component=components[i];
             let componentType=component.attributes["type"].value;
             console.log(componentType)
-            if(type==="All"){
+            if(type==="all"){
                 component.style.display="";
             }else if(componentType===type){
                 component.style.display="";

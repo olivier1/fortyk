@@ -507,13 +507,13 @@ export class FortykRollDialogs{
             }else if(distance<=parseInt(range)/2){
                 short=true;
                 attackRange="short";
-            }else if(distance<=range){
+            }else if(distance<=2*range){
                 normal=true;
                 attackRange="normal";
-            }else if(distance<=2*range){
+            }else if(distance<=3*range){
                 long=true;
                 attackRange="long";
-            }else if(distance<=3*range){
+            }else if(distance<=4*range){
                 extreme=true;
                 attackRange="extreme";
             }else{

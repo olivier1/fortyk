@@ -86,7 +86,9 @@
                     <a class="item-create button" data-type="cadetHouse" title="Add a new Cadet House">Add Cadet House</a>
                     {{#each cadetHouses}}
                     <div class="desccrRow flex-group-left flexcol">
+                        <img class="cadetHouse-img" src="{{this.img}}" title="{{this.name}}" />
                         <div class="list-item">
+                            
                             <span class="underline">Name:</span>
                             <span>{{name}}</span>
                         </div>
@@ -120,12 +122,12 @@
                         </div>
 
                         <div class="list-item">
-                            <span class="underline">Type: </span>
+                            <span class="underline">Type:</span>
                             <span>{{data.data.type.value}}</span>
                         </div>
 
                         <div class="list-item flexrow">
-                            <span class="underline">Location: </span>
+                            <span class="underline">Location:</span>
                             <span>{{data.data.location.value}}</span>
                             <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
                             <a class="list-button item-delete" title="Delete" data-item-id="{{this.id}}"></a>
@@ -196,9 +198,9 @@
                     <select class="component-select"  data-dtype="String">
 
 
-                        <option value="All">All</option>
+                        <option value="all">All</option>
                         {{#each knightComponentTypes}}
-                        <option value="{{this}}">{{this}}</option>
+                        <option value="{{this.value}}"{{#if (compareString this.value ../inventoryFilter)}}selected{{/if}}>{{this.label}}</option>
                         {{/each}}
 
                     </select>
@@ -210,15 +212,15 @@
                 <span class="list-item-header">Number Owned</span>
                 <span class="list-item-header">Edit</span>
                 <span class="list-item-header">Del.</span>
-
+                {{debug inventoryFilter}}
                 {{#each components}}
 
-                <div class="list-item " name="component" type="{{data.data.knightComponentType}}">
+                <div class="list-item " name="component"{{#if (compareString ../inventoryFilter "all")}}style="display:"{{else if (compareString data.data.knightComponentType ../inventoryFilter)}}style="display:"{{else}}style="display: none"{{/if}} type="{{data.data.knightComponentType}}">
 
                     <span >{{name}}</span>
                 </div>
 
-                <div class="list-item flexrow" name="component" type="{{data.data.knightComponentType}}">
+                <div class="list-item flexrow" name="component" {{#if (compareString ../inventoryFilter "all")}}style="display:"{{else if (compareString data.data.knightComponentType ../inventoryFilter)}}style="display:"{{else}}style="display: none"{{/if}} type="{{data.data.knightComponentType}}">
                     {{#if ../isGM}}
                     <input type="text" class="item-text-input list-item" data-target="data.amount.taken" value="{{data.data.amount.taken}}" data-item-id="{{this.id}}" data-dtype="Number">
                     {{/if}}
@@ -227,10 +229,10 @@
 
 
 
-                <div class="list-item" name="component" type="{{data.data.knightComponentType}}">
+                <div class="list-item" name="component" {{#if (compareString ../inventoryFilter "all")}}style="display:"{{else if (compareString data.data.knightComponentType ../inventoryFilter)}}style="display:"{{else}}style="display: none"{{/if}} type="{{data.data.knightComponentType}}">
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
                 </div>
-                <div class="list-item" name="component" type="{{data.data.knightComponentType}}">
+                <div class="list-item" name="component" {{#if (compareString ../inventoryFilter "all")}}style="display:"{{else if (compareString data.data.knightComponentType ../inventoryFilter)}}style="display:"{{else}}style="display: none"{{/if}} type="{{data.data.knightComponentType}}">
                     <a class="list-button item-delete" title="Delete" data-item-id="{{this.id}}"></a>
 
                 </div>
