@@ -111,7 +111,8 @@ export class FortyKItemSheet extends ItemSheet {
     }
     _onCloneClick(event){
         console.log("hey")
-        this.item.clone({},{save:true});
+        let item=this.item.clone();
+        Item.create(item.data);
     }
     async _onModifierClick(event){
         let item=this.item;
