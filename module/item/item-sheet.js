@@ -3,6 +3,7 @@
  * @extends {ItemSheet}
  */
 
+import {objectByString} from "../utilities.js";
 export class FortyKItemSheet extends ItemSheet {
 
     /** @override */
@@ -50,7 +51,7 @@ export class FortyKItemSheet extends ItemSheet {
 
         }
         if(this.actor&&item.type==="repairEntry"){
-            
+
             data.knights=[];
             let knights=this.actor.data.data.knights;
             console.log(knights)
@@ -58,7 +59,7 @@ export class FortyKItemSheet extends ItemSheet {
                 let actor=game.actors.get(knights[i]);
                 console.log(actor);
                 if(actor){
-                    
+
                     data.knights.push(actor.name);
                 }
 
@@ -102,6 +103,10 @@ export class FortyKItemSheet extends ItemSheet {
         html.find('.clone').click(this._onCloneClick.bind(this));
         html.find('.knight-Hardpoint').keydown(this._onHardpointEnter.bind(this));
         html.find('.knight-Hardpoint').focusout(this._onHardpointEdit.bind(this));
+        //handles melee weapon mod
+
+        html.find('.weapon-mod').focusout(this._weaponModEdit.bind(this));
+        html.find('.weapon-mod').keydown(this._weaponModEnter.bind(this));
         // Autoselect entire text 
         $("input[type=text]").focusin(function() {
             $(this).select();
@@ -235,6 +240,70 @@ export class FortyKItemSheet extends ItemSheet {
 
         });
 
+    }
+    async _weaponModEdit(event){
+
+        event.preventDefault();
+        if(!this.updateObj){
+            this.updateObj={};
+        }
+        let item=this.item;
+        let target=event.target.attributes["data-target"].value;
+        let newAmt=event.target.value;
+        let type=event.target.attributes["data-dtype"].value;
+        if(type==="Number"){
+            newAmt=parseFloat(newAmt);
+            if(isNaN(newAmt)){
+                newAmt=0;
+                event.target.value=0;
+            }
+        }
+        let oldValue=objectByString(item.data,target);
+
+        if((oldValue!=newAmt)){
+
+            this.updateObj[target]=newAmt;
+
+
+
+
+        }
+        let updateNmbr=Object.keys(this.updateObj).length;
+       
+        if(updateNmbr>0&&(!event.relatedTarget||($(event.relatedTarget).prop("class").indexOf("weapon-mod") === -1))) {
+            console.log(updateNmbr)
+            await item.update(this.updateObj);
+            this.updateObj=undefined;
+
+        }
+
+    }
+    async _weaponModEnter(event){
+        if (event.keyCode == 13){
+            if(!this.updateObj){
+                this.updateObj={};
+            }
+            let item=this.item;
+            let target=event.target.attributes["data-target"].value;
+            let newAmt=event.target.value;
+            let type=event.target.attributes["data-dtype"].value;
+            if(type==="Number"){
+                newAmt=parseFloat(newAmt);
+                if(isNaN(newAmt)){
+                    newAmt=0;
+                    event.target.value=0;
+                }
+            }
+            let oldValue=objectByString(item.data,target);
+            if(oldValue!=newAmt){
+                this.updateObj[target]=newAmt;
+                await item.update(this.updateObj);
+                this.updateObj=undefined;
+
+
+
+            }
+        }
     }
     //when changing parents check to see if the skill is part of a group if it is change the value of children to false
     async _onParentChange(event){

@@ -1559,7 +1559,8 @@ returns the roll message*/
                         damageOptions.results.push(`</div>`) 
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
                         damageOptions.results.push(`<span>Total Damage: ${chatDamage}.</span>`);
-                        if(damage===0){
+                        console.log(damage);
+                        if(damage<=0){
                             damageOptions.results.push(`<span>Damage is fully absorbed.</span>`);
                         }
                         damageOptions.results.push(`</div>`) 

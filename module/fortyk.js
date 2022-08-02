@@ -196,7 +196,7 @@ Hooks.once('ready', async function() {
         }
         if(data.type==="renderSheets"){
             let actors=data.package.actors;
-            
+
             for(let i=0;i<actors.length;i++){
                 let actor=await game.actors.get(actors[i]);
                 if(actor){
@@ -423,13 +423,22 @@ Hooks.on("updateCombat", async (combat) => {
     }
 })
 Hooks.on("preDeleteCombat", async (combat,options,id) =>{
-    for(let index = 0; index < combat.combatants.length; index++){
-        let actor=combat.combatants[index].actor;
+    let combatants=combat.combatants;
+    combatants.forEach(async (combatant)=>{
+        let actor=combatant.actor;
+        console.log(actor)
         for(let activeEffect of actor.effects){
+            console.log(activeEffect)
+            if(activeEffect.data.label==="Evasion"){
+                await activeEffect.delete({});
+            }
             if(activeEffect.duration.type!=="none"){
                 await activeEffect.delete({});
             }
         }
+    })
+    for(let index = 0; index < combat.combatants.length; index++){
+
     }
 })
 Hooks.on("preUpdateActor", (data, updatedData) =>{
@@ -603,9 +612,20 @@ Hooks.once("dragRuler.ready", (Speedprovider) => {
             let ranges;
             if(token.actor.type==="vehicle"){
                 movement=token.actor.data.data.secChar.speed;
-                ranges=[
-                    {range:movement.tactical,color:"full"},
-                    {range:movement.tactical*2,color:"run"}]
+                if(token.actor.getFlag("fortyk","enhancedmotivesystem")){
+                    ranges=[
+                        {range:movement.tactical*2,color:"full"},
+                        {range:movement.tactical*3,color:"run"}]
+                }else if(token.actor.getFlag("fortyk","ponderous")){
+                    ranges=[
+                        {range:movement.tactical/2,color:"full"},
+                        {range:movement.tactical,color:"run"}]
+                }else{
+                    ranges=[
+                        {range:movement.tactical,color:"full"},
+                        {range:movement.tactical*2,color:"run"}]
+                }
+
             }else{
                 movement=token.actor.data.data.secChar.movement;
                 ranges=[

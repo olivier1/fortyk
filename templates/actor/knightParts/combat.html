@@ -129,9 +129,200 @@
 
                     {{#each this}}
                     {{#if (compareString this.type "meleeWeapon")}}
-                    {{> "systems/fortyk/templates/actor/knightParts/melee-weapon-template.html"}}
+                    <div>
+                        <div class="weapons grid grid-2col">
+                            <div class="weapon-name">
+                                <span>Name: {{this.name}}</span>
+                            </div>
+
+
+                            <div class="list-item">
+                                <span>Attack: </span>
+                                <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../../data.crew.ws}}" data-item-id="{{this.id}}" data-label="Melee Attack" data-char="ws">Roll</span>
+                            </div>
+                            <div class="list-item">
+                                <span>Damage: </span>
+                                <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.data.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.data.data.damageFormula.value}}</a>
+                            </div>
+                            {{#if this.data.flags.fortyk.force}}
+                            <div class="list-item">
+
+                                <a class="force-roll button" data-label="Force"> Force</a>
+
+
+                            </div>
+                            {{/if}}
+                            <div class="list-item">
+                                <span>Reach: {{this.data.data.range.value}}m</span>
+                            </div>
+                            <div class="list-item">
+                                <span>Penetration: {{this.data.data.pen.value}}</span>
+
+                            </div>
+                            <div class="list-item">
+                                <span>Special: 
+
+
+                                    {{#each this.data.flags.fortyk as |flag key|}}
+
+
+                                    {{#if (checkSpecial this)}}
+
+                                    {{#with (lookup ../data.FORTYK.weaponFlags [key])~}}
+                                    <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                                        {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
+                                    {{/if}}
+                                    {{/each}}
+                                </span>
+
+                            </div>
+                            <div class="list-item">
+                                <span>Damage Type: {{this.data.data.damageType.value}}</span>
+
+                            </div>
+
+
+
+                        </div>
+                    </div>
                     {{else if (compareString this.type "rangedWeapon")}}
-                    {{> "systems/fortyk/templates/actor/knightParts/ranged-weapon-template.html"}}
+                    <div class="weapons grid grid-2col">
+                        <div class="weapon-name">
+                            <span>Name: {{this.name}}</span>
+                        </div>
+
+                        <div class="list-item">
+                            <span>Attack: </span> 
+                            {{#if (greaterThan this.data.data.clip.value 0)}}
+                            {{debug ../../this}}
+                            <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../../data.crew.bs}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="">Roll</span>
+                            {{else}}
+                            {{#if this.data.data.ammo._id}}
+                            <span class="weapon-reload button" data-weapon="{{this.id}}" >Discard</span>
+                            {{else}}
+                            <span class=" button"  >Load new Ammo</span>
+                            {{/if}}
+                            {{/if}}
+                        </div>
+                        <div class="list-item">
+                            <span>Damage: </span> 
+                            <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.data.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.data.data.damageFormula.value}}</a>
+
+                        </div>
+                        {{#if this.data.flags.fortyk.force}}
+                        <div class="list-item">
+
+                            <a class="force-roll button" data-label="Force"> Force</a>
+
+
+                        </div>
+                        {{/if}}
+                        {{#if this.data.flags.fortyk.maximal}}
+                        <div class="list-item">
+                            <span>Maximal: <input type="checkbox" class="maximal" data-item-id="{{this.id}}"  {{checked this.data.flags.fortyk.maximalMode}}></span>
+
+
+                        </div>
+                        {{/if}}
+                        {{#if this.data.flags.fortyk.lasModal}}
+                        <div class="list-item">
+                            <span>Las Fire Mode: 
+                                <select class="lasMode"  data-item-id="{{this.id}}" data-dtype="Number">
+                                    {{#select this.data.flags.fortyk.lasMode}}
+
+                                    {{#each this.data.FORTYK.lasModes}}
+
+                                    <option value="{{@index}}">{{this}}</option>
+                                    {{/each}}
+                                    {{/select}}
+                                </select>
+                            </span>
+
+
+                        </div>
+                        {{/if}}
+
+                        {{#unless (contains this.data.data.class.value "thrown")}}
+                        <div class="list-item ammo-list">
+
+                            <label>Current Ammo:</label>
+                            <select class="weapon-ammo" data-weapon="{{this.id}}" data-previous="{{this.data.data.ammo._id}}">
+
+                                {{#select this.data.data.ammo._id}}
+                                <option value="">None</option>
+
+                                {{#each this.validAmmo}}
+
+                                <option value="{{this.id}}">{{this.name}}</option>
+
+                                {{/each}}
+
+                                {{/select}}
+                            </select>
+                        </div>
+                        {{else}}
+                        <div class="list-item">
+                            <span>Amount: {{this.data.data.amount.value}}</span> 
+
+
+                        </div>
+                        {{/unless}}
+                        <div class="list-item flexrow">
+                            <span>Current Clip: </span>
+
+                            <input class="item-text-input" type="text" data-target="data.clip.value"  value="{{this.data.data.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
+                            <span> / </span>
+                            <span>{{this.data.data.clip.max}}</span>
+
+
+                        </div>
+                        <div class="list-item">
+                            <span>Range: {{this.data.data.range.value}}m</span>
+                        </div>
+                        <div class="list-item">
+                            <span>Penetration: {{this.data.data.pen.value}}</span>
+
+                        </div>
+                        <div class="list-item">
+                            <label>Rate of Fire: {{this.data.data.rof.[0].value}}/{{this.data.data.rof.[1].value}}/{{this.data.data.rof.[2].value}}</label>
+                        </div>
+                        <div class="list-item">
+                            <span>Reload: {{this.data.data.reload.value}}</span>
+
+                        </div>
+                        <div class="list-item">
+                            <span>Special: 
+
+                                {{#each this.data.flags.fortyk as |flag key|}}
+
+
+                                {{#if (checkSpecial this)}}
+
+                                {{#with (lookup ../data.FORTYK.weaponFlags [key])~}}
+                                <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                                    {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
+                                {{/if}}{{/each}}
+                            </span>
+
+                        </div>
+                        <div class="list-item">
+                            <span>Damage Type: {{this.data.data.damageType.value}}</span>
+
+                        </div>
+                        <div class="list-item">
+                            <span>Weapon Class: {{this.data.data.class.value}}</span>
+
+
+                        </div>
+                        <div class="list-item">
+                            <span>Weapon Type: {{this.data.data.type.value}}</span>
+
+
+                        </div>
+
+                    </div>
                     {{/if}}
                     {{/each}}
                     {{/each}}
@@ -145,9 +336,200 @@
 
                     {{#each this}}
                     {{#if (compareString this.type "meleeWeapon")}}
-                    {{> "systems/fortyk/templates/actor/knightParts/melee-weapon-template.html"}}
+                    <div>
+                        <div class="weapons grid grid-2col">
+                            <div class="weapon-name">
+                                <span>Name: {{this.name}}</span>
+                            </div>
+
+
+                            <div class="list-item">
+                                <span>Attack: </span>
+                                <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../../data.crew.ws}}" data-item-id="{{this.id}}" data-label="Melee Attack" data-char="ws">Roll</span>
+                            </div>
+                            <div class="list-item">
+                                <span>Damage: </span>
+                                <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.data.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.data.data.damageFormula.value}}</a>
+                            </div>
+                            {{#if this.data.flags.fortyk.force}}
+                            <div class="list-item">
+
+                                <a class="force-roll button" data-label="Force"> Force</a>
+
+
+                            </div>
+                            {{/if}}
+                            <div class="list-item">
+                                <span>Reach: {{this.data.data.range.value}}m</span>
+                            </div>
+                            <div class="list-item">
+                                <span>Penetration: {{this.data.data.pen.value}}</span>
+
+                            </div>
+                            <div class="list-item">
+                                <span>Special: 
+
+
+                                    {{#each this.data.flags.fortyk as |flag key|}}
+
+
+                                    {{#if (checkSpecial this)}}
+
+                                    {{#with (lookup ../data.FORTYK.weaponFlags [key])~}}
+                                    <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                                        {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
+                                    {{/if}}
+                                    {{/each}}
+                                </span>
+
+                            </div>
+                            <div class="list-item">
+                                <span>Damage Type: {{this.data.data.damageType.value}}</span>
+
+                            </div>
+
+
+
+                        </div>
+                    </div>
                     {{else if (compareString this.type "rangedWeapon")}}
-                    {{> "systems/fortyk/templates/actor/knightParts/ranged-weapon-template.html"}}
+                    <div class="weapons grid grid-2col">
+                        <div class="weapon-name">
+                            <span>Name: {{this.name}}</span>
+                        </div>
+
+                        <div class="list-item">
+                            <span>Attack: </span> 
+                            {{#if (greaterThan this.data.data.clip.value 0)}}
+                            {{debug ../../this}}
+                            <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../../data.crew.bs}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="">Roll</span>
+                            {{else}}
+                            {{#if this.data.data.ammo._id}}
+                            <span class="weapon-reload button" data-weapon="{{this.id}}" >Discard</span>
+                            {{else}}
+                            <span class=" button"  >Load new Ammo</span>
+                            {{/if}}
+                            {{/if}}
+                        </div>
+                        <div class="list-item">
+                            <span>Damage: </span> 
+                            <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.data.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.data.data.damageFormula.value}}</a>
+
+                        </div>
+                        {{#if this.data.flags.fortyk.force}}
+                        <div class="list-item">
+
+                            <a class="force-roll button" data-label="Force"> Force</a>
+
+
+                        </div>
+                        {{/if}}
+                        {{#if this.data.flags.fortyk.maximal}}
+                        <div class="list-item">
+                            <span>Maximal: <input type="checkbox" class="maximal" data-item-id="{{this.id}}"  {{checked this.data.flags.fortyk.maximalMode}}></span>
+
+
+                        </div>
+                        {{/if}}
+                        {{#if this.data.flags.fortyk.lasModal}}
+                        <div class="list-item">
+                            <span>Las Fire Mode: 
+                                <select class="lasMode"  data-item-id="{{this.id}}" data-dtype="Number">
+                                    {{#select this.data.flags.fortyk.lasMode}}
+
+                                    {{#each this.data.FORTYK.lasModes}}
+
+                                    <option value="{{@index}}">{{this}}</option>
+                                    {{/each}}
+                                    {{/select}}
+                                </select>
+                            </span>
+
+
+                        </div>
+                        {{/if}}
+
+                        {{#unless (contains this.data.data.class.value "thrown")}}
+                        <div class="list-item ammo-list">
+
+                            <label>Current Ammo:</label>
+                            <select class="weapon-ammo" data-weapon="{{this.id}}" data-previous="{{this.data.data.ammo._id}}">
+
+                                {{#select this.data.data.ammo._id}}
+                                <option value="">None</option>
+
+                                {{#each this.validAmmo}}
+
+                                <option value="{{this.id}}">{{this.name}}</option>
+
+                                {{/each}}
+
+                                {{/select}}
+                            </select>
+                        </div>
+                        {{else}}
+                        <div class="list-item">
+                            <span>Amount: {{this.data.data.amount.value}}</span> 
+
+
+                        </div>
+                        {{/unless}}
+                        <div class="list-item flexrow">
+                            <span>Current Clip: </span>
+
+                            <input class="item-text-input" type="text" data-target="data.clip.value"  value="{{this.data.data.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
+                            <span> / </span>
+                            <span>{{this.data.data.clip.max}}</span>
+
+
+                        </div>
+                        <div class="list-item">
+                            <span>Range: {{this.data.data.range.value}}m</span>
+                        </div>
+                        <div class="list-item">
+                            <span>Penetration: {{this.data.data.pen.value}}</span>
+
+                        </div>
+                        <div class="list-item">
+                            <label>Rate of Fire: {{this.data.data.rof.[0].value}}/{{this.data.data.rof.[1].value}}/{{this.data.data.rof.[2].value}}</label>
+                        </div>
+                        <div class="list-item">
+                            <span>Reload: {{this.data.data.reload.value}}</span>
+
+                        </div>
+                        <div class="list-item">
+                            <span>Special: 
+
+                                {{#each this.data.flags.fortyk as |flag key|}}
+
+
+                                {{#if (checkSpecial this)}}
+
+                                {{#with (lookup ../data.FORTYK.weaponFlags [key])~}}
+                                <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                                    {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
+                                {{/if}}{{/each}}
+                            </span>
+
+                        </div>
+                        <div class="list-item">
+                            <span>Damage Type: {{this.data.data.damageType.value}}</span>
+
+                        </div>
+                        <div class="list-item">
+                            <span>Weapon Class: {{this.data.data.class.value}}</span>
+
+
+                        </div>
+                        <div class="list-item">
+                            <span>Weapon Type: {{this.data.data.type.value}}</span>
+
+
+                        </div>
+
+                    </div>
                     {{/if}}
                     {{/each}}
                     {{/each}}
@@ -155,9 +537,200 @@
 
                     {{#each this}}
                     {{#if (compareString this.type "meleeWeapon")}}
-                    {{> "systems/fortyk/templates/actor/knightParts/melee-weapon-template.html"}}
+                    <div>
+                        <div class="weapons grid grid-2col">
+                            <div class="weapon-name">
+                                <span>Name: {{this.name}}</span>
+                            </div>
+
+
+                            <div class="list-item">
+                                <span>Attack: </span>
+                                <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../../data.crew.ws}}" data-item-id="{{this.id}}" data-label="Melee Attack" data-char="ws">Roll</span>
+                            </div>
+                            <div class="list-item">
+                                <span>Damage: </span>
+                                <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.data.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.data.data.damageFormula.value}}</a>
+                            </div>
+                            {{#if this.data.flags.fortyk.force}}
+                            <div class="list-item">
+
+                                <a class="force-roll button" data-label="Force"> Force</a>
+
+
+                            </div>
+                            {{/if}}
+                            <div class="list-item">
+                                <span>Reach: {{this.data.data.range.value}}m</span>
+                            </div>
+                            <div class="list-item">
+                                <span>Penetration: {{this.data.data.pen.value}}</span>
+
+                            </div>
+                            <div class="list-item">
+                                <span>Special: 
+
+
+                                    {{#each this.data.flags.fortyk as |flag key|}}
+
+
+                                    {{#if (checkSpecial this)}}
+
+                                    {{#with (lookup ../data.FORTYK.weaponFlags [key])~}}
+                                    <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                                        {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
+                                    {{/if}}
+                                    {{/each}}
+                                </span>
+
+                            </div>
+                            <div class="list-item">
+                                <span>Damage Type: {{this.data.data.damageType.value}}</span>
+
+                            </div>
+
+
+
+                        </div>
+                    </div>
                     {{else if (compareString this.type "rangedWeapon")}}
-                    {{> "systems/fortyk/templates/actor/knightParts/ranged-weapon-template.html"}}
+                    <div class="weapons grid grid-2col">
+                        <div class="weapon-name">
+                            <span>Name: {{this.name}}</span>
+                        </div>
+
+                        <div class="list-item">
+                            <span>Attack: </span> 
+                            {{#if (greaterThan this.data.data.clip.value 0)}}
+                            {{debug ../../this}}
+                            <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../../data.crew.bs}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="">Roll</span>
+                            {{else}}
+                            {{#if this.data.data.ammo._id}}
+                            <span class="weapon-reload button" data-weapon="{{this.id}}" >Discard</span>
+                            {{else}}
+                            <span class=" button"  >Load new Ammo</span>
+                            {{/if}}
+                            {{/if}}
+                        </div>
+                        <div class="list-item">
+                            <span>Damage: </span> 
+                            <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.data.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.data.data.damageFormula.value}}</a>
+
+                        </div>
+                        {{#if this.data.flags.fortyk.force}}
+                        <div class="list-item">
+
+                            <a class="force-roll button" data-label="Force"> Force</a>
+
+
+                        </div>
+                        {{/if}}
+                        {{#if this.data.flags.fortyk.maximal}}
+                        <div class="list-item">
+                            <span>Maximal: <input type="checkbox" class="maximal" data-item-id="{{this.id}}"  {{checked this.data.flags.fortyk.maximalMode}}></span>
+
+
+                        </div>
+                        {{/if}}
+                        {{#if this.data.flags.fortyk.lasModal}}
+                        <div class="list-item">
+                            <span>Las Fire Mode: 
+                                <select class="lasMode"  data-item-id="{{this.id}}" data-dtype="Number">
+                                    {{#select this.data.flags.fortyk.lasMode}}
+
+                                    {{#each this.data.FORTYK.lasModes}}
+
+                                    <option value="{{@index}}">{{this}}</option>
+                                    {{/each}}
+                                    {{/select}}
+                                </select>
+                            </span>
+
+
+                        </div>
+                        {{/if}}
+
+                        {{#unless (contains this.data.data.class.value "thrown")}}
+                        <div class="list-item ammo-list">
+
+                            <label>Current Ammo:</label>
+                            <select class="weapon-ammo" data-weapon="{{this.id}}" data-previous="{{this.data.data.ammo._id}}">
+
+                                {{#select this.data.data.ammo._id}}
+                                <option value="">None</option>
+
+                                {{#each this.validAmmo}}
+
+                                <option value="{{this.id}}">{{this.name}}</option>
+
+                                {{/each}}
+
+                                {{/select}}
+                            </select>
+                        </div>
+                        {{else}}
+                        <div class="list-item">
+                            <span>Amount: {{this.data.data.amount.value}}</span> 
+
+
+                        </div>
+                        {{/unless}}
+                        <div class="list-item flexrow">
+                            <span>Current Clip: </span>
+
+                            <input class="item-text-input" type="text" data-target="data.clip.value"  value="{{this.data.data.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
+                            <span> / </span>
+                            <span>{{this.data.data.clip.max}}</span>
+
+
+                        </div>
+                        <div class="list-item">
+                            <span>Range: {{this.data.data.range.value}}m</span>
+                        </div>
+                        <div class="list-item">
+                            <span>Penetration: {{this.data.data.pen.value}}</span>
+
+                        </div>
+                        <div class="list-item">
+                            <label>Rate of Fire: {{this.data.data.rof.[0].value}}/{{this.data.data.rof.[1].value}}/{{this.data.data.rof.[2].value}}</label>
+                        </div>
+                        <div class="list-item">
+                            <span>Reload: {{this.data.data.reload.value}}</span>
+
+                        </div>
+                        <div class="list-item">
+                            <span>Special: 
+
+                                {{#each this.data.flags.fortyk as |flag key|}}
+
+
+                                {{#if (checkSpecial this)}}
+
+                                {{#with (lookup ../data.FORTYK.weaponFlags [key])~}}
+                                <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                                    {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
+                                {{/if}}{{/each}}
+                            </span>
+
+                        </div>
+                        <div class="list-item">
+                            <span>Damage Type: {{this.data.data.damageType.value}}</span>
+
+                        </div>
+                        <div class="list-item">
+                            <span>Weapon Class: {{this.data.data.class.value}}</span>
+
+
+                        </div>
+                        <div class="list-item">
+                            <span>Weapon Type: {{this.data.data.type.value}}</span>
+
+
+                        </div>
+
+                    </div>
                     {{/if}}
                     {{/each}}
                     {{/each}}
@@ -171,9 +744,200 @@
 
                     {{#each this}}
                     {{#if (compareString this.type "meleeWeapon")}}
-                    {{> "systems/fortyk/templates/actor/knightParts/melee-weapon-template.html"}}
+                    <div>
+                        <div class="weapons grid grid-2col">
+                            <div class="weapon-name">
+                                <span>Name: {{this.name}}</span>
+                            </div>
+
+
+                            <div class="list-item">
+                                <span>Attack: </span>
+                                <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../../data.crew.ws}}" data-item-id="{{this.id}}" data-label="Melee Attack" data-char="ws">Roll</span>
+                            </div>
+                            <div class="list-item">
+                                <span>Damage: </span>
+                                <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.data.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.data.data.damageFormula.value}}</a>
+                            </div>
+                            {{#if this.data.flags.fortyk.force}}
+                            <div class="list-item">
+
+                                <a class="force-roll button" data-label="Force"> Force</a>
+
+
+                            </div>
+                            {{/if}}
+                            <div class="list-item">
+                                <span>Reach: {{this.data.data.range.value}}m</span>
+                            </div>
+                            <div class="list-item">
+                                <span>Penetration: {{this.data.data.pen.value}}</span>
+
+                            </div>
+                            <div class="list-item">
+                                <span>Special: 
+
+
+                                    {{#each this.data.flags.fortyk as |flag key|}}
+
+
+                                    {{#if (checkSpecial this)}}
+
+                                    {{#with (lookup ../data.FORTYK.weaponFlags [key])~}}
+                                    <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                                        {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
+                                    {{/if}}
+                                    {{/each}}
+                                </span>
+
+                            </div>
+                            <div class="list-item">
+                                <span>Damage Type: {{this.data.data.damageType.value}}</span>
+
+                            </div>
+
+
+
+                        </div>
+                    </div>
                     {{else if (compareString this.type "rangedWeapon")}}
-                    {{> "systems/fortyk/templates/actor/knightParts/ranged-weapon-template.html"}}
+                    <div class="weapons grid grid-2col">
+                        <div class="weapon-name">
+                            <span>Name: {{this.name}}</span>
+                        </div>
+
+                        <div class="list-item">
+                            <span>Attack: </span> 
+                            {{#if (greaterThan this.data.data.clip.value 0)}}
+                            {{debug ../../this}}
+                            <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../../data.crew.bs}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="">Roll</span>
+                            {{else}}
+                            {{#if this.data.data.ammo._id}}
+                            <span class="weapon-reload button" data-weapon="{{this.id}}" >Discard</span>
+                            {{else}}
+                            <span class=" button"  >Load new Ammo</span>
+                            {{/if}}
+                            {{/if}}
+                        </div>
+                        <div class="list-item">
+                            <span>Damage: </span> 
+                            <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.data.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.data.data.damageFormula.value}}</a>
+
+                        </div>
+                        {{#if this.data.flags.fortyk.force}}
+                        <div class="list-item">
+
+                            <a class="force-roll button" data-label="Force"> Force</a>
+
+
+                        </div>
+                        {{/if}}
+                        {{#if this.data.flags.fortyk.maximal}}
+                        <div class="list-item">
+                            <span>Maximal: <input type="checkbox" class="maximal" data-item-id="{{this.id}}"  {{checked this.data.flags.fortyk.maximalMode}}></span>
+
+
+                        </div>
+                        {{/if}}
+                        {{#if this.data.flags.fortyk.lasModal}}
+                        <div class="list-item">
+                            <span>Las Fire Mode: 
+                                <select class="lasMode"  data-item-id="{{this.id}}" data-dtype="Number">
+                                    {{#select this.data.flags.fortyk.lasMode}}
+
+                                    {{#each this.data.FORTYK.lasModes}}
+
+                                    <option value="{{@index}}">{{this}}</option>
+                                    {{/each}}
+                                    {{/select}}
+                                </select>
+                            </span>
+
+
+                        </div>
+                        {{/if}}
+
+                        {{#unless (contains this.data.data.class.value "thrown")}}
+                        <div class="list-item ammo-list">
+
+                            <label>Current Ammo:</label>
+                            <select class="weapon-ammo" data-weapon="{{this.id}}" data-previous="{{this.data.data.ammo._id}}">
+
+                                {{#select this.data.data.ammo._id}}
+                                <option value="">None</option>
+
+                                {{#each this.validAmmo}}
+
+                                <option value="{{this.id}}">{{this.name}}</option>
+
+                                {{/each}}
+
+                                {{/select}}
+                            </select>
+                        </div>
+                        {{else}}
+                        <div class="list-item">
+                            <span>Amount: {{this.data.data.amount.value}}</span> 
+
+
+                        </div>
+                        {{/unless}}
+                        <div class="list-item flexrow">
+                            <span>Current Clip: </span>
+
+                            <input class="item-text-input" type="text" data-target="data.clip.value"  value="{{this.data.data.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
+                            <span> / </span>
+                            <span>{{this.data.data.clip.max}}</span>
+
+
+                        </div>
+                        <div class="list-item">
+                            <span>Range: {{this.data.data.range.value}}m</span>
+                        </div>
+                        <div class="list-item">
+                            <span>Penetration: {{this.data.data.pen.value}}</span>
+
+                        </div>
+                        <div class="list-item">
+                            <label>Rate of Fire: {{this.data.data.rof.[0].value}}/{{this.data.data.rof.[1].value}}/{{this.data.data.rof.[2].value}}</label>
+                        </div>
+                        <div class="list-item">
+                            <span>Reload: {{this.data.data.reload.value}}</span>
+
+                        </div>
+                        <div class="list-item">
+                            <span>Special: 
+
+                                {{#each this.data.flags.fortyk as |flag key|}}
+
+
+                                {{#if (checkSpecial this)}}
+
+                                {{#with (lookup ../data.FORTYK.weaponFlags [key])~}}
+                                <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                                    {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
+                                {{/if}}{{/each}}
+                            </span>
+
+                        </div>
+                        <div class="list-item">
+                            <span>Damage Type: {{this.data.data.damageType.value}}</span>
+
+                        </div>
+                        <div class="list-item">
+                            <span>Weapon Class: {{this.data.data.class.value}}</span>
+
+
+                        </div>
+                        <div class="list-item">
+                            <span>Weapon Type: {{this.data.data.type.value}}</span>
+
+
+                        </div>
+
+                    </div>
                     {{/if}}
                     {{/each}}
                     {{/each}}

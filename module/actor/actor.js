@@ -556,7 +556,7 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","unrelenting")){
             fatigueMult=2;
         }
-        if(!this.getFlag("core","frenzy")){
+        if(!this.getFlag("core","frenzy")&&!this.getFlag("fortyk","tireless")){
             for (let [key,char] of Object.entries(data.characteristics)){
                 if(key!=="inf"&&char.bonus*fatigueMult<data.secChar.fatigue.value){
                     char.total=Math.ceil(char.total/2);
@@ -620,8 +620,8 @@ export class FortyKActor extends Actor {
         data.characterHitLocations.rArm.shield= 0;
         data.characterHitLocations.lArm.shield= 0;
         if(rightHandWeaponData!==undefined&&rightHandWeaponData.type!=="rangedWeapon"){
-            data.characterHitLocations.rArm.shield= parseInt(rightHandWeaponData.data.shield.value);
-            data.characterHitLocations.body.shield= parseInt(rightHandWeaponData.data.shield.value);
+            data.characterHitLocations.rArm.shield+= parseInt(rightHandWeaponData.data.shield.value);
+            data.characterHitLocations.body.shield+= parseInt(rightHandWeaponData.data.shield.value);
             if(rightHandWeapon.getFlag("fortyk","bulwark")&&this.getFlag("core","prone")){
                 data.characterHitLocations.lArm.shield=parseInt(rightHandWeaponData.data.shield.value);
                 data.characterHitLocations.lLeg.shield=parseInt(rightHandWeaponData.data.shield.value);
@@ -629,12 +629,12 @@ export class FortyKActor extends Actor {
             }
         }
         if(leftHandWeaponData!==undefined&&leftHandWeaponData.type!=="rangedWeapon"){
-            data.characterHitLocations.lArm.shield= parseInt(leftHandWeaponData.data.shield.value);
-            data.characterHitLocations.body.shield= parseInt(leftHandWeaponData.data.shield.value);
+            data.characterHitLocations.lArm.shield+= parseInt(leftHandWeaponData.data.shield.value);
+            data.characterHitLocations.body.shield+= parseInt(leftHandWeaponData.data.shield.value);
             if(leftHandWeapon.getFlag("fortyk","bulwark")&&this.getFlag("core","prone")){
-                data.characterHitLocations.rArm.shield=parseInt(leftHandWeaponData.data.shield.value);
-                data.characterHitLocations.lLeg.shield=parseInt(leftHandWeaponData.data.shield.value);
-                data.characterHitLocations.rLeg.shield=parseInt(leftHandWeaponData.data.shield.value);
+                data.characterHitLocations.rArm.shield+=parseInt(leftHandWeaponData.data.shield.value);
+                data.characterHitLocations.lLeg.shield+=parseInt(leftHandWeaponData.data.shield.value);
+                data.characterHitLocations.rLeg.shield+=parseInt(leftHandWeaponData.data.shield.value);
             }
         }
         //machine
@@ -686,7 +686,7 @@ export class FortyKActor extends Actor {
         //modify total characteristics depending on fatigue
         var fatigueMult=1;
         for (let [key,char] of Object.entries(data.characteristics)){
-            if(!this.getFlag("core","frenzy")&&char.bonus*fatigueMult<data.secChar.fatigue.value){
+            if(!this.getFlag("core","frenzy")&&!this.getFlag("fortyk","tireless")&&char.bonus*fatigueMult<data.secChar.fatigue.value){
                 char.total=Math.ceil(char.value/2);
             }
         }
