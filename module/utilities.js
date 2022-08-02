@@ -45,7 +45,6 @@ export const sleep=function(ms) {
 }
 //returns an actors token object, not the token document. Will search the active canvas for the current token.
 export const getActorToken=function(actor){
-    console.log(actor);
     if(actor.token!==null){
         return actor.token._object; 
     }
@@ -210,7 +209,6 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
     if(attackAngle<0){
         attackAngle=360+attackAngle;
     }
-    console.log(attackAngle)
     let facings=vehicleToken.actor.data.data.facings;
     let facing=null;
     let split={};

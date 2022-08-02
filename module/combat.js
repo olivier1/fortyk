@@ -7,7 +7,6 @@ export const _getInitiativeFormula = function() {
     if ( !actor ) return "1d10";
     let init=CONFIG.Combat.initiative.formula;
     if(actor.type==="vehicle"){
-        console.log(actor)
         if(actor.data.data.knight.pilot){
             actor=actor.data.data.knight.pilot;
             init=`1d10 + ${actor.data.data.characteristics.agi.mod} + ${actor.data.data.secChar.initiative.value} + (${actor.data.data.characteristics.agi.total} / 100)`;

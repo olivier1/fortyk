@@ -174,7 +174,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             for (let [key, wpnType] of Object.entries(data.torsoHardPoints)){
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
-                        console.log(wpnType)
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
                         if(wpnType[i].type==="rangedWeapon"){
                             wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
@@ -248,8 +247,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         let component=house.getEmbeddedDocument("Item",targetId);
         let amtLeft=component.data.data.amount.left;
         if(amtLeft>0){
-            console.log(component);
-            console.log(type);
             let validSlots= document.querySelectorAll(type);
             validSlots.forEach(function(item) {
                 item.classList.add("highlight-slot");
@@ -266,7 +263,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
     }
     _onStopDragComponent(event){
         let type="."+event.target.attributes["name"].value;
-        console.log(type);
         let validSlots= document.querySelectorAll(type);
         validSlots.forEach(function(item) {
             item.classList.remove("highlight-slot");
@@ -332,7 +328,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 let componentSubType=newComponent[0].data.data.type.value;
                 if(componentSubType==="other"){
                     let componentArray=objectByString(this.actor.data,path);
-                    console.log(componentArray, index);
                     componentArray[index]=newComponent[0].id;
                     componentArray.push("");
 
@@ -371,7 +366,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             }else{
 
                 let array=objectByString(chassis.data,path);
-                console.log(index,path,array);
                 array[index]=newComponent[0].id;
 
 
@@ -499,7 +493,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
             }
             let category=tab.dataset["tab"];
-            console.log(this)
             this.document.data.mechtab=category;
             tabClasses.add("active2");
             let lists=document.getElementsByName("mechInventoryTab");
@@ -570,16 +563,14 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let selectedId= $(html).find('input:checked').val();
 
 
-                            console.log(selectedId);
 
 
                             let chassisDoc=await chassisPack.getDocument(selectedId);
-                            console.log(chassisDoc)
-
+                            
 
 
                             let createdChassis=await actor.createEmbeddedDocuments("Item",[chassisDoc.data]);
-                            console.log(createdChassis)
+                         
                             let id=createdChassis[0].id;
                             let update={};
                             update["data.knight.chassis"]=id;
@@ -618,8 +609,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let selectedId= $(html).find('input:checked').val();
 
 
-                            console.log(selectedId);
-
+                         
 
                             let spiritDoc=await spiritPack.getDocument(selectedId);
 
@@ -694,7 +684,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
                             let component=await house.getEmbeddedDocument("Item",item.data.data.originalId);
                             let chassis=await actor.getEmbeddedDocument("Item",data.knight.chassis);
-                            console.log(item,component,house,chassis)
+                           
                             let amtTaken=component.data.data.amount.taken;
                             let newAmt=amtTaken-1;
 
@@ -729,7 +719,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;
         let item=await this.actor.getEmbeddedDocument("Item",itemId);
-        console.log(itemId)
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
         renderedTemplate.then(content => {
             new Dialog({
@@ -780,7 +769,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;
         let item=await this.actor.getEmbeddedDocument("Item",itemId);
-        console.log(itemId)
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
         renderedTemplate.then(content => {
             new Dialog({
@@ -802,9 +790,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let newAmt=amtTaken-1;
 
                             let array=objectByString(this.actor.data,path);
-                            console.log(array, index)
                             array.splice(index,1);
-                            console.log(array)
 
 
 
@@ -838,7 +824,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         if(newHouse){
             let newArray=newHouse.data.data.knights;
             newArray.push(this.actor.id);
-            console.log(newHouse)
             newHouse.update({"data.knights":newArray}); 
         }
         if(oldHouse){
@@ -992,7 +977,6 @@ async _updateHouse(){
     if(house){
         let actors=[];
         actors.push(data.knight.house);
-        console.log(house);
         actors=actors.concat(house.data.data.knights);
         let socketOp={type:"renderSheets",package:{actors:actors}}
         await game.socket.emit("system.fortyk",socketOp);

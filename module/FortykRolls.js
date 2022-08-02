@@ -223,11 +223,9 @@ returns the roll message*/
                     if(attackTarget!==undefined){
                         let attackerToken=getActorToken(actor);
                         let distance=tokenDistance(attackerToken,attackTarget);
-                        console.log(parseInt(weapon.data.range.value)/2)
                         if(distance<=2||distance<=2*canvas.dimensions.distance){
                             hits+=testDos;
                         }else if(distance<=parseInt(weapon.data.range.value)/2){
-                            console.log(Math.floor(testDos/2))
                             hits+=Math.floor(testDos/2);
                         }
                     }
@@ -316,7 +314,6 @@ returns the roll message*/
             await ChatMessage.create(chatOp,{});
         }
         //blast
-        console.log(weapon)
         if(attack&&(weapon.data.type==="Launcher"||weapon.data.type==="Grenade")&&fortykWeapon.getFlag("fortyk","blast")&&!testResult&&jam){
             let fumbleRoll=new Roll("1d10");
             await fumbleRoll.roll();
@@ -348,7 +345,6 @@ returns the roll message*/
             if(attackTarget!==undefined){
                         let attackerToken=getActorToken(actor);
                         let distance=tokenDistance(attackerToken,attackTarget);
-                        console.log(parseInt(weapon.data.range.value)/2)
                         let weaponRng=parseInt(weapon.data.range.value);
                         if(distance<=2*weaponRng){
                             scatterDice="1d10";
@@ -886,7 +882,6 @@ returns the roll message*/
                                     let wpnRoll=new Roll(`1d${wpnnmbr}-1`,{});
                                     await wpnRoll.roll();
                                     let targetWpn=facingWeapons[wpnRoll._total];
-                                    console.log("Target Weapon:",targetWpn)
                                     newFacingString=targetWpn.name;
                                     if(targetWpn.data.mounting.value==="Turret"){
                                         facing=data.facings["front"];
@@ -907,7 +902,6 @@ returns the roll message*/
                                 damageOptions.facing=facing.label; 
                             }
                         }
-                        console.log(facing)
                         let damageTemplate='systems/fortyk/templates/chat/chat-damage.html';
                         let deathwatch=false;
                         var toxic=fortykWeapon.getFlag("fortyk","toxic");
@@ -1559,7 +1553,6 @@ returns the roll message*/
                         damageOptions.results.push(`</div>`) 
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
                         damageOptions.results.push(`<span>Total Damage: ${chatDamage}.</span>`);
-                        console.log(damage);
                         if(damage<=0){
                             damageOptions.results.push(`<span>Damage is fully absorbed.</span>`);
                         }
@@ -1695,7 +1688,6 @@ returns the roll message*/
                 toxicWpn.data.flags.fortyk={}
                 toxicWpn.data.flags.fortyk.ignoreSoak=true;
                 toxicWpn.data.data.damageType.value="Energy";
-                console.log(toxicWpn);
                 await this.damageRoll(toxicWpn.data.data.damageFormula,actor,toxicWpn,1, true);
             }
         }
@@ -1833,7 +1825,6 @@ returns the roll message*/
     static async critEffects(token,num,hitLoc,type,ignoreSON,activeEffects=null,source=""){
         if(game.user.isGM||token.owner){
             let actor=token.actor;
-            console.log(actor)
             if(actor.type!=="vehicle"){
                 switch(type){
                     case "Energy":

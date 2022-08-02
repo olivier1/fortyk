@@ -212,7 +212,6 @@
                 <span class="list-item-header">Number Owned</span>
                 <span class="list-item-header">Edit</span>
                 <span class="list-item-header">Del.</span>
-                {{debug inventoryFilter}}
                 {{#each components}}
 
                 <div class="list-item " name="component"{{#if (compareString ../inventoryFilter "all")}}style="display:"{{else if (compareString data.data.knightComponentType ../inventoryFilter)}}style="display:"{{else}}style="display: none"{{/if}} type="{{data.data.knightComponentType}}">

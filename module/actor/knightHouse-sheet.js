@@ -28,11 +28,9 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         let actor=this.actor;
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
-        console.log(data.inventoryFilter)
        if(data.inventoryFilter===undefined){
            data.inventoryFilter="all";
        }
-        console.log(data.inventoryFilter)
         data.outposts=actor.itemTypes.outpost;
         data.cadetHouses=actor.itemTypes.cadetHouse;
         data.weapons=actor.itemTypes.rangedWeapon.concat(actor.itemTypes.meleeWeapon,actor.itemTypes.ammunition);
@@ -66,11 +64,9 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         let components=document.getElementsByName("component");
         let type=event.currentTarget.value;
         this.document.data.inventoryFilter=type;
-        console.log(type)
         for(let i=0;i<components.length;i++){
             let component=components[i];
             let componentType=component.attributes["type"].value;
-            console.log(componentType)
             if(type==="all"){
                 component.style.display="";
             }else if(componentType===type){
@@ -133,11 +129,9 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         let bays=parseInt(this.actor.data.data.repairBays.value);
         let repairs=[...this.document.data.repairEntries];
         let repairBays=[];
-        console.log(bays)
         for(let i=0;i<bays;i++){
             let repairJob={};
             if(repairs.length>0){
-                console.log("hey")
                 repairJob.entry=repairs.shift();
                 repairJob.days=time;
                 repairJob.done=false;
@@ -151,9 +145,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
             if(index+1>repairBays.length){
                 index=0;
             }
-            console.log(index)
             let job=repairBays[index];
-            console.log(job)
             let jobTime=job.days;
             if(jobTime&&!job.done){
                 let entry=job.entry;

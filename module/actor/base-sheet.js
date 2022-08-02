@@ -118,7 +118,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     async _onDropListItem(event){
 
         let draggedId=event.dataTransfer.getData("text");
-        console.log(event.target)
+     
         let targetId=event.target.dataset["id"];
         if(draggedId!==targetId){
             let draggedItem=await this.actor.items.get(draggedId);
@@ -138,7 +138,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let itemType=draggedItem.type;
             let items=this.actor.itemTypes[itemType].sort(function(a,b){
             return a.data.sort-b.data.sort});
-            console.log(items)
+           
             /*data.items=*/
             let previous=null;
             let update=[];
@@ -626,7 +626,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const dataset = element.dataset;
         let testType=dataset["rollType"];
         var testTarget=parseInt(dataset["target"]);
-        console.log(testTarget)
+       
         var testLabel=dataset["label"];
         var testChar=dataset["char"];
         let rating=dataset["rating"];
@@ -639,7 +639,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
         if(dataset["itemId"]){
             item=await this.actor.items.get(dataset["itemId"]);
-            console.log(item)
+          
             if(!item.data.data.isPrepared){
                 await item.prepareData();
             }

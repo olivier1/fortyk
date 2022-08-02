@@ -54,10 +54,10 @@ export class FortyKItemSheet extends ItemSheet {
 
             data.knights=[];
             let knights=this.actor.data.data.knights;
-            console.log(knights)
+         
             for(let i=0;i<knights.length;i++){
                 let actor=game.actors.get(knights[i]);
-                console.log(actor);
+           
                 if(actor){
 
                     data.knights.push(actor.name);
@@ -115,7 +115,6 @@ export class FortyKItemSheet extends ItemSheet {
 
     }
     _onCloneClick(event){
-        console.log("hey")
         let item=this.item.clone();
         Item.create(item.data);
     }
@@ -271,7 +270,7 @@ export class FortyKItemSheet extends ItemSheet {
         let updateNmbr=Object.keys(this.updateObj).length;
        
         if(updateNmbr>0&&(!event.relatedTarget||($(event.relatedTarget).prop("class").indexOf("weapon-mod") === -1))) {
-            console.log(updateNmbr)
+           
             await item.update(this.updateObj);
             this.updateObj=undefined;
 
@@ -398,7 +397,7 @@ export class FortyKItemSheet extends ItemSheet {
             let target=`data.hardPoints.${location}.${type}`;
             let oldValue=item.data.data.hardPoints[location][type].length;
             let oldArray=item.data.data.hardPoints[location][type];
-            console.log(oldValue)
+           
 
             if((newAmt>oldValue)){
                 for(let i=oldValue;i<newAmt;i++){

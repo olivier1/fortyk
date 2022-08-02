@@ -80,7 +80,6 @@ export class FortyKItem extends Item {
                    
                 }else if(item.type==="knightComponent"){
                     item.data.knightComponentType=item.data.type.value;
-                    console.log(item.data.type.value)
                 }else{
                     item.data.knightComponentType=item.type;
                 }

@@ -24,7 +24,6 @@ export class FortykRollDialogs{
     static async _onOverheat(event){
         event.preventDefault();
         const dataset=event.currentTarget.dataset;
-        console.log(dataset)
         const actor=game.actors.get(dataset["actor"]);
 
         const weapon=duplicate(actor.getEmbeddedDocument("Item",dataset["weapon"]));
@@ -287,7 +286,6 @@ export class FortykRollDialogs{
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(counter)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
                         actor.data.data.secChar.lastHit.attackRange="melee";
                         actor.data.data.secChar.lastHit.vehicle=vehicle;
-                        console.log(actor.data.data.secChar.lastHit.vehicle)
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
                     }
 

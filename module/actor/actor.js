@@ -826,7 +826,6 @@ export class FortyKActor extends Actor {
                     }
                 }
             }
-            console.log(rightShield,leftShield)
             data.knight.instancedComponents=[];
             for(let i=0;i<knight.components.length;i++){
                 let component=knight.components[i];

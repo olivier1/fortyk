@@ -258,15 +258,13 @@ Hooks.once('ready', async function() {
                     await actor.update(options);
                     break;
                 case "forcefieldRoll":
-                    console.log("hi")
                     targetIds=data.package.targets;
                     hits=data.package.hits
                     targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
-                    console.log(targetIds,targets)
+                  
                     targets=new Set(targets);
                     for(let tar of targets){
                         let tarActor=tar.actor;
-                        console.log(tarActor);
                         let forcefield=tarActor.data.data.secChar.wornGear.forceField.document;
                         if(forcefield){
                             FortykRolls.fortykForcefieldTest(forcefield,tarActor,hits);
@@ -305,7 +303,6 @@ Hooks.on("updateCombat", async (combat) => {
         for(let activeEffect of actor.effects){
             if(activeEffect.data.duration.rounds!==undefined){
 
-                console.log(activeEffect)
                 let remaining=Math.ceil(activeEffect.duration.remaining);
                 if(remaining<1){remaining=0}
                 let content="";
@@ -400,7 +397,6 @@ Hooks.on("updateCombat", async (combat) => {
                                      author:actor.name};
                     let cryoMsg=await ChatMessage.create(cryoOptions,{});
                     let inlineResults=parseHtmlForInline(cryoMsg.data.content);
-                    console.log(inlineResults);
                     let tDmg=inlineResults[0];
                     let ae=[]
                     ae.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("t")]));
@@ -426,9 +422,7 @@ Hooks.on("preDeleteCombat", async (combat,options,id) =>{
     let combatants=combat.combatants;
     combatants.forEach(async (combatant)=>{
         let actor=combatant.actor;
-        console.log(actor)
         for(let activeEffect of actor.effects){
-            console.log(activeEffect)
             if(activeEffect.data.label==="Evasion"){
                 await activeEffect.delete({});
             }
