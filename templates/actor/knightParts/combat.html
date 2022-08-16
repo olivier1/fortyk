@@ -5,7 +5,7 @@
 
 
 
-        <div class="descr grid grid-9col">
+        <div class="descr grid grid-5col">
 
 
             <div class="descrRow flexcol">
@@ -44,6 +44,22 @@
                 </div>
             </div>
             <div class="descrRow flexcol">
+                {{#if (greaterThan data.knight.heat.value data.knight.heat.cap)}}
+                <span class="knight-overheat button">Overheat</span>
+                {{else}}
+
+                <label for="data.secChar.wounds.value" class="resource-label">Heat</label>
+
+                {{/if}}
+                <div class="resource-content flexrow flex-center flex-between">
+                    <input type="text" class="combat-resources" data-target="data.knight.heat.value" value="{{data.knight.heat.value}}" data-dtype="Number"/>
+                    <span>/</span>
+                    <input type="text" class="combat-resources" data-target="data.knight.heat.max" value="{{data.knight.heat.max}}" data-dtype="Number" disabled/>
+
+                </div>
+
+            </div>
+            <div class="descrRow flexcol flex-group-center">
                 <label for="data.secChar.wounds.value" class="resource-label">Thresholds</label>
                 <span class="descrSpan">{{data.secChar.wounds.thresholds.[1]}}/{{data.secChar.wounds.thresholds.[2]}}/{{data.secChar.wounds.thresholds.[3]}}/{{data.secChar.wounds.thresholds.[4]}}</span>
                 <label for="data.secChar.wounds.value" class="resource-label">Current Threshold: {{threshold}}</label>
@@ -401,7 +417,7 @@
                         <div class="list-item">
                             <span>Attack: </span> 
                             {{#if (greaterThan this.data.data.clip.value 0)}}
-                           
+
                             <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../../data.crew.bs}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="">Roll</span>
                             {{else}}
                             {{#if this.data.data.ammo._id}}
@@ -602,7 +618,7 @@
                         <div class="list-item">
                             <span>Attack: </span> 
                             {{#if (greaterThan this.data.data.clip.value 0)}}
-                            
+
                             <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../../data.crew.bs}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="">Roll</span>
                             {{else}}
                             {{#if this.data.data.ammo._id}}
@@ -809,7 +825,7 @@
                         <div class="list-item">
                             <span>Attack: </span> 
                             {{#if (greaterThan this.data.data.clip.value 0)}}
-                           
+
                             <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../../data.crew.bs}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="">Roll</span>
                             {{else}}
                             {{#if this.data.data.ammo._id}}

@@ -70,9 +70,9 @@ export class FortykRollDialogs{
                                 }
                             }
                             if(!reroll){
-                               
+
                                 if(testLabel==="Dodge"||testLabel==="Parry"||testLabel==="Jink"){
-                                   
+
                                     let aeData={};
                                     aeData.id="evasion";
                                     aeData.label= "Evasion";
@@ -114,6 +114,7 @@ export class FortykRollDialogs{
         let templateOptions={};
         templateOptions["modifiers"]=duplicate(actor.data.data.secChar.attacks);
         templateOptions["modifiers"].testMod=itemData.data.testMod.value;
+        templateOptions["modifiers"].testMod+=-modifiers.tarEvasion;
         templateOptions["options"]={}
         templateOptions["options"].swift=actor.getFlag("fortyk","swiftattack");
         templateOptions["options"].lightning=actor.getFlag("fortyk","lightningattack");
@@ -122,12 +123,12 @@ export class FortykRollDialogs{
         templateOptions["options"].stunned=modifiers.stunned;
         templateOptions["options"].helpless=modifiers.helpless;
         if(modifiers.size){
-           templateOptions["options"].size=modifiers.size; 
+            templateOptions["options"].size=modifiers.size; 
         }else{
             templateOptions["options"].size=actor.data.data.secChar.size.value;
         }
-        
-        
+
+
         templateOptions["options"].blindfight=actor.getFlag("fortyk","blindfight");
         templateOptions["options"].counter=actor.getFlag("fortyk","counterattack");
         templateOptions["options"].running=modifiers.running;
@@ -317,6 +318,14 @@ export class FortykRollDialogs{
         templateOptions["modifiers"].single=itemData.data.attackMods.single;
         templateOptions["modifiers"].aim=itemData.data.attackMods.aim;
         templateOptions["modifiers"].testMod=itemData.data.testMod.value;
+
+        if(actor.getFlag("fortyk","gyro")){
+            let gyro=parseInt(actor.getFlag("fortyk","gyro"));
+            templateOptions["modifiers"].testMod+=-modifiers.tarEvasion;
+            templateOptions["modifiers"].testMod+=-Math.max(0,modifiers.selfEvasion-gyro);
+        }else{
+            templateOptions["modifiers"].testMod+=-modifiers.tarEvasion-modifiers.selfEvasion;  
+        }
         if(item.getFlag("fortyk","twinlinked")){
 
             templateOptions["modifiers"].testMod+=20;
@@ -430,11 +439,11 @@ export class FortykRollDialogs{
         templateOptions["options"].stunned=modifiers.stunned;
         templateOptions["options"].helpless=modifiers.helpless;
         if(modifiers.size){
-           templateOptions["options"].size=modifiers.size; 
+            templateOptions["options"].size=modifiers.size; 
         }else{
             templateOptions["options"].size=actor.data.data.secChar.size.value;
         }
-        
+
         templateOptions["options"].running=modifiers.running;
         templateOptions["options"].normal=true;
         //elevation stuff
@@ -464,6 +473,17 @@ export class FortykRollDialogs{
                     templateOptions["modifiers"].testMod+=40;
                 }else if(hordeSize>=30){
                     templateOptions["modifiers"].testMod+=30;
+                }
+            }
+            if(tarActor.getFlag("fortyk","supersonic")){
+                if(actor.getFlag("fortyk","skyfire")||item.getFlag("fortyk","skyfire")){
+                    templateOptions["options"].prone=false;
+                }
+                else{templateOptions["modifiers"].testMod-=60}
+            }else{
+                if(item.getFlag("fortyk","skyfire")){
+                    templateOptions["options"].prone=false;
+                    templateOptions["modifiers"].testMod-=20;
                 }
             }
         }

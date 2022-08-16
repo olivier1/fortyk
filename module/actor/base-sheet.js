@@ -673,6 +673,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             attackOptions.running=targetActor.getFlag("core","running");
             attackOptions.size=targetActor.data.data.secChar.size.value;
             attackOptions.selfProne=this.actor.getFlag("core","prone");
+            attackOptions.selfEvasion=this.actor.data.data.evasion;
+            attackOptions.tarEvasion=targetActor.data.data.evasion;
             if(targetActor.getFlag("core","unconscious")||targetActor.getFlag("core","snare")){
                 attackOptions.helpless=true;
             }else{
@@ -683,6 +685,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let attackerElevation=attacker.data.elevation;
             let targetElevation=target.data.elevation;
             attackOptions.elevation=attackerElevation-targetElevation;
+            
 
         }
         if(testType==="meleeAttack"){
@@ -713,7 +716,15 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             if(actor.getFlag("fortyk","deathfromabove")&&actor.data.data.secChar.lastHit.attackType==="charge"){
                 dfa=true;
             }
+            let dmg=0;
+            if(actor.getFlag("fortyk","brutalcharge")&&actor.data.data.secChar.lastHit.attackType==="charge"){
+                dmg=parseInt(actor.getFlag("fortyk","brutalcharge"));
+            }
+            if(fortykWeapon.getFlag("fortyk","brutalcharge")&&actor.data.data.secChar.lastHit.attackType==="charge"){
+                dmg+=parseInt(fortykWeapon.getFlag("fortyk","brutalcharge"));
+            }
             let options={dfa:dfa};
+            options.dmg=dmg;
             let hits=actor.data.data.secChar.lastHit.hits;
             if(!hits){hits=1};
             options.hits=hits;

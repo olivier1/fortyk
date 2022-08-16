@@ -261,7 +261,7 @@ Hooks.once('ready', async function() {
                     targetIds=data.package.targets;
                     hits=data.package.hits
                     targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
-                  
+
                     targets=new Set(targets);
                     for(let tar of targets){
                         let tarActor=tar.actor;
@@ -349,6 +349,25 @@ Hooks.on("updateCombat", async (combat) => {
                         fire.data.data.pen.value=99999;
                         await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire,1, true);
                     }else{
+                        if(actor.getFlag("fortyk","superheavy")){
+                            let heat=parseInt(actor.data.data.knight.heat.value)+1;
+                            await actor.update({"data.knight.heat.value":heat});
+                            let onFireOptions={user: game.user._id,
+                                               speaker:{actor,alias:actor.name},
+                                               content:"On round start, gain 1 heat.",
+                                               classes:["fortyk"],
+                                               flavor:`On Fire!`,
+                                               author:actor.name};
+                            await ChatMessage.create(onFireOptions,{});
+                        }else{
+                            let onFireOptions={user: game.user._id,
+                                               speaker:{actor,alias:actor.name},
+                                               content:"On round start, roll 1d10+(number of rounds on fire) on a 10+ the vehicle explodes.",
+                                               classes:["fortyk"],
+                                               flavor:`On Fire!`,
+                                               author:actor.name};
+                            await ChatMessage.create(onFireOptions,{});
+                        }
                     }
                 }
                 //check for bleeding
@@ -581,6 +600,10 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
             let size= 0;
             if(tokenActor.data.data.horde.value||tokenActor.data.data.formation.value){
                 size= FORTYKTABLES.hordeSizes[newSize];
+                //modify token dimensions if scene ratio isnt 1
+                let gridRatio=canvas.dimensions.distance;
+                size=Math.max(1,size/gridRatio);
+                console.log("hey")
             }else{
                 size= game.fortyk.FORTYK.size[newSize].size;
             }
@@ -637,7 +660,7 @@ Hooks.once("dragRuler.ready", (Speedprovider) => {
             // Return the maximum of the costs
             let actor=token.actor;
             let cost=1;
-            if(actor.getFlag("fortyk","jump")||actor.getFlag("fortyk","crawler")||actor.getFlag("fortyk","hoverer")||actor.getFlag("fortyk","flyer")){
+            if(actor.getFlag("fortyk","jump")||actor.getFlag("fortyk","crawler")||actor.getFlag("fortyk","hoverer")||actor.getFlag("fortyk","flyer")||actor.getFlag("fortyk","skimmer")){
                 cost=1;
             }else{
                 cost=costs.reduce((max, current) => Math.max(max, current));

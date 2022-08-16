@@ -946,7 +946,13 @@
                 "throneMod":"",
                 "components":[""],
                 "spirit":"",
-                "operate":"operate:titanicwalker"
+                "operate":"operate:titanicwalker",
+                "heat":{
+                    "value":0,
+                    "cap":0,
+                    "mod":0,
+                    "max":0
+                }
             }
 
         },
@@ -1107,6 +1113,10 @@
                 "space":{
                     "value":0,
                     "type":"Number"
+                },
+                "state":{
+                    "value":"",
+                    "type":"String"
                 }
             },
             "tableEntry": {
@@ -1584,7 +1594,7 @@
                 "value":0,
                 "type":"Number"
             },
-            "overload":{
+            "heatCap":{
                 "value":0,
                 "type":"Number"
             }

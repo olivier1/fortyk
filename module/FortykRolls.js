@@ -69,11 +69,11 @@ returns the roll message*/
             if(weapon.data.quality.value==="Best"){
             }else if(fortykWeapon.getFlag("fortyk","reliable")){
                 if(testRoll===100){
-                   jam=true; 
+                    jam=true; 
                 }
             }else if(fortykWeapon.getFlag("fortyk","unreliable")||weapon.data.quality.value==="Poor"){
                 if(testRoll>=91){
-                   jam=true; 
+                    jam=true; 
                 }
                 if(weapon.data.quality.value==="Poor"){
                     if(testRoll>target){
@@ -82,7 +82,7 @@ returns the roll message*/
                 }
             }else if(fortykWeapon.getFlag("fortyk","overheats")){
                 if(testRoll>=91){
-                   jam=true; 
+                    jam=true; 
                 }
             }else if(testRoll>=96){
                 jam=true;
@@ -101,10 +101,18 @@ returns the roll message*/
         if(charObj===undefined){charObj={"uB":0}}
         var testDos=0;
         //check for vehicle target and if attacker is vehicle
-        let vehicle=actor.data.data.secChar.lastHit.vehicle;
-        let isVehicle=false;
-        if(actor.type==="vehicle"){
-            isVehicle=true;
+        if(actor.type!=="spaceship"){
+            var vehicle=actor.data.data.secChar.lastHit.vehicle;
+            var isVehicle=false;
+            if(actor.type==="vehicle"){
+                isVehicle=true;
+            }
+        }
+        if(isVehicle&&fortykWeapon){
+            if(fortykWeapon.getFlag("fortyk","taxing")){
+                let newHeat=parseInt(actor.data.data.knight.heat.value)+parseInt(fortykWeapon.getFlag("fortyk","taxing"));
+                actor.update({"data.knight.heat.value":newHeat});
+            }
         }
         //calculate degrees of failure and success
         if((testResult&&testRoll<96||testRoll===1)&&!jam){
@@ -343,17 +351,17 @@ returns the roll message*/
             await ChatMessage.create(chatScatter,{});
             let scatterDice="1d5";
             if(attackTarget!==undefined){
-                        let attackerToken=getActorToken(actor);
-                        let distance=tokenDistance(attackerToken,attackTarget);
-                        let weaponRng=parseInt(weapon.data.range.value);
-                        if(distance<=2*weaponRng){
-                            scatterDice="1d10";
-                        }else if(distance<=weaponRng*3){
-                             scatterDice="2d10";
-                        }else if(distance<=weaponRng*4){
-                             scatterDice="3d10";
-                        }
-                    }
+                let attackerToken=getActorToken(actor);
+                let distance=tokenDistance(attackerToken,attackTarget);
+                let weaponRng=parseInt(weapon.data.range.value);
+                if(distance<=2*weaponRng){
+                    scatterDice="1d10";
+                }else if(distance<=weaponRng*3){
+                    scatterDice="2d10";
+                }else if(distance<=weaponRng*4){
+                    scatterDice="3d10";
+                }
+            }
             let distanceRoll=new Roll("1d5");
             await distanceRoll.roll();
             await distanceRoll.toMessage({
@@ -876,6 +884,7 @@ returns the roll message*/
                                 }else if(facing.path==="rSide"){
                                     facingWeapons=data.rightSideWeapons;
                                 }
+                                console.log(facingWeapons)
                                 //if there are weapons proceed to randomly select one, if not proceed with normal armor facing
                                 if(facingWeapons.length>0){
                                     let wpnnmbr=facingWeapons.length;
@@ -883,16 +892,8 @@ returns the roll message*/
                                     await wpnRoll.roll();
                                     let targetWpn=facingWeapons[wpnRoll._total];
                                     newFacingString=targetWpn.name;
-                                    if(targetWpn.data.mounting.value==="Turret"){
+                                    if(targetWpn.data.mounting.value==="turret"){
                                         facing=data.facings["front"];
-                                    }else if(targetWpn.data.facing.value==="Front"){
-                                        facing=data.facings["front"];
-                                    }else if(targetWpn.data.facing.value==="Rear"){
-                                        facing=data.facings["rear"];
-                                    }else if(targetWpn.data.facing.value==="Left Side"){
-                                        facing=data.facings["lSide"];
-                                    }else if(targetWpn.data.facing.value==="Right Side"){
-                                        facing=data.facings["rSide"];
                                     }
                                     damageOptions.facing=newFacingString;
                                 }else{
@@ -939,10 +940,7 @@ returns the roll message*/
                         if(vehicle&&fortykWeapon.getFlag("fortyk","graviton")){
                             tarRighteous-=1;
                         }
-                        //super-heavies cannot suffer righteous furies
-                        if(tarActor.getFlag("fortyk","superheavy")){
-                            tarRighteous=11;
-                        }
+
                         let tens=0;
                         let dieResults=[];
                         let discards=[];
@@ -1125,7 +1123,7 @@ returns the roll message*/
                         let damage=roll._total;
 
                         let chatDamage=damage;
-                        
+
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
                         //damage part of smite the unholy
                         if(actor.getFlag("fortyk","smitetheunholy")&&tarActor.getFlag("fortyk","fear")&&weapon.type==="meleeWeapon"){
@@ -1176,7 +1174,7 @@ returns the roll message*/
                             let coverReduction=1-cover;
                             damage=Math.ceil(coverReduction*damage);
                             damageOptions.results.push(`<span>Cover reduces ranged damage by ${cover*100}%</span>`);
-                            
+
                         }
                         //logic against swarm enemies
                         if(tarActor.getFlag("fortyk","swarm")&&!(fortykWeapon.getFlag("fortyk","spray")||fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","flame")||fortykWeapon.getFlag("fortyk","scatter"))){
@@ -1376,6 +1374,22 @@ returns the roll message*/
                                     damageOptions.results.push(`Catches fire!`)
                                 } 
                             }
+                            damageOptions.results.push(`</div>`) 
+                        } 
+                        //thermal weapon
+                        let heat=0;
+                        if(vehicle&&fortykWeapon.getFlag("fortyk","thermal")){
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
+                            if(tarActor.getFlag("fortyk","superheavy")){
+                                damageOptions.results.push(`Gains 1 heat from thermal weapon.`);
+                                heat++;
+                            }else{
+                                let fireActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fire")]);
+                                activeEffects.push(fireActiveEffect);
+                                let id=randomID(5);
+                                damageOptions.results.push(`Catches fire!`);
+                            }
+
                             damageOptions.results.push(`</div>`) 
                         } 
                         //snare weapon
@@ -1583,24 +1597,38 @@ returns the roll message*/
                         newWounds[tarNumbr]=Math.max(wounds.min,newWounds[tarNumbr]);
                         //check for super-heavies if a threshold was crossed then apply relevant critical effect
                         if(tarActor.getFlag("fortyk","superheavy")){
+
                             let thresholds=data.secChar.wounds.thresholds;
+
                             let crossed=[];
-                            if(curWounds>thresholds["1"]>=newWounds[tarNumbr]){
+                            if(curWounds>thresholds["1"]&&thresholds["1"]>=newWounds[tarNumbr]){
+                                console.log("hey")
                                 crossed.push(0);
                             }
-                            if(curWounds>thresholds["2"]>=newWounds[tarNumbr]){
+                            if(curWounds>thresholds["2"]&&thresholds["2"]>=newWounds[tarNumbr]){
                                 crossed.push(1);
                             }
-                            if(curWounds>thresholds["3"]>=newWounds[tarNumbr]){
+                            if(curWounds>thresholds["3"]&&thresholds["3"]>=newWounds[tarNumbr]){
                                 crossed.push(2);
                             }
-                            if(curWounds>thresholds["4"]>=newWounds[tarNumbr]){
+                            if(curWounds>thresholds["4"]&&thresholds["4"]>=newWounds[tarNumbr]){
                                 crossed.push(3);
                             }
-                            if(crossed.size>0){
+                            console.log(crossed)
+                            if(crossed.length>0){
+                                console.log(curHit)
                                 await this.thresholdCrits(crossed,curHit.value,tar,activeEffects);
+                                if(weapon.data.damageType.value.toLowerCase()==="energy"){
+
+                                    heat+=crossed.length;
+
+                                }
                             }
+                            let knightHeat=parseInt(tarActor.data.data.knight.heat.value);
+                            knightHeat+=heat;
+                            await tarActor.update({"data.knight.heat.value":knightHeat});
                         }
+
                         //apply field practitioner critical
                         if(lastHit.fieldPractice&&damage>0){
                             await this.critEffects(tar,lastHit.fieldPractice,curHit.value,weapon.data.damageType.value,ignoreSON,activeEffects,"Field practice ");
@@ -1749,7 +1777,12 @@ returns the roll message*/
             await rightRoll.roll();
             let res=rightRoll._total;
             if(tar!==null){
-                await this.critEffects(tar,res,curHit.value,weapon.data.damageType.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`);
+                if(tar.actor.getFlag("fortyk","superheavy")){
+                    await this.superHeavyRightEffects(tar,res,curHit.value,weapon.data.damageType.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`);
+                }else{
+                    await this.critEffects(tar,res,curHit.value,weapon.data.damageType.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`);
+                }
+
             }
             return true;
         }else if(crit&&damage<1){
@@ -1771,13 +1804,14 @@ returns the roll message*/
         if(actor.type==="vehicle"){vehicle=true;}
         let rightMes
         //check for vehicle, vehicle have different crit effects
-        if(vehicle){
-            rightMes=FORTYKTABLES.vehicleCrits[hitLoc][mesRes-1];
-        }else if(threshold){
+        if(threshold){
             rightMes=FORTYKTABLES.thresholdCrits[hitLoc][mesRes];
+        }else if(vehicle){
+            rightMes=FORTYKTABLES.vehicleCrits[hitLoc][mesRes-1];
         }else{
             rightMes=FORTYKTABLES.crits[mesDmgType][hitLoc][mesRes-1];
         }
+        console.log(rightMes);
         //parse for tests inside the crit message
         let testStr=rightMes.match(/(?<=\#)(.*?)(?=\^)/g);
         let tests=[]
@@ -1820,6 +1854,63 @@ returns the roll message*/
                          flavor:`Stuff of Nightmares!`,
                          author:actor.name}
         await ChatMessage.create(chatOptions,{});
+    }
+    static async superHeavyRightEffects(token,num,hitLoc,type,ignoreSON,activeEffects=null,source=""){
+
+        let actor=token.actor;
+        let rightMes="";
+        switch(hitLoc){
+            case "hull":
+                let components=[];
+                components=components.concat(actor.itemTypes.ammunition,actor.itemTypes.forceField,actor.itemTypes.knightComponent,actor.itemTypes.knightCore);
+                components=components.filter(component=>(component.data.data.state!=="X")&&(component.data.data.state!==0));
+                let size=components.length;
+                
+                let compRoll=new Roll(`1d${size}-1`,{});
+
+                await compRoll.roll();
+                let component=components[compRoll._total];
+                let compData=component.data.data;
+                let compUpdate={};
+                console.log(component)
+                if(component.type==="ammunition"){
+                    compUpdate["data.state.value"]="X";
+                    rightMes=`${component.name} explodes dealing weapon damage!`;
+                }else if(compData.state.value==="O"||compData.state.value===""){
+                    compUpdate["data.state.value"]="D";
+                    rightMes=`${component.name} is damaged.`;
+                }else if(compData.state.value==="D"){
+                    compUpdate["data.state.value"]="X";
+                    rightMes=`${component.name} is destroyed.`;
+                }else if(!isNaN(parseInt(compData.state.value))){
+                    compUpdate["data.state.value"]=parseInt(compData.state.value)-1;
+                    if(compUpdate["data.state.value"]===0){
+                        rightMes=`${component.name} is destroyed.`;
+                    }else{
+                        rightMes=`${component.name} is damaged.`; 
+                    }
+                }
+                component.update(compUpdate);
+
+                break;
+            case "weapon":
+                rightMes="The weapon is damaged, an already damaged weapon is destroyed."
+                break;
+            case "motive":
+                rightMes="The motive system is impaired, reducing its tactical speed by [[1d10]], if already impaired it becomes crippled reducing its speed by half, if already crippled the motive system is destroyed, immobilizing the vehicle."
+                break;
+            case "turret":
+                rightMes="The weapon is damaged, an already damaged weapon is destroyed."
+                break;
+        }
+        //report crit effect
+        let chatOptions={user: game.user._id,
+                         speaker:{actor,alias:actor.name},
+                         content:rightMes,
+                         classes:["fortyk"],
+                         flavor:`${source} ${hitLoc} Critical effect`,
+                         author:actor.name}
+        let critMsg=await ChatMessage.create(chatOptions,{});
     }
     //applies critical results to token/actor
     static async critEffects(token,num,hitLoc,type,ignoreSON,activeEffects=null,source=""){
@@ -3713,8 +3804,10 @@ returns the roll message*/
     }
     static async thresholdCrits(crossed,hitLoc,tar,activeEffects){
         let actor=tar.actor;
-        let source="Threshold crit";
+        let source="Threshold crit ";
+
         for(let i=0;i<crossed.length;i++){
+            console.log(hitLoc)
             switch(hitLoc){
                 case "hull":
                     await this._critMsg("hull","Hull", crossed[i], "",actor,source,true);

@@ -130,6 +130,12 @@ export class FortyKActor extends Actor {
                         let size= 0;
                         if(this.data.data.horde.value||this.data.data.formation.value){
                             size= FORTYKTABLES.hordeSizes[newSize];
+                            if(this.isToken){
+                                //modify token dimensions if scene ratio isnt 1
+                                let gridRatio=canvas.dimensions.distance;
+                                size=Math.max(1,size/gridRatio);
+                            }
+
                         }else{
                             size= game.fortyk.FORTYK.size[newSize].size;
                         }
@@ -189,6 +195,7 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","crawler")){
             data.secChar.movement.multi=parseInt(data.secChar.movement.multi)/2; 
         }
+        data.evasion=0;
         //initialize skill modifiers from active events so that they are integers
         this.items.forEach((fortykItem,id,items)=>{
             let item=fortykItem.data;
@@ -237,6 +244,7 @@ export class FortyKActor extends Actor {
             lSide.start=rear.end+1;
             lSide.end=front.start-1;
         }*/
+        data.evasion=0;
         //prepare base stats for imperial knights if they have a chassis selected
         if(data.knight.chassis){
             data.chassis=this.getEmbeddedDocument("Item",data.knight.chassis);
@@ -413,24 +421,24 @@ export class FortyKActor extends Actor {
                     data.secChar.wornGear.forceField=item;
                 }
                 if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
-                    if(item.data.mounting.value==="Turret"){
+                    if(item.data.mounting.value==="turret"){
                         data.rightSideWeapons.push(item); 
                         data.leftSideWeapons.push(item); 
                         data.frontWeapons.push(item); 
                         data.rearWeapons.push(item); 
-                    }else if(item.data.facing.value==="Front"){
+                    }else if(item.data.facing.value==="front"){
                         data.rightSideWeapons.push(item); 
                         data.leftSideWeapons.push(item); 
                         data.frontWeapons.push(item); 
-                    }else if(item.data.facing.value==="Left Side"){
+                    }else if(item.data.facing.value==="lSide"){
                         data.leftSideWeapons.push(item); 
                         data.frontWeapons.push(item);
                         data.rearWeapons.push(item); 
-                    }else if(item.data.facing.value==="Right Side"){
+                    }else if(item.data.facing.value==="rSide"){
                         data.rightSideWeapons.push(item); 
                         data.frontWeapons.push(item);
                         data.rearWeapons.push(item); 
-                    }else if(item.data.facing.value==="Rear"){
+                    }else if(item.data.facing.value==="rear"){
                         data.leftSideWeapons.push(item); 
                         data.rightSideWeapons.push(item);
                         data.rearWeapons.push(item); 
@@ -746,7 +754,9 @@ export class FortyKActor extends Actor {
         if(knight.chassis){
             if(knight.core){
                 data.knight.core=this.getEmbeddedDocument("Item",knight.core);
-                data.knight.overload=data.knight.core.data.data.overload.value;
+
+                data.knight.heat.cap=data.knight.core.data.data.heatCap.value;
+                data.knight.heat.max=parseInt(data.knight.heat.cap)+parseInt(data.knight.heat.mod);
                 data.knight.space.value+=parseFloat(data.knight.core.data.data.space.value);
                 data.knight.tonnage.value+=parseFloat(data.knight.core.data.data.weight.value);
                 data.secChar.speed.tactical+=parseInt(data.knight.core.data.data.speed.value);
@@ -820,7 +830,8 @@ export class FortyKActor extends Actor {
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
                         let wpn=this.getEmbeddedDocument("Item",wpnType[i]);
-                        if(wpn.type==="meleeWeapon"){
+                        
+                        if(wpn&&wpn.type==="meleeWeapon"){
                             leftShield+=parseInt(wpn.data.data.shield.value);
                         }
                     }
@@ -1019,7 +1030,7 @@ export class FortyKActor extends Actor {
                 wornGear["forceField"]=item;
             }
             if(item.type=="skill"){
-               
+
 
 
                 skills.push(item);

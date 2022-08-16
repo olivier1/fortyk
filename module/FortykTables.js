@@ -331,22 +331,22 @@ FORTYKTABLES.vehicleCrits={
           "<span>A short, sharp explosion flares outward from the vehicle. Armour panels fall off, weapons are blasted free, and the vehicle’s drive mechanisms are ruined, causing it to stop dead. The vehicle is now a shattered hulk and suffers the Vehicle Destroyed damage condition (see page 262). Roll 1d10 for each remaining weapon on the vehicle; on a result of 5 or lower, the weapon in question suffers the Weapon Destroyed damage condition (see page 263). Each character inside of the vehicle suffers [[1d10+6]] Explosive damage to a randomly determined Hit Location, and must make a Difficult (–10) Toughness test or become Stunned for [[1d10]] rounds. Skimmers automatically crash as per page 256.</span>",
           "<span>The vehicle’s ammo supply, reactor or fuel supply takes a direct hit, and the vehicle erupts from within. Shards of molten metal are sent flying in every direction as the vehicle is reduced to a smoking crater. The vehicle is destroyed and cannot be repaired. No equipment from within the vehicle can be salvaged. Each character inside suffers [[2d10+18]] Explosive damage to a randomly determined Hit Location. Anyone within [[2d10]] metres of the vehicle suffers [[1d10+6]] Explosive damage from the blast. If the Vehicle has the Open-Topped or Bike vehicle trait, passengers or crew may make a Challenging (+0) Dodge test to bail out at the last second. Anyone who succeeds at this test instead suffers the [[1d10+6]] damage from the vehicle’s explosion.</span>"]}
 FORTYKTABLES.thresholdCrits={
-    "hull":["Every crewmember must test Toughness(+10) or be stunned for 1 round.",
-           "A random component is damaged.",
-           "The facing loses [[2d10]] armor.",
-           "A random component is destroyed."],
-    "weapon":["The weapon is disabled for 1 round.",
-             "The weapon’s targeting is damaged, giving a -20 to tests.",
-             "The weapon is damaged and cannot fire.",
-             "The weapon is destroyed, its ammunition explodes, the Super heavy takes an additional [[2d10]] damage ignoring armor."],
-    "motiveSystem":["The vehicle is shaken so badly, the pilot has to pass an Operate test or change the facing to a random one(roll for scatter). If the vehicle is a walker and the test fails, it falls over.",
-                   "The motive system is slightly damaged, the vehicle loses half its tactical speed on the next round.",
-                   "The engine takes a glancing hit, the tactical speed of the vehicle is reduced by [[1d10]] until repaired.",
-                   "The motive system is crippled, reducing tactical speed by half. In addition the pilot has to pass an Operate test or change the facing to a random one(roll for scatter). If the vehicle is a walker and the test fails, it falls over."],
-    "turret":["The turret’s weapon is jammed.",
-             "The turret’s rotation is locked.",
-             "The turret’s weapon is damaged and cannot fire.",
-             "The turret is destroyed, ammunition explodes dealing an additional 2d10 damage ignoring armor."]
+    "hull":["<span>Every crewmember must test Toughness(+10) or be stunned for 1 round.</span>",
+           "<span>A random component is damaged.</span>",
+           "<span>The facing loses [[2d10]] armor.</span>",
+           "<span>A random component is destroyed.</span>"],
+    "weapon":["<span>The weapon is disabled for 1 round.</span>",
+             "<span>The weapon’s targeting is damaged, giving a -20 to tests.</span>",
+             "<span>The weapon is damaged and cannot fire.</span>",
+             "<span>The weapon is destroyed, its ammunition explodes, the Super heavy takes an additional [[2d10]] damage ignoring armor.</span>"],
+    "motiveSystem":["<span>The vehicle is shaken so badly, the pilot has to pass an Operate test or change the facing to a random one(roll for scatter). If the vehicle is a walker and the test fails, it falls over.</span>",
+                   "<span>The motive system is slightly damaged, the vehicle loses half its tactical speed on the next round.</span>",
+                   "<span>The engine takes a glancing hit, the tactical speed of the vehicle is reduced by [[1d10]] until repaired.</span>",
+                   "<span>The motive system is crippled, reducing tactical speed by half. In addition the pilot has to pass an Operate test or change the facing to a random one(roll for scatter). If the vehicle is a walker and the test fails, it falls over.</span>"],
+    "turret":["<span>The turret’s weapon is jammed.</span>",
+             "<span>The turret’s rotation is locked.</span>",
+             "<span>The turret’s weapon is damaged and cannot fire.</span>",
+             "<span>The turret is destroyed, ammunition explodes dealing an additional 2d10 damage ignoring armor.</span>"]
     
 }
 FORTYKTABLES.haywire=[

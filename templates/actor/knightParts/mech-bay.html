@@ -136,7 +136,7 @@
                         {{/each}}
                         <a class="mechbay-grid-section other-component-color list-item-header4" name="components1"><span class="{{#unless components1}}plus-button{{else}}minus-button{{/unless}}"></span>Components</a>
                         {{#each components}}
-                        
+
                         <span class="list-item mechbay-component components1"  {{#unless ../components1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="{{toLowerCase this.data.data.type.value}}-slot">{{this.name}}</span>
                         <span class="list-item components1" {{#unless ../components1}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
                         <span class="list-item components1" {{#unless ../components1}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
@@ -352,6 +352,15 @@
                 {{#if this}}
 
                 <div class="artillery-weapon artillery filled-slot">
+                    <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
+                        {{#select this.data.data.state.value}}
+
+                        {{#each data.FORTYK.itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{this.name}}</span>
                     {{#if ../isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
@@ -368,13 +377,22 @@
             <div class="info2 mechgrid-child flexcol flex-group-center">
                 <span>Tonnage: {{data.knight.tonnage.value}}/{{data.knight.tonnage.max}}</span>
                 <span>Space: {{data.knight.space.value}}/{{data.knight.space.max}}</span>
-                <span>Overload: {{data.knight.overload}}%</span>
+                <span class="flexrow">Heat: {{data.knight.heat.value}}/{{data.knight.heat.cap}}+<input type="text" class="combat-resources" data-target="data.knight.heat.mod" value="{{data.knight.heat.mod}}" data-dtype="Number"/></span>
             </div>
             <div class="left-weapon mechgrid-child flex-group-center">
                 {{#each leftArmHardPoints.titanicRanged}}
                 {{#if this}}
 
                 <div class="ranged-weapon ranged filled-slot">
+                    <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
+                        {{#select this.data.data.state.value}}
+
+                        {{#each data.FORTYK.itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{this.name}}</span>
                     {{#if ../isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
@@ -391,7 +409,17 @@
                 {{#if this}}
 
                 <div class="melee-weapon melee filled-slot">
+                    <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
+                        {{#select this.data.data.state.value}}
+
+                        {{#each data.FORTYK.itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{this.name}}</span>
+
                     {{#if ../isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
                     {{/if}}
@@ -407,7 +435,17 @@
                 {{#if this}}
 
                 <div class="auxiliary-weapon auxiliary filled-slot">
+                    <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
+                        {{#select this.data.data.state.value}}
+
+                        {{#each data.FORTYK.itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{this.name}}</span>
+
                     {{#if ../isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
                     {{/if}}
@@ -420,10 +458,12 @@
                 {{/if}}
                 {{/each}}
             </div>
-            <div class="torso mechgrid-child flexcol flex-group-center">
+            <div class="torso mechgrid-child flexcol">
                 {{#if data.knight.core}}
 
                 <div class="core core-color filled-slot">
+                    <input class="item-text-input core-input" type="text" data-target="data.state.value"  value="{{data.knight.core.data.data.state.value}}" data-item-id="{{data.knight.core.id}}" data-dtype="Number">
+                    
                     <span>{{data.knight.core.name}}</span>
                     {{#if isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{data.knight.core.id}}"></a>
@@ -438,6 +478,17 @@
                 {{#if data.knight.structure}}
 
                 <div class="structure structure-color filled-slot">
+
+                    <select class="state"  data-item-id="{{data.knight.structure.id}}" data-dtype="Number">
+                        {{#select data.knight.structure.data.data.state.value}}
+
+                        {{#each itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
+
                     <span>{{data.knight.structure.name}}</span>
                     {{#if isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{data.knight.structure.id}}"></a>
@@ -452,6 +503,15 @@
                 {{#if data.knight.armor}}
 
                 <div class="armor armor-color filled-slot">
+                    <select class="state"  data-item-id="{{data.knight.armor.id}}" data-dtype="Number">
+                        {{#select data.knight.armor.data.data.state.value}}
+
+                        {{#each itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{data.knight.armor.name}}</span>
                     {{#if isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{data.knight.armor.id}}"></a>
@@ -466,6 +526,15 @@
                 {{#if data.knight.forceField}}
 
                 <div class="forceField forceField-color filled-slot">
+                    <select class="state"  data-item-id="{{data.knight.forceField.id}}" data-dtype="Number">
+                        {{#select data.knight.forceField.data.data.state.value}}
+
+                        {{#each itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{data.knight.forceField.name}}</span>
                     {{#if isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{data.knight.forceField.id}}"></a>
@@ -481,6 +550,15 @@
                 {{#if this}}
 
                 <div class="auxiliary-weapon auxiliary filled-slot">
+                    <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
+                        {{#select this.data.data.state.value}}
+
+                        {{#each data.FORTYK.itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{this.name}}</span>
                     {{#if ../isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
@@ -496,6 +574,15 @@
                 {{#if data.knight.throneMod}}
 
                 <div class="throne-mod throne-mod-color filled-slot">
+                    <select class="state"  data-item-id="{{data.throneMod.armor.id}}" data-dtype="Number">
+                        {{#select data.knight.throneMod.data.data.state.value}}
+
+                        {{#each itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{data.knight.throneMod.name}}</span>
                     {{#if isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{data.knight.throneMod.id}}"></a>
@@ -510,6 +597,15 @@
                 {{#if data.knight.sensor}}
 
                 <div class="sensor sensor-color filled-slot">
+                    <select class="state"  data-item-id="{{data.knight.sensor.id}}" data-dtype="Number">
+                        {{#select data.knight.sensor.data.data.state.value}}
+
+                        {{#each itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{data.knight.sensor.name}}</span>
                     {{#if isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{data.knight.sensor.id}}"></a>
@@ -524,6 +620,15 @@
                 {{#if data.knight.plating}}
 
                 <div class="plating plating-color filled-slot">
+                    <select class="state"  data-item-id="{{data.knight.plating.id}}" data-dtype="Number">
+                        {{#select data.knight.plating.data.data.state.value}}
+
+                        {{#each itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{data.knight.plating.name}}</span>
                     {{#if isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{data.knight.plating.id}}"></a>
@@ -538,6 +643,15 @@
                 {{#if data.knight.coreMod}}
 
                 <div class="core-mod core-mod-color filled-slot">
+                    <select class="state"  data-item-id="{{data.knight.coreMod.id}}" data-dtype="Number">
+                        {{#select data.knight.coreMod.data.data.state.value}}
+
+                        {{#each itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{data.knight.coreMod.name}}</span>
                     {{#if isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{data.knight.coreMod.id}}"></a>
@@ -552,6 +666,15 @@
                 {{#if data.knight.armActuator}}
 
                 <div class="arm-actuator arm-actuator-color filled-slot">
+                    <select class="state"  data-item-id="{{data.knight.armActuator.id}}" data-dtype="Number">
+                        {{#select data.knight.armActuator.data.data.state.value}}
+
+                        {{#each itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{data.knight.armActuator.name}}</span>
                     {{#if isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{data.knight.armActuator.id}}"></a>
@@ -566,6 +689,15 @@
                 {{#if data.knight.legActuator}}
 
                 <div class="leg-actuator leg-actuator-color filled-slot">
+                    <select class="state"  data-item-id="{{data.knight.legActuator.id}}" data-dtype="Number">
+                        {{#select data.knight.legActuator.data.data.state.value}}
+
+                        {{#each itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{data.knight.legActuator.name}}</span>
                     {{#if isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{data.knight.legActuator.id}}"></a>
@@ -579,11 +711,20 @@
                 {{/if}}
 
             </div>
-            <div class="right-weapon mechgrid-child flex-group-center">
+            <div class="right-weapon mechgrid-child">
                 {{#each rightArmHardPoints.titanicRanged}}
                 {{#if this}}
 
                 <div class="ranged-weapon ranged filled-slot">
+                    <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
+                        {{#select this.data.data.state.value}}
+
+                        {{#each data.FORTYK.itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{this.name}}</span>
                     {{#if ../isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
@@ -600,6 +741,15 @@
                 {{#if this}}
 
                 <div class="melee-weapon melee filled-slot">
+                    <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
+                        {{#select this.data.data.state.value}}
+
+                        {{#each data.FORTYK.itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{this.name}}</span>
                     {{#if ../isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
@@ -616,6 +766,15 @@
                 {{#if this}}
 
                 <div class="auxiliary-weapon auxiliary filled-slot">
+                    <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
+                        {{#select this.data.data.state.value}}
+
+                        {{#each data.FORTYK.itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{this.name}}</span>
                     {{#if ../isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
@@ -629,7 +788,7 @@
                 {{/if}}
                 {{/each}}
             </div>
-            <div class="info3 mechgrid-child flexcol">
+            <div class="info3 mechgrid-child">
                 <div class="flexrow flex-group-center">
                     <span>Front Armor: </span><input type="text" class="combat-resources" data-target="data.facings.front.armor" value="{{data.facings.front.armor}}" data-dtype="Number"/><span>/50</span>
                 </div>
@@ -649,13 +808,22 @@
                     <span>Armor Weight: {{data.knight.tonnage.armor}}</span>
                 </div>
             </div>
-            <div class="info4 mechgrid-child">
+            <div class="info4 mechgrid-child flexcol">
                 {{#each data.knight.instancedComponents}}
 
 
                 {{#if this}}
 
                 <div class="other-component other-component-color filled-slot">
+                    <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
+                        {{#select this.data.data.state.value}}
+
+                        {{#each data.FORTYK.itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
                     <span>{{this.name}}</span>
                     {{#if ../isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>

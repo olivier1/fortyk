@@ -167,6 +167,7 @@ FORTYK.talentCosts=[[600,900,1200],
 FORTYK.psykerTypes={"bound":{"push":2,"sustain":"+10 to Phenomena rolls, -1 to PR per power after the first","perils":0},"unbound":{"push":4,"sustain":"+10 to all rolls on Table 6–2: Psychic Phenomena (see page 196), decrease psy rating by 1 per power.","perils":5}, "daemon":{"push":3, "sustain":"+10 to all rolls on Table 6–2: Psychic Phenomena (see page 196), decrease psy rating by 1 per power. He is not affected by the result unless the result causes Perils of the Warp, though those around him might be.","perils":10},
                     "navigator":{"push":-1,"sustain":"N/A","perils":-1}}
 FORTYK.navigatorPowerTraining=["Novice","Adept","Master"]
+FORTYK.itemStates=["O","D","X"]
 FORTYK.armorFlags={
     "explosive": {
         "value": false,
@@ -236,6 +237,12 @@ FORTYK.weaponFlags={
         "value":false,
         "label":"Bulwark",
         "description":"Shields with this trait extend their AP to all hit locations except the head when the wearer is prone."
+    },
+    "brutalcharge": {
+        "value":false,
+        "num": 0,
+        "label":"Brutal Charge",
+        "description":"Melee weapons with this quality deal X extra damage on a charge attack."
     },
     "concussive": {
         "value": false,
@@ -423,6 +430,11 @@ FORTYK.weaponFlags={
         "label": "Scatter",
         "description": "Scatter weapons are more deadly in shorter ranges. When firing at point blank range a scatter weapon scores an extra hit for every degree of success, when firing at short range the weapon scores an extra hit for every two degrees of success. Firing at any range greater than short range causes the armor of the opponent to count as double. Scatter weapons ignore hit penalties due to size."
     },
+    "shatterresistant": {
+        "value": false,
+        "label": "Shatter Resistant",
+        "description": "Shatter resistant weapons do not get destroyed by weapons with the power field quality."
+    },
     "shieldbreaker": {
         "value": false,
         "label": "Shieldbreaker",
@@ -442,6 +454,11 @@ FORTYK.weaponFlags={
         "value": false,
         "label": "Shredding",
         "description": "Double the weapon's d10s and drop the lowest half."
+    },
+    "skyfire": {
+        "value": false,
+        "label": "Skyfire",
+        "description": "Skyfire weapons ignore penalties to hit targets with the supersonic trait, but they suffer a -20 penalty to hit targets without the trait."
     },
     "smoke": {
         "value": false,
@@ -474,11 +491,22 @@ FORTYK.weaponFlags={
         "value": false,
         "label": "Tainted",
         "description": "Permeated with the power of the Warp, these weapons draw out the inner darkness of their wielders. Weapons with this quality inflict additional damage equal to the value of the user’s Corruption bonus or Daemonic (X) trait value (whichever is higher)."
+    }, 
+    "taxing": {
+        "value": false,
+        "num": 0,
+        "label": "Taxing",
+        "description": "Taxing weapons generate an amount of heat equal to X when fired."
     },
     "tearing": {
         "value": false,
         "label": "Tearing",
         "description": "These weapons call on spinning chainblades, serrated claws, burrowing projectiles, and other vicious means to rip apart targets. These weapons roll one extra die for damage, and the lowest result is discarded."
+    },
+    "thermal": {
+        "value": false,
+        "label": "Thermal",
+        "description": "These weapons cause vehicles hit by them to build up internal heat. Superheavy vehicles gain 1 heat, normal vehicles are set ablaze."
     },
     "toxic": {
         "value": false,

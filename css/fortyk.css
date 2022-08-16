@@ -918,6 +918,7 @@
     background-size:cover;
     background-position-y: center;
     background-position-x: center;
+    height:inherit;
 }
 .mechbay-grid-section{
     display:flex;
@@ -931,6 +932,7 @@
     display:grid;
     grid-template-columns: 33% auto 33%;
     grid-template-rows: 15% auto 70%;
+    height:-webkit-fill-available;
 }
 .info1{
     grid-column:1;
@@ -950,6 +952,9 @@
     overflow:scroll;
 }
 .mechbay-component{
+}
+.core-input{
+    width:10px !important;
 }
 .carapace{
     grid-column:2;
@@ -976,8 +981,11 @@
 .filled-slot{
     border: outset; 
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     min-width: -webkit-fill-available;
+}
+.state{
+    height:fit-content;
 }
 .artillery{
     background-color: #a9a9a996; 
@@ -1030,10 +1038,10 @@
     border: dotted;
 }
 .sheet-content-knight{
-    height:84%;
+    height:78%;
     overflow: scroll;
 }
 .header-knight{
-    height:16%;
+    height:22%;
 }
 [hidden] { display: none !important; }

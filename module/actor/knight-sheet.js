@@ -10,7 +10,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/knight-sheet.html",
             width: 980,
-            height: 660,
+            height: 700,
             tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "mechbay" }],
             default:null,
             scrollY: [
@@ -29,6 +29,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         data.dtypes = ["String", "Number", "Boolean"];
         data.houses=Array.from(game.actors.values()).filter(actor=>actor.isOwner&&actor.type==="knightHouse");
         data.pilots=Array.from(game.actors.values()).filter(actor=>actor.isOwner&&actor.type==="dhPC");
+        data.itemStates=game.fortyk.FORTYK.itemStates;
         if(data.mechtab===undefined){
             data.mechtab="all";
         }
@@ -215,6 +216,8 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         html.find('.stomp').click(this._onStomp.bind(this));
         html.find('.houseSelect').change(this._onHouseChange.bind(this));
         html.find('.pilotSelect').change(this._onPilotChange.bind(this));
+        html.find('.knight-overheat').click(this._onKnightOverheat.bind(this));
+        html.find('.state').change(this._onComponentStateChange.bind(this));
         //handles changing ammo type
         html.find('.weapon-ammo').change(this._onAmmoChange.bind(this));
         //handles reloading a ranged weapon
@@ -303,7 +306,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             let newComUpdate={};
             if(newComponent[0].type==="rangedWeapon"||newComponent[0].type==="meleeWeapon"){
                 let facing=event.target.dataset["facing"];
-
+                console.log(facing);
                 newComUpdate["data.facing.value"]=facing;
                 if(path.indexOf("Arm")!==-1&&path.indexOf("auxiliary")!==-1){
                     newComUpdate["data.space.value"]=0;
@@ -479,7 +482,18 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         return false;
     }
 
+    async _onComponentStateChange(event){
+        event.preventDefault;
+        const data=this.actor.data.data;
+        let dataset=event.currentTarget.dataset;
 
+        let actor=this.actor;
+        let componentID=dataset["itemId"];
+        let state=event.currentTarget.value;
+        let component=actor.items.get(componentID);
+        console.log(component);
+        await component.update({"data.state.value":state});
+    }
     _onMechbayTabClick(event){
         let tab=event.currentTarget;
         let tabClasses=tab.classList;
@@ -566,17 +580,19 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
                             let chassisDoc=await chassisPack.getDocument(selectedId);
-                            
+
 
 
                             let createdChassis=await actor.createEmbeddedDocuments("Item",[chassisDoc.data]);
-                         
+
                             let id=createdChassis[0].id;
                             let update={};
                             update["data.knight.chassis"]=id;
                             update["data.secChar.wounds.value"]=createdChassis[0].data.data.structuralIntegrity.value;
                             update["data.secChar.size.value"]=8;
                             update["data.manoeuvrability.value"]=createdChassis[0].data.data.manoeuvrability.value;
+                            update["token.actorLink"]=true;
+                            update["token.vision"]=true;
                             actor.update(update);
                             this.render(true);
                         }
@@ -609,7 +625,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let selectedId= $(html).find('input:checked').val();
 
 
-                         
+
 
                             let spiritDoc=await spiritPack.getDocument(selectedId);
 
@@ -684,7 +700,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
                             let component=await house.getEmbeddedDocument("Item",item.data.data.originalId);
                             let chassis=await actor.getEmbeddedDocument("Item",data.knight.chassis);
-                           
+
                             let amtTaken=component.data.data.amount.taken;
                             let newAmt=amtTaken-1;
 
@@ -692,13 +708,22 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
 
+                            let componentUpdate={};
+                            console.log(item)
+                            if(item.data.data.state.value==="X"||item.data.data.state.value===0){
+                                let amt=parseInt(component.data.data.amount.value);
+                                console.log(amt)
+                                componentUpdate["data.amount.value"]=amt-1;
+                            }
+                            componentUpdate["data.amount.taken"]=newAmt;
 
                             let array=objectByString(chassis.data,path);
                             array[index]="";
 
                             let chassisUpdate={};
                             chassisUpdate[path]=array;
-                            component.update({"data.amount.taken":newAmt});
+
+                            component.update(componentUpdate);
                             chassis.update(chassisUpdate);
 
                             await actor.deleteEmbeddedDocuments("Item",[itemId]);
@@ -740,14 +765,19 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let newAmt=amtTaken-1;
 
 
+                            let componentUpdate={};
 
-
+                            if(item.data.data.state.value==="X"||item.data.data.state.value===0){
+                                let amt=parseInt(component.data.data.amount.value);
+                                componentUpdate["data.amount.value"]=amt-1;
+                            }
+                            componentUpdate["data.amount.taken"]=newAmt;
 
 
 
                             let update={};
                             update[path]="";
-                            component.update({"data.amount.taken":newAmt});
+                            component.update(componentUpdate);
                             this.actor.update(update);
 
                             await actor.deleteEmbeddedDocuments("Item",[itemId]);
@@ -791,6 +821,13 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
                             let array=objectByString(this.actor.data,path);
                             array.splice(index,1);
+                            let componentUpdate={};
+
+                            if(item.data.data.state.value==="X"||item.data.data.state.value===0){
+                                let amt=parseInt(component.data.data.amount.value);
+                                componentUpdate["data.amount.value"]=amt-1;
+                            }
+                            componentUpdate["data.amount.taken"]=newAmt;
 
 
 
@@ -798,7 +835,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
                             let update={};
                             update[path]=array;
-                            component.update({"data.amount.taken":newAmt});
+                            component.update(componentUpdate);
                             this.actor.update(update);
 
                             await actor.deleteEmbeddedDocuments("Item",[itemId]);
@@ -970,41 +1007,99 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             width:100}).render(true)
                                          });
     }
+    async _onKnightOverheat(event){
+        let actor=this.actor;
+        let data=this.actor.data.data;
+        let heatCap=parseInt(data.knight.heat.max);
+        let heat=parseInt(data.knight.heat.value);
+        let overheat=heat-heatCap;
+        let roll=new Roll(`${overheat}d10kl`,{});
+        await roll.evaluate();
+        let result=roll.total;
+        await roll.toMessage({
+            speaker: ChatMessage.getSpeaker({ actor: actor }),
+            flavor: "Rolling Overheat test"
+        });
+        let ones=0;
+        try{
+            for ( let r of roll.dice[0].results ) {
 
-async _updateHouse(){
-    let data=this.actor.data.data;
-    let house=await game.actors.get(data.knight.house);
-    if(house){
-        let actors=[];
-        actors.push(data.knight.house);
-        actors=actors.concat(house.data.data.knights);
-        let socketOp={type:"renderSheets",package:{actors:actors}}
-        await game.socket.emit("system.fortyk",socketOp);
+                if(r.active){
+                    if(r.result===1){
+                        ones++;
+                    }
+                }
+            } 
+        }catch(err){
+        }
+        let core=data.knight.core;
+        let coreIntegrity=parseInt(core.data.data.state.value)-1;
+        await core.update({"data.state.value":coreIntegrity});
+        let overheatResult="";
+        let overheatFlavor=""
+        if(coreIntegrity===0){
+            overheatResult="The knight’s core goes critical, the knight suffers a core meltdown at the end of your next turn.";
+            overheatFlavor="Irreversible Core Meltdown";
+        }else if(ones>1){
+            overheatResult="The knight’s core goes critical, the knight suffers a core meltdown at the end of your next turn.";
+            overheatFlavor="Irreversible Core Meltdown";
+        }else if(result>=7){
+            overheatResult="The knight shuts down and is considered helpless until restarted. This is a +0 Operate: Titanic Walker test which takes a full action.";
+            overheatFlavor="Emergency Shutdown";
+        }else if(result>=2){
+            overheatResult="The knight takes 4d10 damage until the core overload is cleared.";
+            overheatFlavor="Core Overload";
+        }else if(result===1){
+            overheatResult="Roll a +0 tech-use test, on a success your knight is stunned for 1d5 rounds, on a failure the knight suffers a core meltdown in 1d5 rounds(rolled by the GM). You may retry the tech-use test each round.";
+            overheatFlavor="Core Meltdown";
+        }
+        let chatOverheat={user: game.users.current,
+                          speaker:{user: game.users.current},
+                          content:overheatResult,
+                          classes:["fortyk"],
+                          flavor:overheatFlavor,
+                          author:game.users.current
+                         }
+
+        await ChatMessage.create(chatOverheat,{});
+        this.actor.update({"data.knight.heat.value":0});
+
 
     }
-}
-getValidAmmo(weapon){
-    let ammos=this.actor.itemTypes.ammunition;
-    let validAmmos=[];
-    let wpnClass=weapon.data.data.class.value;
-    let wpnType=weapon.data.data.type.value;
-    for(let i=0;i<ammos.length;i++){
-        let ammo=ammos[i];
-        let ammoClass=ammo.data.data.class.value;
-        let ammoType=ammo.data.data.type.value;
-
-        if(ammoClass===wpnClass&&ammoType===wpnType){
-            if(!ammo.data.data.isEquipped){
-                validAmmos.push(ammo);
-            }else if(ammo.data.data.isEquipped===weapon.id){
-                validAmmos.push(ammo);
-            }
+    async _updateHouse(){
+        let data=this.actor.data.data;
+        let house=await game.actors.get(data.knight.house);
+        if(house){
+            let actors=[];
+            actors.push(data.knight.house);
+            actors=actors.concat(house.data.data.knights);
+            let socketOp={type:"renderSheets",package:{actors:actors}}
+            await game.socket.emit("system.fortyk",socketOp);
 
         }
     }
-    return validAmmos;
-}
-/* async _render(force, options){
+    getValidAmmo(weapon){
+        let ammos=this.actor.itemTypes.ammunition;
+        let validAmmos=[];
+        let wpnClass=weapon.data.data.class.value;
+        let wpnType=weapon.data.data.type.value;
+        for(let i=0;i<ammos.length;i++){
+            let ammo=ammos[i];
+            let ammoClass=ammo.data.data.class.value;
+            let ammoType=ammo.data.data.type.value;
+
+            if(ammoClass===wpnClass&&ammoType===wpnType){
+                if(!ammo.data.data.isEquipped){
+                    validAmmos.push(ammo);
+                }else if(ammo.data.data.isEquipped===weapon.id){
+                    validAmmos.push(ammo);
+                }
+
+            }
+        }
+        return validAmmos;
+    }
+    /* async _render(force, options){
 
         console.log(this)
         if(this.mechtab){

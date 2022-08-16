@@ -74,6 +74,7 @@
     <section class="sheet-content">
 
         <div class="sub-sheet grid grid-2col">
+
             <div class="flexcol vehicle-categories no-flex">
                 <span class="section-title">Weapons</span>
                 <div class="flexrow no-flex">
@@ -263,6 +264,25 @@
                 </div>
             </div>
             <div class="flexcol vehicle-categories margin-left">
+                {{#if flags.fortyk.superheavy}}
+                <div class="descrRow flexcol">
+                    {{#if (greaterThan data.knight.heat.value data.knight.heat.cap)}}
+                    <span class="knight-overheat button">Overheat</span>
+                    {{else}}
+
+                    <label for="data.secChar.wounds.value" class="resource-label">Heat</label>
+
+                    {{/if}}
+                    
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" class="combat-resources" data-target="data.knight.heat.value" value="{{data.knight.heat.value}}" data-dtype="Number"/>
+                        <span>/</span>
+                        <input type="text" class="combat-resources" data-target="data.knight.heat.max" value="{{data.knight.heat.max}}" data-dtype="Number" />
+
+                    </div>
+
+                </div>
+                {{/if}}
                 <div class="flexcol no-flex">
                     <span class="section-title">Crew</span>
                     <input type="text" class="combat-resources" data-target="data.crew.value" value="{{data.crew.value}}" data-dtype="String"/>
@@ -434,7 +454,7 @@
 
 
 
-       
+
 
 
 
