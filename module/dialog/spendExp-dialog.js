@@ -422,7 +422,7 @@ export class SpendExpDialog extends Application {
         let splitAptitudes=aptitudes.toLowerCase().replace(/\s/g, '').split(",");
         let actorAptitudes=this.options.actor.data.data.aptitudes;
         let matchingAptitudes=0;
-        if(splitAptitudes.includes("general")){matchingAptitudes+=1;}
+        splitAptitudes.forEach(apt=> (apt==="general") ? matchingAptitudes+=1 :"");
         for(const apt in actorAptitudes){
 
             let apti=actorAptitudes[apt];
