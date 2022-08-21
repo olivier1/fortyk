@@ -362,6 +362,11 @@ FORTYK.weaponFlags={
         "mode":0,
         "description": "The standard las weapon has a variable setting option, allowing it to fire higher-powered bursts. It may be set to overcharge mode, dealing +1 damage, but using two shots worth of ammunition per shot fired. Further, the weapon may be set to overload mode, dealing +2 damage and gaining +2 penetration. In this case, it uses four shots of ammunition per shot fired, loses Reliable, and gains Unreliable."
     },
+     "mastercrafted": {
+        "value": false,
+        "label": "Master Crafted",
+        "description": "Weapons with this quality have been made by a legendary artisan ensuring their deadliness. Weapons with this quality reroll 1s when rolling for damage. Only best quality weapons may have this quality."
+    },
     "maximal": {
         "value": false,
         "maximal": false,

@@ -484,13 +484,14 @@ export class FortyKActor extends Actor {
                 if(proceed){
                     ae.data.changes.forEach(function(change,i){
                         let basevalue=parseInt(objectByString(actorData,change.key));
+                      
                         let newvalue=parseFloat(change.value);
                         let path=change.key.split(".");
-                        if(newvalue>=0){
+                        /*if(newvalue>=0){
                             newvalue=Math.ceil(newvalue);
                         }else{
                             newvalue=Math.floor(newvalue);
-                        }
+                        }*/
                         if((!isNaN(basevalue)&&!isNaN(newvalue))){
                             let changedValue=0;
                             if(change.mode===1){
@@ -509,11 +510,13 @@ export class FortyKActor extends Actor {
                                     changedValue=newvalue;
                                     setNestedKey(actorData,path,changedValue);
                                 }
-                            }
-                        }else{
-                            if(change.mode===5){
+                            }else if(change.mode===5){
                                 setNestedKey(actorData,path,newvalue);
                             }else if(change.mode===0){
+                                setNestedKey(actorData,path,change.value);
+                            }
+                        }else{
+                            if(change.mode===0){
                                 setNestedKey(actorData,path,change.value);
                             }
                         }
@@ -760,6 +763,9 @@ export class FortyKActor extends Actor {
                 data.knight.space.value+=parseFloat(data.knight.core.data.data.space.value);
                 data.knight.tonnage.value+=parseFloat(data.knight.core.data.data.weight.value);
                 data.secChar.speed.tactical+=parseInt(data.knight.core.data.data.speed.value);
+                console.log(data.secChar.speed.multi);
+                data.secChar.speed.tactical+=data.secChar.speed.mod;
+                data.secChar.speed.tactical=data.secChar.speed.tactical*parseFloat(data.secChar.speed.multi);
                 data.secChar.speed.cruising=Math.ceil(data.secChar.speed.tactical*1.2);
             }
             if(knight.armor){

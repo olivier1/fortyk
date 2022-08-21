@@ -17,7 +17,8 @@ export class FortykRolls{
 @Weapon: the weapon is needed for attack rolls, this is where psy powers are put also
 @reroll: if the roll is a reroll or not
 returns the roll message*/
-    static async fortykTest(char, type, target, actor, label, fortykWeapon=null, reroll=false, fireRate="",delayMsg=false){
+    static async fortykTest(char, type, target, actor, label, fortykWeapon=null, reroll=false, fireRate="",delayMsg=false, modifiers=null){
+        console.log(modifiers);
         //cap target at 100 or floor at 1
         if(target>100){
             target=100;
@@ -45,7 +46,9 @@ returns the roll message*/
             success:false,
             reroll:reroll,
             weapon:weaponid,
-            fireRate:fireRate
+            fireRate:fireRate,
+            modifiers:modifiers,
+            id:randomID(5)
         }
         if(!reroll){
             templateOptions["actor"]=actor.id;
@@ -701,7 +704,20 @@ returns the roll message*/
                 form=startstr+"dl1"+endstr; 
             }
         }
-        //change formula for tearing weapons 
+        //change formula for master crafted weapons 
+        if(fortykWeapon.getFlag("fortyk","mastercrafted")){
+            let dPos = form.indexOf('d10');
+           
+           
+            
+            let afterD=dPos+3;
+            let startstr=form.slice(0,afterD);
+            let endstr=form.slice(afterD);
+            
+                form=startstr+"r1"+endstr; 
+            
+        }
+        //change formula for shredding weapons 
         if(fortykWeapon.getFlag("fortyk","shredding")){
             let dPos = form.indexOf('d');
             let dieNum = form.substr(0,dPos);
@@ -721,9 +737,9 @@ returns the roll message*/
             let startstr=form.slice(0,afterD);
             let endstr=form.slice(afterD);
             if(fortykWeapon.getFlag("fortyk","primitive")){
-                form=`{`+startstr+`,${dieNum*fortykWeapon.getFlag("fortyk","primitive")}}kl1`+endstr; 
+                form=startstr+`max${fortykWeapon.getFlag("fortyk","primitive")}`+endstr; 
             }else if(fortykWeapon.getFlag("fortyk","proven")){
-                form=`{`+startstr+`,${dieNum*fortykWeapon.getFlag("fortyk","proven")}}kh1`+endstr; 
+                form=startstr+`min${fortykWeapon.getFlag("fortyk","proven")}`+endstr; 
             }
         }
         //change formula for cleanse with fire for flame weapons
@@ -756,6 +772,7 @@ returns the roll message*/
             }
             //spray and blast weapons always hit the body hit location
             if(fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","spray")){
+
                 curHit={value:"body",label:"Body"}
             }
             //formations and hordes always get hit in the body
@@ -767,6 +784,12 @@ returns the roll message*/
                     if(targetData.horde.value||targetData.formation.value){
                         curHit.value="body";
                         curHit.label="Body";
+                    }
+                }else{
+                    //if a vehicle blast and spray weapons hit the hull
+                    if(fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","spray")){
+
+                        curHit={value:"hull",label:"Hull"}
                     }
                 }
             }
@@ -870,6 +893,7 @@ returns the roll message*/
                             vehicle:vehicle
                         }
                         if(vehicle){
+                            var targetWpn=null;
                             //check if hitting a weapon, weapons count as the same facing as the facing they are mounted on
                             if(curHit.value==="weapon"){
                                 let facingWeapons=[]
@@ -884,13 +908,12 @@ returns the roll message*/
                                 }else if(facing.path==="rSide"){
                                     facingWeapons=data.rightSideWeapons;
                                 }
-                                console.log(facingWeapons)
                                 //if there are weapons proceed to randomly select one, if not proceed with normal armor facing
                                 if(facingWeapons.length>0){
                                     let wpnnmbr=facingWeapons.length;
                                     let wpnRoll=new Roll(`1d${wpnnmbr}-1`,{});
                                     await wpnRoll.roll();
-                                    let targetWpn=facingWeapons[wpnRoll._total];
+                                    targetWpn=facingWeapons[wpnRoll._total];
                                     newFacingString=targetWpn.name;
                                     if(targetWpn.data.mounting.value==="turret"){
                                         facing=data.facings["front"];
@@ -944,9 +967,10 @@ returns the roll message*/
                         let tens=0;
                         let dieResults=[];
                         let discards=[];
+                        console.log(roll);
                         try{
                             for ( let r of roll.dice[0].results ) {
-                                if(r.discarded){
+                                if(!r.active){
                                     discards.push(true);
                                 }else{
                                     discards.push(false);
@@ -1187,7 +1211,7 @@ returns the roll message*/
                             let corrosiveAmt=new Roll("1d10",{});
                             await corrosiveAmt.roll();
                             let id=randomID(5);
-                            damageOptions.results.push(`<label class="popup" data-id="${id}"> Corrosive Weapon armor damage: ${corrosiveAmt._total}. <span class="popuptext chat-background" id="${id}">Excess corrosion is transferred to damage.</span</label> `);
+                            damageOptions.results.push(`<label class="popup" data-id="${id}"> Corrosive Weapon armor damage: ${corrosiveAmt._total}. <span class="popuptext chat-background" id="${id}">Excess corrosion is transferred to damage.</span></label> `);
                             let corrosiveDamage=0;
                             let newArmor=Math.max(0,(armor-corrosiveAmt._total));
                             corrosiveDamage=Math.abs(Math.min(0,(armor-corrosiveAmt._total)));
@@ -1387,7 +1411,7 @@ returns the roll message*/
                                 let fireActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fire")]);
                                 activeEffects.push(fireActiveEffect);
                                 let id=randomID(5);
-                                damageOptions.results.push(`Catches fire!`);
+                                damageOptions.results.push(`Catches fire from thermal weapon!`);
                             }
 
                             damageOptions.results.push(`</div>`) 
@@ -1584,8 +1608,26 @@ returns the roll message*/
                         for(let i=0;i<messages.length;i++){
                             await ChatMessage.create(messages[i],[]);
                         }
+                        let superheavyOptions={};
+                        if(tarActor.getFlag("fortyk","superheavy")){
+                            superheavyOptions.targetWeapon=targetWpn;
+                            superheavyOptions.facing=facing;
+                            superheavyOptions.threshold=0;
+                            let thresholds=data.secChar.wounds.thresholds;
+                            if(curWounds>thresholds["1"]){
+                                superheavyOptions.threshold=1;
+                            }else if(curWounds>thresholds["2"]){
+                                superheavyOptions.threshold=2;
+                            }else if(curWounds>thresholds["3"]){
+                                superheavyOptions.threshold=3;
+                            }else if(curWounds>thresholds["4"]){
+                                superheavyOptions.threshold=4;
+                            }else{
+                                superheavyOptions.threshold=5;
+                            }
+                        }
                         //check for righteous fury
-                        let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar,ignoreSON,activeEffects);
+                        let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar,ignoreSON,activeEffects,superheavyOptions);
                         //if righteous fury ensure attack deals atleast 1 dmg
                         if(tens&&damage<=0){
                             damage=1;
@@ -1751,7 +1793,7 @@ returns the roll message*/
         }
     }
     //handles righteous fury
-    static async _righteousFury(actor,label,weapon,curHit,tens, damage=1, tar=null, ignoreSON=false,activeEffects=null){
+    static async _righteousFury(actor,label,weapon,curHit,tens, damage=1, tar=null, ignoreSON=false,activeEffects=null,superHeavyOptions={}){
         var crit=false;
         if(tens>0){
             crit=true;
@@ -1778,7 +1820,7 @@ returns the roll message*/
             let res=rightRoll._total;
             if(tar!==null){
                 if(tar.actor.getFlag("fortyk","superheavy")){
-                    await this.superHeavyRightEffects(tar,res,curHit.value,weapon.data.damageType.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`);
+                    await this.superHeavyRightEffects(tar,res,curHit.value,weapon.data.damageType.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`,superHeavyOptions);
                 }else{
                     await this.critEffects(tar,res,curHit.value,weapon.data.damageType.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`);
                 }
@@ -1805,6 +1847,7 @@ returns the roll message*/
         let rightMes
         //check for vehicle, vehicle have different crit effects
         if(threshold){
+            console.log(hitLoc)
             rightMes=FORTYKTABLES.thresholdCrits[hitLoc][mesRes];
         }else if(vehicle){
             rightMes=FORTYKTABLES.vehicleCrits[hitLoc][mesRes-1];
@@ -1855,54 +1898,131 @@ returns the roll message*/
                          author:actor.name}
         await ChatMessage.create(chatOptions,{});
     }
-    static async superHeavyRightEffects(token,num,hitLoc,type,ignoreSON,activeEffects=null,source=""){
+    static async superHeavyRightEffects(token,num,hitLoc,type,ignoreSON,activeEffects=null,source="",options={}){
 
         let actor=token.actor;
         let rightMes="";
-        switch(hitLoc){
-            case "hull":
-                let components=[];
-                components=components.concat(actor.itemTypes.ammunition,actor.itemTypes.forceField,actor.itemTypes.knightComponent,actor.itemTypes.knightCore);
-                components=components.filter(component=>(component.data.data.state!=="X")&&(component.data.data.state!==0));
-                let size=components.length;
-                
-                let compRoll=new Roll(`1d${size}-1`,{});
+        let facing=options.facing;
+        let weapon=options.targetWeapon;
+        let weaponData;
+        let weaponUpdate
+        let threshold=options.threshold;
+        if(threshold===1){
+            rightMes=`Righteous fury reduces ${facing.label} armor by 1!`
+            let armor=facing.armor;
+            armor--;
+            let update={};
+            update[`data.facings.${facing.path}.armor`]=armor;
+            await actor.update(update);
+        }else if(threshold===2){
+            let armorRoll=new Roll(`1d5`,{});
 
-                await compRoll.roll();
-                let component=components[compRoll._total];
-                let compData=component.data.data;
-                let compUpdate={};
-                console.log(component)
-                if(component.type==="ammunition"){
-                    compUpdate["data.state.value"]="X";
-                    rightMes=`${component.name} explodes dealing weapon damage!`;
-                }else if(compData.state.value==="O"||compData.state.value===""){
-                    compUpdate["data.state.value"]="D";
-                    rightMes=`${component.name} is damaged.`;
-                }else if(compData.state.value==="D"){
-                    compUpdate["data.state.value"]="X";
-                    rightMes=`${component.name} is destroyed.`;
-                }else if(!isNaN(parseInt(compData.state.value))){
-                    compUpdate["data.state.value"]=parseInt(compData.state.value)-1;
-                    if(compUpdate["data.state.value"]===0){
+            await armorRoll.roll();
+            let armorReduction=armorRoll._total;
+            rightMes=`Righteous fury reduces ${facing.label} armor by ${armorReduction}!`
+            let armor=facing.armor;
+            armor=armor-armorReduction;
+            let update={};
+            update[`data.facings.${facing.path}.armor`]=armor;
+            await actor.update(update);
+        }else if(threshold>=3){
+            switch(hitLoc){
+                case "hull":
+                    let components=[];
+                    components=components.concat(actor.itemTypes.ammunition,actor.itemTypes.forceField,actor.itemTypes.knightComponent,actor.itemTypes.knightCore);
+                    components=components.filter(component=>(component.data.data.state!=="X")&&(component.data.data.state!==0));
+                    let size=components.length;
+
+                    let compRoll=new Roll(`1d${size}-1`,{});
+
+                    await compRoll.roll();
+                    let component=components[compRoll._total];
+                    let compData=component.data.data;
+                    let compUpdate={};
+                    if(component.type==="ammunition"){
+                        compUpdate["data.state.value"]="X";
+                        rightMes=`${component.name} explodes dealing weapon damage!`;
+                    }else if(compData.state.value==="O"||compData.state.value===""){
+                        compUpdate["data.state.value"]="D";
+                        rightMes=`${component.name} is damaged.`;
+                    }else if(compData.state.value==="D"){
+                        compUpdate["data.state.value"]="X";
                         rightMes=`${component.name} is destroyed.`;
-                    }else{
-                        rightMes=`${component.name} is damaged.`; 
+                    }else if(!isNaN(parseInt(compData.state.value))){
+                        compUpdate["data.state.value"]=parseInt(compData.state.value)-1;
+                        if(compUpdate["data.state.value"]===0){
+                            rightMes=`${component.name} is destroyed.`;
+                        }else{
+                            rightMes=`${component.name} is damaged.`; 
+                        }
                     }
-                }
-                component.update(compUpdate);
+                    component.update(compUpdate);
 
-                break;
-            case "weapon":
-                rightMes="The weapon is damaged, an already damaged weapon is destroyed."
-                break;
-            case "motive":
-                rightMes="The motive system is impaired, reducing its tactical speed by [[1d10]], if already impaired it becomes crippled reducing its speed by half, if already crippled the motive system is destroyed, immobilizing the vehicle."
-                break;
-            case "turret":
-                rightMes="The weapon is damaged, an already damaged weapon is destroyed."
-                break;
+                    break;
+                case "weapon":
+                    weapon=weapon.document;
+                    weaponData=weapon.data.data;
+                    weaponUpdate={};
+                    if(weaponData.state.value==="O"||weaponData.state.value===""){
+                        weaponUpdate["data.state.value"]="D";
+                        rightMes=`${weapon.name} is damaged.`;
+                    }else if(weaponData.state.value==="D"){
+                        weaponUpdate["data.state.value"]="X";
+                        rightMes=`${weapon.name} is destroyed.`;
+                    }
+                    weapon.update(weaponUpdate);
+
+                    break;
+                case "motive":
+                    if(activeEffects){
+                        let ae={};
+                        ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
+                        ae.label="Motive System Damage";
+                        if(actor.data.data.secChar.speed.motive==="O"){
+                            let speedRoll=new Roll(`1d10`,{});
+
+                            await speedRoll.roll();
+                            let speedReduction=speedRoll._total;
+                            ae.changes=[{key:`data.secChar.speed.mod`,value:-speedReduction,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                        {key:`data.secChar.speed.motive`,value:"I",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+
+                            rightMes=`The motive system is impaired reducing tactical speed by ${speedReduction}!`;
+                        }else if(actor.data.data.secChar.speed.motive==="I"){
+
+                            ae.changes=[{key:`data.secChar.speed.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                        {key:`data.secChar.speed.motive`,value:"C",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+
+                            rightMes=`The motive system is crippled reducing tactical speed by half!`;
+                        }else if(actor.data.data.secChar.speed.motive==="CI"){
+
+                            ae.changes=[{key:`data.secChar.speed.multi`,value:"0",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                        {key:`data.secChar.speed.motive`,value:"D",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+
+                            rightMes=`The motive system is destroyed immobilizing the vehicle!`;
+                        }else{
+                            rightMes="The motive system is already destroyed!";
+                        }
+
+                        activeEffects.push(ae);
+                    }
+
+                    break;
+                case "turret":                    
+                    weapon=weapon.document;
+                    weaponData=weapon.data.data;
+                    weaponUpdate={};
+                    if(weaponData.state.value==="O"||weaponData.state.value===""){
+                        weaponUpdate["data.state.value"]="D";
+                        rightMes=`${weapon.name} is damaged.`;
+                    }else if(weaponData.state.value==="D"){
+                        weaponUpdate["data.state.value"]="X";
+                        rightMes=`${weapon.name} is destroyed.`;
+                    }
+                    weapon.update(weaponUpdate);
+                    break;
+            }
         }
+
         //report crit effect
         let chatOptions={user: game.user._id,
                          speaker:{actor,alias:actor.name},
@@ -3852,11 +3972,21 @@ returns the roll message*/
                                 for(let i=0;i<ae.data.changes.length;i++){
                                     for(let z=0;z<newAe.changes.length;z++){
                                         if((ae.data.changes[i].key===newAe.changes[z].key)&&ae.data.changes[i].mode===newAe.changes[z].mode){
-                                            if(!isNaN(parseInt(newAe.changes[z].value))){
-                                                newAe.changes[z].value=parseInt(newAe.changes[z].value)+parseInt(ae.data.changes[i].value);
+
+                                            if(ae.data.changes[i].mode===5){
+
                                             }else{
-                                                newAe.changes[z].value+=ae.data.changes[i].value;
+                                                if(!isNaN(parseInt(newAe.changes[z].value))){
+
+                                                    newAe.changes[z].value=parseInt(newAe.changes[z].value)+parseInt(ae.data.changes[i].value);
+                                                }else{
+
+                                                    newAe.changes[z].value+=ae.data.changes[i].value;
+                                                }
                                             }
+
+
+
                                             upg=true;
                                         } 
                                     }
@@ -3886,6 +4016,7 @@ returns the roll message*/
                         aEs.push(effect[index])
                     }
                 }
+                console.log(aEs)
                 await actor.createEmbeddedDocuments("ActiveEffect",aEs);
             }else{
                 //if user isnt GM use socket to have gm update the actor

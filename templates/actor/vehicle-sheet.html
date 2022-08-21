@@ -273,7 +273,7 @@
                     <label for="data.secChar.wounds.value" class="resource-label">Heat</label>
 
                     {{/if}}
-                    
+
                     <div class="resource-content flexrow flex-center flex-between">
                         <input type="text" class="combat-resources" data-target="data.knight.heat.value" value="{{data.knight.heat.value}}" data-dtype="Number"/>
                         <span>/</span>
@@ -288,8 +288,14 @@
                     <input type="text" class="combat-resources" data-target="data.crew.value" value="{{data.crew.value}}" data-dtype="String"/>
                     <span class="descrSpan">Carrying Capacity:</span>
                     <input type="text" class="combat-resources" data-target="data.crew.capacity" value="{{data.crew.capacity}}" data-dtype="String"/>
-                    <div class="flexrow">
+                    <div class="flexcol">
+                        <div class="descrRow flexcol">
+                                <span class="char-total rollable button" data-roll-type="dodge" data-target="{{data.crew.rating}}" data-label="Jink" data-char="">Jink</span>
+
+
+                            </div>
                         <div class="descrRow flexrow">
+                            
                             <div class="flexcol">
                                 <span class="char-total rollable button" data-roll-type="char" data-target="{{data.crew.ratingTotal}}" data-label="Crew Rating" data-char="">Crew Rating:</span>
                                 <span class="descrSpan"></span>

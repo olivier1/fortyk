@@ -339,7 +339,7 @@ FORTYKTABLES.thresholdCrits={
              "<span>The weapon’s targeting is damaged, giving a -20 to tests.</span>",
              "<span>The weapon is damaged and cannot fire.</span>",
              "<span>The weapon is destroyed, its ammunition explodes, the Super heavy takes an additional [[2d10]] damage ignoring armor.</span>"],
-    "motiveSystem":["<span>The vehicle is shaken so badly, the pilot has to pass an Operate test or change the facing to a random one(roll for scatter). If the vehicle is a walker and the test fails, it falls over.</span>",
+    "motive":["<span>The vehicle is shaken so badly, the pilot has to pass an Operate test or change the facing to a random one(roll for scatter). If the vehicle is a walker and the test fails, it falls over.</span>",
                    "<span>The motive system is slightly damaged, the vehicle loses half its tactical speed on the next round.</span>",
                    "<span>The engine takes a glancing hit, the tactical speed of the vehicle is reduced by [[1d10]] until repaired.</span>",
                    "<span>The motive system is crippled, reducing tactical speed by half. In addition the pilot has to pass an Operate test or change the facing to a random one(roll for scatter). If the vehicle is a walker and the test fails, it falls over.</span>"],

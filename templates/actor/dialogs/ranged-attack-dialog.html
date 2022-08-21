@@ -71,35 +71,35 @@
             <label class="section-title">Aiming</label>
             <div class="list-item flexrow">
 
-                <input type="radio" name="aim-type" value="0" checked><label>None: +0</label>
+                <input type="radio" name="aim-type" aimtype="No" value="0" checked><label>None: +0</label>
 
             </div>
             <div class="list-item flexrow">
-                <input type="radio" name="aim-type" value="{{modifiers.aim.half}}"><label>Half Aim: +{{modifiers.aim.half}}</label>
+                <input type="radio" name="aim-type" aimtype="Half" value="{{modifiers.aim.half}}"><label>Half Aim: +{{modifiers.aim.half}}</label>
             </div>
             <div class="list-item flexrow">
-                <input type="radio" name="aim-type" value="{{modifiers.aim.full}}"><label>Full Aim: +{{modifiers.aim.full}}</label>
+                <input type="radio" name="aim-type" aimtype="Full" value="{{modifiers.aim.full}}"><label>Full Aim: +{{modifiers.aim.full}}</label>
             </div>
         </div>
         {{/unless}}
         <div class="flexcol attack-section">
             <label class="section-title">Distance</label>
             <div class="list-item flexrow">
-                <input type="radio" name="distance" value="{{modifiers.range.standard}}" {{#if options.normal}} checked{{/if}}><label>Standard: +{{modifiers.range.standard}}</label>
+                <input type="radio" name="distance" rangetype="Standard" value="{{modifiers.range.standard}}" {{#if options.normal}} checked{{/if}}><label>Standard: +{{modifiers.range.standard}}</label>
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="distance" value="{{modifiers.range.pointblank}}"{{#if options.pointblank}} checked{{/if}}><label>Point blank: +{{modifiers.range.pointblank}}</label>
+                <input type="radio" name="distance" rangetype="Point Blank" value="{{modifiers.range.pointblank}}"{{#if options.pointblank}} checked{{/if}}><label>Point blank: +{{modifiers.range.pointblank}}</label>
 
             </div>
             <div class="list-item flexrow">
-                <input type="radio" name="distance" value="{{modifiers.range.short}}" {{#if options.short}} checked{{/if}}><label>Short: +{{modifiers.range.short}}</label>
+                <input type="radio" name="distance" rangetype="Short" value="{{modifiers.range.short}}" {{#if options.short}} checked{{/if}}><label>Short: +{{modifiers.range.short}}</label>
             </div>
             <div class="list-item flexrow">
-                <input type="radio" name="distance" value="{{modifiers.range.long}}" {{#if options.long}} checked{{/if}}><label>Long: {{modifiers.range.long}}</label>
+                <input type="radio" name="distance" rangetype="Long" value="{{modifiers.range.long}}" {{#if options.long}} checked{{/if}}><label>Long: {{modifiers.range.long}}</label>
             </div>
             <div class="list-item flexrow">
-                <input type="radio" name="distance" value="{{modifiers.range.extreme}}" {{#if options.extreme}} checked{{/if}}><label>Extreme: {{modifiers.range.extreme}}</label>
+                <input type="radio" name="distance" rangetype="Extreme" value="{{modifiers.range.extreme}}" {{#if options.extreme}} checked{{/if}}><label>Extreme: {{modifiers.range.extreme}}</label>
             </div>
         </div>
     </div>
@@ -110,17 +110,17 @@
             <label class="section-title">Visibility</label>
             <div class="list-item flexrow">
 
-                <input type="radio" name="visibility" value="0" checked><label>Normal: +0</label>
+                <input type="radio" name="visibility" visibilitytype="Normal" value="0" checked><label>Normal: +0</label>
 
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="visibility" value="-10" ><label>Fog/mist/shadow/smoke: -10</label>
+                <input type="radio" name="visibility" visibilitytype="Fog/mist/shadow/smoke" value="-10" ><label>Fog/mist/shadow/smoke: -10</label>
 
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="visibility" value="-20" ><label>Darkness: -20</label>
+                <input type="radio" name="visibility" visibilitytype="Darkness" value="-20" ><label>Darkness: -20</label>
 
             </div>
 

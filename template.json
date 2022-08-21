@@ -785,7 +785,10 @@
             "secChar": {
                 "speed": {
                     "tactical": 0,
-                    "cruising": 0
+                    "cruising": 0,
+                    "motive":"O",
+                    "mod":0,
+                    "multi":1
                 },
                 "manoeuvrability": {
                     "value": 0,

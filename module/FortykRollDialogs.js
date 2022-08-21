@@ -112,9 +112,11 @@ export class FortykRollDialogs{
         let itemData=item.data;
         let template="systems/fortyk/templates/actor/dialogs/melee-attack-dialog.html"
         let templateOptions={};
+        let modifierTracker=[];
         templateOptions["modifiers"]=duplicate(actor.data.data.secChar.attacks);
         templateOptions["modifiers"].testMod=itemData.data.testMod.value;
-        templateOptions["modifiers"].testMod+=-modifiers.tarEvasion;
+        modifierTracker.push({"value":`${testTarget}`,"label":`Base Target Value`});
+        modifierTracker.push({"value":`${templateOptions["modifiers"].testMod}`,"label":`Base Modifier`});
         templateOptions["options"]={}
         templateOptions["options"].swift=actor.getFlag("fortyk","swiftattack");
         templateOptions["options"].lightning=actor.getFlag("fortyk","lightningattack");
@@ -158,13 +160,15 @@ export class FortykRollDialogs{
             let unitStr=actor.data.data.secChar.wounds.value;
             templateOptions["modifiers"].charge=Math.min((10+unitStr*5),60);
             templateOptions["modifiers"].standard=Math.min(unitStr*5,60);
+
         }
         if(actor.type!=="vehicle"&&actor.data.data.horde.value){
             let hordeSize=actor.data.data.secChar.wounds.value;
 
             if((actor.getFlag("fortyk","massAssault")&&item.type==="meleeWeapon")||(actor.getFlag("fortyk","focusedFire")&&item.type==="rangedWeapon")){
 
-                item.data.testMod.value+=Math.min(30,hordeSize);
+                templateOptions["modifiers"].testMod+=Math.min(30,hordeSize);
+                modifierTracker.push({"value":`+${Math.min(30,hordeSize)}`,"label":"Horde Trait Bonus"});
 
             }
         }
@@ -172,7 +176,10 @@ export class FortykRollDialogs{
         let target=targets.values().next().value;
         let vehicle=false;
         if(targets.size>0){
-
+            templateOptions["modifiers"].testMod+=-modifiers.tarEvasion;
+            if(modifiers.tarEvasion){
+                modifierTracker.push({"value":`${-modifiers.tarEvasion}`,"label":"Target Speed Modifier"});
+            }
             let tarActor=target.actor;
             let tarData=tarActor.data;
             if(tarActor.type==="vehicle"){
@@ -184,12 +191,16 @@ export class FortykRollDialogs{
                     let hordeSize=tarData.data.secChar.wounds.value;
                     if(hordeSize>=120){
                         templateOptions["modifiers"].testMod+=60;
+                        modifierTracker.push({"value":`60`,"label":"Horde Size Modifier"});
                     }else if(hordeSize>=90){
                         templateOptions["modifiers"].testMod+=50;
+                        modifierTracker.push({"value":`50`,"label":"Horde Size Modifier"});
                     }else if(hordeSize>=60){
                         templateOptions["modifiers"].testMod+=40;
+                        modifierTracker.push({"value":`40`,"label":"Horde Size Modifier"});
                     }else if(hordeSize>=30){
                         templateOptions["modifiers"].testMod+=30;
+                        modifierTracker.push({"value":`30`,"label":"Horde Size Modifier"});
                     }
                 }
 
@@ -228,9 +239,13 @@ export class FortykRollDialogs{
                         let guarded = Number($(html).find('input[name="guarded"]:checked').val());
                         let counter = Number($(html).find('input[name="counter"]:checked').val());
                         const aimBonus = Number($(html).find('input[name="aim-type"]:checked').val());
+                        let aimType = html.find('input[name=aim-type]:checked')[0].attributes["aimtype"].value;
                         const outnumberBonus = Number($(html).find('input[name="outnumber"]:checked').val());
+                        let outnumberType = html.find('input[name=outnumber]:checked')[0].attributes["outnumbertype"].value;
                         const terrainBonus = Number($(html).find('input[name="terrain"]:checked').val());
+                        let terrainType = html.find('input[name=terrain]:checked')[0].attributes["terraintype"].value;
                         const visibilityBonus = Number($(html).find('input[name="visibility"]:checked').val());
+                        let visibilityType = html.find('input[name=visibility]:checked')[0].attributes["visibilitytype"].value;
                         let defensive = Number($(html).find('input[name="defensive"]:checked').val());
                         let prone = Number($(html).find('input[name="prone"]:checked').val());
                         let high = Number($(html).find('input[name="high"]:checked').val());
@@ -251,6 +266,7 @@ export class FortykRollDialogs{
                         let addLabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
 
                         let attackType=html.find('input[name=attack-type]:checked')[0].attributes["attacktype"].value;
+                        let attacklabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
                         let update={};
                         update["data.secChar.lastHit.attackType"]=attackType;
                         if(attackType==="called"){
@@ -274,20 +290,26 @@ export class FortykRollDialogs{
                             addLabel=  html.find('input[name="counter"]')[0].attributes["label"].value+" "+addLabel
                         }
                         testLabel=addLabel+" "+ testLabel;
-                        if(isNaN(running)){running=0}
-                        if(isNaN(guarded)){guarded=0}
-                        if(isNaN(counter)){counter=0}
-                        if(isNaN(defensive)){defensive=0}
-                        if(isNaN(prone)){prone=0}
-                        if(isNaN(high)){high=0}
-                        if(isNaN(surprised)){surprised=0}
-                        if(isNaN(stunned)){stunned=0}
+                        if(isNaN(running)){running=0}else{ modifierTracker.push({"value":`${running}`,"label":`Running Target Modifier`});}
+                        if(isNaN(guarded)){guarded=0}else{ modifierTracker.push({"value":`${guarded}`,"label":`Guarded Action Modifier`});}
+                        if(isNaN(counter)){counter=0}else{ modifierTracker.push({"value":`${counter}`,"label":`Counter Attack Modifier`});}
+                        if(isNaN(defensive)){defensive=0}else{ modifierTracker.push({"value":`${defensive}`,"label":`Total Defense Modifier`});}
+                        if(isNaN(prone)){prone=0}else{ modifierTracker.push({"value":`${prone}`,"label":`Prone Target Modifier`});}
+                        if(isNaN(high)){high=0}else{ modifierTracker.push({"value":`${high}`,"label":`Higher Ground Modifier`});}
+                        if(isNaN(surprised)){surprised=0}else{ modifierTracker.push({"value":`${surprised}`,"label":`Surprised Target Modifier`});}
+                        if(isNaN(stunned)){stunned=0}else{ modifierTracker.push({"value":`${stunned}`,"label":`Stunned Target Modifier`});}
                         if(isNaN(other)){other=0}
 
+                        modifierTracker.push({"value":`${attackTypeBonus}`,"label":`${attacklabel} Attack Modifier`});
+                        modifierTracker.push({"value":`${aimBonus}`,"label":`${aimType} Aim Modifier`});
+                        modifierTracker.push({"value":`${visibilityBonus}`,"label":`${visibilityType} Visibility Modifier`});
+                        modifierTracker.push({"value":`${terrainBonus}`,"label":`${terrainType} Terrain Modifier`});
+                        modifierTracker.push({"value":`${outnumberBonus}`,"label":`${outnumberType} Modifier`});
+                        modifierTracker.push({"value":`${size}`,"label":`Size Modifier`});
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(counter)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
                         actor.data.data.secChar.lastHit.attackRange="melee";
                         actor.data.data.secChar.lastHit.vehicle=vehicle;
-                        FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
+                        FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, "", false, modifierTracker);
                     }
 
                 }
@@ -302,6 +324,7 @@ export class FortykRollDialogs{
         let template="systems/fortyk/templates/actor/dialogs/ranged-attack-dialog.html"
         let templateOptions={};
         let itemData=item.data;
+        let modifierTracker=[];
 
         templateOptions["modifiers"]=duplicate(actor.data.data.secChar.attacks);
         templateOptions["size"]=game.fortyk.FORTYK.size;
@@ -318,17 +341,13 @@ export class FortykRollDialogs{
         templateOptions["modifiers"].single=itemData.data.attackMods.single;
         templateOptions["modifiers"].aim=itemData.data.attackMods.aim;
         templateOptions["modifiers"].testMod=itemData.data.testMod.value;
+        modifierTracker.push({"value":`${testTarget}`,"label":`Base Target Value`});
+        modifierTracker.push({"value":`${templateOptions["modifiers"].testMod}`,"label":`Base Modifier`});
 
-        if(actor.getFlag("fortyk","gyro")){
-            let gyro=parseInt(actor.getFlag("fortyk","gyro"));
-            templateOptions["modifiers"].testMod+=-modifiers.tarEvasion;
-            templateOptions["modifiers"].testMod+=-Math.max(0,modifiers.selfEvasion-gyro);
-        }else{
-            templateOptions["modifiers"].testMod+=-modifiers.tarEvasion-modifiers.selfEvasion;  
-        }
         if(item.getFlag("fortyk","twinlinked")){
 
             templateOptions["modifiers"].testMod+=20;
+            modifierTracker.push({"value":"+20","label":"Twin-Linked"});
         }
 
 
@@ -341,8 +360,8 @@ export class FortykRollDialogs{
 
             if((actor.getFlag("fortyk","massAssault")&&item.type==="meleeWeapon")||(actor.getFlag("fortyk","focusedFire")&&item.type==="rangedWeapon")){
 
-                item.data.testMod.value+=Math.min(30,hordeSize);
-
+                templateOptions["modifiers"].testMod+=Math.min(30,hordeSize);
+                modifierTracker.push({"value":`${Math.min(30,hordeSize)}`,"label":"Horde Trait Bonus"});
             }
         }
         templateOptions["modifiers"].inaccurate=item.getFlag("fortyk","innacurate");
@@ -456,6 +475,29 @@ export class FortykRollDialogs{
         let targets=game.user.targets;
         let vehicle=false;
         if(targets.size>0){
+            if(actor.getFlag("fortyk","gyro")){
+                let gyro=parseInt(actor.getFlag("fortyk","gyro"));
+                templateOptions["modifiers"].testMod+=-modifiers.tarEvasion;
+                templateOptions["modifiers"].testMod+=-Math.max(0,modifiers.selfEvasion-gyro);
+
+
+                if(-Math.max(0,modifiers.selfEvasion-gyro)){
+                    modifierTracker.push({"value":`${-Math.max(0,modifiers.selfEvasion-gyro)}`,"label":"Speed Modifier"});
+                }
+                if(modifiers.tarEvasion){
+                    modifierTracker.push({"value":`${-modifiers.tarEvasion}`,"label":"Target Speed Modifier"});
+                }
+            }else{
+                templateOptions["modifiers"].testMod+=-modifiers.tarEvasion-modifiers.selfEvasion; 
+                if(modifiers.selfEvasion){
+                    modifierTracker.push({"value":`${-modifiers.selfEvasion}`,"label":"Speed Modifier"});
+                }
+                if(modifiers.tarEvasion){
+                    modifierTracker.push({"value":`${-modifiers.tarEvasion}`,"label":"Target Speed Modifier"});
+                }
+
+
+            }
             let target=targets.values().next().value;
             let tarActor=target.actor;
             let tarData=tarActor.data;
@@ -467,23 +509,34 @@ export class FortykRollDialogs{
                 let hordeSize=tarData.data.secChar.wounds.value;
                 if(hordeSize>=120){
                     templateOptions["modifiers"].testMod+=60;
+                    modifierTracker.push({"value":`60`,"label":"Horde Size Modifier"});
                 }else if(hordeSize>=90){
                     templateOptions["modifiers"].testMod+=50;
+                    modifierTracker.push({"value":`50`,"label":"Horde Size Modifier"});
                 }else if(hordeSize>=60){
                     templateOptions["modifiers"].testMod+=40;
+                    modifierTracker.push({"value":`40`,"label":"Horde Size Modifier"});
                 }else if(hordeSize>=30){
                     templateOptions["modifiers"].testMod+=30;
+                    modifierTracker.push({"value":`30`,"label":"Horde Size Modifier"});
                 }
             }
             if(tarActor.getFlag("fortyk","supersonic")){
                 if(actor.getFlag("fortyk","skyfire")||item.getFlag("fortyk","skyfire")){
                     templateOptions["options"].prone=false;
+
+
                 }
-                else{templateOptions["modifiers"].testMod-=60}
+                else{templateOptions["modifiers"].testMod-=60
+
+                     modifierTracker.push({"value":`-60`,"label":"Supersonic Target Modifier"});
+                    }
             }else{
                 if(item.getFlag("fortyk","skyfire")){
                     templateOptions["options"].prone=false;
                     templateOptions["modifiers"].testMod-=20;
+
+                    modifierTracker.push({"value":`-20`,"label":"Skyfire Modifier"});
                 }
             }
         }
@@ -575,15 +628,19 @@ export class FortykRollDialogs{
                         const attackTypeBonus = Number($(html).find('input[name="attack-type"]:checked').val());
 
 
+
                         let guarded = Number($(html).find('input[name="guarded"]:checked').val());
                         let overwatch = Number($(html).find('input[name="overwatch"]:checked').val());
                         let aimBonus = Number($(html).find('input[name="aim-type"]:checked').val());
+                        let aimType = html.find('input[name=aim-type]:checked')[0].attributes["aimtype"].value;
                         const rangeBonus = Number($(html).find('input[name="distance"]:checked').val());
+                        let rangeType= html.find('input[name=distance]:checked')[0].attributes["rangetype"].value;
                         if(isNaN(aimBonus)){
                             aimBonus=0;
                         }
 
                         const visibilityBonus = Number($(html).find('input[name="visibility"]:checked').val());
+                        let visibilityType= html.find('input[name=visibility]:checked')[0].attributes["visibilitytype"].value;
                         let concealed = Number($(html).find('input[name="concealed"]:checked').val());
                         let prone = Number($(html).find('input[name="prone"]:checked').val());
                         let high = Number($(html).find('input[name="high"]:checked').val());
@@ -619,6 +676,7 @@ export class FortykRollDialogs{
                         testLabel=addLabel+" "+ testLabel;
 
                         let attackType=html.find('input[name=attack-type]:checked')[0].attributes["attacktype"].value;
+                        let attacklabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
                         let update={};
                         update["data.secChar.lastHit.attackType"]=attackType;
                         if(attackType==="called"){
@@ -653,20 +711,26 @@ export class FortykRollDialogs{
                         await item.update({"data.clip.value":curAmmo-rof});
 
                         //convert unchosen checkboxes into 0s
-                        if(isNaN(running)){running=0}
-                        if(isNaN(guarded)){guarded=0}
-                        if(isNaN(overwatch)){overwatch=0}
-                        if(isNaN(prone)){prone=0}
-                        if(isNaN(high)){high=0}
-                        if(isNaN(surprised)){surprised=0}
-                        if(isNaN(stunned)){stunned=0}
-                        if(isNaN(concealed)){concealed=0}
+                        if(isNaN(running)){running=0}else{ modifierTracker.push({"value":`${running}`,"label":`Running Target Modifier`});}
+                        if(isNaN(guarded)){guarded=0}else{ modifierTracker.push({"value":`${guarded}`,"label":`Guarded Action Modifier`});}
+                        if(isNaN(overwatch)){overwatch=0}else{ modifierTracker.push({"value":`${overwatch}`,"label":`Overwatch Action Modifier`});}
+                        if(isNaN(prone)){prone=0}else{ modifierTracker.push({"value":`${prone}`,"label":`Prone Target Modifier`});}
+                        if(isNaN(high)){high=0}else{ modifierTracker.push({"value":`${high}`,"label":`Higher Ground Modifier`});}
+                        if(isNaN(surprised)){surprised=0}else{ modifierTracker.push({"value":`${surprised}`,"label":`Surprised Target Modifier`});}
+                        if(isNaN(stunned)){stunned=0}else{ modifierTracker.push({"value":`${stunned}`,"label":`Stunned Target Modifier`});}
+                        if(isNaN(concealed)){concealed=0}else{ modifierTracker.push({"value":`${concealed}`,"label":`Concealed Target Modifier`});}
                         if(isNaN(other)){other=0}
-                        if(isNaN(melee)){melee=0} 
+                        if(isNaN(melee)){melee=0}else{ modifierTracker.push({"value":`${melee}`,"label":`Melee Modifier`});} 
+                        modifierTracker.push({"value":`${attackTypeBonus}`,"label":`${attacklabel} Attack Modifier`});
+                        modifierTracker.push({"value":`${aimBonus}`,"label":`${aimType} Aim Modifier`});
+                        modifierTracker.push({"value":`${visibilityBonus}`,"label":`${visibilityType} Visibility Modifier`});
+                        modifierTracker.push({"value":`${rangeBonus}`,"label":`${rangeType} Range Modifier`});
+                        modifierTracker.push({"value":`${size}`,"label":`Size Modifier`});
+
                         testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(overwatch)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(melee);
                         actor.data.data.secChar.lastHit.attackRange=attackRange;
                         actor.data.data.secChar.lastHit.vehicle=vehicle;
-                        await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType);
+                        await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType, false, modifierTracker);
                         if(aimBonus>0){
                             await actor.update({"data.secChar.lastHit.aim":true});
                             actor.data.data.secChar.lastHit.aim=true;

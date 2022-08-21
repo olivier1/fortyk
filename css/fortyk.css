@@ -871,6 +871,22 @@
     left: 0%;
     font-variant-caps:normal;
 }
+/* The actual popup */
+.popup .popuptext2 {
+    visibility: hidden;
+    width: 270px;
+    color: #060606;
+    text-align: center;
+    border-radius: 6px;
+    border-color: black;
+    border-style: inset;
+    padding: 8px 3px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: -99%;
+    font-variant-caps:normal;
+}
 /* Popup arrow */
 .popup .popuptext::after {
     content: "";

@@ -78,45 +78,45 @@
             <label class="section-title">Aiming</label>
             <div class="list-item flexrow">
 
-                <input type="radio" name="aim-type" value="0" checked><label>None: +0</label>
+                <input type="radio" name="aim-type" aimtype="No" value="0" checked><label>None: +0</label>
 
             </div>
             <div class="list-item flexrow">
-                <input type="radio" name="aim-type" value="{{modifiers.aim.half}}"><label>Half Aim: +{{modifiers.aim.half}}</label>
+                <input type="radio" name="aim-type" aimtype="Half" value="{{modifiers.aim.half}}"><label>Half Aim: +{{modifiers.aim.half}}</label>
             </div>
             <div class="list-item flexrow">
-                <input type="radio" name="aim-type" value="{{modifiers.aim.full}}"><label>Full Aim: +{{modifiers.aim.full}}</label>
+                <input type="radio" name="aim-type" aimtype="Full" value="{{modifiers.aim.full}}"><label>Full Aim: +{{modifiers.aim.full}}</label>
             </div>
         </div>
         <div class="flexcol attack-section">
             <label class="section-title">Outnumbering</label>
             <div class="list-item flexrow">
 
-                <input type="radio" name="outnumber" value="{{modifiers.gangup.[0]}}" checked><label>1 to 1: +{{modifiers.gangup.[0]}}</label>
+                <input type="radio" name="outnumber" outnumbertype="1 to 1" value="{{modifiers.gangup.[0]}}" checked><label>1 to 1: +{{modifiers.gangup.[0]}}</label>
 
             </div>
             <div class="list-item flexrow">
-                <input type="radio" name="outnumber" value="{{modifiers.gangup.[1]}}" ><label>2 to 1: +{{modifiers.gangup.[1]}}</label>
+                <input type="radio" name="outnumber" outnumbertype="2 to 1" value="{{modifiers.gangup.[1]}}" ><label>2 to 1: +{{modifiers.gangup.[1]}}</label>
             </div>
             <div class="list-item flexrow">
-                <input type="radio" name="outnumber" value="{{modifiers.gangup.[2]}}" ><label>3 to 1: +{{modifiers.gangup.[2]}}</label>
+                <input type="radio" name="outnumber" outnumbertype="3 to 1" value="{{modifiers.gangup.[2]}}" ><label>3 to 1: +{{modifiers.gangup.[2]}}</label>
             </div>
         </div>
         <div class="flexcol attack-section"{{#if options.blindfight}} hidden{{/if}}>
             <label class="section-title">Visibility</label>
             <div class="list-item flexrow">
 
-                <input type="radio" name="visibility" value="0" {{#unless options.selfBlind}} checked{{/unless}}><label>Normal: +0</label>
+                <input type="radio" name="visibility" visibilitytype="Normal" value="0" {{#unless options.selfBlind}} checked{{/unless}}><label>Normal: +0</label>
 
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="visibility" value="-10" ><label>Fog/mist/shadow/smoke: -10</label>
+                <input type="radio" name="visibility" visibilitytype="Fog/mist/shadow/smoke" value="-10" ><label>Fog/mist/shadow/smoke: -10</label>
 
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="visibility" value="-20" {{#if options.selfBlind}} checked{{/if}}><label>Darkness: -20</label>
+                <input type="radio" name="visibility" visibilitytype="Darkness" value="-20" {{#if options.selfBlind}} checked{{/if}}><label>Darkness: -20</label>
 
             </div>
 
@@ -128,22 +128,22 @@
             <label class="section-title">Terrain Type</label>
             <div class="list-item flexrow">
 
-                <input type="radio" name="terrain" value="0" {{#if options.normal}} checked{{/if}}><label>Normal: +0</label>
+                <input type="radio" name="terrain" terraintype="Normal" value="0" {{#if options.normal}} checked{{/if}}><label>Normal: +0</label>
 
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="terrain" value="-10"{{#if options.rough}} checked{{/if}} ><label>Rough: -10</label>
+                <input type="radio" name="terrain" terraintype="Rough" value="-10"{{#if options.rough}} checked{{/if}} ><label>Rough: -10</label>
 
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="terrain" value="-20" {{#if options.tough}} checked{{/if}}><label>Tough: -20</label>
+                <input type="radio" name="terrain" terraintype="Tough" value="-20" {{#if options.tough}} checked{{/if}}><label>Tough: -20</label>
 
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="terrain" value="-30" {{#if options.severe}} checked{{/if}}><label>Severe: -30</label>
+                <input type="radio" name="terrain" terraintype="Severe" value="-30" {{#if options.severe}} checked{{/if}}><label>Severe: -30</label>
 
             </div>
         </div>

@@ -4,7 +4,13 @@
     <span class="chat-target">{{title}}</span>
     <div class="flexrow">
         <span class="chat-target">{{rollResult}}</span>
+        {{#if modifiers}}
+        <label class="chat-target popup" data-id="{{id}}"> {{target}} <span class="popuptext2 chat-background flexcol" id="{{id}}">
+            {{#each modifiers}}{{#unless (equals value 0)}}<div>{{this.label}}: {{#if (greaterThan value -1)}}+{{/if}}{{this.value}}</div>{{/unless}}
+            {{/each}}</span></label> 
+        {{else}}
         <span class="chat-target">{{target}}</span>   
+        {{/if}}
     </div>
     <div class="flexcol chat-target">
         <span class="chat-line {{#if success}}test-success{{else}}test-failure{{/if}}">{{pass}}</span>
