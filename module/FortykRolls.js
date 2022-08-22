@@ -18,7 +18,7 @@ export class FortykRolls{
 @reroll: if the roll is a reroll or not
 returns the roll message*/
     static async fortykTest(char, type, target, actor, label, fortykWeapon=null, reroll=false, fireRate="",delayMsg=false, modifiers=null){
-        console.log(modifiers);
+
         //cap target at 100 or floor at 1
         if(target>100){
             target=100;
@@ -256,6 +256,11 @@ returns the roll message*/
             }else{
                 templateOptions["numberHits"]+="."
             }
+
+            if(actor.getFlag("fortyk","inescapableattack")&&(attackType!=="semi"&&attackType!=="full"&&attackType!=="swift"&&attackType!=="lightning")&&((actor.getFlag("fortyk","inescapableattack").toLowerCase().indexOf("ranged")!==-1&&type==="rangedAttack")||(actor.getFlag("fortyk","inescapableattack").toLowerCase().indexOf("melee")!==-1&&type==="meleeAttack"))){
+                let inescPenalty=Math.max(-60,testDos*(-10));
+                templateOptions["inescapableAttack"]=`Inescapable attack evasion penalty: ${inescPenalty}`; 
+            }
         }
         let attackTarget=game.user.targets.first();
         if(attack&&attackTarget&&templateOptions["success"]){
@@ -267,6 +272,7 @@ returns the roll message*/
                 templateOptions["sizePenalty"]=`Evasion penalty due to size difference: ${penalty}`
             }
         }
+
         //give the chat object options and stuff
         let result={}
         let renderedTemplate= await renderTemplate(template,templateOptions);
@@ -707,15 +713,15 @@ returns the roll message*/
         //change formula for master crafted weapons 
         if(fortykWeapon.getFlag("fortyk","mastercrafted")){
             let dPos = form.indexOf('d10');
-           
-           
-            
+
+
+
             let afterD=dPos+3;
             let startstr=form.slice(0,afterD);
             let endstr=form.slice(afterD);
-            
-                form=startstr+"r1"+endstr; 
-            
+
+            form=startstr+"r1"+endstr; 
+
         }
         //change formula for shredding weapons 
         if(fortykWeapon.getFlag("fortyk","shredding")){
@@ -1194,7 +1200,10 @@ returns the roll message*/
                         let cover=parseFloat(data.secChar.cover.value);
 
                         if(!self&&!fortykWeapon.getFlag("fortyk","ignoreCover")&&!fortykWeapon.getFlag("fortyk","spray")&&cover&&(weapon.type==="rangedWeapon"||weapon.type==="psychicPower")){
-
+                            if(actor.getFlag('fortyk','nowheretohide')){
+                                cover=cover-0.25;
+                                damageOptions.results.push(`<span>Nowhere to hide reduces cover by 25%</span>`);
+                            }
                             let coverReduction=1-cover;
                             damage=Math.ceil(coverReduction*damage);
                             damageOptions.results.push(`<span>Cover reduces ranged damage by ${cover*100}%</span>`);

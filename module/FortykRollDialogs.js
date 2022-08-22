@@ -71,7 +71,7 @@ export class FortykRollDialogs{
                             }
                             if(!reroll){
 
-                                if(testLabel==="Dodge"||testLabel==="Parry"||testLabel==="Jink"){
+                                if(testType==="evasion"){
 
                                     let aeData={};
                                     aeData.id="evasion";
