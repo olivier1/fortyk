@@ -431,13 +431,13 @@
     .fortyk .list-item-header2{
         border-top: 3px solid #999;
         border-bottom: 3px solid #999;
-       
+
         border-right: 3px solid #999;
     }
     .fortyk .list-item-header3{
         border-top: 3px solid #999;
         border-bottom: 3px solid #999;
-        
+
         border-right: 3px solid #999;
     }
     .fortyk .list-item-header4{
@@ -898,12 +898,24 @@
     border-style: solid;
     border-color: #555 transparent transparent transparent;
 }
+/* Popup arrow */
+.popup .popuptext2::after {
+    content: "";
+    position: absolute;
+    top: 102%;
+    left: 68%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
 /* Toggle this class - hide and show the popup */
 .popup .show {
     visibility: visible;
     -webkit-animation: fadeIn 1s;
     animation: fadeIn 1s;
 }
+
 /* Add animation (fade in the popup) */
 @-webkit-keyframes fadeIn {
     from {opacity: 0;} 
@@ -912,6 +924,11 @@
 @keyframes fadeIn {
     from {opacity: 0;}
     to {opacity:1 ;}
+}
+.popup .popuptext2 .pop-line{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 .cadetHouse-img{
     height:75px;
