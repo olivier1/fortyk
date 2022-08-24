@@ -2002,7 +2002,7 @@ returns the roll message*/
                                         {key:`data.secChar.speed.motive`,value:"C",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
 
                             rightMes=`The motive system is crippled reducing tactical speed by half!`;
-                        }else if(actor.data.data.secChar.speed.motive==="CI"){
+                        }else if(actor.data.data.secChar.speed.motive==="C"){
 
                             ae.changes=[{key:`data.secChar.speed.multi`,value:"0",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
                                         {key:`data.secChar.speed.motive`,value:"D",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
@@ -3982,7 +3982,7 @@ returns the roll message*/
                                     for(let z=0;z<newAe.changes.length;z++){
                                         if((ae.data.changes[i].key===newAe.changes[z].key)&&ae.data.changes[i].mode===newAe.changes[z].mode){
 
-                                            if(ae.data.changes[i].mode===5){
+                                            if(ae.data.changes[i].mode===5||ae.data.changes[i].mode===0){
 
                                             }else{
                                                 if(!isNaN(parseInt(newAe.changes[z].value))){
