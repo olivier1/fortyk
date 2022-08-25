@@ -113,10 +113,12 @@ export class FortykRollDialogs{
         let template="systems/fortyk/templates/actor/dialogs/melee-attack-dialog.html"
         let templateOptions={};
         let modifierTracker=[];
+        let miscMods=0;
         templateOptions["modifiers"]=duplicate(actor.data.data.secChar.attacks);
-        templateOptions["modifiers"].testMod=itemData.data.testMod.value;
+        templateOptions["modifiers"].testMod=0;
         modifierTracker.push({"value":`${testTarget}`,"label":`Base Target Value`});
-        modifierTracker.push({"value":`${templateOptions["modifiers"].testMod}`,"label":`Base Modifier`});
+        modifierTracker.push({"value":`${itemData.data.testMod.value}`,"label":`Base Modifier`});
+        miscMods+=itemData.data.testMod.value;
         templateOptions["options"]={}
         templateOptions["options"].swift=actor.getFlag("fortyk","swiftattack");
         templateOptions["options"].lightning=actor.getFlag("fortyk","lightningattack");
@@ -167,7 +169,7 @@ export class FortykRollDialogs{
 
             if((actor.getFlag("fortyk","massAssault")&&item.type==="meleeWeapon")||(actor.getFlag("fortyk","focusedFire")&&item.type==="rangedWeapon")){
 
-                templateOptions["modifiers"].testMod+=Math.min(30,hordeSize);
+                miscMods+=Math.min(30,hordeSize);
                 modifierTracker.push({"value":`+${Math.min(30,hordeSize)}`,"label":"Horde Trait Bonus"});
 
             }
@@ -176,7 +178,7 @@ export class FortykRollDialogs{
         let target=targets.values().next().value;
         let vehicle=false;
         if(targets.size>0){
-            templateOptions["modifiers"].testMod+=-modifiers.tarEvasion;
+            miscMods+=-modifiers.tarEvasion;
             if(modifiers.tarEvasion){
                 modifierTracker.push({"value":`${-modifiers.tarEvasion}`,"label":"Target Speed Modifier"});
             }
@@ -190,16 +192,16 @@ export class FortykRollDialogs{
                 if(tarData.data.horde.value){
                     let hordeSize=tarData.data.secChar.wounds.value;
                     if(hordeSize>=120){
-                        templateOptions["modifiers"].testMod+=60;
+                        miscMods+=60;
                         modifierTracker.push({"value":`60`,"label":"Horde Size Modifier"});
                     }else if(hordeSize>=90){
-                        templateOptions["modifiers"].testMod+=50;
+                        miscMods+=50;
                         modifierTracker.push({"value":`50`,"label":"Horde Size Modifier"});
                     }else if(hordeSize>=60){
-                        templateOptions["modifiers"].testMod+=40;
+                        miscMods+=40;
                         modifierTracker.push({"value":`40`,"label":"Horde Size Modifier"});
                     }else if(hordeSize>=30){
-                        templateOptions["modifiers"].testMod+=30;
+                        miscMods+=30;
                         modifierTracker.push({"value":`30`,"label":"Horde Size Modifier"});
                     }
                 }
@@ -224,6 +226,7 @@ export class FortykRollDialogs{
                 }
             }
         }
+        templateOptions["modifiers"].miscMods=miscMods;
         let renderedTemplate= await renderTemplate(template,templateOptions);
 
         new Dialog({
@@ -298,7 +301,7 @@ export class FortykRollDialogs{
                         if(isNaN(high)){high=0}else{ modifierTracker.push({"value":`${high}`,"label":`Higher Ground Modifier`});}
                         if(isNaN(surprised)){surprised=0}else{ modifierTracker.push({"value":`${surprised}`,"label":`Surprised Target Modifier`});}
                         if(isNaN(stunned)){stunned=0}else{ modifierTracker.push({"value":`${stunned}`,"label":`Stunned Target Modifier`});}
-                        if(isNaN(other)){other=0}
+                        if(isNaN(other)){other=0}else{modifierTracker.push({"value":`${other}`,"label":`Other Modifiers`});}
 
                         modifierTracker.push({"value":`${attackTypeBonus}`,"label":`${attacklabel} Attack Modifier`});
                         modifierTracker.push({"value":`${aimBonus}`,"label":`${aimType} Aim Modifier`});
@@ -306,7 +309,7 @@ export class FortykRollDialogs{
                         modifierTracker.push({"value":`${terrainBonus}`,"label":`${terrainType} Terrain Modifier`});
                         modifierTracker.push({"value":`${outnumberBonus}`,"label":`${outnumberType} Modifier`});
                         modifierTracker.push({"value":`${size}`,"label":`Size Modifier`});
-                        testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(counter)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
+                        testTarget=miscMods+parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(counter)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
                         actor.data.data.secChar.lastHit.attackRange="melee";
                         actor.data.data.secChar.lastHit.vehicle=vehicle;
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, "", false, modifierTracker);
@@ -325,7 +328,7 @@ export class FortykRollDialogs{
         let templateOptions={};
         let itemData=item.data;
         let modifierTracker=[];
-
+        let miscMods=0;
         templateOptions["modifiers"]=duplicate(actor.data.data.secChar.attacks);
         templateOptions["size"]=game.fortyk.FORTYK.size;
 
@@ -340,14 +343,14 @@ export class FortykRollDialogs{
         templateOptions["modifiers"].semi=itemData.data.attackMods.semi;
         templateOptions["modifiers"].single=itemData.data.attackMods.single;
         templateOptions["modifiers"].aim=itemData.data.attackMods.aim;
-        templateOptions["modifiers"].testMod=itemData.data.testMod.value;
+        templateOptions["modifiers"].testMod=0;
         modifierTracker.push({"value":`${testTarget}`,"label":`Base Target Value`});
-        modifierTracker.push({"value":`${templateOptions["modifiers"].testMod}`,"label":`Base Modifier`});
+        modifierTracker.push({"value":`${itemData.data.testMod.value}`,"label":`Base Modifier`});
 
         if(item.getFlag("fortyk","twinlinked")){
 
-            templateOptions["modifiers"].testMod+=20;
-            modifierTracker.push({"value":"+20","label":"Twin-Linked"});
+            miscMods+=20;
+            modifierTracker.push({"value":"20","label":"Twin-Linked"});
         }
 
 
@@ -360,7 +363,7 @@ export class FortykRollDialogs{
 
             if((actor.getFlag("fortyk","massAssault")&&item.type==="meleeWeapon")||(actor.getFlag("fortyk","focusedFire")&&item.type==="rangedWeapon")){
 
-                templateOptions["modifiers"].testMod+=Math.min(30,hordeSize);
+                miscMods+=Math.min(30,hordeSize);
                 modifierTracker.push({"value":`${Math.min(30,hordeSize)}`,"label":"Horde Trait Bonus"});
             }
         }
@@ -477,8 +480,8 @@ export class FortykRollDialogs{
         if(targets.size>0){
             if(actor.getFlag("fortyk","gyro")){
                 let gyro=parseInt(actor.getFlag("fortyk","gyro"));
-                templateOptions["modifiers"].testMod+=-modifiers.tarEvasion;
-                templateOptions["modifiers"].testMod+=-Math.max(0,modifiers.selfEvasion-gyro);
+                miscMods+=-modifiers.tarEvasion;
+                miscMods+=-Math.max(0,modifiers.selfEvasion-gyro);
 
 
                 if(-Math.max(0,modifiers.selfEvasion-gyro)){
@@ -488,7 +491,7 @@ export class FortykRollDialogs{
                     modifierTracker.push({"value":`${-modifiers.tarEvasion}`,"label":"Target Speed Modifier"});
                 }
             }else{
-                templateOptions["modifiers"].testMod+=-modifiers.tarEvasion-modifiers.selfEvasion; 
+                miscMods+=-modifiers.tarEvasion-modifiers.selfEvasion; 
                 if(modifiers.selfEvasion){
                     modifierTracker.push({"value":`${-modifiers.selfEvasion}`,"label":"Speed Modifier"});
                 }
@@ -508,16 +511,16 @@ export class FortykRollDialogs{
             if(!vehicle&&tarData.data.horde.value){
                 let hordeSize=tarData.data.secChar.wounds.value;
                 if(hordeSize>=120){
-                    templateOptions["modifiers"].testMod+=60;
+                    miscMods+=60;
                     modifierTracker.push({"value":`60`,"label":"Horde Size Modifier"});
                 }else if(hordeSize>=90){
-                    templateOptions["modifiers"].testMod+=50;
+                    miscMods+=50;
                     modifierTracker.push({"value":`50`,"label":"Horde Size Modifier"});
                 }else if(hordeSize>=60){
-                    templateOptions["modifiers"].testMod+=40;
+                    miscMods+=40;
                     modifierTracker.push({"value":`40`,"label":"Horde Size Modifier"});
                 }else if(hordeSize>=30){
-                    templateOptions["modifiers"].testMod+=30;
+                    miscMods+=30;
                     modifierTracker.push({"value":`30`,"label":"Horde Size Modifier"});
                 }
             }
@@ -527,14 +530,14 @@ export class FortykRollDialogs{
 
 
                 }
-                else{templateOptions["modifiers"].testMod-=60
+                else{miscMods-=60
 
                      modifierTracker.push({"value":`-60`,"label":"Supersonic Target Modifier"});
                     }
             }else{
                 if(item.getFlag("fortyk","skyfire")){
                     templateOptions["options"].prone=false;
-                    templateOptions["modifiers"].testMod-=20;
+                    miscMods-=20;
 
                     modifierTracker.push({"value":`-20`,"label":"Skyfire Modifier"});
                 }
@@ -613,7 +616,7 @@ export class FortykRollDialogs{
             templateOptions["options"].extreme=extreme;
         }
         templateOptions["size"]=game.fortyk.FORTYK.size;
-
+        templateOptions["modifiers"].miscMods=miscMods;
         let renderedTemplate= await renderTemplate(template,templateOptions);
 
         new Dialog({
@@ -719,7 +722,7 @@ export class FortykRollDialogs{
                         if(isNaN(surprised)){surprised=0}else{ modifierTracker.push({"value":`${surprised}`,"label":`Surprised Target Modifier`});}
                         if(isNaN(stunned)){stunned=0}else{ modifierTracker.push({"value":`${stunned}`,"label":`Stunned Target Modifier`});}
                         if(isNaN(concealed)){concealed=0}else{ modifierTracker.push({"value":`${concealed}`,"label":`Concealed Target Modifier`});}
-                        if(isNaN(other)){other=0}
+                        if(isNaN(other)){other=0}else{modifierTracker.push({"value":`${other}`,"label":`Other Modifiers`});}
                         if(isNaN(melee)){melee=0}else{ modifierTracker.push({"value":`${melee}`,"label":`Melee Modifier`});} 
                         modifierTracker.push({"value":`${attackTypeBonus}`,"label":`${attacklabel} Attack Modifier`});
                         modifierTracker.push({"value":`${aimBonus}`,"label":`${aimType} Aim Modifier`});
@@ -727,7 +730,7 @@ export class FortykRollDialogs{
                         modifierTracker.push({"value":`${rangeBonus}`,"label":`${rangeType} Range Modifier`});
                         modifierTracker.push({"value":`${size}`,"label":`Size Modifier`});
 
-                        testTarget=parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(overwatch)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(melee);
+                        testTarget=miscMods+parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(overwatch)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(melee);
                         actor.data.data.secChar.lastHit.attackRange=attackRange;
                         actor.data.data.secChar.lastHit.vehicle=vehicle;
                         await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType, false, modifierTracker);

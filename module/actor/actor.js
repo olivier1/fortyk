@@ -195,6 +195,10 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","crawler")){
             data.secChar.movement.multi=parseInt(data.secChar.movement.multi)/2; 
         }
+        if(this.getFlag("fortyk","doubleteam")){
+            data.secChar.attacks.gangup["1"]=20;
+            data.secChar.attacks.gangup["2"]=30;
+        }
         data.evasion=0;
         //initialize skill modifiers from active events so that they are integers
         this.items.forEach((fortykItem,id,items)=>{
