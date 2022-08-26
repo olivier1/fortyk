@@ -685,6 +685,7 @@ export class FortykRollDialogs{
                         if(attackType==="called"){
 
                             update["data.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
+                            
                             if(!vehicle&&actor.getFlag("fortyk","fieldvivisection")&&actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
 
 

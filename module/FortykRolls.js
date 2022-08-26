@@ -363,7 +363,8 @@ returns the roll message*/
                 let attackerToken=getActorToken(actor);
                 let distance=tokenDistance(attackerToken,attackTarget);
                 let weaponRng=parseInt(weapon.data.range.value);
-                if(distance<=2*weaponRng){
+                if(distance<=weaponRng/2){
+                }else if(distance<=weaponRng*2){
                     scatterDice="1d10";
                 }else if(distance<=weaponRng*3){
                     scatterDice="2d10";
