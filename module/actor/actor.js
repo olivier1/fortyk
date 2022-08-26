@@ -1227,8 +1227,11 @@ export class FortyKActor extends Actor {
                 }
                 if(item.data.type.value==="Torpedo"){
                     let torpedo=this.items.get(item.data.torpedo.id);
-                    item.data.damage.value=torpedo.data.data.damage.value;
-                    item.data.torpedo.rating=torpedo.data.data.rating.value;
+                    if(torpedo){
+                        item.data.damage.value=torpedo.data.data.damage.value;
+                        item.data.torpedo.rating=torpedo.data.data.rating.value;
+                    }
+                    
                 }
                 components.push(item);
                 weapons.push(item);
