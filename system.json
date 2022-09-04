@@ -252,6 +252,68 @@
             "entity": "Item",
             "private": false
         }
+        ,
+        {
+            "label": "Knight Ranged Weapons",
+            "type": "Item",
+            "name": "knight-ranged-weapons",
+            "path": "packs/knight-ranged-weapons.db",
+            "system": "fortyk",
+            "package": "system",
+            "entity": "Item",
+            "private": false
+        }
+        ,
+        {
+            "label": "Knight Melee Weapons",
+            "type": "Item",
+            "name": "knight-melee-weapons",
+            "path": "packs/knight-melee-weapons.db",
+            "system": "fortyk",
+            "package": "system",
+            "entity": "Item",
+            "private": false
+        },
+        {
+            "label": "Knight Components",
+            "type": "Item",
+            "name": "knight-components",
+            "path": "packs/knight-components.db",
+            "system": "fortyk",
+            "package": "system",
+            "entity": "Item",
+            "private": false
+        },
+        {
+            "label": "Knight Cores",
+            "type": "Item",
+            "name": "knight-cores",
+            "path": "packs/knight-cores.db",
+            "system": "fortyk",
+            "package": "system",
+            "entity": "Item",
+            "private": false
+        },
+        {
+            "label": "Knight Ranged Weapons",
+            "type": "Item",
+            "name": "knight-ranged-weapons",
+            "path": "packs/knight-ranged-weapons.db",
+            "system": "fortyk",
+            "package": "system",
+            "entity": "Item",
+            "private": false
+        },
+        {
+            "label": "Wargear",
+            "type": "Item",
+            "name": "wargear",
+            "path": "packs/wargear.db",
+            "system": "fortyk",
+            "package": "system",
+            "entity": "Item",
+            "private": false
+        }
     ],
     "gridDistance": 1,
     "gridUnits": "m",

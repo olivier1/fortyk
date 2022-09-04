@@ -1,0 +1,226 @@
+[
+  {
+    "Name": "Chameoline Cloak",
+    "Description": "The wearer gains a +20 bonus to Stealth tests. If he remains stationary during his turn, Ballistic Skill tests targeting him suffer a –30 penalty until the beginning of his next turn.",
+    "Weight": "0.5",
+    "Rarity": "very rare",
+    "": ""
+  },
+  {
+    "Name": "Stasis Field",
+    "Description": "When actived this forcefield is a rating 80 forcefield. It also renders the user stunned until his next turn where it shuts down. The forcefield cannot be activated for another 1d5 rounds.",
+    "Weight": "30",
+    "Rarity": "near unique",
+    "": ""
+  },
+  {
+    "Name": "Backpack",
+    "Description": "These personal carrying items can range from containers of heavy cloth to elaborate, body-conforming devices with internal bracing for comfort. They all allow the wearer to transport roughly 30 kg of extra weight, but removing an object from the pack requires a Full Action. Only one backpack or combat vest can be worn at a time.",
+    "Weight": "2",
+    "Rarity": "Abundant",
+    "": ""
+  },
+  {
+    "Name": "Chameleoline Cloak",
+    "Description": "Chameleoline material is made up of mimic fibres that blend the coloration of the wearer into their surroundings, and is the garb of choice for snipers. The wearer gains a +20 bonus to Stealth tests. If he remains stationary during his turn, Ballistic Skill tests targeting him suffer a –30 penalty until the beginning of his next turn.",
+    "Weight": "0.5",
+    "Rarity": "Rare",
+    "": ""
+  },
+  {
+    "Name": "Chrono",
+    "Description": "Chronos are small timepieces, and are essential for Acolytes to properly time their actions. Basic versions simply indicate local time and require manual setting, but finer models can synch to external datastreams for the greatest possible accuracy.",
+    "Weight": "0",
+    "Rarity": "Plentiful",
+    "": ""
+  },
+  {
+    "Name": "Clothing",
+    "Description": "Clothing styles vary greatly across the Imperium, some as basic protection with no thought to aesthetics, some purely ornamental with no concern for environmental or other lesser worries. For some, clothing styles are set at birth or through factory dictates. Others adopt the styles of their gang, sect, house, or other affiliation. While basic clothing common to a setting should be simple to acquire, more elaborate garb of either higher status or specialised function should be more difficult, with the GM acting as final arbiter on Availability or creation.",
+    "Weight": "2",
+    "Rarity": "Abundant",
+    "": ""
+  },
+  {
+    "Name": "Combat Vest",
+    "Description": "While this outerwear vest offers no additional protection, it does include numerous pouches and straps to keep extra weapon clips, sidearms, and grenades within easy reach. Common styles include hip packs, holsters, bandoliers, and vests and can hold 15 kg comfortably. Items held in the combat vest can be drawn as a Free Action during the character’s turn. Only one backpack or combat vest can be worn at a time.",
+    "Weight": "2",
+    "Rarity": "Scarce",
+    "": ""
+  },
+  {
+    "Name": "Concealed Holster",
+    "Description": "These conformal pouches can hold a small pistol such as an autopistol or stub automatic, and are worn under obscuring clothing to disguise the weapon from observers. Attempts to detect such a weapon suffer a –20 penalty, but Ready actions for this weapon become a Full Action rather than a Half Action (or a Half Action instead of a Free Action where applicable).",
+    "Weight": "1",
+    "Rarity": "Average",
+    "": ""
+  },
+  {
+    "Name": "Deadspace Earpiece",
+    "Description": "Each of these tiny devices can limit high-volume sonic disturbances (such as explosions) by automatically detecting and dampening the excessive noise down to a tolerable level. Users wearing this earpiece make any Toughness tests against sonic effects or against the auditory effects of a Concussive weapon with a +20 bonus.",
+    "Weight": "0",
+    "Rarity": "Very Rare",
+    "": ""
+  },
+  {
+    "Name": "Explosive Collar",
+    "Description": "These give penal legionnaires extra incentive to fight and expunge their sins to the Emperor, as well as to keep captured prisoners in line. Each of these heavy collars comes with a remote, usually with a range of 1 km. The remote can either release or explode the collar, which automatically explodes if out of range of the remote for longer than 5 minutes. When triggered, the explosive on the collar detonates. The resulting decapitation instantly kills the wearer, and counts as having a frag grenade detonated at the location (see page 157). Removing an explosive collar without the remote requires a Hard (–20) Tech-Use test. If the character trying to remove the collar fails by two or more degrees of failure, the collar explodes.",
+    "Weight": "3",
+    "Rarity": "Scarce",
+    "": ""
+  },
+  {
+    "Name": "Filtration Plugs",
+    "Description": "Worn in each nostril, filtration plugs screen out most pollutants and hazardous gases. A character wearing filtration plugs gains a +20 bonus to any Toughness test made to resist the effects of damaging gases. Good craftsmanship models add another +10 bonus, while Poor models must be replaced after five hours of usage as the filter becomes clogged and unusable.",
+    "Weight": "0",
+    "Rarity": "Common",
+    "": ""
+  },
+  {
+    "Name": "Photo-Visors/Contacts",
+    "Description": "These can be worn as corneal lenses or as outer eyewear, and amplify any low-level light to allow the wearer to see as if normal lighting was present. Characters wearing these gain the Dark-sight trait (see page 135). Good craftsmanship visors also dampen the effects of photon flash grenades, making the wearer immune to their effects.",
+    "Weight": "0.5",
+    "Rarity": "Scarce",
+    "": ""
+  },
+  {
+    "Name": "Preysense Goggles",
+    "Description": "This eyewear device reveals thermal images so that the wearer can detect things that would be otherwise hidden in obscuring mists and shadow. Poor craftsmanship models cannot belie their true nature and are bulky goggles with glowing lenses; Good and Best craftsmanship models are disguised as normal (if elaborate) eyeglasses. A character wearing these goggles suffers no penalties due to darkness, and gains a +20 bonus to vision-based Perception tests at night.",
+    "Weight": "0.5",
+    "Rarity": "Very Rare",
+    "": ""
+  },
+  {
+    "Name": "Rebreather",
+    "Description": "These devices store and recycle breathable air via a mask and external supply tank, making the user to immune to toxic atmospheres, even allowing him to survive underwater. The air canister lasts only for about one hour and then must be replaced, which takes a Full Action. Good craftsmanship models last two hours, while Poor ones take two Full Actions to replace the canister. Replacement canisters are Scarce.",
+    "Weight": "1",
+    "Rarity": "Scarce",
+    "": ""
+  },
+  {
+    "Name": "Recoil Glove",
+    "Description": "This heavy gauntlet uses interlocking plates laced with memory wire to stiffen in a protective grip, absorbing the shock from powerful hand weapons. A character using a recoil glove can fire a Basic weapon with one hand without the normal –20 penalty, and can wield pistol weapons that normally require two hands in one hand without penalty. Note that specialised weapon training is still required to use the weapon properly, without which the Untrained penalty of –20 still applies.",
+    "Weight": "0.5",
+    "Rarity": "Rare",
+    "": ""
+  },
+  {
+    "Name": "Respirator/Gas Mask",
+    "Description": "A simple breathing mask that covers the nose and mouth or entire face, these offer much better protection than filtration plugs. A character wearing a respirator gains a +30 bonus to a Toughness test made to resist the effects of gas and can re-roll the test if failed. Good craftsmanship models add another +10 bonus, while Poor models must be replaced after 10 hours of usage as the filter becomes clogged and unusable.",
+    "Weight": "0.5",
+    "Rarity": "Average",
+    "": ""
+  },
+  {
+    "Name": "Survival Suit",
+    "Description": "When working in harsh and extreme conditions (especially when it is not known in advance what they will be), survival suits are a must. No matter if it is too hot or too cold, the suit can maintain proper body temperature and hydration via excellent insulation capabilities. Using the differential between body temperature and outside temperature to drive thermoelectric power cells, it also has reclamation systems for turning sweat into drinking water. Most suits come complete with a hood, as well as goggles to protect the head and face. While it does not protect forever, for medium-duration emergencies it can help sustain life until a rescue. The suit grants a +20 bonus to any tests to withstand the effects of extreme environments. Good and Best craftsmanship suits grant a +25 and +30 bonus, respectively, while Poor outfits only last three days before their internal mechanisms falter and need removal from the extreme temperatures to recharge.",
+    "Weight": "0",
+    "Rarity": "Average",
+    "": ""
+  },
+  {
+    "Name": "Synskin",
+    "Description": "Synskin is a bio-reactive body glove with an inert non-reflective surface that moulds itself to the wearer’s form. It grants 2 Armour points to all locations not already armoured and the wearer gains a +10 bonus to Stealth tests. It also renders the wearer invisible to the use of preysense goggles and those with the Dark-sight trait.",
+    "Weight": "2",
+    "Rarity": "Very Rare",
+    "": ""
+  },
+  {
+    "Name": "Void Suit",
+    "Description": "These fully-sealed suits are essential for operating in the vacuum of space, but can also be useful in toxic or hostile environments. A Common craftsmanship void suit has 12 hours of air and imposes a –10 penalty to Agility tests. Poor craftsmanship versions have six hours of air, while Good and Best craftsmanship versions eliminate the Agility penalty.",
+    "Weight": "8",
+    "Rarity": "Scarce",
+    "": ""
+  },
+  {
+    "Name": "Banishing Rod",
+    "Description": "Made of darkened iron slabs enscrolled with hallowed parchment and curled purity seals, banishing rods do not subdue the Warp so much as calm it. When held aloft or even jammed into the ground, they create an area where psychic energy flows sluggishly. In groups, such devices can ward large areas, aiding in exorcisms and impeding the advance of malefic entities. Psykers within 5 metres of one or more banishing rods cannot push psychic powers, and reduce the result of any rolls they make on Table 6–2: Psychic Phenomena (see page 196 of the Dark Heresy Core Rulebook) by –20 (to a minimum of 1). Characters with the Daemonic trait treat this area as a treacherous environment (see page 246 of the Dark Heresy Core Rulebook). When used in an exorcism (see page 70), each rod placed around the target of the exorcism grants a +5 bonus to the Daemonic Mastery test.",
+    "Weight": "8",
+    "Rarity": "Very Rare",
+    "": ""
+  },
+  {
+    "Name": "Consecrated Scroll",
+    "Description": "Soaked in sacred oils and covered in illuminated texts of devotion, consecrated scrolls offer a small measure of protection against the machinations of the Warp. Before making a Focus Power test, a character possessing one of these scrolls may choose to burn a single one as a Free Action; this destroys that scroll. Should the user have to roll on Table 6–2: Psychic Phenomena (see page 196 of the Dark Heresy Core Rulebook) as a result of the subsequent Focus Power test, he may re-roll the result.",
+    "Weight": "1",
+    "Rarity": "Scarce",
+    "": ""
+  },
+  {
+    "Name": "Empyrean Brain Mine",
+    "Description": "Thought to be created using forbidden technologies found on a ghost world, these objects latch onto a victim’s body and send disruptive energies directly into the brain, rendering the target temporarily catatonic. A brain mine must be attached to an enemy through a successful Grapple action in melee combat. At the start of his turn for the following 3 rounds, the target must make a Hard (–20) Agility test. If successful, he can perform a Half Action; otherwise he is unable to perform any actions, including Reactions, that round. The mine deals 1d10+5 Rending damage that is not reduced by armour if forcibly removed, but after 3 rounds, it burns out and dislodges from the target.",
+    "Weight": "1",
+    "Rarity": "Very Rare",
+    "": ""
+  },
+  {
+    "Name": "Psyocculum",
+    "Description": "An arcane assemblage of strange lenses and scarcely-understood ætheric scryers, a psyocculum tracks the Warp signatures of psykers and Daemons alike. Although cumbersome to wear and draining to use, the device leaves those infused with Warp power no place to hide as they become highlighted in a corona of white light. As a Half Action, the wearer may make a Challenging (+10) Awareness test to detect psykers and characters with the Daemonic trait without the need for normal lighting until the end of the encounter. While these targets are illuminated in this way, the wearer gains a +10 bonus to his Ballistic Skill tests against them. The psyocculum distorts standard vision, however, imposing a –20 penalty to all other sight-based tests made while it is used. It also cannot be used at the same time as another piece of headgear, such as a helmet, and requires a Half Action to both put on or take off. Using a psyocculum causes the wearer to gain one level of Fatigue for every 5 minutes of operation beyond the first minute.",
+    "Weight": "1.5",
+    "Rarity": "Rare",
+    "": ""
+  },
+  {
+    "Name": "Adaptive Logis-Engine",
+    "Description": "Many heretically advanced alien species use arcane encryptions and mechanical systems far beyond the understanding of the Adeptus Mechanicus. Nevertheless, Explorator Tech-Priests of Core Theta have recovered archaeotech devices from Askellon’s past that can defeat the alien and show the superiority of the Omnissiah. The Adaptive Logis-Engine uses intrusion machine spirits, chem dispensers, electromagnetic pulses, and other forceful means to break into alien networks and make them accessible to the agents of the Imperium. To operate an Adaptive Logis-Engine, an Acolyte must place it onto the alien computer, lock, or other interface device that he wishes to crack, and make a Hard (–20) Security (Int) test. If successful, the engine accesses the alien device, and the character treats it like any other cogitator or electronic lock for the purposes of additional tests. An Adaptive Logis-Engine takes 5 minutes to access a basic alien system, less 30 seconds for each degree of success on the user’s Security test (to a minimum of 30 seconds).",
+    "Weight": "4",
+    "Rarity": "Extremely Rare",
+    "": ""
+  },
+  {
+    "Name": "Holo-Spectus",
+    "Description": "Consisting of a powerful launching tube, a long-range pictrecorder, and a holographic display, the holo-spectus allows its user to survey a large area to plan movements, seek out targets, or even find his bearings. Aimed skyward, the compact launcher blasts the fist-sized recorder several hundred metres vertically into the air, where it floats on tiny grav plating, feeding what it sees to a three-dimensional holographic display on the base-unit. As the user turns on the spot, so does the floating recorder, allowing the user to see kilometres in every direction. With a simple flick of a switch, the recorder zeroes in on the base unit and returns to the launcher in a matter of seconds. Successfully firing a holo-spectus into the air requires a Challenging (+0) Tech-Use test, after which the user gains a visual representation of the area below the hovering pict-recorder out for several kilometres. The control interface allows the Acolyte to zoom and highlight parts of the holographic display, and turning on the spot causes the recorder above to turn, allowing the Acolyte to survey the area around him in great detail, which grants a +20 bonus to Navigate (Surface), Survival (Tracking), and Scrutiny tests. The recorder can stay airborne for 5 hours before its power cell is exhausted.",
+    "Weight": "6",
+    "Rarity": "Very Rare",
+    "": "Pistol 600m S/-/- no damage, 1 clip no reload"
+  },
+  {
+    "Name": "Stasis Cage",
+    "Description": "The Stasis Cage is a fast and portable method of holding xenos creatures for further study. Consecrated for use during one of the many Askellian Purgation Wars against a now-forgotten alien race, many still exist for use by Inquisitors of the Ordo Xenos, elite bounty hunters, and Faceless Trade hunters. A Stasis Cage generates a field large enough to hold anything with a Size trait of 7 or lower that does not possess the Incorporeal trait for five hours (if using the battery pack), or indefinitely if connected to a power source. A creature inside cannot take any actions, and characters outside cannot attack or interact with anything inside. The cage itself is compact and unfurls into a flat circular plate three metres across. It activates via a small remote mechanism; once active, it can hover with its captive two metres above ground and can be pushed or towed as desired.",
+    "Weight": "6",
+    "Rarity": "Extremely Rare",
+    "": ""
+  },
+  {
+    "Name": "Adeptus Astartes Bolt Casing",
+    "Description": "The near-mythical warriors of the Adeptus Astartes are the Emperor’s Angels of Death, the ultimate champions of humanity and the greatest fear of the enemies of Mankind. Most Imperial Guardsmen go their entire lives without ever witnessing a Space Marine in action, but those who do are likely to be deeply moved by the experience. In the wake of an assault by these legendary figures, Guardsmen sometimes collect the bolt casings left behind as sacred relics that mark the passing of the Emperor’s chosen warriors. Though most meaningful to those Guardsmen who witnessed the event, even a second-hand bolt casing left by the warriors of the Adeptus Astartes is a powerful reminder of the might of the Imperium, and all that the Emperor has done for Mankind.  A character carrying one or more Adeptus Astartes bolt casings gains a +5 bonus to Willpower Tests to resist Fear and Pinning.",
+    "Weight": "0.1",
+    "Rarity": "Very Rare",
+    "": ""
+  },
+  {
+    "Name": "Psychic Hood",
+    "Description": "Psychic hoods are arcane devices that augment the powers of a psyker. Constructed of rare psy-conductive materials, the psy-lattice frame of a psychic hood must connect to the wearer’s cranium at numerous points, and is often subdermally anchored for greatest effect. A character wearing a psychic hood may spend his Reaction to attempt to nullify another psyker’s use of a power, as long as the opposing psyker is within a number of metres equal to the character’s Willpower Characteristic. Before the other psyker makes his Focus Power Roll, the character may spend his Reaction to make a Focus Power (Willpower) Test. Each Degree of Success he scores imposes a –10 penalty on the opposing psyker’s own Focus Power Test. The psyker may choose the psychic strength at which he makes this Test, which can result in Psychic Phenomena, as usual. Additionally, a psychic hood grants the wearer a +5 bonus to all Focus Power Tests, including nullification attempts. A psychic hood cannot be used by, and provides no benefits to, a character who is not a psyker.",
+    "Weight": "2",
+    "Rarity": "Extremely Rare",
+    "": ""
+  },
+  {
+    "Name": "Vid-Relay",
+    "Description": "On rare occasions, some Imperial Guard squads are issued helmet- or shoulder-mounted vid-casters, allowing a dispersed squad to coordinate their activities much more accurately than verbal communication alone would allow. In many cases, however, the truth is that vid-casters allow a commanding officer to lead a dangerous mission, perhaps a suicide mission, from the safety of his command bunker. The other half of the vid-relay system consists of a receiver, which can take the form of a helmet-mounted visor or “flip-out” eyepiece. Common-Craftsmanship vid-relays have a maximum range of about 10 km, while Good-Craftsmanship units can often reach 50 km or more. Best-craftsmanship units can maintain a connection between a planetary surface and a ship in orbit, with only minor delay. The effective range of a vid-relay, and the quality of the signal, can be greatly impacted by dense, intervening material or environmental conditions (such as operating underground or in the midst of a gravitic storm.) Vid-relays are usually accompanied by a vox-system.",
+    "Weight": "1",
+    "Rarity": "Average",
+    "": ""
+  },
+  {
+    "Name": "Rockhound Voidware Suit",
+    "Description": "Void suits are protective suits worn by the workers who make their livelihoods mining asteroids, carving comets for ice, cold ship repair work, or any of the other dangerous but lucrative professions to be found in the void. Unlike most heavy void suits, the “Rockhound” is lighter and allows more user dexterity, an essential trait given the nature of their work. The models feature a solid torso carapace over layers of thin but tough voidproof fabrics with extra padding on the knees and elbows. The helmet is large, and completely clear. It sports a backpack to provide a  re-breather and power supply. The main feature of the suit is the cold-gas micro-jets which surround the torso carapace, to be used for locomotion in limited or absent gravity. Each suit also has a variety of storage pouches, attachment points, and belts for carrying any and all of the tools and supplies a void worker might need. Most users customise their suits in a variety of eye-catching ways, the better to identify each other at a distance. Many miners, for example, will decorate their suit with symbols indicating rich strikes, or banner poles showing their home vessel.  Each suit can sustain the user in the void for 15 hours of operations, and includes a vox-link, suit-patch kit, helmet, protective eyewear including a photo-visor, and a clip harness with ten metres of line. The suit also applies a -5 penalty to the user’s Agility Characteristic while wearing the suit. The micro-jets grant the user the Fly (3) Trait in low or zero gravity situations.",
+    "Weight": "30",
+    "Rarity": "Scarce",
+    "": ""
+  },
+  {
+    "Name": "Slip Suit",
+    "Description": "Made of a leathery, faded yellow material of unknown origin, and sometimes found for trade on Footfall, slip suits have a greasy texture and are nearly frictionless to the touch. They are rare but sought after by many thieves and some bloodsport pit fighters for the benefits they provide in melee combats. The tough fabric is most often stitched into capes or vests. This item gives a +10 bonus to any attempts to break free from a Grapple action, and opponents Grappling the wearer suffer a –10 penalty",
+    "Weight": "7.5",
+    "Rarity": "Very Rare",
+    "": ""
+  },
+  {
+    "Name": "Targeting Monocle",
+    "Description": "For a Rogue Trader, image is everything, both in terms of what it projects and what it conceals. A Targeting Monocle does both—it gives the impression of someone more willing to wear a cumbersome affectation than receive normal ocular augmentics, while secretly providing a dazzling display of information to the user via translucent projections directly to the eye. Distances, wind velocity, infra-red detections, target movement, and more are visible overlaying the normal visual image. Advanced models can link into specially upgraded guns to also include precise firing solutions, ammunition count, and weapon status. A targeting monocle can either be a Motion Predictor, Photo Sight, Preysense Sight, or Telescopic Sight (this is determined when the monocle is acquired). However, it requires a Very Hard (–30) Scrutiny Test to determine this is anything but a Monocle. The Monocle must be linked (usually via a low-power vox connection) with a weapon, and counts as a weapon’s sight.",
+    "Weight": "0.02",
+    "Rarity": "Very Rare",
+    "": ""
+  }
+]

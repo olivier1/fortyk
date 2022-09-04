@@ -1,0 +1,226 @@
+[
+    {
+        "mark": "Marak Pattern Mk 1",
+        "speed": 0,
+        "tonnage": 5,
+        "space": 6,
+        "heatCap": 6,
+        "cost": 1000
+    },
+    {
+        "mark": "Marak Pattern Mk 2",
+        "speed": 10,
+        "tonnage": 8.5,
+        "space": 6,
+        "heatCap": 6,
+        "cost": 1500
+    },
+    {
+        "mark": "Marak Pattern Mk 3",
+        "speed": 20,
+        "tonnage": 12.5,
+        "space": 6,
+        "heatCap": 6,
+        "cost": 2000
+    },
+    {
+        "mark": "Marak Pattern Mk 4",
+        "speed": 30,
+        "tonnage": 16,
+        "space": 6,
+        "heatCap": 5,
+        "cost": 2500
+    },
+    {
+        "mark": "Marak Pattern Mk 5",
+        "speed": 40,
+        "tonnage": 20,
+        "space": 6,
+        "heatCap": 5,
+        "cost": 3000
+    },
+    {
+        "mark": "Marak Pattern Mk 6",
+        "speed": 50,
+        "tonnage": 23.5,
+        "space": 6,
+        "heatCap": 5,
+        "cost": 3500
+    },
+    {
+        "mark": "Marak Pattern Mk 7",
+        "speed": 60,
+        "tonnage": 27.5,
+        "space": 6,
+        "heatCap": 5,
+        "cost": 4000
+    },
+    {
+        "mark": "Rodock Pattern Mk1",
+        "speed": 0,
+        "tonnage": 7.5,
+        "space": 4,
+        "heatCap": 7,
+        "cost": 1000
+    },
+    {
+        "mark": "Rodock Pattern Mk2",
+        "speed": 10,
+        "tonnage": 13,
+        "space": 4,
+        "heatCap": 7,
+        "cost": 1500
+    },
+    {
+        "mark": "Rodock Pattern Mk3",
+        "speed": 20,
+        "tonnage": 18.5,
+        "space": 4,
+        "heatCap": 7,
+        "cost": 2000
+    },
+    {
+        "mark": "Rodock Pattern Mk4",
+        "speed": 30,
+        "tonnage": 24,
+        "space": 4,
+        "heatCap": 6,
+        "cost": 2500
+    },
+    {
+        "mark": "Rodock Pattern Mk5",
+        "speed": 40,
+        "tonnage": 30,
+        "space": 4,
+        "heatCap": 6,
+        "cost": 3000
+    },
+    {
+        "mark": "Rodock Pattern Mk6",
+        "speed": 50,
+        "tonnage": 35.5,
+        "space": 4,
+        "heatCap": 6,
+        "cost": 3500
+    },
+    {
+        "mark": "Rodock Pattern Mk7",
+        "speed": 60,
+        "tonnage": 41,
+        "space": 4,
+        "heatCap": 5,
+        "cost": 4000
+    },
+    {
+        "mark": "Cannum Pattern Mk1",
+        "speed": 0,
+        "tonnage": 4,
+        "space": 8,
+        "heatCap": 5,
+        "cost": 1000
+    },
+    {
+        "mark": "Cannum Pattern Mk2",
+        "speed": 10,
+        "tonnage": 7,
+        "space": 8,
+        "heatCap": 5,
+        "cost": 1500
+    },
+    {
+        "mark": "Cannum Pattern Mk3",
+        "speed": 20,
+        "tonnage": 10,
+        "space": 8,
+        "heatCap": 5,
+        "cost": 2000
+    },
+    {
+        "mark": "Cannum Pattern Mk4",
+        "speed": 30,
+        "tonnage": 13,
+        "space": 8,
+        "heatCap": 5,
+        "cost": 2500
+    },
+    {
+        "mark": "Cannum Pattern Mk5",
+        "speed": 40,
+        "tonnage": 16,
+        "space": 8,
+        "heatCap": 4,
+        "cost": 3000
+    },
+    {
+        "mark": "Cannum Pattern Mk6",
+        "speed": 50,
+        "tonnage": 19,
+        "space": 8,
+        "heatCap": 4,
+        "cost": 3500
+    },
+    {
+        "mark": "Cannum Pattern Mk7",
+        "speed": 60,
+        "tonnage": 22,
+        "space": 8,
+        "heatCap": 4,
+        "cost": 4000
+    },
+    {
+        "mark": "Helios Pattern Mk1",
+        "speed": 10,
+        "tonnage": 3,
+        "space": 2,
+        "heatCap": 9,
+        "cost": 15000
+    },
+    {
+        "mark": "Helios Pattern Mk2",
+        "speed": 20,
+        "tonnage": 6,
+        "space": 2,
+        "heatCap": 9,
+        "cost": 16000
+    },
+    {
+        "mark": "Helios Pattern Mk3",
+        "speed": 30,
+        "tonnage": 9,
+        "space": 2,
+        "heatCap": 9,
+        "cost": 17000
+    },
+    {
+        "mark": "Helios Pattern Mk4",
+        "speed": 40,
+        "tonnage": 12,
+        "space": 2,
+        "heatCap": 9,
+        "cost": 18000
+    },
+    {
+        "mark": "Helios Pattern Mk5",
+        "speed": 50,
+        "tonnage": 15,
+        "space": 2,
+        "heatCap": 8,
+        "cost": 19000
+    },
+    {
+        "mark": "Helios Pattern Mk6",
+        "speed": 60,
+        "tonnage": 18,
+        "space": 2,
+        "heatCap": 8,
+        "cost": 20000
+    },
+    {
+        "mark": "Helios Pattern Mk7",
+        "speed": 70,
+        "tonnage": 21,
+        "space": 2,
+        "heatCap": 8,
+        "cost": 21000
+    }
+]

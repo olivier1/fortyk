@@ -69,7 +69,7 @@
         "type": "Impact",
         "clip": 6,
         "rld": "Full",
-        "special": "Concussive(1),\nGraviton*",
+        "special": "Concussive(1),Graviton",
         "wt": "3",
         "rarity": "Near Unique",
         "training": "Exotic"
@@ -84,7 +84,7 @@
         "type": "Impact",
         "clip": 9,
         "rld": "2 full",
-        "special": "Concussive(2),\nGraviton*",
+        "special": "Concussive(2),Graviton",
         "wt": "6",
         "rarity": "Extremely Rare",
         "training": "Exotic"
@@ -208,7 +208,7 @@
         "type": "Energy",
         "clip": 12,
         "rld": "1full",
-        "special": "Luminagen*",
+        "special": "Luminagen",
         "wt": "7.5",
         "rarity": "Extremely Rare",
         "training": "Exotic"
@@ -223,7 +223,7 @@
         "type": "Energy",
         "clip": 20,
         "rld": "2full",
-        "special": "Luminagen*",
+        "special": "Luminagen",
         "wt": "15",
         "rarity": "Extremely Rare",
         "training": "Exotic"
@@ -238,7 +238,7 @@
         "type": "Energy",
         "clip": 20,
         "rld": "2full",
-        "special": "Luminagen*",
+        "special": "Luminagen",
         "wt": "30",
         "rarity": "Near Unique",
         "training": "Exotic"
@@ -268,7 +268,7 @@
         "type": "Impact",
         "clip": 24,
         "rld": "3 full",
-        "special": "Concussive(2),\nGraviton*, Tearing",
+        "special": "Concussive(2),Graviton, Tearing",
         "wt": "35",
         "rarity": "Near Unique",
         "training": "Exotic, Heavy"
@@ -283,7 +283,7 @@
         "type": "Energy",
         "clip": 10,
         "rld": "3full",
-        "special": "ERADICATION*",
+        "special": "ERADICATION",
         "wt": "50",
         "rarity": "Near Unique",
         "training": "Exotic, Heavy"
@@ -298,7 +298,7 @@
         "type": "Energy",
         "clip": 10,
         "rld": "3full",
-        "special": "ERADICATION*",
+        "special": "ERADICATION",
         "wt": "50",
         "rarity": "Near Unique",
         "training": "Exotic, Heavy"
@@ -313,7 +313,7 @@
         "type": "Energy",
         "clip": 10,
         "rld": "3full",
-        "special": "ERADICATION*, Blast(3)",
+        "special": "ERADICATION, Blast(3)",
         "wt": "50",
         "rarity": "Near Unique",
         "training": "Exotic, Heavy"
@@ -328,7 +328,7 @@
         "type": "Energy",
         "clip": 10,
         "rld": "3full",
-        "special": "ERADICATION*, Blast(5)",
+        "special": "ERADICATION, Blast(5)",
         "wt": "50",
         "rarity": "Near Unique",
         "training": "Exotic, Heavy"
@@ -1063,7 +1063,7 @@
         "type": "Energy",
         "clip": 1,
         "rld": "-",
-        "special": "Haywire, Blast(3), Mindscrambler*",
+        "special": "Haywire, Blast(3), Mindscrambler",
         "wt": "0.5",
         "rarity": "Rare"
     },

@@ -1,0 +1,102 @@
+const pack = game.packs.find(p => p.collection === `world.knight-melee-weapons`);
+
+// Load an external JSON data file which contains data for import
+const response = await fetch("systems/fortyk/importsimperial-knight-melee-weapons.json");
+const content = await response.json();
+console.log(content);
+let datas=[];
+for(let i=0;i<content.length;i++){
+    let imp=content[i];
+    let dataModel={};
+    dataModel["name"]=imp.name;
+    dataModel["type"]="meleeWeapon";
+    let data={};
+    data.class={"value":imp.class};
+    if(!imp.range){
+        
+        data.range={"formula":1};
+    }else{
+        
+       data.range={"formula":parseInt(imp.range)}; 
+    }
+    
+    data.damageFormula={"formula":imp.dmg};
+    data.pen={"formula":imp.pen};
+    data.damageType={"value":imp.type};
+    let flags={"fortyk":{}};
+    let impFlags=imp.special.split(",");
+    for(let y=0; y<impFlags.length;y++){
+        let flag=impFlags[y];
+        flag=flag.replaceAll(" ","");
+        flag=flag.toLowerCase();
+        if(flag.indexOf("(")!==-1){
+            var regExp = /\(([^)]+)\)/;
+            var matches = regExp.exec(flag);
+
+            //matches[1] contains the value between the parentheses
+           
+            flag=flag.substr(0,flag.indexOf("("));
+            flags.fortyk[flag]=parseInt(matches[1]);
+        }else{
+            flags.fortyk[flag]=true;
+        }
+    }
+    data.weight={"value":parseFloat(imp.tonnage)};
+    let impRarity=imp.rarity;
+    
+    switch (impRarity.toLowerCase()){
+        case "ubiquitous":
+            data.rarity={value:100};
+            break;
+        case "abundant":
+            data.rarity={value:30};
+            break;
+        case "plentiful":
+            data.rarity={value:320};
+            break;
+        case "common":
+            data.rarity={value:10};
+            break;
+        case "average":
+            data.rarity={value:0};
+            break;
+        case "scarce":
+            data.rarity={value:-10};
+            break;
+        case "rare":
+            data.rarity={value:-20};
+            break;
+        case "very rare":
+            data.rarity={value:-30};
+            break;
+        case "extremely rare":
+            data.rarity={value:-40};
+            break;
+        case "near unique":
+            data.rarity={value:-50};
+            break;
+        case "unique":
+            data.rarity={value:-60};
+            break;
+
+    }
+    if(imp.description){
+        data.description={"value":imp.description}
+    }
+    dataModel.data=data;
+    dataModel.flags=flags;
+    datas.push(dataModel);
+
+}
+console.log(datas);
+
+// Create temporary Item entities which impose structure on the imported data
+const items = await Item.create(datas, {temporary: true});
+    console.log(items);
+
+    // Save each temporary Actor into the Compendium pack
+    for ( let i of items ) {
+        await pack.importDocument(i);
+        console.log(`Imported Item ${i.name} into Compendium pack ${pack.collection}`);
+    }
+ 

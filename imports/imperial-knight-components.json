@@ -1,0 +1,506 @@
+[
+    {
+        "name": "AMS",
+        "type": "Other",
+        "description": "Protects the knight against missile attacks, the first hit of any missile barrage is automatically negated. Only 1 AMS may be equipped.",
+        "tonnage": 3,
+        "space": 1,
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Augur Array mk1",
+        "type": "Sensor",
+        "description": "Grants a +10 bonus to awareness tests. Allows to scan for enemies as a half action tech-use test. Reveals enemies with lower stealth DoS within 200m.",
+        "tonnage": 2,
+        "space": 1,
+        "rarity": "Average"
+    },
+    {
+        "name": "Augur Array mk2",
+        "type": "Sensor",
+        "description": "Grants a +20 bonus to awareness tests. Allows to scan for enemies as a half action tech-use test. Reveals enemies with lower stealth DoS within 400m.",
+        "tonnage": 3,
+        "space": 2,
+        "rarity": "Scarce"
+    },
+    {
+        "name": "Augur Array mk3",
+        "type": "Sensor",
+        "description": "Grants a +30 bonus to awareness tests. Allows to scan for enemies as a half action tech-use test. Reveals enemies with lower stealth DoS within 600m.",
+        "tonnage": 4,
+        "space": 3,
+        "rarity": "Rare"
+    },
+    {
+        "name": "Auto-loader",
+        "type": "Weapon attachment",
+        "description": "Reloading is a free action for the attached weapon.",
+        "tonnage": 2,
+        "space": 0,
+        "rarity": "Scarce"
+    },
+    {
+        "name": "Cannum Pattern Core Channeler",
+        "type": "Core modification",
+        "description": "This core modification allows the knight to channel its core power into its limbs more effectively. Each round the bondsman can decide to activate the core channelers to gain +15 melee damage and gain 1 heat.",
+        "tonnage": 3,
+        "space": 2,
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Cannum Pattern Leg Actuators",
+        "type": "Leg actuator",
+        "description": "This links your leg actuators to a bigger power flow to the plasma core. Every round the pilot may choose to boost his movement, increasing his tactical speed by 50% and gaining 1 heat.",
+        "tonnage": 3,
+        "space": 2,
+        "rarity": "Rare"
+    },
+    {
+        "name": "Ceramite Plating",
+        "type": "Plating",
+        "description": "The knight becomes immune to the melta quality.",
+        "tonnage": 8,
+        "space": 5,
+        "rarity": "Rare"
+    },
+    {
+        "name": "Command and Control Throne Mechanicum",
+        "type": "Throne Mechanicum modification",
+        "description": "This allows the pilot to affect any number of allied squads and squadrons with his command tests. He also benefits of a +10 to such command tests.",
+        "tonnage": 3,
+        "space": 2,
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Coolant Fluid",
+        "type": "Other",
+        "description": "Is consumed by a Core Stabilizer to remove 2 heat",
+        "tonnage": 0.5,
+        "space": 0,
+        "rarity": "Average"
+    },
+    {
+        "name": "Core Stabilizer",
+        "type": "Core modification",
+        "description": "Can lower heat by 2, consumes 1 coolant fluid per use.",
+        "tonnage": 2,
+        "space": 1,
+        "rarity": "Very rare"
+    },
+    {
+        "name": "Damage Control",
+        "type": "Core modification",
+        "description": "Grants the Knight the Damage Control trait.",
+        "tonnage": 3,
+        "space": 1,
+        "rarity": "Scarce"
+    },
+    {
+        "name": "Dueling Throne Mechanicum",
+        "type": "Throne Mechanicum modification",
+        "description": "Reduces the size penalty to jinking by up to 20.",
+        "tonnage": 3,
+        "space": 1,
+        "rarity": "Extremely Rare"
+    },
+    {
+        "name": "Enhanced Torso Servos",
+        "type": "Other",
+        "description": "Allows the pilot to rotate his facing up to 90 degrees whenever he is struck in melee combat as part of a parry or Jinx action.",
+        "tonnage": 4,
+        "space": 2,
+        "rarity": "Rare"
+    },
+    {
+        "name": "Gyro mk1",
+        "type": "Other",
+        "description": "Lowers range attack penalties from own movement by 10.",
+        "tonnage": 2,
+        "space": 2,
+        "rarity": "Rare"
+    },
+    {
+        "name": "Gyro mk2",
+        "type": "Other",
+        "description": "Lowers range attack penalties from own movement by 20.",
+        "tonnage": 3,
+        "space": 3,
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Lifting Servos",
+        "type": "Arm actuator",
+        "description": "Standing up is only a half action for this knight.",
+        "tonnage": 2,
+        "space": 1,
+        "rarity": "Average"
+    },
+    {
+        "name": "Mine Sweeper",
+        "type": "Other",
+        "description": "Whenever a knight equipped with a mine sweeper would trigger a planted explosive, the knight’s pilot may make a Routine (+20) Perception Test as a Reaction. If he succeeds, he may have the knight back up 5 metres immediately, plus 1 metre per Degree of Success he scored on the Test. If this is enough distance to avoid the explosion, the knight suffers no Damage from the detonating mine. Any Critical Damage (including Critical Damage caused by Thresholds) to the knight’s Front Facing damages the Mine Sweeper, rendering it useless until repaired.",
+        "tonnage": 1,
+        "space": 2,
+        "rarity": "Scarce"
+    },
+    {
+        "name": "Motion Dampening Throne Mechanicum",
+        "type": "Throne Mechanicum modification",
+        "description": "Gives the pilot a +30 bonus to toughness tests to resist stuns as a result of the knight's critical effects.",
+        "tonnage": 2,
+        "space": 1,
+        "rarity": "Average"
+    },
+    {
+        "name": "Overcharged Ion Shield",
+        "type": "Core modification",
+        "description": "Increases the Ion shield rating by 10% but lowers heat cap by 2.",
+        "tonnage": 3,
+        "space": 1,
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Prey sensors Mk1",
+        "type": "Sensor",
+        "description": "Grants the Preysense(1) trait.",
+        "tonnage": 1,
+        "space": 1,
+        "rarity": "Rare"
+    },
+    {
+        "name": "Plating Insulation",
+        "type": "Plating",
+        "description": "The knight cannot gain or lose heat from attacks or environmental effects.",
+        "tonnage": 3,
+        "space": 4,
+        "rarity": "Average"
+    },
+    {
+        "name": "Reactive Plating",
+        "type": "Plating",
+        "description": "The knight's armour is 10% more effective against impact and explosive weapons.",
+        "tonnage": 6,
+        "space": 5,
+        "rarity": "Scarce"
+    },
+    {
+        "name": "Reinforced Throne Mecanicum",
+        "type": "Throne Mechanicum modification",
+        "description": "Protects the pilot from critical damage effects that inflict damage to him. Also protects the pilot from fall damage.",
+        "tonnage": 5,
+        "space": 1,
+        "rarity": "Rare"
+    },
+    {
+        "name": "Rough Terrain Modifications",
+        "type": "Leg actuator",
+        "description": "Rough terrain modifications allow a knight’s pilot to re- roll one failed Operate Test per Turn when navigating difficult terrain. The pilot may reroll tests to prevent Falling Over as well.",
+        "tonnage": 3,
+        "space": 2,
+        "rarity": "Scarce"
+    },
+    {
+        "name": "Skyfire Sensors",
+        "type": "Sensor",
+        "description": "All ranged weapons ignore to hit penalties incurred by shooting at a supersonic flyer.",
+        "tonnage": 1,
+        "space": 1,
+        "rarity": "Scarce"
+    },
+    {
+        "name": "Titanic Pattern Arm Actuators",
+        "type": "Arm actuator",
+        "description": "Increases melee weapon damage by 5 but lowers the knight's manoeuvrability by -10.",
+        "tonnage": 4,
+        "space": 2,
+        "rarity": "Rare"
+    },
+    {
+        "name": "Co-Axial Weapon Mount",
+        "type": "Weapon attachment",
+        "description": "Attaches to a Titanic Ranged weapon allowing to mount one extra auxiliary weapon. Limit of one Co-Axial weapon per ranged weapon.",
+        "tonnage": 1,
+        "space": 0,
+        "rarity": "Scarce"
+    },
+    {
+        "name": "Humpback",
+        "type": "Other",
+        "description": "Takes the place of the Artillery weapon slot on the carapace to increase chassis space by 5.",
+        "tonnage": 2.5,
+        "space": 0,
+        "rarity": "Scarce"
+    },
+    {
+        "name": "Motion Dampening Arm Actuators",
+        "type": "Arm actuator",
+        "description": "This gives a +10 bonus to semi or full automatic ranged attacks from titanic weapons mounted on the arms.",
+        "tonnage": 3,
+        "space": 1,
+        "rarity": "Extremely Rare"
+    },
+    {
+        "name": "Heat bank",
+        "type": "Other",
+        "description": "Increases the heat cap of the Knight by 1.",
+        "tonnage": 1,
+        "space": 1,
+        "rarity": "Scarce"
+    },
+    {
+        "name": "Snub-nosed weapon",
+        "type": "Weapon attachment",
+        "description": "The weapon can be fired in Melee in a similar way as a Pistol, The weapons weight is reduced by 1 ton, to a minimum of 1 ton, Halve the weapons range, lose the Accurate and shieldbreaker qualities if it had them.",
+        "tonnage": 0,
+        "space": 0,
+        "rarity": "Average"
+    },
+    {
+        "name": "AAMS (Aegis Anti Missile System)",
+        "type": "Other",
+        "description": "Protects the knight and any friendly vehicles within 20m against missile attacks, the first hit of any missile barrage is automatically negated. Only 1 AMS may be equipped.",
+        "tonnage": 3,
+        "space": 2,
+        "rarity": "Near Unique"
+    },
+    {
+        "name": "Aegis Throne Mechanicum",
+        "type": "Throne Mechanicum modification",
+        "description": "Protects the pilot from critical damage effects that inflict damage to him and also protects him from fall damage. Gives the pilot a +30 bonus to toughness tests to resist stuns as a result of the knight's critical effects.",
+        "tonnage": 4,
+        "space": 1,
+        "rarity": "Extremely Rare"
+    },
+    {
+        "name": "Ammunition Casing",
+        "type": "Weapon attachment",
+        "description": "Protects the Knight from weapon explosions from the attached weapon.",
+        "tonnage": 1,
+        "space": 1,
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Anti-grav Plates",
+        "type": "Weapon attachment",
+        "description": "The attached weapon's tonnage is reduced by 50%, melee weapons lose 1d10 damage.",
+        "tonnage": 0,
+        "space": 0,
+        "rarity": "Near Unique"
+    },
+    {
+        "name": "Artificer Hull",
+        "type": "Plating",
+        "description": "A knight with this Upgrade reduces all Critical Damage by 4, gains +10 to any Jink Actions, and incorporates the effects of either ceramite plating or reactive plating. Due to the sacred nature of the knight’s hull, all Repair Tests for the knight suffer a –20 penalty in addition to any other modifiers.",
+        "tonnage": 5,
+        "space": 4,
+        "rarity": "Near Unique"
+    },
+    {
+        "name": "Artificer Torso Servos",
+        "type": "Other",
+        "description": "Allows the pilot to rotate his facing up to 180 degrees whenever he is struck in melee combat as part of a parry or Jink action.",
+        "tonnage": 3,
+        "space": 3,
+        "rarity": "Extremely Rare"
+    },
+    {
+        "name": "Augur Array mk4",
+        "type": "Sensor",
+        "description": "Grants a +30 bonus to awareness tests, and grants 1 extra DoS on sucessful awareness tests. Allows to scan for enemies as a half action tech-use test. Reveals enemies with lower stealth DoS within 800m.",
+        "tonnage": 3,
+        "space": 3,
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Augur Array mk5",
+        "type": "Sensor",
+        "description": "Grants a +30 bonus to awareness tests, and grants 2 extra DoS on sucessful awareness tests. Allows to scan for enemies as a half action tech-use test. Reveals enemies with lower stealth DoS within 1000m.",
+        "tonnage": 3.5,
+        "space": 3,
+        "rarity": "Extremely Rare"
+    },
+    {
+        "name": "Augur Array mk6",
+        "type": "Sensor",
+        "description": "Grants a +30 bonus to awareness tests, and grants 3 extra DoS on sucessful awareness tests. Allows to scan for enemies as a half action tech-use test. Reveals enemies with lower stealth DoS within 1200m.",
+        "tonnage": 4,
+        "space": 3,
+        "rarity": "Near Unique"
+    },
+    {
+        "name": "Augur Array mk7",
+        "type": "Sensor",
+        "description": "Grants a +30 bonus to awareness tests, and grants 4 extra DoS on sucessful awareness tests. Allows to scan for enemies as a half action tech-use test. Reveals enemies with lower stealth DoS within 1400m.",
+        "tonnage": 4.5,
+        "space": 3,
+        "rarity": "Unique"
+    },
+    {
+        "name": "Angelus Pattern Damage Control Systems",
+        "type": "Core modification",
+        "description": "Grants the Knight the Damage Control trait, allows to reroll tests to restart the knight and allows to reroll tech-use tests to prevent core meltdowns.",
+        "tonnage": 2,
+        "space": 1,
+        "rarity": "Extremely Rare"
+    },
+    {
+        "name": "Colossus Pattern Arm Actuators",
+        "type": "Arm actuator",
+        "description": "Increases melee damage by 10.",
+        "tonnage": 2,
+        "space": 2,
+        "rarity": "Near Unique"
+    },
+    {
+        "name": "Communion Throne Mechanicum",
+        "type": "Throne Mechanicum modification",
+        "description": "Melding tests with this knight receive a +20 bonus and the manoeuvrability bonus is increased to +30. The pilot may also use the Melding skill instead of the Operate(Super Heavy Walker) skill to perform vehicle actions while melded.",
+        "tonnage": 4,
+        "space": 1,
+        "rarity": "Near Unique"
+    },
+    {
+        "name": "Double Heat Bank",
+        "type": "Other",
+        "description": "Increases the heat cap of the knight by 2.",
+        "tonnage": 1,
+        "space": 2,
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Electromagnetic Cloak",
+        "type": "Other",
+        "description": "Renders the knight untargettable by indirect fire weapons.",
+        "tonnage": 2,
+        "space": 3,
+        "rarity": "Near Unique"
+    },
+    {
+        "name": "Grav Enhanced Titanic Feet",
+        "type": "Leg actuator",
+        "description": "The stomp attacks of this knight increase their blast quality by 5.",
+        "tonnage": 1,
+        "space": 2,
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Gyro mk3",
+        "type": "Other",
+        "description": "Lowers range attack penalties from own movement by 30.",
+        "tonnage": 1.5,
+        "space": 1,
+        "rarity": "Extremely Rare"
+    },
+    {
+        "name": "Gyro mk4",
+        "type": "Other",
+        "description": "Lowers range attack penalties from own movement by 40.",
+        "tonnage": 2,
+        "space": 2,
+        "rarity": "Near Unique"
+    },
+    {
+        "name": "Gyro mk5",
+        "type": "Other",
+        "description": "Lowers range attack penalties from own movement by 50.",
+        "tonnage": 2.5,
+        "space": 2,
+        "rarity": "Unique"
+    },
+    {
+        "name": "Jump Jets",
+        "type": "Other",
+        "description": "Each jump jet allows the knight to jump up to 3m or to reduce falling damage from that distance.",
+        "tonnage": 0.5,
+        "space": 1,
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Machine-Spirit Enhanced Reflexes",
+        "type": "Other",
+        "description": "Allows the knight to jink one additional time each round at the cost of 1 heat.",
+        "tonnage": 1.5,
+        "space": 3,
+        "rarity": "Near Unique"
+    },
+    {
+        "name": "Nova Pattern Plasma Ducts",
+        "type": "Core modification",
+        "description": "This modification can link with equipped Plasma weapons to boost their damage by +3d10, +6 penetration. If it has the blast quality increase it by 5, if not grant it the blast(5) quality. The weapon gains the recharge quality. Each time the knight uses this component it gains 1 heat.",
+        "tonnage": 2,
+        "space": 3,
+        "rarity": "Extremely Rare"
+    },
+    {
+        "name": "Oracle Pattern Sensors Mk1",
+        "type": "Sensor",
+        "description": "Gants the Preysense(1) trait. Gives a +10 bonus to awareness tests.",
+        "tonnage": 2,
+        "space": 1,
+        "rarity": "Extremely Rare"
+    },
+    {
+        "name": "Oracle Pattern Sensors Mk2",
+        "type": "Sensor",
+        "description": "Gants the Preysense(2) trait. Gives a +20 bonus to awareness tests.",
+        "tonnage": 3,
+        "space": 2,
+        "rarity": "Near Unique"
+    },
+    {
+        "name": "Oracle Pattern Sensors Mk3",
+        "type": "Sensor",
+        "description": "Gants the Preysense(3) trait. Gives a +30 bonus to awareness tests.",
+        "tonnage": 4,
+        "space": 3,
+        "rarity": "Unique"
+    },
+    {
+        "name": "Prey sensors Mk2",
+        "type": "Sensor",
+        "description": "Grants the Preysense(2) trait.",
+        "tonnage": 2,
+        "space": 2,
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Prey sensors Mk3",
+        "type": "Sensor",
+        "description": "Grants the Preysense(3) trait.",
+        "tonnage": 2.5,
+        "space": 3,
+        "rarity": "Extremely Rare"
+    },
+    {
+        "name": "Prey sensors Mk4",
+        "type": "Sensor",
+        "description": "Grants the Preysense(4) trait.",
+        "tonnage": 3,
+        "space": 3,
+        "rarity": "Near Unique"
+    },
+    {
+        "name": "Prey sensors Mk5",
+        "type": "Sensor",
+        "description": "Grants the Preysense(5) trait.",
+        "tonnage": 3.5,
+        "space": 3,
+        "rarity": "Unique"
+    },
+    {
+        "name": "Vestigium Pattern Throne Mechanicum",
+        "type": "Throne Mechanicum modification",
+        "description": "Allows the bondsman to apply the aim bonus to every ranged weapon of the knight when performing an aim action.",
+        "tonnage": 3,
+        "space": 1,
+        "rarity": "Near Unique"
+    },
+    {
+        "name": "Maglock Titanic Feet",
+        "type": "Leg actuator",
+        "description": "Allows the knight to secure itself to metallic surfaces in low gravity.",
+        "tonnage": 2,
+        "space": 2,
+        "rarity": "Very Rare"
+    }
+]
