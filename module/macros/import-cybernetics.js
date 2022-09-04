@@ -1,7 +1,7 @@
-const pack = game.packs.find(p => p.collection === `fortyk.wargear`);
+const pack = game.packs.find(p => p.collection === `fortyk.cybernetics`);
 
 // Load an external JSON data file which contains data for import
-const response = await fetch("systems/fortyk/imports/imperial-tools.json");
+const response = await fetch("systems/fortyk/imports/cybernetics.json");
 const content = await response.json();
 console.log(content);
 let datas=[];
@@ -9,7 +9,7 @@ for(let i=0;i<content.length;i++){
     let imp=content[i];
     let dataModel={};
     dataModel["name"]=imp.Name;
-    dataModel["type"]="wargear";
+    dataModel["type"]="cybernetic";
     let data={};
     
     data.weight={"value":parseFloat(imp.Weight)};

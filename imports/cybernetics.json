@@ -1,0 +1,308 @@
+[
+  {
+    "Name": "Bionic Arm",
+    "Description": "Bionic arms are a common replacement, and Common models can mimic normal hand and arm functions, including dexterity and even sense of touch. ++ Poor craftsmanship versions are more cumbersome and visibly artificial; halve the owner’s Agility characteristic (rounded up) where matters of fine dexterity are involved. In addition, Weapon Skill and Ballistic Skill tests made when using the limb suffer a –5 penalty. ++ Good craftsmanship bionic arms improve on natural design and provide a +10 bonus on Agility tests requiring delicate manipulation. ++ Best craftsmanship bionic arms provide a +10 bonus on Agility tests requiring delicate manipulation and add a +10 bonus to Strength tests using the arm. They can be also used to store small items (such as pistol ammo clips) inside concealed interior compartments within the arm.",
+    "Rarity": "Scarce",
+    "Notes": "Bionic Replacement: ++ Adds 2 to TB (Houserule: Armor) for hits against that location ++ Any result that causes bleeding or some other inappropriate result instead renders the bionic limb useless."
+  },
+  {
+    "Name": "Bionic Heart",
+    "Description": "The paranoid (or the prepared) are ever-willing to replace crude flesh with more durable, armoured materials—the light armour shielding of a bionic heart provides a last line of defence. Superior models can be triggered to pump more rapidly to increase physical capacity, though this risks bodily strain as the rest of the circulatory system is put under pressure. A character with this implant gains +1 Armour point to the Body location—this bonus stacks with any armour worn—and gains the Sprint talent.",
+    "Rarity": "Very Rare",
+    "Notes": "Bionic Replacement: ++ Adds 2 to TB (Houserule: Armor) for hits against that location ++ Any result that causes bleeding or some other inappropriate result instead renders the bionic limb useless."
+  },
+  {
+    "Name": "Bionic Legs",
+    "Description": "These bionics are fully integrated into the hip with a spinal link, and Common versions allow the user to walk, run, and climb at normal human levels. ++ Poor craftsmanship models are lumbering affairs that reduce a character’s Movement rate by 1, and when running, the user must succeed on an Ordinary (+10) Agility test or fall Prone at the end of his movement. ++ Good craftsmanship bionic legs grant the owner the Sprint talent, and add a +20 bonus to Agility tests that he makes when attempting to jump or leap.",
+    "Rarity": "Scarce",
+    "Notes": "Bionic Replacement: ++ Adds 2 to TB (Houserule: Armor) for hits against that location ++ Any result that causes bleeding or some other inappropriate result instead renders the bionic limb useless."
+  },
+  {
+    "Name": "Bionic Respiratory System",
+    "Description": "Common bionic lungs and implanted respiratory systems mimic the action of human lungs and keep the body supplied with oxygen. Such characters gain a +20 bonus to Toughness tests made to resist airborne toxins and gas weapons. ++ Poor bionic lungs offer the same benefits as the Common system, but are raucously loud affairs and characters suffer a –20 penalty to Stealth tests. Their generally poor oxygen supply to the body means that the character suffers a –10 penalty on all tests involving strenuous physical activity. ++ Good bionic lungs count as a full life support system—if for any reason the user’s own respiratory system fails, his bionic lungs keep his blood oxygenated—and can be designed to be unnoticeable if desired.",
+    "Rarity": "Rare",
+    "Notes": "Bionic Replacement: ++ Adds 2 to TB (Houserule: Armor) for hits against that location ++ Any result that causes bleeding or some other inappropriate result instead renders the bionic limb useless."
+  },
+  {
+    "Name": "Bionic Senses",
+    "Description": "Eyes, ears, and even noses are often lost through combat or accident, and replacement versions use cranial interfaces to allow a very close approximation to natural senses. Bionic eyes in particular are frequently seen amongst senior Imperial Guard officers, Rogue Traders, and other powerful individuals. Common systems, while usually clearly artificial and often oversized, manage to more or less duplicate the approximate human range of senses adequately and have no further game effects. ++ Poor quality cybernetic senses are problem-ridden imitations of the real thing. Hearing might be troubled by static, for example, or vision rendered in low-resolution monochrome. A character with this system suffers a –20 penalty to tests made involving the cybernetic sense. ++ Good cybernetic senses grant a +10 bonus to tests using that particular sense, and a +20 bonus to tests made to resist attacks on the sense itself, such as deafening noises and blinding flashes. Advanced cybernetic eyes can also incorporate magnifying lenses, a full photo-visor, or a system granting the Dark-sight trait (see page 135). Advanced cybernetic ears can also include an internal micro-bead system. Each additional upgrade requires a separate Requisition test to be fitted into existing cybernetic senses.",
+    "Rarity": "Rare",
+    "Notes": "Bionic Replacement: ++ Adds 2 to TB (Houserule: Armor) for hits against that location ++ Any result that causes bleeding or some other inappropriate result instead renders the bionic limb useless."
+  },
+  {
+    "Name": "Augur Array",
+    "Description": "These implanted devices duplicate the effects of sensor systems that go beyond normal human senses. In all cases, their use requires concentration and a Half Action. Common systems function identically to a standard hand-held auspex device (see page 175). ++ Poor systems possess only a single detection ability (heat, radiation, electromagnetics, or very rarely daemonic taint) and have the limited range of 20 metres. If the augur is set to detect daemonic taint, it has the possibility to be overwhelmed and malfunction should a Warp-denizen get too close. ++ Good systems function as a full auspex, but also allow the character to re-roll all Perception-based tests.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Autosanguine",
+    "Description": "This ancient and blessed microscopic technology flows as a metallic liquid within the character’s bloodstream, repairing minor injuries and accelerating healing. It repairs minor injuries and speeds recovery. When applying healing, the character is always considered Lightly Damaged, and heals at an increased rate, removing 2 points of damage per day instead of 1.",
+    "Rarity": "Very Rare",
+    "Notes": "Some cybernetic systems are only provided to tech-adepts of the Adeptus Mechanicus. It is possible, though, that skilled hereteks might risk the wrath of the Machine Cult by implanting crude versions of these systems in anyone willing to pay their price."
+  },
+  {
+    "Name": "Baleful Eye",
+    "Description": "This legendary archaeotech bionic pattern incorporates a tiny las weapon. Each baleful eye has been passed from recipient to recipient across centuries or millennia, reclaimed by the Machine Cult whenever its owner dies. As might be imagined, it is very intimidating when used as a part of negotiations with primitive societies. A character with this implant has a weapon in his eye that counts as a hot-shot laspistol (see page 154) with a range of  10m. The baleful eye can be fired even if the character’s hands are full. It has no clip size, however a jam result causes the character to lose sight in the eye for a number of rounds equal to the degrees of failure on the attack.",
+    "Rarity": "Near Unique",
+    "Notes": ""
+  },
+  {
+    "Name": "Calculus Logi Upgrade",
+    "Description": "These bionics are internal cogitator implants which aid in data retention and processing. The user can rapidly sift through stacked dataslates and parchments, applying intuition to vast reams of data far beyond the capabilities of a normal man. This implant grants the user a +10 bonus to Literacy, Logic, and Scholastic Lore tests.",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Cerebral Implants",
+    "Description": "Commonly used to repair a severely damaged brain or (hopefully) augment its abilities, these often-risky implant systems represent a major step from simply replacing a limb to altering a character from human to mechanism. Common-level implants can restore paralysed and brain-damaged users to a semblance of normality, but with a permanent loss of 1d10 points from the character’s Weapon Skill, Ballistic Skill, Agility, Intelligence, and Fellowship characteristics. ++ Poor versions restore brain function, but destroy the subject’s personality and memories, rendering them no better than a servitor, and as such are unsuitable for PCs. ++ Good cerebral implants are very rare even among high ranking Imperial officials, and are exceedingly difficult to acquire, becoming Near Unique in Availability. These grant the user the Unnatural Intelligence (2) trait (see page 139) and a +20 bonus to Logic and Lore tests, thanks to the superior mental capabilities he now enjoys.",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Cranial Armour",
+    "Description": "This augmentation covers or replaces most of the skull with layers of plasteel and gel padding to better prevent concussion and other brain injuries. This implant adds +1 Armour point to the Head, and stacks with any worn armour on that location.",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Ferric Lure Implants",
+    "Description": "Powerful electromagnets are implanted in the Acolyte, allowing him to cast forth a net of invisible energy as a Full Action after a successful Challenging (+0) Willpower test. He can call an unsecured metal object into his hand; the object cannot mass more than 1 kg per point of Willpower bonus, and must be within 20 metres. He must already have Mechanicus Implants trait (see page 137) for this system to function, and it can be improved through certain talents as described in Chapter IV: Talents & Traits.",
+    "Rarity": "Very Rare",
+    "Notes": "Some cybernetic systems are only provided to tech-adepts of the Adeptus Mechanicus. It is possible, though, that skilled hereteks might risk the wrath of the Machine Cult by implanting crude versions of these systems in anyone willing to pay their price."
+  },
+  {
+    "Name": "Interface Port",
+    "Description": "The Acolyte now has a mechanical port implanted in his body, commonly in the rear of the neck, which can be connected to machines via a data cable. This allows the user faster and smoother access to the valuable information within, and grants a +10 bonus to Common Lore, Inquiry, or Tech-Use tests whilst connected to a relevant mechanism or data spool.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Internal Reservoir",
+    "Description": "This implant acts as a powerful battery, storing energy for various implants and (especially) for functions that require energy to be expended in rapid or violent fashions. When it is fully charged, the Acolyte no longer gains Fatigue from using Luminen Capacitors either to recharge or attack something, but each use of those implants drains the reservoir by half. The battery fully recharges after one day of resting.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Locator Matrix",
+    "Description": "Micro-cogitators implanted at the base of the skull allow the user to be aware of the direction of the planetary poles, the Acolyte’s present location to within a few metres, relative velocity, altitude, time of day, and other valuable information. The user must still have access to maps and other planetary data in order to benefit from this information, however—knowing one is at a specific location on a planetary surface has little meaning without knowing what is over the next rise, or what is the direction needed to reach a given destination.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Luminem Capacitor",
+    "Description": "This implanted energy source charges internal capacitors, allowing the character to recharge devices or even unleash powerful energy blasts. With a successful Toughness test, the character recharges or powers machinery. This requires one minute of mental focus and meditation. The difficulty of the Toughness test varies depending on the nature of the powered system. * Ordinary (+10): Simple power cell, glow-globe * Challenging (+0): Lasgun charge pack, dataslate * Difficult (–10): Shuttle launch systems, servo-skull * Hard (–20): Lascannon charge pack, servitor * Very Hard (–30): Cogitator core, xenos technology The device can also be used offensively, but requires talents to use properly as described in Chapter IV: Talents & Traits. Only an Acolyte with the Mechanicus Implants trait (see page 137) may use this device. ++ Poor craftsmanship variants impose a –10 penalty to all Toughness tests made to use them. ++ Good craftsmanship variants grant a +10 bonus to all Toughness tests made to use them.",
+    "Rarity": "Very Rare",
+    "Notes": "Some cybernetic systems are only provided to tech-adepts of the Adeptus Mechanicus. It is possible, though, that skilled hereteks might risk the wrath of the Machine Cult by implanting crude versions of these systems in anyone willing to pay their price."
+  },
+  {
+    "Name": "Maglev Coils",
+    "Description": "Archaeotech systems of powerful gravimetric coils are implanted in the body, allowing the user to become unshackled from gravity’s grasp for short periods. Using a Half Action, the user may hover 20-30 centimetres off the ground for a number of minutes equal to 1d10 plus the character’s Toughness bonus. The character must employ a Half Action each round to concentrate on operating this implant and may use the other action to move normally. The character can slow his rate of descent when falling so long as this implant is active when the character reaches the ground, reducing all falling damage to a maximum of 1d10+3 Impact damage. Each time the character activates the coils, it drains the stored power and cannot be used again until recharged (which takes 24 hours).",
+    "Rarity": "Very Rare",
+    "Notes": "Some cybernetic systems are only provided to tech-adepts of the Adeptus Mechanicus. It is possible, though, that skilled hereteks might risk the wrath of the Machine Cult by implanting crude versions of these systems in anyone willing to pay their price."
+  },
+  {
+    "Name": "Mechadendrite, Ballistic",
+    "Description": "Designed for ranged combat, this mechadendrite is fitted with a weapon that functions as a laspistol that does not require recharging. The user does not need weapon training in this weapon class to fire the mechadendrite’s weapon without the normal untrained penalty, and can attack with this weapon as his Reaction.",
+    "Rarity": "Very Rare",
+    "Notes": "Some cybernetic systems are only provided to tech-adepts of the Adeptus Mechanicus. It is possible, though, that skilled hereteks might risk the wrath of the Machine Cult by implanting crude versions of these systems in anyone willing to pay their price.  All mechadendrite cybernetics are considered to be of Good craftsmanship unless otherwise noted.  Mechadendrites are mechanical attachments of brass and steel that act as additional arms. They are normally mounted on the shoulders or back, though some within the Mechanicum also project these cybernetics from their waists or chests. Each is usually 2 metres in length when fully extended, and has a specialised function based around the mechanisms affixed at their end. The number of mechadendrites coiled or folded around a Tech-Priest’s crimsonrobed figure is often an excellent indicator of his rank within the Priesthood of Mars.  Unless stated otherwise, mechadendrites can only be used to perform tasks that the owner already knows how to do. For example, a character with a medicae mechadendrite must have the Medicae skill in order to take advantage of the extra abilities the limb grants. A character must have the appropriate Mechadendrite Use talent (see page 130) to operate his mechadendrite, and the maximum number of mechadendrites he can have installed upon his body is equal to his Toughness bonus."
+  },
+  {
+    "Name": "Mechadendrite, Manipulator",
+    "Description": "A heavy and powerful attachment, this mechadendrite is designed for heavy lifting and handling of industrial gear. It grants the user +20 to Strength-based tests; the vicious gripping and crushing pincers can also tether the user to gantries or suitably heavy objects as a Free Action. Once per round, the character can utilise this mechadendrite as a weapon by spending a Half Action or a Reaction to make a Standard Attack action with it. It counts as a melee weapon that inflicts 1d10+2 Impact damage, Pen 0.  While powerful, the manipulator is not subtle, and attempts to use it for such tasks as dataslate typing, inscribing sacrificial etchings, handling delicate objects, or the like only ends with equipment being dropped, smashed, or otherwise ruined.",
+    "Rarity": "Very Rare",
+    "Notes": "Some cybernetic systems are only provided to tech-adepts of the Adeptus Mechanicus. It is possible, though, that skilled hereteks might risk the wrath of the Machine Cult by implanting crude versions of these systems in anyone willing to pay their price.  All mechadendrite cybernetics are considered to be of Good craftsmanship unless otherwise noted.  Mechadendrites are mechanical attachments of brass and steel that act as additional arms. They are normally mounted on the shoulders or back, though some within the Mechanicum also project these cybernetics from their waists or chests. Each is usually 2 metres in length when fully extended, and has a specialised function based around the mechanisms affixed at their end. The number of mechadendrites coiled or folded around a Tech-Priest’s crimsonrobed figure is often an excellent indicator of his rank within the Priesthood of Mars.  Unless stated otherwise, mechadendrites can only be used to perform tasks that the owner already knows how to do. For example, a character with a medicae mechadendrite must have the Medicae skill in order to take advantage of the extra abilities the limb grants. A character must have the appropriate Mechadendrite Use talent (see page 130) to operate his mechadendrite, and the maximum number of mechadendrites he can have installed upon his body is equal to his Toughness bonus."
+  },
+  {
+    "Name": "Mechadendrite, Medicae",
+    "Description": "This model hosts a variety of medical and surgical tools ideal for combat first aid, and grants a +10 bonus to Medicae and Interrogation tests. The mechadendrite houses six injector pistons, each of which may be filled with one dose of a drug. In addition to providing first aid, the mechadendrite’s flesh staplers may be used to staunch Blood Loss as a Half Action. A small chainscalpel attachment reduces the difficulty of limb amputation to Challenging (+0). Once per round, the character can utilise this mechadendrite as a weapon by spending a Half Action or a Reaction to make a Standard Attack action. It counts as a melee weapon with the Balanced quality that inflicts 1d5 Rending damage, Pen 0.",
+    "Rarity": "Very Rare",
+    "Notes": "Some cybernetic systems are only provided to tech-adepts of the Adeptus Mechanicus. It is possible, though, that skilled hereteks might risk the wrath of the Machine Cult by implanting crude versions of these systems in anyone willing to pay their price.  All mechadendrite cybernetics are considered to be of Good craftsmanship unless otherwise noted.  Mechadendrites are mechanical attachments of brass and steel that act as additional arms. They are normally mounted on the shoulders or back, though some within the Mechanicum also project these cybernetics from their waists or chests. Each is usually 2 metres in length when fully extended, and has a specialised function based around the mechanisms affixed at their end. The number of mechadendrites coiled or folded around a Tech-Priest’s crimsonrobed figure is often an excellent indicator of his rank within the Priesthood of Mars.  Unless stated otherwise, mechadendrites can only be used to perform tasks that the owner already knows how to do. For example, a character with a medicae mechadendrite must have the Medicae skill in order to take advantage of the extra abilities the limb grants. A character must have the appropriate Mechadendrite Use talent (see page 130) to operate his mechadendrite, and the maximum number of mechadendrites he can have installed upon his body is equal to his Toughness bonus."
+  },
+  {
+    "Name": "Mechadendrite, Optical",
+    "Description": "Often consisting of highly flexible, snake-like tubing, this contains pict-capture and other sensory devices for inspection and detection. It is long for a mechadendrite, extending to 3 metres, and grants a +10 bonus to all vision-based Perception tests. The mounted pictdevices allow it to examine surfaces at a microscopic level or to be used as telescopic sight. It contains an infrared torch and sensors with a range of 40m, and so within this area the user ignores combat or other penalties due to darkness. The mechadendrite is also fitted with a stablight that can be tinted a variety of different colours depending on the controller’s whim.",
+    "Rarity": "Very Rare",
+    "Notes": "Some cybernetic systems are only provided to tech-adepts of the Adeptus Mechanicus. It is possible, though, that skilled hereteks might risk the wrath of the Machine Cult by implanting crude versions of these systems in anyone willing to pay their price.  All mechadendrite cybernetics are considered to be of Good craftsmanship unless otherwise noted.  Mechadendrites are mechanical attachments of brass and steel that act as additional arms. They are normally mounted on the shoulders or back, though some within the Mechanicum also project these cybernetics from their waists or chests. Each is usually 2 metres in length when fully extended, and has a specialised function based around the mechanisms affixed at their end. The number of mechadendrites coiled or folded around a Tech-Priest’s crimsonrobed figure is often an excellent indicator of his rank within the Priesthood of Mars.  Unless stated otherwise, mechadendrites can only be used to perform tasks that the owner already knows how to do. For example, a character with a medicae mechadendrite must have the Medicae skill in order to take advantage of the extra abilities the limb grants. A character must have the appropriate Mechadendrite Use talent (see page 130) to operate his mechadendrite, and the maximum number of mechadendrites he can have installed upon his body is equal to his Toughness bonus."
+  },
+  {
+    "Name": "Mechadendrite, Utility",
+    "Description": "The most common type of mechadendrite, these are tipped with a variety of mechanisms for the repair and succour of blessed technologies. It counts as a combi-tool, granting a +10 bonus to all Tech-Use tests. The limb also houses six injector pistons, each of which may be filled with one dose of a sacred unguent. In addition to this, the limb contains an electrically-powered censer, which can gust incense fumes over troublesome faults. Unless the censer is deactivated, all Perception tests made to detect the TechPriest that rely on a sense of smell gain a +10 bonus. As a Half Action, the censer can create one “blast” of smoke every fifteen minutes, which imposes a –5 penalty to Weapon Skill tests made by all living creatures within a two-metre radius for one round. Once per round, the character can also utilise this mechadendrite as a weapon by spending a Half Action or a Reaction to make a Standard Attack action. It counts as a melee weapon with the Defensive quality that inflicts 1d5 Rending damage, Pen 2.",
+    "Rarity": "Very Rare",
+    "Notes": "Some cybernetic systems are only provided to tech-adepts of the Adeptus Mechanicus. It is possible, though, that skilled hereteks might risk the wrath of the Machine Cult by implanting crude versions of these systems in anyone willing to pay their price.  All mechadendrite cybernetics are considered to be of Good craftsmanship unless otherwise noted.  Mechadendrites are mechanical attachments of brass and steel that act as additional arms. They are normally mounted on the shoulders or back, though some within the Mechanicum also project these cybernetics from their waists or chests. Each is usually 2 metres in length when fully extended, and has a specialised function based around the mechanisms affixed at their end. The number of mechadendrites coiled or folded around a Tech-Priest’s crimsonrobed figure is often an excellent indicator of his rank within the Priesthood of Mars.  Unless stated otherwise, mechadendrites can only be used to perform tasks that the owner already knows how to do. For example, a character with a medicae mechadendrite must have the Medicae skill in order to take advantage of the extra abilities the limb grants. A character must have the appropriate Mechadendrite Use talent (see page 130) to operate his mechadendrite, and the maximum number of mechadendrites he can have installed upon his body is equal to his Toughness bonus."
+  },
+  {
+    "Name": "Memorance Implant",
+    "Description": "This implant is a neurally-linked datavault and pict-capture array, often incorporating augmetic replacement of one or both eyes, that records information on people or scenes viewed. It can then later replay that information, or overlay the present view with additional data on people and objects viewed. It is a tool of chroniclers, loremancers, and masters of ceremonies, as well as factors or nobles who like to see the secrets of their rivals overlaid upon their view of the negotiating table. It provides a +10 bonus to Trade (Loremancer) tests or other tests in social situations where the recorded information provides leverage or value.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Mind Impulse Unit",
+    "Description": "These devices, also known as sense-links, allow the owner to interface directly with a machine or technological device. MIUs see widespread use among the Adeptus Mechanicus, who regard them as objects of divine communion. A basic model involves a single spinal or cortex connector, while advanced variants include wrist connector probes—and possibly mechadendrite connectors—in addition to the spinal plug. Common models impose no modifiers to machine spirit communication, and add a +10 bonus to Tech-Use or Operate tests used in conjunction with devices capable of MIU linking. ++ Poor MIU systems require a Challenging (+0) Willpower test to use and impose a –10 penalty when attempting to interface with a device. ++ Good models grant a +10 bonus to commune with machine spirits and for Tech-Use, Operate, Logic, Inquiry, and Ballistic Skill tests made as part of interfacing with the MIU systems.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "MIU Weapon Interface",
+    "Description": "Unlike the more advanced MIU version normally only granted to priests of the Adeptus Mechanicus, this model is more simplified, allowing the user to remotely operate a single weapon which is attached user’s body. While not as elaborate, it is easier to use and a favourite of many militant professions. This system allows the user to fire the linked ranged weapon as a Free Action during his turn. Note that he can still only take a single Action with the Attack subtype during his turn. This additional weapon must be connected to the user via the MIU weapon interface, and is usually equipped as a shoulder mount.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Respiratory Filter Implant",
+    "Description": "These are implanted inside the lungs or involve masses of tubes, wires, vox-grills, or other augmetic parts replacing the neck and upper chest. The implant sifts out most toxic gases; inhaled particulate matter is also filtered, making breathing easier in heavily polluted atmospheres. This implant grants the user a +20 bonus to resist inhaled poisons, gas weapons, or atmospheric toxins.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Scribe-Tines",
+    "Description": "The hand and lower forearm are replaced with specialised and sensitive tools ideal for manipulating parchment, autoscribing, dataslate tuning, and other efforts to record and preserve information. While somewhat disquieting in appearance, they are viewed with favour by hive-world scholars and lexmechanics. This implant gives the user a +10 bonus to all Lore skill tests.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Subskin Armour",
+    "Description": "Thin carapace plating is inserted under the skin in various locations, giving the user added protection against damage. While not as impressive as most augmentations and sometimes uncomfortable, subskin armour is very reliable. This implant adds +2 Armour points to the Arms, Body, and Legs locations, which stacks with any other Armour points for these locations.",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Synthmuscle",
+    "Description": "Ropey strands of vat-grown muscle tissue, thick with slurried nutrients and laced with flakweave, are woven into existing muscle groups, granting increased strength of varying levels. This implant grants the Unnatural Strength (1) trait ++ Best craftsmanship grafts instead grant the Unnatural Strength (4) trait but also impose a –10 penalty on Agility tests due to the newly misshapen and unnatural body form.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Vocal Implant",
+    "Description": "This implant is usually found with those who use their voice to project commands or proclamations, such as Ecclesiarchy Preachers or Adeptus Arbites Crowd Dispersal Officers. This implant works to amplify the vocal cords to an inhuman range in order to shout commands over the noise of a raging battle, and counts as using a laud hailer.",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Volitor Implant",
+    "Description": "The subject has cranial surgery to implant neural receptors and artificial nerve routing, and can be compelled not to reveal a certain item of information, remain within a set area, or perform a specific task. If the subject attempts—or is forced—to counter this compulsion, his brain shuts down into unconsciousness, or even death for some severe volitor patterns.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Alatus Pattern Jump Pack",
+    "Description": "Drawing power directly from a potentia coil, the Alatuspattern jump pack links directly into the user’s nervous system allowing for far greater control than more mundane jump packs. Often taking the form of a sweeping pair of intimidating mechanical wings, the Alatus is a common sight among the elite of the Crimson Guard and it is a frightening sight indeed to see even a single Crimson Guardsman darting about the battlefield with such lethal precision. The Alatus-pattern jump pack doubles the user’s base movement value and can be used to gain the Flyer (12) Trait for up to one minute. Extended flights tend to drain potentia coils far quicker than short jumps, so the user must pass a Challenging (+0) Toughness Test after using the Flyer Trait or gain one level of Fatigue. The mechanical wings grant the user the Fear (1) Trait, and can be used to buffet the enemy in combat, granting the user a +10 to all Parry Tests. Use of the Alatus-pattern jump pack requires the Operate (Aeronautica) Skill and the Mechanicus Implants Trait.",
+    "Rarity": "Extremely Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Servo-Claw",
+    "Description": "The designs of most Mechanicum technologies, such as manipulator mechadendrites and servo-arms, have a specific practical purpose in mind and any use they might have as a weapon is often incidental. The servo-claw is the opposite of that, a form a mechadendrite designed purely for its combat. Consisting of tightly wound bundles of synthetic muscle fibres, the small metal frame ends in a sharp serrated claw that can cut through armour and snap bones with remarkable ease. A servo-claw is usually mounted at waist height as not to interfere with the movement of the arms or any other mechadendrites.  A servo-claw has the following profile: Melee; 1d10+10 I; Pen 4; Tearing. The user can use it to make attack actions as normal. He can also spend a Reaction to make a Standard Melee Attack Action with the servo-claw. The servo-claw never adds the user’s strength to its Damage. The servo-claw can lift objects using its Strength of 50 and Unnatural Strength (+5) Trait. The Mechadendrite Use (Manipulator) Talent applies to the servo-claw.",
+    "Rarity": "Very Rare",
+    "Notes": "Some cybernetic systems are only provided to tech-adepts of the Adeptus Mechanicus. It is possible, though, that skilled hereteks might risk the wrath of the Machine Cult by implanting crude versions of these systems in anyone willing to pay their price.  All mechadendrite cybernetics are considered to be of Good craftsmanship unless otherwise noted.  Mechadendrites are mechanical attachments of brass and steel that act as additional arms. They are normally mounted on the shoulders or back, though some within the Mechanicum also project these cybernetics from their waists or chests. Each is usually 2 metres in length when fully extended, and has a specialised function based around the mechanisms affixed at their end. The number of mechadendrites coiled or folded around a Tech-Priest’s crimsonrobed figure is often an excellent indicator of his rank within the Priesthood of Mars.  Unless stated otherwise, mechadendrites can only be used to perform tasks that the owner already knows how to do. For example, a character with a medicae mechadendrite must have the Medicae skill in order to take advantage of the extra abilities the limb grants. A character must have the appropriate Mechadendrite Use talent (see page 130) to operate his mechadendrite, and the maximum number of mechadendrites he can have installed upon his body is equal to his Toughness bonus."
+  },
+  {
+    "Name": "Inbuild Blade",
+    "Description": "A character with a cybernetic limb such as a bionic arm that does not already have a weapon installed in it can have an inbuilt weapon installed in the limb. If the inbuilt power blade is of Best Craftsmanship, then it is concealed within the bionic limb when not active. Observers must pass a Hard (–20) Scrutiny Test to notice it when searching for concealed weapons. The inbuilt blade counts as a Low-Tech Weapon and has the following profile: Melee; 1d10 R; Balanced. The inbuilt blade is a part of the cybernetic limb, and does not count as a separate cybernetic system. If the cybernetic limb becomes unpowered for any reason, the mechanism controlling the blade also becomes unpowered.",
+    "Rarity": "Scarce",
+    "Notes": "Inbuild Weapons: One obvious advantage of cybernetics, besides restoring the functionality of lost limbs, is the fact that cybernetics can be used to conceal all sorts of useful tools—including weapons. Inbuilt weapons can be added to cybernetic limbs such as bionic arms and mechadendrites, and count as part of the system to which they are bound. Installing an inbuilt weapon requires proper tools, a Challenging (+0) Tech-Use Test, and several hours."
+  },
+  {
+    "Name": "Inbuild Pistol",
+    "Description": "A character with a cybernetic limb such as a bionic arm that does not already have a weapon installed in it can have an inbuilt weapon installed in the limb. An inbuilt weapon can be any Pistol-class weapon with the Compact Upgrade. If the inbuilt pistol is of Best Craftsmanship, then it is concealed within the bionic limb when not active. Observers must pass a Hard (–20) Scrutiny Test to notice it when searching for concealed weapons. The inbuilt pistol is a part of the cybernetic limb, and does not count as a separate cybernetic system. If the cybernetic limb becomes unpowered for any reason, the mechanism controlling the pistol also becomes unpowered. An inbuilt pistol has the same profile as the weapon normally would, but its Clip Size is halved. An inbuilt pistol cannot fire if separated from the cybernetic appendage. The Availability of an inbuilt pistol is the same as that of the normal version of the weapon.",
+    "Rarity": "",
+    "Notes": "Inbuild Weapons: One obvious advantage of cybernetics, besides restoring the functionality of lost limbs, is the fact that cybernetics can be used to conceal all sorts of useful tools—including weapons. Inbuilt weapons can be added to cybernetic limbs such as bionic arms and mechadendrites, and count as part of the system to which they are bound. Installing an inbuilt weapon requires proper tools, a Challenging (+0) Tech-Use Test, and several hours."
+  },
+  {
+    "Name": "Ocular Sight",
+    "Description": "More specialised than regular cybernetic senses, an ocular sight typically replaces one eye with a system carefully calibrated for use with ballistic weapons. Cybernetic sights are particularly valuable for sharpshooters who are expected to operate multiple different weapons in the course of their duties rather than a single rifle or other firearm with which they intimately familiar. An ocular sight is an implant that grants the same benefits as a cybernetic eye (see cybernetic senses on page 206 of the only War Core Rulebook). Until it is activated, this is the only mechanical benefit it provides. A character with an ocular sight can activate (or deactivate) its combat mode as a Half Action. When he does, he gains the Unnatural Ballistic Skill (1) Trait (or the Unnatural Ballistic Skill (2) Trait if the cybernetic sight is of Best Craftsmanship) but suffers a –20 penalty to Awareness Tests while it is active as his vision tunnels in to focus on his targets. Further, while it is active, he cannot benefit from any sight attached to his gun.",
+    "Rarity": "Extremely Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Servo-Arm",
+    "Description": "Enginseers must often operate under less-than-optimal conditions, in the thick of battle and far from a proper machine temple. While Enginseers are often assisted by servitors, many find it beneficial to be as prepared as possible for any eventuality. A servo-arm allows a lone Tech-Priest to fulfil the functions of an entire repair bay, allowing him to even lift a Chimera armoured transport on its side so as to repair a broken tread link. A properly constructed and implanted servo-arm has stabilization and support systems running throughout the Enginseer’s body, allowing him to achieve such feats without harming himself in the process. A servo-arm can extend up to 1.5 m from its shoulder or back mounting and has a fixed Strength value of 75 with the Unnatural Strength (7) Trait—the servo-arm always uses this value, regardless of the character’s Strength Characteristic or Talents. Though incapable of fine manipulation, the servoarm’s powerful claw can be used to lift heavy objects or tether the user to a suitable anchor as a Free Action. In combat, the character can use the servo-arm to make a Standard Attack Action or strike with it as his Reaction for the Round (so long as he only uses it once per Round). A servo-arm has the following profile: Melee; 2d10+14 I; Pen 10; Unwieldy. ++ Best Craftsmanship servo-arms have a Strength of 85 with the Unnatural Strength (7) Trait (increasing Damage to 2d10+15). To use an installed servo-arm, a character must have the Mechadendrite Use (Utility) Talent. To use it as a weapon, a character must also have the Mechadendrite Use (Weapon) Talent.",
+    "Rarity": "Very Rare",
+    "Notes": "Some cybernetic systems are only provided to tech-adepts of the Adeptus Mechanicus. It is possible, though, that skilled hereteks might risk the wrath of the Machine Cult by implanting crude versions of these systems in anyone willing to pay their price.  All mechadendrite cybernetics are considered to be of Good craftsmanship unless otherwise noted.  Mechadendrites are mechanical attachments of brass and steel that act as additional arms. They are normally mounted on the shoulders or back, though some within the Mechanicum also project these cybernetics from their waists or chests. Each is usually 2 metres in length when fully extended, and has a specialised function based around the mechanisms affixed at their end. The number of mechadendrites coiled or folded around a Tech-Priest’s crimsonrobed figure is often an excellent indicator of his rank within the Priesthood of Mars.  Unless stated otherwise, mechadendrites can only be used to perform tasks that the owner already knows how to do. For example, a character with a medicae mechadendrite must have the Medicae skill in order to take advantage of the extra abilities the limb grants. A character must have the appropriate Mechadendrite Use talent (see page 130) to operate his mechadendrite, and the maximum number of mechadendrites he can have installed upon his body is equal to his Toughness bonus."
+  },
+  {
+    "Name": "Blackbone Bracing",
+    "Description": "Some or all of the user’s bones are wrapped with a lattice of plasteel to strengthen them and prevent damage. This implant is commonly provided for fingers, forearms, shins, and ribs both to offer a stronger punch as well as grant more protection in combat. A character with this Implant gains the Bulging Biceps and Iron Jaw Talents, and gains a +2 bonus to Damage for all unarmed attacks.",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Gastral Bionics",
+    "Description": "This replaces the stomach and intestinal tract with a mechanized digestive system, allowing the user to digest almost any organic material and even many non-organic materials, so long as there are nutrients to be found. It will handle most dangerous poisons and harmful bio-motes as well. This implant allows the user to ignore the effects of any ingested toxic foodstuffs or poisons. ++ Best craftmanship implants allow the user to survive by eating anything organic (although they may not enjoy doing so, as the bionics do not protect against flavours, textures, spines, spikes, or splinters).",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Internal Blade",
+    "Description": "Mounted inside the forearm is a long blade, which can spring from a skin vent along the back of the hand to act as a shortsword or dagger, an ideal surprise for a foe who believes an individual unarmed. In some versions, the entire hand is augmetic, folding to form a hilt for the revealed blade. The internal blade has the same characteristics as a monoknife, and may gain any weapon upgrades appropriate for its type. Some rare internal blades are power weapons or possess internal reservoirs of poison with which to coat the blade. ++ Good craftmanship Internal Blades possess the Toxic Quality, while ++ Best craftmanship Internal Blades gain +2 damage, +2 Pen, and the Power Field Quality.",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Internal Power Cell",
+    "Description": "These implanted power cells use body heat and movement to recharge, requiring a day to gain a charge roughly equivalent to a lasgun power pack. Unlike a Potentia Coil implant, this does not generate enough power to operate complex machinery but is smaller, more easily concealed, and still useful in an emergency. Wiring leads to ports in the skin that accept most standard power conduits. The Power Cell can act as an ammo charge pack for a standard Lasgun or Hellgun and will take a full day to recharge after use.",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Pain Ward",
+    "Description": "The pain ward implant redirects incapacitating levels of pain to other regions of the brain, causing the sufferer to experience that pain as colours, hallucinations, or tastes. The implanted character can ignore Stun effects and involuntary actions or penalties resulting from the pain of critical damage, being on fire, drowning, and so on. Involuntary actions and restrictions caused by the mechanics of a particular injury still occur as normal.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Vitae Supplement",
+    "Description": "This is simply an emergency life support system built into the chest and wired into the spine, intended to sustain fragile flesh when it fails. It can oxygenate blood via electrolytic microfabric implanted in the lungs, keep blood circulating via backup pumps, and send necessary electrical stimulus to the rest of the body when it senses catastrophic injury. While it won’t last for longer than a few hours, the actions of the Vitae Supplacement are usually sufficient to prevent death until the medicae arrive. Vitae Supplacement grants the Autosanguine Talent and, at the GM’s discretion, may give a 50% chance of not dying due to blood loss or other normally fatal consequences of severe wounds. Common Craftsmanship versions can preserve someone for up to four hours, Good and Best versions double and triple this time, respectively.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Voidskin",
+    "Description": "Subdermal skin tissue is treated with flakweave and chemical toughening agents, such that the wearer can tolerate a longer term of void exposure before ill effects occur. Chemplant agents also minimize the damage suffered due to the raw energies of the void. Voidskin allows the user to resist damage due to void exposure for an additional d10+3 rounds past the normal duration.",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Vox Implant",
+    "Description": "This implant is a built in micro-bead, often hardwired to a ship’s vox frequencies.",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "AEtheric Wave-spars",
+    "Description": "Grafted to the spine and affixed by thick cables to heavy metal vambraces, these metre-long poles are designed to conduct psychic energy, allowing a psyker to channel more greedily and aggressively, bleeding away some of the excess power. Implants of this sort have been extensively tested by the Calixian Adeptus Astra Telepathica, but it has been found that the power and utility they provide is dangerously unstable, and they are now banned by the decree of none other than Lord Inquisitor Caiden. When a character with this implant Pushes a psychic power, he may add a +1 bonus to his total Psy Rating. ++ Poor ætheric wave-spars also add a further +10 to all rolls on the Psychic Phenomena table. ++ Good-craftsmanship ætheric wavespars instead reduce all rolls on the  Psychic Phenomena table by –10, calculated after all other modifiers.",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Thief's Light",
+    "Description": "A simple skinplant, a thief ’s light is a simple luminescent panel housed in the palm of the hand, almost invisible until activated. When switched on, usually through squeezing the hand shut for a few moments, the panel glows with a soft light, enough to illuminate objects within a few centimetres clearly enough to perform intricate tasks without producing large amounts of light which would give the user’s presence away. The light is powered by the user’s own body heat, and the design is extremely simple and reliable.",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Servo-limbs",
+    "Description": "Crude bionic limbs fitted with heavy industrial tools are common in the depths of hive cities, forced upon heavy bond-labourers and other unfortunates for whom normal tools are insufficient. These tools are often repurposed into crude weapons and used in brutal pit-fights. A servo-limb is a bionic arm with no hand, and consequently cannot be used for fine manipulation or any task that requires holding an object with that hand (or, for that matter, both hands). The heavy tool—most commonly a buzz-saw, pneumo-hammer, rock-drill, a set of monoshears, a chainsaw or other dangerous object—is in all cases a melee weapon dealing 1d10+4 damage (damage type is Rending or Impact, as appropriate for the tool, chosen at the time of implantation), with a Pen of 2 and the Tearing and Unbalanced Qualities.",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Weapon Bracing",
+    "Description": "An articulated, powered network of cables, hydraulic support struts and locking mechanisms are built up the recipient’s arm, beneath the skin and connecting between both muscle and bone all the way up to the shoulder and upper back. All the way along, but concentrated mostly on the forearms and hands, are magnetic clamps that push up beneath or even through the skin, and can affix to specially-altered weapons. The reinforcement spreads the weight of the gun along the arm and absorbs the shock of firing. The system requires n oexternal power source—it runs off of the heat generated by the recipient’s own body—and can accommodate almost any rifle-sized weapon, though ones rebuilt to better fit the bracing (clamping the weapon to the forearm, and relocating the gun’s grip and trigger farther forward) can take better advantage of the structure. A character fitted with weapon bracing can spend a full action connecting a pistol or basic weapon to the external mounts. An affixed weapon can be used in one hand without any penalty that might normally apply, and gains a +20 bonus on all Weapon Skill Tests to resist being disarmed.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Interkeratic Implants",
+    "Description": "These implants consist of additional layers built into the cornea of the recipient, whether gene-altered organic matter just beneath the surface, or advanced photo-augur technology implanted over the surface of the eye. Regardless of the source, the implant enhances the vision of the recipient, allowing him to see in ways he would otherwise be unable to. Small and simple to implant, interkeratic implants tend not to be as obvious in appearance as true bionic eyes, and thus tend to be favoured by those who would prefer not to have their appearance marred by obvious augmetics. Characters with interkeratic implants gain the Dark Sight Trait and are immune to the effects of photon flash grenades.",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Twitch-mask",
+    "Description": "A complex network of micro-servos and subskin synth-flesh dispensers, twitch-masks allow the user to adjust his facial features at will, altering shape and texture in a matter of moments. Rare and difficult to implant, they are nonetheless favoured by confidence tricksters and any others for whom being recognised is a liability. A character with a twitch-mask gains a +10 bonus on all Disguise Tests. ++ Poor craftsmanship versions are painful and slow to use, causing a level of fatigue every time the character changes his appearance. ++ Good quality versions incorporate pigment glands and vox-manipulators, allowing for more thorough changes, instead granting a +20 bonus on all Disguise Tests.",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  }
+]

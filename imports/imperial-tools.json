@@ -1,0 +1,569 @@
+[
+  {
+    "Name": "Auspex/Scanner",
+    "Description": "These standard Imperial detection devices are used to reveal energy emissions, motion, life-signs, and other information. A character using an auspex gains a +20 bonus to Awareness tests. Once per round, as a Free Action, a character with one may make a Tech-Use test to spot things not normally visible to human senses, such as invisible gases, nearby signs of life, non-visible radiation, or other things as appropriate. The standard range is 50m, though walls more than 50cm thick and certain shielding materials can block a scanner. Good craftsmanship models increase the bonus to +30, but Poor models an only penetrate 20cm of material.",
+    "Weight": "0.5",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Auto Quill",
+    "Description": "Often elaborate devices of ink-stained brass and vat-grown or artificial quills, these devices allow a user to copy text or transcribe speech with impressive speed and accuracy. Many scribes carry portable units, suitable for recording interrogation sessions or xenos translations. A character with a relevant Trade skill can use it to gain a +10 to his tests involving this skill when recording data.",
+    "Weight": "-",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Clip/Drop Harness",
+    "Description": "A simple (but robust) spooled safety line with a magnetic or hooked clasp at the end, these tools attach to the user’s belt or shoulder straps. When deployed, they allow for relative safety in rappelling down vertical surfaces or preventing falls from unsteady rooftops. A character using a clip harness to descend a vertical surface gains a +30 bonus on tests to Climb and cannot fall if he fails. Common quality harnesses can hold 150kg, while Good quality harnesses can support 200 kg.",
+    "Weight": "2",
+    "Rarity": "Common",
+    "Notes": ""
+  },
+  {
+    "Name": "Combi-Tool",
+    "Description": "Most combi-tools are small, compact devices filled with foldout and extending probes, blades, hooks, and socket-plugs. They are ideal for coaxing operation from recalcitrant machinery, repairing damaged devices, and in general bending errant machine spirits to the will of the user. A character using a combi-tool gains a +10 bonus to Tech-Use tests.",
+    "Weight": "1",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Comm Leech",
+    "Description": "A somewhat heretical item in the eyes of the Mechanicum, these tap into vox signals or data transmissions. After making a successful Tech-Use test (with the GM setting the difficulty based on the situation and signal), the user can use it to receive a signal or transmission within 1km for a number of minutes equal to his degrees of success. If the character fails by a number of degrees of failure greater than his Intelligence bonus, the sender and receiver of the signal become aware that someone is attempting to tap in.",
+    "Weight": "1",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Dataslate",
+    "Description": "These devices are common across the Imperium, and are the primary means of storing and reading printed text and other forms of data such as pict or audio recordings. Wellcrafted dataslates can also rerecord new information, or transmit and receive data from other devices.",
+    "Weight": "0.5",
+    "Rarity": "Common",
+    "Notes": ""
+  },
+  {
+    "Name": "Demolition Kit",
+    "Description": "Some investigations end with explosive results, and these kits are essential for such a conclusion. They contain the tools for a character to more easily set up sophisticated detonation devices and explosives. Each kit includes the following: * Five demolition charges: These detonate with the same profile as krak grenades (see page 157). * 100 metres of det-cord: This thin rope can be lit with any fire source or detonator, and burns at a rate of 10 seconds per metre, useful for setting a delay on an explosive or activating it at a distance. * Five pressure-release detonators: These can be used to light a det-cord line or trigger explosives directly. All of the materials in this kit can be refilled to these quantities without the use of a Requisition test as long as the character is in a location they would be available.",
+    "Weight": "4",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Diagnostor",
+    "Description": "The diagnostor is a sophisticated medical device used across the galaxy. It can detect and diagnose almost every ailment known to the Imperium, and can be incorporated into medical kits, servoskulls, and other dedicated servitors. Any individual trained in medical knowledge in the Imperial Guard understands its use. A diagnostor provides +20 to Medicae or Perception tests to determine an ailment; success indicates the proper treatment to be used.",
+    "Weight": "4",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Disguise Kit",
+    "Description": "Acolytes often conceal their true identity as part of their investigation, either to create new personas or impersonate others. These kits contain the following: * Basic makeup: Grants a +10 bonus to Deceive tests made to visually disguise the character. * Prosthetic appliances: Allow the character to impersonate individuals with different facial structures. * Skin dyes: Allow the character to impersonate individuals with different skin colours. * Vocal augmenter: Grants a +10 bonus to Deceive tests made to impersonate another voice. * Retina lenses: Allow the character to impersonate individuals with different eye colours. All of the materials in this kit can be refilled to these quantities without the use of a Requisition test as long as the character is in a location they would be available.",
+    "Weight": "2",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Excruciator Kit",
+    "Description": "While all such kits are used in the gathering of information from the unwilling and unrepentant, each is as unique as its user. Most contain a wide range of blades, needles, chemicals, drugs, barbed hooks, neural probes, thermal prods, and other essential tools needed to extract the truth. Employing an excruciator kit grants the user a +20 bonus to Interrogation tests.",
+    "Weight": "2",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Field Suture",
+    "Description": "Common implements found on battlefields across the Imperium, field sutures are used to quickly sew shut wounds to prevent blood loss. They can vary in form, from a simple needle and thread to archaic devices which staple shut the injury. Field sutures provide a +30 bonus for Medicae tests used to staunch Blood Loss.",
+    "Weight": "0.5",
+    "Rarity": "Average",
+    "Notes": ""
+  },
+  {
+    "Name": "Glow-globe/Stablight",
+    "Description": "Just as the Inquisition acts as a light against soul-devouring darkness, so these small portable lamps act against the physical darkness of night. Glow-globes are roughly the size of a clenched fist, and can illuminate an area a dozen or so metres in radius, while cylindrical stablights can project a narrower, conical beam but at twice that distance. Both last roughly five hours before their power packs need recharging or replacing.",
+    "Weight": "0.5",
+    "Rarity": "Abundant",
+    "Notes": ""
+  },
+  {
+    "Name": "Grapnel & Line",
+    "Description": "A combination of clip-harness and gas-powered pistol, this can fire a hook or magnetic clasp attached to a thin, strong wire at an overhead target up to 100m away. Once the grapnel attaches to the desired spot such as a rooftop, a user can manually climb the line or activate a powered winch that can lift the user roughly 5m per round. Common sets can hold 150kg, while Good or Best can support 200 kg",
+    "Weight": "2",
+    "Rarity": "Common",
+    "Notes": ""
+  },
+  {
+    "Name": "Grav Chute",
+    "Description": "Used by the Imperial Guard to drop onto the battlefield from the air, grav chutes use anti-grav fields to slow a rapid fall into a controlled (and safe) descent, with small attitude jets allowing for extra braking and directional finesse. Unlike jump packs, grav chutes are only useful for safe landings and cannot be used for bounding or aerial leaps. If the character passes a Challenging (+0) Agility test or Routine (+20) Operate (Aeronautica) test, the grav chute allows for a safe, guided fall from any height; otherwise the character counts as having fallen two metres for each degree of failure (see Falling on page 243 in Chapter VII: Combat).",
+    "Weight": "15",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Hand-Held  Targeter",
+    "Description": "A hand-held targeter is a small device used in most forces of the Imperium. It is capable of detecting ranges to targets using optical sights for zooming, prediction systems for firing, and so on. It is commonly used by spotters assisting with artillery fire. An Acolyte with a hand-held targeter may spend a Half Action to grant another character +20 bonus to his next Ballistic Skill test when firing a weapon with the Indirect quality.",
+    "Weight": "0.5",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Inhaler/Injector",
+    "Description": "Many drugs require a device to administer a dose such as a syringe, spray-injector, or gas flask. Each can hold one dose of any drug, which a character may administer as a Half Action.",
+    "Weight": "0.5",
+    "Rarity": "Common",
+    "Notes": ""
+  },
+  {
+    "Name": "Lascutter",
+    "Description": "Ideal for slicing open doors and bulkheads, lascutters were originally designed for mining, where their short-range, intense cutting beam could chop apart even the toughest rock. Most can cut or weld around 10cm of metal depending on the thickness involved. They are large and cumbersome, and so can only be used as a Heavy weapon (acting as a Meltagun without any special weapon qualities) on stationary targets within 2 metres.",
+    "Weight": "4",
+    "Rarity": "Average",
+    "Notes": ""
+  },
+  {
+    "Name": "Laud Hailer",
+    "Description": "Whether belting orders over the ferocious roar of combat or addressing a crowd of thousands of the faithful, Imperial officials often require great volume, and a laud hailer is the perfect tool. Each can amplify normal speech levels such that an entire crowd can hear the speaker’s words clearly ",
+    "Weight": "4",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Magboots",
+    "Description": "Heavy and bulky, these oversized boots contain electromagnets. They allow the wearer to adhere to metallic surfaces such as exterior hull plating, and are often found in voidship emergency lockers. Magboots reduce the character’s Agility bonus by 2, but allows him to move normally when in low- or zero-gravity areas, provided there is a suitable metallic surface to walk upon.",
+    "Weight": "2",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Magnoculars",
+    "Description": "These powerful vision aids can magnify distant items into clear focus, helping ensure no heresy goes unspotted. More advanced, high-quality magnoculars can also do such things as give range read-outs, detect heat sources, calculate target location positioning, and take pict-captures of a view for later analysis.",
+    "Weight": "0.5",
+    "Rarity": "Average",
+    "Notes": ""
+  },
+  {
+    "Name": "Manacles",
+    "Description": "No bounty hunter or Enforcer would be without several sets of these solid restraints, though they are often used to ensure sacrificial offerings do not stray from a cult’s altar or for other, darker purposes.",
+    "Weight": "1",
+    "Rarity": "Plentiful",
+    "Notes": ""
+  },
+  {
+    "Name": "Medi-Kit",
+    "Description": "Medi-kits contain synth-skin patches, antiseptics, self-sealing bandages, pressure tourniquets, and other medical aids. A standard kit grants a +10 bonus to Medicae tests so long as the user possesses the Medicae skill. Advanced versions also contain tox wands, synth-skin spray, diagnostic cogitators, and additional high-quality supplies. These grant a +20 bonus to Medicae tests (whether or not the user possesses the Medicae skill) but weight an extra 3kg and are of Rare Availability instead of Common.",
+    "Weight": "2",
+    "Rarity": "Common",
+    "Notes": ""
+  },
+  {
+    "Name": "Micro-Bead",
+    "Description": "Also known as a bead-comm, these small devices are worn in the ear and allow for short-range communications out to roughly 1 kilometre (depending on weather conditions and intervening terrain). Each fits discreetly in the ear, with higher Craftsmanship models nearly undetectable in casual inspection.",
+    "Weight": "-",
+    "Rarity": "Average",
+    "Notes": ""
+  },
+  {
+    "Name": "Monotask Servo-Skull",
+    "Description": "Servo-skulls represent the honoured remains of valued Imperial servants and Tech-Priests who continue their service even after death. The skull is carefully cleansed and engraved, then fitted with a machine spirit to guide its actions, and tiny grav platings to sustain it in flight. Monotask models are dedicated to a single, basic function and are a common sight on many worlds. Each responds to basic verbal commands, and unless otherwise commanded, always hovers near its master. The types below represent only a fraction of the countless patterns found across the sector.  * Augur: The skull carries a scanner and vox-data systems to relay its findings. The character gains the benefits of an auspex as long as the servo-skull is within 10 metres and active. * Illumination: The skull is fitted with a glow-globe or burning brazier to light an area 20 metres in radius. * Laud Hailer: The servo-skull incorporates a laud-hailer, which can play recorded speech or amplify its master’s speech as directed. * Medicae: The skull is fitted with a medicae scanner and tools. The character gains the benefits of a standard medi-kit as long as the servo-skull is within 2 metres and active. * Utility: The skull is equipped with probes, plugs, and tools to aid in technical tasks. The character gains the benefits of a combi-tool as long as the servo-skull is nearby and active.",
+    "Weight": "2",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Multicompass",
+    "Description": "When exploring new worlds, a device of this ancient techpattern is indispensable—but few have the means or influence to acquire one. After a few seconds of analysing planetary data, a multicompass can display directions, show topographical maps, point out compass bearings, indicate altitude, and much more. Possessing a multicompass grants a +20 bonus to all Survival and Navigation (Surface) tests.",
+    "Weight": "4",
+    "Rarity": "Near Unique",
+    "Notes": ""
+  },
+  {
+    "Name": "Multikey",
+    "Description": "In the right hands, a multikey can open most standard Imperial locks and is thus is highly suspect for honest citizens to possess. This also makes it very desirable for criminals or those operating outside normal channels. A character with a multikey gains a +30 bonus to any Security test when trying to open locks.",
+    "Weight": "-",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Null Rod",
+    "Description": "Few things invoke terror as much as a psyker calling on the unholy powers of the Warp to twist reality and rend souls. While faith in the Emperor is always essential, a null rod can also be effective in negating such threats. Most null rods appear as short obsidian  cylinders, often crawling with arcane icons and glyphs. Each can dampen the powers of any psykers within 2d10 metres, causing them to take all tests to use any of their psychic powers with a –30 penalty. They also offer an Acolyte personal protection from psychic attacks by granting a +30 bonus to resist any psychic power that directly affects him. A null rod acts as a truncheon with the Power Field quality when used in close combat.",
+    "Weight": "1",
+    "Rarity": "Near Unique",
+    "Notes": ""
+  },
+  {
+    "Name": "Pict Recorder",
+    "Description": "A relatively simple recording device, pict recorders—or picters— can capture audiovisual media. Most models can also display recorded data on integrated screens, with advanced models using holographic imagery. Specialised pict-servitors are essentially ambulatory recorders, brought on hazardous events or missions to autonomously capture occurrences for later codifying.",
+    "Weight": "1",
+    "Rarity": "Average",
+    "Notes": ""
+  },
+  {
+    "Name": "Psy Focus",
+    "Description": "Many psykers use these small, personalised items to steady themselves before accessing the terrible powers of the Warp. Each is different; some might be no more than a carved finger bone or pressed flower, while others could be a softly glowing crystal or void-iron glyph. All, however, are specially attuned to their bearers through long meditation or ritual, allowing them greater control over their abilities. When a psyker with a psy focus makes a Focus Power test (see page 194), he gains a +10 bonus.",
+    "Weight": "-",
+    "Rarity": "Average",
+    "Notes": ""
+  },
+  {
+    "Name": "Regicide Set",
+    "Description": "A two-player game played across all classes from lowly refresherscrubbers to spire nobility, regicide is simple to learn but difficult to master. Many Imperial Guard officers hone their tactical senses in games with small sets that can fold into their combat kit. A typical regicide game takes 1d5 hours, and while it usually has no in-game effects, the GM can offer benefits to well-roleplayed games such as a +10 bonus to Fellowship-based tests with the opponent for the following day",
+    "Weight": "1",
+    "Rarity": "Plentiful",
+    "Notes": ""
+  },
+  {
+    "Name": "Screamer",
+    "Description": "These proximity alarms set off a piercing wail when they detect intruders. Screamers can detect sound, movement, and even odours. To activate, the player must succeed on a Challenging (+0) Tech-Use test, but the GM rolls this test in secret; players will not know how well the device is working until later on. Once set, a screamer has a Perception of 75 for the purposes of detecting sounds or motions. If it detects an intruder, it sounds its alarm, which can be heard anywhere out to one kilometre. Doors, walls, and other barriers reduce the alarm’s range. Poor craftsmanship models only detect loud noises or fast movements nearby. Good versions can detect specific sounds, movement, or even odour ranges, and can also have more subtle warning methods (such as screaming only into vox channels).",
+    "Weight": "2",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Signal Jammer",
+    "Description": "As the name suggests, this device acts to overpower local vox, data, or other transmissions within a range of roughly 1km. Basic models are overt and obvious, such that the transmitting agencies know they are being jammed. Sophisticated versions emit precisely-tuned frequencies that dampen out transmissions without anyone detecting the action.",
+    "Weight": "2",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Static Generator",
+    "Description": "Simple but obvious, this emits a powerful sphere of white noise across commonly used transmission frequencies within 30 metres. Comm devices do not function, but it is also clear to all users that they are being disrupted, and the device can be easily located. Still, when set on a timer and placed next to a transmission tower, they are effective for short-duration sabotage.",
+    "Weight": "3",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Stummer",
+    "Description": "The reverse of a screamer, a stummer blankets sound within 5m through sonic detection and dampening projectors. A character carrying an active stummer gains a +30 bonus to Stealth tests. A stummer typically has enough power for 20 minutes of continuous use before needing to be recharged, a process that takes about one hour.",
+    "Weight": "2",
+    "Rarity": "Average",
+    "Notes": ""
+  },
+  {
+    "Name": "Vox-Caster",
+    "Description": "A standard Imperial long-distance communications device, voxcasters can transmit and receive to other units within 100km, and can reach most orbiting vessels overhead. Higher craftsmanship models have increased ranges, and can include encryption and other security settings.",
+    "Weight": "4",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Writing Kit",
+    "Description": "Simple and basic, standard writing kits contain parchment, inks, and quills for Acolytes to transcribe confessions, diagram important finds, and leave messages for fellow Acolytes.",
+    "Weight": "2",
+    "Rarity": "Plentiful",
+    "Notes": ""
+  },
+  {
+    "Name": "Accordion Wire",
+    "Description": "A staple of trench warfare, accordion wire comes in wickedly barbed metal spools that can be quickly stretched out and deployed to defend trenches or buildings from an infantry assault. Any character attempting to cross deployed accordion wire must make a Hard (–20) Acrobatics Test or suffer 1d5 Rending Damage plus 1 extra Damage for each Degree of Failure on the Test.",
+    "Weight": "0.5",
+    "Rarity": "Common",
+    "Notes": ""
+  },
+  {
+    "Name": "Demolition Charge",
+    "Description": "A demolition charge is a simple explosive device, commonly used for blowing open doors, breaching bulkheads, and destroying infrastructure. The listed weight for a demolition charge represents 1kg of explosives, though it is possible to rig charges together, thus increasing their destructive potential. When a demolition charge explodes, anything caught within its blast suffers 3d10 Explosive Damage plus 2 Damage for every kilogram used. The blast radius is 5 meters for each kilogram used. For setting and defusing explosives, see the Tech-Use Skill on (see page 133).",
+    "Weight": "1",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Mantrap",
+    "Description": "A portable hinged jaw device that has become popular in the Spinward Front, being used against the Orks of Waaagh! Grimtoof. It was designed as a lightweight tool that the Guardsmen could place as a trap or to protect an area from outside enemies. Most Orks, not being of the highest level of intelligence, tend not to notice them. It was developed primarily for fighting in cities such as Kulth, to slow the Orks down without sacrificing the city’s buildings. If a character steps on the clutch inside the trap, it snaps shut on their leg dealing 1d10 Rending Damage, and rendering him Immobilized. The individual must pass a Difficult (–10) Strength Test to free themselves from the clutches of the trap.",
+    "Weight": "2",
+    "Rarity": "Plentiful",
+    "Notes": ""
+  },
+  {
+    "Name": "9-70 Entrenching Tool",
+    "Description": "A key component of the standard kit of the Imperial Guard, the 9-70 entrenching tool is intended primarily for filling sandbags. This small, folding spade is invaluable for digging trenches, shoring up earthen mounds, and preparing other basic defensive structures. The heavy blade of the 9-70 also makes for an excellent improvised weapon, and many Guardsmen believe that a well-sharpened entrenching tool makes for a better melee weapon than their standard-issue knife. A properly sharpened 9-70 entrenching tool can be used in melee combat with the profile of a warknife (see page 119), with the Primitive (8) and Unwieldy Qualities.",
+    "Weight": "2",
+    "Rarity": "Plentiful",
+    "Notes": ""
+  },
+  {
+    "Name": "Drop Canister",
+    "Description": "A drop canister is a device that can hold a single heavy weapon, along with bipod or tripod and ammunition, or a comparable amount of equipment, delivered via grav-chute to a squad in the field. The canister is heavily reinforced, and together with the decreased velocity accorded by the grav-chute array, drop canisters can be relied on to deliver equipment even in the harsh conditions of battle. A drop canister can be used to deliver arms and equipment to a unit already in position, or alongside troops deploying by grav chute. Deploying a drop canister from an aircraft requires an Ordinary (+10) Operate (Aeronautica) or Challenging (+0) Intelligence Test. If the character deploying the canister fails the Test, the drop canister lands a number of metres away from the intended location equal to ten times the Degrees of Failure, in a random direction.",
+    "Weight": "25",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Nartheticum",
+    "Description": "A sophisticated wrist-mounted medi-pack, a narthecium includes three auto-injectors and a powerful, diamantinetipped saw for cutting through armour to provide emergency treatment to a wounded Guardsman. Consequently, narthecium are typically reserved for very well-supplied regiments, or medics attendant to an officer and his command squad. As well as providing all the benefits of a Good-Craftsmanship medi-pack, the user of a narthecium may administer a dose of a drug from one of the auto-injectors as a Free Action, when done in conjunction with a Medicae Test. Each auto-injector can be used to store a different type of drug. Though not authorised for such use, a narthecium may be used in melee with the profile of a chain knife (see page 116 with the Unwieldy Quality.",
+    "Weight": "3",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Snare Mines",
+    "Description": "Often used by veterans and snipers to defend forward firing positions, and typically deployed in groups, snare mines are simply grenades connected to proximity detonators. Placing a snare mine requires a Routine (+20) TechUse Test and requires one grenade (or other explosive). When a creature of Size (3) or larger approaches within a predetermined distance metres of a snare mine, the grenade detonates with its usual effect. The proximity detonator can be adjusted to trigger at a distance of 1, 2, or 3 metres and can be set with a delay from 0 to 5 Rounds. Detecting a planted snare mine (before triggering it) requires a Challenging (+0) Awareness Test with a –10 penalty for every Degree of Success the user scored on his Tech-Use Test to plant it.",
+    "Weight": "1",
+    "Rarity": "Average",
+    "Notes": ""
+  },
+  {
+    "Name": "Almanac Astrae Divinitus",
+    "Description": "A tech-device of the Divine Astrometricum, a Calixian faction of tech-priests concerned with cataloguing stars, nebulae, and distant events in the voids. Its clicking arrangement of spheres and hololithic projections form a catalogue of sorts, which is of use to those who make their way between stars. It can provide a +10 bonus to Navigation, Pilot, Scholastic Lore (Astromancy), or Trade (Astrographer) Tests where its information is directly relevant to the circumstances.",
+    "Weight": "4",
+    "Rarity": "Extremely Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Arms Coffer",
+    "Description": "A long protective case of many quick-release compartments and sockets for power packs designed to be slung over the back. It is intended to protect the diverse wargear of a professional militant from the environment and pilfering hands.",
+    "Weight": "6",
+    "Rarity": "Average",
+    "Notes": ""
+  },
+  {
+    "Name": "Calculance Array",
+    "Description": "Grand mercantile initiatives are attended by a swarm of scribes and ledgers, and the greatest can only thrive when supported by machines such as the calculance array. It is a noisy, man-sized stack of chugging, promethium-fueled rod-cogitators, often mounted upon a tracked platform. Its machine spirit accepts reams of figures, and other data, ordering them and spitting forth parchment summations and predictions upon command. It provides a +10 bonus to all Commerce Skill Tests.",
+    "Weight": "120",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Data-loom (Hadd-pattern)",
+    "Description": "A limited data-engine and geometric display that has proven useful to those faced with challenging problems of logic or fragmentary information. It gives a +10 bonus to Logic skill Tests, and at the GM’s discretion may reduce the time taken for research or investigations, provided that the investigator has the Tech-Use skill.",
+    "Weight": "13",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Grapplehawk — Very Rare",
+    "Description": "Aerial machines fashioned in the shape of avian predators, Grapplehawks are an unusual form of cyber-familiar used by some Adeptus Arbites squads and wealthy bounty-hunters (see page 375 for details). Once launched into the air a Grapplehawk glides in search of its target before swooping to strike with metallic claws and stunning electrical discharges. Potent internal suspensors provide enough lift for a Grapplehawk to carry a man’s weight through the air for short distances.",
+    "Weight": "-",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Jump Pack",
+    "Description": "Jump packs are large backpacks containing powerful turbofan or rocket engines. A user triggers a jump pack to lift high in to the air and then swoop down as part of their assault. Jump packs are also useful in leaping over high obstacles and reaching rooftops in a single bound, but without training most users will seriously injure themselves in crashes. Though bulky, loud, and somewhat dangerous to use they are ideal for the maximum in personal mobility on the ground or even in the void.  Jump packs require the operator to have the Pilot (Personal) skill. A standard jump pack allows for a safe, guided fall from any height and, with a thruster boost, make an unlimited series of short jumps (landing at the end of each Round’s movement). Alternatively, the pack can duplicate the Flyer (12) trait for up to a minute at a time. A jump pack’s power supply will last for about an hour of strenuous operation before requiring replacement.",
+    "Weight": "25",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Lord-Captain’s Baton",
+    "Description": "Many officers of the Imperial Navy carry one of these short rods as an insignia of rank and station. Most are highly engraved and ornamented with the heraldry of their ship and fleet. Underlings refer to them dismissively as “Calixian Crutches” or worse, seeing them only as another symbol of their oppression. What most do not know— and only find out too late—is that naval batons are often strongly reinforced and can easily shatter bones. Some even contain specialised micro-cogitators or datavaults—for exmaple, the bridge baton of the Rogue Trader ship Aigiarn contains the codeprayers for the bridge machine spirits. It is ceremoniously re-inserted into the main helm station as part of each shift change in an elaborate ceremony of phrases and counterphrases. Failure to properly perform this ritual results in the lockdown of all command systems—a means of preventing piracy or mutiny.",
+    "Weight": "1",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Mefonte’s Orthodoxy",
+    "Description": "A tome or data-slate containing a thrice-blessed collection of catechisms, castigations, and psalms first assembled by Pius Mefonte in the 4th century M41. These are some of the best-known verses of the Calixian Ministorum, and the work itself—ornamented, gilded, and set with flowing pennons of scripture—is a sign that he who owns it is holy and wellversed in the God-Emperor’s teachings. It grants a +10 bonus to Charm Tests involving religious oratory or inspiration and an Imperial audience.",
+    "Weight": "2",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Navis Prima",
+    "Description": "These are perhaps some of the most valuable items an Explorer can possess, as they outline safe routes through the warp, or at least as safe as warp travel can get. Some cover jump locations and travel times known to many, but others can reveal translation timetable plots known only to a few who guard their secrets with their lives. Even rarer are those maps presumed lost, describing jump passages thought forgotten or only known as hearsay or legend. These are all items that can spur decades-long quests ,either establishing new fortunes and houses or wrecking them utterly. These items are exceptionally rare and can be the goals of lifelong pursuits to chase down even the faintest rumour of such a map. Common-Craftsmanship examples of this item grant no bonus, but Good-Craftsmanship primas grant a +10 to Navigation (Stellar) Tests. Best-Craftsmanship primas increase this bonus to +20.",
+    "Weight": "1",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Renumeration Engine",
+    "Description": "A tool and symbol of status for wealthy factors and brokers, the optics and prongs of this heavy device rapidly stack, count, and assay the worth of diverse currencies. Any attempt to cheat by Sleight of Hand or similar method of distraction suffers a -30 penalty where a Remuneration Engine is used. Its temperamental machine spirit requires the constant attention of tech-adepts, however.",
+    "Weight": "7",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Shipboard Emergency Kit",
+    "Description": "Even the most secure and reliable ship possesses emergency kits on most decks—though often decks can measure in the kilometres. Some work crews will also carry smaller versions in case of hull beaches or bulkhead failure. A standard kit weighs roughly 20kg and can include: * Glowstick: Good for 1d5 hours of steady illumination. * Universal Power Cell: Using either integral plugs or adaptor leads, it can power a glowstick or emergency vox for 1d5 hours or a laspistol for 5 shots. * Ration pack and water canister: Contains enough to provide sustenance for roughly 1 day, because if rescue doesn’t come by then it probably won’t come at all. * Emergency Vox: Usually pre-tuned to the ship’s vox, but advanced models are more versatile, and may also be capable of issuing automatic distress cants such as the standard “Voidfarer’s Prayer for Aid.” * Air bottle & mask: Contains roughly 30 minutes of air, usually enough to get through toxic passageways.  * Anti-radiation tablets: Essential when exposed to plasma drive leaks or the raw energies of the void. * Hull sealant spray-gel: This foul-smelling gel can be sprayed onto vents and bulkheads to seal against the void. Each tube can cover 20 or so small (10 sq cm) punctures.",
+    "Weight": "6",
+    "Rarity": "Common",
+    "Notes": ""
+  },
+  {
+    "Name": "Servitor (Labor, Simple Monotask)",
+    "Description": "See RT Core p. 375 for detailsand stats",
+    "Weight": "-",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Servitor (Combat)",
+    "Description": "See RT Core p. 375 for detailsand stats",
+    "Weight": "-",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Servitor (Complex Multitask)",
+    "Description": "See RT Core p. 375 for detailsand stats",
+    "Weight": "-",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Servo-Skull",
+    "Description": "See RT Core p. 375 for detailsand stats",
+    "Weight": "-",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Venom Ring",
+    "Description": "A tool of assassins and dangerous nobility, the ring contains a small reservoir compartment that discretely opens with the right muscle movements of the finger bearing it. It gives a –20 penalty to any Test required to notice that  the ring-wearer is introducing a substance into food or drink.",
+    "Weight": "-",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Bomb Spray",
+    "Description": "Also known as Dry Death, this concoction of several liquids can be sprayed as an aerosol or even simply poured directly onto almost any surface. As long as it stays liquid it is safe, but once dry it will react to any sudden impact (such as a bullet strike or even a thrown rock) with a violent detonation. While not as powerful as regular manufactured explosives, it is very useful for setting surprise attacks or ambushes, or sabotaging a vehicle. Bomb Spray explosives inflict 1d5+3 X Damage per kilogram used, and a blast radius of two metres per their weight in kilograms.",
+    "Weight": "0.02",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Emergency Hab",
+    "Description": "This heavy cloth can be formed into a very durable shelter with the simple addition of water, either from the user or from nature. When exposed to water (or most liquids) one side of the material stiffens into rockcrete, while a layer of silicasheet on the inside acts to keep the hab dry. Most kits come with simple support rods to provide shape to the cloth as it sets, allowing users to form a variety of hab shapes as desired, with room for up to three people. Needless to say, the cloth is stored in a very water-proof container (which can then double as a water bag). Good and Best Craftsmanship versions can contain four and six people, respectively",
+    "Weight": "10",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Firewater",
+    "Description": "Found primarily in the gas giants in systems near the Cauldron, this oily blue-green liquid is rather unremarkable except that it spontaneously bursts into a dark blue flame when exposed to oxygen. Rebel and recidivist strike forces sometimes use it in booby traps, or simply throw glass bottles of the liquid at their enemy. Firewater explosions inflict 1d10 E Damage per kilogram used, and a blast radius of two meters per the weight in kilograms. Those caught in the blast area must make an Agility Test or catch on fire. There is no Good or Best Craftsmanship version of this item.",
+    "Weight": "1",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Flak Spray",
+    "Description": "This spay is often used by covert operatives, as it can be dispensed by a seemingly innocuous applicator. Sprayed onto regular fabric it bonds rapidly, turning it into impact armour strong enough to shield against most blows. The effects fade quickly, however, as body movement gradually breaks down the adhesion and the protection wears away.  But for someone moving from a civilian event into a firefight (or taking a civilian into a fire-fight), it makes for a perfect accessory. Flak Spray makes any clothing act as Guard Flak Armour for 3d10 rounds.",
+    "Weight": "4",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Flex Tent",
+    "Description": "This thin fabric turns utterly rigid when a small electrostatic charge is applied. It is part of many emergency shelter kits, as it is very light weight and needs no supports; users can simply unroll and activate to form a strong shelter against the elements. When the charge is deactivated, the fabric collapses and can be reused if needed, making it a popular item in long distance marches. Common Craftsmanship versions hold two people, Good and Best hold three and four people, respectively",
+    "Weight": "2",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Flip-Belt",
+    "Description": "Anti-grav Flip-belts are used by the decadent Eldar of the socalled Harlequin cult, in a sheer affront to the laws of physics. They allow the user to partially negate the effects of gravity; the impossibly acrobatic movements allowed by the belt along with the wearer’s natural agility and skill make the taunting xenos extremely difficult targets to hit despite their outlandish costumes and coloration. A flip-belt grants the Hover Trait (6) and +20 on all Agility-based Tests, and requires the Pilot (Personal) Skill to use. All Flip-belts are at least Good Craftsmanship.",
+    "Weight": "2",
+    "Rarity": "Extremely Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Glidewing",
+    "Description": "These large metallic folding wings are made of multiple flat plates resembling long feathers. Combined with suspensor fields, they allow the user to glide long distances and even fly for some time. When folded they are bulky and about half a metre thick on the user’s back; extended the wings a requite wide and very noticeable, especially when vain users adorn them with real feathers and colorful paint schemes. Glidewings grants the user the Flyer Trait (12), and require the Pilot (Personal) Skill to use. However the user must launch himself from an elevated position (at least 15 metres high) for them to be used. Best Craftsmanship Glidewings grant a +10 bonus to Skill Tests to use them.",
+    "Weight": "25",
+    "Rarity": "Extremely Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Gravity Generator",
+    "Description": "Bulk versions of the standard grav plating found on all Imperial voidships and stations, gravity generators are huge squares of metal which can be laid out on the surface to replicate the feeling of Blessed Terra either by increasing or reducing the local gravity field. They are useful when operating in areas of much greater or lesser gravity than is the norm, for meeting with natives, negotiating trade accords, securing cargo, or other short-term dealings. They can also be used as portable restraining cells, keeping prisoners secure under very high gravitational restraint.",
+    "Weight": "500",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Jovian-Pattern Modular Hab Base",
+    "Description": "Designed for speed of deployment and ease of assembly, these pre-fabricated units can be set into place by landing craft or even drop pods. Once in the desired location, rocket pinions anchor each unit into place, then each is connected into the larger overall base via enclosed corridors. Modular habs such as these (or the Phaeton pattern) can be used in a variety of environments including inhospitable or even toxic atmospheres.  A Common Craftsmanship Modular Hab Base includes: one barracks for up to 40 people, commissary, medicae facility, command and communications hub (complete with vox and auspex arrays), two storage sheds, a small genatorium, and a prefab landing pad.  Good Craftsmanship bases include a prefabricated bulwark, capable of surrounding the base, and two Sabre defence platforms armed with two twin-linked heavy stubbers.  Best Craftsmanship versions also include a laboratory facility.",
+    "Weight": "n/a",
+    "Rarity": "Extremely Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Lingua-Vox Servitor",
+    "Description": "Useful to diplomats and explorers, a Lingua-Vox Servitor is a specially designed servo-skull equipped with an advanced linguistic cogitation engine. The Lingua-Vox hovers just over the shoulder of its master, aiding him in translating and understanding unfamiliar tongues. An Explorer with an active Lingui-Vox Servitor treats all Speak Language Skills as Basic Skills. Best Craftsmanship Linqua-Vox drones are capable of deciphering Secret Tongues.",
+    "Weight": "2.5",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Long-Range Auspex",
+    "Description": "This is a larger and more powerful version of the hand-held auspex devices used by Imperial agents, usually mounted on a large, transportable chassis for added stability. Though bulky, it can scan huge areas of terrain as well as the sky above and the ground below to detect movement patterns, vox signals, seismic disturbances, and other programmed criteria. Its onboard cogitators analyse and display detected information. The Long-range Auspex counts as an Auspex in all respects, save its range is 5 kilometres and it can penetrate walls up to a metre thick. Good Craftsmanship versions increase the range to 10 kilometres, and Best versions grant a +30 to Awareness Tests made with the device, instead of a +20.",
+    "Weight": "175",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Nephitic Acid",
+    "Description": "The origin of Nephitic Acid is one of the many secrets of the Adeptus Mechanicus. It is unknown whether this grey-green liquid was derived from a xenos breed or devised through the aid of ancient STC datavaults. It quickly dissolves most materials in seconds and then fades into an inert grey paste. Only pure silicate glass can hold it effectively and even the most airtight of bottles still emits the acid’s strong bitter odour. When applied to other materials, it deals 2d10+10 E Damage before becoming inert (the damage is applied once during a single Round). A single dose can eat through the equivalent of five centimetre thick square metre of adamantium in that time.",
+    "Weight": "-",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Perimeter System",
+    "Description": "Used frequently on many newly-colonised planets, these systems are formed from dozens of large pylons bristling with power relay nodes, all linked together in line to form an invisible protective barrier around important installations or structures. They draw a great deal of power and can easily keep most native animals or civilians at bay, but will normally falter against aggressive attacks from armed forces or monstrous creatures. The field causes 2d10+6 E Damage with the Shocking quality. Good and Best Craftsmanship versions do an additional 1d10 damage.",
+    "Weight": "175 / pylon",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Plaguewort Venom",
+    "Description": "This deadly poison is extracted from the neurotoxic sap of the widespread Calixian plaguewort plant’s crushed leaves. Skin contact causes numbing, and if introduced into the bloodstream (for example by coating a bladed weapon or spear with the sweet smelling liquid) it can lead to paralysis and death. Any weapon coated with this venom gains the Toxic quality for 1d5 Rounds of combat. In addition to the Toxic damage, if the target fails its Toughness Test, it suffers 1d10 Agility damage. There is no Good or Best Craftsmanship version of this item.",
+    "Weight": "-",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Power Board",
+    "Description": "Many still refuse to believe these featureless flat planks exist. Power Boards are very much real, most older than many a starship but still gleaming and unmarked. Each allows theuser to glide through the air, using anti-grav engines of unknown design. Internal power cells recharge slowly after use, but each charge can last hours depending on the speed and distance desired. Users operate a board with their own body orientation, and most affix footholds to prevent falls. Most users also decorate their boards with bold and colourful patterns and sayings, the better to advertise their reckless nature, as riding a board well is truly the mark of a skilful individual. A Power Board grants the user the Flyer (15) Trait, but any user must have the Pilot (Personal) Skill to use one.",
+    "Weight": "15",
+    "Rarity": "Near Unique",
+    "Notes": ""
+  },
+  {
+    "Name": "Promethium",
+    "Description": "The common Imperial petrochemical-based liquid fuel, most often used to refer to the jelly-like chemical used to power most Imperial Flamer weapons. It can also be used to create antipersonnel explosives and bombs as it is often readily available in most war zones. Most voidships carry huge reserves as well, both to power many systems as well as for trading with local systems. Refined Promethium is valued across the stars, and is the basis for many bartering cultures. Promethium explosives inflict 1d10 Energy Damage per kilogram used, and a blast radius of four meters per their weight in kilograms. Those caught in the blast area must make an Agility Test or catch on fire. There is no Good or Best Craftsmanship version of this item.",
+    "Weight": "1",
+    "Rarity": "Abundant",
+    "Notes": ""
+  },
+  {
+    "Name": "Psycrystal",
+    "Description": "These small, rare quartz-like crystals emit a soft purple glow when psychic energy is being used nearby, with the intensity varying depending on the degree of power released. They are found mostly on barren worlds devoid of life, an unquietly common phenomenon in the Expanse. Psycrystals perform best when used by non-psykers, paradoxically enough, giving off false indications or even causing mental distress when held by those who can channel the warp. Each crystal glows if psychic powers are being used by an individual within a short distance, usually five metres, or are targeting an individual within the same radius. There is no Good or Best Craftsmanship version of this item.",
+    "Weight": "0.3",
+    "Rarity": "Near Unique",
+    "Notes": ""
+  },
+  {
+    "Name": "Skinplant",
+    "Description": "Skinplants are a more sophisticated version of the electoo—entire devices can be built just under the skin using crystal technology provided by the Machine Cult. Users can replicate electronic ID systems, lamplights, chronos, and a host of other non-mechanical items. Highly fashionable, they adorn the arms and hands of many of the sector’s wealthiest and most stylish individuals. Good and Best Craftsmanship versions are usually more detailed designs or more complex devices (at the GM’s discretion).",
+    "Weight": "-",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Name": "Stasis Pod",
+    "Description": "While fabulously rare, the stasis pods produced by the forge world of Locke are exceedingly well crafted. Each will preserve one humanoid-sized item in a state of unchanging time for as long as power can be maintained. Though used infrequently given the more widely-available nature of saviour systems, stasis pods are ideal for containing dangerous xenos or animal life during transport without the risk of escape or damage. Rogue Traders who specialise in beast hunts  may have many dozens of pods lining their cargo holds, containing everything from the nightmare creatures of Burnscour to savage Genestealers stolen from drifting space hulks.",
+    "Weight": "250",
+    "Rarity": "Extremely Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Travel Survival Kit",
+    "Description": "A staple for many air and ground transports, the Ryboth kit is relatively lightweight and transportable (as many crashed pilots will need to quickly remove themselves from their wreckage to safety before enemy troops arrive). Typical kits contain basics such as fishing gear and animal snares, firestarter tabs, flares, compass and signal mirror, water purification tabs, antibiotic and detox pills, insect repellent, sunscreen gel, flextent shelter, limited med kit, exposure cloth depending on the projected travel locations, multitool, disposable handgun, a booklet on survival tips, prayer scrolls, vox hailer, combat blade, and more. Rations included are basic in the extreme but will keep body and soul in the Emperor’s Embrace until rescue can arrive. Ryboth kits grant a +10 bonus to Survival Tests, providing the tools (but not the knowledge) to aid the user in staying alive longer than he would otherwise. Good and Best Craftsmanship versions grant a +20 instead.",
+    "Weight": "15",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Screaming Tourniquet",
+    "Description": "This advanced item is a staple in many medikits. It uses sonic waves that penetrate deep into the flesh to staunch bleeding. Wrapped around a limb, it closes off arteries and can be tuned to stop bleeding without interfering with regular blood flow, thus preventing anoxia and possible loss of the limb. When used to stop blood loss, this device grants a +10 bonus to any Medicae Test. Good and Best Craftsmanship versions grant a +20 instead.",
+    "Weight": "2",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Name": "Strait-Cape",
+    "Description": "Once prisoners (or bounties) are caught, strait-capes are often used to secure them. Made from heavy, durable fabric, each is lined with memory wire so that when thrown over a body and activated they constrict and wrap the foe into a tight bundle. Once locked, they are almost escape-proof and allow for easy transport of the now-mummified target. Straitcapes can be used as a thrown weapon with the Inaccurate and Snare Qualities, and impose a –10 penalty on all tests to escape its coils, no matter what variety",
+    "Weight": "4",
+    "Rarity": "Scarce",
+    "Notes": ""
+  }
+]

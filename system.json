@@ -313,6 +313,16 @@
             "package": "system",
             "entity": "Item",
             "private": false
+        },
+        {
+            "label": "Cybernetics",
+            "type": "Item",
+            "name": "cybernetics",
+            "path": "packs/cybernetics.db",
+            "system": "fortyk",
+            "package": "system",
+            "entity": "Item",
+            "private": false
         }
     ],
     "gridDistance": 1,
