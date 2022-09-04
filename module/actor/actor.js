@@ -745,16 +745,7 @@ export class FortyKActor extends Actor {
     async _prepareVehicleData(actorData){
         const data=actorData.data;
 
-        //calculate thresholds for superheavies and set min wounds
-        if(this.getFlag("fortyk","superheavy")){
-            let max=data.secChar.wounds.max
-            let thresholdSize=Math.ceil(max/4);
-            data.secChar.wounds.thresholds["1"]=max-thresholdSize;
-            data.secChar.wounds.thresholds["2"]=max-2*thresholdSize;
-            data.secChar.wounds.thresholds["3"]=max-3*thresholdSize;
-            data.secChar.wounds.thresholds["4"]=0;
-            data.secChar.wounds.min=-100;
-        }
+        
         let knight=data.knight;
         var armorRatio=1;
         this.preparePilot();
@@ -860,6 +851,16 @@ export class FortyKActor extends Actor {
                 knight.instancedComponents.push(instancedComponent);
 
             }
+        }
+        //calculate thresholds for superheavies and set min wounds
+        if(this.getFlag("fortyk","superheavy")){
+            let max=data.secChar.wounds.max
+            let thresholdSize=Math.ceil(max/4);
+            data.secChar.wounds.thresholds["1"]=max-thresholdSize;
+            data.secChar.wounds.thresholds["2"]=max-2*thresholdSize;
+            data.secChar.wounds.thresholds["3"]=max-3*thresholdSize;
+            data.secChar.wounds.thresholds["4"]=0;
+            data.secChar.wounds.min=-100;
         }
         //initialize armor
         for(let [key, hitLoc] of Object.entries(data.facings)){

@@ -1680,6 +1680,9 @@
                 "value":0,
                 "type":"Number"
             },
+            "size":{
+                "value":9
+            },
             "hardPoints":{
                 "carapace":{
                     "titanicArtillery":[],

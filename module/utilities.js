@@ -285,7 +285,7 @@ console.log("starting item flag update")
     const response = await fetch("systems/fortyk/imports/skills.json");
     const content = await response.json();
     console.log(content);
-    // Create temporary Actor entities which impose structure on the imported data
+    // Create temporary Item entities which impose structure on the imported data
     const items = await Item.create(content, {temporary: true});
     console.log(items);
 

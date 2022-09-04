@@ -627,7 +627,9 @@ Hooks.once("dragRuler.ready", (Speedprovider) => {
         getRanges(token){
             let movement;
             let ranges;
-            if(token.actor.type==="vehicle"){
+            if(token.actor.type==="spaceship"){
+                ranges=[];
+            }else if(token.actor.type==="vehicle"){
                 movement=token.actor.data.data.secChar.speed;
                 if(token.actor.getFlag("fortyk","enhancedmotivesystem")){
                     ranges=[

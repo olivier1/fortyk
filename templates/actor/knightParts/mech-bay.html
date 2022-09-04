@@ -373,6 +373,32 @@
                 </div>
                 {{/if}}
                 {{/each}}
+                {{#each carapaceHardPoints.auxiliary}}
+                {{#if this}}
+
+                <div class="auxiliary-weapon auxiliary filled-slot">
+                    <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
+                        {{#select this.data.data.state.value}}
+
+                        {{#each data.FORTYK.itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
+                    <span>{{this.name}}</span>
+
+                    {{#if ../isGM}}
+                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
+                    {{/if}}
+                    <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="data.hardPoints.leftArm.auxiliary" data-index="{{@index}}"></a>
+                </div>
+                {{else}}
+                <div class="auxiliary-slot auxiliary component-slot"  data-facing="lSide" data-index="{{@index}}" data-path="data.hardPoints.leftArm.auxiliary">
+                    Auxiliary Slot
+                </div>
+                {{/if}}
+                {{/each}}
             </div>
             <div class="info2 mechgrid-child flexcol flex-group-center">
                 <span>Tonnage: {{data.knight.tonnage.value}}/{{data.knight.tonnage.max}}</span>
@@ -463,7 +489,7 @@
 
                 <div class="core core-color filled-slot">
                     <input class="item-text-input core-input" type="text" data-target="data.state.value"  value="{{data.knight.core.data.data.state.value}}" data-item-id="{{data.knight.core.id}}" data-dtype="Number">
-                    
+
                     <span>{{data.knight.core.name}}</span>
                     {{#if isGM}}
                     <a class="list-button item-edit" title="Edit" data-item-id="{{data.knight.core.id}}"></a>

@@ -295,7 +295,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
         if(ok){
             let amtTaken=component.data.data.amount.taken;
-            let newAmt=amtTaken+1;
+            let newAmt=parseInt(amtTaken)+1;
 
 
             let componentBase=component.data
@@ -556,6 +556,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
     async _onChassisPick(event){
         var chassisPack=await game.packs.get("fortyk.knight-chassis");
+        var vehicletraitsPack=await game.packs.get("fortyk.vehicle-traits");
         let chassis=await chassisPack.getDocuments();
         let templateOptions={"chassis":chassis};
         let actor=this.actor;
@@ -580,16 +581,21 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
                             let chassisDoc=await chassisPack.getDocument(selectedId);
-
-
-
-                            let createdChassis=await actor.createEmbeddedDocuments("Item",[chassisDoc.data]);
+                            let enclosedDoc=await vehicletraitsPack.getDocument("cR1t6ioQMPr9QEe5");
+                            let superHeavyDoc=await vehicletraitsPack.getDocument("AVUMiYtUvUQQAQrc");
+                            let walkerDoc=await vehicletraitsPack.getDocument("3DbsJhqN8KbUXZLd");
+                            let itemDatas=[];
+                            itemDatas.push(chassisDoc.data);
+                            itemDatas.push(enclosedDoc.data);
+                            itemDatas.push(superHeavyDoc.data);
+                            itemDatas.push(walkerDoc.data);
+                            let createdChassis=await actor.createEmbeddedDocuments("Item",itemDatas);
 
                             let id=createdChassis[0].id;
                             let update={};
                             update["data.knight.chassis"]=id;
                             update["data.secChar.wounds.value"]=createdChassis[0].data.data.structuralIntegrity.value;
-                            update["data.secChar.size.value"]=8;
+                            update["data.secChar.size.value"]=parseInt(createdChassis[0].data.data.size.value)-1;
                             update["data.manoeuvrability.value"]=createdChassis[0].data.data.manoeuvrability.value;
                             update["token.actorLink"]=true;
                             update["token.vision"]=true;

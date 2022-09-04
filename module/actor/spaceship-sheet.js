@@ -45,18 +45,21 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
                 character.prepare();
             }
             let skills=character.data.skills;
-            skills.forEach((skill,id,items)=>{
+            if(skills){
+                skills.forEach((skill,id,items)=>{
 
 
-                if(skill.name.toLowerCase()==="command"){
-                    command=skill.data.total.value;
-                }else if(skill.name.toLowerCase()==="voidship"){
-                    operate=skill.data.total.value;
-                }else if(skill.name.toLowerCase()==="void combat"){
-                    tactics=skill.data.total.value;
-                }
+                    if(skill.name.toLowerCase()==="command"){
+                        command=skill.data.total.value;
+                    }else if(skill.name.toLowerCase()==="voidship"){
+                        operate=skill.data.total.value;
+                    }else if(skill.name.toLowerCase()==="void combat"){
+                        tactics=skill.data.total.value;
+                    }
 
-            });
+                });
+            }
+
             data.hangarAttack=Math.max(command,operate,tactics,crew);
 
 
