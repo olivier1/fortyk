@@ -1,0 +1,90 @@
+[
+  {
+    "Item": "Refractor Field",
+    "Rating": "30",
+    "Description": "Refractor fields are small enough to be disguised as jewellery or other ornamentation. While active, they can disperse an attack across the field’s entire surface area to negate the damage, but they also constantly envelop users with a soft halo as their energies interact with the surrounding air. The glow of an active refractor field makes the user more noticeable in low lighting or darkness, and imposes a –20 penalty on all Stealth tests he takes.",
+    "Weight": "2",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Conversion Field",
+    "Rating": "50",
+    "Description": "Also known as flare fields, these devices convert the energy of an attack into radiated light, often strong enough to act as a blinding visual blast against nearby foes. A more powerful version known as a Rosarius is often granted to members of the Ecclesiarchy to guard against the predations of heretics and the unholy. If the conversion field blocks more than 12 points of damage from a single attack, the release of light is strong enough to act as a photon flash grenade burst centred on the wearer (see page 158). The character wearing the conversion field is unaffected by this burst.",
+    "Weight": "1",
+    "Rarity": "Extremely Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Displacer Field",
+    "Rating": "55",
+    "Description": "Displacer fields are powerful, but sometimes as dangerous to use as the actual attack. They operate not by absorbing or shunting away an attack’s energy, but instead by shifting the user away using miniature Warp-jump technologies. This jump is normally triggered through sensors located with the device, though it can also be activated manually if desired. Each activation carries the supreme risk of unprotected travel through the Empyrean; even as the body is swept to safety, the soul risks damnation. When the field successfully nullifies an attack, the user jumps in a random direction using the Scatter Diagram on page 230. Roll 3d10 for the number of metres travelled—the wearer always emerges on solid footing and in a suitable empty space. If all three dice come up with the same number (e.g., 3 results of 7), then the user does not re-emerge for 1d5 rounds and gains 1 Corruption point from exposure to the unnatural energies within the Warp. If the activation is unexpected, then the wearer cannot act for one round while he regains his sense of place.",
+    "Weight": "2",
+    "Rarity": "Near Unique",
+    "Notes": ""
+  },
+  {
+    "Item": "Power Field (Personal)",
+    "Rating": "80",
+    "Description": "Unlike most other field devices, power fields are large, bulky affairs that cannot be easily disguised. Personal versions must be worn as heavy backpacks, while larger units are fitted with motive mechanisms, due to their weight and size. Power fields are very effective, projecting a force wall to negate incoming attacks, but drain energy quickly once active. A power field causes the air to visibly ripple and crackle with static discharge, imposing a –20 penalty on all Stealth tests. It also does not defend against ranged attacks made within 1 metre, or attacks in melee.",
+    "Weight": "50",
+    "Rarity": "Near Unique",
+    "Notes": ""
+  },
+  {
+    "Item": "Power Field (Vehicle/Emplacement)",
+    "Rating": "80",
+    "Description": "Unlike most other field devices, power fields are large, bulky affairs that cannot be easily disguised. Personal versions must be worn as heavy backpacks, while larger units are fitted with motive mechanisms, due to their weight and size. Power fields are very effective, projecting a force wall to negate incoming attacks, but drain energy quickly once active. A power field causes the air to visibly ripple and crackle with static discharge, imposing a –20 penalty on all Stealth tests. It also does not defend against ranged attacks made within 1 metre, or attacks in melee.",
+    "Weight": "500",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Icon of the Just",
+    "Rating": "55",
+    "Description": "A proud, glowing symbol of Inquisitorial might, each Icon of the Just projects a personal force field strong enough to block both mortal weaponry and the devastating attacks of daemonic entities. Often stylised as small hammers or symbols of the Inquisition, few except the Ordo Malleus’ most trusted and devoted Daemonhunters receive these blessed devices. Each Icon of the Just also contains holy wards that repel Warpspawn. Opponents with the Daemonic trait suffer a –10 penalty to attack tests and Focus Power tests against the wearer.",
+    "Weight": "0.5",
+    "Rarity": "Extremely Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Flare Shield",
+    "Rating": "25 or 50",
+    "Description": "Well known for its force fields, Cerix Magnus retains many templates from before the Compliance. The flare shield, originally designed to protect the forge world’s vehicles, is one such device, and Inquisitors with strong ties to the Tech-Magi of that planet sometimes gain access to this excellent form of protection. A flare shield has a protection rating of 25, which is doubled against weapons with the Blast or Spray qualities. If the shield overloads, it inflicts 1d10 Energy damage to the wearer that ignores Toughness bonus and Armour",
+    "Weight": "3",
+    "Rarity": "Extremely Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Field Wall Generator",
+    "Rating": "65",
+    "Description": "A renowned item from the forge world of Cerix Magnus, this device creates a force ield with a wide protective scope. It has saved the lives of Acolyte warbands and beleaguered teams of Adeptus Arbites on many worlds across Askellon. The wall consists of two or more generators. Activating or deactivating a generator requires a Full Action, which also activates all other linked generators. A linear force ield then forms between each generator, 1.5 metres high and up to 8 metres in length. The barrier acts as cover, so only parts of the body protected by the ield wall gain force ield protection. If a wall section overloads, then only that portion between the two generators shuts down, and any other linked sections remain unafected.",
+    "Weight": "18",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Rosarius",
+    "Rating": "50",
+    "Description": "Equal parts force ield, devotional icon, and badge of oice, the rosarius is a conversion ield commonly used by the Ecclesiarchy and its allies. Allies who can draw a line of sight to a character with a rosarius gain a +10 bonus to Fear and Pinning tests; this is lost if the wearer dies or sufers any Critical damage. It is only available to Acolytes with the Adeptus Ministorum or Adepta Sororitas backgrounds, or who have taken the Inquisitor elite advance. Acolytes without these backgrounds must provide a rationale to their GM when attempting to Acquire this item.",
+    "Weight": "0.6",
+    "Rarity": "Extremely Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Archaeotech Mirror Shield",
+    "Rating": "60",
+    "Description": "Resembling a strange kind of ornamentation, archeotech mirror shields consist of a large reflective surface surrounded by elaborate wiring and tech-glyphs. They are normally worn on the forearm, and when struck by energy weapons can absorb and redirect the force, reflecting it back onto the attacker. A Mirror Shield’s Protection Rating only applies to the Arm and Body. However, when it successfully blocks a ranged attack dealing Energy damage, the wearer may spend his Reaction to make a Challenging (+0) Agility Test. On a success, the wearer reflects the shot back at a target of his choice within the range of the weapon. The target takes the hit, suffering all effects.",
+    "Weight": "1.5",
+    "Rarity": "Near Unique",
+    "Notes": "looks like this would be annoying to implement"
+  },
+  {
+    "Item": "Salvation Shield",
+    "Rating": "70",
+    "Description": "Reportedly created by the mysterious Jokaero, although other reports claim they are relics of human technology from the Dark Age, these tiny devices resemble a button or small broach. When activated by a coded series of touches, a button shield generates a silent, invisible field of roughly one square metre projecting outward half a metre. The field is strong, on the scale of a power field, but can only last a few minutes before the charge dissipates; once used it requires several hours to recharge itself. These are worn singly on the chest, but for the few individuals with access to several button shields, they can be worn in a pattern to protect more of the body. The more daring wear them as rings, so as to provide the most dramatic usage to unsuspecting foes.",
+    "Weight": "0.05",
+    "Rarity": "Near Unique",
+    "Notes": "Seems to be a directional thing"
+  }
+]

@@ -1,7 +1,7 @@
-const pack = game.packs.find(p => p.collection === `world.knight-melee-weapons`);
+const pack = game.packs.find(p => p.collection === `fortyk.melee-weapons`);
 
 // Load an external JSON data file which contains data for import
-const response = await fetch("systems/fortyk/importsimperial-knight-melee-weapons.json");
+const response = await fetch("systems/fortyk/imports/ordohereticus-melee-weapons.json");
 const content = await response.json();
 console.log(content);
 let datas=[];

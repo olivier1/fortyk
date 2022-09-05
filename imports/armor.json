@@ -1,0 +1,342 @@
+[
+  {
+    "Item": "Heavy Leathers",
+    "Locations": "Arms, Body",
+    "AP": "1",
+    "Max Ag": "100",
+    "Weight": "5",
+    "Description": "",
+    "Rarity": "Common",
+    "Notes": ""
+  },
+  {
+    "Item": "Imperial Robes",
+    "Locations": "Arms, Body, Legs",
+    "AP": "1",
+    "Max Ag": "100",
+    "Weight": "4",
+    "Description": "",
+    "Rarity": "Average",
+    "Notes": ""
+  },
+  {
+    "Item": "Armoured Bodyglove",
+    "Locations": "Arms, Body, Legs",
+    "AP": "2",
+    "Max Ag": "100",
+    "Weight": "5",
+    "Description": "",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Chainmail Suit",
+    "Locations": "Arms, Body, Legs",
+    "AP": "3",
+    "Max Ag": "35",
+    "Weight": "15",
+    "Description": "",
+    "Rarity": "Common",
+    "Notes": ""
+  },
+  {
+    "Item": "Feudal World Plate",
+    "Locations": "All",
+    "AP": "5",
+    "Max Ag": "25",
+    "Weight": "30",
+    "Description": "",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Item": "Xenos Hide",
+    "Locations": "Body",
+    "AP": "6",
+    "Max Ag": "50",
+    "Weight": "20",
+    "Description": "",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Flak Helmet",
+    "Locations": "Head",
+    "AP": "2",
+    "Max Ag": "100",
+    "Weight": "2",
+    "Description": "Flak Armour: As long as the wearer is not on the target spot of the blast, flak armour counts as 1 AP higher against damage from weapons with the Blast quality.",
+    "Rarity": "Average",
+    "Notes": ""
+  },
+  {
+    "Item": "Flak Gauntlets",
+    "Locations": "Arms",
+    "AP": "2",
+    "Max Ag": "100",
+    "Weight": "1",
+    "Description": "Flak Armour: As long as the wearer is not on the target spot of the blast, flak armour counts as 1 AP higher against damage from weapons with the Blast quality.",
+    "Rarity": "Average",
+    "Notes": ""
+  },
+  {
+    "Item": "Light Flak Cloak",
+    "Locations": "Arms, Body, Legs",
+    "AP": "2",
+    "Max Ag": "55",
+    "Weight": "4",
+    "Description": "Flak Armour: As long as the wearer is not on the target spot of the blast, flak armour counts as 1 AP higher against damage from weapons with the Blast quality.",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Item": "Flak Vest",
+    "Locations": "Body",
+    "AP": "3",
+    "Max Ag": "60",
+    "Weight": "5",
+    "Description": "Flak Armour: As long as the wearer is not on the target spot of the blast, flak armour counts as 1 AP higher against damage from weapons with the Blast quality.",
+    "Rarity": "Average",
+    "Notes": ""
+  },
+  {
+    "Item": "Flak Cloak",
+    "Locations": "Arms, Body, Legs",
+    "AP": "3",
+    "Max Ag": "55",
+    "Weight": "8",
+    "Description": "Flak Armour: As long as the wearer is not on the target spot of the blast, flak armour counts as 1 AP higher against damage from weapons with the Blast quality.",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Item": "Flak Coat",
+    "Locations": "Arms, Body",
+    "AP": "3",
+    "Max Ag": "60",
+    "Weight": "5",
+    "Description": "Flak Armour: As long as the wearer is not on the target spot of the blast, flak armour counts as 1 AP higher against damage from weapons with the Blast quality.",
+    "Rarity": "Average",
+    "Notes": ""
+  },
+  {
+    "Item": "Imperial Guard Flak Armour",
+    "Locations": "All",
+    "AP": "4",
+    "Max Ag": "55",
+    "Weight": "11",
+    "Description": "Flak Armour: As long as the wearer is not on the target spot of the blast, flak armour counts as 1 AP higher against damage from weapons with the Blast quality.",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Item": "Mesh Vest",
+    "Locations": "Body",
+    "AP": "4",
+    "Max Ag": "100",
+    "Weight": "2",
+    "Description": "",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Mesh Cloak",
+    "Locations": "Arms, Body, Legs",
+    "AP": "4",
+    "Max Ag": "60",
+    "Weight": "3",
+    "Description": "",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Carapace Helm",
+    "Locations": "Head",
+    "AP": "4",
+    "Max Ag": "100",
+    "Weight": "2",
+    "Description": "",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Carapace Gauntlets",
+    "Locations": "Arms",
+    "AP": "5",
+    "Max Ag": "100",
+    "Weight": "2",
+    "Description": "",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Carapace Greaves",
+    "Locations": "Legs",
+    "AP": "5",
+    "Max Ag": "100",
+    "Weight": "3",
+    "Description": "",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Enforcer Light Carapace",
+    "Locations": "All",
+    "AP": "5",
+    "Max Ag": "45",
+    "Weight": "15",
+    "Description": "",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Carapace Chestplate",
+    "Locations": "Body",
+    "AP": "6",
+    "Max Ag": "55",
+    "Weight": "7",
+    "Description": "",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Militarum Tempestus Carapace",
+    "Locations": "All",
+    "AP": "6",
+    "Max Ag": "45",
+    "Weight": "15",
+    "Description": "",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Light Power Armour",
+    "Locations": "All",
+    "AP": "7",
+    "Max Ag": "40",
+    "Weight": "40",
+    "Description": "Light power armour requires a constant power supply, normally built into the suit, which offsets its weight so it does not count against the user’s normal carrying limit (see page 248). It grants the user 10 strength and increases the value of his Size trait by 1 level. Unless stated otherwise, the power supply functions for 1d5 hours before needing recharging or refuelling. Most suits feature a detachable helmet; when this in place, the wearer benefits from an internal oxygen supply and standard vox systems.",
+    "Rarity": "Very Rare",
+    "Notes": "Power Armour"
+  },
+  {
+    "Item": "Heavy Power Armour",
+    "Locations": "All",
+    "AP": "8",
+    "Max Ag": "35",
+    "Weight": "65",
+    "Description": "Granted to but a few outside of the elite Adeptus Astartes and the Adepta Sororitas, power armour has been a part of the Imperium since the Emperor’s conquest of Terra. Inquisitors, and sometimes their most honoured of Acolytes, are on occasion granted these ancient protective suits when facing the most powerful of foes. Heavy power armour grants the wearer the Auto-Stabilised and grants 20 strength, and increases the value of his Size (X) trait by 1. When used with the detachable helmet, it is environmentally sealed with its own oxygen supply and voxcaster systems. Its power supply can operate for 2d5 hours before recharging or refueling is needed, and while powered the suit’s weight does not count towards the user’s carry limit (see page 248 of the Dark Heresy Core Rulebook).",
+    "Rarity": "Extremely Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Obsidian Plate",
+    "Locations": "Body",
+    "AP": "6",
+    "Max Ag": "35",
+    "Weight": "35",
+    "Description": "Extremely heavy and seemingly primitive, obsidian plate armour dulls the effects of psychic powers; the records of numerous Askellon Inquisitors show its efficiency especially in fighting entities aligned with Tzeentch. Its bulky nature—and the efforts to ensure it does not fall into the bloodstained hands of cultists who worship the Skull God— though, act to prevent obsidian plate from being more widely distributed in the sector. A character wearing this armour gains the Resistance (Psychic Powers) talent, or an additional +10 to tests to resist psychic powers if the character already has this talent. Obsidian plate counts its listed Armour points as triple against hits inflicted by Psychic Bolts. A psyker wearing obsidian plate cannot push his psychic powers, and reduces his psy-rating by 3 (to a minimum of 1).",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Adepta Sororitas Power Armour",
+    "Locations": "All",
+    "AP": "7",
+    "Max Ag": "50",
+    "Weight": "35",
+    "Description": "Covered in devotional script, purity seals, and symbols of worship, the armour worn by the Sisters of Battle is as much a holy icon as it is a protective casing. More nimble than the massive suits of the Adeptus Astartes, it still retains many technological enhancements that give its wearer an edge in battle. Adepta Sororitas power armour grants +10 strength, and the wearer always counts as braced. The armour does not increase the wearer’s Size trait, and is only available to Acolytes with the Adepta Sororitas background.",
+    "Rarity": "Extremely Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Moldsuit",
+    "Locations": "All",
+    "AP": "100",
+    "Max Ag": "40",
+    "Weight": "10",
+    "Description": "An adaptation of the standard Askellian environmental suit, the so-called mouldsuits of Temperance contain a triple-redundant iltration system designed to protect the wearer from the deadly mind-mould. Absolutely vital in dealing with spore infestations, the mouldsuit’s robust design makes it useful in many other situations, and the few that leave the planet fetch a good price. A character wearing a mouldsuit is completely immune to the efects of mind-mould (and thus spore bombs), unless he has the Psyker trait, in which case the spores afect him normally. The iltration system grants a +40 bonus to any Toughness test made to resist the efects of harmful gasses, as well as a +10 bonus to tests for resisting extreme temperatures and being set on ire. Each contains a separate rebreather unit that lasts for 5 hours before requiring replacement. It is not designed for battle, and ofers no combat protection though it can be worn over armour. If the wearer takes more than 5 points of damage in a single round, the suit becomes damaged and ceases to provide iltering beneits until repaired.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Praetor Armour",
+    "Locations": "All",
+    "AP": "6",
+    "Max Ag": "50",
+    "Weight": "16",
+    "Description": "One of Selvanus Binary’s seminal creations, Praetor Armour protects its Ebon Sentinels from harm as they guard the vitally important forge world. Capable of luid and articulated movement, the armour is resilient enough to withstand most small arms ire and close-ranged combat. Occasionally, suits appear on the open market, where they fetch extravagant prices before the Adeptus Mechanicus moves quickly to reclaim them. Praetor Armour contains an integral respirator, commlink, photo-visor, targeter, and recoil suppression sleeves, as well as a magnetic harness on the back capable of holding a single basic weapon. Any Acolyte without the Adeptus Mechanicus background gains the Enemy (Adeptus Mechanicus) talent while openly wearing or displaying Praetor Armour.",
+    "Rarity": "Extremely Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Crimson Armour",
+    "Locations": "All",
+    "AP": "6",
+    "Max Ag": "50",
+    "Weight": "6",
+    "Description": "Guardsmen across the Spinward Front that witness the Crimson Guard in action always recount the sense of dread that seems to surround them. Much of this horrific feeling stems from the Crimson Guard’s standard issue armour. Expertly engineered within the Lathes of the Calixis Sector the armour is not only intimidating in appearance, but conceals numerous additional systems that give even lone Crimson Guardsmen an edge in combat. Crimson armour comes equipped with a Good Quality photo-visor and increases the wearer's strength by 10. Crimson armour ins environmentally sealed as long as the helmet is worn.",
+    "Rarity": "Near Unique",
+    "Notes": ""
+  },
+  {
+    "Item": "Sanctified Vestments",
+    "Locations": "Arms, Body, Legs",
+    "AP": "5",
+    "Max Ag": "100",
+    "Weight": "12",
+    "Description": "This broad category of reinforced clerical garments encompasses everything from the armour-plated robes of a battle-friar to the artfully woven mantle of an itinerant missionary. There is no uniform pattern or method of creation for these garments and each is particular to its wearer or the Ministorum facility at which it was crafted.",
+    "Rarity": "Rare",
+    "Notes": "Ministorum Priests Only"
+  },
+  {
+    "Item": "Augmetic Engine-Plate",
+    "Locations": "All",
+    "AP": "7",
+    "Max Ag": "",
+    "Weight": "20",
+    "Description": "This armour is primarily used to protect against the hostile environments and physical hazards of a starship’s enginarium, though more martially minded Tech-Priests serving aboard the Navy patrol vessels in the Koronus Expanse have been known to repurpose suits to serve in combat. While hardly designed for agility, engine-plate is extremely resilient, being composed of heavy ceramite-bonded plasteel plating over thick layers of vulcanised rubber and flak-weave.  Augmetic engine-plate is environmentally sealed and proof against vacuum, toxic or corrosive environments, underwater and most other atmospheric conditions, keeping the wearer alive through a large, reliable rebreather system that lasts for a little over eight hours before the air tanks require refilling. These suits also contain an internal micro-vox, mag-boots and a photo-visor. The bulk and rigid construction of the suit is a hindrance to movement, imposing a –10 penalty to the wearer’s Agility for all purposes, and a further –10 penalty on all tests reliant on fine manipulation using the gauntlets. However, the thick, heat-resistant layers of the suit means the wearer is immune to Flame weapons, counts as AP 10 against other Energy weapons, and gains a +30 to any tests made to resist adverse environmental conditions such as extreme heat or cold.",
+    "Rarity": "Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Voidsuit (Footfall)",
+    "Locations": "All",
+    "AP": "2",
+    "Max Ag": "",
+    "Weight": "10",
+    "Description": "As with many other items dubbed ‘Footfall-pattern’, these voidsuits are not truly a singular design, but rather are each unique items created to broadly similar specifications, the product of various unsanctioned artificers and heretic manufactories on worlds, stations and vessels within the Koronus Expanse. Unlike many such illicit creations, Footfall-pattern voidsuits are of remarkably high quality, the explorers and colonists of the Expanse being extremely familiar with the dangers of the void, and thus less-than-willing to risk themselves with creations of uncertain protective value. Less cumbersome than the widely-used Selenite-pattern, it provides somewhat less protection from hazards, but is more comfortable to wear for long periods of time, such that many voidmen wear the main body of the suit as normal work overalls, adding the helm, gauntlets and boots only when they need to work in vacuum.  When fully sealed, the suit’s rebreather tanks provide enough air for four hours, after which time they must be replaced, which can be done as a Full Action without compromising the suit’s seals and without removing the suit. An integral micro-bead vox, mag-boots, lamp pack, and clip harness are also included in most common versions.",
+    "Rarity": "Scarce",
+    "Notes": ""
+  },
+  {
+    "Item": "Mesh-Weave Clothing",
+    "Locations": "Arms, Body, Legs",
+    "AP": "3",
+    "Max Ag": "",
+    "Weight": "1",
+    "Description": "Favoured by the wealthy and paranoid, as well as any others who must keep up a particular appearance without leaving themselves completely vulnerable, mesh-woven clothing is extremely expensive and difficult to obtain. There are perhaps only a dozen individuals in the entire Calixis Sector, and maybe only two in the Koronus Expanse, whose skills allow them to craft clothing which is both protective and sophisticated.  However, the armour is virtually undetectable by conventional methods, the mesh layers so perfectly concealed that they escape the notice of all but the most vigilant of observers.  The finest and most extravagant of mesh-woven clothes are believed to incorporate elements of mesh armour salvaged from the bodies of Eldar warriors, the armour being extraordinarily lightweight and almost as fine as silk, and thus easily added to fine clothing without looking particularly out of place. Such items, as well as being extremely expensive and difficult to acquire, are deemed heretical for their inclusion of xenos craftsmanship",
+    "Rarity": "Extremely Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Pressure Carapace",
+    "Locations": "All",
+    "AP": "6",
+    "Max Ag": "",
+    "Weight": "16",
+    "Description": "Designed for the rigours of ship-to-ship combat, a pressure carapace is armour first and a voidsuit second. Constructed from lightweight ceramite plating over a thin, multilayered, sealed undersuit, pressure carapace is not really designed to protect from the hazards of the void long-term, instead serving more as an incidental safeguard against accidental exposure. Adeptus Arbites boarding parties, such as those serving as part of the Calixis Sector’s Precinct Astra, tend to employ suits of pressure carapace during their raids upon illegal shipping, though they are far from the only organisation to use this type of armour.  Given their intended use, suits of pressure carapace are somewhat resistant to the normal tears and punctures that are a hazard in vacuum combat. Against any attack that would normally cause a suit puncture, roll 1d10—on a 6+, the suit’s construction holds up and no puncture is caused. Higher-quality versions of the armour contain an exotic fluid layer that swiftly welds shut any breaches in the suit. A Good or Best craftsmanship suit of pressure carapace cannot suffer from breaches or punctures.",
+    "Rarity": "Very Rare",
+    "Notes": ""
+  },
+  {
+    "Item": "Xenos Chitin Armour",
+    "Locations": "Body",
+    "AP": "5",
+    "Max Ag": "",
+    "Weight": "3",
+    "Description": "Extremely rare and utterly blasphemous, this carefully-wrought armour is composed of pieces of the chitinous exoskeleton of Tyranid creatures. Given the scarcity of Tyranids within the Calixis Sector and Koronus Expanse, obtaining the materials is difficult, but the resilience of their carapace, and the chance to own something so rare and distinctive is often incentive enough for well-connected pirates and ne’er-dowells. Recently, however, this jet-black or dark blue armour has shown up more often, reportedly smuggled from distant locations by several Rogue Traders with ties to the Imperial Navy. The Inquisition is quite eager to find these individuals, and learn the source of these sales.  Tyranid chitin is roughly as protective as flak or light carapace armour. Owning a suit of xenos chitin armour is considered to be a heresy, and consequently will attract unfavourable attention from the Inquisition, Adeptus Arbites, Ecclesiarchy and others besides. In the Calixis Sector, the Inquisition may take special, and likely fatal, interest in those who wear such armour.",
+    "Rarity": "Near Unique",
+    "Notes": ""
+  }
+]

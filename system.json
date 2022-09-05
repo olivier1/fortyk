@@ -323,6 +323,26 @@
             "package": "system",
             "entity": "Item",
             "private": false
+        },
+        {
+            "label": "Armor",
+            "type": "Item",
+            "name": "armor",
+            "path": "packs/armor.db",
+            "system": "fortyk",
+            "package": "system",
+            "entity": "Item",
+            "private": false
+        },
+        {
+            "label": "Forcefields",
+            "type": "Item",
+            "name": "forcefields",
+            "path": "packs/forcefields.db",
+            "system": "fortyk",
+            "package": "system",
+            "entity": "Item",
+            "private": false
         }
     ],
     "gridDistance": 1,
