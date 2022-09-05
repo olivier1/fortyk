@@ -11,8 +11,35 @@ for(let i=0;i<content.length;i++){
     dataModel["name"]=imp.Item;
     dataModel["type"]="armor";
     let data={};
-    data.rating={"value":imp.Rating};
     data.weight={"value":parseFloat(imp.Weight)};
+    data.maxAgi={"value":imp.maxAg};
+    let locations=imp.Locations.toLowerCase();
+    let ap=imp.AP;
+    let dataAp={};
+    if(locations==="all"){
+        dataAp.head={"value":ap}; 
+        dataAp.body={"value":ap}; 
+        dataAp.lArm={"value":ap}; 
+        dataAp.rArm={"value":ap}; 
+        dataAp.lLeg={"value":ap}; 
+        dataAp.rLeg={"value":ap}; 
+    }else{
+        if(locations.indexOf("head")!==-1){
+            dataAp.head={"value":ap}; 
+        }
+        if(locations.indexOf("body")!==-1){
+            dataAp.body={"value":ap}; 
+        }
+        if(locations.indexOf("arms")!==-1){
+            dataAp.lArm={"value":ap}; 
+            dataAp.rArm={"value":ap}; 
+        }
+        if(locations.indexOf("legs")!==-1){
+            dataAp.lLeg={"value":ap}; 
+            dataAp.rLeg={"value":ap}; 
+        }
+    }
+    data.ap=dataAp;
     let impRarity=imp.Rarity;
 
     switch (impRarity.toLowerCase()){
