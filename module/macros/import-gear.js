@@ -1,19 +1,23 @@
-const pack = game.packs.find(p => p.collection === `fortyk.wargear`);
+const pack = game.packs.find(p => p.collection === `fortyk.drugs-and-consumables`);
 
 // Load an external JSON data file which contains data for import
-const response = await fetch("systems/fortyk/imports/imperial-tools.json");
+const response = await fetch("systems/fortyk/imports/drugs.json");
 const content = await response.json();
 console.log(content);
 let datas=[];
 for(let i=0;i<content.length;i++){
     let imp=content[i];
     let dataModel={};
-    dataModel["name"]=imp.Name;
+    dataModel["name"]=imp.name;
     dataModel["type"]="wargear";
     let data={};
+    if(imp.weight){
+        data.weight={"value":parseFloat(imp.weight)};
+    }else{
+        data.weight=0;
+    }
     
-    data.weight={"value":parseFloat(imp.Weight)};
-    let impRarity=imp.Rarity;
+    let impRarity=imp.rarity;
 
     switch (impRarity.toLowerCase()){
         case "ubiquitous":
@@ -51,8 +55,8 @@ for(let i=0;i<content.length;i++){
             break;
 
     }
-    if(imp.Description){
-        data.description={"value":imp.Description}
+    if(imp.description){
+        data.description={"value":imp.description}
     }
     dataModel.data=data;
     datas.push(dataModel);

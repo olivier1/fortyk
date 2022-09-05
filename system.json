@@ -343,7 +343,18 @@
             "package": "system",
             "entity": "Item",
             "private": false
+        },
+        {
+            "label": "Drugs & Consumables",
+            "type": "Item",
+            "name": "drugs-and-consumables",
+            "path": "packs/drugs-and-consumables.db",
+            "system": "fortyk",
+            "package": "system",
+            "entity": "Item",
+            "private": false
         }
+        
     ],
     "gridDistance": 1,
     "gridUnits": "m",

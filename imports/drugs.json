@@ -1,0 +1,245 @@
+[
+    {
+        "name": "Numb-ers",
+        "description": "Numbs the user's emotions for 2d5 hours. This drug gives a +20 bonus to fear tests but imposes a -10 penalty to all fellowship based tests for the duration. The user suffers a -20 penalty to willpower once the drug's effect is over for a duration of 1d5 hours.",
+        "rarity": "Rare",
+        "addictive": "Yes"
+    },
+    {
+        "name": "Bolt",
+        "description": "Grants the user an additional half action each round for 2d10 rounds. The user is still limited by action type limitations. Once the effects ends he must pass a -20 toughness test or only get 1 half action per round for 1d10 hours.",
+        "rarity": "Extremely Rare",
+        "addictive": "Yes"
+    },
+    {
+        "name": "Flesh-mend",
+        "description": "Grants the user the Regeneration(2) trait for 2d10 rounds. When the effect ends the user must pass a -20 toughness test or take 1 damage per degree of failure not reduced by armor or toughness.",
+        "rarity": "Near Unique",
+        "addictive": "Yes"
+    },
+    {
+        "name": "Ground",
+        "description": "When administered to a psyker this drug lowers their effective psy rating by 1 for 1d5 hours. In addition it lowers rolls on the psychic phenomena table by 20 for the duration(rolls lower than 1 count as 1). Psykers must pass a -10 willppower test when taking this drug or gain 1d5 insanity. Non psyker who take this drug must pass a willpower test or gain 1d10 insanity.",
+        "rarity": "Very Rare",
+        "addictive": "No"
+    },
+    {
+        "name": "Jackout",
+        "description": "This drug gives the user 2 toughness and strength bonus for 2d10 minutes but lowers his agility bonus by 2 for the duration. When the effect is over the user gets a -20% penalty on all toughness and strength tests for 1d5 hours.",
+        "rarity": "Very Rare",
+        "addictive": "Yes"
+    },
+    {
+        "name": "Minders",
+        "description": "This drug gives the user a +10% bonus to any intelligence test for 1d5 hours. The user gets a -20% penalty to intelligence tests for 1 hour after using this drug.",
+        "rarity": "Scarce",
+        "addictive": "Yes"
+    },
+    {
+        "name": "Bliss",
+        "description": "The user gets a +10% bonus to charm and inquiry tests for 1d5 hours. The user gets severaly depressed once the drug runs out and must pass a willpower test or gain 1d3 insanity.",
+        "rarity": "Common",
+        "addictive": "Yes"
+    },
+    {
+        "name": "Nirvana",
+        "description": "Nirvana is a strong hallucinogenic based on Obscura but with most of the undersireable side-effects removed. Nirvana users enter a dream-like state for 1d5 hours (if required to engage in combat, consider them under the effects of a hallucinogen grenade).",
+        "rarity": "Very rare",
+        "addictive": "Yes"
+    },
+    {
+        "name": "Focus",
+        "description": "The user gets a +10% bonus to perception tests for 1d5 hours. Once the drug runs out the user suffers a  -20% penalty to perception tests for 1d10 hours.",
+        "rarity": "Rare",
+        "addictive": "Yes"
+    },
+    {
+        "name": "Amasec",
+        "description": "This refreshment is made from distilled wine or other fermented beverages, and is popular in many regions of the Imperium. It is usually a fine-quality product, with some well-aged vintages renowned across the sector for bouquet and flavour.",
+        "weight": 1,
+        "rarity": "Average"
+    },
+    {
+        "name": "Desoleum Fungus",
+        "description": "A hallucinogen made from unusual narcotic mushrooms that grow in ancient aquifers deep in Hive Desoleum’s lower reaches, this drug has a disorienting, intoxicating effect that causes users to stumble about despite retaining the full spectrum of their senses. Depraved gangers particularly enjoy dosing themselves and then instigating extended gunfights, whirling about drunkenly and watching the havoc of their wayward shots. A dose of lasts 1d10 rounds, and the user immediately suffers 1 Fatigue as his body spins wildly. A character under the effects of the drug can take advantage of the skewed perspective this gives him: once during this time, he may invert the result of any 1d100 roll, exchanging the tens digit for the ones digit (turning a 73 into a 37 or a 91 into a 19, etc.).",
+        "weight": "0",
+        "rarity": "Scarce"
+    },
+    {
+        "name": "De-Tox",
+        "description": "De-tox can negate most of the dangerous effects of other drugs or toxins. A dose immediately ends the effects, both positive and negative, for any chemicals the subject has inhaled, ingested, or injected, unless the item specifically states de-tox cannot work against it. Its use is extremely unpleasant, however, with common side-effects so extreme (excessive vomiting and diarrhoea being the mildest) that many would rather abide their current woes. Using de-tox, however, is both painful and debilitating, and can cause several unpleasant side effects such as vomiting, nose bleeds, and a great voiding of the bowels. Upon taking this drug, a character is Stunned for a number of rounds equal to 1d10 minus his Toughness bonus. A result of 0 or less means that the character suffers no ill effects.",
+        "weight": "0",
+        "rarity": "Rare"
+    },
+    {
+        "name": "Frenzon",
+        "description": "Frenzon is a term for a number of combat drugs used in conscript and assault forces, especially in penal legions. A dose creates a fanatical and fearless state, leaving the user ready to fight any foe, no matter how suicidal it may seem. A character using frenzon gains the Frenzy talent and immediately becomes Frenzied. These effects last for the duration of the drug; a single dose of which lasts for 1d10 minutes. Frenzon is Addictive.",
+        "weight": "0",
+        "rarity": "Very Rare",
+        "addictive": "Drug is Addictive"
+    },
+    {
+        "name": "Lho-Sticks",
+        "description": "A mild narcotic, each stick contains dried and cured plant leaves that release a scented, stimulating smoke when ignited and inhaled through a cheap tube that burns away with the drug. As the leaves vary with the planet, lho-sticks can vary from world to world as well, often making them useful trade items.",
+        "weight": "0",
+        "rarity": "Common"
+    },
+    {
+        "name": "Obscura",
+        "description": "Though often illegal, obscura is popular in many fighting units where combatants are eager for respite from constant battle, as well as among civilians seeking relief from the drudgeries of harsh life. Obscura-users enter a dream-like state for 1d5 hours (if required to engage in combat, consider them under the effects of a hallucinogen grenade). For 1d10 hours after the effects wear off, they enter a deep depression, unless another dose of obscura is taken. Obscura is Addictive.",
+        "weight": "0",
+        "rarity": "Rare",
+        "addictive": "Drug is Addictive"
+    },
+    {
+        "name": "Ration Pack",
+        "description": "These small pouches contain concentrated or dehydrated foodstuffs suitable for one complete meal, and also include vitamin supplements, water puri-tabs, a protein bar, and heating pellets. Well-made packs are actually quite palatable, but even a master Ratling chef would have difficulty with the poor ingredients used in cheaper packs. Besides the benefits of holding off starvation, ration packs can help to keep an Acolyte effective in the field. Eating one or more ration packs (or other, comparable meals) during a period of rest of at least two hours removes one additional level of Fatigue.",
+        "weight": 2,
+        "rarity": "Plentiful"
+    },
+    {
+        "name": "Recaf",
+        "description": "These common beverages offer a mild stimulant effect as well as pleasing taste. Hot recaf starts many days across the sector, from Imperial Guardsmen fighting on combat lines against the xenos threat to Acolytes striving to stay alert on an all-night vigil near a suspected cult hideout. Consuming recaf helps to hone senses dulled by exhaustion, and a dose removes one level of Fatigue from the character. The cumulative penalty to Toughness tests taken for consuming additional doses of recaf is –20 instead of the normal –10.",
+        "weight": "0",
+        "rarity": "Abundant"
+    },
+    {
+        "name": "Sacred Unguents",
+        "description": "Holy lubricating oils that have received the blessings of the Omnissiah, these liquids are highly sought after for their calming effect on recalcitrant machine spirits. If applied to a weapon— which requires a Full Action—the weapon becomes immune to jamming (see page 224) for a number of shots equal to its clip size. If the unguent is applied to an already jammed weapon, the jam immediately clears, but there is no further effect.",
+        "weight": "0",
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Slaught",
+        "description": "This combat drug (also known as onslaught) is frequently taken to heighten awareness and improve reaction time. It literally speeds up the user, but causes neural and physiological damage with prolonged application. Taking a dose increases the user’s Agility bonus and Perception bonus by 3 for 2d10 minutes. Note this does not increase the actual characteristic values. When the drug runs its course, the user must pass a Challenging (+0) Toughness test or suffer a –20 penalty to Agility tests and Perception tests for 1d5 hours. Slaught is Addictive.",
+        "weight": "0",
+        "rarity": "Scarce",
+        "addictive": "Drug is Addictive"
+    },
+    {
+        "name": "Spook",
+        "description": "A highly-proscribed drug, spook creates and augments that most hazardous of effects: psychic abilities. Even the briefest of connections to the Warp and the Ruinous Powers that dwell within can allow daemonic incursions or worse, but in desperate instances, even these horrific effects are brushed aside. If a character without any psy rating takes a dose of this drug, he must successfully make a Challenging (+0) Willpower test or gain 1d5 Insanity points due to his mind being filled with terrifying visions of the Warp. If he succeeds, the user gains a psychic power from Table 5–16: Spook Effects (see descriptions in Chapter VI: Psychic Powers). The power lasts for 1d5 hours, and the user makes all Focus Power tests during this time as if he had a psy rating of 1. If a character with a psy rating of 1 or more uses spook, he must make a Challenging (+0) Willpower test. If he fails, he gain 1 Insanity Point and the drug has no further effects. If he passes, he adds 1 to his psy rating for the next hour. However, add +25 to rolls he makes on Table 6–2: Psychic Phenomena (see page 196). Spook is Addictive, and depending on the setting, its mere possession can incur intense and even lethal punishment from local authorities.",
+        "weight": "0",
+        "rarity": "Rare",
+        "addictive": "Drug is Addictive Table is on DH2 Core p.175"
+    },
+    {
+        "name": "Stimm",
+        "description": "A dose of stimm is enough to energise the weary and mask pain with short-term vitality, often enough to finally bring a protracted combat to a successful conclusion. Each dose lasts for 3d10 rounds. During this time, a character ignores any negative effects to his characteristics from damage, Critical damage, and Fatigue, and cannot be Stunned. When the stimm wears off, the character suffers a –20 penalty to Strength, Toughness, and Agility tests for one hour and gains one level of Fatigue. Stimm is Addictive.",
+        "weight": "0",
+        "rarity": "Average",
+        "addictive": "Drug is Addictive"
+    },
+    {
+        "name": "Tranq",
+        "description": "The drug tranq covers an array of artificial, alcoholic chemdistillates brewed by underhive scum, criminals, and even Guardsmen desperate for respite from their wretched lots. It numbs the body and mind, which provides a very different feeling than being drunk on amasec, rotgut, or other spirits. Though similar in the end result, the effects of tranq are unpleasant, depressive, and require an acquired taste.",
+        "weight": 1,
+        "rarity": "Abundant"
+    },
+    {
+        "name": "High Provender",
+        "description": "The nobility of the Imperium dine upon such delicacies as real, unprocessed meat from strange beasts, fruits won from death worlds at the cost of many lives, and exotic grains from private hydroponic gardens. Some intricate delicacies are created solely for the purpose of demonstrating great wealth, but no self-respecting noble would sink so low as to eat and drink the same rations as their servants—or, Emperor forbid, the filth that serfs and mid-hivers consume.",
+        "weight": "0",
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Thosophist's Philtre",
+        "description": "A heady, thick liquor of Archaos, forbidden by ancient law upon that world. It is said to give a drinker depth and clarity of thought, and though this is likely no more than the mystique that attends any forbidden item, this rare intoxicant is prized as a sign of culture and wealth amongst Calixian sophisticates.",
+        "weight": "0",
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Blush",
+        "description": "This intoxicating drink is made from a rare small yellow fruit found on some worlds on the rimward edges of the Calixis Sector. Fermented properly in raw stone vats, it gives a very pleasant glowing feeling when imbibed. This glow is quite literal—as intoxication sets in, the drinker actually emits a soft reddish hue that diminishes as the effects fade and sobriety sets back in. Popular amongst debauched young nobles, it is a favourite drink at their parties, where they compete to see who can glow the brightest before passing out.",
+        "weight": "0",
+        "rarity": "Rare"
+    },
+    {
+        "name": "Attention Spanner",
+        "description": "This drug induces a state of near monomania, allowing the user to totally focus their concentration on a single subject. It is not to be used carelessly; if the mind wanders while the drug takes effect there is no telling what topic may become the fixation. Still, when a deadly puzzle must be solved or an ancient scroll deciphered it can literally become a lifesaver. Users taking the drug must first take a Difficult (-10) Willpower Test to see if they successfully focus on the desired topic. If they succeed, then they take all Intelligence-based tests at +30 bonus for 3d10 rounds. If they fail however, for the same period of time they take all tests at a –20 penalty, perhaps concentrating more on an attractive shipmate or the pattern or the stars through the glassteel void portals.",
+        "weight": "0",
+        "rarity": "Very Rare",
+        "addictive": "Listed as Drug. I assume this means addictive"
+    },
+    {
+        "name": "Cold Fire",
+        "description": "As long as Ghostfire has been used to produce Frenzon and many of the other combat stimulants in Calixis, there has been the refined extract commonly called Cold Fire. While Frenzon induces a near-suicidal state of aggression (which is fine for Penal Legionaries), Cold Fire allows for more self-control, although it is still illegal unless issued by regimental commanders. Users gain the Battle Rage Talent, lasting for 3d10 rounds per dose.",
+        "weight": "0",
+        "rarity": "Rare",
+        "addictive": "Listed as Drug. I assume this means addictive. Battle Rage doesn't do anything on its own I guess. Maybe this is simply Frenzon+?"
+    },
+    {
+        "name": "Ploin Juice",
+        "description": "The ploin is a fruit grown in both the Calixis Sector and Koronus Expanse. It is often brewed into a non-alcoholic beverage popular with many Explorers as it combats many common illnesses brought on by the habitual poor diets inherent to extended space travel. Made from the lopsided ploin fruit, it is rich in nutrients. When cheaply fermented it produces a clear, strong drink commonly known as “wobble”—as this is both what the fruit does when set upright, as well as what most users do after imbibing. Drinking wobble requires a Difficult (–10) Carouse Test to avoid extreme drunkenness—a level of fatigue in game terms—and painful headaches the following morning.",
+        "weight": "0",
+        "rarity": "Ubiquitous"
+    },
+    {
+        "name": "Raenka",
+        "description": "Raenka is a highly prized brandy made from fermented Ploin juice and crafted through careful distillation in used amasec barrels. On several feudal worlds, it is a main export and secures a great percentage of yearly revenues. Prized for its rich dark yellow hue and subtle bouquet, raenka connoisseurs eagerly watch for news each season on the stages of ageing and which areas are releasing their vintages. Many traders make a small but tidy profit carrying barrels by special request from fermentation yards to impatient buyers willing to circumvent the normal flow of the liqueur.",
+        "weight": "0",
+        "rarity": "Scarce"
+    },
+    {
+        "name": "Spur",
+        "description": "A common drug for those who live by the sword, spur infuses the user with boundless energy until he feels ready to tackle any situation. The powerful stimulant increases reaction times and overall stamina for a short period, with the inevitable crash of depression and weariness following soon after. Each dose lasts 2d10 minutes, during which the user cannot be Stunned and takes no Fatigue. Afterwards, however, the character takes a –20 Penalty for Toughness and Agility Tests for one hour, as well as one Fatigue level for every two they would have received while the drug was active. If used more than five times in a week long period, the user must make a Hard (–20) Willpower Test, or ingest the drug daily as he becomes addicted.",
+        "weight": "0",
+        "rarity": "Scarce",
+        "addictive": "Listed as Drug. I assume this means addictive"
+    },
+    {
+        "name": "Wideawake",
+        "description": "A simple drug made in numerous styles from many different ingredients, Wideawake acts to ward off feelings of drowsiness and keeps the user alert for many hours beyond his normal limit. While multiple doses will keep the user awake even longer, once the effects wear off the resulting collapse will last much longer and lead to feelings of listlessness for several days. Wideawake allows the user to stay awake and alert, ignoring one level of Fatigue for 1d5 hours. Additional doses prolong the affect, but do not counteract more than one Fatigue level. fter the drug wears off the user suffers an additional level of Fatigue.",
+        "weight": "0",
+        "rarity": "Plentiful",
+        "addictive": "Listed as Drug. I assume this means addictive"
+    },
+    {
+        "name": "White Void",
+        "description": "An addictive and illegal drug mostly found amid front line units entrenched in seemingly endless combat, White Void creates a beatific feeling of well being. Common methods of usage involve either sprinkling the powder onto damp lho sticks, or immersing the sticks in dissolved powder then smoking them once dry. Long-term usage slowly removes coloration from the eye, eventually leaving a small black dot surrounded by white. Users gain +20 WP for 1d10 minutes per dose. If used more than twice in a week long period, the user must make a Hard (–20) Willpower Test or become addicted, unable to fight his cravings and ingesting the drug on a daily basis.",
+        "weight": "0",
+        "rarity": "Rare",
+        "addictive": "Listed as Drug. I assume this means addictive"
+    },
+    {
+        "name": "Barrage (Drug)",
+        "description": "A particularly nasty combat drug favoured by the mercenary slavers of the Korath Combine (although not so popular amongst their indentured soldiers), Barrage has extremely nasty side-effects. It bombards the user’s metabolism with chemicals that enhance muscle strength, pain tolerance and sensory acuity, bolstering them considerably. However, the strain these chemicals place upon the body damages the same functions it enhances with each use. A single dose of Barrage grants the user the Unnatural Perception (x2), Unnatural Strength (x2) and Unnatural Toughness (x2) talents for 1d5 rounds. However, each round the user is under the effects of the drug, the user permanently loses 1 point from each of Strength, Toughness and Perception.",
+        "rarity": "Rare"
+    },
+    {
+        "name": "Burnscour Rain (Poison)",
+        "description": "Almost everything on the death world of Burnscour is inimical to non-native life, and even the water is highly caustic and filled with toxic spores, yet purity augurs and tox-wands struggle to locate these lethal impurities. Carefully stored and contained, it can be used as a debilitating and potent poison. A creature exposed to Burnscour Rain must pass a Difficult (–10) Toughness Test or immediately suffer 1d5 Strength and Toughness damage (roll separately for each), and an additional 1d5 Strength and Toughness damage for every Degree of Failure on the test.  However, so dangerous is this poison that it takes a Difficult (–10) Chem-Use Test to successfully apply it to a weapon, load it into a dispenser or otherwise handle a dose. Failure means that the character has been exposed to the poison and must test to resist its effects as noted above.",
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Geist (Drug)",
+        "description": "A psycho-reactive compound derived from ghostfire pollen harvested on Iocanthos and combined with a pre-existing psycho-active drug known as Spook, Geist is known for its ability to boost the powers of psykers. Geist is extraordinarily dangerous when used on non-psykers, who lack the necessary mental discipline to control the sudden surge in power. In psykers, the increase in power the drug induces can be unpredictable, but valuable. Such stimulants, often blended with tiny amounts of slaught, and human blood, have been used by notorious witches and sorcerers in the Koronus Expanse, making the Calixian Ordos ever more eager to outlaw them. In any character without a Psy Rating, use of Geist causes an immediate Psychic Phenomena result. In characters with a Psy Rating, a dose of Geist grants the character two additional points of Psy Rating for 1d5+1 minutes. However, the character may not use powers Fettered while under the influence of the drug, and adds +10 to all rolls on the Psychic Phenomena table, in addition to any other modifiers.",
+        "rarity": "Very Rare"
+    },
+    {
+        "name": "Glimmer",
+        "description": "A particularly unusual narcotic, Glimmer is a mildly toxic substance which seems to have no other discernible effects when injected, inhaled or ingested. However, when light is filtered through a small quantity of this orange-red fluid, it induces a state of extreme relaxation and apparent intoxication upon any who are exposed to the light. The chemical dries up after a few moments of exposure to bright light, but the resultant luminescence lingers for far longer. Most users are known to share the drug, setting up mirrored rooms and loading glass filters filled with the fluid into the front of glow-lamps. The diffuse ruddy glow of these rooms leaves its occupants in a dreamlike state for around an hour after initial exposure. Addicts often go a step further, applying the substance as eye-drops and taking in the filtered light directly, experiencing the effects far more swiftly and more strongly. Those who use in this way soon become blind, as the substance damages their eyes beyond repair. Using Glimmer imposes a –1d10 penalty to Perception and Willpower for about an hour, and users must make a Challenging (+0) Toughness Test or become unconscious (fall asleep). Nobody is entirely certain of where Glimmer comes from; it simply appeared on the black markets on several worlds about five years ago, proving to be particularly popular amongst the light-obsessed nobles of Scintilla. Rumours persist that vast lakes of the substance exist on a world deep in the Koronus Expanse, under the faint light of an old and dying star. Of similar concern is the fact that the drug seems to have no discernible effects on any creatures except humans.",
+        "rarity": "Rare"
+    },
+    {
+        "name": "Haze (Drug)",
+        "description": "Though this drug is not as common as Obscura, Haze dealers nonetheless become extremely prosperous within the Calixis Sector’s many hive worlds, and other locations where crime is rife. Normally inhaled or ingested, Haze can produce an addictive delirium that lasts for hours. A single dose of Haze causes 1d5 Intelligence, Perception and Willpower damage, rolled separately for each. After regaining all the lost characteristic points, the character becomes irritable and sensitive to bright lights and loud noises for 1d5 hours.",
+        "rarity": "Rare"
+    },
+    {
+        "name": "Silver Anathema (Poison)",
+        "description": "A rare example of a machine-poison, Silver Anathema’s discovery quickly resulted in it being banned by the Mechanicus leaders of every Forge world in the Calixis Sector, The method by which it functions is a secret known only to very few within the Cult of the Machine, but what can be determined from rumour and hearsay is that it somehow reacts with the victim’s body, leaving metallic thorns protruding from their body where it has done its deadly work. A creature exposed to silver anathema must pass a Hard (–20) Toughness Test or suffer 3d10 wounds, with no reduction for Toughness Bonus or Armour, as the poison reacts and tears through the creature’s tissues with sharp metallic growths.",
+        "rarity": "Near Unique"
+    },
+    {
+        "name": "Spinebark Sap (Poison)",
+        "description": "Another deadly substance from Burnscour, the sap of the Spinebark tree is an extremely potent neurotoxin. The Spinebark tree, from which this sap exudes, proceeds to grow over and consume the paralysed, still-living victim. A contact poison, Spinebark Sap must be handled extremely carefully: it takes a Difficult (–10) Chem-Use Test to successfully apply it to a weapon, load it into a dispenser or otherwise handle a dose of Spinebark Sap. Failure means that the character has been exposed to the poison and must test to resist its effects. A creature exposed to Spinebark Sap must pass a Hard (–20) Toughness Test or suffer 1d10 Strength damage, plus an additional 1d10 Strength damage for every degree of failure.",
+        "rarity": "Extremely Rare"
+    },
+    {
+        "name": "Tox-Mister",
+        "description": "A tiny device that vaguely resembles a hypo-spray unit, toxmisters convert liquid poisons into sprays of mist that quickly disperse and evaporate, making them effective tools for delivering a poison swiftly at close range and leaving little evidence behind. The small size and portability of the device makes it a valuable tool for assassins, and a useful last-ditch weapon for pirates and other ruthless criminals. A tox-mister contains a tiny replaceable reservoir that can be filled with any liquid; these reservoirs are sealed and easily interchangeable, allowing a would-be poisoner to switch quickly between payloads. A tox-mister can only deliver a poison up to a metre away, creating a tiny cloud of droplets that hang in the air momentarily. A tox-mister can be used to administer poisons even in close combat, requiring a Weapon Skill Test as normal for any attack performed at such a short range, though the spray from a tox-mister  cannot be parried, only dodged. A creature caught within the spray must then test to resist the poison used.",
+        "weight": 0.1,
+        "rarity": "Scarce"
+    }
+]
