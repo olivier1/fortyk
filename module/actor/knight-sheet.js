@@ -195,7 +195,10 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             }
         }
         let frontArmor=actor.data.data.facings.front.value;
-        data.stomp=Math.ceil(frontArmor/2);
+        let size=parseInt(actor.data.data.secChar.size.value);
+        console.log(size)
+        let ratio=size/8;
+        data.stomp=Math.ceil((frontArmor/2)*ratio);
 
 
         return data;
