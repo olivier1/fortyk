@@ -3965,6 +3965,7 @@ returns the roll message*/
                 }else{
                     actor=token;
                 }
+                console.log(effect)
                 let aEs=[];
                 for(let index=0; index <effect.length;index++){
                     let dupp=false;

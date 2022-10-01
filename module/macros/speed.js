@@ -1,4 +1,3 @@
-
 new Dialog({
     title: "Speed Modifier",
     content: `<div><label>Modifier:</label> <input id="speed" type="text" name="speed" value="0" autofocus/></div>`,
@@ -6,7 +5,8 @@ new Dialog({
         submit: {
             label: 'OK',
             callback: async(html) => {
-                let speed = Number($(html).find('input[name="speed"]').val());
+                let speed = $(html).find('input[name="speed"]').val();
+                console.log(speed)
 
                 let aeData={};
                 aeData.id="speed";
@@ -25,8 +25,13 @@ new Dialog({
                 ]
                 for(let target of canvas.tokens.controlled){
 
-                    game.fortyk.FortykRolls.applyActiveEffect(target,[aeData])   
-
+                    let actor
+                    if(token instanceof Token){
+                        actor=token.actor;
+                    }else{
+                        actor=token;
+                    }
+                    await actor.createEmbeddedDocuments("ActiveEffect",[aeData]);
                 }
             }
         }
@@ -34,5 +39,9 @@ new Dialog({
     default: "submit",
 
 
-    width:100}
+    width:100,
+    render: (html)=>{
+        console.log("hi")
+        html.find('input[name="speed"]').focus()
+    }}
           ).render(true);

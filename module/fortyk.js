@@ -322,7 +322,7 @@ Hooks.on("updateCombat", async (combat) => {
                     await ChatMessage.create(activeEffectOptions,{});
                 }
                 if(activeEffect.duration.remaining<=0){
-                    activeEffect.delete({});
+                   await activeEffect.delete({});
                 }
 
 

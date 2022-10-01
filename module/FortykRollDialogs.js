@@ -339,8 +339,8 @@ export class FortykRollDialogs{
         }
 
         templateOptions["modifiers"].suppressive=itemData.data.attackMods.suppressive;
-        templateOptions["modifiers"].full=itemData.data.attackMods.full;
-        templateOptions["modifiers"].semi=itemData.data.attackMods.semi;
+        templateOptions["modifiers"].full=parseInt(itemData.data.attackMods.full);
+        templateOptions["modifiers"].semi=parseInt(itemData.data.attackMods.semi);
         templateOptions["modifiers"].single=itemData.data.attackMods.single;
         templateOptions["modifiers"].aim=itemData.data.attackMods.aim;
         templateOptions["modifiers"].testMod=0;
@@ -377,14 +377,14 @@ export class FortykRollDialogs{
         //set flags for rate of fire
         let curAmmo=parseInt(itemData.data.clip.value);
         let consump=parseInt(itemData.data.clip.consumption);
-        let rofSingle=parseInt(itemData.data.rof[0].value);
+        let rofSingle=itemData.data.rof[0].value;
         let rofSemi=parseInt(itemData.data.rof[1].value);
         if(isNaN(rofSingle)){
             rofSingle=1;
         }
         let rofFull=parseInt(itemData.data.rof[2].value);
         let canShoot=false;
-        if(parseInt(rofSingle)===0){
+        if(parseInt(rofSingle)===0||rofSingle==="-"){
             templateOptions["single"]=false;
         }else{
 
@@ -396,8 +396,8 @@ export class FortykRollDialogs{
             }
 
         }
-
-        if(parseInt(rofSemi)===0){
+        console.log(rofSemi,rofFull)
+        if(rofSemi===0||Number.isNaN(rofSemi===NaN)){
             templateOptions["semi"]=false;
         }else{
             if(rofSemi*consump>curAmmo){
@@ -408,7 +408,8 @@ export class FortykRollDialogs{
             }
 
         }
-        if(parseInt(rofFull)===0){
+        if(rofFull===0||Number.isNaN(rofFull)){
+            console.log("yo")
             templateOptions["full"]=false;
         }else{
             if(rofFull*consump>curAmmo){
@@ -478,6 +479,7 @@ export class FortykRollDialogs{
         let targets=game.user.targets;
         let vehicle=false;
         if(targets.size>0){
+            console.log(modifiers);
             if(actor.getFlag("fortyk","gyro")){
                 let gyro=parseInt(actor.getFlag("fortyk","gyro"));
                 miscMods+=-modifiers.tarEvasion;

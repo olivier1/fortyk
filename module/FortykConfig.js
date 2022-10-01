@@ -561,7 +561,7 @@ FORTYK.weaponFlags={
         "description": "Creatures with this trait have weapons that are partially insubstantial, able to ignore such mundane things as armour or cover. Natural weapons and attacks made by a creature with this trait ignore physical armour, unless the armour is created from psychoactive materials or is somehow warded against the Warp. Force fields still work against these attacks normally."
     }
 }
-FORTYK.weaponFacings=[{value:"front",label:"Front"},{value:"rear",label:"Rear"},{value:"lSide",label:"Left Side"},{value:"rSide",label:"Right Side"}]
+FORTYK.weaponFacings=[{value:"",label:"None"},{value:"front",label:"Front"},{value:"rear",label:"Rear"},{value:"lSide",label:"Left Side"},{value:"rSide",label:"Right Side"}]
 FORTYK.weaponMounts=[
     {value:"fixed",label:"Fixed",description:"Fixed weapons are embedded within the hull of a vehicle and do not possess the ability to turn. They might have a limited vertical traversal ability, but otherwise only fire in a direct straight line from the Facing the weapon is mounted. To turn the gun from left to right the vehicle must move. A Basilisk’s earthshaker cannon is an example of a Fixed Weapon Mounting."},
     {value:"hull",label:"Hull",description:"Hull weapons are similar to Fixed weapons in that they have a limited range of movement, but benefit from being able to move from left to right as well as up and down. A Hull weapon has a 45-degree Fire Arc from the Facing the weapon is mounted. A Baneblade’s demolisher cannon is an example of a Hull Weapon Mounting in the Front Facing."},

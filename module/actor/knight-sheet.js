@@ -311,9 +311,20 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 let facing=event.target.dataset["facing"];
                 console.log(facing);
                 newComUpdate["data.facing.value"]=facing;
+                if(path.indexOf("auxiliary")!==-1){
+                    console.log(newComponent[0]);
+                    if(newComponent[0].data.data.class.value==="Heavy"){
+                        newComUpdate["data.weight.value"]=2;
+                        newComUpdate["data.space.value"]=2;
+                    }else{
+                        newComUpdate["data.weight.value"]=1;
+                        newComUpdate["data.space.value"]=1;
+                    }
+                }
                 if(path.indexOf("Arm")!==-1&&path.indexOf("auxiliary")!==-1){
                     newComUpdate["data.space.value"]=0;
                 }
+
 
 
             }
