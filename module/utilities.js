@@ -129,7 +129,7 @@ export const getSkills= async function(){
     {
         let skillItem = undefined;
         await pack.getDocument(sk._id).then(skill => skillItem = skill);
-        skillCollection.push(skillItem.data);
+        skillCollection.push(skillItem);
     }
     return skillCollection;
 };
@@ -209,7 +209,7 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
     if(attackAngle<0){
         attackAngle=360+attackAngle;
     }
-    let facings=vehicleToken.actor.data.data.facings;
+    let facings=vehicleToken.actor.system.facings;
     let facing=null;
     let split={};
     for(const face in facings){

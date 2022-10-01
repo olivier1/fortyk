@@ -78,7 +78,7 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
     async _onTntParse(event){
 
         let actor=this.actor;
-        let data=actor.data.data;
+        let data=actor.system;
         let tnt=data.talentsntraits.value.toLowerCase();
         let message="Trait changes on "+actor.name+":";
         if(tnt.includes("true grit")){

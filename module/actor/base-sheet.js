@@ -481,7 +481,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                         break;
                                 }
                                 let itemData=tnt.data;
-                                let tntData=itemData.data;
+                                let tntData=itemsystem;
                                 let spec=tntData.specialisation.value;
                                 let flag=tntData.flagId.value;
                                 if(!actor.getFlag("fortyk",flag)){
@@ -604,7 +604,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     //handles firing mode change for las weapons
     async _onLasModeChange(event){
         event.preventDefault;
-        const data=this.actor.data.data;
+        const data=this.actor.system;
         let dataset=event.currentTarget.dataset;
 
         let actor=this.actor;
@@ -640,7 +640,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         if(dataset["itemId"]){
             item=await this.actor.items.get(dataset["itemId"]);
           
-            if(!item.data.data.isPrepared){
+            if(!item.system.isPrepared){
                 await item.prepareData();
             }
         }
@@ -671,10 +671,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             attackOptions.stunned=targetActor.getFlag("core","stunned");
             attackOptions.totalDef=targetActor.getFlag("core","totalDef");
             attackOptions.running=targetActor.getFlag("core","running");
-            attackOptions.size=targetActor.data.data.secChar.size.value;
+            attackOptions.size=targetActor.system.secChar.size.value;
             attackOptions.selfProne=this.actor.getFlag("core","prone");
-            attackOptions.selfEvasion=this.actor.data.data.evasion;
-            attackOptions.tarEvasion=targetActor.data.data.evasion;
+            attackOptions.selfEvasion=this.actor.system.evasion;
+            attackOptions.tarEvasion=targetActor.system.evasion;
             if(targetActor.getFlag("core","unconscious")||targetActor.getFlag("core","snare")){
                 attackOptions.helpless=true;
             }else{
@@ -707,25 +707,25 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
             let actor=this.actor;
             let fortykWeapon=actor.items.get(dataset.weapon);
-            if(!fortykWeapon.data.data.isPrepared){
+            if(!fortykWeapon.system.isPrepared){
                 await fortykWeapon.prepareData();
 
             }
             let weapon=fortykWeapon.data;
             let dfa=false;
-            if(actor.getFlag("fortyk","deathfromabove")&&actor.data.data.secChar.lastHit.attackType==="charge"){
+            if(actor.getFlag("fortyk","deathfromabove")&&actor.system.secChar.lastHit.attackType==="charge"){
                 dfa=true;
             }
             let dmg=0;
-            if(actor.getFlag("fortyk","brutalcharge")&&actor.data.data.secChar.lastHit.attackType==="charge"){
+            if(actor.getFlag("fortyk","brutalcharge")&&actor.system.secChar.lastHit.attackType==="charge"){
                 dmg=parseInt(actor.getFlag("fortyk","brutalcharge"));
             }
-            if(fortykWeapon.getFlag("fortyk","brutalcharge")&&actor.data.data.secChar.lastHit.attackType==="charge"){
+            if(fortykWeapon.getFlag("fortyk","brutalcharge")&&actor.system.secChar.lastHit.attackType==="charge"){
                 dmg+=parseInt(fortykWeapon.getFlag("fortyk","brutalcharge"));
             }
             let options={dfa:dfa};
             options.dmg=dmg;
-            let hits=actor.data.data.secChar.lastHit.hits;
+            let hits=actor.system.secChar.lastHit.hits;
             if(!hits){hits=1};
             options.hits=hits;
             let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
@@ -749,7 +749,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                             }else{
                                 //if user isnt GM use socket to have gm process the damage roll
                                 let targets=game.user.targets.ids;
-                                let lastHit=this.actor.data.data.secChar.lastHit
+                                let lastHit=this.actor.system.secChar.lastHit
                                 let socketOp={type:"damageRoll",package:{formula:formula,actor:actor.id,fortykWeapon:fortykWeapon.id,hits:hits,magdmg:magdmg,pen:pen,user:game.user.id,lastHit:lastHit,targets:targets}}
                                 game.socket.emit("system.fortyk",socketOp);
                             }
@@ -761,7 +761,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 width:100}).render(true)
                                              });
         }else if(dataset.formula){
-            let roll = new Roll(dataset.formula, this.actor.data.data);
+            let roll = new Roll(dataset.formula, this.actor.system);
             let label = dataset.label ? `Rolling ${dataset.label} damage.` : '';
             await roll.roll();
             roll.toMessage({
@@ -782,11 +782,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let label=dataset["label"];
             let power=this.actor.getEmbeddedDocument("Item",powerId);
             let ae=power.effects.entries().next().value[1];
-            if(power.data.data.transferId){
-                ae=this.actor.effects.get(power.data.data.transferId);
+            if(power.system.transferId){
+                ae=this.actor.effects.get(power.system.transferId);
             }
             let aeData=duplicate(ae.data);
-            let pr=power.data.data.curPR.value;
+            let pr=power.system.curPR.value;
             aeData.changes.forEach(function(change){
                 change.value=eval(change.value);
                 if(change.value>=0){
@@ -823,9 +823,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let actor=this.actor;
         let newArmorId=event.currentTarget.value;
         let newArmor=actor.getEmbeddedDocument("Item",newArmorId);
-        let oldArmorId=this.actor.data.data.secChar.wornGear.armor._id;
+        let oldArmorId=this.actor.system.secChar.wornGear.armor._id;
 
-        let oldArmor=this.actor.data.data.secChar.wornGear.armor
+        let oldArmor=this.actor.system.secChar.wornGear.armor
         let updates=[];
 
         if(oldArmor&&oldArmor.data){
@@ -845,8 +845,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let actor=this.actor;
         let newForceFieldId=event.currentTarget.value;
         let newForceField=actor.getEmbeddedDocument("Item",newForceFieldId);
-        let oldForceFieldId=this.actor.data.data.secChar.wornGear.forceField._id;
-        let oldForceField=this.actor.data.data.secChar.wornGear.forceField
+        let oldForceFieldId=this.actor.system.secChar.wornGear.forceField._id;
+        let oldForceField=this.actor.system.secChar.wornGear.forceField
         let updates=[];
         if(oldForceField&&oldForceField.data){
             updates.push({"_id":oldForceFieldId,"data.isEquipped":false});
@@ -880,9 +880,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
                         force.data.flags.fortyk={};
                         force.data.flags.fortyk.ignoreSoak=true;
-                        force.data.data.damageFormula.value=`${hits}d10`;
-                        force.data.data.damageType.value="Energy";
-                        FortykRolls.damageRoll(force.data.data.damageFormula,actor,force,1);
+                        force.system.damageFormula.value=`${hits}d10`;
+                        force.system.damageType.value="Energy";
+                        FortykRolls.damageRoll(force.system.damageFormula,actor,force,1);
                     }
                 }
             },

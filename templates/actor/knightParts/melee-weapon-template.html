@@ -11,7 +11,7 @@
         </div>
         <div class="list-item">
             <span>Damage: </span>
-            <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.data.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.data.data.damageFormula.value}}</a>
+            <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.system.damageFormula.value}}</a>
         </div>
         {{#if this.data.flags.fortyk.force}}
         <div class="list-item">
@@ -22,10 +22,10 @@
         </div>
         {{/if}}
         <div class="list-item">
-            <span>Reach: {{this.data.data.range.value}}m</span>
+            <span>Reach: {{this.system.range.value}}m</span>
         </div>
         <div class="list-item">
-            <span>Penetration: {{this.data.data.pen.value}}</span>
+            <span>Penetration: {{this.system.pen.value}}</span>
 
         </div>
         <div class="list-item">
@@ -47,7 +47,7 @@
 
         </div>
         <div class="list-item">
-            <span>Damage Type: {{this.data.data.damageType.value}}</span>
+            <span>Damage Type: {{this.system.damageType.value}}</span>
 
         </div>
 

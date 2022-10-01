@@ -5,11 +5,11 @@
 
     <div class="list-item">
         <span>Attack: </span> 
-        {{#if (greaterThan this.data.data.clip.value 0)}}
+        {{#if (greaterThan this.system.clip.value 0)}}
         
         <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../../data.crew.bs}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="">Roll</span>
         {{else}}
-        {{#if this.data.data.ammo._id}}
+        {{#if this.system.ammo._id}}
         <span class="weapon-reload button" data-weapon="{{this.id}}" >Discard</span>
         {{else}}
         <span class=" button"  >Load new Ammo</span>
@@ -18,7 +18,7 @@
     </div>
     <div class="list-item">
         <span>Damage: </span> 
-        <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.data.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.data.data.damageFormula.value}}</a>
+        <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.system.damageFormula.value}}</a>
 
     </div>
     {{#if this.data.flags.fortyk.force}}
@@ -54,13 +54,13 @@
     </div>
     {{/if}}
 
-    {{#unless (contains this.data.data.class.value "thrown")}}
+    {{#unless (contains this.system.class.value "thrown")}}
     <div class="list-item ammo-list">
 
         <label>Current Ammo:</label>
-        <select class="weapon-ammo" data-weapon="{{this.id}}" data-previous="{{this.data.data.ammo._id}}">
+        <select class="weapon-ammo" data-weapon="{{this.id}}" data-previous="{{this.system.ammo._id}}">
 
-            {{#select this.data.data.ammo._id}}
+            {{#select this.system.ammo._id}}
             <option value="">None</option>
 
             {{#each this.validAmmo}}
@@ -74,7 +74,7 @@
     </div>
     {{else}}
     <div class="list-item">
-        <span>Amount: {{this.data.data.amount.value}}</span> 
+        <span>Amount: {{this.system.amount.value}}</span> 
 
 
     </div>
@@ -82,24 +82,24 @@
     <div class="list-item flexrow">
         <span>Current Clip: </span>
 
-        <input class="item-text-input" type="text" data-target="data.clip.value"  value="{{this.data.data.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
+        <input class="item-text-input" type="text" data-target="data.clip.value"  value="{{this.system.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
         <span> / </span>
-        <span>{{this.data.data.clip.max}}</span>
+        <span>{{this.system.clip.max}}</span>
 
 
     </div>
     <div class="list-item">
-        <span>Range: {{this.data.data.range.value}}m</span>
+        <span>Range: {{this.system.range.value}}m</span>
     </div>
     <div class="list-item">
-        <span>Penetration: {{this.data.data.pen.value}}</span>
+        <span>Penetration: {{this.system.pen.value}}</span>
 
     </div>
     <div class="list-item">
-        <label>Rate of Fire: {{this.data.data.rof.[0].value}}/{{this.data.data.rof.[1].value}}/{{this.data.data.rof.[2].value}}</label>
+        <label>Rate of Fire: {{this.system.rof.[0].value}}/{{this.system.rof.[1].value}}/{{this.system.rof.[2].value}}</label>
     </div>
     <div class="list-item">
-        <span>Reload: {{this.data.data.reload.value}}</span>
+        <span>Reload: {{this.system.reload.value}}</span>
 
     </div>
     <div class="list-item">
@@ -119,16 +119,16 @@
 
     </div>
     <div class="list-item">
-        <span>Damage Type: {{this.data.data.damageType.value}}</span>
+        <span>Damage Type: {{this.system.damageType.value}}</span>
 
     </div>
     <div class="list-item">
-        <span>Weapon Class: {{this.data.data.class.value}}</span>
+        <span>Weapon Class: {{this.system.class.value}}</span>
 
 
     </div>
     <div class="list-item">
-        <span>Weapon Type: {{this.data.data.type.value}}</span>
+        <span>Weapon Type: {{this.system.type.value}}</span>
 
 
     </div>

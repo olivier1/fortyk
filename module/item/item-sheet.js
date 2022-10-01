@@ -44,7 +44,7 @@ export class FortyKItemSheet extends ItemSheet {
             if(this.actor!==null&&this.actor.data!==undefined){
                 data['skillgroups']=this.actor.items.filter(function(item){
 
-                    if(item.type==="skill"){return item.data.data.hasChildren.value}else{return false;}})
+                    if(item.type==="skill"){return item.system.hasChildren.value}else{return false;}})
             }
 
 
@@ -53,7 +53,7 @@ export class FortyKItemSheet extends ItemSheet {
         if(this.actor&&item.type==="repairEntry"){
 
             data.knights=[];
-            let knights=this.actor.data.data.knights;
+            let knights=this.actor.system.knights;
          
             for(let i=0;i<knights.length;i++){
                 let actor=game.actors.get(knights[i]);
@@ -136,8 +136,8 @@ export class FortyKItemSheet extends ItemSheet {
         }
         let ae={};
 
-        if(this.item.data.data.transferId){
-            ae=this.item.actor.getEmbeddedDocument("ActiveEffect",this.item.data.data.transferId);
+        if(this.item.system.transferId){
+            ae=this.item.actor.getEmbeddedDocument("ActiveEffect",this.item.system.transferId);
         }else{
             ae=item.effects.entries().next().value[1];
         }
@@ -312,11 +312,11 @@ export class FortyKItemSheet extends ItemSheet {
         if(value!==""){
             let item=this.item;
             console.log(item);
-            if(item.data.data.hasChildren){
+            if(item.system.hasChildren){
                 let children=this.actor.items.filter(item=>function(item){
                     console.log(this);
                     console.log(item);
-                    return item.data.data.parent.value===this.item.data.data.name.value});
+                    return item.system.parent.value===this.item.system.name.value});
                 console.log(children);
                 for(let i of children){
                     await i.update({'data.parent.value':""});
@@ -353,8 +353,8 @@ export class FortyKItemSheet extends ItemSheet {
             return;
         }
         let target=`data.hardPoints.${location}.${type}`;
-        let oldValue=item.data.data.hardPoints[location][type].length;
-        let oldArray=item.data.data.hardPoints[location][type];
+        let oldValue=item.system.hardPoints[location][type].length;
+        let oldArray=item.system.hardPoints[location][type];
 
 
         if((newAmt>oldValue)){
@@ -395,8 +395,8 @@ export class FortyKItemSheet extends ItemSheet {
                 return;
             }
             let target=`data.hardPoints.${location}.${type}`;
-            let oldValue=item.data.data.hardPoints[location][type].length;
-            let oldArray=item.data.data.hardPoints[location][type];
+            let oldValue=item.system.hardPoints[location][type].length;
+            let oldArray=item.system.hardPoints[location][type];
            
 
             if((newAmt>oldValue)){

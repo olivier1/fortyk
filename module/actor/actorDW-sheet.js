@@ -197,7 +197,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let actor=this.actor;
         let data=duplicate(actor.data);
 
-        let weapons=Object.values(data.data.secChar.wornGear.extraWeapons);
+        let weapons=Object.values(system.secChar.wornGear.extraWeapons);
         weapons.push({});
         let weaponsObj=Object.assign({},weapons);
         await actor.update({"data.secChar.wornGear.extraWeapons":weaponsObj});
@@ -206,7 +206,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     //handles removing extra weapon slots
     async _onRemoveExtraWeapon(event){
         let actor=this.actor;
-        let data=duplicate(actor.data.data);
+        let data=duplicate(actor.system);
         let weapons=Object.values(data.secChar.wornGear.extraWeapons);
 
         if(weapons.length>0){
@@ -221,7 +221,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let actor=this.actor;
         const weaponId=event.currentTarget.value;
         const index=parseInt(event.currentTarget.dataset["index"]);
-        const previousWeaponId=this.actor.data.data.secChar.wornGear.extraWeapons[index].id;
+        const previousWeaponId=this.actor.system.secChar.wornGear.extraWeapons[index].id;
         let str="extra"+index;
         let updates=[];
         if(weaponId!==""){
@@ -253,14 +253,14 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
 
 
-        if(previousAmmo!==undefined&&previousAmmo.data.data!==undefined){
+        if(previousAmmo!==undefined&&previousAmmo.system!==undefined){
 
 
 
-            previousAmmo.update({"data.currentClip.value":weaponData.data.clip.value});
+            previousAmmo.update({"data.currentClip.value":weaponsystem.clip.value});
         }
         if(ammo!==undefined){
-            weaponUpdate["data.clip.value"]=ammo.data.data.currentClip.value;
+            weaponUpdate["data.clip.value"]=ammo.system.currentClip.value;
         }else{
             weaponUpdate["data.clip.value"]=0;
         }
@@ -285,14 +285,14 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         let ooa=false;
         //different logic for throwing weapons
-        if(weapon.data.data.class.value!=="Thrown"){
-            const ammo=this.actor.getEmbeddedDocument("Item",weapon.data.data.ammo._id);
+        if(weapon.system.class.value!=="Thrown"){
+            const ammo=this.actor.getEmbeddedDocument("Item",weapon.system.ammo._id);
 
             if(ammo!==null){
-                let ammoAmt=parseInt(ammo.data.data.amount.value);
+                let ammoAmt=parseInt(ammo.system.amount.value);
 
                 if(ammoAmt>0){
-                    weaponUpdate["data.clip.value"]=weapon.data.data.clip.max;
+                    weaponUpdate["data.clip.value"]=weapon.system.clip.max;
                     ammoUpdate["data.amount.value"]=ammoAmt-1
                     weapon.update(weaponUpdate);
                     ammo.update(ammoUpdate);
@@ -306,10 +306,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             }
 
         }else{
-            if(weapon.data.data.amount.value>0){
+            if(weapon.system.amount.value>0){
 
-                weaponUpdate["data.clip.value"]=weapon.data.data.clip.max;
-                weaponUpdate["data.amount.value"]=parseInt(weapon.data.data.amount.value)-1;
+                weaponUpdate["data.clip.value"]=weapon.system.clip.max;
+                weaponUpdate["data.amount.value"]=parseInt(weapon.system.amount.value)-1;
                 weapon.update(weaponUpdate);
             }else{
                 ooa=true;
@@ -340,7 +340,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     //handles when weapons are swapped and stuff
     async _onWeaponChange(event){
         event.preventDefault;
-        const data=this.actor.data.data;
+        const data=this.actor.system;
 
         let actor=this.actor;
         let weapon=actor.items.get(event.currentTarget.value);
@@ -400,7 +400,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let powerID=dataset["itemId"];
         let power=this.actor.items.get(powerID);
 
-        let favorite=power.data.data.favorite;
+        let favorite=power.system.favorite;
         if(favorite){
             await power.update({"data.favorite":false});
         }else{

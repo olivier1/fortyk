@@ -28,4 +28,4 @@ let upd=async ()=>{
 
 upd();
 //const model = game.system.model.Actor[actorData.type];
-// actorData.data = filterObject(actorData.data, model);
+// actorsystem = filterObject(actorsystem, model);

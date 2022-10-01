@@ -115,8 +115,8 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         });
     }
     _onAddIncome(event){
-        let bonds=parseInt(this.actor.data.data.wealth.value);
-        bonds+=parseInt(this.actor.data.data.wealth.income);
+        let bonds=parseInt(this.actor.system.wealth.value);
+        bonds+=parseInt(this.actor.system.wealth.income);
         this.actor.update({"data.wealth.value":bonds});
     }
     async _onPassTime(event){
@@ -126,7 +126,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
             return
         }
 
-        let bays=parseInt(this.actor.data.data.repairBays.value);
+        let bays=parseInt(this.actor.system.repairBays.value);
         let repairs=[...this.document.data.repairEntries];
         let repairBays=[];
         for(let i=0;i<bays;i++){
@@ -149,7 +149,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
             let jobTime=job.days;
             if(jobTime&&!job.done){
                 let entry=job.entry;
-                let remainingTime=jobTime-parseInt(entry.data.data.time.value);
+                let remainingTime=jobTime-parseInt(entry.system.time.value);
                 if(remainingTime>=0){
                     await entry.delete();
                     if(remainingTime>0){
@@ -162,7 +162,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
                     }
                 }else{
                     job.done=true
-                    await job.entry.update({"data.time.value":(parseInt(entry.data.data.time.value)-jobTime)})
+                    await job.entry.update({"data.time.value":(parseInt(entry.system.time.value)-jobTime)})
                 }
             }
             index++;

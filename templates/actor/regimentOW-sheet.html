@@ -35,30 +35,30 @@
                     <label class="underline">Commanding Officer</label>
                     <div class=" flexcol">
                         <span class="descrSpan">Name:</span>
-                        <input type="text" value="{{data.data.officer.name}}" name="data.officer.name" placeholder="???"/>
+                        <input type="text" value="{{system.officer.name}}" name="data.officer.name" placeholder="???"/>
                     </div>
                     <div class=" flexcol">
                         <span class="descrSpan">Personality:</span>
-                        <input type="text" value="{{data.data.officer.personality}}" name="data.officer.personality" placeholder="???"/>
+                        <input type="text" value="{{system.officer.personality}}" name="data.officer.personality" placeholder="???"/>
                     </div>
                 </div>
             </div>
             <div class="descr flexcol">
                 <div class="descrRow flex-group-left">
                     <span class="descrSpan">Regiment Type:</span>
-                    <input name="data.regimentType.value" type="text" value="{{data.data.regimentType.value}}" placeholder="Type"/>
+                    <input name="data.regimentType.value" type="text" value="{{system.regimentType.value}}" placeholder="Type"/>
 
 
                     <span class="descrSpan">Regimental Doctrines:</span>
-                    <input name="data.doctrines.0.value" type="text" value="{{data.data.doctrines.0.value}}" placeholder="Doctrine"/>
-                    <input name="data.doctrines.1.value" type="text" value="{{data.data.doctrines.1.value}}" placeholder="Doctrine"/>
-                    <input name="data.doctrines.2.value" type="text" value="{{data.data.doctrines.2.value}}" placeholder="Doctrine"/>
-                    <input name="data.doctrines.3.value" type="text" value="{{data.data.doctrines.3.value}}" placeholder="Doctrine"/>
-                    <input name="data.doctrines.4.value" type="text" value="{{data.data.doctrines.4.value}}" placeholder="Doctrine"/>
+                    <input name="data.doctrines.0.value" type="text" value="{{system.doctrines.0.value}}" placeholder="Doctrine"/>
+                    <input name="data.doctrines.1.value" type="text" value="{{system.doctrines.1.value}}" placeholder="Doctrine"/>
+                    <input name="data.doctrines.2.value" type="text" value="{{system.doctrines.2.value}}" placeholder="Doctrine"/>
+                    <input name="data.doctrines.3.value" type="text" value="{{system.doctrines.3.value}}" placeholder="Doctrine"/>
+                    <input name="data.doctrines.4.value" type="text" value="{{system.doctrines.4.value}}" placeholder="Doctrine"/>
 
 
                     <span class="descrSpan">Regimental Drawback:</span>
-                    <input name="data.drawback.value" type="text" value="{{data.data.drawback.value}}" placeholder="Drawback"/>
+                    <input name="data.drawback.value" type="text" value="{{system.drawback.value}}" placeholder="Drawback"/>
                 </div>
             </div>
             <div class="descr flexcol">
@@ -68,16 +68,16 @@
                     <div class="flexcol">
 
                         <span class="descrSpan">Name:</span>
-                        <input type="text" value="{{data.data.homeworld.value}}" name="data.homeworld.value" placeholder="Name"/>
+                        <input type="text" value="{{system.homeworld.value}}" name="data.homeworld.value" placeholder="Name"/>
                     </div>
                     <div class="flexcol">
                         <span class="descrSpan">Type:</span>
-                        <input type="text" value="{{data.data.homeworld.planetType}}" name="data.homeworld.planetType" placeholder="Type"/>
+                        <input type="text" value="{{system.homeworld.planetType}}" name="data.homeworld.planetType" placeholder="Type"/>
 
                     </div>
                     <div class="flexcol">
                         <span class="descrSpan">Culture:</span>
-                        <input type="text" value="{{data.data.homeworld.culture}}" name="data.homeworld.culture" placeholder="Culture"/>
+                        <input type="text" value="{{system.homeworld.culture}}" name="data.homeworld.culture" placeholder="Culture"/>
                     </div>
                 </div>
             </div>
@@ -87,7 +87,7 @@
         </div>
 
         <div class="tab kit" data-group="primary" data-tab="kit">
-            {{editor content=data.data.srgk.value target="data.srgk.value" button=true owner=owner editable=editable}}
+            {{editor content=system.srgk.value target="data.srgk.value" button=true owner=owner editable=editable}}
         </div>
         <div class="tab logistics" data-group="primary" data-tab="logistics">
             <div class="descr flexcol">
@@ -96,16 +96,16 @@
                     <div class="flexcol">
 
                         <span class="descrSpan">Squad Logistics:</span>
-                        <input type="text" value="{{data.data.characteristics.inf.value}}" name="data.characteristics.inf.value" placeholder="10"/>
+                        <input type="text" value="{{system.characteristics.inf.value}}" name="data.characteristics.inf.value" placeholder="10"/>
                     </div>
                     <div class="flexcol">
 
                         <span class="descrSpan">Logistics Modifier:</span>
-                        <input type="text" value="{{data.data.characteristics.inf.mod}}" name="data.characteristics.inf.mod" placeholder="0"/>
+                        <input type="text" value="{{system.characteristics.inf.mod}}" name="data.characteristics.inf.mod" placeholder="0"/>
                     </div>
                     <div class="flexcol">
                         <span class="descrSpan">Total Logistics:</span>
-                        <span class="char-total rollable button" data-roll-type="char" data-target="{{data.data.characteristics.inf.total}}" data-label="{{data.characteristics.inf.label}}" data-char="inf">{{data.characteristics.inf.total}}</span>
+                        <span class="char-total rollable button" data-roll-type="char" data-target="{{system.characteristics.inf.total}}" data-label="{{data.characteristics.inf.label}}" data-char="inf">{{data.characteristics.inf.total}}</span>
 
                     </div>
 
@@ -186,7 +186,7 @@
                     </div>
                     <div class="flexcol">
                         <span class="descrSpan">Regiment Strength:</span>
-                        <input type="text" value="{{data.data.personnel.strength}}" name="data.personnel.strength" placeholder="Culture"/>
+                        <input type="text" value="{{system.personnel.strength}}" name="data.personnel.strength" placeholder="Culture"/>
                     </div>
                 </div>
             </div>

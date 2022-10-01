@@ -7,12 +7,12 @@ export const _getInitiativeFormula = function() {
     if ( !actor ) return "1d10";
     let init=CONFIG.Combat.initiative.formula;
     if(actor.type==="vehicle"){
-        if(actor.data.data.knight.pilot){
-            actor=actor.data.data.knight.pilot;
+        if(actor.system.knight.pilot){
+            actor=actor.system.knight.pilot;
             console.log(actor)
-            init=`1d10 + ${actor.data.data.characteristics.agi.bonus} + ${actor.data.data.secChar.initiative.value} + (${actor.data.data.characteristics.agi.total} / 100)`;
+            init=`1d10 + ${actor.system.characteristics.agi.bonus} + ${actor.system.secChar.initiative.value} + (${actor.system.characteristics.agi.total} / 100)`;
         }else{
-            let crewRating=actor.data.data.crew.rating;
+            let crewRating=actor.system.crew.rating;
             let crewBonus=Math.floor(crewRating/10);
             init=`1d10 + ${crewBonus} + (${crewRating})/100`;
         }

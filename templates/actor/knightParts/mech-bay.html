@@ -101,74 +101,74 @@
                         <a class="mechbay-grid-section ranged list-item-header4" name="rangedWeapons1"><span class="{{#unless rangedWeapons1}}plus-button{{else}}minus-button{{/unless}}"></span>Ranged Weapons</a>
                         {{#each rangedWeapons}}
                         <span class="list-item mechbay-component rangedWeapons1" {{#unless ../rangedWeapons1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="ranged-slot">{{this.name}}</span>
-                        <span class="list-item rangedWeapons1" {{#unless ../rangedWeapons1}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item rangedWeapons1" {{#unless ../rangedWeapons1}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item rangedWeapons1" {{#unless ../rangedWeapons1}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item rangedWeapons1" {{#unless ../rangedWeapons1}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item rangedWeapons1" {{#unless ../rangedWeapons1}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item rangedWeapons1" {{#unless ../rangedWeapons1}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section artillery list-item-header4" name="artilleryWeapons1"><span class="{{#unless artilleryWeapons1}}plus-button{{else}}minus-button{{/unless}}"></span>Artillery Weapons</a>
                         {{#each artilleryWeapons}}
                         <span class="list-item mechbay-component artilleryWeapons1"{{#unless ../artilleryWeapons1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="artillery-slot">{{this.name}}</span>
-                        <span class="list-item artilleryWeapons1" {{#unless ../artilleryWeapons1}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item artilleryWeapons1" {{#unless ../artilleryWeapons1}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item artilleryWeapons1" {{#unless ../artilleryWeapons1}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item artilleryWeapons1" {{#unless ../artilleryWeapons1}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item artilleryWeapons1" {{#unless ../artilleryWeapons1}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item artilleryWeapons1" {{#unless ../artilleryWeapons1}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section other-component-color list-item-header4"  name="ammunitions1"><span class="{{#unless ammunitions1}}plus-button{{else}}minus-button{{/unless}}"></span>Ammunition</a>
                         {{#each ammunition}}
                         <span class="list-item mechbay-component ammunitions1" {{#unless ../ammunitions1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="other-slot">{{this.name}}</span>
-                        <span class="list-item ammunitions1" {{#unless ../ammunitions1}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item ammunitions1" {{#unless ../ammunitions1}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item ammunitions1" {{#unless ../ammunitions1}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item ammunitions1" {{#unless ../ammunitions1}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item ammunitions1" {{#unless ../ammunitions1}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item ammunitions1" {{#unless ../ammunitions1}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section melee list-item-header4" name="meleeWeapons1"><span class="{{#unless meleeWeapons1}}plus-button{{else}}minus-button{{/unless}}"></span>Melee Weapons</a>
                         {{#each meleeWeapons}}
 
                         <span class="list-item mechbay-component meleeWeapons1" {{#unless ../meleeWeapons1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="melee-slot">{{this.name}}</span>
-                        <span class="list-item meleeWeapons1" {{#unless ../meleeWeapons1}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item meleeWeapons1" {{#unless ../meleeWeapons1}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item meleeWeapons1" {{#unless ../meleeWeapons1}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item meleeWeapons1" {{#unless ../meleeWeapons1}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item meleeWeapons1" {{#unless ../meleeWeapons1}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item meleeWeapons1" {{#unless ../meleeWeapons1}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section auxiliary list-item-header4" name="auxiliaryWeapons1"><span class="{{#unless auxiliaryWeapons1}}plus-button{{else}}minus-button{{/unless}}"></span>Auxiliary Weapons</a>
                         {{#each auxiliaryWeapons}}
                         <span class="list-item mechbay-component auxiliaryWeapons1" {{#unless ../auxiliaryWeapons1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="auxiliary-slot">{{this.name}}</span>
-                        <span class="list-item auxiliaryWeapons1" {{#unless ../auxiliaryWeapons1}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item auxiliaryWeapons1" {{#unless ../auxiliaryWeapons1}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item auxiliaryWeapons1" {{#unless ../auxiliaryWeapons1}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item auxiliaryWeapons1" {{#unless ../auxiliaryWeapons1}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item auxiliaryWeapons1" {{#unless ../auxiliaryWeapons1}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item auxiliaryWeapons1" {{#unless ../auxiliaryWeapons1}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section other-component-color list-item-header4" name="components1"><span class="{{#unless components1}}plus-button{{else}}minus-button{{/unless}}"></span>Components</a>
                         {{#each components}}
 
-                        <span class="list-item mechbay-component components1"  {{#unless ../components1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="{{toLowerCase this.data.data.type.value}}-slot">{{this.name}}</span>
-                        <span class="list-item components1" {{#unless ../components1}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item components1" {{#unless ../components1}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item components1" {{#unless ../components1}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item mechbay-component components1"  {{#unless ../components1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="{{toLowerCase this.system.type.value}}-slot">{{this.name}}</span>
+                        <span class="list-item components1" {{#unless ../components1}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item components1" {{#unless ../components1}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item components1" {{#unless ../components1}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section core-color list-item-header4" name="cores1"><span class="{{#unless cores1}}plus-button{{else}}minus-button{{/unless}}"></span>Cores</a>
                         {{#each cores}}
                         <span class="list-item mechbay-component cores1" {{#unless ../cores1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="core-slot">{{this.name}}</span>
-                        <span class="list-item cores1" {{#unless ../cores1}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item cores1" {{#unless ../cores1}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item cores1" {{#unless ../cores1}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item cores1" {{#unless ../cores1}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item cores1" {{#unless ../cores1}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item cores1" {{#unless ../cores1}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section armor-color list-item-header4" name="armors1"><span class="{{#unless armors1}}plus-button{{else}}minus-button{{/unless}}"></span>Armors</a>
                         {{#each armors}}
                         <span class="list-item mechbay-component armors1" {{#unless ../armors1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="armor-slot">{{this.name}}</span>
-                        <span class="list-item armors1" {{#unless ../armors1}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item armors1" {{#unless ../armors1}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item armors1" {{#unless ../armors1}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item armors1" {{#unless ../armors1}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item armors1" {{#unless ../armors1}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item armors1" {{#unless ../armors1}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section structure-color list-item-header4" name="structures1"><span class="{{#unless structures1}}plus-button{{else}}minus-button{{/unless}}"></span>Structures</a>
                         {{#each structures}}
                         <span class="list-item mechbay-component structures1" {{#unless ../structures1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="structure-slot">{{this.name}}</span>
-                        <span class="list-item structures1" {{#unless ../structures1}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item structures1" {{#unless ../structures1}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item structures1" {{#unless ../structures1}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item structures1" {{#unless ../structures1}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item structures1" {{#unless ../structures1}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item structures1" {{#unless ../structures1}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section forceField-color list-item-header4" name="forceFields1"><span class="{{#unless forceFields1}}plus-button{{else}}minus-button{{/unless}}"></span>Force Fields</a>
                         {{#each forceFields}}
                         <span class="list-item mechbay-component forceFields1" {{#unless ../forceFields1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="forceField-slot">{{this.name}}</span>
-                        <span class="list-item forceFields1" {{#unless ../forceFields1}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item forceFields1" {{#unless ../forceFields1}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item forceFields1" {{#unless ../forceFields1}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item forceFields1" {{#unless ../forceFields1}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item forceFields1" {{#unless ../forceFields1}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item forceFields1" {{#unless ../forceFields1}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                     </div>
 
@@ -182,38 +182,38 @@
                         <a class="mechbay-grid-section ranged list-item-header4" name="rangedWeapons2"><span class="{{#unless rangedWeapons2}}plus-button{{else}}minus-button{{/unless}}"></span>Ranged Weapons</a>
                         {{#each rangedWeapons}}
                         <span class="list-item mechbay-component rangedWeapons2" {{#unless ../rangedWeapons2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="ranged-slot">{{this.name}}</span>
-                        <span class="list-item rangedWeapons2" {{#unless ../rangedWeapons2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item rangedWeapons2" {{#unless ../rangedWeapons2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item rangedWeapons2" {{#unless ../rangedWeapons2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item rangedWeapons2" {{#unless ../rangedWeapons2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item rangedWeapons2" {{#unless ../rangedWeapons2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item rangedWeapons2" {{#unless ../rangedWeapons2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section artillery list-item-header4" name="artilleryWeapons2"><span class="{{#unless artilleryWeapons2}}plus-button{{else}}minus-button{{/unless}}"></span>Artillery Weapons</a>
                         {{#each artilleryWeapons}}
                         <span class="list-item mechbay-component artilleryWeapons2"{{#unless ../artilleryWeapons2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="artillery-slot">{{this.name}}</span>
-                        <span class="list-item artilleryWeapons2" {{#unless ../artilleryWeapons2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item artilleryWeapons2" {{#unless ../artilleryWeapons2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item artilleryWeapons2" {{#unless ../artilleryWeapons2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item artilleryWeapons2" {{#unless ../artilleryWeapons2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item artilleryWeapons2" {{#unless ../artilleryWeapons2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item artilleryWeapons2" {{#unless ../artilleryWeapons2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section other-component-color list-item-header4"  name="ammunitions2"><span class="{{#unless ammunitions2}}plus-button{{else}}minus-button{{/unless}}"></span>Ammunition</a>
                         {{#each ammunition}}
                         <span class="list-item mechbay-component ammunitions2" {{#unless ../ammunitions2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="other-slot">{{this.name}}</span>
-                        <span class="list-item ammunitions2" {{#unless ../ammunitions2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item ammunitions2" {{#unless ../ammunitions2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item ammunitions2" {{#unless ../ammunitions2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item ammunitions2" {{#unless ../ammunitions2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item ammunitions2" {{#unless ../ammunitions2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item ammunitions2" {{#unless ../ammunitions2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section melee list-item-header4" name="meleeWeapons2"><span class="{{#unless meleeWeapons2}}plus-button{{else}}minus-button{{/unless}}"></span>Melee Weapons</a>
                         {{#each meleeWeapons}}
 
                         <span class="list-item mechbay-component meleeWeapons2" {{#unless ../meleeWeapons2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="melee-slot">{{this.name}}</span>
-                        <span class="list-item meleeWeapons2" {{#unless ../meleeWeapons2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item meleeWeapons2" {{#unless ../meleeWeapons2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item meleeWeapons2" {{#unless ../meleeWeapons2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item meleeWeapons2" {{#unless ../meleeWeapons2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item meleeWeapons2" {{#unless ../meleeWeapons2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item meleeWeapons2" {{#unless ../meleeWeapons2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section auxiliary list-item-header4" name="auxiliaryWeapons2"><span class="{{#unless auxiliaryWeapons2}}plus-button{{else}}minus-button{{/unless}}"></span>Auxiliary Weapons</a>
                         {{#each auxiliaryWeapons}}
                         <span class="list-item mechbay-component auxiliaryWeapons2" {{#unless ../auxiliaryWeapons2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="auxiliary-slot">{{this.name}}</span>
-                        <span class="list-item auxiliaryWeapons2" {{#unless ../auxiliaryWeapons2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item auxiliaryWeapons2" {{#unless ../auxiliaryWeapons2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item auxiliaryWeapons2" {{#unless ../auxiliaryWeapons2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item auxiliaryWeapons2" {{#unless ../auxiliaryWeapons2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item auxiliaryWeapons2" {{#unless ../auxiliaryWeapons2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item auxiliaryWeapons2" {{#unless ../auxiliaryWeapons2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                     </div>
                 </div>
@@ -226,51 +226,51 @@
                         <a class="mechbay-grid-section sensor-color list-item-header4" name="sensors2"><span class="{{#unless sensors2}}plus-button{{else}}minus-button{{/unless}}"></span>Sensors</a>
                         {{#each sensors}}
                         <span class="list-item mechbay-component sensors2" {{#unless ../sensors2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="sensor-slot">{{this.name}}</span>
-                        <span class="list-item sensors2" {{#unless ../sensors2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item sensors2" {{#unless ../sensors2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item sensors2" {{#unless ../sensors2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item sensors2" {{#unless ../sensors2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item sensors2" {{#unless ../sensors2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item sensors2" {{#unless ../sensors2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section plating-color list-item-header4" name="platings2"><span class="{{#unless platings2}}plus-button{{else}}minus-button{{/unless}}"></span>Platings</a>
                         {{#each platings}}
                         <span class="list-item mechbay-component platings2" {{#unless ../platings2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="plating-slot">{{this.name}}</span>
-                        <span class="list-item platings2" {{#unless ../platings2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item platings2" {{#unless ../platings2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item platings2" {{#unless ../platings2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item platings2" {{#unless ../platings2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item platings2" {{#unless ../platings2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item platings2" {{#unless ../platings2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section core-color list-item-header4" name="coremods2"><span class="{{#unless coremods2}}plus-button{{else}}minus-button{{/unless}}"></span>Core Mods</a>
                         {{#each coreMods}}
                         <span class="list-item mechbay-component coremods2" {{#unless ../coremods2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="core-mod-slot">{{this.name}}</span>
-                        <span class="list-item coremods2" {{#unless ../coremods2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item coremods2" {{#unless ../coremods2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item coremods2" {{#unless ../coremods2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item coremods2" {{#unless ../coremods2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item coremods2" {{#unless ../coremods2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item coremods2" {{#unless ../coremods2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section throne-mod-color list-item-header4" name="thronemods2"><span class="{{#unless thronemods2}}plus-button{{else}}minus-button{{/unless}}"></span>Throne Mods</a>
                         {{#each throneMods}}
                         <span class="list-item mechbay-component thronemods2" {{#unless ../thronemods2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="throne-mod-slot">{{this.name}}</span>
-                        <span class="list-item thronemods2" {{#unless ../thronemods2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item thronemods2" {{#unless ../thronemods2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item thronemods2" {{#unless ../thronemods2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item thronemods2" {{#unless ../thronemods2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item thronemods2" {{#unless ../thronemods2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item thronemods2" {{#unless ../thronemods2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section arm-actuator-color list-item-header4" name="armActuators2"><span class="{{#unless armActuators2}}plus-button{{else}}minus-button{{/unless}}"></span>Arm Actuators</a>
                         {{#each armActuators}}
                         <span class="list-item mechbay-component armActuators2" {{#unless ../armActuators2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="arm-actuator-slot">{{this.name}}</span>
-                        <span class="list-item armActuators2" {{#unless ../armActuators2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item armActuators2" {{#unless ../armActuators2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item armActuators2" {{#unless ../armActuators2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item armActuators2" {{#unless ../armActuators2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item armActuators2" {{#unless ../armActuators2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item armActuators2" {{#unless ../armActuators2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section leg-actuator-color list-item-header4" name="legActuators2"><span class="{{#unless legActuators2}}plus-button{{else}}minus-button{{/unless}}"></span>Leg Actuators</a>
                         {{#each legActuators}}
                         <span class="list-item mechbay-component legActuators2" {{#unless ../legActuators2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="leg-actuator-slot">{{this.name}}</span>
-                        <span class="list-item legActuators2" {{#unless ../legActuators2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item legActuators2" {{#unless ../legActuators2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item legActuators2" {{#unless ../legActuators2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item legActuators2" {{#unless ../legActuators2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item legActuators2" {{#unless ../legActuators2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item legActuators2" {{#unless ../legActuators2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section other-component-color list-item-header4" name="others2"><span class="{{#unless others2}}plus-button{{else}}minus-button{{/unless}}"></span>Other Components</a>
                         {{#each others}}
                         <span class="list-item mechbay-component others2" {{#unless ../others2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="other-slot">{{this.name}}</span>
-                        <span class="list-item others2" {{#unless ../others2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item others2" {{#unless ../others2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item others2" {{#unless ../others2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item others2" {{#unless ../others2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item others2" {{#unless ../others2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item others2" {{#unless ../others2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                     </div>
 
@@ -284,9 +284,9 @@
                         <a class="mechbay-grid-section core-color list-item-header4" name="cores2"><span class="{{#unless cores2}}plus-button{{else}}minus-button{{/unless}}"></span>Cores</a>
                         {{#each cores}}
                         <span class="list-item mechbay-component cores2" {{#unless ../cores2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="core-slot">{{this.name}}</span>
-                        <span class="list-item cores2" {{#unless ../cores2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item cores2" {{#unless ../cores2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item cores2" {{#unless ../cores2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item cores2" {{#unless ../cores2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item cores2" {{#unless ../cores2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item cores2" {{#unless ../cores2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                     </div>
                 </div>
@@ -299,16 +299,16 @@
                         <a class="mechbay-grid-section armor-color list-item-header4" name="armors2"><span class="{{#unless armors2}}plus-button{{else}}minus-button{{/unless}}"></span>Armors</a>
                         {{#each armors}}
                         <span class="list-item mechbay-component armors2" {{#unless ../armors2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="armor-slot">{{this.name}}</span>
-                        <span class="list-item armors2" {{#unless ../armors2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item armors2" {{#unless ../armors2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item armors2" {{#unless ../armors2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item armors2" {{#unless ../armors2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item armors2" {{#unless ../armors2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item armors2" {{#unless ../armors2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                         <a class="mechbay-grid-section forceField-color list-item-header4" name="forceFields2"><span class="{{#unless forceFields2}}plus-button{{else}}minus-button{{/unless}}"></span>Force Fields</a>
                         {{#each forceFields}}
                         <span class="list-item mechbay-component forceFields2" {{#unless ../forceFields1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="forceField-slot">{{this.name}}</span>
-                        <span class="list-item forceFields2" {{#unless ../forceFields2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item forceFields2" {{#unless ../forceFields2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item forceFields2" {{#unless ../forceFields2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item forceFields2" {{#unless ../forceFields2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item forceFields2" {{#unless ../forceFields2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item forceFields2" {{#unless ../forceFields2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                     </div>
 
@@ -322,9 +322,9 @@
                         <a class="mechbay-grid-section structure-color list-item-header4" name="structures2"><span class="{{#unless structures2}}plus-button{{else}}minus-button{{/unless}}"></span>Structures</a>
                         {{#each structures}}
                         <span class="list-item mechbay-component structures2" {{#unless ../structures2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="structure-slot">{{this.name}}</span>
-                        <span class="list-item structures2" {{#unless ../structures2}}style="display: none"{{/unless}}>{{this.data.data.amount.left}}</span>
-                        <span class="list-item structures2" {{#unless ../structures2}}style="display: none"{{/unless}}>{{this.data.data.weight.value}}</span>
-                        <span class="list-item structures2" {{#unless ../structures2}}style="display: none"{{/unless}}>{{this.data.data.space.value}}</span>
+                        <span class="list-item structures2" {{#unless ../structures2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item structures2" {{#unless ../structures2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item structures2" {{#unless ../structures2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
                     </div>
 
@@ -353,7 +353,7 @@
 
                 <div class="artillery-weapon artillery filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.data.data.state.value}}
+                        {{#select this.system.state.value}}
 
                         {{#each data.FORTYK.itemStates}}
 
@@ -378,7 +378,7 @@
 
                 <div class="auxiliary-weapon auxiliary filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.data.data.state.value}}
+                        {{#select this.system.state.value}}
 
                         {{#each data.FORTYK.itemStates}}
 
@@ -411,7 +411,7 @@
 
                 <div class="ranged-weapon ranged filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.data.data.state.value}}
+                        {{#select this.system.state.value}}
 
                         {{#each data.FORTYK.itemStates}}
 
@@ -436,7 +436,7 @@
 
                 <div class="melee-weapon melee filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.data.data.state.value}}
+                        {{#select this.system.state.value}}
 
                         {{#each data.FORTYK.itemStates}}
 
@@ -462,7 +462,7 @@
 
                 <div class="auxiliary-weapon auxiliary filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.data.data.state.value}}
+                        {{#select this.system.state.value}}
 
                         {{#each data.FORTYK.itemStates}}
 
@@ -488,7 +488,7 @@
                 {{#if data.knight.core}}
 
                 <div class="core core-color filled-slot">
-                    <input class="item-text-input core-input" type="text" data-target="data.state.value"  value="{{data.knight.core.data.data.state.value}}" data-item-id="{{data.knight.core.id}}" data-dtype="Number">
+                    <input class="item-text-input core-input" type="text" data-target="data.state.value"  value="{{data.knight.core.system.state.value}}" data-item-id="{{data.knight.core.id}}" data-dtype="Number">
 
                     <span>{{data.knight.core.name}}</span>
                     {{#if isGM}}
@@ -506,7 +506,7 @@
                 <div class="structure structure-color filled-slot">
 
                     <select class="state"  data-item-id="{{data.knight.structure.id}}" data-dtype="Number">
-                        {{#select data.knight.structure.data.data.state.value}}
+                        {{#select data.knight.structure.system.state.value}}
 
                         {{#each itemStates}}
 
@@ -530,7 +530,7 @@
 
                 <div class="armor armor-color filled-slot">
                     <select class="state"  data-item-id="{{data.knight.armor.id}}" data-dtype="Number">
-                        {{#select data.knight.armor.data.data.state.value}}
+                        {{#select data.knight.armor.system.state.value}}
 
                         {{#each itemStates}}
 
@@ -553,7 +553,7 @@
 
                 <div class="forceField forceField-color filled-slot">
                     <select class="state"  data-item-id="{{data.knight.forceField.id}}" data-dtype="Number">
-                        {{#select data.knight.forceField.data.data.state.value}}
+                        {{#select data.knight.forceField.system.state.value}}
 
                         {{#each itemStates}}
 
@@ -577,7 +577,7 @@
 
                 <div class="auxiliary-weapon auxiliary filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.data.data.state.value}}
+                        {{#select this.system.state.value}}
 
                         {{#each data.FORTYK.itemStates}}
 
@@ -601,7 +601,7 @@
 
                 <div class="throne-mod throne-mod-color filled-slot">
                     <select class="state"  data-item-id="{{data.throneMod.armor.id}}" data-dtype="Number">
-                        {{#select data.knight.throneMod.data.data.state.value}}
+                        {{#select data.knight.throneMod.system.state.value}}
 
                         {{#each itemStates}}
 
@@ -624,7 +624,7 @@
 
                 <div class="sensor sensor-color filled-slot">
                     <select class="state"  data-item-id="{{data.knight.sensor.id}}" data-dtype="Number">
-                        {{#select data.knight.sensor.data.data.state.value}}
+                        {{#select data.knight.sensor.system.state.value}}
 
                         {{#each itemStates}}
 
@@ -647,7 +647,7 @@
 
                 <div class="plating plating-color filled-slot">
                     <select class="state"  data-item-id="{{data.knight.plating.id}}" data-dtype="Number">
-                        {{#select data.knight.plating.data.data.state.value}}
+                        {{#select data.knight.plating.system.state.value}}
 
                         {{#each itemStates}}
 
@@ -670,7 +670,7 @@
 
                 <div class="core-mod core-mod-color filled-slot">
                     <select class="state"  data-item-id="{{data.knight.coreMod.id}}" data-dtype="Number">
-                        {{#select data.knight.coreMod.data.data.state.value}}
+                        {{#select data.knight.coreMod.system.state.value}}
 
                         {{#each itemStates}}
 
@@ -693,7 +693,7 @@
 
                 <div class="arm-actuator arm-actuator-color filled-slot">
                     <select class="state"  data-item-id="{{data.knight.armActuator.id}}" data-dtype="Number">
-                        {{#select data.knight.armActuator.data.data.state.value}}
+                        {{#select data.knight.armActuator.system.state.value}}
 
                         {{#each itemStates}}
 
@@ -716,7 +716,7 @@
 
                 <div class="leg-actuator leg-actuator-color filled-slot">
                     <select class="state"  data-item-id="{{data.knight.legActuator.id}}" data-dtype="Number">
-                        {{#select data.knight.legActuator.data.data.state.value}}
+                        {{#select data.knight.legActuator.system.state.value}}
 
                         {{#each itemStates}}
 
@@ -743,7 +743,7 @@
 
                 <div class="ranged-weapon ranged filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.data.data.state.value}}
+                        {{#select this.system.state.value}}
 
                         {{#each data.FORTYK.itemStates}}
 
@@ -768,7 +768,7 @@
 
                 <div class="melee-weapon melee filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.data.data.state.value}}
+                        {{#select this.system.state.value}}
 
                         {{#each data.FORTYK.itemStates}}
 
@@ -793,7 +793,7 @@
 
                 <div class="auxiliary-weapon auxiliary filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.data.data.state.value}}
+                        {{#select this.system.state.value}}
 
                         {{#each data.FORTYK.itemStates}}
 
@@ -842,7 +842,7 @@
 
                 <div class="other-component other-component-color filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.data.data.state.value}}
+                        {{#select this.system.state.value}}
 
                         {{#each data.FORTYK.itemStates}}
 

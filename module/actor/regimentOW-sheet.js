@@ -62,7 +62,7 @@ export class FortyKOWRegimentSheet extends ActorSheet {
    async _onCreateGuard(event){
         let newGuard={"name":"","status":"","cod":""}
         
-        let squad=Object.values(this.actor.data.data.personnel.squad);
+        let squad=Object.values(this.actor.system.personnel.squad);
         squad.push(newGuard);
         let squadObj=Object.assign({},squad);
          await this.actor.update({"data.personnel.squad":squadObj});
@@ -72,7 +72,7 @@ export class FortyKOWRegimentSheet extends ActorSheet {
          const element = event.currentTarget;
         const dataset = element.dataset;
         let index=parseInt(dataset["index"]);
-        let squad=Object.values(this.actor.data.data.personnel.squad);
+        let squad=Object.values(this.actor.system.personnel.squad);
        
         squad.splice(index,1);
         

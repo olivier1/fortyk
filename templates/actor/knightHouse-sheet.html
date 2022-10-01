@@ -95,12 +95,12 @@
 
                         <div class="list-item">
                             <span class="underline">House Head:</span>
-                            <span>{{data.data.houseHead.value}}</span>
+                            <span>{{system.houseHead.value}}</span>
                         </div>
 
                         <div class="list-item flexrow">
                             <span class="underline">Location:</span>
-                            <span>{{data.data.location.value}}</span>
+                            <span>{{system.location.value}}</span>
                             <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
                             <a class="list-button item-delete" title="Delete" data-item-id="{{this.id}}"></a>
                         </div>
@@ -123,12 +123,12 @@
 
                         <div class="list-item">
                             <span class="underline">Type:</span>
-                            <span>{{data.data.type.value}}</span>
+                            <span>{{system.type.value}}</span>
                         </div>
 
                         <div class="list-item flexrow">
                             <span class="underline">Location:</span>
-                            <span>{{data.data.location.value}}</span>
+                            <span>{{system.location.value}}</span>
                             <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
                             <a class="list-button item-delete" title="Delete" data-item-id="{{this.id}}"></a>
                         </div>
@@ -175,12 +175,12 @@
 
                 <div class="{{#if (greaterThan ../data.repairBays.value @index)}}list-emphasis{{else}}list-item{{/if}}">
 
-                    <span>{{data.data.knight.value}}</span>
+                    <span>{{system.knight.value}}</span>
                 </div>
 
                 <div class="flexrow {{#if (greaterThan ../data.repairBays.value @index)}}list-emphasis{{else}}list-item{{/if}}">
 
-                    <span>{{data.data.time.value}} Days</span>
+                    <span>{{system.time.value}} Days</span>
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
                     <a class="list-button item-delete" title="Delete" data-item-id="{{this.id}}"></a>
                 </div>
@@ -214,24 +214,24 @@
                 <span class="list-item-header">Del.</span>
                 {{#each components}}
 
-                <div class="list-item " name="component"{{#if (compareString ../inventoryFilter "all")}}style="display:"{{else if (compareString data.data.knightComponentType ../inventoryFilter)}}style="display:"{{else}}style="display: none"{{/if}} type="{{data.data.knightComponentType}}">
+                <div class="list-item " name="component"{{#if (compareString ../inventoryFilter "all")}}style="display:"{{else if (compareString system.knightComponentType ../inventoryFilter)}}style="display:"{{else}}style="display: none"{{/if}} type="{{system.knightComponentType}}">
 
                     <span >{{name}}</span>
                 </div>
 
-                <div class="list-item flexrow" name="component" {{#if (compareString ../inventoryFilter "all")}}style="display:"{{else if (compareString data.data.knightComponentType ../inventoryFilter)}}style="display:"{{else}}style="display: none"{{/if}} type="{{data.data.knightComponentType}}">
+                <div class="list-item flexrow" name="component" {{#if (compareString ../inventoryFilter "all")}}style="display:"{{else if (compareString system.knightComponentType ../inventoryFilter)}}style="display:"{{else}}style="display: none"{{/if}} type="{{system.knightComponentType}}">
                     {{#if ../isGM}}
-                    <input type="text" class="item-text-input list-item" data-target="data.amount.taken" value="{{data.data.amount.taken}}" data-item-id="{{this.id}}" data-dtype="Number">
+                    <input type="text" class="item-text-input list-item" data-target="data.amount.taken" value="{{system.amount.taken}}" data-item-id="{{this.id}}" data-dtype="Number">
                     {{/if}}
-                    <input type="text" class="item-text-input list-item" data-target="data.amount.value" value="{{data.data.amount.value}}" data-item-id="{{this.id}}" data-dtype="Number">
+                    <input type="text" class="item-text-input list-item" data-target="data.amount.value" value="{{system.amount.value}}" data-item-id="{{this.id}}" data-dtype="Number">
                 </div>
 
 
 
-                <div class="list-item" name="component" {{#if (compareString ../inventoryFilter "all")}}style="display:"{{else if (compareString data.data.knightComponentType ../inventoryFilter)}}style="display:"{{else}}style="display: none"{{/if}} type="{{data.data.knightComponentType}}">
+                <div class="list-item" name="component" {{#if (compareString ../inventoryFilter "all")}}style="display:"{{else if (compareString system.knightComponentType ../inventoryFilter)}}style="display:"{{else}}style="display: none"{{/if}} type="{{system.knightComponentType}}">
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
                 </div>
-                <div class="list-item" name="component" {{#if (compareString ../inventoryFilter "all")}}style="display:"{{else if (compareString data.data.knightComponentType ../inventoryFilter)}}style="display:"{{else}}style="display: none"{{/if}} type="{{data.data.knightComponentType}}">
+                <div class="list-item" name="component" {{#if (compareString ../inventoryFilter "all")}}style="display:"{{else if (compareString system.knightComponentType ../inventoryFilter)}}style="display:"{{else}}style="display: none"{{/if}} type="{{system.knightComponentType}}">
                     <a class="list-button item-delete" title="Delete" data-item-id="{{this.id}}"></a>
 
                 </div>
