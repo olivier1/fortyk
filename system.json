@@ -1,12 +1,21 @@
 {
-    "name": "fortyk",
+    "id": "fortyk",
     "title": "fortyk",
     "description": "The fortyk system for FoundryVTT!",
     "version": "0.9.3",
-    "minimumCoreVersion": "9.242",
-    "compatibleCoreVersion": "9.269",
+    "compatibility": {
+        "minimum": "10",
+        "verified": "10",
+        "maximum": "10"
+    },
     "templateVersion": 9,
-    "author": "Olivier Bouchard Vanasse",
+    "authors": 
+    [
+        {
+            "name": "Olivier Bouchard Vanasse",
+            "url": "https://github.com/olivier1"
+        }
+    ],
     "esmodules": ["module/fortyk.js"],
     "styles": ["css/fortyk.css"],
     "scripts": [],
@@ -17,7 +26,7 @@
             "system": "fortyk",
             "module": "fortyk",
             "path": "./packs/skills.db",
-            "entity": "Item",
+            "type": "Item",
             "tag" : "skill"
         },
         {
@@ -26,12 +35,12 @@
             "system": "fortyk",
             "module": "fortyk",
             "path": "./packs/talent-core-dh2.db",
-            "entity": "Item",
+            "type": "Item",
             "tag" : "talentdh2core"
         },
         {
             "label": "Traits (Core DH2)",
-            "entity": "Item",
+            "type": "Item",
             "name": "traits-core-dh2",
             "path": "./packs/traits-core-dh2.db",
             "system": "fortyk",
@@ -40,7 +49,7 @@
         },
         {
             "label": "Role, Homeworld & Background Bonus(Core DH2)",
-            "entity": "Item",
+            "type": "Item",
             "name": "role-homeworld-and-background-bonuscore-dh2",
             "path": "./packs/role-homeworld-and-background-bonuscore-dh2.db",
             "system": "fortyk",
@@ -49,7 +58,7 @@
         },
         {
             "label": "Talents (Enemies Within)",
-            "entity": "Item",
+            "type": "Item",
             "name": "talents-enemies-within",
             "path": "./packs/talents-enemies-within.db",
             "system": "fortyk",
@@ -58,7 +67,7 @@
         },
         {
             "label": "Role, Homeworld & Background Bonus(Enemies Within)",
-            "entity": "Item",
+            "type": "Item",
             "name": "role-homeworld-and-background-bonusenemies-within",
             "path": "./packs/role-homeworld-and-background-bonusenemies-within.db",
             "system": "fortyk",
@@ -67,7 +76,7 @@
         },
         {
             "label": "Role, Homeworld & Background Bonus(Enemies Without)",
-            "entity": "Item",
+            "type": "Item",
             "name": "role-homeworld-and-background-bonusenemies-without",
             "path": "./packs/role-homeworld-and-background-bonusenemies-without.db",
             "system": "fortyk",
@@ -76,7 +85,7 @@
         },
         {
             "label": "Talents (Enemies Without)",
-            "entity": "Item",
+            "type": "Item",
             "name": "talents-enemies-without",
             "path": "./packs/talents-enemies-without.db",
             "system": "fortyk",
@@ -85,7 +94,7 @@
         },
         {
             "label": "Talents (Enemies Beyond)",
-            "entity": "Item",
+            "type": "Item",
             "name": "talents-enemies-beyond",
             "path": "./packs/talents-enemies-beyond.db",
             "system": "fortyk",
@@ -94,7 +103,7 @@
         },
         {
             "label": "Role, Homeworld & Background Bonus(Enemies Beyond)",
-            "entity": "Item",
+            "type": "Item",
             "name": "role-homeworld-and-background-bonusenemies-beyond",
             "path": "./packs/role-homeworld-and-background-bonusenemies-beyond.db",
             "system": "fortyk",
@@ -103,7 +112,7 @@
         },
         {
             "label": "Deathwatch Bonus and Drawbacks",
-            "entity": "Item",
+            "type": "Item",
             "name": "deathwatch-bonus-and-drawbacks",
             "path": "./packs/deathwatch-bonus-and-drawbacks.db",
             "system": "fortyk",
@@ -112,7 +121,7 @@
         },
         {
             "label": "Deathwatch Talents",
-            "entity": "Item",
+            "type": "Item",
             "name": "deathwatch-talents",
             "path": "./packs/deathwatch-talents.db",
             "system": "fortyk",
@@ -121,7 +130,7 @@
         },
         {
             "label": "Homeworld and specialty Abilities (Core OW)",
-            "entity": "Item",
+            "type": "Item",
             "name": "homeworld-and-specialty-abilities-core-ow",
             "path": "./packs/homeworld-and-specialty-abilities-core-ow.db",
             "system": "fortyk",
@@ -130,7 +139,7 @@
         },
         {
             "label": "Talents (OW Core)",
-            "entity": "Item",
+            "type": "Item",
             "name": "talents-ow-core",
             "path": "./packs/talents-ow-core.db",
             "system": "fortyk",
@@ -138,7 +147,7 @@
         },
         {
             "label": "Homeworld and Specialty Abilities (Hammer of the Emperor)",
-            "entity": "Item",
+            "type": "Item",
             "name": "homeworld-and-specialty-abilities-hammer-of-the-emperor",
             "path": "./packs/homeworld-and-specialty-abilities-hammer-of-the-emperor.db",
             "system": "fortyk",
@@ -146,7 +155,7 @@
         },
         {
             "label": "Talents (Hammer of the Emperor)",
-            "entity": "Item",
+            "type": "Item",
             "name": "talents-hammer-of-the-emperor",
             "path": "./packs/talents-hammer-of-the-emperor.db",
             "system": "fortyk",
@@ -154,7 +163,7 @@
         },
         {
             "label": "Orders (Hammer of the Emperor)",
-            "entity": "Item",
+            "type": "Item",
             "name": "orders-hammer-of-the-emperor",
             "path": "./packs/orders-hammer-of-the-emperor.db",
             "system": "fortyk",
@@ -162,7 +171,7 @@
         },
         {
             "label": "Homeworld and Specialty Abilities (Shield of Humanity)",
-            "entity": "Item",
+            "type": "Item",
             "name": "homeworld-and-specialty-abilities-shield-of-humanity",
             "path": "./packs/homeworld-and-specialty-abilities-shield-of-humanity.db",
             "system": "fortyk",
@@ -170,7 +179,7 @@
         },
         {
             "label": "Talents (Shield of Humanity)",
-            "entity": "Item",
+            "type": "Item",
             "name": "talents-shield-of-humanity",
             "path": "./packs/talents-shield-of-humanity.db",
             "system": "fortyk",
@@ -178,7 +187,7 @@
         },
         {
             "label": "Orders (Shield of Humanity)",
-            "entity": "Item",
+            "type": "Item",
             "name": "orders-shield-of-humanity",
             "path": "./packs/orders-shield-of-humanity.db",
             "system": "fortyk",
@@ -186,7 +195,7 @@
         },
         {
             "label": "Melee Weapons",
-            "entity": "Item",
+            "type": "Item",
             "name": "melee-weapons",
             "path": "./packs/melee-weapons.db",
             "system": "fortyk",
@@ -194,7 +203,7 @@
         },
         {
             "label": "Ranged Weapons",
-            "entity": "Item",
+            "type": "Item",
             "name": "ranged-weapons",
             "path": "./packs/ranged-weapons.db",
             "system": "fortyk",
@@ -202,7 +211,7 @@
         },
         {
             "label": "Custom Talents",
-            "entity": "Item",
+            "type": "Item",
             "name": "custom-talents",
             "path": "./packs/custom-talents.db",
             "system": "fortyk",
@@ -210,7 +219,7 @@
         },
         {
             "label": "Custom Bonus And Drawbacks",
-            "entity": "Item",
+            "type": "Item",
             "name": "custom-bonus-and-drawbacks",
             "path": "./packs/custom-bonus-and-drawbacks.db",
             "system": "fortyk",
@@ -218,7 +227,7 @@
         },
         {
             "label": "fortykMacros",
-            "entity": "Macro",
+            "type": "Macro",
             "name": "fortymacros",
             "path": "./packs/fortykmacros.db",
             "system": "fortyk",
@@ -229,8 +238,7 @@
             "type": "Item",
             "name": "vehicle-traits",
             "path": "./packs/vehicle-traits.db",
-            "system": "fortyk",
-            "entity": "Item"
+            "system": "fortyk"
         },
         {
             "label": "Knight Chassis",
@@ -239,7 +247,6 @@
             "path": "packs/knight-chassis.db",
             "system": "fortyk",
             "package": "system",
-            "entity": "Item",
             "private": false
         },
         {
@@ -249,7 +256,6 @@
             "path": "packs/knight-spirits.db",
             "system": "fortyk",
             "package": "system",
-            "entity": "Item",
             "private": false
         }
         ,
@@ -260,7 +266,6 @@
             "path": "packs/knight-ranged-weapons.db",
             "system": "fortyk",
             "package": "system",
-            "entity": "Item",
             "private": false
         }
         ,
@@ -271,7 +276,6 @@
             "path": "packs/knight-melee-weapons.db",
             "system": "fortyk",
             "package": "system",
-            "entity": "Item",
             "private": false
         },
         {
@@ -281,7 +285,6 @@
             "path": "packs/knight-components.db",
             "system": "fortyk",
             "package": "system",
-            "entity": "Item",
             "private": false
         },
         {
@@ -291,7 +294,6 @@
             "path": "packs/knight-cores.db",
             "system": "fortyk",
             "package": "system",
-            "entity": "Item",
             "private": false
         },
         {
@@ -301,7 +303,6 @@
             "path": "packs/knight-ranged-weapons.db",
             "system": "fortyk",
             "package": "system",
-            "entity": "Item",
             "private": false
         },
         {
@@ -311,7 +312,6 @@
             "path": "packs/wargear.db",
             "system": "fortyk",
             "package": "system",
-            "entity": "Item",
             "private": false
         },
         {
@@ -321,7 +321,6 @@
             "path": "packs/cybernetics.db",
             "system": "fortyk",
             "package": "system",
-            "entity": "Item",
             "private": false
         },
         {
@@ -331,7 +330,6 @@
             "path": "packs/armor.db",
             "system": "fortyk",
             "package": "system",
-            "entity": "Item",
             "private": false
         },
         {
@@ -341,7 +339,6 @@
             "path": "packs/forcefields.db",
             "system": "fortyk",
             "package": "system",
-            "entity": "Item",
             "private": false
         },
         {
@@ -351,10 +348,9 @@
             "path": "packs/drugs-and-consumables.db",
             "system": "fortyk",
             "package": "system",
-            "entity": "Item",
             "private": false
         }
-        
+
     ],
     "gridDistance": 1,
     "gridUnits": "m",

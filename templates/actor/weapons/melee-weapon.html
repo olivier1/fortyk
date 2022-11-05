@@ -5,17 +5,17 @@
     </div>
 
     <div class="list-item">
-        <span>Reach: {{this.data.range.value}}m</span>
+        <span>Reach: {{this.system.range.value}}m</span>
     </div>
     <div class="list-item">
-        <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{data.characteristics.ws.total}}" data-item-id="this.id" data-label="Melee Attack" data-char="ws">Attack Roll</span>
+        <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{system.characteristics.ws.total}}" data-item-id="this.id" data-label="Melee Attack" data-char="ws">Attack Roll</span>
     </div>
     <div class="list-item">
         <span>Damage: </span>
-        <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}+@characteristics.s.bonus" data-weapon="{{this.id}}"> {{this.data.damageFormula.value}}+{{data.characteristics.s.bonus}}</a>
+        <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}+@characteristics.s.bonus" data-weapon="{{this.id}}"> {{this.system.damageFormula.value}}+{{system.characteristics.s.bonus}}</a>
     </div>
     <div class="list-item">
-        <span>Penetration: {{this.data.pen.value}}</span>
+        <span>Penetration: {{this.system.pen.value}}</span>
 
     </div>
     <div class="list-item">
@@ -28,16 +28,16 @@
 
     </div>
     <div class="list-item">
-        <span>Damage Type: {{this.data.damageType.value}}</span>
+        <span>Damage Type: {{this.system.damageType.value}}</span>
 
     </div>
     <div class="list-item">
-        <span>Weapon Class: {{this.data.class.value}}</span>
+        <span>Weapon Class: {{this.system.class.value}}</span>
 
 
     </div>
     <div class="list-item">
-        <span>Weapon Type: {{this.data.type.value}}</span>
+        <span>Weapon Type: {{this.system.type.value}}</span>
     </div>
 
 </div>

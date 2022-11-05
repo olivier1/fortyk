@@ -45,8 +45,9 @@ export const sleep=function(ms) {
 }
 //returns an actors token object, not the token document. Will search the active canvas for the current token.
 export const getActorToken=function(actor){
+    console.log(actor)
     if(actor.token!==null){
-        return actor.token._object; 
+        return actor.token; 
     }
     let tokens=[];
     if(canvas.tokens.children.length>0){
@@ -55,10 +56,11 @@ export const getActorToken=function(actor){
 
     let t=null;
     for(let token of tokens){
-        if(token.data.actorId===actor.data._id){
+        if(token.actor.id===actor.id){
             t=token;
         }
     }
+    console.log(t)
     return t;
 }
 export const parseHtmlForInline=function(html){
@@ -73,40 +75,38 @@ export const parseHtmlForInline=function(html){
 }
 export const tokenDistance=function(token1,token2){
     let gridRatio=canvas.dimensions.distance/canvas.dimensions.size;
-    let token1x=token1.data.x;
-    let token1y=token1.data.y;
-    let token2x=token2.data.x;
-    let token2y=token2.data.y;
-    if(token1.data.width>=2){
+    let token1x=token1.x;
+    let token1y=token1.y;
+    let token2x=token2.x;
+    let token2y=token2.y;
+    if(token1.w>=200){
         if(token2x>token1x){
-            token1x+=Math.ceil(token1.data.width/2)*100;
+            token1x+=Math.ceil(token1.w/2);
         }
     }
-    if(token1.data.height>=2){
+    if(token1.h>=200){
         if(token2y>token1y){
-            token1y+=Math.ceil(token1.data.height/2)*100;
+            token1y+=Math.ceil(token1.h/2);
         }
     }
-    if(token2.data.width>=2){
+    if(token2.w>=200){
         if(token1x>token2x){
-            token2x+=Math.ceil(token2.data.width/2)*100;
+            token2x+=Math.ceil(token2.w/2);
         }
     }
-    if(token2.data.height>=2){
+    if(token2.h>=200){
         if(token1y>token2y){
-            token2y+=Math.ceil(token2.data.height/2)*100;
+            token2y+=Math.ceil(token2.h/2);
         }
     }
-    if(canvas.scene.data.gridType===0){
+    if(canvas.scene.grid.type===0){
         let distancePx=Math.sqrt((Math.pow(token1x-token2x),2)+Math.pow((token1y-token2y),2)+Math.pow((token1.data.elevation-token2.data.elevation),2))
         return distancePx*gridRatio
     }
-    if(canvas.scene.data.gridType>=1){
-
+    if(canvas.scene.grid.type>=1){
         let xDistance=Math.abs(gridRatio*(token1x-token2x));
         let yDistance=Math.abs(gridRatio*(token1y-token2y));
         let zDistance=Math.abs(gridRatio*(token1.data.elevation-token2.data.elevation));
-        
         return Math.max(xDistance,yDistance,zDistance); 
     }
 
@@ -129,11 +129,12 @@ export const getSkills= async function(){
     {
         let skillItem = undefined;
         await pack.getDocument(sk._id).then(skill => skillItem = skill);
-        skillCollection.push(skillItem.data);
+        skillCollection.push(skillItem);
     }
     return skillCollection;
 };
 export const objectByString = function(o, s) {
+    
     s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
     s = s.replace(/^\./, '');           // strip a leading dot
     var a = s.split('.');
@@ -175,14 +176,15 @@ export const isEmpty=function (obj) {
     return true;
 }
 export const getVehicleFacing=function(vehicleToken,attackerToken){
+    console.log(vehicleToken,attackerToken)
     //determine quadrant
-    let attackerx=attackerToken.data.x+(attackerToken.data.width/2)*100;//adjust to get middle of token
-    let attackery=attackerToken.data.y+(attackerToken.data.height/2)*100;//adjust to get middle of token
-    let vehiclex=vehicleToken.data.x+(vehicleToken.data.width/2)*100;//adjust to get middle of token
-    let vehicley=vehicleToken.data.y+(vehicleToken.data.height/2)*100;//adjust to get middle of token
+    let attackerx=attackerToken.x+(attackerToken.w/2);//adjust to get middle of token
+    let attackery=attackerToken.y+(attackerToken.h/2);//adjust to get middle of token
+    let vehiclex=vehicleToken.x+(vehicleToken.w/2);//adjust to get middle of token
+    let vehicley=vehicleToken.y+(vehicleToken.h/2);//adjust to get middle of token
    
     let attackAngle=0;
-   
+   console.log(vehiclex,vehicley,attackerx,attackery)
     if(vehiclex>=attackerx){
         //is on left of vehicle
         if(vehicley<attackery){
@@ -202,14 +204,16 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
             attackAngle=270+Math.round(radToDeg(Math.atan((attackery-vehicley)/(attackerx-vehiclex))));
         }
     }
+    console.log(attackAngle)
     //adjust for vehicle rotation
     let vehicleRotation=vehicleToken.data.rotation;
-    
+    console.log(vehicleToken)
     attackAngle-=vehicleRotation;
     if(attackAngle<0){
         attackAngle=360+attackAngle;
     }
-    let facings=vehicleToken.actor.data.data.facings;
+    let facings=vehicleToken.actor.system.facings;
+    console.log(facings, attackAngle)
     let facing=null;
     let split={};
     for(const face in facings){
@@ -227,6 +231,7 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
     if(facing===null){
         facing=split;
     }
+    console.log(facing)
     return facing;
 }
 export const degToRad=function (degrees) {
@@ -249,7 +254,7 @@ console.log("starting item flag update")
             if(item.type==="rangedWeapon"||item.type==="meleeWeapon"||item.type==="psychicPower"||item.type==="ammunition"){
                 let mod=duplicate(item);
                 if(mod.flags===undefined){
-                    mod=mod.data;
+                    mod=mod;
                 }   
                 let update=false;
                 console.log(mod);

@@ -74,7 +74,7 @@ export class ActorDialogs{
         let actor = game.actors.get(actorId);
        
         /*
-        await actor.createEmbeddedDocuments("ActiveEffect",[{name:"newActiveEffect","data.label":"newActiveEffect"}])*/
+        await actor.createEmbeddedDocuments("ActiveEffect",[{name:"newActiveEffect","system.label":"newActiveEffect"}])*/
 
 
 

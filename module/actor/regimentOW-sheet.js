@@ -25,7 +25,7 @@ export class FortyKOWRegimentSheet extends ActorSheet {
     }
      /** @override */
     getData() {
-        const data = super.getData();
+        const data = super.getData().actor;
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
         
@@ -62,23 +62,23 @@ export class FortyKOWRegimentSheet extends ActorSheet {
    async _onCreateGuard(event){
         let newGuard={"name":"","status":"","cod":""}
         
-        let squad=Object.values(this.actor.data.data.personnel.squad);
+        let squad=Object.values(this.actor.system.personnel.squad);
         squad.push(newGuard);
         let squadObj=Object.assign({},squad);
-         await this.actor.update({"data.personnel.squad":squadObj});
+         await this.actor.update({"system.personnel.squad":squadObj});
         
     }
     async _onDeleteGuard(event){
          const element = event.currentTarget;
         const dataset = element.dataset;
         let index=parseInt(dataset["index"]);
-        let squad=Object.values(this.actor.data.data.personnel.squad);
+        let squad=Object.values(this.actor.system.personnel.squad);
        
         squad.splice(index,1);
         
          
         
-       await this.actor.update({"data.personnel.squad":squad});
+       await this.actor.update({"system.personnel.squad":squad});
         
     }
 }

@@ -4,16 +4,16 @@
         <a class="item-create button" data-type="cybernetic" title="Add a new Cybernetic">Add Cybernetic</a>
         <div class="list list4col grid grid-4col">
             <a class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="cybernetics">Name</a>
-            <a class="list-item sort-button" data-sort-type="location" data-path="data.location.value" data-item-type="cybernetics">Location</a>
+            <a class="list-item sort-button" data-sort-type="location" data-path="system.location.value" data-item-type="cybernetics">Location</a>
             <span class="list-button"></span>
             <span class="list-button"></span>
             {{#each actor.cybernetics as |c key|}}
 
-            <a class="item-descr list-item" data-name="{{c.name}}" data-item-descr="{{c.data.description.value}}">{{c.name}}</a>
+            <a class="item-descr list-item" data-name="{{c.name}}" data-item-descr="{{c.system.description.value}}">{{c.name}}</a>
             <select data-item-id="{{c._id}}" class="cyber-location-select list-item" data-dtype="String">
-                {{#select c.data.location.value}}
+                {{#select c.system.location.value}}
 
-                {{#each ../data.characterHitLocations as |l key|}}
+                {{#each ../system.characterHitLocations as |l key|}}
 
                 <option value="{{key}}">{{l.label}}</option>
                 {{/each}}
@@ -31,25 +31,25 @@
     <div class="cyber flexcol">
         <span class="section-title">Carry</span>
         <div class="carry flexcol">
-            <span>Mod: <input type="text" class="combat-resources" data-target="data.carry.mod" value="{{data.carry.mod}}" data-dtype="Number"/></span>
-            <span>Total Weight: {{data.carry.value}}kg</span>
-            <span>Max Weight: {{data.carry.max}}kg</span>
+            <span>Mod: <input type="text" class="combat-resources" data-target="system.carry.mod" value="{{system.carry.mod}}" data-dtype="Number"/></span>
+            <span>Total Weight: {{system.carry.value}}kg</span>
+            <span>Max Weight: {{system.carry.max}}kg</span>
         </div>
         <span class="section-title">Wargear</span>
         <a class="wargear-create button" title="Add a new Wargear">Add Wargear</a>
 
         <div class="list list5col grid grid-5col">
             <a class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="wargear">Name</a>
-            <a class="list-item sort-button" data-sort-type="amount" data-path="data.amount.value" data-item-type="wargear">Amount</a>
-            <a class="list-item sort-button" data-sort-type="weight" data-path="data.weight.total" data-item-type="wargear">Weight</a>
+            <a class="list-item sort-button" data-sort-type="amount" data-path="system.amount.value" data-item-type="wargear">Amount</a>
+            <a class="list-item sort-button" data-sort-type="weight" data-path="system.weight.total" data-item-type="wargear">Weight</a>
             <span class="list-button"></span>
             <span class="list-button"></span>
             {{#each actor.wargear as |w key|}}
 
 
-            <a class="item-descr list-item drag" data-name="{{w.name}}" data-item-descr="{{w.data.description.value}}">{{w.name}}</a>
-            <input type="text" class="item-text-input list-item" data-target="data.amount.value" value="{{w.data.amount.value}}" data-item-id="{{w._id}}" data-dtype="Number">
-            <span class="list-item">{{w.data.weight.total}}kg</span>
+            <a class="item-descr list-item drag" data-name="{{w.name}}" data-item-descr="{{w.system.description.value}}">{{w.name}}</a>
+            <input type="text" class="item-text-input list-item" data-target="system.amount.value" value="{{w.system.amount.value}}" data-item-id="{{w._id}}" data-dtype="Number">
+            <span class="list-item">{{w.system.weight.total}}kg</span>
 
             <a class="list-button item-edit" title="Edit" data-item-id="{{w._id}}"></a>
             <a class="list-button item-delete" title="Delete" data-item-id="{{w._id}}"></a>

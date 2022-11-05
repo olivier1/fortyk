@@ -40,7 +40,7 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
 
     async _onKnightOverheat(event){
         let actor=this.actor;
-        let data=this.actor.data.data;
+        let data=this.actor.system;
         let heatCap=parseInt(data.knight.heat.max);
         let heat=parseInt(data.knight.heat.value);
         let overheat=heat-heatCap;
@@ -88,7 +88,7 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
                          }
 
         await ChatMessage.create(chatOverheat,{});
-        this.actor.update({"data.knight.heat.value":0});
+        this.actor.update({"system.knight.heat.value":0});
 
 
     }

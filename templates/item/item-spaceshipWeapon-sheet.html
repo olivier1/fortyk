@@ -12,20 +12,20 @@
     </div>
     <div class="flexcol">
         <label>Power:</label>
-        <input type="text" value="{{data.power.value}}" name="data.power.value">
+        <input type="text" value="{{system.power.value}}" name="system.power.value">
     </div>
     <div class="flexcol">
         <label>Space:</label>
-        <input type="text" value="{{data.space.value}}" name="data.space.value">
+        <input type="text" value="{{system.space.value}}" name="system.space.value">
     </div>
     <div class="flexcol">
         <label>Ship Points:</label>
-        <input type="text" value="{{data.sp.value}}" name="data.sp.value">
+        <input type="text" value="{{system.sp.value}}" name="system.sp.value">
     </div>
     <div class="flexcol">
         <label>Type:</label>
-        <select class="damage-type" name="data.type.value">
-            {{#select data.type.value}}
+        <select class="damage-type" name="system.type.value">
+            {{#select system.type.value}}
             {{#each FORTYK.spaceshipWeaponTypes}}
             <option value="{{this}}">{{this}}</option>
             {{/each}}
@@ -34,20 +34,20 @@
     </div>
     <div class="flexcol">
         <label>Damage:</label>
-        <input type="text" value="{{data.damage.value}}" name="data.damage.value">
+        <input type="text" value="{{system.damage.value}}" name="system.damage.value">
     </div>
     <div class="flexcol">
         <label>Range:</label>
-        <input type="text" value="{{data.range.value}}" name="data.range.value">
+        <input type="text" value="{{system.range.value}}" name="system.range.value">
     </div>
     <div class="flexcol">
         <label>Strength:</label>
-        <input type="text" value="{{data.strength.value}}" name="data.strength.value">
+        <input type="text" value="{{system.strength.value}}" name="system.strength.value">
     </div>
     <div class="flexcol">
         <label>Location:</label>
-        <select class="damage-type" name="data.location.value">
-            {{#select data.location.value}}
+        <select class="damage-type" name="system.location.value">
+            {{#select system.location.value}}
             {{#each FORTYK.spaceshipWeaponLocations}}
             <option value="{{this}}">{{this}}</option>
             {{/each}}
@@ -61,6 +61,6 @@
     {{/if}}
     <div class="item-description">
         <label>Description:</label>
-        {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
     </div>
 </form>

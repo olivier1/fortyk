@@ -26,10 +26,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     /* -------------------------------------------- */
     /** @override */
     getData() {
-        const data = super.getData().actor.data;
+        const data = super.getData().actor;
         data.actor=this.actor.prepare();
         data.isGM=game.user.isGM;
-        data.isOwner=this.actor.isOwner;
         data.dtypes = ["String", "Number", "Boolean"];
         data.races=game.fortyk.FORTYK.races;
         data.aptitudes=game.fortyk.FORTYK.aptitudes;
@@ -40,7 +39,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.editable = this.options.editable;
         data.money=game.settings.get("fortyk","dhMoney");
         data.coverTypes=game.fortyk.FORTYK.coverTypes;
-        
+
         return data;
     }
     /** @override */
@@ -72,7 +71,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.maximal').click(this._onMaximalClick.bind(this));
         //handles lasmode select
         html.find('.lasMode').change(this._onLasModeChange.bind(this));
-       
+
         //handles chaning armor
         html.find('.armor-select').change(this._onArmorChange.bind(this));
         //handles changing forcefield
@@ -118,15 +117,15 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     async _onDropListItem(event){
 
         let draggedId=event.dataTransfer.getData("text");
-     
+
         let targetId=event.target.dataset["id"];
         if(draggedId!==targetId){
             let draggedItem=await this.actor.items.get(draggedId);
 
             let targetItem=await this.actor.items.get(targetId);
 
-            let sortDrag=draggedItem.data.sort;
-            let sortTarget=targetItem.data.sort;
+            let sortDrag=draggedItem.sort;
+            let sortTarget=targetItem.sort;
             if(sortTarget>sortDrag){
 
                 sortDrag=sortTarget;
@@ -137,15 +136,15 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
             let itemType=draggedItem.type;
             let items=this.actor.itemTypes[itemType].sort(function(a,b){
-            return a.data.sort-b.data.sort});
-           
+                return a.sort-b.sort});
+
             /*data.items=*/
             let previous=null;
             let update=[];
             update.push({"_id":draggedId,"sort":sortDrag});
             update.push({"_id":targetId,"sort":sortTarget});
             items.forEach((value,key)=>{
-                let sort=value.data.sort;
+                let sort=value.sort;
                 if(value.id===draggedId){
                     sort=sortDrag;
                 }else if(value.id===targetId){
@@ -153,7 +152,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 }
                 if(sort===previous){
                     sort++
-                   update.push({"_id":value.id,"sort":sort}) 
+                    update.push({"_id":value.id,"sort":sort}) 
                 }
                 previous=sort;
             });
@@ -208,7 +207,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 event.target.value=0;
             }
         }
-        let oldValue=objectByString(actor.data,target);
+        let oldValue=objectByString(actor,target);
 
         if((oldValue!=newAmt)){
 
@@ -243,7 +242,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     event.target.value=0;
                 }
             }
-            let oldValue=objectByString(actor.data,target);
+            let oldValue=objectByString(actor,target);
             if(oldValue!=newAmt){
                 this.updateObj[target]=newAmt;
                 await actor.update(this.updateObj);
@@ -259,15 +258,15 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let sortType=event.target.dataset["sortType"];
         let path=event.target.dataset["path"];
         let itemType=event.target.dataset["itemType"];
-        let actor=this.actor.data;
+        let actor=this.actor;
         let items=actor[itemType];
         let update={};
-        let updatePath="data.sort."+itemType;
+        let updatePath="sort."+itemType;
 
         update[updatePath]={};
         update[updatePath].type=sortType;
         update[updatePath].path=path;
-        if(!actor.data.sort[itemType]||actor.data.sort[itemType].type!==sortType||actor.data.sort[itemType].reverse){
+        if(!actor.sort[itemType]||actor.sort[itemType].type!==sortType||actor.sort[itemType].reverse){
             update[updatePath].reverse=false;
         }else{
             update[updatePath].reverse=true;
@@ -310,7 +309,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             sort: sort
         };
         let item=await FortyKItem.create(itemData,{temporary:true});
-        await this.actor.createEmbeddedDocuments("Item",[item.data],{"renderSheet":true});
+        await this.actor.createEmbeddedDocuments("Item",[duplicate(item)],{"renderSheet":true});
 
     }
     //provides an interface to add new talents and apply the corresponding flags
@@ -318,7 +317,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         event.preventDefault();
         var actor=this.actor;
         let tnts
-        if(actor.data.type==="vehicle"){
+        if(actor.type==="vehicle"){
             var vehicleTraits=await game.packs.get("fortyk.vehicle-traits");
             tnts=await vehicleTraits.getDocuments();
         }else{
@@ -345,7 +344,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
 
         //load different packs depending on actor type
-        if(actor.data.type==="dhPC"||actor.data.type==="npc"){
+        if(actor.type==="dhPC"||actor.type==="npc"){
             var dh2CoreBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonuscore-dh2");
             tnts=tnts.concat(await dh2CoreBonus.getDocuments());
             var dh2EnemiesWithinBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-within");
@@ -354,12 +353,12 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             tnts=tnts.concat(await dh2EnemiesWithoutBonus.getDocuments());
             var dh2EnemiesBeyondBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonusenemies-beyond");
             tnts=tnts.concat(await dh2EnemiesBeyondBonus.getDocuments());
-        }else if(actor.data.type==="dwPC"||actor.data.type==="npc"){
+        }else if(actor.type==="dwPC"||actor.type==="npc"){
             var dwBonus=await game.packs.get("fortyk.deathwatch-bonus-and-drawbacks");
             tnts=tnts.concat(await dwBonus.getDocuments());
             var dwTalents=await game.packs.get("fortyk.deathwatch-talents");
             tnts=tnts.concat(await dwTalents.getDocuments());
-        }else if(actor.data.type==="owPC"||actor.data.type==="npc"){
+        }else if(actor.type==="owPC"||actor.type==="npc"){
             var owCoreAbilities=await game.packs.get("fortyk.homeworld-and-specialty-abilities-core-ow");
             tnts=tnts.concat(await owCoreAbilities.getDocuments());
             var owHOTEAbilities=await game.packs.get("fortyk.homeworld-and-specialty-abilities-hammer-of-the-emperor");
@@ -480,10 +479,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                         tnt=await vehicleTraits.getDocument(selectedIds[i]);
                                         break;
                                 }
-                                let itemData=tnt.data;
-                                let tntData=itemData.data;
-                                let spec=tntData.specialisation.value;
-                                let flag=tntData.flagId.value;
+                                let itemData= duplicate(tnt);
+
+                                let spec=itemData.system.specialisation.value;
+                                let flag=itemData.system.flagId.value;
                                 if(!actor.getFlag("fortyk",flag)){
 
                                     if(spec==="N/A"){
@@ -492,7 +491,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                     }else{
                                         let chosenSpec=await Dialog.prompt({
                                             title: `Choose specialisation for ${tnt.name}`,
-                                            content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${tntData.specialisation.value}" autofocus/></p>`,
+                                            content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${itemData.system.specialisation.value}" autofocus/></p>`,
 
 
 
@@ -509,7 +508,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
                                             width:100}
                                                                           );
-                                        await itemData.update({"data.specialisation.value": chosenSpec});
+                                        itemData.system.specialisation.value= chosenSpec;
 
                                     }
                                     talentsNTraits.push(itemData);
@@ -530,7 +529,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     async _onItemEdit(event){
         event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;
-        const item = this.actor.items.find(i => i.data._id == itemId);
+        const item = this.actor.items.find(i => i._id == itemId);
         item.sheet.render(true);
     }
     //deletes the selected item from the actor
@@ -604,7 +603,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     //handles firing mode change for las weapons
     async _onLasModeChange(event){
         event.preventDefault;
-        const data=this.actor.data.data;
+        const data=this.actor.system;
         let dataset=event.currentTarget.dataset;
 
         let actor=this.actor;
@@ -626,7 +625,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const dataset = element.dataset;
         let testType=dataset["rollType"];
         var testTarget=parseInt(dataset["target"]);
-       
+
         var testLabel=dataset["label"];
         var testChar=dataset["char"];
         let rating=dataset["rating"];
@@ -635,12 +634,14 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
         var item=null;
 
-
-
+        //ensure actor is prepared
+        if(!this.actor.isPrepared){
+            this.actor.prepareData();
+        }
         if(dataset["itemId"]){
             item=await this.actor.items.get(dataset["itemId"]);
-          
-            if(!item.data.data.isPrepared){
+            //ensure item is prepared
+            if(!item.system.isPrepared){
                 await item.prepareData();
             }
         }
@@ -671,10 +672,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             attackOptions.stunned=targetActor.getFlag("core","stunned");
             attackOptions.totalDef=targetActor.getFlag("core","totalDef");
             attackOptions.running=targetActor.getFlag("core","running");
-            attackOptions.size=targetActor.data.data.secChar.size.value;
+            attackOptions.size=targetActor.system.secChar.size.value;
             attackOptions.selfProne=this.actor.getFlag("core","prone");
-            attackOptions.selfEvasion=this.actor.data.data.evasion;
-            attackOptions.tarEvasion=targetActor.data.data.evasion;
+            attackOptions.selfEvasion=this.actor.system.evasion;
+            attackOptions.tarEvasion=targetActor.system.evasion;
             if(targetActor.getFlag("core","unconscious")||targetActor.getFlag("core","snare")){
                 attackOptions.helpless=true;
             }else{
@@ -682,10 +683,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
             attackOptions.selfBlind=this.actor.getFlag("core","blind");
             attackOptions.distance=tokenDistance(target, attacker);
-            let attackerElevation=attacker.data.elevation;
-            let targetElevation=target.data.elevation;
+          
+            let attackerElevation=attacker.elevation;
+            let targetElevation=target.elevation;
             attackOptions.elevation=attackerElevation-targetElevation;
-            
+
 
         }
         if(testType==="meleeAttack"){
@@ -707,29 +709,29 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
             let actor=this.actor;
             let fortykWeapon=actor.items.get(dataset.weapon);
-            if(!fortykWeapon.data.data.isPrepared){
+            if(!fortykWeapon.system.isPrepared){
                 await fortykWeapon.prepareData();
 
             }
-            let weapon=fortykWeapon.data;
+            let weapon=fortykWeapon;
             let dfa=false;
-            if(actor.getFlag("fortyk","deathfromabove")&&actor.data.data.secChar.lastHit.attackType==="charge"){
+            if(actor.getFlag("fortyk","deathfromabove")&&actor.system.secChar.lastHit.attackType==="charge"){
                 dfa=true;
             }
             let dmg=0;
-            if(actor.getFlag("fortyk","brutalcharge")&&actor.data.data.secChar.lastHit.attackType==="charge"){
+            if(actor.getFlag("fortyk","brutalcharge")&&actor.system.secChar.lastHit.attackType==="charge"){
                 dmg=parseInt(actor.getFlag("fortyk","brutalcharge"));
             }
-            if(fortykWeapon.getFlag("fortyk","brutalcharge")&&actor.data.data.secChar.lastHit.attackType==="charge"){
+            if(fortykWeapon.getFlag("fortyk","brutalcharge")&&actor.system.secChar.lastHit.attackType==="charge"){
                 dmg+=parseInt(fortykWeapon.getFlag("fortyk","brutalcharge"));
             }
             let options={dfa:dfa};
             options.dmg=dmg;
-            let hits=actor.data.data.secChar.lastHit.hits;
+            let hits=actor.system.secChar.lastHit.hits;
             if(!hits){hits=1};
             options.hits=hits;
             let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
-            let formula=duplicate(weapon.data.damageFormula);
+            let formula=duplicate(weapon.system.damageFormula);
             renderedTemplate.then(content => {new Dialog({
                 title: `Number of Hits & Bonus Damage`,
                 content: content,
@@ -749,7 +751,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                             }else{
                                 //if user isnt GM use socket to have gm process the damage roll
                                 let targets=game.user.targets.ids;
-                                let lastHit=this.actor.data.data.secChar.lastHit
+                                let lastHit=this.actor.system.secChar.lastHit
                                 let socketOp={type:"damageRoll",package:{formula:formula,actor:actor.id,fortykWeapon:fortykWeapon.id,hits:hits,magdmg:magdmg,pen:pen,user:game.user.id,lastHit:lastHit,targets:targets}}
                                 game.socket.emit("system.fortyk",socketOp);
                             }
@@ -761,7 +763,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 width:100}).render(true)
                                              });
         }else if(dataset.formula){
-            let roll = new Roll(dataset.formula, this.actor.data.data);
+            let roll = new Roll(dataset.formula, this.actor.system);
             let label = dataset.label ? `Rolling ${dataset.label} damage.` : '';
             await roll.roll();
             roll.toMessage({
@@ -782,11 +784,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let label=dataset["label"];
             let power=this.actor.getEmbeddedDocument("Item",powerId);
             let ae=power.effects.entries().next().value[1];
-            if(power.data.data.transferId){
-                ae=this.actor.effects.get(power.data.data.transferId);
+            if(power.system.transferId){
+                ae=this.actor.effects.get(power.system.transferId);
             }
-            let aeData=duplicate(ae.data);
-            let pr=power.data.data.curPR.value;
+            let aeData=duplicate(ae);
+            let pr=power.system.curPR.value;
             aeData.changes.forEach(function(change){
                 change.value=eval(change.value);
                 if(change.value>=0){
@@ -814,25 +816,25 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     async _onRepairForcefield(event){
         event.preventDefault();
         let itemId = event.currentTarget.attributes["data-id"].value;
-        const item = this.actor.items.find(i => i.data._id == itemId);
-        await item.update({"data.broken.value":false});
+        const item = this.actor.items.find(i => i._id == itemId);
+        await item.update({"system.broken.value":false});
     }
-    
+
     //handle enabling and disabling active effects associated with armor
     async _onArmorChange(event){
         let actor=this.actor;
         let newArmorId=event.currentTarget.value;
         let newArmor=actor.getEmbeddedDocument("Item",newArmorId);
-        let oldArmorId=this.actor.data.data.secChar.wornGear.armor._id;
+        let oldArmorId=this.actor.system.secChar.wornGear.armor._id;
 
-        let oldArmor=this.actor.data.data.secChar.wornGear.armor
+        let oldArmor=this.actor.system.secChar.wornGear.armor
         let updates=[];
 
-        if(oldArmor&&oldArmor.data){
-            updates.push({"_id":oldArmorId,"data.isEquipped":false});
+        if(!jQuery.isEmptyObject(oldArmor)){
+            updates.push({"_id":oldArmorId,"system.isEquipped":false});
         }
-        if(newArmor&&newArmor.data){
-            updates.push({"_id":newArmorId,"data.isEquipped":true});
+        if(!jQuery.isEmptyObject(newArmor)){
+            updates.push({"_id":newArmorId,"system.isEquipped":true});
         }
 
         if(updates.length>0){
@@ -845,14 +847,14 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let actor=this.actor;
         let newForceFieldId=event.currentTarget.value;
         let newForceField=actor.getEmbeddedDocument("Item",newForceFieldId);
-        let oldForceFieldId=this.actor.data.data.secChar.wornGear.forceField._id;
-        let oldForceField=this.actor.data.data.secChar.wornGear.forceField
+        let oldForceFieldId=this.actor.system.secChar.wornGear.forceField._id;
+        let oldForceField=this.actor.system.secChar.wornGear.forceField
         let updates=[];
-        if(oldForceField&&oldForceField.data){
-            updates.push({"_id":oldForceFieldId,"data.isEquipped":false});
+        if(!jQuery.isEmptyObject(oldForceField)){
+            updates.push({"_id":oldForceFieldId,"system.isEquipped":false});
         }
-        if(newForceField&&newForceField.data){
-            updates.push({"_id":newForceFieldId,"data.isEquipped":true});
+        if(!jQuery.isEmptyObject(newForceField)){
+            updates.push({"_id":newForceFieldId,"system.isEquipped":true});
         }
         if(updates.length>0){
             await this.actor.updateEmbeddedDocuments("Item",updates);
@@ -878,11 +880,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         let forceData={name:"Force",type:"rangedWeapon"}
                         let force=await Item.create(forceData, {temporary: true});
 
-                        force.data.flags.fortyk={};
-                        force.data.flags.fortyk.ignoreSoak=true;
-                        force.data.data.damageFormula.value=`${hits}d10`;
-                        force.data.data.damageType.value="Energy";
-                        FortykRolls.damageRoll(force.data.data.damageFormula,actor,force,1);
+                        force.flags.fortyk={};
+                        force.flags.fortyk.ignoreSoak=true;
+                        force.system.damageFormula.value=`${hits}d10`;
+                        force.system.damageType.value="Energy";
+                        FortykRolls.damageRoll(force.system.damageFormula,actor,force,1);
                     }
                 }
             },

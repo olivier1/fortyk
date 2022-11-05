@@ -12,8 +12,8 @@
     </div>
     <div class="flexcol">
         <label>Type:</label>
-        <select class="damage-type" name="data.type.value">
-                {{#select data.type.value}}
+        <select class="damage-type" name="system.type.value">
+                {{#select system.type.value}}
                 {{#each FORTYK.spaceshipSquadronTypes}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
@@ -22,12 +22,12 @@
     </div>
     <div class="flexcol">
         <label>Rating:</label>
-        <input type="text" value="{{data.rating.value}}" name="data.rating.value">
+        <input type="text" value="{{system.rating.value}}" name="system.rating.value">
     </div>
     
     
     <div class="item-description">
         <label>Description:</label>
-        {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
     </div>
 </form>

@@ -14,21 +14,21 @@
     
     <div class="flexcol">
         <label>Space taken % (0.%):</label>
-        <input type="text" value="{{data.space.value}}" name="data.space.value">
+        <input type="text" value="{{system.space.value}}" name="system.space.value">
     </div>
     <div class="flexcol">
         <label>Space Increase % (1.%):</label>
-        <input type="text" value="{{data.space.mod}}" name="data.space.mod">
+        <input type="text" value="{{system.space.mod}}" name="system.space.mod">
     </div>
     <div class="flexcol">
         <label>Structural Integrity Modifier % (1.%):</label>
-        <input type="text" value="{{data.SI.mod}}" name="data.SI.mod">
+        <input type="text" value="{{system.SI.mod}}" name="system.SI.mod">
     </div>
     <div class="flexcol">
         <label>Item Quality:</label>
 
-        <select class="quality"  name="data.quality.value">
-            {{#select data.quality.value}}
+        <select class="quality"  name="system.quality.value">
+            {{#select system.quality.value}}
             {{#each FORTYK.itemQualities}}
             <option value="{{this}}">{{this}}</option>
             {{/each}}
@@ -37,8 +37,8 @@
     </div>
     <div class="flexcol">
         <label>Rarity:</label>
-        <select class="power-type" name="data.rarity.value">
-            {{#select data.rarity.value}}
+        <select class="power-type" name="system.rarity.value">
+            {{#select system.rarity.value}}
             <option value="100">Ubiquitous</option>
             <option value="30">Abundant</option>  
             <option value="20">Plentiful</option>
@@ -62,6 +62,6 @@
     {{/if}}
     <div class="item-description">
         <label>Description:</label>
-        {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
     </div>
 </form>

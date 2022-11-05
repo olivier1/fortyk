@@ -4,7 +4,7 @@ let upd=async ()=>{
         console.log(a);
         let weps=[]
         for (let i of a.items){
-            if(i.data.type==="rangedWeapon")
+            if(i.type==="rangedWeapon")
             try {
                 
 
@@ -28,4 +28,4 @@ let upd=async ()=>{
 
 upd();
 //const model = game.system.model.Actor[actorData.type];
-// actorData.data = filterObject(actorData.data, model);
+// actor.system = filterObject(actor.system, model);

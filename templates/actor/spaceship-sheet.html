@@ -18,18 +18,18 @@
 
                             <div class="descrRow flexcol">
                                 <span class="descrSpan">Class:</span>
-                                <input type="text" class="combat-resources" data-target="data.class.value" value="{{data.class.value}}" data-dtype="String"/>
+                                <input type="text" class="combat-resources" data-target="system.class.value" value="{{system.class.value}}" data-dtype="String"/>
                             </div>
                             <div class="descrRow flexcol">
                                 <span class="descrSpan">Hull:</span>
-                                <input type="text" class="combat-resources" data-target="data.hull.value" value="{{data.hull.value}}" data-dtype="String"/>
+                                <input type="text" class="combat-resources" data-target="system.hull.value" value="{{system.hull.value}}" data-dtype="String"/>
                             </div>
 
                         </div>
                         <div class="descrRow flexcol">
                             <div><span class="descrSpan">Complications/Past History:</span>
-                                <input type="text" class="combat-resources" data-target="data.complications.0" value="{{data.complications.[0]}}" data-dtype="String"/>
-                                <input type="text" class="combat-resources" data-target="data.complications.1" value="{{data.complications.[1]}}" data-dtype="String"/>
+                                <input type="text" class="combat-resources" data-target="system.complications.0" value="{{system.complications.[0]}}" data-dtype="String"/>
+                                <input type="text" class="combat-resources" data-target="system.complications.1" value="{{system.complications.[1]}}" data-dtype="String"/>
                             </div>
                             
                             
@@ -44,66 +44,66 @@
             <div class="descr grid grid-5col">
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Speed:</span>
-                    <input type="text" class="combat-resources" data-target="data.speed.value" value="{{data.speed.value}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="system.speed.value" value="{{system.speed.value}}" data-dtype="Number"/>
                 </div>
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Manoeuver:</span>
-                    <input type="text" class="combat-resources" data-target="data.manoeuvrability.value" value="{{data.manoeuvrability.value}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="system.manoeuvrability.value" value="{{system.manoeuvrability.value}}" data-dtype="Number"/>
 
                 </div>
 
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Detection:</span>
-                    <input type="text" class="combat-resources" data-target="data.detection.value" value="{{data.detection.value}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="system.detection.value" value="{{system.detection.value}}" data-dtype="Number"/>
 
                 </div>
 
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Turret Rating:</span>
-                    <input type="text" class="combat-resources" data-target="data.turret.value" value="{{data.turret.value}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="system.turret.value" value="{{system.turret.value}}" data-dtype="Number"/>
 
                 </div>
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Void Shields:</span>
-                    <input type="text" class="combat-resources" data-target="data.shields.value" value="{{data.shields.value}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="system.shields.value" value="{{system.shields.value}}" data-dtype="Number"/>
 
                 </div>
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Armor:</span>
-                    <input type="text" class="combat-resources" data-target="data.armor.value" value="{{data.armor.value}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="system.armor.value" value="{{system.armor.value}}" data-dtype="Number"/>
 
                 </div>
                 <div class="descrRow flexcol">
-                    <span class="char-total rollable button" data-roll-type="char" data-target="{{data.crew.rating}}" data-label="Crew Rating" data-char="">Crew Rating:</span>
+                    <span class="char-total rollable button" data-roll-type="char" data-target="{{system.crew.rating}}" data-label="Crew Rating" data-char="">Crew Rating:</span>
                     <span class="descrSpan"></span>
-                    <input type="text" class="combat-resources" data-target="data.crew.rating" value="{{data.crew.rating}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="system.crew.rating" value="{{system.crew.rating}}" data-dtype="Number"/>
 
                 </div>
                 <div class="resource flex-group-center">
-                    <label for="data.secChar.wounds.value" class="resource-label">Hull Integrity</label>
+                    <label for="system.secChar.wounds.value" class="resource-label">Hull Integrity</label>
                     <div class="resource-content flexrow flex-center flex-between">
-                        <input type="text" class="combat-resources" data-target="data.hullIntegrity.value" value="{{data.hullIntegrity.value}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" data-target="system.hullIntegrity.value" value="{{system.hullIntegrity.value}}" data-dtype="Number"/>
                         <span> / </span>
-                        <input type="text" class="combat-resources" data-target="data.hullIntegrity.max" value="{{data.hullIntegrity.max}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" data-target="system.hullIntegrity.max" value="{{system.hullIntegrity.max}}" data-dtype="Number"/>
                     </div>
                 </div>
 
                 <div class="resource flex-group-center">
-                    <label for="data.secChar.fatigue.value" class="resource-label">Crew</label>
+                    <label for="system.secChar.fatigue.value" class="resource-label">Crew</label>
                     <div class="resource-content flexrow flex-center flex-between">
-                        <input type="text" class="combat-resources" data-target="data.crew.value" value="{{data.crew.value}}" data-dtype="String"/>
+                        <input type="text" class="combat-resources" data-target="system.crew.value" value="{{system.crew.value}}" data-dtype="String"/>
                         <span> / </span>
-                        <input type="text" class="combat-resources" data-target="data.crew.max" value="{{data.crew.max}}" data-dtype="String"/>
+                        <input type="text" class="combat-resources" data-target="system.crew.max" value="{{system.crew.max}}" data-dtype="String"/>
                         
                     </div>
-                    <input type="text" class="combat-resources" data-target="data.crew.capacity" value="{{data.crew.capacity}}" placeholder="Crew capacity" data-dtype="String"/>
+                    <input type="text" class="combat-resources" data-target="system.crew.capacity" value="{{system.crew.capacity}}" placeholder="Crew capacity" data-dtype="String"/>
                 </div>
                 <div class="resource flex-group-center">
-                    <label for="data.secChar.fatigue.value" class="resource-label">Morale</label>
+                    <label for="system.secChar.fatigue.value" class="resource-label">Morale</label>
                     <div class="resource-content flexrow flex-center flex-between">
-                        <input type="text" class="combat-resources" data-target="data.morale.value" value="{{data.morale.value}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" data-target="system.morale.value" value="{{system.morale.value}}" data-dtype="Number"/>
                         <span> / </span>
-                        <input type="text" class="combat-resources" data-target="data.morale.max" value="{{data.morale.max}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" data-target="system.morale.max" value="{{system.morale.max}}" data-dtype="Number"/>
                     </div>
                 </div>
             </div>
@@ -137,31 +137,31 @@
             <div class="descr flexrow">
 
                 <div class="resource flex-group-center">
-                    <label for="data.secChar.wounds.value" class="resource-label">Ship Points</label>
+                    <label for="system.secChar.wounds.value" class="resource-label">Ship Points</label>
                     <div class="resource-content flexrow flex-center flex-between">
-                        <div class="flexcol">Start:<input type="text" class="combat-resources" name="data.shipPoints.value" value="{{data.shipPoints.value}}" data-dtype="Number"/></div>
+                        <div class="flexcol">Start:<input type="text" class="combat-resources" name="system.shipPoints.value" value="{{system.shipPoints.value}}" data-dtype="Number"/></div>
                         <div class="flexcol"> Spent:
-                            <span>{{data.shipPoints.spent}}</span></div>
+                            <span>{{system.shipPoints.spent}}</span></div>
 
                         <div class="flexcol"> Remnaining:
-                            <span>{{data.shipPoints.remaining}}</span></div>
+                            <span>{{system.shipPoints.remaining}}</span></div>
 
                     </div>
                 </div>
                 <div class="resource flex-group-center">
-                    <label for="data.secChar.fatigue.value" class="resource-label">Power</label>
+                    <label for="system.secChar.fatigue.value" class="resource-label">Power</label>
                     <div class="resource-content flexcol flex-center flex-between">
-                        {{data.power.value}}
+                        {{system.power.value}}
 
-                        <input type="text" class="combat-resources" name="data.power.max" value="{{data.power.max}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" name="system.power.max" value="{{system.power.max}}" data-dtype="Number"/>
                     </div>
                 </div>
                 <div class="resource  flex-group-center">
-                    <label for="data.secChar.space.value" class="resource-label">Space</label>
+                    <label for="system.secChar.space.value" class="resource-label">Space</label>
                     <div class="resource-content flexcol flex-center flex-between">
-                        {{data.space.value}}
+                        {{system.space.value}}
 
-                        <input type="text" class="combat-resources" name="data.space.max" value="{{data.space.max}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" name="system.space.max" value="{{system.space.max}}" data-dtype="Number"/>
                     </div>
                 </div>
 
@@ -170,19 +170,19 @@
             <a class="shipComponent-create button" data-type="shipComponent" title="Add Ship Component">Add Ship Component</a>
             <div class="list list7col grid grid-7col">
                 <a class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="components">Name</a>
-                <a class="list-item sort-button" data-sort-type="status" data-path="data.status.value" data-item-type="components">Status</a>
-                <a class="list-item sort-button" data-sort-type="power" data-path="data.power.value" data-item-type="components">Power</a>
-                <a class="list-item sort-button" data-sort-type="space" data-path="data.space.value" data-item-type="components">Space</a>
-                <a class="list-item sort-button" data-sort-type="sp" data-path="data.sp.value" data-item-type="components">SP</a>
+                <a class="list-item sort-button" data-sort-type="status" data-path="system.status.value" data-item-type="components">Status</a>
+                <a class="list-item sort-button" data-sort-type="power" data-path="system.power.value" data-item-type="components">Power</a>
+                <a class="list-item sort-button" data-sort-type="space" data-path="system.space.value" data-item-type="components">Space</a>
+                <a class="list-item sort-button" data-sort-type="sp" data-path="system.sp.value" data-item-type="components">SP</a>
                 <span class="list-button"></span>
                 <span class="list-button"></span>
 
                 {{#each actor.components as |t key|}}
 
-                <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}</a>
+                <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.system.description.value}}">{{t.name}}</a>
                 <select class="component-status" data-id="{{this._id}}">
 
-                    {{#select this.data.status.value}}
+                    {{#select this.system.status.value}}
 
 
                     {{#each ../spaceshipComponentStatuses}}
@@ -193,9 +193,9 @@
 
                     {{/select}}
                 </select>
-                <span class="item-descr list-item">{{t.data.power.value}}</span>
-                <span class="item-descr list-item">{{t.data.space.value}}</span>
-                <span class="item-descr list-item">{{t.data.sp.value}}</span>
+                <span class="item-descr list-item">{{t.system.power.value}}</span>
+                <span class="item-descr list-item">{{t.system.space.value}}</span>
+                <span class="item-descr list-item">{{t.system.sp.value}}</span>
                 <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
                 <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
 
@@ -209,59 +209,59 @@
 
         <div class="tab spaceship-weapons" data-group="primary" data-tab="spaceship-weapons">
             <div class="flex-group-center">
-                <label for="data.secChar.space.value" class="resource-label">Weapon slots</label>
+                <label for="system.secChar.space.value" class="resource-label">Weapon slots</label>
                 <div class="resource-content flexrow flex-center flex-between">
                     <div class="flexcol"> Dorsal: 
-                        <input type="text"  name="data.weaponCapacity.dorsal" value="{{data.weaponCapacity.dorsal}}" data-dtype="Number"/></div>
+                        <input type="text"  name="system.weaponCapacity.dorsal" value="{{system.weaponCapacity.dorsal}}" data-dtype="Number"/></div>
 
                     <div class="flexcol"> Prow: 
-                        <input type="text"  name="data.weaponCapacity.prow" value="{{data.weaponCapacity.prow}}" data-dtype="Number"/></div>
+                        <input type="text"  name="system.weaponCapacity.prow" value="{{system.weaponCapacity.prow}}" data-dtype="Number"/></div>
 
                     <div class="flexcol">Keel: 
-                        <input type="text"  name="data.weaponCapacity.keel" value="{{data.weaponCapacity.keel}}" data-dtype="Number"/></div>
+                        <input type="text"  name="system.weaponCapacity.keel" value="{{system.weaponCapacity.keel}}" data-dtype="Number"/></div>
 
                     <div class="flexcol">Port: 
-                        <input type="text" name="data.weaponCapacity.port" value="{{data.weaponCapacity.port}}" data-dtype="Number"/></div>
+                        <input type="text" name="system.weaponCapacity.port" value="{{system.weaponCapacity.port}}" data-dtype="Number"/></div>
 
                     <div class="flexcol">Starboard: 
-                        <input type="text"  name="data.weaponCapacity.starboard" value="{{data.weaponCapacity.starboard}}" data-dtype="Number"/></div>
+                        <input type="text"  name="system.weaponCapacity.starboard" value="{{system.weaponCapacity.starboard}}" data-dtype="Number"/></div>
 
                 </div>
             </div>
             {{#each actor.weapons as |t key|}}
-            {{#if (contains this.data.status.value "Online")}}
+            {{#if (contains this.system.status.value "Online")}}
             <div class="weapons grid grid-3col">
                 <div class="list-item-header3">
                     <span>Name: {{this.name}}</span>
                 </div>
                 <div class="list-item">
-                    <span>Type: {{this.data.type.value}}</span>
+                    <span>Type: {{this.system.type.value}}</span>
 
                 </div>
                 <div class="list-item">
-                    <span>Location: {{this.data.location.value}}</span>
+                    <span>Location: {{this.system.location.value}}</span>
 
                 </div>
 
                 <div class="list-item">
-                    <span>Range: {{this.data.range.value}}</span>
+                    <span>Range: {{this.system.range.value}}</span>
                 </div>
 
 
 
                 <div class="list-item">
-                    <label>Strength: {{this.data.strength.value}}</label>
+                    <label>Strength: {{this.system.strength.value}}</label>
                 </div>
-                {{#if (contains this.data.type.value "Torpedo")}}
+                {{#if (contains this.system.type.value "Torpedo")}}
                 <div class="list-item">
                     <select class="torpedo-ammo" data-weapon="{{this._id}}">
 
-                        {{#select this.data.torpedo.id}}
+                        {{#select this.system.torpedo.id}}
                         <option value="" data-damage=" "data-rating="0">None</option>
 
                         {{#each ../actor.torpedoes}}
 
-                        <option value="{{this._id}}" data-damage="{{this.data.damage.value}}" data-rating="{{this.data.rating.value}}">{{this.name}}</option>
+                        <option value="{{this._id}}" data-damage="{{this.system.damage.value}}" data-rating="{{this.system.rating.value}}">{{this.name}}</option>
 
                         {{/each}}
 
@@ -269,18 +269,18 @@
                     </select>
                 </div>
                 <div class="list-item">
-                    <label>Rating: {{this.data.torpedo.rating}}</label>
+                    <label>Rating: {{this.system.torpedo.rating}}</label>
                 </div>
-                {{else if (contains this.data.type.value "Hangar")}}
+                {{else if (contains this.system.type.value "Hangar")}}
                 <div class="list-item">
                     <select class="torpedo-ammo" data-weapon="{{this._id}}">
 
-                        {{#select this.data.torpedo.id}}
+                        {{#select this.system.torpedo.id}}
                         <option value="" data-damage=" "data-rating="0">None</option>
 
                         {{#each ../actor.bombers}}
 
-                        <option value="{{this._id}}" data-damage="{{../data.damage.value}}" data-rating="{{this.data.rating.value}}">{{this.name}}</option>
+                        <option value="{{this._id}}" data-damage="{{../system.damage.value}}" data-rating="{{this.system.rating.value}}">{{this.name}}</option>
 
                         {{/each}}
 
@@ -288,22 +288,22 @@
                     </select>
                 </div>
                 <div class="list-item">
-                    <label>Rating: {{this.data.torpedo.rating}}</label>
+                    <label>Rating: {{this.system.torpedo.rating}}</label>
                 </div>
                 {{/if}}
                 <div class="list-item">
                     <span>Attack:</span>
-                    {{#if (contains this.data.type.value "Hangar")}}
-                    <a class=" rollable button" data-label="Spaceship Attack"data-roll-type="char"data-target="{{../hangarAttack}}"data-char=""data-rating="{{this.data.torpedo.rating}}"> {{../hangarAttack}}+{{this.data.torpedo.rating}}</a>
+                    {{#if (contains this.system.type.value "Hangar")}}
+                    <a class=" rollable button" data-label="Spaceship Attack"data-roll-type="char"data-target="{{../hangarAttack}}"data-char=""data-rating="{{this.system.torpedo.rating}}"> {{../hangarAttack}}+{{this.system.torpedo.rating}}</a>
                     {{else}}
-                    <a class=" rollable button" data-label="Spaceship Attack"data-roll-type="char"data-target="{{../bs}}"data-char="" data-rating="{{this.data.torpedo.rating}}"> {{../bs}}{{#if (contains this.data.type.value "Torpedo")}}+{{this.data.torpedo.rating}} {{/if}}</a>
+                    <a class=" rollable button" data-label="Spaceship Attack"data-roll-type="char"data-target="{{../bs}}"data-char="" data-rating="{{this.system.torpedo.rating}}"> {{../bs}}{{#if (contains this.system.type.value "Torpedo")}}+{{this.system.torpedo.rating}} {{/if}}</a>
                     {{/if}}
 
 
                 </div>
                 <div class="list-item">
                     <span>Damage: </span> 
-                    <a class="space-damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damage.value}}" data-weapon="{{this._id}}"> {{this.data.damage.value}}</a>
+                    <a class="space-damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damage.value}}" data-weapon="{{this._id}}"> {{this.system.damage.value}}</a>
 
                 </div>
 
@@ -316,34 +316,34 @@
         <div class="tab cargo" data-group="primary" data-tab="cargo">
             <div class="flexrow">
                 <div class="resource flex-group-center">
-                    <label for="data.secChar.fatigue.value" class="resource-label">Cargo Capacity</label>
+                    <label for="system.secChar.fatigue.value" class="resource-label">Cargo Capacity</label>
                     <div class="resource-content flexcol flex-center flex-between">
-                        {{data.cargo.value}}
+                        {{system.cargo.value}}
 
-                        <input type="text" class="combat-resources" name="data.cargo.max" value="{{data.cargo.max}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" name="system.cargo.max" value="{{system.cargo.max}}" data-dtype="Number"/>
                     </div>
                 </div>
                 <div class=" flex-group-center">
-                    <label for="data.secChar.fatigue.value" class="resource-label">Cargo Value</label>
+                    <label for="system.secChar.fatigue.value" class="resource-label">Cargo Value</label>
                     <div class="resource-content flexcol flex-center flex-between">
-                        {{data.cargo.profit}}
+                        {{system.cargo.profit}}
 
 
                     </div>
                 </div>
                 <div class=" flex-group-center">
-                    <label for="data.secChar.fatigue.value" class="resource-label">Supplies (In days)</label>
+                    <label for="system.secChar.fatigue.value" class="resource-label">Supplies (In days)</label>
                     <div class="resource-content flexrow flex-center flex-between">
-                        <input type="text" class="combat-resources" name="data.cargo.supplies" value="{{data.cargo.supplies}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" name="system.cargo.supplies" value="{{system.cargo.supplies}}" data-dtype="Number"/>
                         /
-                        <input type="text" class="combat-resources" name="data.cargo.suppliesMax" value="{{data.cargo.suppliesMax}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" name="system.cargo.suppliesMax" value="{{system.cargo.suppliesMax}}" data-dtype="Number"/>
 
                     </div>
                 </div>
                 <div class=" flex-group-center">
-                    <label for="data.secChar.fatigue.value" class="resource-label">Fuel %</label>
+                    <label for="system.secChar.fatigue.value" class="resource-label">Fuel %</label>
                     <div class="resource-content flexcol flex-center flex-between">
-                        <input type="text" class="combat-resources" name="data.cargo.fuel" value="{{data.cargo.fuel}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" name="system.cargo.fuel" value="{{system.cargo.fuel}}" data-dtype="Number"/>
 
 
                     </div>
@@ -353,19 +353,19 @@
             <a class="item-create button" data-type="spaceshipCargo" title="Add Cargo">Add Cargo</a>
             <div class="list list7col grid grid-7col">
                 <a class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="cargo">Name</a>
-                <a class="list-item sort-button" data-sort-type="type" data-path="data.type.value" data-item-type="cargo">Type</a>
-                <a class="list-item sort-button" data-sort-type="space" data-path="data.space.value" data-item-type="cargo">Quantity</a>
-                <a class="list-item sort-button" data-sort-type="value" data-path="t.data.pf.total" data-item-type="cargo">Value</a>
-                <a class="list-item sort-button" data-sort-type="rarity" data-path="data.rarity.value" data-item-type="cargo">Rarity</a>
+                <a class="list-item sort-button" data-sort-type="type" data-path="system.type.value" data-item-type="cargo">Type</a>
+                <a class="list-item sort-button" data-sort-type="space" data-path="system.space.value" data-item-type="cargo">Quantity</a>
+                <a class="list-item sort-button" data-sort-type="value" data-path="t.system.pf.total" data-item-type="cargo">Value</a>
+                <a class="list-item sort-button" data-sort-type="rarity" data-path="system.rarity.value" data-item-type="cargo">Rarity</a>
                 <span class="list-button"></span>
                 <span class="list-button"></span>
                 {{#each actor.cargo as |t key|}}
 
-                <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}</a>
-                <span class="list-item">{{t.data.type.value}}</span>
-                <input type="text" class="item-text-input list-item" data-target="data.space.value" value="{{t.data.space.value}}" data-item-id="{{t._id}}" data-dtype="Number">
-                <span class="list-item">{{t.data.pf.total}}</span>
-                <span class="list-item">{{t.data.rarity.value}}</span>
+                <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.system.description.value}}">{{t.name}}</a>
+                <span class="list-item">{{t.system.type.value}}</span>
+                <input type="text" class="item-text-input list-item" data-target="system.space.value" value="{{t.system.space.value}}" data-item-id="{{t._id}}" data-dtype="Number">
+                <span class="list-item">{{t.system.pf.total}}</span>
+                <span class="list-item">{{t.system.rarity.value}}</span>
                 <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
                 <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
 
@@ -381,17 +381,17 @@
             <a class="item-create button" data-type="spaceshipSquadron" title="Add Squadron">Add Squadron</a>
             <div class="list list6col grid grid-6col">
                 <span class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="squadrons">Name</span>
-                <span class="list-item sort-button" data-sort-type="type" data-path="data.type.value" data-item-type="squadrons">Type</span>
-                <span class="list-item sort-button" data-sort-type="rating" data-path="data.rating.value" data-item-type="squadrons">Rating</span>
-                <span class="list-item sort-button" data-sort-type="halfstr" data-path="data.halfstr.value" data-item-type="squadrons">Half</span>
+                <span class="list-item sort-button" data-sort-type="type" data-path="system.type.value" data-item-type="squadrons">Type</span>
+                <span class="list-item sort-button" data-sort-type="rating" data-path="system.rating.value" data-item-type="squadrons">Rating</span>
+                <span class="list-item sort-button" data-sort-type="halfstr" data-path="system.halfstr.value" data-item-type="squadrons">Half</span>
                 <span class="list-button"></span>
                 <span class="list-button"></span>
                 {{#each actor.squadrons as |t key|}}
 
-                <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}</a>
-                <span class="list-item">{{t.data.type.value}}</span>
-                <span class="list-item">{{t.data.rating.value}}</span>
-                <span class="list-item"><input type="checkbox" class="halfstr" data-item-id="{{this._id}}"  {{checked this.data.halfstr.value}}></span>
+                <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.system.description.value}}">{{t.name}}</a>
+                <span class="list-item">{{t.system.type.value}}</span>
+                <span class="list-item">{{t.system.rating.value}}</span>
+                <span class="list-item"><input type="checkbox" class="halfstr" data-item-id="{{this._id}}"  {{checked this.system.halfstr.value}}></span>
                 <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
                 <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
 

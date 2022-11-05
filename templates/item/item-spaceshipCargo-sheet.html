@@ -12,33 +12,33 @@
     </div>
     <div class="flexcol">
         <label>Type:</label>
-        <select class="damage-type" name="data.type.value">
-                {{#select data.type.value}}
+        <select class="damage-type" name="system.type.value">
+                {{#select system.type.value}}
                 {{#each FORTYK.spaceshipCargoTypes}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
                 {{/select}}
             </select>
     </div>
-    {{#if (contains data.type.value "Torpedoes")}}
+    {{#if (contains system.type.value "Torpedoes")}}
     <div class="flexcol">
         <label>Damage:</label>
-        <input type="text" value="{{data.damage.value}}" name="data.damage.value">
+        <input type="text" value="{{system.damage.value}}" name="system.damage.value">
     </div>
     
     <div class="flexcol">
         <label>Rating:</label>
-        <input type="text" value="{{data.rating.value}}" name="data.rating.value">
+        <input type="text" value="{{system.rating.value}}" name="system.rating.value">
     </div>
     {{/if}}
     <div class="flexcol">
         <label>Profit Factor Per Quantity:</label>
-        <input type="text" value="{{data.pf.value}}" name="data.pf.value">
+        <input type="text" value="{{system.pf.value}}" name="system.pf.value">
     </div>
     <div class="flexcol">
         <label>Rarity:</label>
-        <select class="damage-type" name="data.rarity.value">
-                {{#select data.rarity.value}}
+        <select class="damage-type" name="system.rarity.value">
+                {{#select system.rarity.value}}
                 {{#each FORTYK.spaceshipCargoRarity}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
@@ -48,6 +48,6 @@
     
     <div class="item-description">
         <label>Description:</label>
-        {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
     </div>
 </form>

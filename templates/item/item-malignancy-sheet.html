@@ -16,11 +16,11 @@
         <div class="flexrow">
             <div class="flexcol">
                 <label>Min:</label>
-                <input type="text" value="{{data.min.value}}" name="data.min.value">
+                <input type="text" value="{{system.min.value}}" name="system.min.value">
             </div>
             <div class="flexcol">
                 <label>Max:</label>
-                <input type="text" value="{{data.max.value}}" name="data.max.value">
+                <input type="text" value="{{system.max.value}}" name="system.max.value">
             </div>
         </div>
 
@@ -28,6 +28,6 @@
 
     <div class="item-description">
         <label>Description:</label>
-        {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
     </div>
 </form>

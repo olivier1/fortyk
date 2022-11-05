@@ -13,7 +13,7 @@
     <div class="flexcol">
         <label>Location:</label>
         
-                <input type="text" value="{{data.bodyPart.value}}" name="data.bodyPart.value">
+                <input type="text" value="{{system.bodyPart.value}}" name="system.bodyPart.value">
             
              
         
@@ -22,6 +22,6 @@
 
     <div class="item-description">
         <label>Description:</label>
-        {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
     </div>
 </form>

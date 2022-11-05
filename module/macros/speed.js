@@ -21,7 +21,7 @@ new Dialog({
                     rounds:0
                 };
                 aeData.changes=[
-                    {key: "data.evasion", value: speed, mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}            
+                    {key: "system.evasion", value: speed, mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}            
                 ]
                 for(let target of canvas.tokens.controlled){
 

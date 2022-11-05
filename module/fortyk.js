@@ -61,7 +61,7 @@ Hooks.once('init', async function() {
     //set custom system status effects
     CONFIG.statusEffects=FORTYK.StatusEffects;
     //set default font
-    CONFIG.fontFamilies.push("CaslonAntique");
+    CONFIG.fontDefinitions["CaslonAntique"]={editor:true,fonts:[]};
     CONFIG.defaultFontFamily="CaslonAntique";
     //preload handlebars templates
     preloadHandlebarsTemplates();
@@ -222,7 +222,7 @@ Hooks.once('ready', async function() {
                     let formula=await data.package.formula;
                     actor=await game.actors.get(data.package.actor);
                     let fortykWeapon=actor.getEmbeddedDocument("Item",data.package.fortykWeapon);
-                    if(!fortykWeapon.data.data.isPrepared){
+                    if(!fortykWeapon.system.isPrepared){
                         fortykWeapon.prepareData();
                     }
                     targetIds=data.package.targets;
@@ -237,6 +237,7 @@ Hooks.once('ready', async function() {
                 case "reportDamage":
                     let targetId=data.package.target;
                     let target=canvas.tokens.get(targetId);
+                    console.log(target)
                     let targetActor=target.actor;
                     let damage=data.package.damage;
                     FortykRolls.reportDamage(targetActor,damage);
@@ -265,7 +266,7 @@ Hooks.once('ready', async function() {
                     targets=new Set(targets);
                     for(let tar of targets){
                         let tarActor=tar.actor;
-                        let forcefield=tarActor.data.data.secChar.wornGear.forceField.document;
+                        let forcefield=tarActor.system.secChar.wornGear.forceField.document;
                         if(forcefield){
                             FortykRolls.fortykForcefieldTest(forcefield,tarActor,hits);
                         }
@@ -300,37 +301,49 @@ Hooks.on("updateCombat", async (combat) => {
         let actor=token.actor;
         //PAN CAMERA TO ACTIVE TOKEN
         canvas.animatePan({x:token.x,y:token.y});
+        const currentWindows = Object.values(ui.windows);
+
+        for (let window of currentWindows) {
+            if (window.actor) window.close()
+        }
+        if(actor.type==="npc"){
+
+            actor.sheet.render(true);
+
+        }
+
         for(let activeEffect of actor.effects){
-            if(activeEffect.data.duration.rounds!==undefined){
+          
+            if(activeEffect.duration.rounds!==null){
 
                 let remaining=Math.ceil(activeEffect.duration.remaining);
                 if(remaining<1){remaining=0}
                 let content="";
-                if(activeEffect.data.label!=="Evasion"){
+                if(activeEffect.label!=="Evasion"){
                     if(remaining===0){
-                        content=`${activeEffect.data.label} expires.`;
+                        content=`${activeEffect.label} expires.`;
                     }else{
-                        content=`${activeEffect.data.label} has ${remaining} rounds remaining.`;
+                        content=`${activeEffect.label} has ${remaining} rounds remaining.`;
                     }
 
                     let activeEffectOptions={user: game.user._id,
                                              speaker:{actor,alias:actor.name},
                                              content:content,
                                              classes:["fortyk"],
-                                             flavor:`${activeEffect.data.label} duration.`,
+                                             flavor:`${activeEffect.label} duration.`,
                                              author:actor.name};
                     await ChatMessage.create(activeEffectOptions,{});
                 }
                 if(activeEffect.duration.remaining<=0){
-                   await activeEffect.delete({});
+                    await activeEffect.delete({});
                 }
 
 
             }
             //check for flags
-            if(activeEffect.data.flags.core){
+            if(activeEffect.flags.core){
                 //check for fire
-                if(activeEffect.data.flags.core.statusId==="fire"){
+                if(activeEffect.flags.core.statusId==="fire"){
                     if(actor.type!=="vehicle"){
                         let onFireOptions={user: game.user._id,
                                            speaker:{actor,alias:actor.name},
@@ -339,19 +352,19 @@ Hooks.on("updateCombat", async (combat) => {
                                            flavor:`On Fire!`,
                                            author:actor.name};
                         await ChatMessage.create(onFireOptions,{});
-                        await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "On Fire! Panic");
-                        let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+1;
-                        await actor.update({"data.secChar.fatigue.value":fatigue});
+                        await FortykRolls.fortykTest("wp", "char", actor.system.characteristics.wp.total,actor, "On Fire! Panic");
+                        let fatigue=parseInt(actor.system.secChar.fatigue.value)+1;
+                        await actor.update({"system.secChar.fatigue.value":fatigue});
                         let fireData={name:"Fire",type:"rangedWeapon"}
                         let fire=await Item.create(fireData, {temporary: true});
-                        fire.data.flags.fortyk={};
-                        fire.data.data.damageType.value="Energy";
-                        fire.data.data.pen.value=99999;
-                        await FortykRolls.damageRoll(fire.data.data.damageFormula,actor,fire,1, true);
+                        fire.flags.fortyk={};
+                        fire.system.damageType.value="Energy";
+                        fire.system.pen.value=99999;
+                        await FortykRolls.damageRoll(fire.system.damageFormula,actor,fire,1, true);
                     }else{
                         if(actor.getFlag("fortyk","superheavy")){
-                            let heat=parseInt(actor.data.data.knight.heat.value)+1;
-                            await actor.update({"data.knight.heat.value":heat});
+                            let heat=parseInt(actor.system.knight.heat.value)+1;
+                            await actor.update({"system.knight.heat.value":heat});
                             let onFireOptions={user: game.user._id,
                                                speaker:{actor,alias:actor.name},
                                                content:"On round start, gain 1 heat.",
@@ -371,10 +384,10 @@ Hooks.on("updateCombat", async (combat) => {
                     }
                 }
                 //check for bleeding
-                if(activeEffect.data.flags.core.statusId==="bleeding"){
+                if(activeEffect.flags.core.statusId==="bleeding"){
                     let bleed=true;
                     if(actor.getFlag("fortyk","diehard")){
-                        let diehrd= await FortykRolls.fortykTest("wp", "char", actor.data.data.characteristics.wp.total,actor, "Die Hard");
+                        let diehrd= await FortykRolls.fortykTest("wp", "char", actor.system.characteristics.wp.total,actor, "Die Hard");
                         if(diehrd.value){
                             bleed=false;
                             let dieHardOptions={user: game.user._id,
@@ -401,12 +414,12 @@ Hooks.on("updateCombat", async (combat) => {
                                              flavor:flavor,
                                              author:actor.name};
                         await ChatMessage.create(bleedingOptions,{});
-                        let fatigue=parseInt(actor.data.data.secChar.fatigue.value)+bleedStack;
-                        await actor.update({"data.secChar.fatigue.value":fatigue});
+                        let fatigue=parseInt(actor.system.secChar.fatigue.value)+bleedStack;
+                        await actor.update({"system.secChar.fatigue.value":fatigue});
                     }
                 }
                 //check for cryo
-                if(activeEffect.data.flags.core.statusId==="cryogenic"){
+                if(activeEffect.flags.core.statusId==="cryogenic"){
                     let cryoContent=`<span>On round start, take [[2d10]]  toughness damage!</span>`;
                     let cryoOptions={user: game.user._id,
                                      speaker:{actor,alias:actor.name},
@@ -415,7 +428,7 @@ Hooks.on("updateCombat", async (combat) => {
                                      flavor:`Freezing`,
                                      author:actor.name};
                     let cryoMsg=await ChatMessage.create(cryoOptions,{});
-                    let inlineResults=parseHtmlForInline(cryoMsg.data.content);
+                    let inlineResults=parseHtmlForInline(cryoMsg.content);
                     let tDmg=inlineResults[0];
                     let ae=[]
                     ae.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("t")]));
@@ -426,13 +439,13 @@ Hooks.on("updateCombat", async (combat) => {
         }
         //check for regeneration
         if(actor.getFlag("fortyk","regeneration")){
-            let regen=await FortykRolls.fortykTest("t", "char", actor.data.data.characteristics.t.total,actor, "Regeneration");
+            let regen=await FortykRolls.fortykTest("t", "char", actor.system.characteristics.t.total,actor, "Regeneration");
             if(regen.value){
                 let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
-                let maxWounds=actor.data.data.secChar.wounds.max;
-                let currWounds=actor.data.data.secChar.wounds.value;
+                let maxWounds=actor.system.secChar.wounds.max;
+                let currWounds=actor.system.secChar.wounds.value;
                 currWounds=Math.min(maxWounds,currWounds+regenAmt);
-                await actor.update({"data.secChar.wounds.value":currWounds});
+                await actor.update({"system.secChar.wounds.value":currWounds});
             }
         }
     }
@@ -442,7 +455,7 @@ Hooks.on("preDeleteCombat", async (combat,options,id) =>{
     combatants.forEach(async (combatant)=>{
         let actor=combatant.actor;
         for(let activeEffect of actor.effects){
-            if(activeEffect.data.label==="Evasion"){
+            if(activeEffect.label==="Evasion"){
                 await activeEffect.delete({});
             }
             if(activeEffect.duration.type!=="none"){
@@ -466,8 +479,8 @@ Hooks.on('preCreateItem', (actor, data,options) =>{
 Hooks.on('createActiveEffect',async (ae,options,id)=>{
     if(game.user.isGM){
         let actor=ae.parent;
-        if(ae.data.flags.core){
-            let flag=ae.data.flags.core.statusId;
+        if(ae.flags.core){
+            let flag=ae.flags.core.statusId;
             if(flag){
                 await actor.setFlag("core",flag,true);
             } 
@@ -478,8 +491,8 @@ Hooks.on('createActiveEffect',async (ae,options,id)=>{
 Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
     if(game.user.isGM){
         let actor=ae.parent;
-        if(ae.data.flags.core){
-            let flag=ae.data.flags.core.statusId;
+        if(ae.flags.core){
+            let flag=ae.flags.core.statusId;
             if(flag){
                 await actor.setFlag("core",flag,false);
             }
@@ -495,35 +508,32 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
         button.class="custom";
         button.icon="fas fa-asterisk";
         button.label="Manage AEs";
-        button.onclick=() =>{
+        button.onclick=async ()=>{
             let actor=sheet.actor;
             if(sheet.token){
                 actor=sheet.token.actor;
             }
-            let templateOptions={actor:actor};
-            let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html', templateOptions);
+
             var options = {
-                classes:["systems/fortyk/css/fortyk.css"],
                 id:"aeDialog"
             };
-            renderedTemplate.then(content => { 
-                var d=new ActiveEffectDialog({
-                    title: "Active Effects",
-                    content: content,
-                    buttons:{
-                        button:{
-                            label:"Ok",
-                            callback: async html => {
-                                sheet.actor.dialog=undefined;
-                            }
-                        },
+            var d=new ActiveEffectDialog({
+                title: "Active Effects",
+                actor:actor,
+                buttons:{
+                    button:{
+                        label:"Ok",
+                        callback: async html => {
+                            sheet.actor.dialog=undefined;
+                        }
                     },
-                    close:function(){
-                        sheet.actor.dialog=undefined;
-                    }
-                },options).render(true)
-                sheet.actor.dialog=d;
-            });
+                },
+                close:function(){
+                    sheet.actor.dialog=undefined;
+                }
+            },options).render(true)
+            sheet.actor.dialog=d;
+
         }
         let close=buttons.pop();
         buttons.push(button);
@@ -532,12 +542,15 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
 })
 Hooks.on("preCreateActor", (createData) =>{
 })
-Hooks.on("preCreateToken", async (document, data, options, userId) =>{
+Hooks.on("createToken", async (document, data, options, userId) =>{
     //modify token dimensions if scene ratio isnt 1
     let gridRatio=canvas.dimensions.distance;
-    let newHeight=Math.max(1,document.data.height/gridRatio);
-    let newWidth=Math.max(1,document.data.width/gridRatio);
-    await document.data.update({"height":newHeight,"width":newWidth});
+    let newHeight=Math.max(1,document.height/gridRatio);
+    let newWidth=Math.max(1,document.width/gridRatio);
+    if(newHeight!==document.height||newWidth!==document.width){
+        await document.update({"_id":randomID(6),"height":newHeight,"width":newWidth});
+    }
+
 });
 Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
     let effects=null;
@@ -559,10 +572,10 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
     let fullToken=await canvas.tokens.get(token._id);
     let tokenActor=fullToken.actor;
     try{
-        let newFatigue=data.data.secChar.fatigue.value;
-        if(newFatigue>=tokenActor.data.data.secChar.fatigue.max*2){
+        let newFatigue=system.secChar.fatigue.value;
+        if(newFatigue>=tokenActor.system.secChar.fatigue.max*2){
             await game.fortyk.FortykRolls.applyDead(fullToken,tokenActor,"fatigue");
-        }else if(!tokenActor.getFlag("core","frenzy")&&!tokenActor.getFlag("core","unconscious")&&newFatigue>=tokenActor.data.data.secChar.fatigue.max){
+        }else if(!tokenActor.getFlag("core","frenzy")&&!tokenActor.getFlag("core","unconscious")&&newFatigue>=tokenActor.system.secChar.fatigue.max){
             let effect=[];
             effect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("unconscious")]));
             let chatUnconscious={user: game.user._id,
@@ -579,31 +592,31 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
     let newSize= 0;
     let wounds=false;
     try{
-        wounds=data.data.secChar.wounds.value;
+        wounds=system.secChar.wounds.value;
     }catch(err){
         wounds=false;
     }
     let size=false;
     try{
-        size=data.data.secChar.size.value; 
+        size=system.secChar.size.value; 
     }catch(err){
         size=false;
     }
-    if(wounds&&(tokenActor.data.data.horde.value||tokenActor.data.data.formation.value)||size){
-        if(tokenActor.data.data.horde.value||tokenActor.data.data.formation.value){
-            newSize= data.data.secChar.wounds.value;
+    if(wounds&&(tokenActor.system.horde.value||tokenActor.system.formation.value)||size){
+        if(tokenActor.system.horde.value||tokenActor.system.formation.value){
+            newSize= system.secChar.wounds.value;
             if(newSize<0){newSize=0}
         }else{
-            newSize= data.data.secChar.size.value;
+            newSize= system.secChar.size.value;
         }
-        if ( (!tokenActor.data.data.horde.value&&!tokenActor.data.data.formation.value&&newSize && (newSize !== tokenActor.data.data.secChar.size.value))||((tokenActor.data.data.horde.value||tokenActor.data.data.formation.value)&&newSize!==undefined && (newSize !== tokenActor.data.data.secChar.wounds.value)) ) {
+        if ( (!tokenActor.system.horde.value&&!tokenActor.system.formation.value&&newSize && (newSize !== tokenActor.system.secChar.size.value))||((tokenActor.system.horde.value||tokenActor.system.formation.value)&&newSize!==undefined && (newSize !== tokenActor.system.secChar.wounds.value)) ) {
             let size= 0;
-            if(tokenActor.data.data.horde.value||tokenActor.data.data.formation.value){
+            if(tokenActor.system.horde.value||tokenActor.system.formation.value){
                 size= FORTYKTABLES.hordeSizes[newSize];
                 //modify token dimensions if scene ratio isnt 1
                 let gridRatio=canvas.dimensions.distance;
                 size=Math.max(1,size/gridRatio);
-                console.log("hey")
+                
             }else{
                 size= game.fortyk.FORTYK.size[newSize].size;
             }
@@ -630,7 +643,7 @@ Hooks.once("dragRuler.ready", (Speedprovider) => {
             if(token.actor.type==="spaceship"){
                 ranges=[];
             }else if(token.actor.type==="vehicle"){
-                movement=token.actor.data.data.secChar.speed;
+                movement=token.actor.system.secChar.speed;
                 if(token.actor.getFlag("fortyk","enhancedmotivesystem")){
                     ranges=[
                         {range:movement.tactical*2,color:"full"},
@@ -646,7 +659,7 @@ Hooks.once("dragRuler.ready", (Speedprovider) => {
                 }
 
             }else{
-                movement=token.actor.data.data.secChar.movement;
+                movement=token.actor.system.secChar.movement;
                 ranges=[
                     {range:movement.half,color:"half"},
                     {range:movement.full,color:"full"},

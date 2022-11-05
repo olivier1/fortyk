@@ -14,15 +14,15 @@
 
         <div class="flexcol">
             <label>Reach:</label>
-            <input type="text" value="{{data.range.formula}}" name="data.range.formula">
+            <input type="text" value="{{system.range.formula}}" name="system.range.formula">
         </div>
         <div class="flexcol">
             <label>Damage:</label>
-            <input type="text" value="{{data.damageFormula.formula}}" name="data.damageFormula.formula">
+            <input type="text" value="{{system.damageFormula.formula}}" name="system.damageFormula.formula">
         </div>
         <div class="flexcol">
             <label>Penetration:</label>
-            <input type="text" value="{{data.pen.formula}}" name="data.pen.formula" data-dtype="String">
+            <input type="text" value="{{system.pen.formula}}" name="system.pen.formula" data-dtype="String">
         </div>
         <div class="flexcol">
             <a class="special button">Special</a>
@@ -35,8 +35,8 @@
         {{/if}}
         <div class="flexcol">
             <label>Damage Type:</label>
-            <select class="damage-type" name="data.damageType.value">
-                {{#select data.damageType.value}}
+            <select class="damage-type" name="system.damageType.value">
+                {{#select system.damageType.value}}
                 {{#each FORTYK.damageTypes}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
@@ -46,25 +46,25 @@
         <div class="flexcol">
             <label>Weapon Class:</label>
 
-            <select class="weapon-type"  name="data.class.value">
-                {{#select data.class.value}}
+            <select class="weapon-type"  name="system.class.value">
+                {{#select system.class.value}}
                 {{#each FORTYK.meleeWeaponClasses}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
                 {{/select}}
             </select>
         </div>
-        {{#if (contains data.class.value "Shield")}}
+        {{#if (contains system.class.value "Shield")}}
         <div class="flexcol">
             <label>Shield Value:</label>
-            <input type="text" value="{{data.shield.value}}" name="data.shield.value">
+            <input type="text" value="{{system.shield.value}}" name="system.shield.value">
         </div>
         {{/if}}
         <div class="flexcol">
             <label>Weapon Type:</label>
 
-            <select class="weapon-type"  name="data.type.value">
-                {{#select data.type.value}}
+            <select class="weapon-type"  name="system.type.value">
+                {{#select system.type.value}}
                 {{#each FORTYK.meleeWeaponTypes}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
@@ -74,9 +74,9 @@
         {{#if vehicle}}
         <div class="flexcol">
             <label>Mounting:</label>
-            <select class="mounting" name="data.mounting.value">
+            <select class="mounting" name="system.mounting.value">
 
-                {{#select data.mounting.value}}
+                {{#select system.mounting.value}}
                 {{#each FORTYK.weaponMounts}}
                 <option value="{{value}}">{{label}}</option>
                 {{/each}}
@@ -85,9 +85,9 @@
         </div>
         <div class="flexcol">
             <label>Facing:</label>
-            <select class="facing" name="data.facing.value">
+            <select class="facing" name="system.facing.value">
 
-                {{#select data.facing.value}}
+                {{#select system.facing.value}}
                 {{#each FORTYK.weaponFacings}}
                 <option value="{{value}}">{{label}}</option>
                 {{/each}}
@@ -98,8 +98,8 @@
         <div class="flexcol">
             <label>Item Quality:</label>
 
-            <select class="quality"  name="data.quality.value">
-                {{#select data.quality.value}}
+            <select class="quality"  name="system.quality.value">
+                {{#select system.quality.value}}
                 {{#each FORTYK.itemQualities}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
@@ -108,8 +108,8 @@
         </div>
         <div class="flexcol">
             <label>Rarity:</label>
-            <select class="power-type" name="data.rarity.value">
-                {{#select data.rarity.value}}
+            <select class="power-type" name="system.rarity.value">
+                {{#select system.rarity.value}}
                 <option value="100">Ubiquitous</option>
                 <option value="30">Abundant</option>  
                 <option value="20">Plentiful</option>
@@ -128,15 +128,15 @@
         </div>
         <div class="flexcol">
             <label>Weight:</label>
-            <input type="text" value="{{data.weight.value}}" name="data.weight.value">
+            <input type="text" value="{{system.weight.value}}" name="system.weight.value">
         </div>
         <div class="flexcol">
             <label>Test Mod:</label>
-            <input type="text" class="weapon-mod" value="{{data.testMod.value}}" data-target="data.testMod.value" data-dtype="Number">
+            <input type="text" class="weapon-mod" value="{{system.testMod.value}}" data-target="system.testMod.value" data-dtype="Number">
         </div>
     </div>
     <div class="item-description">
         <label>Description:</label>
-        {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
     </div>
 </form>
