@@ -63,7 +63,7 @@ export class FortyKActor extends Actor {
             //check for fatigue unconsciousness/death
             let newFatigue=false;
             try{
-                newFatigue=data["data.secChar.fatigue.value"];
+                newFatigue=data["system.secChar.fatigue.value"];
             }catch(err){
                 newFatigue=false;
             }
@@ -93,13 +93,13 @@ export class FortyKActor extends Actor {
             let newSize= 0;
             let wounds=false;
             try{
-                wounds=data["data.secChar.wounds.value"];
+                wounds=data["system.secChar.wounds.value"];
             }catch(err){
                 wounds=false;
             }
             let size=false;
             try{
-                size=data["data.secChar.size.value"]; 
+                size=data["system.secChar.size.value"]; 
             }catch(err){
                 size=false;
             }
@@ -108,7 +108,7 @@ export class FortyKActor extends Actor {
                 vehicle=true
             }
             if(vehicle){
-                newSize= data["data.secChar.size.value"];
+                newSize= data["system.secChar.size.value"];
                 if(newSize && (newSize !== this.system.secChar.size.value)){
                     let size= 0;
                     size= game.fortyk.FORTYK.size[newSize].size;
@@ -121,10 +121,10 @@ export class FortyKActor extends Actor {
             }else{
                 if(wounds&&(this.system.horde.value||this.system.formation.value)||size){
                     if(this.system.horde.value||this.system.formation.value){
-                        newSize= data["data.secChar.wounds.value"];
+                        newSize= data["system.secChar.wounds.value"];
                         if(newSize<0){newSize=0}
                     }else{
-                        newSize= data["data.secChar.size.value"];
+                        newSize= data["system.secChar.size.value"];
                     }
                     if ( (!this.system.horde.value&&!this.system.formation.value&&newSize && (newSize !== this.system.secChar.size.value))||((this.system.horde.value||this.system.formation.value)&&newSize!==undefined && (newSize !== this.system.secChar.wounds.value)) ) {
                         let size= 0;
@@ -156,7 +156,7 @@ export class FortyKActor extends Actor {
     prepareData(){
         if (!this.img) this.img = CONST.DEFAULT_TOKEN;
         if ( !this.name ) this.name = "New " + this.entity;
-        
+
         this.prepareBaseData();
         this.prepareEmbeddedEntities();
         this.prepareDerivedData();
@@ -337,6 +337,7 @@ export class FortyKActor extends Actor {
                 }
                 //check if equipped
                 if((item.type==="meleeWeapon"||item.type==="rangedWeapon")&&item.system.isEquipped){
+                    
                     if(item.system.isEquipped.indexOf("right")!==-1){
                         data.secChar.wornGear.weapons[0]=fortykItem; 
                         if(item.system.twohanded.value){
@@ -488,7 +489,7 @@ export class FortyKActor extends Actor {
                 if(proceed){
                     ae.changes.forEach(function(change,i){
                         let basevalue=parseInt(objectByString(actorData,change.key));
-                      
+
                         let newvalue=parseFloat(change.value);
                         let path=change.key.split(".");
                         /*if(newvalue>=0){
@@ -634,7 +635,6 @@ export class FortyKActor extends Actor {
         data.characterHitLocations.body.shield= 0;
         data.characterHitLocations.rArm.shield= 0;
         data.characterHitLocations.lArm.shield= 0;
-        console.log(rightHandWeaponData)
         if(rightHandWeaponData!==null&&rightHandWeaponData.type!=="rangedWeapon"){
             data.characterHitLocations.rArm.shield+= parseInt(rightHandWeapon.system.shield.value);
             data.characterHitLocations.body.shield+= parseInt(rightHandWeapon.system.shield.value);
@@ -728,7 +728,7 @@ export class FortyKActor extends Actor {
         //compute rest of armor and absorption
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
             hitLoc.armor=parseInt(hitLoc.armor);
-            if(armor!==undefined){
+            if(!jQuery.isEmptyObject(armor)){
                 hitLoc.armor=parseInt(hitLoc.armor)+parseInt(armor.system.ap[key].value);
             }
             hitLoc.armor+=hitLoc.armorMod;
@@ -746,7 +746,7 @@ export class FortyKActor extends Actor {
     async _prepareVehicleData(actorData){
         const data=this.system;
 
-        
+
         let knight=data.knight;
         var armorRatio=1;
         this.preparePilot();
@@ -759,7 +759,6 @@ export class FortyKActor extends Actor {
                 data.knight.space.value+=parseFloat(data.knight.core.system.space.value);
                 data.knight.tonnage.value+=parseFloat(data.knight.core.system.weight.value);
                 data.secChar.speed.tactical+=parseInt(data.knight.core.system.speed.value);
-                console.log(data.secChar.speed.multi);
                 data.secChar.speed.tactical+=data.secChar.speed.mod;
                 data.secChar.speed.tactical=data.secChar.speed.tactical*parseFloat(data.secChar.speed.multi);
                 data.secChar.speed.cruising=Math.ceil(data.secChar.speed.tactical*1.2);
@@ -832,7 +831,7 @@ export class FortyKActor extends Actor {
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
                         let wpn=this.getEmbeddedDocument("Item",wpnType[i]);
-                        
+
                         if(wpn&&wpn.type==="meleeWeapon"){
                             leftShield+=parseInt(wpn.system.shield.value);
                         }
@@ -988,6 +987,9 @@ export class FortyKActor extends Actor {
     }
     prepare(){
         let preparedData = this
+        if(!preparedData.isPrepared){
+            preparedData.prepareData();
+        }
         // Call prepareItems first to organize and process Items
         if(preparedData.type==='dwPC'||preparedData.type==='dhPC'||preparedData.type==='owPC'){
             mergeObject(preparedData, this.preparePCItems(preparedData));
@@ -1220,12 +1222,16 @@ export class FortyKActor extends Actor {
             }else if(item.type==="spaceshipWeapon"){
                 if(item.system.type.value==="Hangar"){
                     item.system.damage.value="1d10+"+Math.ceil(data.crew.rating/10);
+                  
                     let squadron=this.items.get(item.system.torpedo.id);
-                    if(squadron.system.halfstr.value){
-                        item.system.torpedo.rating=squadron._source.system.rating.value-10;
-                    }else{
-                        item.system.torpedo.rating=squadron.system.rating.value;
+                    if(squadron){
+                        if(squadron.system.halfstr.value){
+                            item.system.torpedo.rating=squadron._source.system.rating.value-10;
+                        }else{
+                            item.system.torpedo.rating=squadron.system.rating.value;
+                        }
                     }
+
                 }
                 if(item.system.type.value==="Torpedo"){
                     let torpedo=this.items.get(item.system.torpedo.id);
@@ -1233,7 +1239,7 @@ export class FortyKActor extends Actor {
                         item.system.damage.value=torpedo.system.damage.value;
                         item.system.torpedo.rating=torpedo.system.rating.value;
                     }
-                    
+
                 }
                 components.push(item);
                 weapons.push(item);
@@ -1390,13 +1396,15 @@ export class FortyKActor extends Actor {
     }
     //when creating active effects check if they are transferred from an item, if so give the active effect flag to the item for referrence.
     _onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId){
+        
         if(embeddedName==="ActiveEffect"){
             let actor=this;
             documents.forEach(async function(item,i){
-                if(item.system.origin){
+             
+                if(item.origin){
                     let powerId=item.system.origin.split('.')[3];
                     let power=actor.getEmbeddedDocument("Item",powerId);
-                    await power.update({"data.transferId":item.id})
+                    await power.update({"system.transferId":item.id})
                 }
             })
         }
@@ -1437,7 +1445,7 @@ export class FortyKActor extends Actor {
                         let skill=actor.getEmbeddedDocument("Item",data.itemId.value);
                         let skillAdv=parseInt(skill.system.value);
                         if(skillAdv===0){skillAdv=-20}else{skillAdv-=10}
-                        skill.update({"data.value":skillAdv});
+                        skill.update({"system.value":skillAdv});
                     }else if(advType==="New Skill"){
                         try{
                             actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);

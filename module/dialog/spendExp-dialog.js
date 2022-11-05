@@ -17,11 +17,11 @@ export class SpendExpDialog extends Application {
     }
 
     async getData(){
-
-        this.data=super.getData();
-        let data=this.data;
+        
+        let data=this;
         let actor=this.options.actor;
         if(!this.options.cost){this.options.cost=0}
+      
         data.actorExp=actor.system.experience.value;
         data.cost=this.options.cost;
         data.remainingExp=data.actorExp-data.cost;
@@ -31,18 +31,18 @@ export class SpendExpDialog extends Application {
             data.advancementTypes.push("Signature Wargear");
         }
         data.mode=this.options.mode;
-        data.skills=actor.data.skills;
-        data.parentSkills=data.skills.filter(skill => skill.data.hasChildren.value)
+        data.skills=actor.skills;
+        data.parentSkills=data.skills.filter(skill => skill.system.hasChildren.value)
         data.upgradeableSkills=data.skills.reduce(function(map,skill){
 
 
-            if(!skill.data.hasChildren.value&&(skill.data.value<30)){
+            if(!skill.system.hasChildren.value&&(skill.system.value<30)){
                 let dupSkill=duplicate(skill);
                 let label=dupSkill.name;
-                if(parseInt(dupSkill.data.value)===-20){
+                if(parseInt(dupSkill.system.value)===-20){
                     label+=" +0";  
                 }else{
-                    label+=" +"+(parseInt(dupSkill.data.value)+10);
+                    label+=" +"+(parseInt(dupSkill.system.value)+10);
                 }
                 dupSkill.name=label;
                 map.push(dupSkill);  
@@ -52,14 +52,14 @@ export class SpendExpDialog extends Application {
         },[]);
 
         let actorChars=this.options.actor.system.characteristics;
-        data.upgradeableChars=this.upgradeableChars(actorChars,data.FORTYK.characteristics);
+        data.upgradeableChars=this._upgradeableChars(actorChars,data.FORTYK.characteristics);
         data.aptitudes=data.FORTYK.aptitudes;
 
         if(!this.options.talents){
             this.options.talents=await this._loadTalents();
         }
         data.talents=this.options.talents;
-        return this.data;
+        return data;
     }
     activateListeners(html) {
         super.activateListeners(html);
@@ -97,7 +97,7 @@ export class SpendExpDialog extends Application {
 
 
     } 
-    upgradeableChars(actorChars,chars){
+    _upgradeableChars(actorChars,chars){
         let upgChars={}
         for(const char in chars){
             if(actorChars[char].advance<25){
@@ -130,7 +130,7 @@ export class SpendExpDialog extends Application {
     async _onSubmit(event){
         event.preventDefault();
         let actor=this.options.actor;
-        if(this.data.remainingExp<0){
+        if(this.remainingExp<0){
             new Dialog({
                 title: `Insufficient Experience.`,
                 classes:"fortky",
@@ -165,7 +165,7 @@ export class SpendExpDialog extends Application {
             };
 
             let item=await FortyKItem.create(itemData,{temporary:true});
-            await actor.createEmbeddedDocuments("Item",[item.data]);
+            await actor.createEmbeddedDocuments("Item",[duplicate(item)]);
             this.options.cost=0;
         }else if(this.options.mode==="Skill Upgrade"){
             let skill=this.options.chosenSkill;
@@ -189,8 +189,8 @@ export class SpendExpDialog extends Application {
             };
 
             let item=await FortyKItem.create(itemData,{temporary:true});
-            await actor.createEmbeddedDocuments("Item",[item.data]);
-            await actor.updateEmbeddedDocuments("Item",[{"_id":skill.id,"data.value":skillUpgrade}]);
+            await actor.createEmbeddedDocuments("Item",[duplicate(item)]);
+            await actor.updateEmbeddedDocuments("Item",[{"_id":skill.id,"system.value":skillUpgrade}]);
             this.options.cost=0;
         }else if(this.options.mode==="New Skill"){
             let advanceName=""
@@ -235,7 +235,7 @@ export class SpendExpDialog extends Application {
         }else if(this.options.mode==="Characteristic Upgrade"){
             let char=this.options.chosenChar;
             let training=this.options.charUpg;
-            let name = this.data.FORTYK.characteristics[char].label+" +"+training;
+            let name = this.FORTYK.characteristics[char].label+" +"+training;
 
             const itemData = {
                 name: `${name}`,
@@ -249,7 +249,7 @@ export class SpendExpDialog extends Application {
             };
 
             let item=await FortyKItem.create(itemData,{temporary:true});
-            await actor.createEmbeddedDocuments("Item",[item.data]);
+            await actor.createEmbeddedDocuments("Item",[duplicate(item)]);
             let update={};
             let path=`data.characteristics.${char}.advance`;
             update[path]=training;
@@ -259,8 +259,8 @@ export class SpendExpDialog extends Application {
 
             let talent=this.options.chosenTalent;
             let advanceName=talent.name;
-            let itemData=talent.data;
-            let tntData=itemsystem;
+            let itemData=duplicate(talent);
+            let tntData=talent.system;
             let spec=tntData.specialisation.value;
             let flag=tntData.flagId.value;
 
@@ -282,6 +282,9 @@ export class SpendExpDialog extends Application {
 
                         return choosenSpec;
                     },
+                    render: (html)=>{
+                        document.getElementById('specInput').select();
+                    },
 
 
 
@@ -290,8 +293,8 @@ export class SpendExpDialog extends Application {
 
                     width:100}
                                                   );
-                setTimeout(function() {document.getElementById('specInput').select();}, 50);
-                await itemData.update({"data.specialisation.value": chosenSpec});
+                
+                itemData.system.specialisation.value=chosenSpec;
 
             }
             let talentId=""
@@ -307,11 +310,11 @@ export class SpendExpDialog extends Application {
                     let spec2=actorTalent[0].system.specialisation.value;
                     talentId=actorTalent[0].id;
                     spec2+=", "+chosenSpec;
-                    await actorTalent[0].update({"data.specialisation.value":spec2}); 
+                    await actorTalent[0].update({"system.specialisation.value":spec2}); 
                 }
 
             }else{
-                let actorTalent=await actor.createEmbeddedDocuments("Item",[talent.data]);
+                let actorTalent=await actor.createEmbeddedDocuments("Item",[duplicate(talent)]);
                 talentId=actorTalent[0].id;
             }
             await actor.setFlag("fortyk",flag,chosenSpec);
@@ -339,11 +342,10 @@ export class SpendExpDialog extends Application {
             };
 
             let item=await FortyKItem.create(itemData,{temporary:true});
-            await actor.createEmbeddedDocuments("Item",[item.data]);
+            await actor.createEmbeddedDocuments("Item",[duplicate(item)]);
             this.options.cost=0;
         }
-
-        await this.render(true);
+        await this._render();
     }
 
     async _onModeChange(event){
@@ -363,7 +365,7 @@ export class SpendExpDialog extends Application {
         this.options.chosenChar=undefined;
         this.options.chosenTalent=undefined;
         this._updateCost();
-        await this.render(true);
+        await this._render();
 
     }
     async _onSkillTypeChange(event){
@@ -401,7 +403,7 @@ export class SpendExpDialog extends Application {
         event.preventDefault();
         let charKey=event.target.value;
         let charAdv=this.options.actor.system.characteristics[charKey].advance;
-        let charAptitudes=this.data.FORTYK.characteristics[charKey].aptitudes;
+        let charAptitudes=this.FORTYK.characteristics[charKey].aptitudes;
         this.options.chosenChar=charKey;
         this.calculateCharCost(charAptitudes,charAdv);
         document.getElementById("submitButton").removeAttribute("disabled");
@@ -410,7 +412,7 @@ export class SpendExpDialog extends Application {
         let node=event.target;
         let pack=node.attributes["data-compendium"];
         let id=node.value;
-        let talent=this.data.talents[id];
+        let talent=this.talents[id];
         this.options.chosenTalent=talent;
         let aptitudes=talent.system.aptitudes.value;
         let tier=parseInt(talent.system.tier.value);
@@ -434,7 +436,7 @@ export class SpendExpDialog extends Application {
         }
         if(matchingAptitudes>2){matchingAptitudes=2};
 
-        let cost=this.data.FORTYK.talentCosts[matchingAptitudes][tier-1];
+        let cost=this.FORTYK.talentCosts[matchingAptitudes][tier-1];
         let discount=parseInt(document.getElementById("discount").value)
         cost=cost-discount;
         this.options.cost=cost;
@@ -453,7 +455,7 @@ export class SpendExpDialog extends Application {
         }
         if(matchingAptitudes>2){matchingAptitudes=2};
         training+=5;
-        let cost=this.data.FORTYK.characteristicUpgradeCosts[matchingAptitudes][training];
+        let cost=this.FORTYK.characteristicUpgradeCosts[matchingAptitudes][training];
         let discount=parseInt(document.getElementById("discount").value)
         cost=cost-discount;
         this.options.cost=cost;
@@ -487,7 +489,7 @@ export class SpendExpDialog extends Application {
         }
         if(matchingAptitudes>2){matchingAptitudes=2};
         if(training===-20){training=0}else{training+=10};
-        let cost=this.data.FORTYK.skillUpgradeCosts[matchingAptitudes][training];
+        let cost=this.FORTYK.skillUpgradeCosts[matchingAptitudes][training];
         let discount=0
         try{discount=parseInt(document.getElementById("discount").value)}
         catch(err){}
@@ -534,7 +536,7 @@ export class SpendExpDialog extends Application {
             let char=this.options.chosenChar;
             if(char){
                 let charAdv=this.options.actor.system.characteristics[char].advance;
-                let charAptitudes=this.data.FORTYK.characteristics[char].aptitudes;
+                let charAptitudes=this.FORTYK.characteristics[char].aptitudes;
                 this.calculateCharCost(charAptitudes,charAdv);
             }
 
@@ -601,8 +603,9 @@ export class SpendExpDialog extends Application {
     }
     _updateCost(){
         document.getElementById("cost").textContent=this.options.cost;
-        this.data.remainingExp=this.data.actorExp-this.options.cost;
-        document.getElementById("remainingExp").textContent=this.data.remainingExp
+        this.remainingExp=this.actorExp-this.options.cost;
+        console.log(this.options.cost,this.actorExp)
+        document.getElementById("remainingExp").textContent=this.remainingExp
 
 
     }
@@ -625,7 +628,7 @@ export class SpendExpDialog extends Application {
         var customTalents=await game.packs.get("fortyk.custom-talents");
         tnts=tnts.concat(await customTalents.getDocuments());
         //load different packs depending on actor type
-        if(actor.data.type==="dwPC"){
+        if(actor.type==="dwPC"){
             var dwTalents=await game.packs.get("fortyk.deathwatch-talents");
             tnts=tnts.concat(await dwTalents.getDocuments());
 

@@ -13,8 +13,8 @@
         </div>
         <div class="flexcol">
             <label>Discipline:</label>
-            <select class="discipline" name="data.discipline.value">
-                {{#select data.discipline.value}}
+            <select class="discipline" name="system.discipline.value">
+                {{#select system.discipline.value}}
                 {{#each FORTYK.psychicDisciplines}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
@@ -24,8 +24,8 @@
         <div class="flexcol">
             <label>Power Type:</label>
 
-            <select class="power-type" name="data.class.value">
-                {{#select data.class.value}}
+            <select class="power-type" name="system.class.value">
+                {{#select system.class.value}}
                 {{#each FORTYK.psychicPowerTypes}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
@@ -34,18 +34,18 @@
         </div>
         <div class="flexcol">
             <label>Action:</label>
-            <input type="text" value="{{data.action.value}}" name="data.action.value">
+            <input type="text" value="{{system.action.value}}" name="system.action.value">
         </div>
         <div class="flexcol">
             <label>Subtype:</label>
-            <input type="text" value="{{data.subtype.value}}" name="data.subtype.value">
+            <input type="text" value="{{system.subtype.value}}" name="system.subtype.value">
         </div>
 
         <div class="flexcol">
             <label>Test Type:</label>
 
-            <select class="power-char" name="data.testChar.value">
-                {{#select data.testChar.value}}
+            <select class="power-char" name="system.testChar.value">
+                {{#select system.testChar.value}}
                 <option value="wp">Willpower</option>
                 <option value="per">Perception</option>
                 <option value="psy">Psyniscience</option>  
@@ -54,28 +54,28 @@
         </div>
         <div class="flexcol">
             <label>Modifier:</label>
-            <input type="text" value="{{data.testMod.value}}" name="data.testMod.value" data-dtype="Number">
+            <input type="text" value="{{system.testMod.value}}" name="system.testMod.value" data-dtype="Number">
         </div>
         <div class="flexcol">
             <label>Sustain:</label>
-            <input type="text" value="{{data.sustain.value}}" name="data.sustain.value">
+            <input type="text" value="{{system.sustain.value}}" name="system.sustain.value">
         </div>
         <div class="flexcol">
             <label>Requirements:</label>
-            <input type="text" value="{{data.reqs.value}}" name="data.reqs.value">
+            <input type="text" value="{{system.reqs.value}}" name="system.reqs.value">
         </div>
         <div class="flexcol">
             <label>Range:</label>
-            <input type="text" value="{{data.range.formula}}" name="data.range.formula">
+            <input type="text" value="{{system.range.formula}}" name="system.range.formula">
         </div>
-        {{#if (contains data.class.value "Psychic")}}
+        {{#if (contains system.class.value "Psychic")}}
         <div class="flexcol">
             <label>Damage:</label>
-            <input type="text" value="{{data.damageFormula.formula}}" name="data.damageFormula.formula">
+            <input type="text" value="{{system.damageFormula.formula}}" name="system.damageFormula.formula">
         </div>
         <div class="flexcol">
             <label>Penetration:</label>
-            <input type="text" value="{{data.pen.formula}}" name="data.pen.formula" data-dtype="String">
+            <input type="text" value="{{system.pen.formula}}" name="system.pen.formula" data-dtype="String">
         </div>
         <div class="flexcol">
 
@@ -85,15 +85,15 @@
         </div>
         <div class="flexcol">
             <label>Damage Type:</label>
-            <select class="damage-type" name="data.damageType.value">
-                {{#select data.damageType.value}}
+            <select class="damage-type" name="system.damageType.value">
+                {{#select system.damageType.value}}
                 {{#each FORTYK.damageTypes}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
                 {{/select}}
             </select>
         </div>
-        {{else if (contains data.class.value "Buff/Debuff")}}
+        {{else if (contains system.class.value "Buff/Debuff")}}
         {{#if isGM}}
         <div class="flexcol">
             <a class="modifier button">Buff/Debuff</a>
@@ -103,6 +103,6 @@
     </div>
     <div class="item-description">
         <label>Description:</label>
-        {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
     </div>
 </form>

@@ -4,15 +4,15 @@
     <div class="corruption flexcol">
         <div class="corr-item flexrow">
             <label>Corruption:</label>
-            <input type="text" name="data.secChar.corruption.value" value="{{data.secChar.corruption.value}}">
+            <input type="text" name="system.secChar.corruption.value" value="{{system.secChar.corruption.value}}">
         </div>
         <div class="corr-item flexrow">
             <label>Malignancy Test Modifier:</label>
-            <input type="text" name="data.secChar.corruption.mod" value="{{data.secChar.corruption.mod}}">
+            <input type="text" name="system.secChar.corruption.mod" value="{{system.secChar.corruption.mod}}">
         </div>
         <div class="corr-item flexrow">
             <label>Characteristics Used:</label>
-            <input type="text" name="data.secChar.corruption.chars" value="{{data.secChar.corruption.chars}}">
+            <input type="text" name="system.secChar.corruption.chars" value="{{system.secChar.corruption.chars}}">
         </div>
         <a class="corr-item item-create button" data-type="malignancy" title="Add new malignancy">Add Malignancy</a>
         <div class="list list3col grid grid-3col">
@@ -21,7 +21,7 @@
             <span class="list-button"></span>
             {{#each actor.malignancies as |m key|}}
 
-            <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.data.description.value}}">{{m.name}}</a>
+            <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.system.description.value}}">{{m.name}}</a>
             <a class="list-button item-edit" title="Edit Malignancy" data-item-id="{{m._id}}"></a>
             <a class="list-button item-delete" title="Delete Malignancy" data-item-id="{{m._id}}"></a>
 
@@ -37,7 +37,7 @@
             <span class="list-button"></span>
             {{#each actor.mutations as |m key|}}
 
-            <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.data.description.value}}">{{m.name}}</a>
+            <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.system.description.value}}">{{m.name}}</a>
             <a class="list-button item-edit" title="Edit Mutation" data-item-id="{{m._id}}"></a>
             <a class="list-button item-delete" title="Delete Mutation" data-item-id="{{m._id}}"></a>
 
@@ -52,15 +52,15 @@
         <div class="corruption flexcol">
             <div class="corr-item flexrow">
                 <label>Insanity:</label>
-                <input type="text" name="data.secChar.insanity.value" value="{{data.secChar.insanity.value}}">
+                <input type="text" name="system.secChar.insanity.value" value="{{system.secChar.insanity.value}}">
             </div>
             <div class="corr-item flexrow">
                 <label>Shock Test Modifier:</label>
-                <input type="text" name="data.secChar.insanity.mod" value="{{data.secChar.insanity.mod}}">
+                <input type="text" name="system.secChar.insanity.mod" value="{{system.secChar.insanity.mod}}">
             </div>
             <div class="corr-item flexrow">
                 <label>Shock:</label>
-                <input type="text" name="data.secChar.shock" value="{{data.secChar.insanity.shock}}">
+                <input type="text" name="system.secChar.shock" value="{{system.secChar.insanity.shock}}">
             </div>
             <a class="corr-item item-create button" data-type="disorder" title="Add new disorder">Add Disorder</a>
             <div class="list list3col grid grid-3col">
@@ -69,7 +69,7 @@
                 <span class="list-button"></span>
                 {{#each actor.disorders as |d key|}}
 
-                <a class="item-descr list-item" data-name="{{d.name}}" data-item-descr="{{d.data.description.value}}">{{d.name}}</a>
+                <a class="item-descr list-item" data-name="{{d.name}}" data-item-descr="{{d.system.description.value}}">{{d.name}}</a>
                 <a class="list-button item-edit" title="Edit Disorder" data-item-id="{{d._id}}"></a>
                 <a class="list-button item-delete" title="Delete Disorder" data-item-id="{{d._id}}"></a>
 
@@ -88,7 +88,7 @@
                
                 {{#each actor.injuries as |m key|}}
 
-                <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.data.description.value}}">{{m.name}}</a>
+                <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.system.description.value}}">{{m.name}}</a>
                 <a class="list-button item-edit" title="Edit Malignancy" data-item-id="{{m._id}}"></a>
                 <a class="list-button item-delete" title="Delete Malignancy" data-item-id="{{m._id}}"></a>
 

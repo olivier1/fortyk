@@ -10,7 +10,7 @@ new Dialog({
 
                 for(let token of canvas.tokens.controlled){
                     let tokenActor=token.actor;
-                    let tokenActorData=token.actor.data;
+                    let tokenActorData=token.actor;
                     let data=token.actor.system;
 
                     let testTarget=data.characteristics[char].total+mod;

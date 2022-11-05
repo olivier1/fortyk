@@ -34,22 +34,22 @@
                     <label class="underline">House & Alliances</label>
                     <div class=" flexcol">
                         <span class="descrSpan">High King:</span>
-                        <input type="text" class="combat-resources" data-target="data.alliances.highKing" value="{{data.alliances.highKing}}"placeholder="High King" data-dtype="String"/>
+                        <input type="text" class="combat-resources" data-target="system.alliances.highKing" value="{{system.alliances.highKing}}"placeholder="High King" data-dtype="String"/>
                         <div class=" flexcol">
                             <span class="descrSpan">House Type:</span>
-                            <input type="text" class="combat-resources" data-target="data.alliances.houseType" value="{{data.alliances.houseType}}"placeholder="Type" data-dtype="String"/>
+                            <input type="text" class="combat-resources" data-target="system.alliances.houseType" value="{{system.alliances.houseType}}"placeholder="Type" data-dtype="String"/>
                         </div>
                         <div class=" flexcol">
                             <span class="descrSpan">House Colors:</span>
-                            <input type="text" class="combat-resources" data-target="data.colors.value" value="{{data.colors.value}}"placeholder="Colors" data-dtype="String"/>
+                            <input type="text" class="combat-resources" data-target="system.colors.value" value="{{system.colors.value}}"placeholder="Colors" data-dtype="String"/>
                         </div>
                         <div class=" flexcol">
                             <span class="descrSpan">House Alliance:</span>
-                            <input type="text" class="combat-resources" data-target="data.alliances.recentAlliance" value="{{data.alliances.recentAlliance}}"placeholder="Faction" data-dtype="String"/>
+                            <input type="text" class="combat-resources" data-target="system.alliances.recentAlliance" value="{{system.alliances.recentAlliance}}"placeholder="Faction" data-dtype="String"/>
                         </div>
                         <div class=" flexcol">
                             <span class="descrSpan">House Navigator:</span>
-                            <input type="text" class="combat-resources" data-target="data.alliances.navigatorAlliance" value="{{data.alliances.navigatorAlliance}}"placeholder="Navigator House" data-dtype="String"/>
+                            <input type="text" class="combat-resources" data-target="system.alliances.navigatorAlliance" value="{{system.alliances.navigatorAlliance}}"placeholder="Navigator House" data-dtype="String"/>
                         </div>
                     </div>
                 </div>
@@ -60,18 +60,18 @@
                     <div class="flexrow">
                         <div class=" flexcol">
                             <span class="descrSpan">Rating:</span>
-                            <input type="text" class="combat-resources" data-target="data.wealth.rating" value="{{data.wealth.rating}}"placeholder="0" data-dtype="Number"/>
+                            <input type="text" class="combat-resources" data-target="system.wealth.rating" value="{{system.wealth.rating}}"placeholder="0" data-dtype="Number"/>
                         </div>
                         <div class=" flexcol">
                             <span class="descrSpan">Income:</span>
-                            <input type="text" class="combat-resources" data-target="data.wealth.income" value="{{data.wealth.income}}"placeholder="0" data-dtype="Number" disabled/>
+                            <input type="text" class="combat-resources" data-target="system.wealth.income" value="{{system.wealth.income}}"placeholder="0" data-dtype="Number" disabled/>
                         </div>
                         <span class="button addIncome" >Add Income</span>
                     </div>
 
                     <div class=" flexcol">
                         <span class="descrSpan">Imperial Bonds:</span>
-                        <input type="text" class="combat-resources" data-target="data.wealth.value" value="{{data.wealth.value}}"placeholder="0" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" data-target="system.wealth.value" value="{{system.wealth.value}}"placeholder="0" data-dtype="Number"/>
                     </div>
 
 
@@ -147,7 +147,7 @@
             <div class="flexrow">
                 <div class=" flexcol">
                     <span class="descrSpan">Repair Bays:</span>
-                    <input type="text" class="combat-resources" data-target="data.repairBays.value" value="{{data.repairBays.value}}"placeholder="1" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="system.repairBays.value" value="{{system.repairBays.value}}"placeholder="1" data-dtype="Number"/>
                 </div>
                 <div class="flexcol">
                     <span class="descrSpan">Days to pass:</span>
@@ -168,17 +168,17 @@
               
                 {{#each repairEntries}}
               
-                <div class=" drag {{#if (greaterThan ../data.repairBays.value @index)}}list-emphasis{{else}}list-item{{/if}}"  data-id="{{this.id}}">
+                <div class=" drag {{#if (greaterThan ../system.repairBays.value @index)}}list-emphasis{{else}}list-item{{/if}}"  data-id="{{this.id}}">
 
                     <span data-id="{{this.id}}">{{name}}</span>
                 </div>
 
-                <div class="{{#if (greaterThan ../data.repairBays.value @index)}}list-emphasis{{else}}list-item{{/if}}">
+                <div class="{{#if (greaterThan ../system.repairBays.value @index)}}list-emphasis{{else}}list-item{{/if}}">
 
                     <span>{{system.knight.value}}</span>
                 </div>
 
-                <div class="flexrow {{#if (greaterThan ../data.repairBays.value @index)}}list-emphasis{{else}}list-item{{/if}}">
+                <div class="flexrow {{#if (greaterThan ../system.repairBays.value @index)}}list-emphasis{{else}}list-item{{/if}}">
 
                     <span>{{system.time.value}} Days</span>
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
@@ -221,9 +221,9 @@
 
                 <div class="list-item flexrow" name="component" {{#if (compareString ../inventoryFilter "all")}}style="display:"{{else if (compareString system.knightComponentType ../inventoryFilter)}}style="display:"{{else}}style="display: none"{{/if}} type="{{system.knightComponentType}}">
                     {{#if ../isGM}}
-                    <input type="text" class="item-text-input list-item" data-target="data.amount.taken" value="{{system.amount.taken}}" data-item-id="{{this.id}}" data-dtype="Number">
+                    <input type="text" class="item-text-input list-item" data-target="system.amount.taken" value="{{system.amount.taken}}" data-item-id="{{this.id}}" data-dtype="Number">
                     {{/if}}
-                    <input type="text" class="item-text-input list-item" data-target="data.amount.value" value="{{system.amount.value}}" data-item-id="{{this.id}}" data-dtype="Number">
+                    <input type="text" class="item-text-input list-item" data-target="system.amount.value" value="{{system.amount.value}}" data-item-id="{{this.id}}" data-dtype="Number">
                 </div>
 
 

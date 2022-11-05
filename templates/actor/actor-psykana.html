@@ -1,25 +1,25 @@
 <div class="sheet-psy flexcol">
 
     <div class="psy-header grid grid-4col">
-        {{#unless (contains data.psykana.psykerType.value "navigator")}}
+        {{#unless (contains system.psykana.psykerType.value "navigator")}}
         
             <div class="flexrow list-item">
                 <label>Psy Rating:</label>
-                <input type="text" class="combat-resources" data-target="data.psykana.pr.value" value="{{data.psykana.pr.value}}" data-dtype="Number"/>
+                <input type="text" class="combat-resources" data-target="system.psykana.pr.value" value="{{system.psykana.pr.value}}" data-dtype="Number"/>
 
             </div>
             <div class="flexrow list-item">
                 <label>Sustained Powers:</label>
-                <input type="text" class="combat-resources" data-target="data.psykana.pr.sustain" value="{{data.psykana.pr.sustain}}" data-dtype="Number"/>
+                <input type="text" class="combat-resources" data-target="system.psykana.pr.sustain" value="{{system.psykana.pr.sustain}}" data-dtype="Number"/>
 
             </div>
             <div class="flexrow list-item">
-                <label>Effective PR: {{data.psykana.pr.effective}}</label>
+                <label>Effective PR: {{system.psykana.pr.effective}}</label>
 
             </div>
             <div class="flexrow list-item">
                 <label>Phenomena Modifier:</label>
-                <input type="text" class="combat-resources" data-target="data.psykana.phenomena.value" value="{{data.psykana.phenomena.value}}" data-dtype="Number"/>
+                <input type="text" class="combat-resources" data-target="system.psykana.phenomena.value" value="{{system.psykana.phenomena.value}}" data-dtype="Number"/>
 
             </div>
        
@@ -27,8 +27,8 @@
         {{/unless}}
             <div class="flexrow list-item">
                 <label>Class:</label>
-                <select class="psyType-select" name="data.psykana.psykerType.value" data-dtype="String">
-                    {{#select data.psykana.psykerType.value}}
+                <select class="psyType-select" name="system.psykana.psykerType.value" data-dtype="String">
+                    {{#select system.psykana.psykerType.value}}
                     <option value="bound">Bound</option>
                     <option value="unbound">Unbound</option>
                     <option value="daemon">Daemon</option>
@@ -38,13 +38,13 @@
             </div>
             <div class="flexrow list-item">
                 <label>Psy Modifier:</label>
-                <input type="text" name="data.psykana.mod.value" value="{{data.psykana.mod.value}}">
+                <input type="text" name="system.psykana.mod.value" value="{{system.psykana.mod.value}}">
             </div>
             <div class="flexrow list-item2">
                 <label>Show:</label>
-                <select class="psyType-select" name="data.psykana.filter" data-dtype="String">
+                <select class="psyType-select" name="system.psykana.filter" data-dtype="String">
 
-                    {{#select data.psykana.filter}}
+                    {{#select system.psykana.filter}}
                     <option value="">All</option>
                     {{#each psyDisciplines}}
                     <option value="{{this}}">{{this}}</option>
@@ -65,30 +65,30 @@
 
 
 
-                <a class="list-item psy-name item-descr" data-name="{{this.name}}" data-item-descr="{{this.data.description.value}}">Name: {{this.name}}</a>
+                <a class="list-item psy-name item-descr" data-name="{{this.name}}" data-item-descr="{{this.system.description.value}}">Name: {{this.name}}</a>
 
 
 
 
-                <label class="list-item">Action: {{power.data.action.value}}</label>
+                <label class="list-item">Action: {{power.system.action.value}}</label>
 
-                {{#unless (contains ../data.psykana.psykerType.value "navigator")}}
-                <label class="list-item">Discipline: {{power.data.discipline.value}}</label>
-                <label class="list-item">Power Type: {{power.data.class.value}}</label>
+                {{#unless (contains ../system.psykana.psykerType.value "navigator")}}
+                <label class="list-item">Discipline: {{power.system.discipline.value}}</label>
+                <label class="list-item">Power Type: {{power.system.class.value}}</label>
 
-                <label class="list-item">Subtype: {{power.data.subtype.value}}</label>
+                <label class="list-item">Subtype: {{power.system.subtype.value}}</label>
                 <div class="list-item flexrow">
                     <label>PR: </label>
-                    <input type="text" class="item-text-input" data-target="data.curPR.value" data-item-id="{{power._id}}" value="{{power.data.curPR.value}}" data-dtype="Number">
+                    <input type="text" class="item-text-input" data-target="system.curPR.value" data-item-id="{{power._id}}" value="{{power.system.curPR.value}}" data-dtype="Number">
                 </div>
 
 
-                <label class="list-item">Sustain: {{power.data.sustain.value}}</label>
+                <label class="list-item">Sustain: {{power.system.sustain.value}}</label>
                 {{else}}
                 <div class="list-item2">
                     Training:
-                    <select class="power-training" data-item-id="{{power._id}}"  name="data.training.value">
-                        {{#select power.data.training.value}}
+                    <select class="power-training" data-item-id="{{power._id}}"  name="system.training.value">
+                        {{#select power.system.training.value}}
                         {{#each FORTYK.navigatorPowerTraining}}
                         <option value="{{this}}">{{this}}</option>
                         {{/each}}
@@ -97,21 +97,21 @@
 
                 {{/select}}
                 {{/unless}}
-                <label class="list-item">Test Type: {{power.data.testChar.value}}</label>
+                <label class="list-item">Test Type: {{power.system.testChar.value}}</label>
 
 
 
-                <label class="list-item">Modifier: {{power.data.testMod.value}}</label>
+                <label class="list-item">Modifier: {{power.system.testMod.value}}</label>
 
 
 
-                <label class="list-item">Range: {{power.data.range.value}}m</label>
+                <label class="list-item">Range: {{power.system.range.value}}m</label>
 
-                {{#if (contains power.data.class.value "psychic")}}
+                {{#if (contains power.system.class.value "psychic")}}
 
 
 
-                <label class="list-item">Penetration: {{power.data.pen.value}}</label>
+                <label class="list-item">Penetration: {{power.system.pen.value}}</label>
 
                 <div class="list-item">
                     <span>Special: 
@@ -129,21 +129,21 @@
 
                 </div>
 
-                <label class="list-item">Damage Type: {{power.data.damageType.value}}</label>
+                <label class="list-item">Damage Type: {{power.system.damageType.value}}</label>
 
                 {{/if}}
 
                 <div class="list-item flexcol">
                     <label>Test Target: </label>
-                    <span data-item-id="{{power._id}}" class="rollable powerItem button{{#if (greaterThan power.data.curPR.value ../data.psykana.pr.effective)}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-target="{{power.data.target.value}}" data-label="{{power.name}}" data-char="{{power.data.testChar.type}}">{{power.data.target.value}}</span>
+                    <span data-item-id="{{power._id}}" class="rollable powerItem button{{#if (greaterThan power.system.curPR.value ../system.psykana.pr.effective)}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-target="{{power.system.target.value}}" data-label="{{power.name}}" data-char="{{power.system.testChar.type}}">{{power.system.target.value}}</span>
                 </div>
-                {{#if (contains power.data.class.value "psychic")}}
-                <label class="list-item">Damage: <a class="damage-roll button" data-label="{{power.name}}"data-formula="{{power.data.damageFormula.value}}" data-weapon="{{power._id}}">{{power.data.damageFormula.value}}</a></label>
-                {{else if (contains power.data.class.value "Buff/Debuff")}}
+                {{#if (contains power.system.class.value "psychic")}}
+                <label class="list-item">Damage: <a class="damage-roll button" data-label="{{power.name}}"data-formula="{{power.system.damageFormula.value}}" data-weapon="{{power._id}}">{{power.system.damageFormula.value}}</a></label>
+                {{else if (contains power.system.class.value "Buff/Debuff")}}
                 <label class="list-item"><a class="buff-debuff button" data-label="{{power.name}}"data-power="{{power._id}}">Apply Buff/Debuff</a></label>
                 {{/if}}
                 <div class="list-item flexrow">
-                    <span>Favorite <input type="checkbox" class="favorite" data-item-id="{{this._id}}"  {{checked this.data.favorite}}></span>
+                    <span>Favorite <input type="checkbox" class="favorite" data-item-id="{{this._id}}"  {{checked this.system.favorite}}></span>
                     <a class="item-edit" title="Edit Power" data-item-id="{{power._id}}"></a>
                     <a class="item-delete" title="Delete Power" data-item-id="{{power._id}}"></a>
                 </div>

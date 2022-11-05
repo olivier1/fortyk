@@ -46,7 +46,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         for(let i=0;i<data.components.length;i++){
             data.components[i].prepareData();
         }
-        data.repairEntries=actor.itemTypes.repairEntry.sort(function(a,b){return a.data.sort-b.data.sort});
+        data.repairEntries=actor.itemTypes.repairEntry.sort(function(a,b){return a.sort-b.sort});
         data.knightComponentTypes=FORTYK.knightComponentTypes;
        
         return data;
@@ -63,7 +63,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
     _onComponentCategoryChange(event){
         let components=document.getElementsByName("component");
         let type=event.currentTarget.value;
-        this.document.data.inventoryFilter=type;
+        this.document.inventoryFilter=type;
         for(let i=0;i<components.length;i++){
             let component=components[i];
             let componentType=component.attributes["type"].value;
@@ -97,7 +97,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
                             };
 
                             let item=await FortyKItem.create(itemData,{temporary:true});
-                            await this.actor.createEmbeddedDocuments("Item",[item.data],{"renderSheet":true});
+                            await this.actor.createEmbeddedDocuments("Item",[duplicate(item)],{"renderSheet":true});
 
 
 
@@ -117,7 +117,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
     _onAddIncome(event){
         let bonds=parseInt(this.actor.system.wealth.value);
         bonds+=parseInt(this.actor.system.wealth.income);
-        this.actor.update({"data.wealth.value":bonds});
+        this.actor.update({"system.wealth.value":bonds});
     }
     async _onPassTime(event){
         let time=parseInt(document.getElementById("daysToPass").value);
@@ -127,7 +127,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         }
 
         let bays=parseInt(this.actor.system.repairBays.value);
-        let repairs=[...this.document.data.repairEntries];
+        let repairs=[...this.document.repairEntries];
         let repairBays=[];
         for(let i=0;i<bays;i++){
             let repairJob={};
@@ -162,7 +162,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
                     }
                 }else{
                     job.done=true
-                    await job.entry.update({"data.time.value":(parseInt(entry.system.time.value)-jobTime)})
+                    await job.entry.update({"system.time.value":(parseInt(entry.system.time.value)-jobTime)})
                 }
             }
             index++;
@@ -172,6 +172,5 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
             }
             if(check){repairsDone=true}
         }while(!repairsDone)
-            console.log(repairs)
     }
 }

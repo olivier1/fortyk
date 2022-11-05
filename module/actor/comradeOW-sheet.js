@@ -13,7 +13,7 @@ export class FortyKOWComradeSheet extends ActorSheet {
     }
     /** @override */
     getData(){
-        const context = super.getData().data;
+        const context = super.getData();
         context.races=game.fortyk.FORTYK.races;
         context.ranks=game.fortyk.FORTYK.comradeRanks;
         return context;

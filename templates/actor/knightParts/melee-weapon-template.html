@@ -7,13 +7,13 @@
 
         <div class="list-item">
             <span>Attack: </span>
-            <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../../data.crew.ws}}" data-item-id="{{this.id}}" data-label="Melee Attack" data-char="ws">Roll</span>
+            <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../../system.crew.ws}}" data-item-id="{{this.id}}" data-label="Melee Attack" data-char="ws">Roll</span>
         </div>
         <div class="list-item">
             <span>Damage: </span>
             <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.system.damageFormula.value}}</a>
         </div>
-        {{#if this.data.flags.fortyk.force}}
+        {{#if this.flags.fortyk.force}}
         <div class="list-item">
 
             <a class="force-roll button" data-label="Force"> Force</a>
@@ -32,12 +32,12 @@
             <span>Special: 
 
 
-                {{#each this.data.flags.fortyk as |flag key|}}
+                {{#each this.flags.fortyk as |flag key|}}
                
 
                 {{#if (checkSpecial this)}}
 
-                {{#with (lookup ../data.FORTYK.weaponFlags [key])~}}
+                {{#with (lookup ../system.FORTYK.weaponFlags [key])~}}
                 <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
 
                     {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>

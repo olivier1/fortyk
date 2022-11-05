@@ -23,7 +23,7 @@ export class FortyKItem extends Item {
         let modifiers= await ActiveEffect.create(modifiersData,{temporary:true});
 
         data.effects=[];
-        data.effects.push(modifiers.data);
+        data.effects.push(modifiers);
         //resume item creation
         */
         return super.create(data, options);
@@ -36,8 +36,8 @@ export class FortyKItem extends Item {
 
             if(this.isEmbedded){
 
-                if(this.system.specialisation.value!==data["data.specialisation.value"]){
-                    await this.actor.setFlag("fortyk",this.system.flagId.value,data["data.specialisation.value"])
+                if(this.system.specialisation.value!==data["system.specialisation.value"]){
+                    await this.actor.setFlag("fortyk",this.system.flagId.value,data["system.specialisation.value"])
                 }
             }
         }
@@ -57,7 +57,7 @@ export class FortyKItem extends Item {
         item["FORTYK"]=game.fortyk.FORTYK;
 
         //ensure this is an owned item
-
+      
         if(this.actor!==null&&this.actor!==undefined){
             const data = this.actor.system;
             let actor=this.actor;
@@ -108,15 +108,18 @@ export class FortyKItem extends Item {
             }
             if(item.type==="rangedWeapon"){
                 let ammo=actor.getEmbeddedDocument("Item",item.system.ammo._id);
-
+                if(ammo){
+                    item.system.ammo.name=ammo.name;
+                }
                 if(ammo!==undefined&&!ammo.system.default.value){
-                    let ammoData=ammo.data;
-                    item.system.damageType.value=ammosystem.damageType.value;
-                    item.system.range.value=ammosystem.range.formula;
-                    item.system.range.formula=ammosystem.range.formula;
-                    item.system.pen.value=ammosystem.pen.formula;
-                    item.system.damageFormula.value=ammosystem.damageFormula.formula;
-                    item.flags=ammoData.flags;
+                    
+                    item.system.damageType.value=ammo.system.damageType.value;
+                    item.system.range.value=ammo.system.range.formula;
+                    item.system.range.formula=ammo.system.range.formula;
+                    item.system.pen.value=ammo.system.pen.formula;
+                    item.system.damageFormula.value=ammo.system.damageFormula.formula;
+                    item.flags=ammo.flags;
+                    console.log(item);
 
                 }else{
                     if(!item.system.damTyp===""){
@@ -124,10 +127,11 @@ export class FortyKItem extends Item {
                     }else{
                         item.system.damTyp=item.system.damageType.value;
                     }
-
-                    item.system.range.value=item.system.range.formula;
+                    
+                    item.system.range.value=item.system.range.formula.toString();
                     item.system.pen.value=item.system.pen.formula;
                     item.system.damageFormula.value=item.system.damageFormula.formula;
+                   
 
                 }
                 if(item.system.damTyp===undefined){item.system.damTyp=item.system.damageType.value}
@@ -149,11 +153,11 @@ export class FortyKItem extends Item {
                 */
                 if(this.getFlag("fortyk","twinlinked")){
 
-
-                    item.system.clip.consumption=item.system.clip.consumption*2;
+                   
+                    item.system.clip.consumption=item._source.system.clip.consumption*2;
                 }
                 if(this.getFlag("fortyk","storm")){
-                    item.system.clip.consumption=item.system.clip.consumption*2;
+                    item.system.clip.consumption=item._source.system.clip.consumption*2;
                 }
                 if(this.getFlag("fortyk","lasModal")){
                     if(this.getFlag("fortyk","lasMode")===0){
@@ -293,15 +297,13 @@ export class FortyKItem extends Item {
 
 
 
-                    try
-                    {
+                    if (typeof item.system.range.formula === 'string' || item.system.range.formula instanceof String){
                         let sb=data.characteristics.s.bonus;
                         let formula=item.system.range.formula.toLowerCase();
                         item.system.range.value=eval(formula);
-                    } 
-                    catch(err){
-                        item.system.range.value="";
-                    } 
+                    }
+                        
+                    
                     if(actor.getFlag("fortyk","mightyshot")){
                         item.system.damageFormula.value+="+"+Math.ceil(data.characteristics.bs.bonus/2);
                     }
@@ -364,7 +366,7 @@ export class FortyKItem extends Item {
                     try{
                         if(this.getFlag("fortyk","force")){
                             let pr=parseInt(data.psykana.pr.value);
-                            item.system.pen.value=parseInt(item.system.pen.value)+pr;
+                            item.system.pen.value=parseInt(item._source.system.pen.value)+pr;
                             item.system.damageFormula.value+=`+${pr}`;
                         }
                     }catch(err){

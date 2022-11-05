@@ -1,6 +1,6 @@
 for(let target of canvas.tokens.controlled){
-    if(target.data.overlayEffect===undefined||target.data.overlayEffect===null||!target.data.overlayEffect.includes("icons/svg/skull.svg")){
-        let id=target.data._id;
+    if(target.overlayEffect===undefined||target.overlayEffect===null||!target.overlayEffect.includes("icons/svg/skull.svg")){
+        let id=target._id;
 
         let effect="icons/svg/skull.svg";
         target.toggleOverlay(effect);

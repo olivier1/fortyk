@@ -12,20 +12,20 @@
     </div>
     <div class="flexcol">
         <label>Failure Effect:</label>
-        <input type="text" value="{{data.failure.value}}" name="data.failure.value">
+        <input type="text" value="{{system.failure.value}}" name="system.failure.value">
     </div>
     <div class="flexcol">
         <label>Meld Modifier:</label>
-        <input type="text" value="{{data.meldMod.value}}" name="data.meldMod.value">
+        <input type="text" value="{{system.meldMod.value}}" name="system.meldMod.value">
     </div>
     <div class="flexcol">
         <label>Meld Bonus:</label>
-        <input type="text" value="{{data.meldBonus.value}}" name="data.meldBonus.value">
+        <input type="text" value="{{system.meldBonus.value}}" name="system.meldBonus.value">
     </div>
     
 
     <div class="item-description">
         <label>Description:</label>
-        {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
     </div>
 </form>

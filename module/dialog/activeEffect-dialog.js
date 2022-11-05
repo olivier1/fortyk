@@ -1,6 +1,13 @@
 export class ActiveEffectDialog extends Dialog {
 
+    static get defaultOptions() {
 
+        return mergeObject(super.defaultOptions, {
+            classes: ["fortyk"],
+            template: "systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html",
+            default:null
+        });
+    }
 
     activateListeners(html) {
         super.activateListeners(html);
@@ -95,7 +102,7 @@ export class ActiveEffectDialog extends Dialog {
         let templateOptions={actor:actor};
 
         let renderedTemplate=await renderTemplate('systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html', templateOptions);
-        this.data.content=renderedTemplate;
+        this.content=renderedTemplate;
 
         this.render(true);
     }

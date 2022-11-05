@@ -11,16 +11,16 @@
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Age:</span>
-                <input name="data.age.value" type="text" value="{{data.age.value}}" placeholder="??"/>
+                <input name="system.age.value" type="text" value="{{system.age.value}}" placeholder="??"/>
             </div>
             <div class="descrRow flexcol">
                 <span class="descrSpan">Sex:</span>
-                <input name="data.sex.value" type="text" value="{{data.sex.value}}" placeholder="M/F"/>
+                <input name="system.sex.value" type="text" value="{{system.sex.value}}" placeholder="M/F"/>
             </div>
             <div class="descrRow flexcol">
                 <span class="descrSpan">Race:</span>
-                <select class="raceSelect" name="data.race.value" data-dtype="String">
-                    {{#select data.race.value}}
+                <select class="raceSelect" name="system.race.value" data-dtype="String">
+                    {{#select system.race.value}}
 
                     {{#each races}}
 
@@ -33,26 +33,26 @@
             </div>
             <div class="descrRow flexcol">
                 <span class="descrSpan">Build:</span>
-                <input name="data.build.value" type="text" value="{{data.build.value}}" placeholder="??"/>
+                <input name="system.build.value" type="text" value="{{system.build.value}}" placeholder="??"/>
             </div>
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Hair:</span>
-                <input name="data.hair.value" type="text" value="{{data.hair.value}}" placeholder="??"/>
+                <input name="system.hair.value" type="text" value="{{system.hair.value}}" placeholder="??"/>
             </div>
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Eye:</span>
-                <input name="data.eye.value" type="text" value="{{data.eye.value}}" placeholder="??"/>
+                <input name="system.eye.value" type="text" value="{{system.eye.value}}" placeholder="??"/>
             </div>
             <div class="descrRow flexcol">
                 <span class="descrSpan">Quirks:</span>
-                <input name="data.quirks.value" type="text" value="{{data.quirks.value}}" placeholder="??"/>
+                <input name="system.quirks.value" type="text" value="{{system.quirks.value}}" placeholder="??"/>
             </div>
             <div class="descrRow flexcol">
                 <span class="descrSpan">Veterancy:</span>
-                <select class="raceSelect" name="data.veterancy.value" data-dtype="String">
-                    {{#select data.veterancy.value}}
+                <select class="raceSelect" name="system.veterancy.value" data-dtype="String">
+                    {{#select system.veterancy.value}}
 
                     {{#each ranks}}
 
@@ -64,11 +64,11 @@
                
             </div>
             <div class="descrRow flexcol">
-                <label for="data.secChar.wounds.value" class="resource-label">Wounds</label>
+                <label for="system.secChar.wounds.value" class="resource-label">Wounds</label>
                 <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" class="combat-resources" data-target="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="system.secChar.wounds.value" value="{{system.secChar.wounds.value}}" data-dtype="Number"/>
                     <span> / </span>
-                    <input type="text" class="combat-resources" data-target="data.secChar.wounds.max" value="{{data.secChar.wounds.max}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="system.secChar.wounds.max" value="{{system.secChar.wounds.max}}" data-dtype="Number"/>
                 </div>
             </div>
         </div>

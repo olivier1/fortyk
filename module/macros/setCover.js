@@ -19,7 +19,7 @@ new Dialog({
                 console.log(label, cover);
                 for(let token of canvas.tokens.controlled){
                     let actor=token.actor;
-                    actor.update({"data.secChar.cover.value":cover});
+                    actor.update({"system.secChar.cover.value":cover});
                 }
                 let chatCover={user: game.user._id,
                                  speaker:{actor,alias:game.user.name},

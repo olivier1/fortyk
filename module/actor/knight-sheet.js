@@ -25,6 +25,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
     async getData() {
         const data = super.getData();
         const actor=this.actor;
+        const system=actor.system;
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
         data.houses=Array.from(game.actors.values()).filter(actor=>actor.isOwner&&actor.type==="knightHouse");
@@ -196,7 +197,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         }
         let frontArmor=actor.system.facings.front.value;
         let size=parseInt(actor.system.secChar.size.value);
-        console.log(size)
+       
         let ratio=size/8;
         data.stomp=Math.ceil((frontArmor/2)*ratio);
 
@@ -301,34 +302,33 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             let newAmt=parseInt(amtTaken)+1;
 
 
-            let componentBase=component.data
-            componentBase.data.originalId=component.id;
+            let componentBase=duplicate(component)
+            componentBase.system.originalId=component.id;
 
-            component.update({"data.amount.taken":newAmt});
+            component.update({"system.amount.taken":newAmt});
             let newComponent=await actor.createEmbeddedDocuments("Item",[componentBase]);
             let newComUpdate={};
             if(newComponent[0].type==="rangedWeapon"||newComponent[0].type==="meleeWeapon"){
                 let facing=event.target.dataset["facing"];
-                console.log(facing);
-                newComUpdate["data.facing.value"]=facing;
+                
+                newComUpdate["system.facing.value"]=facing;
                 if(path.indexOf("auxiliary")!==-1){
-                    console.log(newComponent[0]);
                     if(newComponent[0].system.class.value==="Heavy"){
-                        newComUpdate["data.weight.value"]=2;
-                        newComUpdate["data.space.value"]=2;
+                        newComUpdate["system.weight.value"]=2;
+                        newComUpdate["system.space.value"]=2;
                     }else{
-                        newComUpdate["data.weight.value"]=1;
-                        newComUpdate["data.space.value"]=1;
+                        newComUpdate["system.weight.value"]=1;
+                        newComUpdate["system.space.value"]=1;
                     }
                 }
                 if(path.indexOf("Arm")!==-1&&path.indexOf("auxiliary")!==-1){
-                    newComUpdate["data.space.value"]=0;
+                    newComUpdate["system.space.value"]=0;
                 }
 
 
 
             }
-            newComUpdate["data.originalId"]=component.id;
+            newComUpdate["system.originalId"]=component.id;
             await newComponent[0].update(newComUpdate)
             let componentType=newComponent[0].type;
             let chassisUpdate={};
@@ -344,7 +344,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             }else if(componentType==="knightComponent"){
                 let componentSubType=newComponent[0].system.type.value;
                 if(componentSubType==="other"){
-                    let componentArray=objectByString(this.actor.data,path);
+                    let componentArray=objectByString(this.actor,path);
                     componentArray[index]=newComponent[0].id;
                     componentArray.push("");
 
@@ -375,14 +375,14 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
                 }
             }else if(componentType==="ammunition"){
-                let componentArray=objectByString(this.actor.data,path);
+                let componentArray=objectByString(this.actor,path);
                 componentArray[index]=newComponent[0].id;
                 componentArray.push("");
 
                 knightUpdate[path]=componentArray;  
             }else{
 
-                let array=objectByString(chassis.data,path);
+                let array=objectByString(chassis,path);
                 array[index]=newComponent[0].id;
 
 
@@ -505,8 +505,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         let componentID=dataset["itemId"];
         let state=event.currentTarget.value;
         let component=actor.items.get(componentID);
-        console.log(component);
-        await component.update({"data.state.value":state});
+        await component.update({"system.state.value":state});
     }
     _onMechbayTabClick(event){
         let tab=event.currentTarget;
@@ -521,7 +520,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
             }
             let category=tab.dataset["tab"];
-            this.document.data.mechtab=category;
+            this.document.system.mechtab=category;
             tabClasses.add("active2");
             let lists=document.getElementsByName("mechInventoryTab");
             for(let i=0;i<lists.length;i++){
@@ -555,7 +554,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         }
 
         let type=header.attributes["name"].value 
-        this.document.data[type]=expand;
+        this.document[type]=expand;
         let components=document.getElementsByClassName(type);
         for(let i=0;i<components.length;i++){
             let component=components[i];
@@ -598,22 +597,26 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let enclosedDoc=await vehicletraitsPack.getDocument("cR1t6ioQMPr9QEe5");
                             let superHeavyDoc=await vehicletraitsPack.getDocument("AVUMiYtUvUQQAQrc");
                             let walkerDoc=await vehicletraitsPack.getDocument("3DbsJhqN8KbUXZLd");
+                            
                             let itemDatas=[];
-                            itemDatas.push(chassisDoc.data);
-                            itemDatas.push(enclosedDoc.data);
-                            itemDatas.push(superHeavyDoc.data);
-                            itemDatas.push(walkerDoc.data);
+                            itemDatas.push(duplicate(chassisDoc));
+                            itemDatas.push(duplicate(enclosedDoc));
+                            itemDatas.push(duplicate(superHeavyDoc));
+                            itemDatas.push(duplicate(walkerDoc));
                             let createdChassis=await actor.createEmbeddedDocuments("Item",itemDatas);
 
                             let id=createdChassis[0].id;
                             let update={};
-                            update["data.knight.chassis"]=id;
-                            update["data.secChar.wounds.value"]=createdChassis[0].system.structuralIntegrity.value;
-                            update["data.secChar.size.value"]=parseInt(createdChassis[0].system.size.value)-1;
-                            update["data.manoeuvrability.value"]=createdChassis[0].system.manoeuvrability.value;
+                            update["system.knight.chassis"]=id;
+                            update["system.secChar.wounds.value"]=createdChassis[0].system.structuralIntegrity.value;
+                            update["system.secChar.size.value"]=parseInt(createdChassis[0].system.size.value)-1;
+                            update["system.manoeuvrability.value"]=createdChassis[0].system.manoeuvrability.value;
                             update["token.actorLink"]=true;
                             update["token.vision"]=true;
-                            actor.update(update);
+                            await actor.update(update);
+                            await actor.setFlag("fortyk","superheavy",true);
+                            await actor.setFlag("fortyk","enclosed",true);
+                            await actor.setFlag("fortyk","walker",true);
                             this.render(true);
                         }
                     }
@@ -652,11 +655,11 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
 
-                            let createdSpirit=await actor.createEmbeddedDocuments("Item",[spiritDoc.data]);
+                            let createdSpirit=await actor.createEmbeddedDocuments("Item",[duplicate(spiritDoc)]);
 
                             let id=createdSpirit[0].id;
                             let update={};
-                            update["data.knight.spirit"]=id;
+                            update["system.knight.spirit"]=id;
                             actor.update(update);
                             this.render(true);
                         }
@@ -682,7 +685,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                     submit:{
                         label:"Yes",
                         callback: async dlg => { 
-                            await this.actor.update({"data.knight.chassis":""});
+                            await this.actor.update({"system.knight.chassis":""});
                             await this.actor.deleteEmbeddedDocuments("Item",[itemId]);
 
                             this.render(true);
@@ -729,15 +732,13 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
                             let componentUpdate={};
-                            console.log(item)
                             if(item.system.state.value==="X"||item.system.state.value===0){
                                 let amt=parseInt(component.system.amount.value);
-                                console.log(amt)
-                                componentUpdate["data.amount.value"]=amt-1;
+                                componentUpdate["system.amount.value"]=amt-1;
                             }
-                            componentUpdate["data.amount.taken"]=newAmt;
+                            componentUpdate["system.amount.taken"]=newAmt;
 
-                            let array=objectByString(chassis.data,path);
+                            let array=objectByString(chassis,path);
                             array[index]="";
 
                             let chassisUpdate={};
@@ -789,9 +790,9 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
                             if(item.system.state.value==="X"||item.system.state.value===0){
                                 let amt=parseInt(component.system.amount.value);
-                                componentUpdate["data.amount.value"]=amt-1;
+                                componentUpdate["system.amount.value"]=amt-1;
                             }
-                            componentUpdate["data.amount.taken"]=newAmt;
+                            componentUpdate["system.amount.taken"]=newAmt;
 
 
 
@@ -839,15 +840,15 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let amtTaken=component.system.amount.taken;
                             let newAmt=amtTaken-1;
 
-                            let array=objectByString(this.actor.data,path);
+                            let array=objectByString(this.actor,path);
                             array.splice(index,1);
                             let componentUpdate={};
 
                             if(item.system.state.value==="X"||item.system.state.value===0){
                                 let amt=parseInt(component.system.amount.value);
-                                componentUpdate["data.amount.value"]=amt-1;
+                                componentUpdate["system.amount.value"]=amt-1;
                             }
-                            componentUpdate["data.amount.taken"]=newAmt;
+                            componentUpdate["system.amount.taken"]=newAmt;
 
 
 
@@ -881,12 +882,12 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         if(newHouse){
             let newArray=newHouse.system.knights;
             newArray.push(this.actor.id);
-            newHouse.update({"data.knights":newArray}); 
+            newHouse.update({"system.knights":newArray}); 
         }
         if(oldHouse){
             let oldArray=oldHouse.system.knights;
             oldArray=oldArray.filter((knight) =>{knight!==this.actor.id});
-            oldHouse.update({"data.knights":oldArray});
+            oldHouse.update({"system.knights":oldArray});
         }
 
 
@@ -899,12 +900,12 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         const weapon=this.actor.getEmbeddedDocument("Item",dataset["weapon"]);
         if(!weapon){return};
 
-        let weaponData=weapon.data;
+        let weaponData=weapon;
         const previousAmmo=this.actor.getEmbeddedDocument("Item",dataset["previous"]);
         const ammoID=event.currentTarget.value;
         const ammo=this.actor.getEmbeddedDocument("Item",ammoID);
         let weaponUpdate={}
-        weaponUpdate["data.ammo._id"]=ammoID;
+        weaponUpdate["system.ammo._id"]=ammoID;
 
 
 
@@ -913,22 +914,22 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
 
-            previousAmmo.update({"data.currentClip.value":weaponsystem.clip.value,"data.isEquipped":false});
+            previousAmmo.update({"system.currentClip.value":weapon.system.clip.value,"system.isEquipped":false});
         }
         if(ammo!==undefined){
             let ammoUpdate={};
             if(ammo.system.isFresh){
-                ammoUpdate["data.isFresh"]=false;
-                ammoUpdate["data.currentClip.value"]=weapon.system.clip.max;
-                weaponUpdate["data.clip.value"]=weapon.system.clip.max;
+                ammoUpdate["system.isFresh"]=false;
+                ammoUpdate["system.currentClip.value"]=weapon.system.clip.max;
+                weaponUpdate["system.clip.value"]=weapon.system.clip.max;
             }else{
-                weaponUpdate["data.clip.value"]=ammo.system.currentClip.value;
+                weaponUpdate["system.clip.value"]=ammo.system.currentClip.value;
             }
-            ammoUpdate["data.isEquipped"]=weapon.id;
+            ammoUpdate["system.isEquipped"]=weapon.id;
 
             ammo.update(ammoUpdate);
         }else{
-            weaponUpdate["data.clip.value"]=0;
+            weaponUpdate["system.clip.value"]=0;
         }
 
 
@@ -953,12 +954,12 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         let weaponUpdate={};
         let ammoUpdate={};
         let houseUpdate={};
-        weaponUpdate["data.ammo._id"]="";
+        weaponUpdate["system.ammo._id"]="";
         weapon.update(weaponUpdate);
         let components=actor.system.knight.components.filter(component=>component!==ammo.id);
-        actor.update({"data.knight.components":components});
+        actor.update({"system.knight.components":components});
         let originalAmmo=house.getEmbeddedDocument("Item",ammo.system.originalId);
-        originalAmmo.update({"data.amount.taken":originalAmmo.system.amount.taken-1,"data.amount.value":parseInt(originalAmmo.system.amount.value)-1});
+        originalAmmo.update({"system.amount.taken":originalAmmo.system.amount.taken-1,"system.amount.value":parseInt(originalAmmo.system.amount.value)-1});
         ammo.delete();
 
 
@@ -974,11 +975,11 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         if(newPilot){
 
 
-            newPilot.update({"data.riding.id":this.actor.id}); 
+            newPilot.update({"system.riding.id":this.actor.id}); 
         }
         if(oldPilot){
 
-            oldPilot.update({"data.riding.id":""});
+            oldPilot.update({"system.riding.id":""});
         }
 
 
@@ -1014,7 +1015,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                         }
                         let stompData={name:"Titanic Feet",type:"meleeWeapon"}
                         let stomp=await Item.create(stompData, {temporary: true});
-                        stomp.data.flags.fortyk={"blast":3};
+                        stomp.flags.fortyk={"blast":3};
                         stomp.system.damageType.value="Impact";
                         stomp.system.pen.value=0;
                         stomp.system.damageFormula.value=formula;
@@ -1054,7 +1055,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         }
         let core=data.knight.core;
         let coreIntegrity=parseInt(core.system.state.value)-1;
-        await core.update({"data.state.value":coreIntegrity});
+        await core.update({"system.state.value":coreIntegrity});
         let overheatResult="";
         let overheatFlavor=""
         if(coreIntegrity===0){
@@ -1082,7 +1083,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                          }
 
         await ChatMessage.create(chatOverheat,{});
-        this.actor.update({"data.knight.heat.value":0});
+        this.actor.update({"system.knight.heat.value":0});
 
 
     }

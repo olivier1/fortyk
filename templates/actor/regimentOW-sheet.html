@@ -3,7 +3,7 @@
     {{!-- Sheet Header --}}
     <header class="sheet-header flexrow">
 
-        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+        <img class="profile-img" src="{{img}}" data-edit="img" title="{{name}}" />
         {{!-- Sheet Tab Navigation --}}
         <nav class="sheet-tabs tabs grid grid-4col" data-group="primary">
 
@@ -27,38 +27,39 @@
             <div class="descr ">
                 <div class="descrRow flex-group-left">
                     <span class="descrSpan">Regiment Name:</span>
-                    <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
+                    <input name="name" type="text" value="{{name}}" placeholder="Name"/>
                 </div>
             </div>
             <div class="descr flexcol">
                 <div class="descrRow flex-group-left">
                     <label class="underline">Commanding Officer</label>
                     <div class=" flexcol">
+                        {{debug}}
                         <span class="descrSpan">Name:</span>
-                        <input type="text" value="{{system.officer.name}}" name="data.officer.name" placeholder="???"/>
+                        <input type="text" value="{{system.officer.name}}" name="system.officer.name" placeholder="???"/>
                     </div>
                     <div class=" flexcol">
                         <span class="descrSpan">Personality:</span>
-                        <input type="text" value="{{system.officer.personality}}" name="data.officer.personality" placeholder="???"/>
+                        <input type="text" value="{{system.officer.personality}}" name="system.officer.personality" placeholder="???"/>
                     </div>
                 </div>
             </div>
             <div class="descr flexcol">
                 <div class="descrRow flex-group-left">
                     <span class="descrSpan">Regiment Type:</span>
-                    <input name="data.regimentType.value" type="text" value="{{system.regimentType.value}}" placeholder="Type"/>
+                    <input name="system.regimentType.value" type="text" value="{{system.regimentType.value}}" placeholder="Type"/>
 
 
                     <span class="descrSpan">Regimental Doctrines:</span>
-                    <input name="data.doctrines.0.value" type="text" value="{{system.doctrines.0.value}}" placeholder="Doctrine"/>
-                    <input name="data.doctrines.1.value" type="text" value="{{system.doctrines.1.value}}" placeholder="Doctrine"/>
-                    <input name="data.doctrines.2.value" type="text" value="{{system.doctrines.2.value}}" placeholder="Doctrine"/>
-                    <input name="data.doctrines.3.value" type="text" value="{{system.doctrines.3.value}}" placeholder="Doctrine"/>
-                    <input name="data.doctrines.4.value" type="text" value="{{system.doctrines.4.value}}" placeholder="Doctrine"/>
+                    <input name="system.doctrines.0.value" type="text" value="{{system.doctrines.0.value}}" placeholder="Doctrine"/>
+                    <input name="system.doctrines.1.value" type="text" value="{{system.doctrines.1.value}}" placeholder="Doctrine"/>
+                    <input name="system.doctrines.2.value" type="text" value="{{system.doctrines.2.value}}" placeholder="Doctrine"/>
+                    <input name="system.doctrines.3.value" type="text" value="{{system.doctrines.3.value}}" placeholder="Doctrine"/>
+                    <input name="system.doctrines.4.value" type="text" value="{{system.doctrines.4.value}}" placeholder="Doctrine"/>
 
 
                     <span class="descrSpan">Regimental Drawback:</span>
-                    <input name="data.drawback.value" type="text" value="{{system.drawback.value}}" placeholder="Drawback"/>
+                    <input name="system.drawback.value" type="text" value="{{system.drawback.value}}" placeholder="Drawback"/>
                 </div>
             </div>
             <div class="descr flexcol">
@@ -68,16 +69,16 @@
                     <div class="flexcol">
 
                         <span class="descrSpan">Name:</span>
-                        <input type="text" value="{{system.homeworld.value}}" name="data.homeworld.value" placeholder="Name"/>
+                        <input type="text" value="{{system.homeworld.value}}" name="system.homeworld.value" placeholder="Name"/>
                     </div>
                     <div class="flexcol">
                         <span class="descrSpan">Type:</span>
-                        <input type="text" value="{{system.homeworld.planetType}}" name="data.homeworld.planetType" placeholder="Type"/>
+                        <input type="text" value="{{system.homeworld.planetType}}" name="system.homeworld.planetType" placeholder="Type"/>
 
                     </div>
                     <div class="flexcol">
                         <span class="descrSpan">Culture:</span>
-                        <input type="text" value="{{system.homeworld.culture}}" name="data.homeworld.culture" placeholder="Culture"/>
+                        <input type="text" value="{{system.homeworld.culture}}" name="system.homeworld.culture" placeholder="Culture"/>
                     </div>
                 </div>
             </div>
@@ -87,7 +88,7 @@
         </div>
 
         <div class="tab kit" data-group="primary" data-tab="kit">
-            {{editor content=system.srgk.value target="data.srgk.value" button=true owner=owner editable=editable}}
+            {{editor system.srgk.value target="system.srgk.value" button=true owner=owner editable=editable rollData=rollData}}
         </div>
         <div class="tab logistics" data-group="primary" data-tab="logistics">
             <div class="descr flexcol">
@@ -96,16 +97,16 @@
                     <div class="flexcol">
 
                         <span class="descrSpan">Squad Logistics:</span>
-                        <input type="text" value="{{system.characteristics.inf.value}}" name="data.characteristics.inf.value" placeholder="10"/>
+                        <input type="text" value="{{system.characteristics.inf.value}}" name="system.characteristics.inf.value" placeholder="10"/>
                     </div>
                     <div class="flexcol">
 
                         <span class="descrSpan">Logistics Modifier:</span>
-                        <input type="text" value="{{system.characteristics.inf.mod}}" name="data.characteristics.inf.mod" placeholder="0"/>
+                        <input type="text" value="{{system.characteristics.inf.mod}}" name="system.characteristics.inf.mod" placeholder="0"/>
                     </div>
                     <div class="flexcol">
                         <span class="descrSpan">Total Logistics:</span>
-                        <span class="char-total rollable button" data-roll-type="char" data-target="{{system.characteristics.inf.total}}" data-label="{{data.characteristics.inf.label}}" data-char="inf">{{data.characteristics.inf.total}}</span>
+                        <span class="char-total rollable button" data-roll-type="char" data-target="{{system.characteristics.inf.total}}" data-label="{{system.characteristics.inf.label}}" data-char="inf">{{system.characteristics.inf.total}}</span>
 
                     </div>
 
@@ -117,8 +118,8 @@
                     <div class="flexcol">
 
                         <span class="descrSpan">Number of Troops:</span>
-                        <select class="charSelect" name="data.characteristics.inf.not" data-dtype="Number">
-                            {{#select data.characteristics.inf.not}}
+                        <select class="charSelect" name="system.characteristics.inf.not" data-dtype="Number">
+                            {{#select system.characteristics.inf.not}}
                             <option value="-10">Company or Less</option>
                             <option value="0">Single Regiment</option>
                             <option value="10">Multiple Regiments</option>
@@ -128,8 +129,8 @@
                     <div class="flexcol">
 
                         <span class="descrSpan">Time Spent in Front:</span>
-                        <select class="charSelect" name="data.characteristics.inf.time" data-dtype="Number">
-                            {{#select data.characteristics.inf.time}}
+                        <select class="charSelect" name="system.characteristics.inf.time" data-dtype="Number">
+                            {{#select system.characteristics.inf.time}}
                             <option value="-10">Less then 3 months</option>
                             <option value="0">3-6 months</option>
                             <option value="10">6-12 months</option>
@@ -141,8 +142,8 @@
                     <div class="flexcol">
 
                         <span class="descrSpan">Front Active:</span>
-                        <select class="charSelect" name="data.characteristics.inf.frontActive" data-dtype="Number">
-                            {{#select data.characteristics.inf.frontActive}}
+                        <select class="charSelect" name="system.characteristics.inf.frontActive" data-dtype="Number">
+                            {{#select system.characteristics.inf.frontActive}}
                             <option value="-10">Less then 3 months</option>
                             <option value="0">3-6 months</option>
                             <option value="10">6-12 months</option>
@@ -154,8 +155,8 @@
                     <div class="flexcol">
 
                         <span class="descrSpan">War Conditions:</span>
-                        <select class="charSelect" name="data.characteristics.inf.war" data-dtype="Number">
-                            {{#select data.characteristics.inf.war}}
+                        <select class="charSelect" name="system.characteristics.inf.war" data-dtype="Number">
+                            {{#select system.characteristics.inf.war}}
                             <option value="-30">Losing Badly</option>
                             <option value="-20">Faltering</option>
                             <option value="-10">Violent Impasse</option>
@@ -177,16 +178,16 @@
                     <div class="flexcol">
 
                         <span class="descrSpan">Squad Name:</span>
-                        <input type="text" value="{{data.personnel.squadName}}" name="data.personnel.squadName" placeholder="Name"/>
+                        <input type="text" value="{{system.personnel.squadName}}" name="system.personnel.squadName" placeholder="Name"/>
                     </div>
                     <div class="flexcol">
                         <span class="descrSpan">Platoon Name:</span>
-                        <input type="text" value="{{data.personnel.platoonName}}" name="data.personnel.platoonName" placeholder="Name"/>
+                        <input type="text" value="{{system.personnel.platoonName}}" name="system.personnel.platoonName" placeholder="Name"/>
 
                     </div>
                     <div class="flexcol">
                         <span class="descrSpan">Regiment Strength:</span>
-                        <input type="text" value="{{system.personnel.strength}}" name="data.personnel.strength" placeholder="Culture"/>
+                        <input type="text" value="{{system.personnel.strength}}" name="system.personnel.strength" placeholder="Culture"/>
                     </div>
                 </div>
             </div>
@@ -201,11 +202,11 @@
                 <div class="flex-group-center">
                     <label>Cause of Death</label>
                 </div>
-            {{#each data.personnel.squad}}
-                 <input type="text" value="{{this.name}}" name="data.personnel.squad.{{@index}}.name" placeholder="Name"/>
-                <input type="text" value="{{this.status}}" name="data.personnel.squad.{{@index}}.status" placeholder="Status"/>
+            {{#each system.personnel.squad}}
+                 <input type="text" value="{{this.name}}" name="system.personnel.squad.{{@index}}.name" placeholder="Name"/>
+                <input type="text" value="{{this.status}}" name="system.personnel.squad.{{@index}}.status" placeholder="Status"/>
                 <div class="flexrow">
-                    <input class="cod"type="text" value="{{this.cod}}" name="data.personnel.squad.{{@index}}.cod" placeholder="C.O.D."/>
+                    <input class="cod"type="text" value="{{this.cod}}" name="system.personnel.squad.{{@index}}.cod" placeholder="C.O.D."/>
                 <a class="list-button item-delete deleteguard" title="Delete" data-index="{{@index}}"></a></div>
             {{/each}}
             </div>

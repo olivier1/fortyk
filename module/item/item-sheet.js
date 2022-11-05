@@ -27,7 +27,7 @@ export class FortyKItemSheet extends ItemSheet {
         // Alternatively, you could use the following return statement to do a
         // unique item sheet by type, like `weapon-sheet.html`.
 
-        // return `${path}/${this.item.data.type}-sheet.html`;
+        // return `${path}/${this.item.system.type}-sheet.html`;
     }
 
     /* -------------------------------------------- */
@@ -38,10 +38,11 @@ export class FortyKItemSheet extends ItemSheet {
 
 
         const item=this.item;
-        const data = super.getData().data;
+        const data = this.item;
+        console.log(data)
         if(this.item.type==="skill"){
             //GET THE SKILLS WITH CHILDREN
-            if(this.actor!==null&&this.actor.data!==undefined){
+            if(this.actor){
                 data['skillgroups']=this.actor.items.filter(function(item){
 
                     if(item.type==="skill"){return item.system.hasChildren.value}else{return false;}})
@@ -68,9 +69,8 @@ export class FortyKItemSheet extends ItemSheet {
         if(this.actor&&this.actor.type==="vehicle"){
             data.vehicle=true;
         }
-        data.item=this.item.data;
+        data.item=this.item;
         data.isGM=game.user.isGM;
-        data.isOwner=this.item.isOwner;
         data.dtypes = ["String", "Number", "Boolean"];
         data.FORTYK=game.fortyk.FORTYK;
         data.editable = this.options.editable;
@@ -116,7 +116,7 @@ export class FortyKItemSheet extends ItemSheet {
     }
     _onCloneClick(event){
         let item=this.item.clone();
-        Item.create(item.data);
+        Item.create(duplicate(item));
     }
     async _onModifierClick(event){
         let item=this.item;
@@ -158,7 +158,7 @@ export class FortyKItemSheet extends ItemSheet {
         }
 
 
-        let flags=this.item.data.flags.fortyk;
+        let flags=this.item.flags.fortyk;
 
         for(const flag in flags){
 
@@ -257,7 +257,7 @@ export class FortyKItemSheet extends ItemSheet {
                 event.target.value=0;
             }
         }
-        let oldValue=objectByString(item.data,target);
+        let oldValue=objectByString(item,target);
 
         if((oldValue!=newAmt)){
 
@@ -293,7 +293,7 @@ export class FortyKItemSheet extends ItemSheet {
                     event.target.value=0;
                 }
             }
-            let oldValue=objectByString(item.data,target);
+            let oldValue=objectByString(item,target);
             if(oldValue!=newAmt){
                 this.updateObj[target]=newAmt;
                 await item.update(this.updateObj);
@@ -319,10 +319,10 @@ export class FortyKItemSheet extends ItemSheet {
                     return item.system.parent.value===this.item.system.name.value});
                 console.log(children);
                 for(let i of children){
-                    await i.update({'data.parent.value':""});
+                    await i.update({'system.parent.value':""});
 
                 }
-                await this.item.update({'data.hasChildren.value':false});
+                await this.item.update({'system.hasChildren.value':false});
             }
 
 
@@ -335,7 +335,7 @@ export class FortyKItemSheet extends ItemSheet {
 
         let value=event.currentTarget.checked;
         if(value){
-            await this.item.update({'data.parent.value':""});
+            await this.item.update({'system.parent.value':""});
         }
     }
     async _onHardpointEdit(event){

@@ -12,19 +12,19 @@
     </div>
     <div class="flexcol">
         <label>Tier:</label>
-        <input type="text" value="{{data.tier.value}}" name="data.tier.value">
+        <input type="text" value="{{system.tier.value}}" name="system.tier.value">
     </div>
     <div class="flexcol">
         <label>Prerequisites:</label>
-        <input type="text" value="{{data.prereqs.value}}" name="data.prereqs.value">
+        <input type="text" value="{{system.prereqs.value}}" name="system.prereqs.value">
     </div>
     <div class="flexcol">
         <label>Aptitudes:</label>
-        <input type="text" value="{{data.aptitudes.value}}" name="data.aptitudes.value">
+        <input type="text" value="{{system.aptitudes.value}}" name="system.aptitudes.value">
     </div>
     <div class="flexcol">
         <label>Specialisation:</label>
-        <input type="text" value="{{data.specialisation.value}}" name="data.specialisation.value">
+        <input type="text" value="{{system.specialisation.value}}" name="system.specialisation.value">
     </div>
     {{#if isGM}}
     Don't change this unless you know what youre doing!
@@ -35,16 +35,16 @@
 
     <div class="flexcol">
         <label>Tags:</label>
-        <input type="text" value="{{data.tags.value}}" name="data.tags.value">
+        <input type="text" value="{{system.tags.value}}" name="system.tags.value">
     </div>
 
     <div class="flexcol">
         <label>Flag Id:</label>
-        <input type="text" value="{{data.flagId.value}}" name="data.flagId.value">
+        <input type="text" value="{{system.flagId.value}}" name="system.flagId.value">
     </div>
     {{/if}}
     <div class="item-description">
         <label>Description:</label>
-        {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
     </div>
 </form>

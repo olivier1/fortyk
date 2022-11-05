@@ -88,7 +88,7 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
                          }
 
         await ChatMessage.create(chatOverheat,{});
-        this.actor.update({"data.knight.heat.value":0});
+        this.actor.update({"system.knight.heat.value":0});
 
 
     }

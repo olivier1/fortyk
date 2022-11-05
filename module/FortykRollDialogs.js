@@ -28,7 +28,7 @@ export class FortykRollDialogs{
 
         const weapon=duplicate(actor.getEmbeddedDocument("Item",dataset["weapon"]));
         let newWeapon=await Item.create(weapon,{temporary:true});
-        const formula=weapon.data.damageFormula;
+        const formula=weapon.system.damageFormula;
         newWeapon.system.pen.value=0;
 
 
@@ -109,7 +109,7 @@ export class FortykRollDialogs{
     //handles the melee attack dialog WHEW
     static async callMeleeAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
 
-        let itemData=item.data;
+        let itemData=item;
         let template="systems/fortyk/templates/actor/dialogs/melee-attack-dialog.html"
         let templateOptions={};
         let modifierTracker=[];
@@ -117,8 +117,8 @@ export class FortykRollDialogs{
         templateOptions["modifiers"]=duplicate(actor.system.secChar.attacks);
         templateOptions["modifiers"].testMod=0;
         modifierTracker.push({"value":`${testTarget}`,"label":`Base Target Value`});
-        modifierTracker.push({"value":`${itemsystem.testMod.value}`,"label":`Base Modifier`});
-        miscMods+=itemsystem.testMod.value;
+        modifierTracker.push({"value":`${item.system.testMod.value}`,"label":`Base Modifier`});
+        miscMods+=item.system.testMod.value;
         templateOptions["options"]={}
         templateOptions["options"].swift=actor.getFlag("fortyk","swiftattack");
         templateOptions["options"].lightning=actor.getFlag("fortyk","lightningattack");
@@ -183,14 +183,14 @@ export class FortykRollDialogs{
                 modifierTracker.push({"value":`${-modifiers.tarEvasion}`,"label":"Target Speed Modifier"});
             }
             let tarActor=target.actor;
-            let tarData=tarActor.data;
+            let tar=tarActor;
             if(tarActor.type==="vehicle"){
                 vehicle=true;
                 templateOptions.vehicle=true;
             }
             if(!vehicle){
-                if(tarsystem.horde.value){
-                    let hordeSize=tarsystem.secChar.wounds.value;
+                if(tar.system.horde.value){
+                    let hordeSize=tar.system.secChar.wounds.value;
                     if(hordeSize>=120){
                         miscMods+=60;
                         modifierTracker.push({"value":`60`,"label":"Horde Size Modifier"});
@@ -271,19 +271,19 @@ export class FortykRollDialogs{
                         let attackType=html.find('input[name=attack-type]:checked')[0].attributes["attacktype"].value;
                         let attacklabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
                         let update={};
-                        update["data.secChar.lastHit.attackType"]=attackType;
+                        update["system.secChar.lastHit.attackType"]=attackType;
                         if(attackType==="called"){
 
-                            update["data.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
+                            update["system.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
                             if(!vehicle&&actor.getFlag("fortyk","fieldvivisection")&&actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
 
 
-                                update["data.secChar.lastHit.fieldPractice"]=$(html).find('select[name="fieldPracticeAmt"] option:selected').val();
+                                update["system.secChar.lastHit.fieldPractice"]=$(html).find('select[name="fieldPracticeAmt"] option:selected').val();
                             }else{
-                                update["data.secChar.lastHit.fieldPractice"]=null;
+                                update["system.secChar.lastHit.fieldPractice"]=null;
                             }
                         }else{
-                            update["data.secChar.lastHit.fieldPractice"]=null;
+                            update["system.secChar.lastHit.fieldPractice"]=null;
                         }
                         await actor.update(update);
                         if(html.find('input[name="guarded"]').is(':checked')){
@@ -312,6 +312,7 @@ export class FortykRollDialogs{
                         testTarget=miscMods+parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(counter)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
                         actor.system.secChar.lastHit.attackRange="melee";
                         actor.system.secChar.lastHit.vehicle=vehicle;
+                        actor.system.secChar.lastHit.facing=modifiers.facing;
                         FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, "", false, modifierTracker);
                     }
 
@@ -326,26 +327,26 @@ export class FortykRollDialogs{
     static async callRangedAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
         let template="systems/fortyk/templates/actor/dialogs/ranged-attack-dialog.html"
         let templateOptions={};
-        let itemData=item.data;
+        let itemData=item;
         let modifierTracker=[];
         let miscMods=0;
         templateOptions["modifiers"]=duplicate(actor.system.secChar.attacks);
         templateOptions["size"]=game.fortyk.FORTYK.size;
 
-        if(itemsystem.rof[1].value||itemsystem.rof[2].value){
+        if(item.system.rof[1].value||item.system.rof[2].value){
             templateOptions["modifiers"].supp=true;
         }else{
             templateOptions["modifiers"].supp=false;
         }
 
-        templateOptions["modifiers"].suppressive=itemsystem.attackMods.suppressive;
-        templateOptions["modifiers"].full=parseInt(itemsystem.attackMods.full);
-        templateOptions["modifiers"].semi=parseInt(itemsystem.attackMods.semi);
-        templateOptions["modifiers"].single=itemsystem.attackMods.single;
-        templateOptions["modifiers"].aim=itemsystem.attackMods.aim;
+        templateOptions["modifiers"].suppressive=item.system.attackMods.suppressive;
+        templateOptions["modifiers"].full=parseInt(item.system.attackMods.full);
+        templateOptions["modifiers"].semi=parseInt(item.system.attackMods.semi);
+        templateOptions["modifiers"].single=item.system.attackMods.single;
+        templateOptions["modifiers"].aim=item.system.attackMods.aim;
         templateOptions["modifiers"].testMod=0;
         modifierTracker.push({"value":`${testTarget}`,"label":`Base Target Value`});
-        modifierTracker.push({"value":`${itemsystem.testMod.value}`,"label":`Base Modifier`});
+        modifierTracker.push({"value":`${item.system.testMod.value}`,"label":`Base Modifier`});
 
         if(item.getFlag("fortyk","twinlinked")){
 
@@ -371,23 +372,24 @@ export class FortykRollDialogs{
 
 
         for (let [key, rng] of Object.entries(templateOptions.modifiers.range)){
-            let wepMod=itemsystem.attackMods.range[key];
+            let wepMod=item.system.attackMods.range[key];
             templateOptions.modifiers.range[key]=Math.max(wepMod,rng);
         }
         //set flags for rate of fire
-        let curAmmo=parseInt(itemsystem.clip.value);
-        let consump=parseInt(itemsystem.clip.consumption);
-        let rofSingle=itemsystem.rof[0].value;
-        let rofSemi=parseInt(itemsystem.rof[1].value);
+        let curAmmo=parseInt(item.system.clip.value);
+        let consump=parseInt(item.system.clip.consumption);
+   
+        let rofSingle=item.system.rof[0].value;
+        let rofSemi=parseInt(item.system.rof[1].value);
         if(isNaN(rofSingle)){
             rofSingle=1;
         }
-        let rofFull=parseInt(itemsystem.rof[2].value);
+        let rofFull=parseInt(item.system.rof[2].value);
         let canShoot=false;
         if(parseInt(rofSingle)===0||rofSingle==="-"){
             templateOptions["single"]=false;
         }else{
-
+            
             if(rofSingle*consump>curAmmo){
                 templateOptions["single"]=false;
             }else{
@@ -396,8 +398,7 @@ export class FortykRollDialogs{
             }
 
         }
-        console.log(rofSemi,rofFull)
-        if(rofSemi===0||Number.isNaN(rofSemi===NaN)){
+        if(rofSemi===0||Number.isNaN(rofSemi)){
             templateOptions["semi"]=false;
         }else{
             if(rofSemi*consump>curAmmo){
@@ -409,7 +410,7 @@ export class FortykRollDialogs{
 
         }
         if(rofFull===0||Number.isNaN(rofFull)){
-            console.log("yo")
+          
             templateOptions["full"]=false;
         }else{
             if(rofFull*consump>curAmmo){
@@ -479,7 +480,6 @@ export class FortykRollDialogs{
         let targets=game.user.targets;
         let vehicle=false;
         if(targets.size>0){
-            console.log(modifiers);
             if(actor.getFlag("fortyk","gyro")){
                 let gyro=parseInt(actor.getFlag("fortyk","gyro"));
                 miscMods+=-modifiers.tarEvasion;
@@ -505,13 +505,13 @@ export class FortykRollDialogs{
             }
             let target=targets.values().next().value;
             let tarActor=target.actor;
-            let tarData=tarActor.data;
+            let tar=tarActor;
             if(tarActor.type==="vehicle"){
                 vehicle=true;
                 templateOptions.vehicle=true;
             }
-            if(!vehicle&&tarsystem.horde.value){
-                let hordeSize=tarsystem.secChar.wounds.value;
+            if(!vehicle&&tar.system.horde.value){
+                let hordeSize=tar.system.secChar.wounds.value;
                 if(hordeSize>=120){
                     miscMods+=60;
                     modifierTracker.push({"value":`60`,"label":"Horde Size Modifier"});
@@ -576,7 +576,7 @@ export class FortykRollDialogs{
             let normal=false;
             let long=false;
             let extreme=false;
-            let range=itemsystem.range.value;
+            let range=item.system.range.value;
             if(distance<=2||distance<=2*canvas.dimensions.distance){
                 pointblank=true;
                 attackRange="pointBlank";
@@ -683,20 +683,20 @@ export class FortykRollDialogs{
                         let attackType=html.find('input[name=attack-type]:checked')[0].attributes["attacktype"].value;
                         let attacklabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
                         let update={};
-                        update["data.secChar.lastHit.attackType"]=attackType;
+                        update["system.secChar.lastHit.attackType"]=attackType;
                         if(attackType==="called"){
 
-                            update["data.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
+                            update["system.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
                             
                             if(!vehicle&&actor.getFlag("fortyk","fieldvivisection")&&actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
 
 
-                                update["data.secChar.lastHit.fieldPractice"]=$(html).find('select[name="fieldPracticeAmt"] option:selected').val();
+                                update["system.secChar.lastHit.fieldPractice"]=$(html).find('select[name="fieldPracticeAmt"] option:selected').val();
                             }else{
-                                update["data.secChar.lastHit.fieldPractice"]=null;
+                                update["system.secChar.lastHit.fieldPractice"]=null;
                             }
                         }else{
-                            update["data.secChar.lastHit.fieldPractice"]=null;
+                            update["system.secChar.lastHit.fieldPractice"]=null;
                         }
                         await actor.update(update);
                         //spend ammo on gun
@@ -714,7 +714,7 @@ export class FortykRollDialogs{
                         }
 
 
-                        await item.update({"data.clip.value":curAmmo-rof});
+                        await item.update({"system.clip.value":curAmmo-rof});
 
                         //convert unchosen checkboxes into 0s
                         if(isNaN(running)){running=0}else{ modifierTracker.push({"value":`${running}`,"label":`Running Target Modifier`});}
@@ -736,13 +736,14 @@ export class FortykRollDialogs{
                         testTarget=miscMods+parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(overwatch)+parseInt(aimBonus)+parseInt(visibilityBonus)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other)+parseInt(concealed)+parseInt(rangeBonus)+parseInt(melee);
                         actor.system.secChar.lastHit.attackRange=attackRange;
                         actor.system.secChar.lastHit.vehicle=vehicle;
+                        actor.system.secChar.lastHit.facing=modifiers.facing;
                         await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, attackType, false, modifierTracker);
                         if(aimBonus>0){
-                            await actor.update({"data.secChar.lastHit.aim":true});
+                            await actor.update({"system.secChar.lastHit.aim":true});
                             actor.system.secChar.lastHit.aim=true;
 
                         }else{
-                            await actor.update({"data.secChar.lastHit.aim":false});
+                            await actor.update({"system.secChar.lastHit.aim":false});
                         }
                     }
 

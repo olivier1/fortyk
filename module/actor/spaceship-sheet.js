@@ -29,7 +29,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
     getData() {
         const data = super.getData();
 
-        if(game.user.character===undefined){
+        if(game.user.character===null){
             data.bs=this.actor.system.crew.rating;
             data.hangarAttack=this.actor.system.crew.rating;
         }else if(game.user.character.type.toLowerCase().includes("pc")){
@@ -41,20 +41,20 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
             let command=0;
             let tactics=0;
             let operate=0;
-            if(character.data.skills===undefined){
+            if(character.skills===undefined){
                 character.prepare();
             }
-            let skills=character.data.skills;
+            let skills=character.skills;
             if(skills){
                 skills.forEach((skill,id,items)=>{
 
 
                     if(skill.name.toLowerCase()==="command"){
-                        command=skill.data.total.value;
+                        command=skill.system.total.value;
                     }else if(skill.name.toLowerCase()==="voidship"){
-                        operate=skill.data.total.value;
+                        operate=skill.system.total.value;
                     }else if(skill.name.toLowerCase()==="void combat"){
-                        tactics=skill.data.total.value;
+                        tactics=skill.system.total.value;
                     }
 
                 });
@@ -127,7 +127,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
     async _damageRoll(formula,label,hits){
         for(let i=0;i<hits;i++){
             let roll = new Roll(formula, this.actor.system);
-            await roll.roll().then(value=>{roll.toMessage({
+            await roll.evaluate({async: true}).then(value=>{roll.toMessage({
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 flavor: label
             });});
@@ -183,9 +183,9 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
 
         let halfstr=fortykSquadron.system.halfstr.value;
         if(halfstr){
-            await fortykSquadron.update({"data.halfstr.value":false});
+            await fortykSquadron.update({"system.halfstr.value":false});
         }else{
-            await fortykSquadron.update({"data.halfstr.value":true});
+            await fortykSquadron.update({"system.halfstr.value":true});
         }
         await this.actor.prepare();
 
@@ -206,7 +206,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
         let item= this.actor.getEmbeddedDocument("Item", dataItemId);
         let update={}
 
-        update["data.torpedo.id"]=torpId;
+        update["system.torpedo.id"]=torpId;
 
         await item.update(update);
         await this.actor.prepare();
@@ -221,7 +221,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
 
         let item= this.actor.getEmbeddedDocument("Item", dataItemId);
         let update={}
-        update["data.status.value"]=status;
+        update["system.status.value"]=status;
 
         await item.update(update);
         await this.actor.prepare();

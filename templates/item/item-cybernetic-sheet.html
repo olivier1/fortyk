@@ -12,13 +12,13 @@
     </div>
     <div class="flexcol">
         <label>Weight:</label>
-        <input type="text" value="{{data.weight.value}}" name="data.weight.value">
+        <input type="text" value="{{system.weight.value}}" name="system.weight.value">
     </div>
     <div class="flexcol">
             <label>Item Quality:</label>
 
-            <select class="quality"  name="data.quality.value">
-                {{#select data.quality.value}}
+            <select class="quality"  name="system.quality.value">
+                {{#select system.quality.value}}
                 {{#each FORTYK.itemQualities}}
                 <option value="{{this}}">{{this}}</option>
                 {{/each}}
@@ -27,8 +27,8 @@
         </div>
     <div class="flexcol">
         <label>Rarity:</label>
-        <select class="power-type" name="data.rarity.value">
-            {{#select data.rarity.value}}
+        <select class="power-type" name="system.rarity.value">
+            {{#select system.rarity.value}}
             <option value="100">Ubiquitous</option>
             <option value="30">Abundant</option>  
             <option value="20">Plentiful</option>
@@ -47,6 +47,6 @@
     </div>
     <div class="item-description">
         <label>Description:</label>
-        {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
     </div>
 </form>

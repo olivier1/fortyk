@@ -1,6 +1,6 @@
 for(let token of canvas.tokens.controlled){
     
-    if(token.data.tint!==""){
+    if(token.tint!==""){
         token.document.update({tint: ""});
     }
     

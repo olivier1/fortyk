@@ -18,8 +18,8 @@
 
                             <div class="descrRow flexcol">
                                 <span class="descrSpan">Type:</span>
-                                <select class="typeSelect" name="data.type.value" data-dtype="String">
-                                    {{#select data.type.value}}
+                                <select class="typeSelect" name="system.type.value" data-dtype="String">
+                                    {{#select system.type.value}}
 
                                     {{#each vehicleTypes}}
 
@@ -31,22 +31,22 @@
                             </div>
                             <div class="descrRow flexcol">
                                 <span class="descrSpan">Tactical Speed:</span>
-                                <input type="text" class="combat-resources" data-target="data.secChar.speed.tactical" value="{{data.secChar.speed.tactical}}" data-dtype="Number"/>
+                                <input type="text" class="combat-resources" data-target="system.secChar.speed.tactical" value="{{system.secChar.speed.tactical}}" data-dtype="Number"/>
                             </div>
                             <div class="descrRow flexcol">
                                 <span class="descrSpan">Cruising Speed:</span>
-                                <input type="text" class="combat-resources" data-target="data.secChar.speed.cruising" value="{{data.secChar.speed.cruising}}" data-dtype="String"/>
+                                <input type="text" class="combat-resources" data-target="system.secChar.speed.cruising" value="{{system.secChar.speed.cruising}}" data-dtype="String"/>
                             </div>
                             <div class="descrRow flexcol">
                                 <span class="descrSpan">Manoeuvrability:</span>
-                                <input type="text" class="combat-resources" data-target="data.secChar.manoeuvrability.value" value="{{data.secChar.manoeuvrability.value}}" data-dtype="Number"/>
+                                <input type="text" class="combat-resources" data-target="system.secChar.manoeuvrability.value" value="{{system.secChar.manoeuvrability.value}}" data-dtype="Number"/>
                             </div>
                             <div class="descrRow flexcol">
-                                <label for="data.secChar.wounds.value" class="resource-label">Structural Integrity</label>
+                                <label for="system.secChar.wounds.value" class="resource-label">Structural Integrity</label>
                                 <div class="resource-content flexrow flex-center flex-between">
-                                    <input type="text" class="combat-resources" data-target="data.secChar.wounds.value" value="{{data.secChar.wounds.value}}" data-dtype="Number"/>
+                                    <input type="text" class="combat-resources" data-target="system.secChar.wounds.value" value="{{system.secChar.wounds.value}}" data-dtype="Number"/>
                                     <span>/</span>
-                                    <input type="text" class="combat-resources" data-target="data.secChar.wounds.max" value="{{data.secChar.wounds.max}}" data-dtype="Number"/>
+                                    <input type="text" class="combat-resources" data-target="system.secChar.wounds.max" value="{{system.secChar.wounds.max}}" data-dtype="Number"/>
                                 </div>
                             </div>
                         </div>
@@ -92,11 +92,11 @@
 
                             <div class="list-item">
                                 <span>Attack: </span>
-                                <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../data.crew.ws}}" data-item-id="{{this._id}}" data-label="Melee Attack" data-char="ws">Roll</span>
+                                <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../system.crew.ws}}" data-item-id="{{this._id}}" data-label="Melee Attack" data-char="ws">Roll</span>
                             </div>
                             <div class="list-item">
                                 <span>Damage: </span>
-                                <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
+                                <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.system.damageFormula.value}}</a>
                             </div>
                             {{#if this.flags.fortyk.force}}
                             <div class="list-item">
@@ -107,10 +107,10 @@
                             </div>
                             {{/if}}
                             <div class="list-item">
-                                <span>Reach: {{this.data.range.value}}m</span>
+                                <span>Reach: {{this.system.range.value}}m</span>
                             </div>
                             <div class="list-item">
-                                <span>Penetration: {{this.data.pen.value}}</span>
+                                <span>Penetration: {{this.system.pen.value}}</span>
 
                             </div>
                             <div class="list-item">
@@ -129,17 +129,17 @@
 
                             </div>
                             <div class="list-item">
-                                <span>Damage Type: {{this.data.damageType.value}}</span>
+                                <span>Damage Type: {{this.system.damageType.value}}</span>
 
                             </div>
 
 
                             <div class="list-item">
-                                <span>Facing: {{this.data.facing.value}}</span>
+                                <span>Facing: {{this.system.facing.value}}</span>
 
                             </div>
                             <div class="list-item">
-                                <span>Mounting: {{this.data.mounting.value}}</span>
+                                <span>Mounting: {{this.system.mounting.value}}</span>
 
                             </div>
                             <div class="list-item flexrow">
@@ -160,11 +160,11 @@
 
                             <div class="list-item">
                                 <span>Attack: </span>
-                                <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../data.crew.bs}}" data-item-id="{{this._id}}" data-label="Ranged Attack" data-char="bs">Roll</span>
+                                <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../system.crew.bs}}" data-item-id="{{this._id}}" data-label="Ranged Attack" data-char="bs">Roll</span>
                             </div>
                             <div class="list-item">
                                 <span>Damage: </span>
-                                <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.data.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.data.damageFormula.value}}</a>
+                                <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.system.damageFormula.value}}</a>
 
                             </div>
 
@@ -203,23 +203,23 @@
                             <div class="list-item flexrow">
                                 <span>Clip: </span>
 
-                                <input class="item-text-input" type="text" data-target="data.clip.value" value="{{this.data.clip.value}}" name="this.data.clip.value" data-item-id="{{this._id}}" data-dtype="Number">
+                                <input class="item-text-input" type="text" data-target="system.clip.value" value="{{this.system.clip.value}}" name="this.system.clip.value" data-item-id="{{this._id}}" data-dtype="Number">
                                 <span> / </span>
-                                <span>{{this.data.clip.max}}</span>
+                                <span>{{this.system.clip.max}}</span>
 
                             </div>
                             <div class="list-item">
-                                <span>Range: {{this.data.range.value}}m</span>
+                                <span>Range: {{this.system.range.value}}m</span>
                             </div>
                             <div class="list-item">
-                                <span>Penetration: {{this.data.pen.value}}</span>
+                                <span>Penetration: {{this.system.pen.value}}</span>
 
                             </div>
                             <div class="list-item">
-                                <label>Rate of Fire: {{this.data.rof.[0].value}}/{{this.data.rof.[1].value}}/{{this.data.rof.[2].value}}</label>
+                                <label>Rate of Fire: {{this.system.rof.[0].value}}/{{this.system.rof.[1].value}}/{{this.system.rof.[2].value}}</label>
                             </div>
                             <div class="list-item">
-                                <span>Reload: {{this.data.reload.value}}</span>
+                                <span>Reload: {{this.system.reload.value}}</span>
 
                             </div>
                             <div class="list-item">
@@ -238,17 +238,17 @@
 
                             </div>
                             <div class="list-item">
-                                <span>Damage Type: {{this.data.damageType.value}}</span>
+                                <span>Damage Type: {{this.system.damageType.value}}</span>
 
                             </div>
 
 
                             <div class="list-item">
-                                <span>Facing: {{this.data.facing.value}}</span>
+                                <span>Facing: {{this.system.facing.value}}</span>
 
                             </div>
                             <div class="list-item">
-                                <span>Mounting: {{this.data.mounting.value}}</span>
+                                <span>Mounting: {{this.system.mounting.value}}</span>
 
                             </div>
                             <div class="list-item flexrow">
@@ -266,18 +266,18 @@
             <div class="flexcol vehicle-categories margin-left">
                 {{#if flags.fortyk.superheavy}}
                 <div class="descrRow flexcol">
-                    {{#if (greaterThan data.knight.heat.value data.knight.heat.cap)}}
+                    {{#if (greaterThan system.knight.heat.value system.knight.heat.cap)}}
                     <span class="knight-overheat button">Overheat</span>
                     {{else}}
 
-                    <label for="data.secChar.wounds.value" class="resource-label">Heat</label>
+                    <label for="system.secChar.wounds.value" class="resource-label">Heat</label>
 
                     {{/if}}
 
                     <div class="resource-content flexrow flex-center flex-between">
-                        <input type="text" class="combat-resources" data-target="data.knight.heat.value" value="{{data.knight.heat.value}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" data-target="system.knight.heat.value" value="{{system.knight.heat.value}}" data-dtype="Number"/>
                         <span>/</span>
-                        <input type="text" class="combat-resources" data-target="data.knight.heat.max" value="{{data.knight.heat.max}}" data-dtype="Number" />
+                        <input type="text" class="combat-resources" data-target="system.knight.heat.max" value="{{system.knight.heat.max}}" data-dtype="Number" />
 
                     </div>
 
@@ -285,33 +285,33 @@
                 {{/if}}
                 <div class="flexcol no-flex">
                     <span class="section-title">Crew</span>
-                    <input type="text" class="combat-resources" data-target="data.crew.value" value="{{data.crew.value}}" data-dtype="String"/>
+                    <input type="text" class="combat-resources" data-target="system.crew.value" value="{{system.crew.value}}" data-dtype="String"/>
                     <span class="descrSpan">Carrying Capacity:</span>
-                    <input type="text" class="combat-resources" data-target="data.crew.capacity" value="{{data.crew.capacity}}" data-dtype="String"/>
+                    <input type="text" class="combat-resources" data-target="system.crew.capacity" value="{{system.crew.capacity}}" data-dtype="String"/>
                     <div class="flexcol">
                         <div class="descrRow flexcol">
-                                <span class="char-total rollable button" data-roll-type="evasion" data-target="{{data.crew.rating}}" data-label="Jink" data-char="">Jink</span>
+                                <span class="char-total rollable button" data-roll-type="evasion" data-target="{{system.crew.rating}}" data-label="Jink" data-char="">Jink</span>
 
 
                             </div>
                         <div class="descrRow flexrow">
                             
                             <div class="flexcol">
-                                <span class="char-total rollable button" data-roll-type="char" data-target="{{data.crew.ratingTotal}}" data-label="Crew Rating" data-char="">Crew Rating:</span>
+                                <span class="char-total rollable button" data-roll-type="char" data-target="{{system.crew.ratingTotal}}" data-label="Crew Rating" data-char="">Crew Rating:</span>
                                 <span class="descrSpan"></span>
-                                <input type="text" class="combat-resources" data-target="data.crew.rating" value="{{data.crew.rating}}" data-dtype="Number"/>
+                                <input type="text" class="combat-resources" data-target="system.crew.rating" value="{{system.crew.rating}}" data-dtype="Number"/>
                             </div>
 
                             <div class="flexcol">
-                                <span class="char-total rollable button" data-roll-type="char" data-target="{{data.crew.ws}}" data-label="Crew WS" data-char="">Crew WS:</span>
+                                <span class="char-total rollable button" data-roll-type="char" data-target="{{system.crew.ws}}" data-label="Crew WS" data-char="">Crew WS:</span>
                                 <span class="descrSpan"></span>
-                                <input type="text" class="combat-resources" data-target="data.crew.ws" value="{{data.crew.ws}}" data-dtype="Number"/>
+                                <input type="text" class="combat-resources" data-target="system.crew.ws" value="{{system.crew.ws}}" data-dtype="Number"/>
                             </div>
 
                             <div class="flexcol">
-                                <span class="char-total rollable button" data-roll-type="char" data-target="{{data.crew.bs}}" data-label="Crew BS" data-char="">Crew BS:</span>
+                                <span class="char-total rollable button" data-roll-type="char" data-target="{{system.crew.bs}}" data-label="Crew BS" data-char="">Crew BS:</span>
                                 <span class="descrSpan"></span>
-                                <input type="text" class="combat-resources" data-target="data.crew.bs" value="{{data.crew.bs}}" data-dtype="Number"/>
+                                <input type="text" class="combat-resources" data-target="system.crew.bs" value="{{system.crew.bs}}" data-dtype="Number"/>
                             </div>
 
 
@@ -328,8 +328,8 @@
                         <div class="flexcol flex-group-center">
                             <div class="flexrow flex-group-left">
                                 <span >Size</span>
-                                <select class="sizeSelect" name="data.secChar.size.value" data-dtype="Number">
-                                    {{#select data.secChar.size.value}}
+                                <select class="sizeSelect" name="system.secChar.size.value" data-dtype="Number">
+                                    {{#select system.secChar.size.value}}
 
                                     {{#each size}}
 
@@ -343,8 +343,8 @@
                             </div>
                             <span >Cover</span>
 
-                            <select class="cover"  name="data.secChar.cover.value">
-                                {{#select data.secChar.cover.value}}
+                            <select class="cover"  name="system.secChar.cover.value">
+                                {{#select system.secChar.cover.value}}
                                 {{#each coverTypes}}
                                 <option value="{{value}}">{{label}}</option>
                                 {{/each}}
@@ -356,31 +356,31 @@
                             <div class="resource flex-group-center">
                                 <label  class="resource-label">Has Turret</label>
                                 <div class="resource-content flex-group-center">
-                                    <input type="checkbox" name="data.hasTurret.value" {{checked data.hasTurret.value}}>
+                                    <input type="checkbox" name="system.hasTurret.value" {{checked system.hasTurret.value}}>
                                 </div>
                             </div>
                             <span >Force Field</span>
                             <div class="flexrow">
                                 <select class="force-field" >
 
-                                    <option value="" {{#if data.secChar.wornGear.forceField.data}}selected{{/if}}>None</option>
+                                    <option value="" {{#if system.secChar.wornGear.forceField}}selected{{/if}}>None</option>
                                     {{#each actor.forceFields}}
-                                    <option value="{{this._id}}" {{#if this.data.isEquipped}}selected{{/if}}>{{this.name}}</option>
+                                    <option value="{{this._id}}" {{#if this.system.isEquipped}}selected{{/if}}>{{this.name}}</option>
                                     {{/each}}
                                 </select>
 
-                                {{#if data.secChar.wornGear.forceField._id}}
-                                <a class="item-edit" data-item-id="{{data.secChar.wornGear.forceField._id}}"data-type="forceField" title="Edit Forcefield"></a>
-                                <a class="item-delete minus-button" data-item-id="{{data.secChar.wornGear.forceField._id}}"data-type="forceField" title="Delete Forcefield"></a>
+                                {{#if system.secChar.wornGear.forceField._id}}
+                                <a class="item-edit" data-item-id="{{system.secChar.wornGear.forceField._id}}"data-type="forceField" title="Edit Forcefield"></a>
+                                <a class="item-delete minus-button" data-item-id="{{system.secChar.wornGear.forceField._id}}"data-type="forceField" title="Delete Forcefield"></a>
                             </div>
                             <div class="forcefield flexrow flex-group-center">
-                                {{#unless data.secChar.wornGear.forceField.data.broken.value}}
-                                <label>Overload: {{data.secChar.wornGear.forceField.data.rating.overload}}</label>
+                                {{#unless system.secChar.wornGear.forceField.system.broken.value}}
+                                <label>Overload: {{system.secChar.wornGear.forceField.system.rating.overload}}</label>
                                 <label>Rating: </label> 
 
-                                <span class="forcefield rollable button" data-roll-type="forcefield" data-id="{{data.secChar.wornGear.forceField._id}}">{{data.secChar.wornGear.forceField.data.rating.value}}</span>
+                                <span class="forcefield rollable button" data-roll-type="forcefield" data-id="{{system.secChar.wornGear.forceField._id}}">{{system.secChar.wornGear.forceField.system.rating.value}}</span>
                                 {{else}}
-                                <span class="forcefield repairForcefield button" data-id="{{data.secChar.wornGear.forceField._id}}" >Repair</span>
+                                <span class="forcefield repairForcefield button" data-id="{{system.secChar.wornGear.forceField._id}}" >Repair</span>
                                 {{/unless}}
 
                             </div>
@@ -405,26 +405,26 @@
                         <div class="armor flexcol flex-group-center">
 
                             <span>Front</span>
-                            <input type="text" class="combat-resources" data-target="data.facings.front.armor" value="{{data.facings.front.armor}}" data-dtype="Number"/>
+                            <input type="text" class="combat-resources" data-target="system.facings.front.armor" value="{{system.facings.front.armor}}" data-dtype="Number"/>
                         </div>
                         <div class="armor flexcol flex-group-center">
 
                             <span>Left Side</span>
 
 
-                            <input type="text" class="combat-resources" data-target="data.facings.lSide.armor" value="{{data.facings.lSide.armor}}" data-dtype="Number"/>
+                            <input type="text" class="combat-resources" data-target="system.facings.lSide.armor" value="{{system.facings.lSide.armor}}" data-dtype="Number"/>
                         </div>
                         <div class="armor flexcol flex-group-center">
 
                             <span>Right Side</span>
 
-                            <input type="text" class="combat-resources" data-target="data.facings.rSide.armor" value="{{data.facings.rSide.armor}}" data-dtype="Number"/>
+                            <input type="text" class="combat-resources" data-target="system.facings.rSide.armor" value="{{system.facings.rSide.armor}}" data-dtype="Number"/>
                         </div>
                         <div class="armor flexcol flex-group-center">
 
                             <span>Rear</span>
 
-                            <input type="text" class="combat-resources" data-target="data.facings.rear.armor" value="{{data.facings.rear.armor}}" data-dtype="Number"/>
+                            <input type="text" class="combat-resources" data-target="system.facings.rear.armor" value="{{system.facings.rear.armor}}" data-dtype="Number"/>
                         </div>
                     </div>
 
@@ -439,7 +439,7 @@
                     <span class="list-button"></span>
                     {{#each actor.talentsntraits as |t key|}}
 
-                    <a class="item-descr list-item" data-name="{{t.name}}" data-item-descr="{{t.data.description.value}}">{{t.name}}{{#unless (compareString "N/A" t.data.specialisation.value)}} ({{t.data.specialisation.value}}){{/unless}} </a>
+                    <a class="item-descr list-item" data-name="{{t.name}}" data-item-descr="{{t.system.description.value}}">{{t.name}}{{#unless (compareString "N/A" t.system.specialisation.value)}} ({{t.system.specialisation.value}}){{/unless}} </a>
                     <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
                     <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
 
@@ -453,7 +453,7 @@
             <div class="tnt flexcol">
                 <span class="section-title">Description</span>
                 <div class="item-description">
-                    {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable rollData=rollData}}
+                    {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable rollData=rollData}}
                 </div>
             </div>
         </div>

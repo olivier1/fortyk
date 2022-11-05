@@ -129,7 +129,7 @@ FORTYK.carry=[
     {"carry":2250,
      "lift":4500,
      "push":9000}]
-FORTYK.coverTypes=[{"value":0,"label":"None"},{"value":0.25,"label":"Light Cover"},{"value":0.5,"label":"Medium Cover"},{"value":0.75,"label":"Heavy Cover"}]
+FORTYK.coverTypes=[{"value":0,"label":"None"},{"value":0.1,"label":"Light Cover"},{"value":0.3,"label":"Medium Cover"},{"value":0.5,"label":"Heavy Cover"}]
 FORTYK.extraHits={ 
     "head":[{"value":"head","label":"Head"},{"value":"head","label":"Head"},{"value":"rArm","label":"Right Arm"},{"value":"body","label":"Body"},{"value":"lArm","label":"Left Arm"},{"value":"body","label":"Body"}],
     "rArm":[{"value":"rArm","label":"Right Arm"},{"value":"rArm","label":"Right Arm"},{"value":"body","label":"Body"},{"value":"head","label":"Head"},{"value":"body","label":"Body"},{"value":"lArm","label":"Left Arm"}],
@@ -652,7 +652,7 @@ FORTYK.StatusEffects = [
         icon: "icons/svg/terror.svg",
         flags: { core: { statusId: "shock" } },
         changes:[
-            {key: "data.globalMOD.value", value: -10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}            
+            {key: "system.globalMOD.value", value: -10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}            
         ]
     },
     {
@@ -699,13 +699,13 @@ FORTYK.StatusEffects = [
         icon: "systems/fortyk/icons/frenzy.png",
         flags: { core: { statusId: "frenzy" } },
         changes:[
-            {key: "data.characteristics.s.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.t.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.wp.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.ws.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.bs.value", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.int.value", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
-            {key: "data.characteristics.fel.value", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}
+            {key: "system.characteristics.s.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "system.characteristics.t.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "system.characteristics.wp.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "system.characteristics.ws.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "system.characteristics.bs.value", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "system.characteristics.int.value", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
+            {key: "system.characteristics.fel.value", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}
         ]
     },
     {
