@@ -432,7 +432,7 @@ Hooks.on("updateCombat", async (combat) => {
                     let tDmg=inlineResults[0];
                     let ae=[]
                     ae.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("t")]));
-                    ae[0].changes=[{key:`data.characteristics.t.value`,value:-1*tDmg,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
+                    ae[0].changes=[{key:`system.characteristics.t.value`,value:-1*tDmg,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                     await FortykRolls.applyActiveEffect(token,ae);
                 }
             }

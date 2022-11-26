@@ -45,6 +45,11 @@
             {{/select}}
         </select>
     </div>
+    {{#if isGM}}
+    <div class="flexcol">
+        <a class="modifier button">Active Effect</a>
+    </div>
+    {{/if}}
     <div class="item-description">
         <label>Description:</label>
         {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}

@@ -352,7 +352,7 @@ export class FortyKItemSheet extends ItemSheet {
         if(isNaN(newAmt)){
             return;
         }
-        let target=`data.hardPoints.${location}.${type}`;
+        let target=`system.hardPoints.${location}.${type}`;
         let oldValue=item.system.hardPoints[location][type].length;
         let oldArray=item.system.hardPoints[location][type];
 
@@ -394,7 +394,7 @@ export class FortyKItemSheet extends ItemSheet {
             if(isNaN(newAmt)){
                 return;
             }
-            let target=`data.hardPoints.${location}.${type}`;
+            let target=`system.hardPoints.${location}.${type}`;
             let oldValue=item.system.hardPoints[location][type].length;
             let oldArray=item.system.hardPoints[location][type];
            

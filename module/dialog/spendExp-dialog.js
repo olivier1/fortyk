@@ -251,7 +251,7 @@ export class SpendExpDialog extends Application {
             let item=await FortyKItem.create(itemData,{temporary:true});
             await actor.createEmbeddedDocuments("Item",[duplicate(item)]);
             let update={};
-            let path=`data.characteristics.${char}.advance`;
+            let path=`system.characteristics.${char}.advance`;
             update[path]=training;
             await actor.update(update);
             this.options.cost=0;

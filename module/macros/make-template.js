@@ -1,0 +1,12 @@
+let scene=game.scenes.active;
+let template={};
+template.angle=0;
+template.borderColor="#000000";
+template.direction=2;
+template.distance=3;
+template.fillColor="#2845cc";
+template.hidden=false;
+template.t="circle";
+template.x=200;
+template.y=500;
+scene.createEmbeddedDocuments("MeasuredTemplate",[template]);

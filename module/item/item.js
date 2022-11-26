@@ -58,7 +58,7 @@ export class FortyKItem extends Item {
 
         //ensure this is an owned item
       
-        if(this.actor!==null&&this.actor!==undefined){
+        if(this.actor){
             const data = this.actor.system;
             let actor=this.actor;
             item.isPrepared=true;
@@ -123,7 +123,7 @@ export class FortyKItem extends Item {
 
                 }else{
                     if(!item.system.damTyp===""){
-                        item.system.damageType.value=data.damTyp;
+                        item.system.damageType.value=item.system.damTyp;
                     }else{
                         item.system.damTyp=item.system.damageType.value;
                     }
@@ -366,7 +366,7 @@ export class FortyKItem extends Item {
                     try{
                         if(this.getFlag("fortyk","force")){
                             let pr=parseInt(data.psykana.pr.value);
-                            item.system.pen.value=parseInt(item._source.system.pen.value)+pr;
+                            item.system.pen.value+=pr;
                             item.system.damageFormula.value+=`+${pr}`;
                         }
                     }catch(err){

@@ -176,7 +176,7 @@ export class FortyKActor extends Actor {
         data.secChar.wornGear.armor={};
         data.secChar.wornGear.weapons=[{},{}];
         data.secChar.wornGear.forceField={};
-        if(this.getFlag("fortyk","marksman")){
+        if(this.getFlag("fortyk","marksman")||this.getFlag("fortyk","marksmanshonor")){
             data.secChar.attacks.range.long=0;
             data.secChar.attacks.range.extreme=0;
         }
@@ -1400,9 +1400,9 @@ export class FortyKActor extends Actor {
         if(embeddedName==="ActiveEffect"){
             let actor=this;
             documents.forEach(async function(item,i){
-             
-                if(item.origin){
-                    let powerId=item.system.origin.split('.')[3];
+                console.log(item,i)
+                if(item&&item.origin){
+                    let powerId=item.origin.split('.')[3];
                     let power=actor.getEmbeddedDocument("Item",powerId);
                     await power.update({"system.transferId":item.id})
                 }
@@ -1458,7 +1458,7 @@ export class FortyKActor extends Actor {
                         let char=data.characteristic.value;
                         let charAdv=actor.system.characteristics[char].advance;
                         charAdv-=5;
-                        let path=`data.characteristics.${char}.advance`;
+                        let path=`system.characteristics.${char}.advance`;
                         let upd={}
                         upd[path]=charAdv;
                         actor.update(upd);

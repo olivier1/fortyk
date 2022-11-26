@@ -64,13 +64,17 @@ export const getActorToken=function(actor){
     return t;
 }
 export const parseHtmlForInline=function(html){
+    console.log(html);
   let inlineStr=$(html).find(`a.inline-roll.inline-result`).text();
+    console.log(inlineStr)
     let resultArray=inlineStr.split(' ');
-    resultArray.shift();
+    console.log(resultArray)
+    
     let intArray=[];
     for(let i=0;i<resultArray.length;i++){
         intArray.push(parseInt(resultArray[i]));
     }
+    console.log(intArray)
     return intArray;
 }
 export const tokenDistance=function(token1,token2){
@@ -176,34 +180,11 @@ export const isEmpty=function (obj) {
     return true;
 }
 export const getVehicleFacing=function(vehicleToken,attackerToken){
-    console.log(vehicleToken,attackerToken)
-    //determine quadrant
-    let attackerx=attackerToken.x+(attackerToken.w/2);//adjust to get middle of token
-    let attackery=attackerToken.y+(attackerToken.h/2);//adjust to get middle of token
-    let vehiclex=vehicleToken.x+(vehicleToken.w/2);//adjust to get middle of token
-    let vehicley=vehicleToken.y+(vehicleToken.h/2);//adjust to get middle of token
    
-    let attackAngle=0;
-   console.log(vehiclex,vehicley,attackerx,attackery)
-    if(vehiclex>=attackerx){
-        //is on left of vehicle
-        if(vehicley<attackery){
-            //is under vehicle
-            attackAngle=Math.round(radToDeg(Math.atan((vehiclex-attackerx)/(attackery-vehicley))));
-        }else{
-            attackAngle=90+Math.round(radToDeg(Math.atan((vehicley-attackery)/(vehiclex-attackerx))));
-            //is above vehicle
-        }
-    }else{
-        //is on right of vehicle
-        if(vehicley>attackery){
-            //is above vehicle
-            attackAngle=180+Math.round(radToDeg(Math.atan((attackerx-vehiclex)/(vehicley-attackery))));
-        }else{
-            //is under vehicle
-            attackAngle=270+Math.round(radToDeg(Math.atan((attackery-vehicley)/(attackerx-vehiclex))));
-        }
-    }
+   
+   
+    let attackAngle=this.getAttackAngle(vehicleToken,attackerToken);
+   
     console.log(attackAngle)
     //adjust for vehicle rotation
     let vehicleRotation=vehicleToken.data.rotation;
@@ -241,6 +222,37 @@ export const degToRad=function (degrees) {
 export const radToDeg=function (rad) {
   return rad / (Math.PI / 180);
 };
+/*returns the angle of the line between two tokens with 0 being direct south
+@targetToken: the targetted token
+@attackerToken: the token initiating the attack
+*/
+export const getAttackAngle=function (targetToken,attackerToken){
+    let attackerx=attackerToken.x+(attackerToken.w/2);//adjust to get middle of token
+    let attackery=attackerToken.y+(attackerToken.h/2);//adjust to get middle of token
+    let targetx=targetToken.x+(targetToken.w/2);//adjust to get middle of token
+    let targety=targetToken.y+(targetToken.h/2);//adjust to get middle of token
+    let attackAngle=0;
+    if(targetx>=attackerx){
+        //is on left of target
+        if(targety<attackery){
+            //is under target
+            attackAngle=Math.round(radToDeg(Math.atan((targetx-attackerx)/(attackery-targety))));
+        }else{
+            attackAngle=90+Math.round(radToDeg(Math.atan((targety-attackery)/(targetx-attackerx))));
+            //is above target
+        }
+    }else{
+        //is on right of target
+        if(targety>attackery){
+            //is above target
+            attackAngle=180+Math.round(radToDeg(Math.atan((attackerx-targetx)/(targety-attackery))));
+        }else{
+            //is under target
+            attackAngle=270+Math.round(radToDeg(Math.atan((attackery-targety)/(attackerx-targetx))));
+        }
+    }
+    return attackAngle;
+}
 //
 //for looping through items to give them flags
 /*
