@@ -406,7 +406,7 @@ export class FortyKActor extends Actor {
                     data.shipPoints.spent+=parseInt(item.system.sp.value);
                 }else if(item.type==="spaceshipCargo"){
                     data.cargo.value+=parseInt(item.system.space.value);
-                    item.system.pf.total=eval(item.system.pf.value)*parseFloat(item.system.space.value);
+                    item.system.pf.total=Function(item.system.pf.value)()*parseFloat(item.system.space.value);
                     data.cargo.profit+=item.system.pf.total;
                 }
             });

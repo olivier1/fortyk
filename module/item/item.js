@@ -200,15 +200,15 @@ export class FortyKItem extends Item {
                         if(typeof fl=="string"){
                             if(fl.toLowerCase().indexOf("pr")!==-1){
 
-                                flags[flag]=Math.ceil(eval(flags[flag]));
+                                flags[flag]=Math.ceil(Function("return "+flags[flag])());
                             }
                         }
                     }
                     if(data.psykana.psykerType.value.toLowerCase()==="navigator"){
                         let range=item.system.range.formula.toLowerCase();
 
-                        item.system.range.value=Math.ceil(eval(range));
-                        item.system.pen.value=Math.ceil(eval(item.system.pen.formula.toLowerCase()));
+                        item.system.range.value=Math.ceil(Function("return "+range)());
+                        item.system.pen.value=Math.ceil(Function("return "+item.system.pen.formula.toLowerCase())());
                         let training=0;
                         switch(item.system.training.value){
                             case "Novice":
@@ -236,8 +236,8 @@ export class FortyKItem extends Item {
 
                             let range=item.system.range.formula.toLowerCase();
                             let wp=data.characteristics.wp.bonus;
-                            item.system.range.value=Math.ceil(eval(range));
-                            item.system.pen.value=Math.ceil(eval(item.system.pen.formula.toLowerCase()));
+                            item.system.range.value=Math.ceil(Function("return "+range)());
+                            item.system.pen.value=Math.ceil(Function("return "+item.system.pen.formula.toLowerCase())());
                             let temp;
                             temp=item.system.damageFormula.formula.replace(/pr/gmi,pr);
                             item.system.damageFormula.value=temp.replace(/wp/gmi,wp);
@@ -300,7 +300,7 @@ export class FortyKItem extends Item {
                     if (typeof item.system.range.formula === 'string' || item.system.range.formula instanceof String){
                         let sb=data.characteristics.s.bonus;
                         let formula=item.system.range.formula.toLowerCase();
-                        item.system.range.value=eval(formula);
+                        item.system.range.value=Function("return "+formula)();
                     }
                         
                     
