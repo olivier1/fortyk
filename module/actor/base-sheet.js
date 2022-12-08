@@ -790,7 +790,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let aeData=duplicate(ae);
             let pr=power.system.curPR.value;
             aeData.changes.forEach(function(change){
-                change.value=Function("return "+change.value)();
+                change.value=Function(`let pr=${pr};return `+change.value)();
                 if(change.value>=0){
                     aeData.icon="icons/svg/upgrade.svg";
                     aeData.id="buff";
