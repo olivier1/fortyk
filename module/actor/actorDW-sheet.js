@@ -197,7 +197,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let actor=this.actor;
         let data=duplicate(actor);
 
-        let weapons=Object.values(system.secChar.wornGear.extraWeapons);
+        let weapons=Object.values(data.system.secChar.wornGear.extraWeapons);
         weapons.push({});
         let weaponsObj=Object.assign({},weapons);
         await actor.update({"system.secChar.wornGear.extraWeapons":weaponsObj});
