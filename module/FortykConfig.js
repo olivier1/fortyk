@@ -307,6 +307,10 @@ FORTYK.weaponFlags={
         "value": false,
         "label": "Force",
         "description": "A force weapon relies on the user’s mind to unlock its true potential, suddenly turning a sword or staff into a device burning with eldritch energies able to reave tanks. Force weapons count as Best craftsmanship Mono variants of the equivalent Low-Tech weapon. In the hands of a psyker, the weapon also deals bonus damage and gains bonus penetration equal to the psyker’s base psy rating (so a psy rating 3 would grant +3 damage and +3 penetration), and the damage type changes to Energy. In addition, whenever a psyker damages an opponent, he may take a Focus Power action (Opposed with Willpower) as a Half Action. If he wins the test, then for every degree of success, the Force weapon’s wielder deals an additional 1d10 Energy damage, ignoring Armour and Toughness bonus. Psykers always use their base psy rating when determining psychic strength for this test, and cannot generate Psychic Phenomena on this test. Force weapons cannot be destroyed by weapons with the Power Field quality."
+    },"gauss": {
+        "value": false,
+        "label": "Gauss",
+        "description": "Gauss weapons are terrifying examples of advanced technology. Gauss weapons generate Zealous Hatred on a 9 or 10, and if they would not deal damage when generating Zealous Hatred, they deal 1d5 Wounds instead of 1 (see page 242). In addition, they generate Zealous Hatred against vehicles on a 9 or 0, even if they do not deal damage"
     },
     "graviton": {
         "value": false,

@@ -779,6 +779,9 @@ returns the roll message*/
         if(fortykWeapon.getFlag("fortyk","vengeful")){
             righteous=fortykWeapon.getFlag("fortyk","vengeful");
         }
+        if(fortykWeapon.getFlag("fortyk","gauss")){
+            righteous--;
+        }
         let ignoreSON=(fortykWeapon.type==="psychicPower"||fortykWeapon.getFlag("fortyk","force")||fortykWeapon.getFlag("fortyk","sanctified")||fortykWeapon.getFlag("fortyk","daemonbane")||fortykWeapon.getFlag("fortyk","warp"));
         if(!lastHit){
             lastHit=actor.system.secChar.lastHit;
@@ -1737,23 +1740,6 @@ returns the roll message*/
                         damageOptions.results.push(`</div>`) 
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
                         damageOptions.results.push(`<span>Total Damage: ${chatDamage}.</span>`);
-                        if(damage<=0){
-                            damageOptions.results.push(`<span>Damage is fully absorbed.</span>`);
-                        }
-                        damageOptions.results.push(`</div>`) 
-                        let renderedDamageTemplate= await renderTemplate(damageTemplate,damageOptions);
-                        var txt = document.createElement("textarea");
-                        txt.innerHTML = renderedDamageTemplate;
-                        renderedDamageTemplate= txt.value;
-                        await roll.toMessage({user: game.user._id,
-                                              speaker:{actor,alias:actor.name},
-                                              content:renderedDamageTemplate,
-                                              classes:["fortyk"],
-                                              author:actor.name});
-                        //await ChatMessage.create({content:renderedDamageTemplate},{});
-                        for(let i=0;i<messages.length;i++){
-                            await ChatMessage.create(messages[i],[]);
-                        }
                         let superheavyOptions={};
                         if(tarActor.getFlag("fortyk","superheavy")){
                             superheavyOptions.targetWeapon=targetWpn;
@@ -1776,10 +1762,39 @@ returns the roll message*/
                         let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar,ignoreSON,activeEffects,superheavyOptions);
                         //if righteous fury ensure attack deals atleast 1 dmg
                         if(tens&&damage<=0){
-                            damage=1;
+                            if(fortykWeapon.getFlag("fortyk","gauss")){
+                                let gaussDmg=new Roll("1d5");
+                                    await gaussDmg.evaluate({async: true});
+                                damageOptions.results.push(`<span>Gauss weapon deals ${gaussDmg.total} damage through the soak on righteous fury!</span>`);
+                                damage=gaussDmg.total;
+                            }else{
+                                damageOptions.results.push(`<span>Righteous fury deals ${gaussDmg.total} damage through the soak!</span>`);
+                                damage=1;
+                            }
+                            
                         }else if(damage<=0){
                             damage=0;
+                            damageOptions.results.push(`<span>Damage is fully absorbed.</span>`);
                         }
+                        damageOptions.results.push(`</div>`) 
+                        let renderedDamageTemplate= await renderTemplate(damageTemplate,damageOptions);
+                        var txt = document.createElement("textarea");
+                        txt.innerHTML = renderedDamageTemplate;
+                        renderedDamageTemplate= txt.value;
+                        await roll.toMessage({user: game.user._id,
+                                              speaker:{actor,alias:actor.name},
+                                              content:renderedDamageTemplate,
+                                              classes:["fortyk"],
+                                              author:actor.name});
+                        //await ChatMessage.create({content:renderedDamageTemplate},{});
+                        for(let i=0;i<messages.length;i++){
+                            await ChatMessage.create(messages[i],[]);
+                        }
+                        if(crit){
+                            await ChatMessage.create(crit,[]);
+                        }
+                        
+                        
                         //set new hp of target
                         newWounds[tarNumbr]=newWounds[tarNumbr]-damage;
                         newWounds[tarNumbr]=Math.max(wounds.min,newWounds[tarNumbr]);
@@ -1955,9 +1970,9 @@ returns the roll message*/
         //if righteous fury roll the d5 and spew out the crit result
         if(!vehicle&&tar!==null&&crit&&tar.actor.system.suddenDeath.value){
             this.applyDead(tar,actor,'<span class="chat-righteous">Righteous Fury</span>');
-            return true;
+            return false;
         }
-        if(crit&&damage>0){
+        if((weapon.getFlag("fortyk","gauss")&&crit&&vehicle)||(crit&&damage>0)){
             let diceStr="1d5";
             if(vehicle&&tar.actor.getFlag("fortyk","ramshackle")){
                 diceStr="1d10";    
@@ -1973,16 +1988,20 @@ returns the roll message*/
                 }
 
             }
-            return true;
+            return false;
         }else if(crit&&damage<1){
+            let dmg=1;
+            if(weapon.getFlag("fortyk","gauss")){
+                dmg="1d5";
+            }
             let chatOptions={user: game.user._id,
                              speaker:{actor,alias:actor.name},
-                             content:`<span class="chat-righteous">Righteous Fury</span> does 1 damage through the soak!`,
+                             content:`<span class="chat-righteous">Righteous Fury</span> does ${dmg} damage through the soak!`,
                              classes:["fortyk"],
                              flavor:`<span class="chat-righteous">Righteous Fury</span>`,
                              author:actor.name}
-            await ChatMessage.create(chatOptions,{});
-            return true;
+            //await ChatMessage.create(chatOptions,{});
+            return chatOptions;
         }else{
             return false;
         }

@@ -183,7 +183,7 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
    
    
    
-    let attackAngle=this.getAttackAngle(vehicleToken,attackerToken);
+    let attackAngle=getAttackAngle(vehicleToken,attackerToken);
    
     console.log(attackAngle)
     //adjust for vehicle rotation
