@@ -59,6 +59,7 @@ export class FortyKItem extends Item {
         //ensure this is an owned item
       
         if(this.actor){
+            console.log(this)
             const data = this.actor.system;
             let actor=this.actor;
             item.isPrepared=true;
@@ -190,7 +191,13 @@ export class FortyKItem extends Item {
 
             if(actor.type!=="vehicle"&&actor.type!=="knightHouse"){
                 if(item.type==="psychicPower"){
-                    let psyniscience=actor.system.skills.psyniscience;
+                    console.log(actor)
+                    try{
+                        var psyniscience=actor.system.skills.psyniscience;
+                    }catch(err){
+                        var psyniscience=0;
+                    }
+                    
                     let pr=parseInt(item.system.curPR.value);
                     //iterate through item flags to evaluate PR strings
                     let flags=item.flags.fortyk;
