@@ -1198,7 +1198,14 @@ returns the roll message*/
                         }
 
                         //check if weapon ignores soak
-                        if(!fortykWeapon.getFlag("fortyk","ignoreSoak")){
+                        let ignoreSoak=false;
+                        if(fortykWeapon.getFlag("fortyk","ignoreSoak")){
+                            ignoreSoak=true;
+                        }
+                        if(tarActor.getFlag("fortyk","machine")&&fortykWeapon.getFlag("fortyk","mindscrambler")){
+                            ignoreSoak=true;
+                        }
+                        if(!ignoreSoak){
                             damageOptions.results.push(`<div class="chat-target flexcol">`)
                             let pen=0;
                             //random pen logic

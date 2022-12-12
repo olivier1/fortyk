@@ -377,6 +377,11 @@ FORTYK.weaponFlags={
         "label": "Maximal",
         "description": "Many energy weapons have multiple settings, allowing the user greater tactical flexibility in combat. As a Free Action, this weapon can be switched between two modes: Standard (which uses the normal weapon profile) and Maximal. When the weapon is fired on Maximal, it adds 10 metres to its range, 1d10 to its damage, and +2 to its penetration. If it has the Blast quality, then the value of this quality is increased by 2 (i.e., Blast [3] becomes Blast [5]). The weapon also uses three times the normal amount of ammunition per shot and gains the Recharge quality."
     },
+    "mindscrambler": {
+        "value": false,
+        "label": "Mindscrambler",
+        "description": "These weapons emit intense electromagnetic and magnetic waves which interfere with the functioning of machine to a dangerous degree. Weapons with this quality ignore all armor and toughness when dealing damage to a creature with the machine trait."
+    },
     "melta": {
         "value": false,
         "label": "Melta",
