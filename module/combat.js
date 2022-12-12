@@ -9,7 +9,6 @@ export const _getInitiativeFormula = function() {
     if(actor.type==="vehicle"){
         if(actor.system.knight.pilot){
             actor=actor.system.knight.pilot;
-            console.log(actor)
             init=`1d10 + ${actor.system.characteristics.agi.bonus} + ${actor.system.secChar.initiative.value} + (${actor.system.characteristics.agi.total} / 100)`;
         }else{
             let crewRating=actor.system.crew.rating;

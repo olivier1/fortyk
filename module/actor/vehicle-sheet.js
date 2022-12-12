@@ -63,7 +63,6 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
             } 
         }catch(err){
         }
-        console.log(result)
         let overheatResult="";
         let overheatFlavor=""
         if(ones>1){

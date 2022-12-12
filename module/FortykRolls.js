@@ -357,7 +357,6 @@ returns the roll message*/
                 blast=true;
             }
             let rof=1;
-            console.log(attackType)
             if(attackType==="semi"){
                 rof=parseInt(weapon.system.rof[1].value);
 
@@ -405,7 +404,7 @@ returns the roll message*/
 
 
                         let distance=tokenDistance(attacker,attackTarget);
-                        console.log(distance)
+                  
                         let weaponRng=parseInt(weapon.system.range.value);
                         if(distance<=weaponRng/2){
                         }else if(distance<=weaponRng*2){
@@ -418,7 +417,7 @@ returns the roll message*/
                     }
                     let targetx=attackTarget.x+(attackTarget.w/2);//adjust to get middle of token
                     let targety=attackTarget.y+(attackTarget.h/2);//adjust to get middle of token
-                    console.log(targetx,targety)
+             
                     let gridRatio=canvas.dimensions.size/canvas.dimensions.distance;
                     let templates=[];
                     let contentStr="<div class='flexcol'><img class='fortyk' src='../systems/fortyk/icons/scatter.png'>";
@@ -447,7 +446,7 @@ returns the roll message*/
                                 mult=testDos;
                             }
                             let distance=distanceRoll._total*mult;
-                            console.log(distanceRoll,mult)
+                           
                             let pixelDistance=distance*gridRatio;
                             let radianAngle=modifiedAngle*(Math.PI/180);
                             let xDistance=-(pixelDistance*Math.sin(radianAngle));
@@ -1758,20 +1757,19 @@ returns the roll message*/
                                 superheavyOptions.threshold=5;
                             }
                         }
-                        //check for righteous fury
-                        let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar,ignoreSON,activeEffects,superheavyOptions);
+                        
                         //if righteous fury ensure attack deals atleast 1 dmg
                         if(tens&&damage<=0){
                             if(fortykWeapon.getFlag("fortyk","gauss")){
                                 let gaussDmg=new Roll("1d5");
-                                    await gaussDmg.evaluate({async: true});
+                                await gaussDmg.evaluate({async: true});
                                 damageOptions.results.push(`<span>Gauss weapon deals ${gaussDmg.total} damage through the soak on righteous fury!</span>`);
                                 damage=gaussDmg.total;
                             }else{
-                                damageOptions.results.push(`<span>Righteous fury deals ${gaussDmg.total} damage through the soak!</span>`);
+                                damageOptions.results.push(`<span>Righteous fury deals 1 damage through the soak!</span>`);
                                 damage=1;
                             }
-                            
+
                         }else if(damage<=0){
                             damage=0;
                             damageOptions.results.push(`<span>Damage is fully absorbed.</span>`);
@@ -1790,11 +1788,13 @@ returns the roll message*/
                         for(let i=0;i<messages.length;i++){
                             await ChatMessage.create(messages[i],[]);
                         }
+                        //check for righteous fury
+                        let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar,ignoreSON,activeEffects,superheavyOptions);
                         if(crit){
                             await ChatMessage.create(crit,[]);
                         }
-                        
-                        
+
+
                         //set new hp of target
                         newWounds[tarNumbr]=newWounds[tarNumbr]-damage;
                         newWounds[tarNumbr]=Math.max(wounds.min,newWounds[tarNumbr]);
@@ -1805,7 +1805,7 @@ returns the roll message*/
 
                             let crossed=[];
                             if(curWounds>thresholds["1"]&&thresholds["1"]>=newWounds[tarNumbr]){
-                                console.log("hey")
+                               
                                 crossed.push(0);
                             }
                             if(curWounds>thresholds["2"]&&thresholds["2"]>=newWounds[tarNumbr]){
@@ -4119,6 +4119,7 @@ returns the roll message*/
 
     }
     static async applyActiveEffect(token,effect,ignoreSON=false){
+        console.log(effect)
         if(effect.length>0){
             if(game.user.isGM||token.isOwner){
 
@@ -4178,7 +4179,7 @@ returns the roll message*/
                     if(effect[index].id==="stunned"&&actor.getFlag("fortyk","ironjaw")){
                         skip=(await this.fortykTest("t", "char", (actor.system.characteristics.t.total),actor, "Iron Jaw")).value;
                     }
-                    if(effect[index].id==="stunned"&&actor.getFlag("fortyk","frenzy")){
+                    if(effect[index].id==="stunned"&&actor.getFlag("core","frenzy")){
                         skip=true;
                     }
                     if(!ignoreSON&&(effect[index].id==="stunned"||effect[index].id==="bleeding")&&actor.getFlag("fortyk","stuffoffnightmares")){
@@ -4189,9 +4190,8 @@ returns the roll message*/
                         aEs.push(effect[index])
                     }
                 }
-                console.log(aEs,actor)
                 await actor.createEmbeddedDocuments("ActiveEffect",aEs);
-                console.log("hey")
+              
             }else{
                 //if user isnt GM use socket to have gm update the actor
                 let tokenId=token._id;
@@ -4202,7 +4202,7 @@ returns the roll message*/
     }
     static async applyDead(target,actor,cause=""){
         if(game.user.isGM||target.owner){
-            console.log(actor)
+            
             let msg=target.name+" is killed";
             if(cause!==""){
                 msg+=" by "+cause+"!";
@@ -4217,16 +4217,23 @@ returns the roll message*/
                              author:actor.name}
             await ChatMessage.create(chatOptions,{});
             let id=target._id;
-            let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
-            await this.applyActiveEffect(actor,activeEffect);
-            try{
-                let combatant = await game.combat.getCombatantByToken(id);
-                let combatid=combatant.id;
-                let update=[];
-                update.push({"_id":combatid, 'defeated':true})
-                await game.combat.updateEmbeddedDocuments("Combatant",update) 
-            }catch(err){
+
+            if(actor.getFlag("fortyk","regeneration")&&actor.system.race.value==="Necron"){
+                let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("unconscious")])];
+                await this.applyActiveEffect(actor,activeEffect);
+            }else{
+                let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
+                await this.applyActiveEffect(actor,activeEffect);
+                /*try{
+                    let combatant = await game.combat.getCombatantByToken(id);
+                    let combatid=combatant.id;
+                    let update=[];
+                    update.push({"_id":combatid, 'defeated':true})
+                    await game.combat.updateEmbeddedDocuments("Combatant",update) 
+                }catch(err){
+                } */
             }
+
 
         }else{
             let tokenId=target._id;

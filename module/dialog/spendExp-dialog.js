@@ -604,7 +604,6 @@ export class SpendExpDialog extends Application {
     _updateCost(){
         document.getElementById("cost").textContent=this.options.cost;
         this.remainingExp=this.actorExp-this.options.cost;
-        console.log(this.options.cost,this.actorExp)
         document.getElementById("remainingExp").textContent=this.remainingExp
 
 

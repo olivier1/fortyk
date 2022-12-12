@@ -564,6 +564,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
     //handles editing text inputs that are linked to owned items 
     async _itemTextInputEdit(event){
+        
         let actor= this.actor;
         let newAmt=event.target.value;
 
@@ -574,7 +575,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         if(oldValue!=newAmt){
             let update={};
             update[target]=newAmt;
-            item.update(update);
+            await item.update(update);
         }
     }
     //handles firing mode change for maximal weapons

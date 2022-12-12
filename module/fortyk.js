@@ -50,9 +50,9 @@ Hooks.once('init', async function() {
         return statusFlags;
     })();
     /**
-   * Set an initiative formula for the system
-   * @type {String}
-   */
+       * Set an initiative formula for the system
+       * @type {String}
+       */
     CONFIG.Combat.initiative = {
         formula: "1d10 + @characteristics.agi.bonus + @secChar.initiative.value + (@characteristics.agi.total / 100)",
         decimals: 2
@@ -237,7 +237,7 @@ Hooks.once('ready', async function() {
                 case "reportDamage":
                     let targetId=data.package.target;
                     let target=canvas.tokens.get(targetId);
-                    console.log(target)
+                  
                     let targetActor=target.actor;
                     let damage=data.package.damage;
                     FortykRolls.reportDamage(targetActor,damage);
@@ -294,6 +294,7 @@ Hooks.once('ready', async function() {
 });
 //round management effects, when a token's turn starts
 Hooks.on("updateCombat", async (combat) => {
+   
     if(game.user.isGM){
         game.user.updateTokenTargets();
         let token=canvas.tokens.get(combat.current.tokenId);
@@ -311,9 +312,9 @@ Hooks.on("updateCombat", async (combat) => {
             actor.sheet.render(true);
 
         }
-
+        var dead={};
         for(let activeEffect of actor.effects){
-          
+
             if(activeEffect.duration.rounds!==null){
 
                 let remaining=Math.ceil(activeEffect.duration.remaining);
@@ -342,6 +343,10 @@ Hooks.on("updateCombat", async (combat) => {
             }
             //check for flags
             if(activeEffect.flags.core){
+
+                if(activeEffect.flags.core.statusId==="unconscious"){
+                    dead=activeEffect;
+                }
                 //check for fire
                 if(activeEffect.flags.core.statusId==="fire"){
                     if(actor.type!=="vehicle"){
@@ -397,6 +402,7 @@ Hooks.on("updateCombat", async (combat) => {
                                                 flavor:`Bleeding`,
                                                 author:actor.name};
                             await ChatMessage.create(dieHardOptions,{});
+
                         }
                     }
                     if(bleed){
@@ -439,14 +445,44 @@ Hooks.on("updateCombat", async (combat) => {
         }
         //check for regeneration
         if(actor.getFlag("fortyk","regeneration")){
-            let regen=await FortykRolls.fortykTest("t", "char", actor.system.characteristics.t.total,actor, "Regeneration");
-            if(regen.value){
-                let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
-                let maxWounds=actor.system.secChar.wounds.max;
-                let currWounds=actor.system.secChar.wounds.value;
-                currWounds=Math.min(maxWounds,currWounds+regenAmt);
-                await actor.update({"system.secChar.wounds.value":currWounds});
+            let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
+            if(actor.system.race.value==="Necron"&&actor.getFlag("core","unconscious")){
+                let reanimation= await FortykRolls.fortykTest("t", "char", actor.system.characteristics.t.total-20,actor, "Reanimation protocol");
+               
+                if(reanimation.value){
+
+                    let reanimationOptions={user: game.user._id,
+                                            speaker:{actor,alias:actor.name},
+                                            content:`${actor.name} rises from the dead!`,
+                                            classes:["fortyk"],
+                                            flavor:`Reanimation protocol`,
+                                            author:actor.name};
+                    await ChatMessage.create(reanimationOptions,{});
+                    await dead.delete();
+                    await actor.update({"system.secChar.wounds.value":regenAmt});
+
+                }else if((!reanimation.value)&&reanimation.dos>=3){
+                     let reanimationOptions={user: game.user._id,
+                                            speaker:{actor,alias:actor.name},
+                                            content:`${actor.name} is recalled away!`,
+                                            classes:["fortyk"],
+                                            flavor:`Reanimation protocol`,
+                                            author:actor.name};
+                    await ChatMessage.create(reanimationOptions,{});
+                    await dead.delete();
+                    let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
+                    await FortykRolls.applyActiveEffect(actor,activeEffect);
+                }
+            }else{
+                let regen=await FortykRolls.fortykTest("t", "char", actor.system.characteristics.t.total,actor, "Regeneration");
+                if(regen.value){
+                    let maxWounds=actor.system.secChar.wounds.max;
+                    let currWounds=actor.system.secChar.wounds.value;
+                    currWounds=Math.min(maxWounds,currWounds+regenAmt);
+                    await actor.update({"system.secChar.wounds.value":currWounds});
+                }
             }
+            
         }
     }
 })
@@ -500,8 +536,8 @@ Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
     }
 });
 /**
- * Add the mane active effects button to actor sheets
- */
+     * Add the mane active effects button to actor sheets
+     */
 Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
     if(game.user.isGM){
         let button={}
@@ -545,8 +581,8 @@ Hooks.on("preCreateActor", (createData) =>{
 Hooks.on("createToken", async (document, data, options, userId) =>{
     //modify token dimensions if scene ratio isnt 1
     let gridRatio=canvas.dimensions.distance;
-    let newHeight=Math.max(1,document.height/gridRatio);
-    let newWidth=Math.max(1,document.width/gridRatio);
+    let newHeight=Math.max(0.1,document.height/gridRatio);
+    let newWidth=Math.max(0.1,document.width/gridRatio);
     if(newHeight!==document.height||newWidth!==document.width){
         await document.update({"_id":randomID(6),"height":newHeight,"width":newWidth});
     }
@@ -616,7 +652,7 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
                 //modify token dimensions if scene ratio isnt 1
                 let gridRatio=canvas.dimensions.distance;
                 size=Math.max(1,size/gridRatio);
-                
+
             }else{
                 size= game.fortyk.FORTYK.size[newSize].size;
             }

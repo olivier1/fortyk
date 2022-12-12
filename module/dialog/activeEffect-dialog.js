@@ -13,7 +13,6 @@ export class ActiveEffectDialog extends Dialog {
         super.activateListeners(html);
 
 
-
         html.find('.ae').click(this._onAeClick.bind(this));
         html.find('.ae-create').click(this._onAeCreate.bind(this));
         html.find('.ae-delete').click(this._onAeDelete.bind(this));
@@ -40,7 +39,6 @@ export class ActiveEffectDialog extends Dialog {
         new ActiveEffectConfig(effect).render(true);
     }
     async _onAeCreate(event){
-
         let actorId = event.currentTarget.attributes["data-actor-id"].value;
         let tokenId = event.currentTarget.attributes["data-token-id"].value;
         let actor = game.actors.get(actorId);

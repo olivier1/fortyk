@@ -59,7 +59,6 @@ export class FortyKItem extends Item {
         //ensure this is an owned item
       
         if(this.actor){
-            console.log(this)
             const data = this.actor.system;
             let actor=this.actor;
             item.isPrepared=true;
@@ -120,7 +119,6 @@ export class FortyKItem extends Item {
                     item.system.pen.value=ammo.system.pen.formula;
                     item.system.damageFormula.value=ammo.system.damageFormula.formula;
                     item.flags=ammo.flags;
-                    console.log(item);
 
                 }else{
                     if(!item.system.damTyp===""){
@@ -191,7 +189,6 @@ export class FortyKItem extends Item {
 
             if(actor.type!=="vehicle"&&actor.type!=="knightHouse"){
                 if(item.type==="psychicPower"){
-                    console.log(actor)
                     try{
                         var psyniscience=actor.system.skills.psyniscience;
                     }catch(err){

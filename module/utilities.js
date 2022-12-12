@@ -45,7 +45,7 @@ export const sleep=function(ms) {
 }
 //returns an actors token object, not the token document. Will search the active canvas for the current token.
 export const getActorToken=function(actor){
-    console.log(actor)
+   
     if(actor.token!==null){
         return actor.token; 
     }
@@ -60,21 +60,19 @@ export const getActorToken=function(actor){
             t=token;
         }
     }
-    console.log(t)
     return t;
 }
 export const parseHtmlForInline=function(html){
-    console.log(html);
+   
   let inlineStr=$(html).find(`a.inline-roll.inline-result`).text();
-    console.log(inlineStr)
+
     let resultArray=inlineStr.split(' ');
-    console.log(resultArray)
+ 
     
     let intArray=[];
     for(let i=0;i<resultArray.length;i++){
         intArray.push(parseInt(resultArray[i]));
     }
-    console.log(intArray)
     return intArray;
 }
 export const tokenDistance=function(token1,token2){
@@ -138,7 +136,7 @@ export const getSkills= async function(){
     return skillCollection;
 };
 export const objectByString = function(o, s) {
-    
+   
     s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
     s = s.replace(/^\./, '');           // strip a leading dot
     var a = s.split('.');
@@ -185,16 +183,14 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
    
     let attackAngle=getAttackAngle(vehicleToken,attackerToken);
    
-    console.log(attackAngle)
+
     //adjust for vehicle rotation
     let vehicleRotation=vehicleToken.data.rotation;
-    console.log(vehicleToken)
     attackAngle-=vehicleRotation;
     if(attackAngle<0){
         attackAngle=360+attackAngle;
     }
     let facings=vehicleToken.actor.system.facings;
-    console.log(facings, attackAngle)
     let facing=null;
     let split={};
     for(const face in facings){
@@ -212,7 +208,6 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
     if(facing===null){
         facing=split;
     }
-    console.log(facing)
     return facing;
 }
 export const degToRad=function (degrees) {

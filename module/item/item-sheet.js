@@ -39,7 +39,6 @@ export class FortyKItemSheet extends ItemSheet {
 
         const item=this.item;
         const data = this.item;
-        console.log(data)
         if(this.item.type==="skill"){
             //GET THE SKILLS WITH CHILDREN
             if(this.actor){

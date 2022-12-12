@@ -156,7 +156,7 @@ export class FortyKActor extends Actor {
     prepareData(){
         if (!this.img) this.img = CONST.DEFAULT_TOKEN;
         if ( !this.name ) this.name = "New " + this.entity;
-
+        
         this.prepareBaseData();
         this.prepareEmbeddedEntities();
         this.prepareDerivedData();
@@ -557,7 +557,6 @@ export class FortyKActor extends Actor {
                 char.total=Math.min(char.total,char.max);
             }else{
                 char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod);
-                char.total=Math.min(char.total,char.max);
                 char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
                 char.total+=parseInt(data.globalMOD.value);
                 char.total=Math.min(char.total,char.max);
@@ -683,7 +682,7 @@ export class FortyKActor extends Actor {
                 }
             }
         }
-        this.prepareSkills(data);
+        this.prepareItems(data);
     }
     _prepareNPCData(actorData){
         const data=this.system;
@@ -915,7 +914,7 @@ export class FortyKActor extends Actor {
 
         }
     }
-    prepareSkills(data){
+    prepareItems(data){
         //get worn weapon ids into an array so that they can be accessed by the sheet easily
         let wornWeapons=data.secChar.wornGear.weapons;
         if(!Array.isArray(data.secChar.wornGear.weapons)){
@@ -933,6 +932,20 @@ export class FortyKActor extends Actor {
         let leftParry=this.weaponParry(leftHandWeapon);
         let rightParry=this.weaponParry(rightHandWeapon);
         let parry=Math.max(leftParry,rightParry);
+        //prepare weapons and powers
+        let rangedWeapons=this.itemTypes.rangedWeapon;
+        for(let i=0;i<rangedWeapons.length;i++){
+            rangedWeapons[i].prepareData();
+        }
+        let meleeWeapons=this.itemTypes.meleeWeapon;
+        for(let i=0;i<meleeWeapons.length;i++){
+            meleeWeapons[i].prepareData();
+        }
+        let psychicPowers=this.itemTypes.psychicPower;
+        for(let i=0;i<psychicPowers.length;i++){
+            psychicPowers[i].prepareData();
+        }
+        //prepare skills
         let skills=this.itemTypes.skill;
         data.skills={};
         for(let i=0;i<skills.length;i++){
@@ -1400,7 +1413,6 @@ export class FortyKActor extends Actor {
         if(embeddedName==="ActiveEffect"){
             let actor=this;
             documents.forEach(async function(item,i){
-                console.log(item,i)
                 if(item&&item.origin){
                     let powerId=item.origin.split('.')[3];
                     let power=actor.getEmbeddedDocument("Item",powerId);
