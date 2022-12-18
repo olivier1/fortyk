@@ -156,7 +156,7 @@ export class FortyKActor extends Actor {
     prepareData(){
         if (!this.img) this.img = CONST.DEFAULT_TOKEN;
         if ( !this.name ) this.name = "New " + this.entity;
-        
+
         this.prepareBaseData();
         this.prepareEmbeddedEntities();
         this.prepareDerivedData();
@@ -337,7 +337,7 @@ export class FortyKActor extends Actor {
                 }
                 //check if equipped
                 if((item.type==="meleeWeapon"||item.type==="rangedWeapon")&&item.system.isEquipped){
-                    
+
                     if(item.system.isEquipped.indexOf("right")!==-1){
                         data.secChar.wornGear.weapons[0]=fortykItem; 
                         if(item.system.twohanded.value){
@@ -885,7 +885,10 @@ export class FortyKActor extends Actor {
         if(data.knight.chassis){
             data.knight.tonnage.armor=data.knight.armorValues.value*armorRatio;
             data.knight.tonnage.value+=data.knight.tonnage.armor;
+            //round the total tonnage to 2 decimals
+            data.knight.tonnage.value=Math.round((data.knight.tonnage.value + Number.EPSILON) * 100) / 100
         }
+
         data.crew.ratingTotal=data.crew.rating+data.secChar.manoeuvrability.value;
     }
     _prepareHouseData(actorData){
@@ -1235,7 +1238,7 @@ export class FortyKActor extends Actor {
             }else if(item.type==="spaceshipWeapon"){
                 if(item.system.type.value==="Hangar"){
                     item.system.damage.value="1d10+"+Math.ceil(data.crew.rating/10);
-                  
+
                     let squadron=this.items.get(item.system.torpedo.id);
                     if(squadron){
                         if(squadron.system.halfstr.value){
@@ -1409,20 +1412,22 @@ export class FortyKActor extends Actor {
     }
     //when creating active effects check if they are transferred from an item, if so give the active effect flag to the item for referrence.
     _onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId){
-        
-        if(embeddedName==="ActiveEffect"){
-            let actor=this;
-            documents.forEach(async function(item,i){
-                if(item&&item.origin){
-                    let powerId=item.origin.split('.')[3];
-                    let power=actor.getEmbeddedDocument("Item",powerId);
-                    await power.update({"system.transferId":item.id})
-                }
-            })
+        if(game.user.isGM){
+            if(embeddedName==="ActiveEffect"){
+                let actor=this;
+                documents.forEach(async function(item,i){
+                    if(item&&item.origin){
+                        let powerId=item.origin.split('.')[3];
+                        let power=actor.getEmbeddedDocument("Item",powerId);
+                        await power.update({"system.transferId":item.id})
+                    }
+                })
+            }
+            if(this.type==="knightHouse"){
+                this.updateKnights();
+            } 
         }
-        if(this.type==="knightHouse"){
-            this.updateKnights();
-        }
+
         super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
     }
     _onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId){

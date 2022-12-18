@@ -506,6 +506,11 @@ FORTYK.weaponFlags={
         "label": "Tainted",
         "description": "Permeated with the power of the Warp, these weapons draw out the inner darkness of their wielders. Weapons with this quality inflict additional damage equal to the value of the user’s Corruption bonus or Daemonic (X) trait value (whichever is higher)."
     }, 
+    "tarHead": {
+        "value": false,
+        "label": "Targets Head",
+        "description": "Some weapons always hit the head, this trait reprsesents that."
+    }, 
     "taxing": {
         "value": false,
         "num": 0,
@@ -568,6 +573,11 @@ FORTYK.weaponFlags={
         "value": false,
         "label": "Warp",
         "description": "Creatures with this trait have weapons that are partially insubstantial, able to ignore such mundane things as armour or cover. Natural weapons and attacks made by a creature with this trait ignore physical armour, unless the armour is created from psychoactive materials or is somehow warded against the Warp. Force fields still work against these attacks normally."
+    },
+     "wpSoak": {
+        "value": false,
+        "label": "Willpower Soak",
+        "description": "Certain psychic powers have their damage reduced by the target's willpower bonus instead of toughness. This trait represents that ability."
     }
 }
 FORTYK.weaponFacings=[{value:"",label:"None"},{value:"front",label:"Front"},{value:"rear",label:"Rear"},{value:"lSide",label:"Left Side"},{value:"rSide",label:"Right Side"}]

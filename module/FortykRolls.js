@@ -334,6 +334,10 @@ returns the roll message*/
                 hitlocation=FORTYKTABLES.hitLocations[actor.system.secChar.lastHit.called];
                 vehicleHitlocation=FORTYKTABLES.vehicleHitLocations[actor.system.secChar.lastHit.called];
             }
+            if(fortykWeapon.getFlag("fortyk","tarHead")){
+                hitlocation=FORTYKTABLES.hitLocations[1];
+                vehicleHitlocation=FORTYKTABLES.vehicleHitLocations[81];
+            }
             await actor.update({"system.secChar.lastHit.value":hitlocation.value,"system.secChar.lastHit.label":hitlocation.label,"system.secChar.lastHit.dos":testDos,"system.secChar.lastHit.hits":hits,"system.secChar.lastHit.vehicleHitLocation":vehicleHitlocation});
             let content="";
             if(vehicle){
@@ -404,7 +408,7 @@ returns the roll message*/
 
 
                         let distance=tokenDistance(attacker,attackTarget);
-                  
+
                         let weaponRng=parseInt(weapon.system.range.value);
                         if(distance<=weaponRng/2){
                         }else if(distance<=weaponRng*2){
@@ -417,7 +421,7 @@ returns the roll message*/
                     }
                     let targetx=attackTarget.x+(attackTarget.w/2);//adjust to get middle of token
                     let targety=attackTarget.y+(attackTarget.h/2);//adjust to get middle of token
-             
+
                     let gridRatio=canvas.dimensions.size/canvas.dimensions.distance;
                     let templates=[];
                     let contentStr="<div class='flexcol'><img class='fortyk' src='../systems/fortyk/icons/scatter.png'>";
@@ -446,7 +450,7 @@ returns the roll message*/
                                 mult=testDos;
                             }
                             let distance=distanceRoll._total*mult;
-                           
+
                             let pixelDistance=distance*gridRatio;
                             let radianAngle=modifiedAngle*(Math.PI/180);
                             let xDistance=-(pixelDistance*Math.sin(radianAngle));
@@ -992,7 +996,7 @@ returns the roll message*/
                         let armorSuit=undefined;
                         let isHordelike=false;
                         if(!vehicle){
-                            armorSuit=data.secChar.wornGear.armor.document;
+                            armorSuit=data.secChar.wornGear.armor;
                             if(data.horde.value||data.formation.value){
                                 isHordelike=true;
                             }
@@ -1157,7 +1161,8 @@ returns the roll message*/
                             damageOptions.results.push(`<span class="chat-righteous">Righteous Fury!</span>`)
                         }
                         damageOptions.results.push(`</div>`);
-                        if(!armorSuit){
+                        console.log(armorSuit)
+                        if(jQuery.isEmptyObject(armorSuit)){
                             armorSuit=await Item.create({type:"armor",name:"standin"},{temporary:true});
                         }
                         let wounds=data.secChar.wounds;
@@ -1275,8 +1280,13 @@ returns the roll message*/
                             }else if(fortykWeapon.getFlag("fortyk","warp")&&armorSuit.getFlag("fortyk","holy")){
                                 damageOptions.results.push(`<span>Warp weapon is repelled by warded armor.</span>`);
                             }
-
-                            if(!vehicle&&fortykWeapon.getFlag("fortyk","felling")&&parseInt(tarActor.system.characteristics.t.uB)){
+                            if(!vehicle&&fortykWeapon.getFlag("fortyk","wpSoak")){
+                                let ts=parseInt(tarActor.system.characteristics.t.bonus);
+                                soak-=ts;
+                                let wps=parseInt(tarActor.system.characteristics.wp.bonus);
+                                soak+=wps;
+                                damageOptions.results.push(`<span>This attack targets the target's willpower instead of toughness!</span>`);
+                            }else if(!vehicle&&fortykWeapon.getFlag("fortyk","felling")&&parseInt(tarActor.system.characteristics.t.uB)){
                                 let ut=parseInt(tarActor.system.characteristics.t.uB);
                                 let fel=Math.min(ut,fortykWeapon.getFlag("fortyk","felling"));
                                 damageOptions.results.push(`<span>Felling ignores ${fel} unnatural toughness.</span>`);
@@ -1652,6 +1662,7 @@ returns the roll message*/
                             messages.push(chatOptions);
                         }
                         //impenetrable armor logic
+                        console.log(armorSuit)
                         if(armorSuit.getFlag("fortyk","impenetrable")){
                             damage=Math.ceil(damage/2);
                             if(damage>0){
@@ -1764,7 +1775,7 @@ returns the roll message*/
                                 superheavyOptions.threshold=5;
                             }
                         }
-                        
+
                         //if righteous fury ensure attack deals atleast 1 dmg
                         if(tens&&damage<=0){
                             if(fortykWeapon.getFlag("fortyk","gauss")){
@@ -1812,7 +1823,7 @@ returns the roll message*/
 
                             let crossed=[];
                             if(curWounds>thresholds["1"]&&thresholds["1"]>=newWounds[tarNumbr]){
-                               
+
                                 crossed.push(0);
                             }
                             if(curWounds>thresholds["2"]&&thresholds["2"]>=newWounds[tarNumbr]){
@@ -1835,6 +1846,13 @@ returns the roll message*/
                             let knightHeat=parseInt(tarActor.system.knight.heat.value);
                             knightHeat+=heat;
                             await tarActor.update({"system.knight.heat.value":knightHeat});
+                            let chatOptions={user: game.user._id,
+                                             speaker:{actor,alias:actor.name},
+                                             content:"Gained 1 heat from energy attack triggering threshold.",
+                                             classes:["fortyk"],
+                                             flavor:`Gained heat`,
+                                             author:actor.name}
+                            await ChatMessage.create(chatOptions,{});
                         }
 
                         //apply field practitioner critical
@@ -1865,7 +1883,7 @@ returns the roll message*/
                             this.reportDamage(tarActor, damage);
                         }else{
                             //if user isnt GM use socket to have gm update the actor
-                            let tokenId=tar._id;
+                            let tokenId=tar.id;
                             let socketOp={type:"reportDamage",package:{target:tokenId,damage:damage}}
                             await game.socket.emit("system.fortyk",socketOp);
                         }
@@ -1877,7 +1895,7 @@ returns the roll message*/
                             await tarActor.update({"system.secChar.wounds.value":newWounds[tarNumbr]});
                         }else{
                             //if user isnt GM use socket to have gm update the actor
-                            let tokenId=tar._id;
+                            let tokenId=tar.id;
                             let socketOp={type:"updateValue",package:{token:tokenId,value:newWounds[tarNumbr],path:"system.secChar.wounds.value"}}
                             await game.socket.emit("system.fortyk",socketOp);
                         }
@@ -4198,7 +4216,7 @@ returns the roll message*/
                     }
                 }
                 await actor.createEmbeddedDocuments("ActiveEffect",aEs);
-              
+
             }else{
                 //if user isnt GM use socket to have gm update the actor
                 let tokenId=token._id;
@@ -4209,7 +4227,7 @@ returns the roll message*/
     }
     static async applyDead(target,actor,cause=""){
         if(game.user.isGM||target.owner){
-            
+
             let msg=target.name+" is killed";
             if(cause!==""){
                 msg+=" by "+cause+"!";

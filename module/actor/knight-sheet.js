@@ -1020,6 +1020,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                         stomp.system.pen.value=0;
                         stomp.system.damageFormula.value=formula;
                         await FortykRolls.damageRoll(stomp.system.damageFormula,actor,stomp,1);
+                        
 
                     }
                 }

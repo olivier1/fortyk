@@ -370,7 +370,7 @@ export class FortyKItem extends Item {
                     try{
                         if(this.getFlag("fortyk","force")){
                             let pr=parseInt(data.psykana.pr.value);
-                            item.system.pen.value+=pr;
+                            item.system.pen.value=parseInt(item.system.pen.value)+pr;
                             item.system.damageFormula.value+=`+${pr}`;
                         }
                     }catch(err){
