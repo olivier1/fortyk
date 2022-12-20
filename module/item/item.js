@@ -57,7 +57,7 @@ export class FortyKItem extends Item {
         item["FORTYK"]=game.fortyk.FORTYK;
 
         //ensure this is an owned item
-      
+
         if(this.actor){
             const data = this.actor.system;
             let actor=this.actor;
@@ -70,21 +70,21 @@ export class FortyKItem extends Item {
                 if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="ammunition"){
                     if(item.type==="rangedWeapon"){
                         if(item.system.class.value.indexOf("Titanic")===-1){
-                          item.system.knightComponentType="auxiliaryWeapon";  
+                            item.system.knightComponentType="auxiliaryWeapon";  
                         }else{
-                             item.system.knightComponentType=item.type;
+                            item.system.knightComponentType=item.type;
                         }
                     }else{
-                         item.system.knightComponentType=item.type;
+                        item.system.knightComponentType=item.type;
                     }
-                   
+
                 }else if(item.type==="knightComponent"){
                     item.system.knightComponentType=item.system.type.value;
                 }else{
                     item.system.knightComponentType=item.type;
                 }
             }
-            
+
             if(item.type==="meleeWeapon"){
                 item.system.damageFormula.value=item.system.damageFormula.formula;
                 item.system.range.value=item.system.range.formula;
@@ -112,7 +112,7 @@ export class FortyKItem extends Item {
                     item.system.ammo.name=ammo.name;
                 }
                 if(ammo!==undefined&&!ammo.system.default.value){
-                    
+
                     item.system.damageType.value=ammo.system.damageType.value;
                     item.system.range.value=ammo.system.range.formula;
                     item.system.range.formula=ammo.system.range.formula;
@@ -126,11 +126,11 @@ export class FortyKItem extends Item {
                     }else{
                         item.system.damTyp=item.system.damageType.value;
                     }
-                    
+
                     item.system.range.value=item.system.range.formula.toString();
                     item.system.pen.value=item.system.pen.formula;
                     item.system.damageFormula.value=item.system.damageFormula.formula;
-                   
+
 
                 }
                 if(item.system.damTyp===undefined){item.system.damTyp=item.system.damageType.value}
@@ -152,7 +152,7 @@ export class FortyKItem extends Item {
                 */
                 if(this.getFlag("fortyk","twinlinked")){
 
-                   
+
                     item.system.clip.consumption=item._source.system.clip.consumption*2;
                 }
                 if(this.getFlag("fortyk","storm")){
@@ -194,7 +194,7 @@ export class FortyKItem extends Item {
                     }catch(err){
                         var psyniscience=0;
                     }
-                    
+
                     let pr=parseInt(item.system.curPR.value);
                     //iterate through item flags to evaluate PR strings
                     let flags=item.flags.fortyk;
@@ -304,10 +304,13 @@ export class FortyKItem extends Item {
                     if (typeof item.system.range.formula === 'string' || item.system.range.formula instanceof String){
                         let sb=data.characteristics.s.bonus;
                         let formula=item.system.range.formula.toLowerCase();
-                        item.system.range.value=Function(`let sb=${sb}; return `+formula)();
+                     
+                       
+                            item.system.range.value=Function(`let sb=${sb}; return `+formula)(); 
+                       
                     }
-                        
-                    
+
+
                     if(actor.getFlag("fortyk","mightyshot")){
                         item.system.damageFormula.value+="+"+Math.ceil(data.characteristics.bs.bonus/2);
                     }

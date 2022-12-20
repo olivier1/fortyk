@@ -300,6 +300,7 @@ Hooks.on("updateCombat", async (combat) => {
         let token=canvas.tokens.get(combat.current.tokenId);
         if(token===undefined){return}
         let actor=token.actor;
+        console.log(token, actor)
         //PAN CAMERA TO ACTIVE TOKEN
         canvas.animatePan({x:token.x,y:token.y});
         const currentWindows = Object.values(ui.windows);
