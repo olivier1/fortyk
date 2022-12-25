@@ -119,6 +119,9 @@ export class FortykRollDialogs{
         modifierTracker.push({"value":`${testTarget}`,"label":`Base Target Value`});
         modifierTracker.push({"value":`${item.system.testMod.value}`,"label":`Base Modifier`});
         miscMods+=item.system.testMod.value;
+        if(miscMods>0){
+            modifierTracker.push({"value":`${miscMods}`,"label":"Weapon Bonus"});
+        }
         templateOptions["options"]={}
         templateOptions["options"].swift=actor.getFlag("fortyk","swiftattack");
         templateOptions["options"].lightning=actor.getFlag("fortyk","lightningattack");
@@ -178,7 +181,9 @@ export class FortykRollDialogs{
         let target=targets.values().next().value;
         let vehicle=false;
         if(targets.size>0){
+            console.log(modifiers)
             miscMods+=-modifiers.tarEvasion;
+            console.log(miscMods)
             if(modifiers.tarEvasion){
                 modifierTracker.push({"value":`${-modifiers.tarEvasion}`,"label":"Target Speed Modifier"});
             }
@@ -339,10 +344,10 @@ export class FortykRollDialogs{
             templateOptions["modifiers"].supp=false;
         }
 
-        templateOptions["modifiers"].suppressive=item.system.attackMods.suppressive;
+        templateOptions["modifiers"].suppressive=parseInt(item.system.attackMods.suppressive);
         templateOptions["modifiers"].full=parseInt(item.system.attackMods.full);
         templateOptions["modifiers"].semi=parseInt(item.system.attackMods.semi);
-        templateOptions["modifiers"].single=item.system.attackMods.single;
+        templateOptions["modifiers"].standard=parseInt(item.system.attackMods.single);
         templateOptions["modifiers"].aim=item.system.attackMods.aim;
         templateOptions["modifiers"].testMod=0;
         modifierTracker.push({"value":`${testTarget}`,"label":`Base Target Value`});

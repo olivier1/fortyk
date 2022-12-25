@@ -12,7 +12,7 @@
             </div>
             <div class="list-item flexrow" {{#unless full}} hidden{{/unless}}>
 
-                <input type="radio" name="attack-type" value="{{modifiers.full}}" index='2'attacktype="full"label="Full-Auto"{{#unless single}}checked{{/unless}}><label>Full-Auto: {{modifiers.full}}</label>
+                <input type="radio" name="attack-type" value="{{modifiers.full}}" index='2'attacktype="full"label="Full-Auto"{{#unless single}}checked{{/unless}}><label>Full-Auto: {{#if (greaterThan modifiers.full -1)}}+{{/if}}{{modifiers.full}}</label>
             </div>
             <div class="list-item flexrow" {{#unless supp}} hidden{{/unless}}>
 
@@ -22,7 +22,7 @@
             <div class="list-item flexcol"{{#unless single}} hidden{{/unless}}>
                 {{#if vehicle}}
                 <div class="flexrow">
-                    <input type="radio" name="attack-type" value="{{modifiers.called}}"index='0' label="Called Shot" attacktype="called"><label>Called Shot: {{modifiers.called}}</label>
+                    <input type="radio" name="attack-type" value="{{modifiers.called}}"index='0' label="Called Shot" attacktype="called"><label>Called Shot: {{#if (greaterThan modifiers.called -1)}}+{{/if}}{{modifiers.called}}</label>
                     <select name="calledLoc">
                         <option value="20">Motive System</option>
                         <option value="60">Hull</option>
@@ -32,7 +32,7 @@
                 </div>
                 {{else}}
                 <div class="flexrow">
-                    <input type="radio" name="attack-type" value="{{modifiers.called}}" index='0' label="Called Shot" attacktype="called"><label>Called Shot: {{modifiers.called}}</label>
+                    <input type="radio" name="attack-type" value="{{modifiers.called}}" index='0' label="Called Shot" attacktype="called"><label>Called Shot: {{#if (greaterThan modifiers.called -1)}}+{{/if}}{{modifiers.called}}</label>
                     <select name="calledLoc">
                         <option value="9">Head</option>
                         <option value="69">Body</option>

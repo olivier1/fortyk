@@ -95,9 +95,9 @@
                 <div class="mechTab all" name="mechInventoryTab"{{#unless (compareString mechtab 'all')}}style="display: none"{{/unless}} data-group="secondary" data-tab="all">
                     <div class="componentgrid">
                         <span class="list-item-header">Name</span>
-                        <span class="list-item-header">A</span>
-                        <span class="list-item-header">T</span>
-                        <span class="list-item-header">S</span>
+                        <span class="list-item-header">Avail</span>
+                        <span class="list-item-header">Tonnage</span>
+                        <span class="list-item-header">Space</span>
                         <a class="mechbay-grid-section ranged list-item-header4" name="rangedWeapons1"><span class="{{#unless rangedWeapons1}}plus-button{{else}}minus-button{{/unless}}"></span>Ranged Weapons</a>
                         {{#each rangedWeapons}}
                         <span class="list-item mechbay-component rangedWeapons1" {{#unless ../rangedWeapons1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="ranged-slot">{{this.name}}</span>
@@ -176,9 +176,9 @@
                 <div class="mechTab weapons" name="mechInventoryTab" {{#unless (compareString mechtab 'weapons')}}style="display: none"{{/unless}} data-group="secondary" data-tab="weapons">
                     <div class="componentgrid">
                         <span class="list-item-header">Name</span>
-                        <span class="list-item-header">A</span>
-                        <span class="list-item-header">T</span>
-                        <span class="list-item-header">S</span>
+                        <span class="list-item-header">Avail</span>
+                        <span class="list-item-header">Tonnage</span>
+                        <span class="list-item-header">Space</span>
                         <a class="mechbay-grid-section ranged list-item-header4" name="rangedWeapons2"><span class="{{#unless rangedWeapons2}}plus-button{{else}}minus-button{{/unless}}"></span>Ranged Weapons</a>
                         {{#each rangedWeapons}}
                         <span class="list-item mechbay-component rangedWeapons2" {{#unless ../rangedWeapons2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="ranged-slot">{{this.name}}</span>
@@ -220,9 +220,9 @@
                 <div class="mechTab components" name="mechInventoryTab" {{#unless (compareString mechtab 'components')}}style="display: none"{{/unless}} data-group="secondary" data-tab="components">
                     <div class="componentgrid">
                         <span class="list-item-header">Name</span>
-                        <span class="list-item-header">A</span>
-                        <span class="list-item-header">T</span>
-                        <span class="list-item-header">S</span>
+                        <span class="list-item-header">Avail</span>
+                        <span class="list-item-header">Tonnage</span>
+                        <span class="list-item-header">Space</span>
                         <a class="mechbay-grid-section sensor-color list-item-header4" name="sensors2"><span class="{{#unless sensors2}}plus-button{{else}}minus-button{{/unless}}"></span>Sensors</a>
                         {{#each sensors}}
                         <span class="list-item mechbay-component sensors2" {{#unless ../sensors2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="sensor-slot">{{this.name}}</span>
@@ -278,9 +278,9 @@
                 <div class="mechTab cores" name="mechInventoryTab" {{#unless (compareString mechtab 'cores')}}style="display: none"{{/unless}} data-group="secondary" data-tab="cores">
                     <div class="componentgrid">
                         <span class="list-item-header">Name</span>
-                        <span class="list-item-header">A</span>
-                        <span class="list-item-header">T</span>
-                        <span class="list-item-header">S</span>
+                        <span class="list-item-header">Avail</span>
+                        <span class="list-item-header">Tonnage</span>
+                        <span class="list-item-header">Space</span>
                         <a class="mechbay-grid-section core-color list-item-header4" name="cores2"><span class="{{#unless cores2}}plus-button{{else}}minus-button{{/unless}}"></span>Cores</a>
                         {{#each cores}}
                         <span class="list-item mechbay-component cores2" {{#unless ../cores2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="core-slot">{{this.name}}</span>
@@ -293,9 +293,9 @@
                 <div class="mechTab armors" name="mechInventoryTab" {{#unless (compareString mechtab 'armors')}}style="display: none"{{/unless}} data-group="secondary" data-tab="armors">
                     <div class="componentgrid">
                         <span class="list-item-header">Name</span>
-                        <span class="list-item-header">A</span>
-                        <span class="list-item-header">T</span>
-                        <span class="list-item-header">S</span>
+                        <span class="list-item-header">Avail</span>
+                        <span class="list-item-header">Tonnage</span>
+                        <span class="list-item-header">Space</span>
                         <a class="mechbay-grid-section armor-color list-item-header4" name="armors2"><span class="{{#unless armors2}}plus-button{{else}}minus-button{{/unless}}"></span>Armors</a>
                         {{#each armors}}
                         <span class="list-item mechbay-component armors2" {{#unless ../armors2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="armor-slot">{{this.name}}</span>
@@ -316,9 +316,9 @@
                 <div class="mechTab structures" name="mechInventoryTab" {{#unless (compareString mechtab 'structures')}}style="display: none"{{/unless}} data-group="secondary" data-tab="structures">
                     <div class="componentgrid">
                         <span class="list-item-header">Name</span>
-                        <span class="list-item-header">A</span>
-                        <span class="list-item-header">T</span>
-                        <span class="list-item-header">S</span>
+                        <span class="list-item-header">Avail</span>
+                        <span class="list-item-header">Tonnage</span>
+                        <span class="list-item-header">Space</span>
                         <a class="mechbay-grid-section structure-color list-item-header4" name="structures2"><span class="{{#unless structures2}}plus-button{{else}}minus-button{{/unless}}"></span>Structures</a>
                         {{#each structures}}
                         <span class="list-item mechbay-component structures2" {{#unless ../structures2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="structure-slot">{{this.name}}</span>

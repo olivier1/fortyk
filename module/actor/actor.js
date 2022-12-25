@@ -883,7 +883,8 @@ export class FortyKActor extends Actor {
             }
         }
         if(data.knight.chassis){
-            data.knight.tonnage.armor=data.knight.armorValues.value*armorRatio;
+            //multiply by the armor weight ratio and round to 2 decimals
+            data.knight.tonnage.armor=Math.round((data.knight.armorValues.value*armorRatio + Number.EPSILON) * 100) / 100;
             data.knight.tonnage.value+=data.knight.tonnage.armor;
             //round the total tonnage to 2 decimals
             data.knight.tonnage.value=Math.round((data.knight.tonnage.value + Number.EPSILON) * 100) / 100

@@ -300,7 +300,6 @@ Hooks.on("updateCombat", async (combat) => {
         let token=canvas.tokens.get(combat.current.tokenId);
         if(token===undefined){return}
         let actor=token.actor;
-        console.log(token, actor)
         //PAN CAMERA TO ACTIVE TOKEN
         canvas.animatePan({x:token.x,y:token.y});
         const currentWindows = Object.values(ui.windows);
@@ -448,7 +447,7 @@ Hooks.on("updateCombat", async (combat) => {
         if(actor.getFlag("fortyk","regeneration")){
             let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
             if(actor.system.race.value==="Necron"&&actor.getFlag("core","unconscious")){
-                let reanimation= await FortykRolls.fortykTest("t", "char", actor.system.characteristics.t.total-20,actor, "Reanimation protocol");
+                let reanimation= await FortykRolls.fortykTest("t", "char", actor.system.characteristics.t.total,actor, "Reanimation protocol");
                
                 if(reanimation.value){
 

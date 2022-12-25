@@ -4267,7 +4267,7 @@ returns the roll message*/
         }
     }
     static async _addFatigue(actor,newfatigue){
-        newfatigue=newfatigue+parseInt(actor.system.secChar.fatigue.value);
+        newfatigue=parseInt(newfatigue)+parseInt(actor.system.secChar.fatigue.value);
         if(game.user.isGM||actor.owner){
             await actor.update({"system.secChar.fatigue.value":newfatigue});
         }else{
