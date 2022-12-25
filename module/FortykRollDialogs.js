@@ -26,8 +26,8 @@ export class FortykRollDialogs{
         const dataset=event.currentTarget.dataset;
         const actor=game.actors.get(dataset["actor"]);
 
-        const weapon=duplicate(actor.getEmbeddedDocument("Item",dataset["weapon"]));
-        let newWeapon=await Item.create(weapon,{temporary:true});
+        const weapon=actor.getEmbeddedDocument("Item",dataset["weapon"]);
+        let newWeapon=weapon.clone({},[]);
         const formula=weapon.system.damageFormula;
         newWeapon.system.pen.value=0;
 
