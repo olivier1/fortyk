@@ -967,7 +967,7 @@
 .mechgrid{
     display:grid;
     grid-template-columns: 33% auto 33%;
-    grid-template-rows: 15% auto 70%;
+    grid-template-rows: 15% auto 65%;
     height:-webkit-fill-available;
 }
 .info1{
@@ -981,6 +981,7 @@
 .info3{
     grid-column:1;
     grid-row:3;
+    place-self: flex-end;
 }
 .info4{
     grid-column:3;
