@@ -72,7 +72,6 @@ export class FortykRollDialogs{
                             if(!reroll){
 
                                 if(testType==="evasion"){
-
                                     let aeData={};
                                     aeData.id="evasion";
                                     aeData.label= "Evasion";

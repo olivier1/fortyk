@@ -1336,6 +1336,10 @@
             "training": {
                 "value": "",
                 "type": "String"
+            },
+            "cost": {
+                "value":0,
+                "type":"Number"
             }
         },
         "skill": {

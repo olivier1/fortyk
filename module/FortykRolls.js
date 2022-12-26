@@ -1515,6 +1515,28 @@ returns the roll message*/
                             damageOptions.results.push(`<label class="popup" data-id="${id}"> ${tarActor.name} is crippled. <span class="popuptext chat-background" id="${id}">${tarActor.name} is crippled, they take ${fortykWeapon.getFlag("fortyk","crippling")} damage to the ${curHit.label} which ignores all soak, if they ever take more than a half action in a turn. This lasts until they are fully healed or until the end of the encounter.</span></label>`)
                             damageOptions.results.push(`</div>`) 
                         }
+                        //luminagen weapon logic
+                        if(fortykWeapon.getFlag("fortyk","luminagen")&&!isHordelike){
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
+                            let luminagenActiveEffect={
+                                id: "luminagen",
+                                label: "Luminagen",
+                                icon: "icons/svg/eye.svg",
+                                flags: { core: { statusId: "luminagen" } }
+                            };
+                            let lumiRoll=new Roll("1d5",{});
+                            await lumiRoll.evaluate({async: true});
+                            let lumiDuration=parseInt(lumiRoll.result);
+
+                            luminagenActiveEffect.transfer=false;
+                            luminagenActiveEffect.duration={
+                                rounds:lumiDuration
+                            }
+                            activeEffects.push(luminagenActiveEffect);
+
+                            damageOptions.results.push(`The target is affected by Luminagen and suffers a -10 penalty to all evasion tests for ${lumiDuration} rounds!`)
+                            damageOptions.results.push(`</div>`) 
+                        }
                         //NIDITUS WEAPON
                         if(!vehicle&&(fortykWeapon.getFlag("fortyk","niditus")&&damage)>0){
                             damageOptions.results.push(`<div class="chat-target flexcol">`)
@@ -1662,7 +1684,6 @@ returns the roll message*/
                             messages.push(chatOptions);
                         }
                         //impenetrable armor logic
-                        console.log(armorSuit)
                         if(armorSuit.getFlag("fortyk","impenetrable")){
                             damage=Math.ceil(damage/2);
                             if(damage>0){
