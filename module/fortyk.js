@@ -237,7 +237,7 @@ Hooks.once('ready', async function() {
                 case "reportDamage":
                     let targetId=data.package.target;
                     let target=canvas.tokens.get(targetId);
-                  
+
                     let targetActor=target.actor;
                     let damage=data.package.damage;
                     FortykRolls.reportDamage(targetActor,damage);
@@ -294,7 +294,7 @@ Hooks.once('ready', async function() {
 });
 //round management effects, when a token's turn starts
 Hooks.on("updateCombat", async (combat) => {
-   
+
     if(game.user.isGM){
         game.user.updateTokenTargets();
         let token=canvas.tokens.get(combat.current.tokenId);
@@ -448,7 +448,7 @@ Hooks.on("updateCombat", async (combat) => {
             let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
             if(actor.system.race.value==="Necron"&&actor.getFlag("core","unconscious")){
                 let reanimation= await FortykRolls.fortykTest("t", "char", actor.system.characteristics.t.total,actor, "Reanimation protocol");
-               
+
                 if(reanimation.value){
 
                     let reanimationOptions={user: game.user._id,
@@ -462,7 +462,7 @@ Hooks.on("updateCombat", async (combat) => {
                     await actor.update({"system.secChar.wounds.value":regenAmt});
 
                 }else if((!reanimation.value)&&reanimation.dos>=3){
-                     let reanimationOptions={user: game.user._id,
+                    let reanimationOptions={user: game.user._id,
                                             speaker:{actor,alias:actor.name},
                                             content:`${actor.name} is recalled away!`,
                                             classes:["fortyk"],
@@ -482,7 +482,7 @@ Hooks.on("updateCombat", async (combat) => {
                     await actor.update({"system.secChar.wounds.value":currWounds});
                 }
             }
-            
+
         }
     }
 })
@@ -704,13 +704,19 @@ Hooks.once("dragRuler.ready", (Speedprovider) => {
             }
             return ranges;
         }
-        getCostForStep(token, area, options={}) {
-            // Lookup the cost for each square occupied by the token
-            options.token = token;
-            const costs = area.map(space => terrainRuler.getCost(space.x, space.y, options));
-            // Return the maximum of the costs
+        
+    }
+    dragRuler.registerSystem("fortyk", FortykSpeedProvider);
+})
+Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
+    class FortykSystemRuleProvider extends RuleProvider {
+        calculateCombinedCost(terrain, options) {
+         
+            let token=options.token;
             let actor=token.actor;
+            const costs = terrain.map(space => terrainRuler.getCost(space.x, space.y, options));
             let cost=1;
+            
             if(actor.getFlag("fortyk","jump")||actor.getFlag("fortyk","crawler")||actor.getFlag("fortyk","hoverer")||actor.getFlag("fortyk","flyer")||actor.getFlag("fortyk","skimmer")){
                 cost=1;
             }else{
@@ -719,5 +725,5 @@ Hooks.once("dragRuler.ready", (Speedprovider) => {
             return cost;
         }
     }
-    dragRuler.registerSystem("fortyk", FortykSpeedProvider);
-})
+    enhancedTerrainLayer.registerSystem("fortyk", FortykSystemRuleProvider);
+});

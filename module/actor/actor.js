@@ -994,7 +994,7 @@ export class FortyKActor extends Actor {
             }
             if(item.name==="Dodge"){
                 item.system.mod.value+=data.evasionMod;
-                
+
             }
 
             if(this.getFlag("fortyk","fieldvivisection")&&item.name==="Medicae"){
@@ -1019,7 +1019,12 @@ export class FortyKActor extends Actor {
             data.secChar.movement.half=Math.max(Math.ceil((data.characteristics["agi"].bonus+data.secChar.size.movement+data.secChar.movement.mod)*parseFloat(data.secChar.movement.multi)),1); 
         }
         data.secChar.movement.full=data.secChar.movement.half*2;
-        data.secChar.movement.charge=data.secChar.movement.half*3;
+        if(this.getFlag("fortyk","preternaturalspeed")){
+            data.secChar.movement.charge=data.secChar.movement.half*6;
+        }else{
+            data.secChar.movement.charge=data.secChar.movement.half*3;
+        }
+
         data.secChar.movement.run=data.secChar.movement.half*6;
     }
     prepare(){
