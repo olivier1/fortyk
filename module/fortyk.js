@@ -711,16 +711,21 @@ Hooks.once("dragRuler.ready", (Speedprovider) => {
 Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
     class FortykSystemRuleProvider extends RuleProvider {
         calculateCombinedCost(terrain, options) {
-         
-            let token=options.token;
-            let actor=token.actor;
-            const costs = terrain.map(space => terrainRuler.getCost(space.x, space.y, options));
-            let cost=1;
+            if(terrain.length===0){
+                return 1;
+            }
             
-            if(actor.getFlag("fortyk","jump")||actor.getFlag("fortyk","crawler")||actor.getFlag("fortyk","hoverer")||actor.getFlag("fortyk","flyer")||actor.getFlag("fortyk","skimmer")){
+            
+            let cost=terrain[0].cost;
+            if(!cost){cost=1}
+            let token=options.token;
+            let actor
+            if(token){
+                actor=token.actor;
+            }
+            
+            if(actor&&(actor.getFlag("fortyk","jump")||actor.getFlag("fortyk","crawler")||actor.getFlag("fortyk","hoverer")||actor.getFlag("fortyk","flyer")||actor.getFlag("fortyk","skimmer"))){
                 cost=1;
-            }else{
-                cost=costs.reduce((max, current) => Math.max(max, current));
             }
             return cost;
         }
