@@ -45,7 +45,7 @@ export const sleep=function(ms) {
 }
 //returns an actors token object, not the token document. Will search the active canvas for the current token.
 export const getActorToken=function(actor){
-   
+
     if(actor.token!==null){
         return actor.token; 
     }
@@ -63,15 +63,19 @@ export const getActorToken=function(actor){
     return t;
 }
 export const parseHtmlForInline=function(html){
-   
-  let inlineStr=$(html).find(`a.inline-roll.inline-result`).text();
-
-    let resultArray=inlineStr.split(' ');
- 
+    console.log(html)
+    console.log($(html).find(`a.inline-roll.inline-result`))
+    let inlineStr=$(html).find(`a.inline-roll.inline-result`);
     
+    let strArray=[];
+    for(let i=0;i<inlineStr.length;i++){
+        strArray.push(inlineStr[i].text);
+    }
+
+
     let intArray=[];
-    for(let i=0;i<resultArray.length;i++){
-        intArray.push(parseInt(resultArray[i]));
+    for(let i=0;i<strArray.length;i++){
+        intArray.push(parseInt(strArray[i]));
     }
     return intArray;
 }
@@ -136,7 +140,7 @@ export const getSkills= async function(){
     return skillCollection;
 };
 export const objectByString = function(o, s) {
-   
+
     s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
     s = s.replace(/^\./, '');           // strip a leading dot
     var a = s.split('.');
@@ -178,11 +182,11 @@ export const isEmpty=function (obj) {
     return true;
 }
 export const getVehicleFacing=function(vehicleToken,attackerToken){
-   
-   
-   
+
+
+
     let attackAngle=getAttackAngle(vehicleToken,attackerToken);
-   
+
 
     //adjust for vehicle rotation
     let vehicleRotation=vehicleToken.data.rotation;
@@ -200,7 +204,7 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
             split=f;
         }
         if(attackAngle>=f.start&&attackAngle<=f.end){
-          
+
             facing=f;
         }
     }
@@ -211,11 +215,11 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
     return facing;
 }
 export const degToRad=function (degrees) {
-  return degrees * (Math.PI / 180);
+    return degrees * (Math.PI / 180);
 };
 
 export const radToDeg=function (rad) {
-  return rad / (Math.PI / 180);
+    return rad / (Math.PI / 180);
 };
 /*returns the angle of the line between two tokens with 0 being direct south
 @targetToken: the targetted token

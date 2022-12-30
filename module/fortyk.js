@@ -251,6 +251,11 @@ Hooks.once('ready', async function() {
                 case "updateValue":
                     id=data.package.token;
                     value=data.package.value;
+                    console.log(value)
+                    let parsedValue=parseFloat(value);
+                    if(!isNaN(parsedValue)){
+                        value=parsedValue;
+                    }
                     let path=data.package.path;
                     token=canvas.tokens.get(id);
                     actor=token.actor;
@@ -579,12 +584,14 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
 Hooks.on("preCreateActor", (createData) =>{
 })
 Hooks.on("createToken", async (document, data, options, userId) =>{
-    //modify token dimensions if scene ratio isnt 1
-    let gridRatio=canvas.dimensions.distance;
-    let newHeight=Math.max(0.1,document.height/gridRatio);
-    let newWidth=Math.max(0.1,document.width/gridRatio);
-    if(newHeight!==document.height||newWidth!==document.width){
-        await document.update({"_id":randomID(6),"height":newHeight,"width":newWidth});
+    if(game.user.isGM){
+        //modify token dimensions if scene ratio isnt 1
+        let gridRatio=canvas.dimensions.distance;
+        let newHeight=Math.max(0.1,document.height/gridRatio);
+        let newWidth=Math.max(0.1,document.width/gridRatio);
+        if(newHeight!==document.height||newWidth!==document.width){
+            await document.update({"_id":randomID(6),"height":newHeight,"width":newWidth});
+        }
     }
 
 });
@@ -704,7 +711,7 @@ Hooks.once("dragRuler.ready", (Speedprovider) => {
             }
             return ranges;
         }
-        
+
     }
     dragRuler.registerSystem("fortyk", FortykSpeedProvider);
 })
@@ -714,8 +721,8 @@ Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
             if(terrain.length===0){
                 return 1;
             }
-            
-            
+
+
             let cost=terrain[0].cost;
             if(!cost){cost=1}
             let token=options.token;
@@ -723,7 +730,7 @@ Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
             if(token){
                 actor=token.actor;
             }
-            
+
             if(actor&&(actor.getFlag("fortyk","jump")||actor.getFlag("fortyk","crawler")||actor.getFlag("fortyk","hoverer")||actor.getFlag("fortyk","flyer")||actor.getFlag("fortyk","skimmer"))){
                 cost=1;
             }

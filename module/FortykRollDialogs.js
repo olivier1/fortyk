@@ -116,7 +116,6 @@ export class FortykRollDialogs{
         templateOptions["modifiers"]=duplicate(actor.system.secChar.attacks);
         templateOptions["modifiers"].testMod=0;
         modifierTracker.push({"value":`${testTarget}`,"label":`Base Target Value`});
-        modifierTracker.push({"value":`${item.system.testMod.value}`,"label":`Base Modifier`});
         miscMods+=item.system.testMod.value;
         if(miscMods>0){
             modifierTracker.push({"value":`${miscMods}`,"label":"Weapon Bonus"});

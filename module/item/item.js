@@ -203,16 +203,29 @@ export class FortyKItem extends Item {
 
                         if(typeof fl=="string"){
                             if(fl.toLowerCase().indexOf("pr")!==-1){
-
-                                flags[flag]=Math.ceil(Function(`let pr=${pr};return `+flags[flag])());
+                                try{
+                                  flags[flag]=Math.ceil(Function(`let pr=${pr};return `+flags[flag])());  
+                                }catch (err){
+                                    flags[flag]=0;
+                                }
+                                
                             }
                         }
                     }
                     if(data.psykana.psykerType.value.toLowerCase()==="navigator"){
                         let range=item.system.range.formula.toLowerCase();
-
-                        item.system.range.value=Math.ceil(Function(`let wp=${wp};return `+range)());
-                        item.system.pen.value=Math.ceil(Function(`let wp=${wp};return `+item.system.pen.formula.toLowerCase())());
+                        try{
+                            item.system.range.value=Math.ceil(Function(`let wp=${wp};return `+range)());
+                        }catch(err){
+                           item.system.range.value=0; 
+                        }
+                        try{
+                           item.system.pen.value=Math.ceil(Function(`let wp=${wp};return `+item.system.pen.formula.toLowerCase())()); 
+                        }catch(err){
+                            item.system.pen.value=0;
+                        }
+                        
+                        
                         let training=0;
                         switch(item.system.training.value){
                             case "Novice":
@@ -240,8 +253,18 @@ export class FortyKItem extends Item {
 
                             let range=item.system.range.formula.toLowerCase();
                             let wp=data.characteristics.wp.bonus;
-                            item.system.range.value=Math.ceil(Function(`let pr=${pr};let wp=${wp};return `+range)());
-                            item.system.pen.value=Math.ceil(Function(`let pr=${pr};let wp=${wp};return `+item.system.pen.formula.toLowerCase())());
+                            try{
+                                item.system.range.value=Math.ceil(Function(`let pr=${pr};let wp=${wp};return `+range)());
+                            }catch(err){
+                                item.system.range.value=0;
+                            }
+                            try{
+                                item.system.pen.value=Math.ceil(Function(`let pr=${pr};let wp=${wp};return `+item.system.pen.formula.toLowerCase())());
+                            }catch(err){
+                                item.system.pen.value=0;
+                            }
+                            
+                            
                             let temp;
                             temp=item.system.damageFormula.formula.replace(/pr/gmi,pr);
                             item.system.damageFormula.value=temp.replace(/wp/gmi,wp);
@@ -304,10 +327,13 @@ export class FortyKItem extends Item {
                     if (typeof item.system.range.formula === 'string' || item.system.range.formula instanceof String){
                         let sb=data.characteristics.s.bonus;
                         let formula=item.system.range.formula.toLowerCase();
-                     
-                       
+
+                        try{
                             item.system.range.value=Function(`let sb=${sb}; return `+formula)(); 
-                       
+                        }catch (err){
+                            item.system.range.value=0; 
+                        }
+
                     }
 
 

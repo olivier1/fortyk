@@ -2015,7 +2015,7 @@ returns the roll message*/
         if(!vehicle&&tar!==null&&(tar.actor.system.horde.value||tar.actor.system.formation.value)){crit=false}
         //if righteous fury roll the d5 and spew out the crit result
         if(!vehicle&&tar!==null&&crit&&tar.actor.system.suddenDeath.value){
-            this.applyDead(tar,actor,'<span class="chat-righteous">Righteous Fury</span>');
+            this.applyDead(tar,tar.actor,'<span class="chat-righteous">Righteous Fury</span>');
             return false;
         }
         if((weapon.getFlag("fortyk","gauss")&&crit&&vehicle)||(crit&&damage>0)){
@@ -2097,6 +2097,7 @@ returns the roll message*/
         let critMsg=await ChatMessage.create(chatOptions,{});
         let inlineResults={}
         //parse any inline rolls and give them to the crit function to apply critical effects
+        console.log(critMsg)
         inlineResults.rolls=parseHtmlForInline(critMsg.content);
         inlineResults.tests=tests;
         return inlineResults;
@@ -3761,6 +3762,7 @@ returns the roll message*/
                 }
                 break;
             case 6:
+                console.log(rolls)
                 this._addFatigue(actor,rolls.rolls[0]);
                 ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("bleeding")]);
                 activeEffects.push(ae);
@@ -4288,6 +4290,7 @@ returns the roll message*/
         }
     }
     static async _addFatigue(actor,newfatigue){
+        console.log(newfatigue,actor)
         newfatigue=parseInt(newfatigue)+parseInt(actor.system.secChar.fatigue.value);
         if(game.user.isGM||actor.owner){
             await actor.update({"system.secChar.fatigue.value":newfatigue});
