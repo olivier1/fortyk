@@ -210,7 +210,11 @@
                         <div class="list-item">
                             <span>Attack: </span> 
                             {{#if (greaterThan this.system.clip.value 0)}}
+                            {{#if this.flags.fortyk.spray}}
+                            <span class="spray-attack rollable button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span>
+                            {{else}}
                             <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../../system.crew.bs}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="">Roll</span>
+                            {{/if}}
                             {{else}}
                             {{#if this.system.ammo._id}}
                             <span class="weapon-reload button" data-weapon="{{this.id}}" >Discard</span>
@@ -307,7 +311,7 @@
                         </div>
                         <div class="list-item">
                             <span>Special: 
-                                
+
 
                                 {{#each this.flags.fortyk as |flag key|}}
 
@@ -618,8 +622,11 @@
                         <div class="list-item">
                             <span>Attack: </span> 
                             {{#if (greaterThan this.system.clip.value 0)}}
-
+                            {{#if this.flags.fortyk.spray}}
+                            <span class="spray-attack rollable button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span>
+                            {{else}}
                             <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../../system.crew.bs}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="">Roll</span>
+                            {{/if}}
                             {{else}}
                             {{#if this.system.ammo._id}}
                             <span class="weapon-reload button" data-weapon="{{this.id}}" >Discard</span>
@@ -826,7 +833,11 @@
                             <span>Attack: </span> 
                             {{#if (greaterThan this.system.clip.value 0)}}
 
+                            {{#if this.flags.fortyk.spray}}
+                            <span class="spray-attack rollable button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span>
+                            {{else}}
                             <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../../system.crew.bs}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="">Roll</span>
+                            {{/if}}
                             {{else}}
                             {{#if this.system.ammo._id}}
                             <span class="weapon-reload button" data-weapon="{{this.id}}" >Discard</span>

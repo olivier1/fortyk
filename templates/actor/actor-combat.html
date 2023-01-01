@@ -154,6 +154,9 @@
                         <span data-item-id="{{this._id}}" class="rollable powerItem button{{#if (greaterThan this.system.curPR.value ../system.psykana.pr.effective)}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-target="{{this.system.target.value}}" data-label="{{this.name}}" data-char="{{this.system.testChar.type}}">{{this.system.target.value}}</span>
                     </div>
                     {{#if (contains this.system.class.value "psychic")}}
+                    {{#if this.flags.fortyk.spray}}
+                    <label class="list-item"><span class="spray-attack rollable powerItem button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span></label>
+                    {{/if}}
                     <label class="list-item">Damage: <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this._id}}">{{this.system.damageFormula.value}}</a></label>
                     {{else if (contains this.system.class.value "Buff/Debuff")}}
                     <label class="list-item"><a class="buff-debuff button" data-label="{{this.name}}"data-power="{{this._id}}">Apply Buff/Debuff</a></label>
@@ -231,7 +234,7 @@
             {{#each wornGear.weapons}}
 
             {{#if (contains this.type "ranged")}}
-          
+
             <div class="weapons grid grid-2col">
                 <div class="weapon-name">
                     <span>Name: {{this.name}}</span>
@@ -240,7 +243,13 @@
                 <div class="list-item">
                     <span>Attack: </span> 
                     {{#if (greaterThan this.system.clip.value 0)}}
+                    {{#if this.flags.fortyk.spray}}
+                    <span class="spray-attack rollable button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span>
+                    {{else}}
+
                     <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../system.characteristics.bs.total}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="bs">Roll</span>
+
+                    {{/if}}
                     {{else}}
                     <span class="weapon-reload button" data-weapon="{{this.id}}" >Reload</span>
                     {{/if}}

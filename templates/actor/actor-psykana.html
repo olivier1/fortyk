@@ -2,57 +2,57 @@
 
     <div class="psy-header grid grid-4col">
         {{#unless (contains system.psykana.psykerType.value "navigator")}}
-        
-            <div class="flexrow list-item">
-                <label>Psy Rating:</label>
-                <input type="text" class="combat-resources" data-target="system.psykana.pr.value" value="{{system.psykana.pr.value}}" data-dtype="Number"/>
 
-            </div>
-            <div class="flexrow list-item">
-                <label>Sustained Powers:</label>
-                <input type="text" class="combat-resources" data-target="system.psykana.pr.sustain" value="{{system.psykana.pr.sustain}}" data-dtype="Number"/>
+        <div class="flexrow list-item">
+            <label>Psy Rating:</label>
+            <input type="text" class="combat-resources" data-target="system.psykana.pr.value" value="{{system.psykana.pr.value}}" data-dtype="Number"/>
 
-            </div>
-            <div class="flexrow list-item">
-                <label>Effective PR: {{system.psykana.pr.effective}}</label>
+        </div>
+        <div class="flexrow list-item">
+            <label>Sustained Powers:</label>
+            <input type="text" class="combat-resources" data-target="system.psykana.pr.sustain" value="{{system.psykana.pr.sustain}}" data-dtype="Number"/>
 
-            </div>
-            <div class="flexrow list-item">
-                <label>Phenomena Modifier:</label>
-                <input type="text" class="combat-resources" data-target="system.psykana.phenomena.value" value="{{system.psykana.phenomena.value}}" data-dtype="Number"/>
+        </div>
+        <div class="flexrow list-item">
+            <label>Effective PR: {{system.psykana.pr.effective}}</label>
 
-            </div>
-       
+        </div>
+        <div class="flexrow list-item">
+            <label>Phenomena Modifier:</label>
+            <input type="text" class="combat-resources" data-target="system.psykana.phenomena.value" value="{{system.psykana.phenomena.value}}" data-dtype="Number"/>
+
+        </div>
+
 
         {{/unless}}
-            <div class="flexrow list-item">
-                <label>Class:</label>
-                <select class="psyType-select" name="system.psykana.psykerType.value" data-dtype="String">
-                    {{#select system.psykana.psykerType.value}}
-                    <option value="bound">Bound</option>
-                    <option value="unbound">Unbound</option>
-                    <option value="daemon">Daemon</option>
-                    <option value="navigator">Navigator</option>
-                    {{/select}}
-                </select>
-            </div>
-            <div class="flexrow list-item">
-                <label>Psy Modifier:</label>
-                <input type="text" name="system.psykana.mod.value" value="{{system.psykana.mod.value}}">
-            </div>
-            <div class="flexrow list-item2">
-                <label>Show:</label>
-                <select class="psyType-select" name="system.psykana.filter" data-dtype="String">
+        <div class="flexrow list-item">
+            <label>Class:</label>
+            <select class="psyType-select" name="system.psykana.psykerType.value" data-dtype="String">
+                {{#select system.psykana.psykerType.value}}
+                <option value="bound">Bound</option>
+                <option value="unbound">Unbound</option>
+                <option value="daemon">Daemon</option>
+                <option value="navigator">Navigator</option>
+                {{/select}}
+            </select>
+        </div>
+        <div class="flexrow list-item">
+            <label>Psy Modifier:</label>
+            <input type="text" name="system.psykana.mod.value" value="{{system.psykana.mod.value}}">
+        </div>
+        <div class="flexrow list-item2">
+            <label>Show:</label>
+            <select class="psyType-select" name="system.psykana.filter" data-dtype="String">
 
-                    {{#select system.psykana.filter}}
-                    <option value="">All</option>
-                    {{#each psyDisciplines}}
-                    <option value="{{this}}">{{this}}</option>
-                    {{/each}}
-                    {{/select}}
-                </select>
-            </div>
-        
+                {{#select system.psykana.filter}}
+                <option value="">All</option>
+                {{#each psyDisciplines}}
+                <option value="{{this}}">{{this}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+        </div>
+
 
     </div>
     <a class="item-create button" data-type="psychicPower" title="Add a new Psychic Power">Add Psychic Power</a>
@@ -138,6 +138,9 @@
                     <span data-item-id="{{power._id}}" class="rollable powerItem button{{#if (greaterThan power.system.curPR.value ../system.psykana.pr.effective)}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-target="{{power.system.target.value}}" data-label="{{power.name}}" data-char="{{power.system.testChar.type}}">{{power.system.target.value}}</span>
                 </div>
                 {{#if (contains power.system.class.value "psychic")}}
+                {{#if power.flags.fortyk.spray}}
+                <label class="list-item"><span class="spray-attack rollable powerItem button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span></label>
+                {{/if}}
                 <label class="list-item">Damage: <a class="damage-roll button" data-label="{{power.name}}"data-formula="{{power.system.damageFormula.value}}" data-weapon="{{power._id}}">{{power.system.damageFormula.value}}</a></label>
                 {{else if (contains power.system.class.value "Buff/Debuff")}}
                 <label class="list-item"><a class="buff-debuff button" data-label="{{power.name}}"data-power="{{power._id}}">Apply Buff/Debuff</a></label>

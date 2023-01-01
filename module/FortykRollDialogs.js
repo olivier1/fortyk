@@ -381,7 +381,7 @@ export class FortykRollDialogs{
         //set flags for rate of fire
         let curAmmo=parseInt(item.system.clip.value);
         let consump=parseInt(item.system.clip.consumption);
-   
+
         let rofSingle=item.system.rof[0].value;
         let rofSemi=parseInt(item.system.rof[1].value);
         if(isNaN(rofSingle)){
@@ -392,7 +392,7 @@ export class FortykRollDialogs{
         if(parseInt(rofSingle)===0||rofSingle==="-"){
             templateOptions["single"]=false;
         }else{
-            
+
             if(rofSingle*consump>curAmmo){
                 templateOptions["single"]=false;
             }else{
@@ -413,7 +413,7 @@ export class FortykRollDialogs{
 
         }
         if(rofFull===0||Number.isNaN(rofFull)){
-          
+
             templateOptions["full"]=false;
         }else{
             if(rofFull*consump>curAmmo){
@@ -690,7 +690,7 @@ export class FortykRollDialogs{
                         if(attackType==="called"){
 
                             update["system.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
-                            
+
                             if(!vehicle&&actor.getFlag("fortyk","fieldvivisection")&&actor.getFlag("fortyk","fieldvivisection").includes(tarRace)&&actor.getFlag("fortyk","fieldpractitioner")){
 
 
@@ -791,6 +791,80 @@ export class FortykRollDialogs{
 
 
             width:200}
+                  ).render(true);
+    }
+    static async callSprayAttackDialog(actor, testLabel, weapon, options, title="Enter test modifier"){
+        console.log("hey")
+        new Dialog({
+            title: title,
+            content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="0" autofocus/></p>`,
+            buttons: {
+                submit: {
+                    label: 'OK',
+                    callback: async(html) => {
+                        let targets=game.user.targets;
+                        let mod = Number($(html).find('input[name="modifier"]').val());
+                        let psy=false;
+                        if(weapon.type==="psychicPower"){
+                            psy=true;
+                        }
+                        if(!psy){
+                            let ammo=weapon.system.clip.value;
+                            if(ammo===0){
+                                return;
+                            } 
+                        }
+
+                        if(targets.size===0){
+                            this.callSprayAttackDialog(actor, testLabel, weapon, options, "No targets");
+                            return;
+                        }
+
+                        if(isNaN(mod)){
+                            this.callSprayAttackDialog(actor, testLabel, weapon, options, "Invalid Number");
+                            return;
+                        }
+
+
+                        let messageContent="";
+                        let updatedtargets=[];
+                        for(let token of targets){
+                            let tokenActor=token.actor;
+                            let tokenActorData=token.actor;
+                            let data=token.actor.system;
+
+                            let testTarget=data.characteristics.agi.total+mod;
+                            let test=await game.fortyk.FortykRolls.fortykTest("agi", "Test", testTarget, tokenActor, "Avoid Spray Attack",weapon,false,"",true);
+                            messageContent+=`<div>${tokenActor.name}'s `+test.template+`</div>`;
+                            if(!test.value){
+                                updatedtargets.push(token.id);
+                            }
+
+
+                        }
+                        messageContent+=`<div>Selected targets may attempt to evade if they have a reaction remaining and can move out of the attack's area of effect.</div>`
+                        game.user.updateTokenTargets(updatedtargets);
+                        let chatOptions={user: game.user._id,
+                                         speaker:{actor,alias:actor.name},
+                                         content:messageContent,
+                                         classes:["fortyk"],
+                                         flavor:`Spray Attack result`,
+                                         author:actor.name}
+                        await ChatMessage.create(chatOptions,{});
+                        if(!psy){
+                            await weapon.update({"system.clip.value":ammo-1});
+                        }
+
+
+
+                    }
+
+                }
+            },
+            default: "submit",
+
+
+            width:100}
                   ).render(true);
     }
     static async callForcefieldDialog(forcefield,actor,title="Enter number of hits"){

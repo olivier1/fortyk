@@ -249,7 +249,14 @@
 
                         <div class="list-item">
                             <span>Attack: </span>
-                            <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../system.characteristics.bs.total}}" data-item-id="{{this._id}}" data-label="Ranged Attack" data-char="bs">Roll</span>
+                            {{#if this.flags.fortyk.spray}}
+                            <span class="spray-attack rollable button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span>
+                            {{else}}
+
+                            <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../system.characteristics.bs.total}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="bs">Roll</span>
+
+                            {{/if}}
+
                         </div>
                         <div class="list-item">
                             <span>Damage: </span>
@@ -539,7 +546,7 @@
         </div>
         </div>
     <div class="tab tnt" data-group="primary" data-tab="tnt">
-        
+
         <div class="tnt flexcol">
             <a class="tnt-create button" data-type="talentntrait" title="Add a new Talent or Trait">Add Talent or Trait</a>
             <div class="list list3col grid grid-3col">
@@ -702,6 +709,9 @@
                             <span data-item-id="{{power._id}}" class="rollable powerItem button{{#if (greaterThan power.system.curPR.value ../system.psykana.pr.effective)}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-target="{{power.system.target.value}}" data-label="{{power.name}}" data-char="{{power.system.testChar.type}}">{{power.system.target.value}}</span>
                         </div>
                         {{#if (contains power.system.class.value "psychic")}}
+                        {{#if power.flags.fortyk.spray}}
+                        <label class="list-item"><span class="spray-attack rollable powerItem button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span></label>
+                        {{/if}}
                         <label class="list-item">Damage: <a class="damage-roll button" data-label="{{power.name}}"data-formula="{{power.system.damageFormula.value}}" data-weapon="{{power._id}}">{{power.system.damageFormula.value}}</a></label>
                         {{else if (contains power.system.class.value "Buff/Debuff")}}
                         <label class="list-item"><a class="buff-debuff button" data-label="{{power.name}}"data-power="{{power._id}}">Apply Buff/Debuff</a></label>

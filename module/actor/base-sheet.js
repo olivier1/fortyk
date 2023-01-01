@@ -622,11 +622,12 @@ export default class FortyKBaseActorSheet extends ActorSheet {
    */
     async _onRoll(event) {
         event.preventDefault();
+        
         const element = event.currentTarget;
         const dataset = element.dataset;
         let testType=dataset["rollType"];
         var testTarget=parseInt(dataset["target"]);
-
+        console.log(testType)
         var testLabel=dataset["label"];
         var testChar=dataset["char"];
         let rating=dataset["rating"];
@@ -634,7 +635,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             testTarget+=parseInt(rating);
         }
         var item=null;
-
+        
         //ensure actor is prepared
         if(!this.actor.isPrepared){
             this.actor.prepareData();
@@ -652,7 +653,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             await FortykRollDialogs.callForcefieldDialog(forcefield,this.actor);
             return;
         }
-        if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"){
+        if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"&&testType!=="sprayAttack"){
             await FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
             return;
         }
@@ -693,11 +694,22 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
         if(testType==="meleeAttack"){
             FortykRollDialogs.callMeleeAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
-        }else if(testType==="rangedAttack"){
-            FortykRollDialogs.callRangedAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
-        }else if(testType==="focuspower"){
-            FortykRollDialogs.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
+            return;
         }
+        if(testType==="rangedAttack"){
+            FortykRollDialogs.callRangedAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
+            return;
+        }
+        if(testType==="focuspower"){
+            FortykRollDialogs.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
+            return;
+        }
+        
+        if(testType==="sprayAttack"){
+            console.log(testType)
+            FortykRollDialogs.callSprayAttackDialog(this.actor, testLabel, item, attackOptions);
+        }
+        
 
     }
     //handles weapon damage rolls

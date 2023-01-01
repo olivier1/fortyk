@@ -453,6 +453,10 @@
 .fortyk .power-training{
     width:100%;
 }
+.fortyk .spray-attack{
+    height: 100%;
+    align-content: center;
+}
 .fortyk .skills{
     border: 1px solid #AAA;
 }
