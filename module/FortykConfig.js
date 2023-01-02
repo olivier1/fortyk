@@ -12,6 +12,7 @@ FORTYK.races=["Human",
               "Tau",
               "Daemon",
               "Laek",
+              "Faceless",
               "Servitor",
               "Other"]
 FORTYK.size=[
