@@ -723,12 +723,11 @@ returns the roll message*/
         let rating=data.rating.value;
         let overload=data.rating.overload;
         let breakOnOverload=data.overloadBreak.value;
-        let formula=`${hits}d100cs<=${rating}`;
-        let roll=new Roll(formula, {});
-        await roll.evaluate();
+        let formula=`1d100cs<=${rating}`;
+
         let overloaded=false;
         let remainingHits=hits;
-        let die=roll.dice[0].results;
+
         let template='systems/fortyk/templates/chat/chat-forcefield-test.html';
         var templateOptions={
             title:`${forcefield.name} Test`,
@@ -739,10 +738,16 @@ returns the roll message*/
         }
         let hitResults=[];
         let i=0;
+        let rolls=[];
         while(!(breakOnOverload&&overloaded)&&i<hits){
-            let dice=die[i];
-            let roll1=dice.result;
-            let pass=dice.success;
+            let roll=new Roll(formula, {});
+
+            await roll.evaluate();
+            roll.dice[0].options.rollOrder = i+1;
+            rolls.push(roll);
+            console.log(roll)
+            let roll1=roll.dice[0].values[0];
+            let pass=roll.dice[0].results[0].success;
             overloaded=false;
             let result={overload:false,roll:roll1,pass:pass,string:""}
             if(roll1<=overload){
@@ -770,13 +775,15 @@ returns the roll message*/
         templateOptions.results=hitResults;
         templateOptions.remainingHits=remainingHits;
         let renderedTemplate= await renderTemplate(template,templateOptions);
-        await roll.toMessage({user: game.user._id,
+        let chatOptions={user: game.user._id,
                               speaker:{actor,alias:actor.name},
                               content:renderedTemplate,
                               type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-                              rolls: [roll],
+                              rolls: rolls,
                               classes:["fortyk"],
-                              author:actor.name})
+                              author:actor.name}
+        await ChatMessage.create(chatOptions,{});
+        
     }
     //handles damage rolls and applies damage to the target, generates critical effects
     static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0, user=game.users.current, lastHit=null, targets=null){
