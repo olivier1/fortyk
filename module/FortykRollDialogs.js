@@ -805,11 +805,13 @@ export class FortykRollDialogs{
                         let targets=game.user.targets;
                         let mod = Number($(html).find('input[name="modifier"]').val());
                         let psy=false;
+                        console.log(weapon)
                         if(weapon.type==="psychicPower"){
                             psy=true;
                         }
+                        
                         if(!psy){
-                            let ammo=weapon.system.clip.value;
+                            var ammo=weapon.system.clip.value;
                             if(ammo===0){
                                 return;
                             } 
@@ -829,6 +831,7 @@ export class FortykRollDialogs{
                         let messageContent="";
                         let updatedtargets=[];
                         let rolls=[];
+                        let i=1;
                         for(let token of targets){
                             let tokenActor=token.actor;
                             let tokenActorData=token.actor;
@@ -840,8 +843,10 @@ export class FortykRollDialogs{
                             if(!test.value){
                                 updatedtargets.push(token.id);
                             }
+                            let r=test.roll;
+                            r.dice[0].options.rollOrder = i;
                             rolls.push(test.roll);
-
+                            i++;
 
                         }
                         messageContent+=`<div>Selected targets may attempt to evade if they have a reaction remaining and can move out of the attack's area of effect.</div>`

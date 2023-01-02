@@ -87,6 +87,7 @@ Hooks.once('init', async function() {
     CONFIG.Cards.documentClass=FortyKCards;
     //register system settings
     registerSystemSettings();
+    
     // Handlebars helpers
     Handlebars.registerHelper('concat', function() {
         var outStr = '';
@@ -166,6 +167,8 @@ Hooks.once("setup", function() {
 });
 //HOOKS
 Hooks.once('ready', async function() {
+    //change dice so nice setting
+    game.settings.set("dice-so-nice","enabledSimultaneousRollForMessage",false);
     //search for vehicles with pilots to assign them their stats
     let vehicles=Array.from(game.actors.values()).filter(actor=>actor.type==="vehicle");
     for(let i=0;i<vehicles.length;i++){
