@@ -155,7 +155,9 @@
                     </div>
                     {{#if (contains this.system.class.value "psychic")}}
                     {{#if this.flags.fortyk.spray}}
-                    <label class="list-item"><span class="spray-attack rollable powerItem button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span></label>
+                    <label class="list-item">
+                        <label>Attack: </label>
+                        <span class="spray-attack rollable powerItem button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span></label>
                     {{/if}}
                     <label class="list-item">Damage: <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this._id}}">{{this.system.damageFormula.value}}</a></label>
                     {{else if (contains this.system.class.value "Buff/Debuff")}}
