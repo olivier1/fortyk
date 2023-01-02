@@ -828,6 +828,7 @@ export class FortykRollDialogs{
 
                         let messageContent="";
                         let updatedtargets=[];
+                        let rolls=[];
                         for(let token of targets){
                             let tokenActor=token.actor;
                             let tokenActorData=token.actor;
@@ -839,6 +840,7 @@ export class FortykRollDialogs{
                             if(!test.value){
                                 updatedtargets.push(token.id);
                             }
+                            rolls.push(test.roll);
 
 
                         }
@@ -846,6 +848,8 @@ export class FortykRollDialogs{
                         game.user.updateTokenTargets(updatedtargets);
                         let chatOptions={user: game.user._id,
                                          speaker:{actor,alias:actor.name},
+                                         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+                                         rolls: rolls,
                                          content:messageContent,
                                          classes:["fortyk"],
                                          flavor:`Spray Attack result`,

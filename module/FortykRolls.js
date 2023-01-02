@@ -294,6 +294,7 @@ returns the roll message*/
 
         //give the chat object options and stuff
         let result={}
+        result.roll=roll;
         let renderedTemplate= await renderTemplate(template,templateOptions);
         if(delayMsg){
             let id=randomID(5);
@@ -772,6 +773,8 @@ returns the roll message*/
         await roll.toMessage({user: game.user._id,
                               speaker:{actor,alias:actor.name},
                               content:renderedTemplate,
+                              type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+                              rolls: [roll],
                               classes:["fortyk"],
                               author:actor.name})
     }
