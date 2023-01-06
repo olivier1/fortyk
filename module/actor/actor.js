@@ -1457,7 +1457,7 @@ export class FortyKActor extends Actor {
         super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
     }
     _onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId){
-
+        
         if(this.dialog){
             this.dialog.updateDialog(this);
         }

@@ -776,14 +776,16 @@ returns the roll message*/
         templateOptions.remainingHits=remainingHits;
         let renderedTemplate= await renderTemplate(template,templateOptions);
         let chatOptions={user: game.user._id,
-                              speaker:{actor,alias:actor.name},
-                              content:renderedTemplate,
-                              type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-                              rolls: rolls,
-                              classes:["fortyk"],
-                              author:actor.name}
-        await ChatMessage.create(chatOptions,{});
-        
+                         speaker:{actor,alias:actor.name},
+                         content:renderedTemplate,
+                         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+                         rolls: rolls,
+                         rollMode: game.settings.get("core", "rollMode"),
+                         sound:"sounds/dice.wav",
+                         classes:["fortyk"],
+                         author:actor.name}
+        await ChatMessage.create(chatOptions);
+
     }
     //handles damage rolls and applies damage to the target, generates critical effects
     static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0, user=game.users.current, lastHit=null, targets=null){

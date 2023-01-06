@@ -464,11 +464,13 @@
     grid-template-columns: 25% 15% 20% 14% 16% 5% 5% ;
     place-items: start stretch;
     margin:0px;
+
 }
 .fortyk .skills .skills-header .gap{
     background-image:"" !important;
-    background-color: black !important;
-    border: 1px solid black !important;
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
+    height: 20PX;
 }
 .fortyk .skills .skills-header select{
     width:100%;
@@ -495,9 +497,10 @@
     font-weight: bold !important;
     font-style:bold;
     font-variant-caps: petite-caps;
+    grid-column: span 5;
 }
 .fortyk .skills .skills-header .skillSubItem{
-    padding-left:10px !important;
+    padding-left:20px !important;
     height:100%;
 }
 .fortyk .item-edit{
@@ -507,6 +510,7 @@
     width:20px !important; 
     height:20px !important;
     margin-left:3px;
+    border:0px !important;
     display:inherit;
 }
 .delete-weapon,
@@ -520,6 +524,7 @@
     width:20px !important;
     height:20px !important;
     margin-left:3px;
+    border:0px !important;
     display:inherit;
 }
 .fortyk .weapon-name{

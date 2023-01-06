@@ -809,7 +809,7 @@ export class FortykRollDialogs{
                         if(weapon.type==="psychicPower"){
                             psy=true;
                         }
-                        
+
                         if(!psy){
                             var ammo=weapon.system.clip.value;
                             if(ammo===0){
@@ -857,6 +857,7 @@ export class FortykRollDialogs{
                                          rolls: rolls,
                                          content:messageContent,
                                          classes:["fortyk"],
+                                         sound:"sounds/dice.wav",
                                          flavor:`Spray Attack result`,
                                          author:actor.name}
                         await ChatMessage.create(chatOptions,{});

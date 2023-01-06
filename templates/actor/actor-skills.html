@@ -26,19 +26,12 @@
 
     <div class="skills-header grid grid-7col" name="skillheads">
         <a class="skillItem skill-group item-descr" data-name="{{skill.name}}" data-item-descr="{{skill.system.description.value}}" title="Skill Use: {{skill.system.skillUse.value}}">{{skill.name}}</a>
-        <span class="skillItem" ></span>
-        <span class="skillItem" ></span>
-        <span class="skillItem" ></span>
-        <span class="skillItem" ></span>
+        
         <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{skill._id}}"></a>
         <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{skill._id}}"></a>
 
     </div>
-    <div class="skills-header flexrow" name="skillheads">
-        <span class="skillItem gap"></span>
-
-
-    </div>
+    
     {{#each ../actor.skills as |spec a|}}
     
 
