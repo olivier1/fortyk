@@ -30,6 +30,10 @@
                 <span> / </span>
                 <input type="text" class="combat-resources" data-target="system.secChar.wounds.max" value="{{system.secChar.wounds.max}}" data-dtype="Number"/>
             </div>
+
+        </div>
+        <div class="flex-group-center">
+            <div class="flexcol">Heavy Damage <input type="checkbox"   {{checked this.system.secChar.wounds.heavy}} disabled style="align-self: center;"> </div>
         </div>
         <div class="flex-group-center">
             <label for="system.secChar.fatigue.value" class="resource-label">Fatigue</label>

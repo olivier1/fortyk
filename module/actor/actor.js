@@ -587,6 +587,13 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","soundconstitution")&&!isNaN(parseInt(this.getFlag("fortyk","soundconstitution")))){
             data.secChar.wounds.max=parseInt(data.secChar.wounds.max)+parseInt(this.getFlag("fortyk","soundconstitution"));
         }
+        data.secChar.wounds.heavy=false;
+        if(!this.getFlag("fortyk","hardy")){
+            let damage=data.secChar.wounds.max-data.secChar.wounds.value;
+            if(damage>data.characteristics.t.bonus*2){
+                data.secChar.wounds.heavy=true;
+            }
+        }
         //parse skill modifiers from active effects
         for (let [key, char] of Object.entries(data.skillmods)){
             char=parseInt(char);
