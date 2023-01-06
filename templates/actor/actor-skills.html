@@ -1,12 +1,12 @@
 
 
-
+<div class="flexrow">
+    <input type="text"  id="skillfilter" class="skillfilter" placeholder="Search...">
+    <a class="item-create button" data-type="skill" title="Add new skill">New Skill</a>
+</div>
 <div class="sheet-skills flexcol">
-   
-    <div class="flexrow">
-        <input type="text"  id="skillfilter" class="skillfilter" placeholder="Search...">
-        <a class="item-create button" data-type="skill" title="Add new skill">New Skill</a>
-    </div>
+
+
 
     <div class="skills-header grid grid-7col">
         <a class="skillItem sort-button" data-sort-type="name" data-path="name" data-item-type="skills">Skill</a>
@@ -17,40 +17,40 @@
         <span class="skillItem">Edit</span>
         <span class="skillItem">Del.</span>
     </div>
-   
+
 
     {{#each actor.skills as |skill key|}}
 
-    
+
     {{#if skill.system.hasChildren.value}}
 
     <div class="skills-header grid grid-7col" name="skillheads">
         <a class="skillItem skill-group item-descr" data-name="{{skill.name}}" data-item-descr="{{skill.system.description.value}}" title="Skill Use: {{skill.system.skillUse.value}}">{{skill.name}}</a>
-        
+
         <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{skill._id}}"></a>
         <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{skill._id}}"></a>
 
     </div>
-    
+
     {{#each ../actor.skills as |spec a|}}
-    
+
 
     {{#if (compareString skill.name spec.system.parent.value)}}
-    
+
     <div class="skills-header grid grid-7col" name="skill">
         <a class="skillSubItem item-descr" name="name"data-name="{{spec.name}}" data-item-descr="{{skill.system.description.value}}" title="Skill Use: {{skill.system.skillUse.value}}">{{spec.name}}</a>
         <select data-item-id="{{spec._id}}" class="skillItem skill-char">
             {{#select spec.system.characteristic.value}}
             {{#each ../../skillChars}}
             <option value="{{this.name}}"{{#if (compareString this.name ../spec.system.characteristic.value)}}selected{{/if}}>{{this.caps}}</option>
-            
+
             {{/each}}
             {{/select}}
         </select>   
         <select  data-item-id="{{spec._id}}" class="skillItem skill-adv">
             {{#select spec.system.value}}
             {{#each ../../skillTraining}}
-        
+
             <option value="{{this.value}}"{{#if (compareString this.value ../spec.system.value)}}selected{{/if}}>{{this.name}}</option>
             {{/each}}
             {{/select}}
@@ -72,23 +72,23 @@
     </div>
     {{else if (compareString skill.system.parent.value)}}
     <div class="skills-header grid grid-7col" name="skill">
-        
+
         <a class="skillItem item-descr" name="name" data-name="{{skill.name}}" data-item-descr="{{skill.system.description.value}}" title="Skill Use: {{skill.system.skillUse.value}}">{{skill.name}}</a>
         <select  data-item-id="{{skill._id}}" class="skillItem skill-char">
             {{#select skill.system.characteristic.value}}
-           {{#each ../skillChars}}
-           <option value="{{this.name}}"{{#if (compareString @key ../skill.system.characteristic.value)}}selected{{/if}}>{{this.caps}}</option>
-            
+            {{#each ../skillChars}}
+            <option value="{{this.name}}"{{#if (compareString @key ../skill.system.characteristic.value)}}selected{{/if}}>{{this.caps}}</option>
+
             {{/each}}
-           {{/select}}
+            {{/select}}
         </select>
         <select data-item-id="{{skill._id}}" class="skillItem skill-adv">
-           {{#select skill.system.value}}
+            {{#select skill.system.value}}
             {{#each ../skillTraining}}
-           
+
             <option value="{{this.value}}"{{#if (compareString this.value ../skill.system.value)}}selected{{/if}}>{{this.name}}</option>
             {{/each}}
-           {{/select}}
+            {{/select}}
         </select>
         <input data-item-id="{{skill._id}}" class="skillItem item-text-input" data-target="system.mod.value" type="text" value="{{skill.system.mod.value}}" data-dtype="Number"/>
 
@@ -98,6 +98,6 @@
 
     </div>
     {{/if}}
-    
+
     {{/each}}
 </div>

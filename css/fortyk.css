@@ -457,6 +457,13 @@
 .fortyk .skills{
     border: 1px solid #AAA;
 }
+.fortyk .skills.tab{
+    overflow:hidden !important;
+}
+.fortyk .sheet-skills{
+    height:100%;
+    overflow:scroll;
+}
 .fortyk .skills .skills-header{
     border: 1px solid #AAA;
     width:100%;
