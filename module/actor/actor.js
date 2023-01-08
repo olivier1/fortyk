@@ -728,6 +728,13 @@ export class FortyKActor extends Actor {
         //prepare psyker stuff
         data.psykana.pr.effective=parseInt(data .psykana.pr.value)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
         data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
+        data.secChar.wounds.heavy=false;
+        if(!this.getFlag("fortyk","hardy")){
+            let damage=data.secChar.wounds.max-data.secChar.wounds.value;
+            if(damage>data.characteristics.t.bonus*2){
+                data.secChar.wounds.heavy=true;
+            }
+        }
         //movement
         this.prepareMovement(data);
         //total soak
@@ -935,7 +942,7 @@ export class FortyKActor extends Actor {
                 if(isNaN(operate)){
                     operate=0;
                 }
-                data.crew.rating=operate+parseInt(data.secChar.manoeuvrability.value);
+                data.crew.rating=operate;
             }
 
         }

@@ -446,14 +446,11 @@
 
         </div>
         <div class="flexcol flex-group-center">
-            <span class="section-title">Size</span>
-            <select class="sizeSelect" name="system.secChar.size.value" data-dtype="Number">
-                {{#select system.secChar.size.value}}
-
-                {{#each size}}
-
-                <option value="{{@index}}">{{this.name}}</option>
-
+            <span class="section-title">Cover</span>
+            <select class="cover"  name="system.secChar.cover.value">
+                {{#select system.secChar.cover.value}}
+                {{#each coverTypes}}
+                <option value="{{value}}">{{label}}</option>
                 {{/each}}
                 {{/select}}
             </select>
@@ -491,28 +488,28 @@
             <div class="forcefield flexcol">
 
                 <span class="section-title">Force Field</span>
-                
-                    <select class="force-field" >
 
-                        <option value="" {{#if system.secChar.wornGear.forceField}}selected{{/if}}>None</option>
-                        {{#each actor.forceFields}}
-                        <option value="{{this._id}}" {{#if this.system.isEquipped}}selected{{/if}}>{{this.name}}</option>
-                        {{/each}}
-                    </select>
-                    {{#if system.secChar.wornGear.forceField._id}}
+                <select class="force-field" >
 
-                    <div class="forcefield flexrow flex-group-center">
-                        {{#unless system.secChar.wornGear.forceField.system.broken.value}}
-                        <label>Overload: {{system.secChar.wornGear.forceField.system.rating.overload}}</label>
-                        <label>Rating: </label> 
+                    <option value="" {{#if system.secChar.wornGear.forceField}}selected{{/if}}>None</option>
+                    {{#each actor.forceFields}}
+                    <option value="{{this._id}}" {{#if this.system.isEquipped}}selected{{/if}}>{{this.name}}</option>
+                    {{/each}}
+                </select>
+                {{#if system.secChar.wornGear.forceField._id}}
 
-                        <span class="forcefield rollable button" data-roll-type="forcefield" data-id="{{system.secChar.wornGear.forceField._id}}">{{system.secChar.wornGear.forceField.system.rating.value}}</span>
-                        {{else}}
-                        <span class="forcefield repairForcefield button" data-id="{{system.secChar.wornGear.forceField._id}}" >Repair</span>
-                        {{/unless}}
-                    </div>
+                <div class="forcefield flexrow flex-group-center">
+                    {{#unless system.secChar.wornGear.forceField.system.broken.value}}
+                    <label>Overload: {{system.secChar.wornGear.forceField.system.rating.overload}}</label>
+                    <label>Rating: </label> 
 
-                    {{/if}}
+                    <span class="forcefield rollable button" data-roll-type="forcefield" data-id="{{system.secChar.wornGear.forceField._id}}">{{system.secChar.wornGear.forceField.system.rating.value}}</span>
+                    {{else}}
+                    <span class="forcefield repairForcefield button" data-id="{{system.secChar.wornGear.forceField._id}}" >Repair</span>
+                    {{/unless}}
+                </div>
+
+                {{/if}}
 
             </div>
             <div class="forcefield flexcol" >
@@ -526,14 +523,7 @@
                     {{/each}}
                 </select>
                 <div class="flexcol">
-                    <span class="section-title">Cover</span>
-                    <select class="cover"  name="system.secChar.cover.value">
-                        {{#select system.secChar.cover.value}}
-                        {{#each coverTypes}}
-                        <option value="{{value}}">{{label}}</option>
-                        {{/each}}
-                        {{/select}}
-                    </select>
+
                     <div class="flexrow flex-group-center">
                         <div class="armor flexcol flex-group-center">
 
@@ -585,6 +575,17 @@
                         </div>
                     </div>
                 </div>
+                <span class="section-title">Size</span>
+                <select class="sizeSelect" name="system.secChar.size.value" data-dtype="Number">
+                    {{#select system.secChar.size.value}}
+
+                    {{#each size}}
+
+                    <option value="{{@index}}">{{this.name}}</option>
+
+                    {{/each}}
+                    {{/select}}
+                </select>
             </div>
         </div>
     </div>

@@ -1872,7 +1872,7 @@ returns the roll message*/
                                 await this.thresholdCrits(crossed,curHit.value,tar,activeEffects);
                                 if(weapon.system.damageType.value.toLowerCase()==="energy"){
 
-                                    heat+=crossed.length;
+                                    heat++;
 
                                 }
                             }
@@ -1895,7 +1895,7 @@ returns the roll message*/
                         //handle critical effects and death
                         //Xenos Bane Logic #2
                         if(!vehicle&&tens&&deathwatch&actor.getFlag("fortyk","xenosbane")&&(actor.system.secChar.wounds.value>=curWounds)&&!isHordelike){
-                            let banetest=await this.fortykTest("t", "char", (tarActor.system.characteristics.t.total),tarActor, `Resist Xenos Bane intant death`,null,false,"",true);
+                            let banetest=await this.fortykTest("t", "char", (tarActor.system.characteristics.t.total),tarActor, `Resist Xenos Bane instant death`,null,false,"",true);
                             if(!banetest.value){
                                 this.applyDead(tar,tarActor,"Xenos Bane");
                             }

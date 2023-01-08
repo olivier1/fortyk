@@ -18,7 +18,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 ".exp",
                 ".combat",
                 ".gear",
-                ".psykana"
+                ".psykana",
+                ".sheet-skills"
             ]
 
         });
