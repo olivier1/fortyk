@@ -66,6 +66,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
         //change item property via text input
         html.find('.item-text-input').focusout(this._itemTextInputEdit.bind(this));
+        html.find('.item-text-input').keydown(this._itemTextInputEnter.bind(this));
         //get item description
         html.find('.item-descr').click(this._onItemDescrGet.bind(this));
         //handles maximal checkbox
@@ -565,7 +566,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
     //handles editing text inputs that are linked to owned items 
     async _itemTextInputEdit(event){
-        
+
         let actor= this.actor;
         let newAmt=event.target.value;
 
@@ -578,6 +579,24 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             update[target]=newAmt;
             await item.update(update);
         }
+    }
+    //handles editing text inputs that are linked to owned items 
+    async _itemTextInputEnter(event){
+        if (event.keyCode == 13){
+            let actor= this.actor;
+            let newAmt=event.target.value;
+
+            let dataItemId=event.target.attributes["data-item-id"].value;
+            let target=event.target.attributes["data-target"].value.toString();
+            let item= actor.getEmbeddedDocument("Item", dataItemId);
+            let oldValue=event.target.defaultValue;
+            if(oldValue!=newAmt){
+                let update={};
+                update[target]=newAmt;
+                await item.update(update);
+            }
+        }
+
     }
     //handles firing mode change for maximal weapons
     async _onMaximalClick(event){
@@ -623,7 +642,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
    */
     async _onRoll(event) {
         event.preventDefault();
-        
+
         const element = event.currentTarget;
         const dataset = element.dataset;
         let testType=dataset["rollType"];
@@ -636,7 +655,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             testTarget+=parseInt(rating);
         }
         var item=null;
-        
+
         //ensure actor is prepared
         if(!this.actor.isPrepared){
             this.actor.prepareData();
@@ -686,7 +705,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
             attackOptions.selfBlind=this.actor.getFlag("core","blind");
             attackOptions.distance=tokenDistance(target, attacker);
-          
+
             let attackerElevation=attacker.elevation;
             let targetElevation=target.elevation;
             attackOptions.elevation=attackerElevation-targetElevation;
@@ -705,12 +724,12 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             FortykRollDialogs.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
             return;
         }
-        
+
         if(testType==="sprayAttack"){
             console.log(testType)
             FortykRollDialogs.callSprayAttackDialog(this.actor, testLabel, item, attackOptions);
         }
-        
+
 
     }
     //handles weapon damage rolls
@@ -807,9 +826,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 try{
                     change.value=Function(`let pr=${pr};return `+change.value)();
                 }catch (err){
-                   change.value=0; 
+                    change.value=0; 
                 }
-                
+
                 if(change.value>=0){
                     aeData.icon="icons/svg/upgrade.svg";
                     aeData.id="buff";
