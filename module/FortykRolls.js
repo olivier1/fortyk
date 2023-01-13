@@ -1808,7 +1808,8 @@ returns the roll message*/
                                 superheavyOptions.threshold=5;
                             }
                         }
-
+                        //check for righteous fury
+                        let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar,ignoreSON,activeEffects,superheavyOptions);
                         //if righteous fury ensure attack deals atleast 1 dmg
                         if(tens&&damage<=0){
                             if(fortykWeapon.getFlag("fortyk","gauss")){
@@ -1839,8 +1840,7 @@ returns the roll message*/
                         for(let i=0;i<messages.length;i++){
                             await ChatMessage.create(messages[i],[]);
                         }
-                        //check for righteous fury
-                        let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar,ignoreSON,activeEffects,superheavyOptions);
+
                         if(crit){
                             await ChatMessage.create(crit,[]);
                         }
