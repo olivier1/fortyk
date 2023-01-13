@@ -328,6 +328,7 @@ export class FortykRollDialogs{
                   ).render(true);
     }
     static async callRangedAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
+        console.log(testTarget)
         let template="systems/fortyk/templates/actor/dialogs/ranged-attack-dialog.html"
         let templateOptions={};
         let itemData=item;
