@@ -844,6 +844,7 @@ export class FortykRollDialogs{
                             if(!test.value){
                                 updatedtargets.push(token.id);
                             }
+
                             let r=test.roll;
                             r.dice[0].options.rollOrder = i;
                             rolls.push(test.roll);
@@ -852,6 +853,7 @@ export class FortykRollDialogs{
                         }
                         messageContent+=`<div>Selected targets may attempt to evade if they have a reaction remaining and can move out of the attack's area of effect.</div>`
                         game.user.updateTokenTargets(updatedtargets);
+                        game.user.broadcastActivity({targets:updatedtargets});
                         let chatOptions={user: game.user._id,
                                          speaker:{actor,alias:actor.name},
                                          type: CONST.CHAT_MESSAGE_TYPES.ROLL,
@@ -865,6 +867,8 @@ export class FortykRollDialogs{
                         if(!psy){
                             await weapon.update({"system.clip.value":ammo-1});
                         }
+                       
+                      
 
 
 

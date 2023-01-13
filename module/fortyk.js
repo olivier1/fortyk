@@ -87,7 +87,7 @@ Hooks.once('init', async function() {
     CONFIG.Cards.documentClass=FortyKCards;
     //register system settings
     registerSystemSettings();
-    
+
     // Handlebars helpers
     Handlebars.registerHelper('concat', function() {
         var outStr = '';
@@ -211,6 +211,7 @@ Hooks.once('ready', async function() {
 
             }
         }
+        
         if(game.user.isGM){
             let id="";
             let actor=null;
@@ -296,6 +297,7 @@ Hooks.once('ready', async function() {
                     let ork=data.package.ork;
                     FortykRolls.perilsOfTheWarp(ork);
                     break;
+
             }
         }
     })
