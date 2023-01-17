@@ -471,6 +471,7 @@
     grid-template-columns: 25% 15% 20% 14% 16% 5% 5% ;
     place-items: start stretch;
     margin:0px;
+    flex-grow:0;
 
 }
 .fortyk .skills .skills-header .gap{

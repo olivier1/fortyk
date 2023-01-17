@@ -197,7 +197,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         }
         let frontArmor=actor.system.facings.front.value;
         let size=parseInt(actor.system.secChar.size.value);
-       
+
         let ratio=size/8;
         data.stomp=Math.ceil((frontArmor/2)*ratio);
 
@@ -310,7 +310,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             let newComUpdate={};
             if(newComponent[0].type==="rangedWeapon"||newComponent[0].type==="meleeWeapon"){
                 let facing=event.target.dataset["facing"];
-                
+
                 newComUpdate["system.facing.value"]=facing;
                 if(path.indexOf("auxiliary")!==-1){
                     if(newComponent[0].system.class.value==="Heavy"){
@@ -597,7 +597,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let enclosedDoc=await vehicletraitsPack.getDocument("cR1t6ioQMPr9QEe5");
                             let superHeavyDoc=await vehicletraitsPack.getDocument("AVUMiYtUvUQQAQrc");
                             let walkerDoc=await vehicletraitsPack.getDocument("3DbsJhqN8KbUXZLd");
-                            
+
                             let itemDatas=[];
                             itemDatas.push(duplicate(chassisDoc));
                             itemDatas.push(duplicate(enclosedDoc));
@@ -1020,7 +1020,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                         stomp.system.pen.value=0;
                         stomp.system.damageFormula.value=formula;
                         await FortykRolls.damageRoll(stomp.system.damageFormula,actor,stomp,1);
-                        
+
 
                     }
                 }
@@ -1046,11 +1046,11 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         try{
             for ( let r of roll.dice[0].results ) {
 
-                if(r.active){
-                    if(r.result===1){
-                        ones++;
-                    }
+
+                if(r.result===1){
+                    ones++;
                 }
+
             } 
         }catch(err){
         }
@@ -1069,10 +1069,10 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             overheatResult="The knight shuts down and is considered helpless until restarted. This is a +0 Operate: Titanic Walker test which takes a full action.";
             overheatFlavor="Emergency Shutdown";
         }else if(result>=2){
-            overheatResult="The knight takes 4d10 damage until the core overload is cleared.";
+            overheatResult="The knight takes 4d10 damage ignoring armor each turn until the core overload is cleared. To clear the Core Overload the bondsman must either pass a +0 tech-use test as a full action or shut down the knight.";
             overheatFlavor="Core Overload";
         }else if(result===1){
-            overheatResult="Roll a +0 tech-use test, on a success your knight is stunned for 1d5 rounds, on a failure the knight suffers a core meltdown in 1d5 rounds(rolled by the GM). You may retry the tech-use test each round.";
+            overheatResult="Roll a +0 tech-use test as a full action, on a success your knight is stunned for 1d5 rounds, on a failure the knight suffers a core meltdown in 1d5 rounds(rolled by the GM). You may retry the tech-use test each round.";
             overheatFlavor="Core Meltdown";
         }
         let chatOverheat={user: game.users.current,
