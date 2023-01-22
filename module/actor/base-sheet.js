@@ -775,7 +775,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                             const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
                             const dmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
                             const pen = parseInt(Number($(el).find('input[name="pen"]').val()));
-                            const magdmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
+                            const magdmg = parseInt(Number($(el).find('input[name="magdmg"]').val()));
                             if(dmg>0){
                                 formula.value+=`+${dmg}`
                             }
