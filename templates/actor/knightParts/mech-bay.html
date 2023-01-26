@@ -816,19 +816,19 @@
             </div>
             <div class="info3 mechgrid-child">
                 <div class="flexrow flex-group-center">
-                    <span>Front Armor: </span><input type="text" class="combat-resources" data-target="system.facings.front.armor" value="{{system.facings.front.armor}}" data-dtype="Number"/><span>/45</span>
+                    <span>Front Armor: </span><input type="text" class="combat-resources" data-target="system.facings.front.armor" value="{{system.facings.front.armor}}" data-dtype="Number"/><span>/{{system.knight.armorValues.sideMax}}</span>
                 </div>
 
                 <div class="flexrow flex-group-center">
-                    <span>Left Side Armor: </span><input type="text" class="combat-resources" data-target="system.facings.lSide.armor" value="{{system.facings.lSide.armor}}" data-dtype="Number"/><span>{{#if system.facings.lSide.shield}}+{{system.facings.lSide.shield}}{{/if}}/45</span>
+                    <span>Left Side Armor: </span><input type="text" class="combat-resources" data-target="system.facings.lSide.armor" value="{{system.facings.lSide.armor}}" data-dtype="Number"/><span>{{#if system.facings.lSide.shield}}+{{system.facings.lSide.shield}}{{/if}}/{{system.knight.armorValues.sideMax}}</span>
                 </div>
 
                 <div class="flexrow flex-group-center">
-                    <span>Right Side Armor: </span> <input type="text" class="combat-resources" data-target="system.facings.rSide.armor" value="{{system.facings.rSide.armor}}" data-dtype="Number"/><span>{{#if system.facings.rSide.shield}}+{{system.facings.rSide.shield}}{{/if}}/45</span>
+                    <span>Right Side Armor: </span> <input type="text" class="combat-resources" data-target="system.facings.rSide.armor" value="{{system.facings.rSide.armor}}" data-dtype="Number"/><span>{{#if system.facings.rSide.shield}}+{{system.facings.rSide.shield}}{{/if}}/{{system.knight.armorValues.sideMax}}</span>
                 </div>
 
                 <div class="flexrow flex-group-center">
-                    <span>Rear Armor: </span><input type="text" class="combat-resources" data-target="system.facings.rear.armor" value="{{system.facings.rear.armor}}" data-dtype="Number"/><span>/45</span>
+                    <span>Rear Armor: </span><input type="text" class="combat-resources" data-target="system.facings.rear.armor" value="{{system.facings.rear.armor}}" data-dtype="Number"/><span>/{{system.knight.armorValues.sideMax}}</span>
                 </div>
                 <div class="flexrow flex-group-center">
                     <span>Armor Weight: {{system.knight.tonnage.armor}}</span>

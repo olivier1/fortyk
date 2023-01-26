@@ -260,6 +260,7 @@ export class FortyKActor extends Actor {
             data.knight.armorValues={};
             data.knight.armorValues.value=0;
             data.knight.armorValues.max=parseInt(chassis.armor.value);
+            data.knight.armorValues.sideMax=45;
             data.knight.space={};
             data.knight.space.max=parseInt(chassis.space.value);
             data.knight.space.value=0;
@@ -797,6 +798,7 @@ export class FortyKActor extends Actor {
                 data.knight.totalArmor=0;
                 data.knight.space.value+=Math.ceil(parseFloat(data.knight.armor.system.space.value)*parseFloat(data.knight.space.max));
                 data.knight.armorValues.max=Math.ceil(data.knight.armorValues.max*parseFloat(data.knight.armor.system.armor.mod));
+                data.knight.armorValues.sideMax=Math.ceil(data.knight.armorValues.sideMax*parseFloat(data.knight.armor.system.armor.mod))
             }
             if(knight.structure){
                 data.knight.structure=this.getEmbeddedDocument("Item",knight.structure);
