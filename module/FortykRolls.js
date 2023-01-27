@@ -1585,18 +1585,24 @@ returns the roll message*/
                         //flame weapon
                         if(!armorSuit.getFlag("fortyk","flamerepellent")&&fortykWeapon.getFlag("fortyk","flame")&&!isHordelike){
                             damageOptions.results.push(`<div class="chat-target flexcol">`)
+                            let fire
                             if(vehicle){
-                                damageOptions.results.push(`Pilot must make a +${facing.armor} Operate test or the vehicle catches fire.`)
+
+                                fire=await this.fortykTest("agi", "char", tarActor.system.crew.ratingTotal+facing.armor,tarActor, "Resist fire",null,false,"",true);
+                                
+
                             }else{
-                                let fire=await this.fortykTest("agi", "char", tarActor.system.characteristics.agi.total,tarActor, "Resist fire",null,false,"",true);
-                                damageOptions.results.push(fire.template);
-                                if(!fire.value){
-                                    let fireActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fire")]);
-                                    activeEffects.push(fireActiveEffect);
-                                    let id=randomID(5);
-                                    damageOptions.results.push(`Catches fire!`)
-                                } 
+                                fire=await this.fortykTest("agi", "char", tarActor.system.characteristics.agi.total,tarActor, "Resist fire",null,false,"",true);
+                                
+
                             }
+                            damageOptions.results.push(fire.template);
+                            if(!fire.value){
+                                let fireActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fire")]);
+                                activeEffects.push(fireActiveEffect);
+                                let id=randomID(5);
+                                damageOptions.results.push(`Catches fire!`)
+                            } 
                             damageOptions.results.push(`</div>`) 
                         } 
                         //thermal weapon
@@ -1873,19 +1879,20 @@ returns the roll message*/
                                 if(weapon.system.damageType.value.toLowerCase()==="energy"){
 
                                     heat++;
+                                    let chatOptions={user: game.user._id,
+                                                     speaker:{actor,alias:actor.name},
+                                                     content:"Gained 1 heat from energy attack triggering threshold.",
+                                                     classes:["fortyk"],
+                                                     flavor:`Gained heat`,
+                                                     author:actor.name}
+                                    await ChatMessage.create(chatOptions,{});
 
                                 }
                             }
                             let knightHeat=parseInt(tarActor.system.knight.heat.value);
                             knightHeat+=heat;
                             await tarActor.update({"system.knight.heat.value":knightHeat});
-                            let chatOptions={user: game.user._id,
-                                             speaker:{actor,alias:actor.name},
-                                             content:"Gained 1 heat from energy attack triggering threshold.",
-                                             classes:["fortyk"],
-                                             flavor:`Gained heat`,
-                                             author:actor.name}
-                            await ChatMessage.create(chatOptions,{});
+
                         }
 
                         //apply field practitioner critical

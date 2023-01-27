@@ -838,7 +838,12 @@ export class FortykRollDialogs{
                             let tokenActorData=token.actor;
                             let data=token.actor.system;
 
-                            let testTarget=data.characteristics.agi.total+mod;
+                            let testTarget=0;
+                            if(tokenActor.type==="vehicle"){
+                                testTarget=data.crew.ratingTotal+mod
+                            }else{
+                               testTarget=data.characteristics.agi.total+mod; 
+                            }
                             let test=await game.fortyk.FortykRolls.fortykTest("agi", "Test", testTarget, tokenActor, "Avoid Spray Attack",weapon,false,"",true);
                             messageContent+=`<div>${tokenActor.name}'s `+test.template+`</div>`;
                             if(!test.value){
