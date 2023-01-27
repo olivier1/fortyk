@@ -211,7 +211,7 @@ Hooks.once('ready', async function() {
 
             }
         }
-        
+
         if(game.user.isGM){
             let id="";
             let actor=null;
@@ -359,6 +359,7 @@ Hooks.on("updateCombat", async (combat) => {
                 }
                 //check for fire
                 if(activeEffect.flags.core.statusId==="fire"){
+
                     if(actor.type!=="vehicle"){
                         let onFireOptions={user: game.user._id,
                                            speaker:{actor,alias:actor.name},
@@ -388,13 +389,31 @@ Hooks.on("updateCombat", async (combat) => {
                                                author:actor.name};
                             await ChatMessage.create(onFireOptions,{});
                         }else{
-                            let onFireOptions={user: game.user._id,
-                                               speaker:{actor,alias:actor.name},
-                                               content:"On round start, roll 1d10+(number of rounds on fire) on a 10+ the vehicle explodes.",
-                                               classes:["fortyk"],
-                                               flavor:`On Fire!`,
-                                               author:actor.name};
-                            await ChatMessage.create(onFireOptions,{});
+
+                            let duration=activeEffect.getFlag("fortyk","vehicleFireExplosionTimer");
+                            console.log(duration)
+                            if(duration===undefined){
+                                duration=0;
+                            }
+                            let fireForm=`1d10+${duration}`;
+                            let fireRoll=new Roll(fireForm,{});
+                            await fireRoll.evaluate({async: false});
+                            fireRoll.toMessage({flavor:"Testing for explosion"});
+                            let result=fireRoll._total; 
+                            if(result>=10){
+                                let onFireOptions={user: game.user._id,
+                                                   speaker:{actor,alias:actor.name},
+                                                   content:"The vehicle explodes!",
+                                                   classes:["fortyk"],
+                                                   flavor:`On Fire!`,
+                                                   author:actor.name};
+                                await ChatMessage.create(onFireOptions,{}); 
+                                let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
+                                await FortykRolls.applyActiveEffect(actor,activeEffect);
+
+                            }
+                            duration++;
+                            console.log(await activeEffect.setFlag("fortyk","vehicleFireExplosionTimer",duration));
                         }
                     }
                 }

@@ -86,7 +86,7 @@ export class FortyKActor extends Actor {
                                          flavor:`Fatigue pass out`,
                                          author:actor.name};
                     await ChatMessage.create(chatUnconscious,{});
-                    await game.fortyk.FortykRolls.applyActiveEffect(token,effect);
+                   await actor.createEmbeddedDocuments("ActiveEffect",effect);
                 }
             }
             // Apply changes in Actor size to Token width/height
