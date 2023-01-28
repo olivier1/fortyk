@@ -1589,11 +1589,11 @@ returns the roll message*/
                             if(vehicle){
 
                                 fire=await this.fortykTest("agi", "char", tarActor.system.crew.ratingTotal+facing.armor,tarActor, "Resist fire",null,false,"",true);
-                                
+
 
                             }else{
                                 fire=await this.fortykTest("agi", "char", tarActor.system.characteristics.agi.total,tarActor, "Resist fire",null,false,"",true);
-                                
+
 
                             }
                             damageOptions.results.push(fire.template);
@@ -1814,8 +1814,7 @@ returns the roll message*/
                                 superheavyOptions.threshold=5;
                             }
                         }
-                        //check for righteous fury
-                        let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar,ignoreSON,activeEffects,superheavyOptions);
+
                         //if righteous fury ensure attack deals atleast 1 dmg
                         if(tens&&damage<=0){
                             if(fortykWeapon.getFlag("fortyk","gauss")){
@@ -1847,6 +1846,8 @@ returns the roll message*/
                             await ChatMessage.create(messages[i],[]);
                         }
 
+                        //check for righteous fury
+                        let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar,ignoreSON,activeEffects,superheavyOptions);
                         if(crit){
                             await ChatMessage.create(crit,[]);
                         }
@@ -2055,10 +2056,7 @@ returns the roll message*/
             }
             return false;
         }else if(crit&&damage<1){
-            let dmg=1;
-            if(weapon.getFlag("fortyk","gauss")){
-                dmg="1d5";
-            }
+
             let chatOptions={user: game.user._id,
                              speaker:{actor,alias:actor.name},
                              content:`<span class="chat-righteous">Righteous Fury</span> does ${dmg} damage through the soak!`,
