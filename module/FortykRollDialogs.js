@@ -275,6 +275,24 @@ export class FortykRollDialogs{
                         let attacklabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
                         let update={};
                         update["system.secChar.lastHit.attackType"]=attackType;
+                        if(attackType==="allout"){
+                            let aeData={};
+                            aeData.id="evasion";
+                            aeData.label= "Evasion";
+                            if(actor.getFlag("core","evasion")){
+                                aeData.icon= "systems/fortyk/icons/evasion2.png";
+                            }else{
+                                aeData.icon= "systems/fortyk/icons/evasion.png"; 
+                            }
+
+
+                            aeData.flags= { core: { statusId: "evasion" } }
+                            aeData.duration={
+
+                                rounds:0
+                            };
+                            FortykRolls.applyActiveEffect(actor,[aeData]);
+                        }
                         if(attackType==="called"){
 
                             update["system.secChar.lastHit.called"]=$(html).find('select[name="calledLoc"] option:selected').val();
@@ -842,7 +860,7 @@ export class FortykRollDialogs{
                             if(tokenActor.type==="vehicle"){
                                 testTarget=data.crew.ratingTotal+mod
                             }else{
-                               testTarget=data.characteristics.agi.total+mod; 
+                                testTarget=data.characteristics.agi.total+mod; 
                             }
                             let test=await game.fortyk.FortykRolls.fortykTest("agi", "Test", testTarget, tokenActor, "Avoid Spray Attack",weapon,false,"",true);
                             messageContent+=`<div>${tokenActor.name}'s `+test.template+`</div>`;
@@ -872,8 +890,8 @@ export class FortykRollDialogs{
                         if(!psy){
                             await weapon.update({"system.clip.value":ammo-1});
                         }
-                       
-                      
+
+
 
 
 
