@@ -86,7 +86,7 @@ export class FortyKActor extends Actor {
                                          flavor:`Fatigue pass out`,
                                          author:actor.name};
                     await ChatMessage.create(chatUnconscious,{});
-                   await actor.createEmbeddedDocuments("ActiveEffect",effect);
+                    await actor.createEmbeddedDocuments("ActiveEffect",effect);
                 }
             }
             // Apply changes in Actor size to Token width/height
@@ -867,14 +867,14 @@ export class FortyKActor extends Actor {
                     }
                 }
             }
-            data.knight.instancedComponents=[];
+            knight.instancedComponents=[];
             for(let i=0;i<knight.components.length;i++){
                 let component=knight.components[i];
                 let instancedComponent=this.getEmbeddedDocument("Item",component);
 
                 if(instancedComponent){
-                    data.knight.space.value+=parseFloat(instancedComponent.system.space.value);
-                    data.knight.tonnage.value+=parseFloat(instancedComponent.system.weight.value);
+                    knight.space.value+=parseFloat(instancedComponent.system.space.value);
+                    knight.tonnage.value+=parseFloat(instancedComponent.system.weight.value);
                 }
 
                 knight.instancedComponents.push(instancedComponent);
@@ -1473,7 +1473,7 @@ export class FortyKActor extends Actor {
         super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
     }
     _onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId){
-        
+
         if(this.dialog){
             this.dialog.updateDialog(this);
         }

@@ -16,7 +16,8 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             scrollY: [
                 ".left-mechbay",
                 ".info4",
-                ".sheet-content"
+                ".sheet-content",
+                ".sheet-content-knight"
             ]
 
         });

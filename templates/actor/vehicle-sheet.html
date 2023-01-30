@@ -456,6 +456,28 @@
                 </div>
 
             </div>
+            {{#if flags.fortyk.superheavy}}
+            <div class="descrRow flexcol">
+                <span class="section-title">Components</span>
+                <div class="list list3col grid grid-3col">
+                    <span class="list-item">Name</span>
+                    <span class="list-button"></span>
+                    <span class="list-button"></span>
+                    {{#each components as |t key|}}
+
+                    <a class="item-descr list-item" data-name="{{t.name}}" data-item-descr="{{t.system.description.value}}">{{t.name}}{{#unless (compareString "N/A" t.system.specialisation.value)}} ({{t.system.specialisation.value}}){{/unless}} </a>
+                    <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
+                    <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
+
+
+
+                    {{/each}}
+
+                </div>
+
+
+            </div>
+            {{/if}}
             <div class="tnt flexcol">
                 <span class="section-title">Description</span>
                 <div class="item-description">

@@ -349,6 +349,15 @@
             "system": "fortyk",
             "package": "system",
             "private": false
+        },
+        {
+            "label": "Psychic Powers",
+            "type": "Item",
+            "name": "psychic-powers",
+            "path": "packs/psychic-powers.db",
+            "system": "fortyk",
+            "private": false,
+            "flags": {}
         }
 
     ],
