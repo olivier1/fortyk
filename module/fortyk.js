@@ -168,7 +168,12 @@ Hooks.once("setup", function() {
 //HOOKS
 Hooks.once('ready', async function() {
     //change dice so nice setting
-    game.settings.set("dice-so-nice","enabledSimultaneousRollForMessage",false);
+    try{
+        game.settings.set("dice-so-nice","enabledSimultaneousRollForMessage",false);
+    }catch(err){
+        
+    }
+    
     //search for vehicles with pilots to assign them their stats
     let vehicles=Array.from(game.actors.values()).filter(actor=>actor.type==="vehicle");
     for(let i=0;i<vehicles.length;i++){

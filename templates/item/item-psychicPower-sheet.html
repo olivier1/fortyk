@@ -22,6 +22,14 @@
             </select>
         </div>
         <div class="flexcol">
+            <label>Cost:</label>
+            <input type="text" value="{{system.cost.value}}" name="system.cost.value">
+        </div>
+        <div class="flexcol">
+            <label>Requirements:</label>
+            <input type="text" value="{{system.reqs.value}}" name="system.reqs.value">
+        </div>
+        <div class="flexcol">
             <label>Power Type:</label>
 
             <select class="power-type" name="system.class.value">
@@ -36,10 +44,7 @@
             <label>Action:</label>
             <input type="text" value="{{system.action.value}}" name="system.action.value">
         </div>
-        <div class="flexcol">
-            <label>Subtype:</label>
-            <input type="text" value="{{system.subtype.value}}" name="system.subtype.value">
-        </div>
+        
 
         <div class="flexcol">
             <label>Test Type:</label>
@@ -56,21 +61,20 @@
             <label>Modifier:</label>
             <input type="text" value="{{system.testMod.value}}" name="system.testMod.value" data-dtype="Number">
         </div>
+        
+        
+        
+        <div class="flexcol">
+            <label>Range:</label>
+            <input type="text" value="{{system.range.formula}}" name="system.range.formula">
+        </div>
         <div class="flexcol">
             <label>Sustain:</label>
             <input type="text" value="{{system.sustain.value}}" name="system.sustain.value">
         </div>
         <div class="flexcol">
-            <label>Requirements:</label>
-            <input type="text" value="{{system.reqs.value}}" name="system.reqs.value">
-        </div>
-        <div class="flexcol">
-            <label>Cost:</label>
-            <input type="text" value="{{system.cost.value}}" name="system.cost.value">
-        </div>
-        <div class="flexcol">
-            <label>Range:</label>
-            <input type="text" value="{{system.range.formula}}" name="system.range.formula">
+            <label>Subtype:</label>
+            <input type="text" value="{{system.subtype.value}}" name="system.subtype.value">
         </div>
         {{#if (contains system.class.value "Psychic")}}
         <div class="flexcol">
