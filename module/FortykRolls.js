@@ -926,29 +926,8 @@ returns the roll message*/
                     //curHit=game.fortyk.FORTYKTABLES.hitLocations[randomLocation._total];
                 }
             }
-            //spray and blast weapons always hit the body hit location
-            if(fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","spray")){
 
-                curHit={value:"body",label:"Body"}
-            }
-            //formations and hordes always get hit in the body
-            if(targets.size>0){
-                let targetIt=targets.values();
-                let target=targetIt.next().value;
-                let targetData=target.actor.system;
-                if(target.actor.type!=="vehicle"){
-                    if(targetData.horde.value||targetData.formation.value){
-                        curHit.value="body";
-                        curHit.label="Body";
-                    }
-                }else{
-                    //if a vehicle blast and spray weapons hit the hull
-                    if(fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","spray")){
 
-                        curHit={value:"hull",label:"Hull"}
-                    }
-                }
-            }
             let roll=new Roll(form,actor.system);
             let label = weapon.name ? `Rolling ${weapon.name} damage to ${curHit.label}.` : 'damage';
             await roll.evaluate({async: true});
@@ -1018,6 +997,7 @@ returns the roll message*/
                             curHit.value=lastHit.vehicleHitLocation.value;
                             curHit.label=lastHit.vehicleHitLocation.label;
                         }
+
                         let tarRighteous=righteous;
                         //calc distance
                         let distance=tokenDistance(attackerToken,tar);
@@ -1039,6 +1019,20 @@ returns the roll message*/
                                     curHit.label=game.fortyk.FORTYKTABLES.vehicleHitLocations[randomLocation._total].label;
                                 } 
                             }
+                        }
+                        //spray and blast weapons always hit the body hit location, the hull on vehicles
+                        if(fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","spray")){
+                            if(!vehicle){
+                                curHit={value:"body",label:"Body"}
+                            }else{
+                                curHit={value:"hull",label:"Hull"}
+                            }
+
+                        }
+                        //hordes and formations always get hit in the body
+                        if(isHordelike){
+                            curHit.value="body";
+                            curHit.label="Body";
                         }
                         let damageOptions={
                             wpnName:fortykWeapon.name,
@@ -1389,6 +1383,29 @@ returns the roll message*/
                             damageOptions.results.push(`<span>Swarm enemies take reduced damage against non blast, spray, flame or scatter weapons.</span>`);
                         }
                         damage=damage-soak;
+                        //gauss weapon logic
+                        if(fortykWeapon.getFlag("fortyk","gauss")&&tens&&!isHordelike){
+                            let gaussAmt=new Roll("1d5",{});
+                            await gaussAmt.evaluate({async: true});
+
+                            damageOptions.results.push(`<label> Gauss Weapon armor damage: ${gaussAmt._total}.</label> `);
+
+                            let newArmor=Math.max(0,(armor-gaussAmt._total));
+
+                            let gaussAmount=-gaussAmt._total;
+                            let path="";
+                            if(vehicle){
+                                path=`system.facings.${facing.path}.armor`;
+                            }else{
+                                path=`system.characterHitLocations.${curHit.value}.armorMod`;
+                            }
+                            let gaussActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("corrode")]);
+                            gaussActiveEffect.changes=[];
+                            let changes={key:path,value:gaussAmount,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}
+                            gaussActiveEffect.changes.push(changes);
+                            activeEffects.push(gaussActiveEffect);
+
+                        }
                         //corrosive weapon logic
                         if(fortykWeapon.getFlag("fortyk","corrosive")&&!isHordelike){
                             let corrosiveAmt=new Roll("1d10",{});
@@ -1841,15 +1858,10 @@ returns the roll message*/
 
                         //if righteous fury ensure attack deals atleast 1 dmg
                         if(tens&&damage<=0){
-                            if(fortykWeapon.getFlag("fortyk","gauss")){
-                                let gaussDmg=new Roll("1d5");
-                                await gaussDmg.evaluate({async: true});
-                                damageOptions.results.push(`<span>Gauss weapon deals ${gaussDmg.total} damage through the soak on righteous fury!</span>`);
-                                damage=gaussDmg.total;
-                            }else{
-                                damageOptions.results.push(`<span>Righteous fury deals 1 damage through the soak!</span>`);
-                                damage=1;
-                            }
+
+                            damageOptions.results.push(`<span>Righteous fury deals 1 damage through the soak!</span>`);
+                            damage=1;
+
 
                         }else if(damage<=0){
                             damage=0;
@@ -2062,7 +2074,7 @@ returns the roll message*/
             this.applyDead(tar,tar.actor,'<span class="chat-righteous">Righteous Fury</span>');
             return false;
         }
-        if((weapon.getFlag("fortyk","gauss")&&crit&&vehicle)||(crit&&damage>0)){
+        if((crit&&damage>0)){
             let diceStr="1d5";
             if(vehicle&&tar.actor.getFlag("fortyk","ramshackle")){
                 diceStr="1d10";    

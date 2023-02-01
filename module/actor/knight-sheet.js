@@ -802,7 +802,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                                 let newAmt=amtTaken-1;
 
 
-                                let componentUpdate={};
+                                var componentUpdate={};
 
                                 if(item.system.state.value==="X"||item.system.state.value===0){
                                     let amt=parseInt(component.system.amount.value);

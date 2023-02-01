@@ -311,7 +311,7 @@ FORTYK.weaponFlags={
     },"gauss": {
         "value": false,
         "label": "Gauss",
-        "description": "Gauss weapons are terrifying examples of advanced technology. Gauss weapons generate Zealous Hatred on a 9 or 10, and if they would not deal damage when generating Zealous Hatred, they deal 1d5 Wounds instead of 1 (see page 242). In addition, they generate Zealous Hatred against vehicles on a 9 or 0, even if they do not deal damage"
+        "description": "Gauss weapons are terrifying examples of advanced technology. Gauss weapons generate Righteous Fury on a 9 or 10, and reduce the armor of the struck location by 1d5 on a Righteous Fury."
     },
     "graviton": {
         "value": false,
