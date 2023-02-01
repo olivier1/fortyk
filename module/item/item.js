@@ -41,10 +41,11 @@ export class FortyKItem extends Item {
                 }
             }
         }
-        if(game.user.isGM){
-            if(this.actor){
-                if(this.actor.type==="knightHouse"){
-                    if(this.system.loaned){
+
+        if(this.actor){
+            if(this.actor.type==="knightHouse"){
+                if(this.system.loaned){
+                    if(game.user.isGM){
                         let loaned=this.system.loaned;
                         for(let i=0;i<loaned.length;i++){
                             let knight=await game.actors.get(loaned[i].knightId);
@@ -52,16 +53,23 @@ export class FortyKItem extends Item {
                             update["_id"]=loaned[i].itemId;
                             console.log(update)
                             try{
-                                 await knight.updateEmbeddedDocuments("Item",[update]);
+                                await knight.updateEmbeddedDocuments("Item",[update]);
                             }catch(err){
-                                
+
                             }
-                           
+
                         }
+                    }else{
+                        //if user isnt GM use socket to have gm update the actor
+                        let loans=this.system.loaned;
+                        let socketOp={type:"updateLoans",package:{"loans":loans, "update":data}}
+                        await game.socket.emit("system.fortyk",socketOp);
                     }
+
                 }
             }
         }
+
 
         super.update(data,options);
     }

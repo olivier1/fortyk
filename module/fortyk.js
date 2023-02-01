@@ -171,9 +171,9 @@ Hooks.once('ready', async function() {
     try{
         game.settings.set("dice-so-nice","enabledSimultaneousRollForMessage",false);
     }catch(err){
-        
+
     }
-    
+
     //search for vehicles with pilots to assign them their stats
     let vehicles=Array.from(game.actors.values()).filter(actor=>actor.type==="vehicle");
     for(let i=0;i<vehicles.length;i++){
@@ -271,6 +271,22 @@ Hooks.once('ready', async function() {
                     let options={}
                     options[path]=value;
                     await actor.update(options);
+                    break;
+                case "updateLoans":
+                    let loaned=data.package.loans;
+                    let update=data.package.update;
+                    for(let i=0;i<loaned.length;i++){
+                        let knight=await game.actors.get(loaned[i].knightId);
+                        let update1=duplicate(update);
+                        update1["_id"]=loaned[i].itemId;
+                        console.log(update1)
+                        try{
+                            await knight.updateEmbeddedDocuments("Item",[update1]);
+                        }catch(err){
+
+                        }
+
+                    }
                     break;
                 case "forcefieldRoll":
                     targetIds=data.package.targets;
