@@ -1,4 +1,4 @@
-    {
+{
     "Actor": {
         "types": [
             "npc",
@@ -1091,7 +1091,8 @@
                 "isEquipped": false
             },
             "loanable":{
-                "originalId":""
+                "originalId":"",
+                "loaned":[]
             },
             "physicalProp": {
                 "weight": {
@@ -1656,9 +1657,9 @@
             }
         },
         "knightChassis":{
-             "templates":[
+            "templates":[
                 "description",
-                 "equippable"
+                "equippable"
             ],
             "structuralIntegrity":{
                 "value":0,

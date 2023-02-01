@@ -491,7 +491,7 @@ export class FortyKActor extends Actor {
                 //if item is equipped and/or not disabled
                 if(proceed){
                     ae.changes.forEach(function(change,i){
-                        let basevalue=parseInt(objectByString(actorData,change.key));
+                        let basevalue=parseFloat(objectByString(actorData,change.key));
 
                         let newvalue=parseFloat(change.value);
                         let path=change.key.split(".");

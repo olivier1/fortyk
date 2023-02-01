@@ -1280,8 +1280,14 @@ returns the roll message*/
                             }else{
                                 soak=parseInt(data.characterHitLocations[curHit.value].value);
                             }
+                            let damageType=weapon.system.damageType.value.toLowerCase();
+                            //reactive plating
+                            if(tarActor.getFlag("fortyk","reactiveplating")&&(damageType==="explosive")||damageType==="impact"){
+                                soak+=Math.ceil(armor*0.1);
+                                damageOptions.results.push(`<span>Reactive Plating is resistant against this damage type.</span>`);
+                            }
                             //resistant armor
-                            if(armorSuit.getFlag("fortyk",weapon.system.damageType.value.toLowerCase())){
+                            if(armorSuit.getFlag("fortyk",damageType)){
                                 soak+=Math.ceil(armor*0.5);
                                 damageOptions.results.push(`<span>Armor is resistant against this damage type.</span>`);
                             }
@@ -1713,6 +1719,24 @@ returns the roll message*/
                                                 author:tarActor.name}
                                 messages.push(impOptions);
                             }
+                        }
+                        //artificer hull
+                        if(vehicle&&damage>0&&damage>newWounds[tarNumbr]&&tarActor.getFlag("fortyk","artificerhull")){
+                            let critDamage=0;
+                            if(newWounds[tarNumbr]<=0){
+                                critDamage=damage;
+                            }else{
+                                critDamage=damage-newWounds[tarNumbr];
+                            }
+                            critDamage=Math.max(critDamage-4,0);
+                            damage=damage-critDamage;
+                            let artificerOptions={user: user._id,
+                                                  speaker:{actor,alias:tarActor.name},
+                                                  content:"Artificer hull reduces critical damage by 4!",
+                                                  classes:["fortyk"],
+                                                  flavor:`Artificer Hull`,
+                                                  author:tarActor.name}
+                            messages.push(artificerOptions);
                         }
                         //reinforced armor
                         if(vehicle&&damage>0&&damage>newWounds[tarNumbr]&&tarActor.getFlag("fortyk","reinforcedarmour")){

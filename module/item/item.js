@@ -41,6 +41,28 @@ export class FortyKItem extends Item {
                 }
             }
         }
+        if(game.user.isGM){
+            if(this.actor){
+                if(this.actor.type==="knightHouse"){
+                    if(this.system.loaned){
+                        let loaned=this.system.loaned;
+                        for(let i=0;i<loaned.length;i++){
+                            let knight=await game.actors.get(loaned[i].knightId);
+                            let update=duplicate(data);
+                            update["_id"]=loaned[i].itemId;
+                            console.log(update)
+                            try{
+                                 await knight.updateEmbeddedDocuments("Item",[update]);
+                            }catch(err){
+                                
+                            }
+                           
+                        }
+                    }
+                }
+            }
+        }
+
         super.update(data,options);
     }
 
@@ -204,11 +226,11 @@ export class FortyKItem extends Item {
                         if(typeof fl=="string"){
                             if(fl.toLowerCase().indexOf("pr")!==-1){
                                 try{
-                                  flags[flag]=Math.ceil(Function(`let pr=${pr};return `+flags[flag])());  
+                                    flags[flag]=Math.ceil(Function(`let pr=${pr};return `+flags[flag])());  
                                 }catch (err){
                                     flags[flag]=0;
                                 }
-                                
+
                             }
                         }
                     }
@@ -217,15 +239,15 @@ export class FortyKItem extends Item {
                         try{
                             item.system.range.value=Math.ceil(Function(`let wp=${wp};return `+range)());
                         }catch(err){
-                           item.system.range.value=0; 
+                            item.system.range.value=0; 
                         }
                         try{
-                           item.system.pen.value=Math.ceil(Function(`let wp=${wp};return `+item.system.pen.formula.toLowerCase())()); 
+                            item.system.pen.value=Math.ceil(Function(`let wp=${wp};return `+item.system.pen.formula.toLowerCase())()); 
                         }catch(err){
                             item.system.pen.value=0;
                         }
-                        
-                        
+
+
                         let training=0;
                         switch(item.system.training.value){
                             case "Novice":
@@ -263,8 +285,8 @@ export class FortyKItem extends Item {
                             }catch(err){
                                 item.system.pen.value=0;
                             }
-                            
-                            
+
+
                             let temp;
                             temp=item.system.damageFormula.formula.replace(/pr/gmi,pr);
                             item.system.damageFormula.value=temp.replace(/wp/gmi,wp);
