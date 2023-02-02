@@ -782,7 +782,7 @@ export class FortyKActor extends Actor {
             if(knight.core){
                 data.knight.core=this.getEmbeddedDocument("Item",knight.core);
 
-                data.knight.heat.cap=data.knight.core.system.heatCap.value;
+                data.knight.heat.cap+=data.knight.core.system.heatCap.value;
                 data.knight.heat.max=parseInt(data.knight.heat.cap)+parseInt(data.knight.heat.mod);
                 data.knight.space.value+=parseFloat(data.knight.core.system.space.value);
                 data.knight.tonnage.value+=parseFloat(data.knight.core.system.weight.value);

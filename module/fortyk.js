@@ -534,6 +534,21 @@ Hooks.on("updateCombat", async (combat) => {
             }
 
         }
+        //frigus core
+        if(actor.getFlag("fortyk","friguscore")){
+            let heat=parseInt(actor.system.knight.heat.value);
+            if(heat>0){
+                await actor.update({"system.knight.heat.value":heat-1});
+                let frigusOptions={user: game.user._id,
+                                   speaker:{actor,alias:actor.name},
+                                   content:"On round start, lose 1 heat.",
+                                   classes:["fortyk"],
+                                   flavor:`Frigus Core`,
+                                   author:actor.name};
+                await ChatMessage.create(frigusOptions,{});
+            }
+
+        }
     }
 })
 Hooks.on("preDeleteCombat", async (combat,options,id) =>{
