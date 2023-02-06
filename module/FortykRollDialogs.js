@@ -51,9 +51,24 @@ export class FortykRollDialogs{
             title+=`${testLabel} `+"Test";
 
         }
+        let modifier=0;
+
+        if(testType==="evasion"){
+            if(actor.getFlag("fortyk","evadeMod")){
+
+                modifier=actor.getFlag("fortyk","evadeMod");
+            }
+            if(actor.getFlag("core","luminagen")){
+                modifier-=10;
+            }
+            if(actor.getFlag("core","holyShield")){
+                modifier+=10;
+            }
+        }
+
         new Dialog({
             title: title,
-            content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="0" autofocus/></p>`,
+            content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="${modifier}" autofocus/></p>`,
             buttons: {
                 submit: {
                     label: 'OK',
@@ -72,6 +87,9 @@ export class FortykRollDialogs{
                             if(!reroll){
 
                                 if(testType==="evasion"){
+                                    if(actor.getFlag("fortyk","evadeMod")){
+                                        actor.setFlag("fortyk","evadeMod",false);
+                                    }
                                     let aeData={};
                                     aeData.id="evasion";
                                     aeData.label= "Evasion";
@@ -292,6 +310,14 @@ export class FortykRollDialogs{
                                 rounds:0
                             };
                             FortykRolls.applyActiveEffect(actor,[aeData]);
+                        }
+                        
+                        if(guarded){
+                            let guardActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("holyShield")]);
+                            guardActiveEffect.duration={
+                                rounds:0
+                            }
+                            FortykRolls.applyActiveEffect(actor,[guardActiveEffect]);
                         }
                         if(attackType==="called"){
 
@@ -688,6 +714,13 @@ export class FortykRollDialogs{
                             if(size<0){
                                 size=0;
                             }
+                        }
+                        if(guarded){
+                            let guardActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("holyShield")]);
+                            guardActiveEffect.duration={
+                                rounds:0
+                            }
+                            FortykRolls.applyActiveEffect(actor,[guardActiveEffect]);
                         }
                         let other = Number($(html).find('input[name="other"]').val());
                         let melee = Number($(html).find('input[name="melee"]:checked').val());

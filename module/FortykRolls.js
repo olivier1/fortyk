@@ -211,7 +211,10 @@ returns the roll message*/
         if(attack&&templateOptions["success"]){
             hits=1;
             let attackTarget=game.user.targets.first();
-            if(type==="meleeAttack"){
+
+            if(actor.type!=="vehicle"&&actor.system.formation.value){
+                hits=Math.min(testDos,actor.system.secChar.wounds.value); 
+            }else if(type==="meleeAttack"){
                 let wsBonus
                 if(isVehicle){
                     wsBonus=Math.floor(parseInt(actor.system.crew.ws)/10)
@@ -275,22 +278,32 @@ returns the roll message*/
             }else{
                 templateOptions["numberHits"]+="."
             }
-
+            let evadepenalty=0;
             if(actor.getFlag("fortyk","inescapableattack")&&(attackType!=="semi"&&attackType!=="full"&&attackType!=="swift"&&attackType!=="lightning")&&((actor.getFlag("fortyk","inescapableattack").toLowerCase().indexOf("ranged")!==-1&&type==="rangedAttack")||(actor.getFlag("fortyk","inescapableattack").toLowerCase().indexOf("melee")!==-1&&type==="meleeAttack"))){
                 let inescPenalty=Math.max(-60,testDos*(-10));
+                evadepenalty+=inescPenalty;
                 templateOptions["inescapableAttack"]=`Inescapable attack evasion penalty: ${inescPenalty}`; 
             }
-        }
-        let attackTarget=game.user.targets.first();
-        if(attack&&attackTarget&&templateOptions["success"]){
-            let tarActor=attackTarget.actor;
-            let tarSize=tarActor.system.secChar.size.value;
-            let attackerSize=actor.system.secChar.size.value;
-            if(attackerSize>tarSize){
-                let penalty=(tarSize-attackerSize)*10;
-                templateOptions["sizePenalty"]=`Evasion penalty due to size difference: ${penalty}`
+            let tarActor;
+            if(attackTarget!==undefined){
+                tarActor=attackTarget.actor;
+                let tarSize=tarActor.system.secChar.size.value;
+                let attackerSize=actor.system.secChar.size.value;
+                if(attackerSize>tarSize){
+                    let penalty=(tarSize-attackerSize)*10;
+                    evadepenalty+=penalty;
+                    templateOptions["sizePenalty"]=`Evasion penalty due to size difference: ${penalty}`
+                }
             }
+
+            evadepenalty=Math.max(evadepenalty,-60);
+
+            if(targetActor&&evadepenalty!==0){
+                await tarActor.setFlag("fortyk","evadeMod",evadepenalty);
+            }
+
         }
+
 
         //give the chat object options and stuff
         let result={}
@@ -948,19 +961,23 @@ returns the roll message*/
             //handle spray weapon jams
             if(fortykWeapon.getFlag("fortyk","spray")&&weapon.type==="rangedWeapon"){
                 let jam=false;
-                for ( let r of roll.dice[0].results ) {
-                    if(r.roll===9){
-                        jam=true;
+                try{
+                    for ( let r of roll.dice[0].results ) {
+                        if(r.roll===9){
+                            jam=true;
+                        }
                     }
-                }
-                if(jam){
-                    let jamOptions={user: user._id,
-                                    speaker:{actor,alias:actor.name},
-                                    content:"Spray weapon jammed on a roll of 9",
-                                    classes:["fortyk"],
-                                    flavor:`Weapon Jam`,
-                                    author:actor.name}
-                    await ChatMessage.create(jamOptions,{});
+                    if(jam){
+                        let jamOptions={user: user._id,
+                                        speaker:{actor,alias:actor.name},
+                                        content:"Spray weapon jammed on a roll of 9",
+                                        classes:["fortyk"],
+                                        flavor:`Weapon Jam`,
+                                        author:actor.name}
+                        await ChatMessage.create(jamOptions,{});
+                    }
+                }catch(err){
+
                 }
             }
             //check to see if attack is targetted or just rolling damage with no targets

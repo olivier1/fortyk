@@ -201,6 +201,7 @@ export class FortyKActor extends Actor {
         }
         data.evasion=0;
         data.evasionMod=0;
+        
         //initialize skill modifiers from active events so that they are integers
         this.items.forEach((fortykItem,id,items)=>{
             let item=fortykItem;
@@ -251,6 +252,7 @@ export class FortyKActor extends Actor {
         }*/
         data.evasion=0;
         data.evasionMod=0;
+        
         //prepare base stats for imperial knights if they have a chassis selected
         if(data.knight.chassis){
             data.chassis=this.getEmbeddedDocument("Item",data.knight.chassis);
@@ -569,10 +571,8 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","neverquit")){
             data.secChar.fatigue.max+=2;
         }
-        //luminagen
-        if(this.getFlag("core","luminagen")){
-            data.evasionMod-=10;
-        }
+       
+       
         //modify total characteristics depending on fatigue
         var fatigueMult=1;
         if(this.getFlag("fortyk","unrelenting")){
@@ -719,10 +719,7 @@ export class FortyKActor extends Actor {
                 char.total=Math.ceil(char.value/2);
             }
         }
-        //luminagen
-        if(this.getFlag("core","luminagen")){
-            data.evasionMod-=10;
-        }
+        
         //prepare parry/dodge
         data.parry.total=data.characteristics.ws.total+parseInt(data.parry.mod)+data.evasionMod;
         data.dodge.total=data.characteristics.agi.total+parseInt(data.dodge.mod)+data.evasionMod;
@@ -774,10 +771,7 @@ export class FortyKActor extends Actor {
         let knight=data.knight;
         var armorRatio=1;
         this.preparePilot();
-        //luminagen
-        if(this.getFlag("core","luminagen")){
-            data.evasionMod-=10;
-        }
+        
         if(knight.chassis){
             if(knight.core){
                 data.knight.core=this.getEmbeddedDocument("Item",knight.core);

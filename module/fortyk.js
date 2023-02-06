@@ -549,6 +549,9 @@ Hooks.on("updateCombat", async (combat) => {
             }
 
         }
+        if(actor.getFlag("fortyk","evadeMod")){
+            await actor.setFlag("fortyk","evadeMod",false);
+        }
     }
 })
 Hooks.on("preDeleteCombat", async (combat,options,id) =>{
@@ -562,6 +565,9 @@ Hooks.on("preDeleteCombat", async (combat,options,id) =>{
             if(activeEffect.duration.type!=="none"){
                 await activeEffect.delete({});
             }
+        }
+        if(actor.getFlag("fortyk","evadeMod")){
+            await actor.setFlag("fortyk","evadeMod",false);
         }
     })
     for(let index = 0; index < combat.combatants.length; index++){

@@ -305,12 +305,12 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
             let componentBase=duplicate(component)
             componentBase.system.originalId=component.id;
-            
+
             let newComponent=await actor.createEmbeddedDocuments("Item",[componentBase]);
             let comUpdate={};
             comUpdate["system.amount.taken"]=newAmt
             let loanedArray=componentBase.system.loaned;
-         
+
             loanedArray.push({"knightId":actor.id,"itemId":newComponent[0]._id});
             console.log(loanedArray)
             comUpdate["system.loaned"]=loanedArray;
@@ -401,12 +401,12 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
                 chassisUpdate[path]=array;
             }
+            if(Object.keys(knightUpdate).length>0){
+                await this.actor.update(knightUpdate);
+            }
 
             if(Object.keys(chassisUpdate).length>0){
                 await chassis.update(chassisUpdate);
-            }
-            if(Object.keys(knightUpdate).length>0){
-                await this.actor.update(knightUpdate);
             }
 
         }
@@ -814,7 +814,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let loans=component.system.loaned;
                             let newLoans=loans.filter(loan=>loan.knightId!==actor.id&&loan.itemId!==itemId);
                             componentUpdate["system.loaned"]=newLoans;
-                            
+
 
                             let update={};
                             update[path]="";
@@ -871,7 +871,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let loans=component.system.loaned;
                             let newLoans=loans.filter(loan=>!(loan.knightId===actor.id&&loan.itemId===itemId));
                             componentUpdate["system.loaned"]=newLoans;
-                            
+
 
 
 
