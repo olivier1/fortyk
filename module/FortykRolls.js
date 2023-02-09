@@ -7,7 +7,8 @@ import {getVehicleFacing} from "./utilities.js";
 import {getAttackAngle} from "./utilities.js";
 import {sleep} from "./utilities.js";
 import {parseHtmlForInline} from "./utilities.js";
-import {FortykRollDialogs} from "./FortykRollDialogs.js"
+import {FortykRollDialogs} from "./FortykRollDialogs.js";
+
 export class FortykRolls{
     /*The base test function, will roll against the target and return the success and degree of failure/success, the whole roll message is handled by the calling function.
 @char: a characteristic object that contains any unattural characteristic the object may have
@@ -4308,7 +4309,22 @@ returns the roll message*/
                         aEs.push(effect[index])
                     }
                 }
-                await actor.createEmbeddedDocuments("ActiveEffect",aEs);
+                let effects=await actor.createEmbeddedDocuments("ActiveEffect",aEs);
+                if (window.EffectCounter) {
+                    console.log(window.EffectCounter)
+                    for(let i=0;i<effects.length;i++){
+
+                        let effectInstance=effects[i];
+                        if(effectInstance.duration.rounds){
+                           new ActiveEffectCounter(effectInstance.duration.rounds,effectInstance.icon,effectInstance); 
+                        }
+                        
+                        
+                    }
+                }
+
+
+
 
             }else{
                 //if user isnt GM use socket to have gm update the actor

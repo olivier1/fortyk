@@ -128,6 +128,7 @@
     border-width: medium;
     padding:5px;
     display:grid;
+    background-image: url(../../../ui/parchment.jpg);
 }
 .flex-between {
     -webkit-box-pack: justify;

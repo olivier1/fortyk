@@ -173,7 +173,20 @@ Hooks.once('ready', async function() {
     }catch(err){
 
     }
+    if(window.EffectCounter){
+        CounterTypes.setDefaultType("icons/svg/daze.svg","statuscounter.countdown_round");
+        CounterTypes.setDefaultType("icons/svg/net.svg","statuscounter.countdown_round");
+        CounterTypes.setDefaultType("icons/svg/blind.svg","statuscounter.countdown_round");
+        CounterTypes.setDefaultType("icons/svg/deaf.svg","statuscounter.countdown_round");
+        CounterTypes.setDefaultType("systems/fortyk/icons/cryo.png","statuscounter.countdown_round");
+        CounterTypes.setDefaultType("systems/fortyk/icons/spiral.png","statuscounter.countdown_round");
+        CounterTypes.setDefaultType("icons/svg/upgrade.svg","statuscounter.countdown_round");
+        CounterTypes.setDefaultType("icons/svg/downgrade.svg","statuscounter.countdown_round");
+        CounterTypes.setDefaultType("icons/svg/target.svg","statuscounter.countdown_round");
+        CounterTypes.setDefaultType("icons/svg/eye.svg","statuscounter.countdown_round");
 
+
+    }
     //search for vehicles with pilots to assign them their stats
     let vehicles=Array.from(game.actors.values()).filter(actor=>actor.type==="vehicle");
     for(let i=0;i<vehicles.length;i++){
@@ -366,9 +379,14 @@ Hooks.on("updateCombat", async (combat) => {
                                              author:actor.name};
                     await ChatMessage.create(activeEffectOptions,{});
                 }
-                if(activeEffect.duration.remaining<=0){
-                    await activeEffect.delete({});
+                try{
+                    if(activeEffect.duration.remaining<=0){
+                        await activeEffect.delete({});
+                    } 
+                }catch (err){
+
                 }
+
 
 
             }
