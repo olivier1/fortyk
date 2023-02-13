@@ -25,7 +25,10 @@
     {{#if skill.system.hasChildren.value}}
 
     <div class="skills-group grid grid-7col" name="skillheads">
-        <a class="skillItem skill-group item-descr" data-name="{{skill.name}}" data-item-descr="{{skill.system.description.value}}" title="Skill Use: {{skill.system.skillUse.value}}">{{skill.name}}</a>
+        <div class="skillItem skill-group">
+            <a class=" item-descr" data-name="{{skill.name}}" data-item-descr="{{skill.system.description.value}}" title="Skill Use: {{skill.system.skillUse.value}}">{{skill.name}}</a>
+        </div>
+        
 
         <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{skill._id}}"></a>
         <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{skill._id}}"></a>
