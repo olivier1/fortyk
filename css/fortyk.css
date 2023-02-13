@@ -475,6 +475,17 @@
     flex-grow:0;
 
 }
+.fortyk .skills .skills-group{
+    border: 1px solid #AAA;
+    border-style:groove;
+    border-width: thick;
+    width:100%;
+    grid-column:initial;
+    grid-template-columns: 25% 15% 20% 14% 16% 5% 5% ;
+    place-items: start stretch;
+    margin:0px;
+    flex-grow:0;
+}
 .fortyk .skills .skills-header .gap{
     background-image:"" !important;
     background-color: transparent !important;
@@ -502,15 +513,29 @@
     width:100%;
     height:100%;
 }
-.fortyk .skills .skills-header .skill-group{
+.fortyk .skills .skills-group .skill-group{
     font-weight: bold !important;
     font-style:bold;
     font-variant-caps: petite-caps;
     grid-column: span 5;
 }
+.fortyk .skills .skills-group .skill-group:before{
+   background-image: url('https://i.pinimg.com/originals/32/35/82/32358288d7100b89936b626d7bbfcdf9.png');
+    background-size: 20px 20px;
+    display: inline-block;
+    width: 20px; 
+    height: 20px;
+    content:"";
+    
+    
+}
 .fortyk .skills .skills-header .skillSubItem{
     padding-left:20px !important;
     height:100%;
+}
+.fortyk .skills .skills-header .skillSubItem:before{
+    font-family:'Font Awesome 5 Free';
+    content:" \f105";
 }
 .fortyk .item-edit{
     background-image: url("../icons/editicon.png") !important;
