@@ -25,8 +25,8 @@
                 {{/each}}
                 {{/select}}
             </select>
-            <a class="cyberItem item-edit" title="Edit" data-item-id="{{c._id}}"></a>
-            <a class="cyberItem item-delete" title="Delete" data-item-id="{{c._id}}"></a>
+            <span class="list-button"><a class="cyberItem item-edit" title="Edit" data-item-id="{{c._id}}"></a></span>
+            <span class="list-button"><a class="cyberItem item-delete" title="Delete" data-item-id="{{c._id}}"></a></span>
 
 
 
@@ -58,8 +58,8 @@
             <input type="text" class="item-text-input list-item" data-target="system.amount.value" value="{{w.system.amount.value}}" data-item-id="{{w._id}}" data-dtype="Number">
             <span class="list-item">{{w.system.weight.total}}kg</span>
 
-            <a class="list-button item-edit" title="Edit" data-item-id="{{w._id}}"></a>
-            <a class="list-button item-delete" title="Delete" data-item-id="{{w._id}}"></a>
+            <span class="list-button"><a class="list-button item-edit" title="Edit" data-item-id="{{w._id}}"></a></span>
+            <span class="list-button"> <a class="list-button item-delete" title="Delete" data-item-id="{{w._id}}"></a></span>
 
 
 

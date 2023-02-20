@@ -135,7 +135,7 @@ export class FortykRollDialogs{
         templateOptions["modifiers"].testMod=0;
         modifierTracker.push({"value":`${testTarget}`,"label":`Base Target Value`});
         miscMods+=item.system.testMod.value;
-        if(miscMods>0){
+        if(miscMods!==0){
             modifierTracker.push({"value":`${miscMods}`,"label":"Weapon Bonus"});
         }
         templateOptions["options"]={}
@@ -394,8 +394,9 @@ export class FortykRollDialogs{
         templateOptions["modifiers"].aim=item.system.attackMods.aim;
         templateOptions["modifiers"].testMod=0;
         modifierTracker.push({"value":`${testTarget}`,"label":`Base Target Value`});
-        modifierTracker.push({"value":`${item.system.testMod.value}`,"label":`Base Modifier`});
-
+        modifierTracker.push({"value":`${item.system.testMod.value}`,"label":"Weapon Bonus"});
+        miscMods+=item.system.testMod.value;
+        
         if(item.getFlag("fortyk","twinlinked")){
 
             miscMods+=20;
@@ -529,7 +530,7 @@ export class FortykRollDialogs{
         let vehicle=false;
         if(targets.size>0){
             if(actor.getFlag("fortyk","gyro")){
-                let gyro=parseInt(actor.getFlag("fortyk","gyro"));
+                let gyro=parseInt(actor.getFlag("fortyk","gyro"))*10;
                 miscMods+=-modifiers.tarEvasion;
                 miscMods+=-Math.max(0,modifiers.selfEvasion-gyro);
 
@@ -706,8 +707,8 @@ export class FortykRollDialogs{
                         if(actor.getFlag("fortyk","preysense")){
 
                             if(size<0){
-                                let preysense=parseInt(actor.getFlag("fortyk","preysense"))*10
-                                size=Math.min(0,size+preysense)
+                                let preysense=parseInt(actor.getFlag("fortyk","preysense"))*10;
+                                size=Math.min(0,size+preysense);
                             }
                         }
                         if(item.getFlag("fortyk","scatter")){

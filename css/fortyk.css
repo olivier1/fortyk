@@ -450,6 +450,8 @@
 }
 .fortyk .list-button{
     flex:none;
+    border-bottom: 1px solid #999;
+    border-right: 1px solid #999;
 }
 .fortyk .power-training{
     width:100%;
@@ -528,9 +530,9 @@
     height: 20px;
     content:"";
     vertical-align: sub;
-    
-    
-    
+
+
+
 }
 .fortyk .skills .skills-header .skillSubItem{
     padding-left:20px !important;
