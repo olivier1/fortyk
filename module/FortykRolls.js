@@ -411,9 +411,10 @@ returns the roll message*/
                                 author:actor.name}
                 await ChatMessage.create(chatFumble,{});
             }else if(attack&&fortykWeapon.getFlag("fortyk","blast")){
+                
                 let targets=game.user.targets;
                 if(targets.size>0){
-
+                    let attackTarget=game.user.targets.first();
 
 
                     var targetActor=target.actor;
@@ -2325,7 +2326,9 @@ returns the roll message*/
     }
     //applies critical results to token/actor
     static async critEffects(token,num,hitLoc,type,ignoreSON,activeEffects=null,source=""){
+        console.log(token,num,hitLoc,type,ignoreSON,activeEffects,source)
         if(game.user.isGM||token.owner){
+            
             let actor=token.actor;
             if(actor.type!=="vehicle"){
                 switch(type){
@@ -2347,7 +2350,7 @@ returns the roll message*/
             }
         }else{
             //if user isnt GM use socket to have gm update the actor
-            let tokenId=token._id;
+            let tokenId=token.id;
             let socketOp={type:"critEffect",package:{token:tokenId,num:num,hitLoc:hitLoc,type:type,ignoreSON:ignoreSON}}
             await game.socket.emit("system.fortyk",socketOp);
         }

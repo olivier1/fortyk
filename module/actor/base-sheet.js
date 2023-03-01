@@ -50,7 +50,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.profile-img').contextmenu(this._onImgRightClick.bind(this));
 
         // Everything below here is only needed if the sheet is editable
-
+        //get item description
+        html.find('.item-descr').click(this._onItemDescrGet.bind(this));
         if (!this.options.editable) return;
 
         //handles combat tab resources
@@ -67,8 +68,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         //change item property via text input
         html.find('.item-text-input').focusout(this._itemTextInputEdit.bind(this));
         html.find('.item-text-input').keydown(this._itemTextInputEnter.bind(this));
-        //get item description
-        html.find('.item-descr').click(this._onItemDescrGet.bind(this));
+
         //handles maximal checkbox
         html.find('.maximal').click(this._onMaximalClick.bind(this));
         //handles lasmode select
