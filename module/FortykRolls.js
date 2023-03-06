@@ -298,9 +298,18 @@ returns the roll message*/
             }
 
             evadepenalty=Math.max(evadepenalty,-60);
-
-            if(targetActor&&evadepenalty!==0){
-                await tarActor.setFlag("fortyk","evadeMod",evadepenalty);
+            console.log(evadepenalty,tarActor)
+            if(tarActor&&evadepenalty!==0){
+                if(game.user.isGM||tarActor.isOwner){
+                    await tarActor.setFlag("fortyk","evadeMod",evadepenalty);
+                }else{
+                    console.log("hey")
+                    //if user isnt GM use socket to have gm update the actor
+                    let tokenId=attackTarget.id;
+                    let socketOp={type:"setFlag",package:{token:tokenId,value:evadepenalty,scope:"fortyk",flag:"evadeMod"}}
+                    await game.socket.emit("system.fortyk",socketOp);
+                }
+                
             }
 
         }
@@ -411,13 +420,13 @@ returns the roll message*/
                                 author:actor.name}
                 await ChatMessage.create(chatFumble,{});
             }else if(attack&&fortykWeapon.getFlag("fortyk","blast")){
-                
+
                 let targets=game.user.targets;
                 if(targets.size>0){
                     let attackTarget=game.user.targets.first();
 
 
-                    var targetActor=target.actor;
+                    
                     let attackAngle=getAttackAngle(attackTarget,attacker);
                     let scatterDice="1d5";
                     if(attackTarget!==undefined){
@@ -1295,7 +1304,8 @@ returns the roll message*/
                             }
                             let damageType=weapon.system.damageType.value.toLowerCase();
                             //reactive plating
-                            if(tarActor.getFlag("fortyk","reactiveplating")&&(damageType==="explosive")||damageType==="impact"){
+                            console.log(tarActor.getFlag("fortyk","reactiveplating"))
+                            if(tarActor.getFlag("fortyk","reactiveplating")&&((damageType==="explosive")||damageType==="impact")){
                                 soak+=Math.ceil(armor*0.1);
                                 damageOptions.results.push(`<span>Reactive Plating is resistant against this damage type.</span>`);
                             }
@@ -1987,7 +1997,7 @@ returns the roll message*/
                     }
                     if(h===hits-1){
                         //update wounds
-                        if(game.user.isGM||tar.owner){
+                        if(game.user.isGM||tar.isOwner){
                             await tarActor.update({"system.secChar.wounds.value":newWounds[tarNumbr]});
                         }else{
                             //if user isnt GM use socket to have gm update the actor
@@ -2327,8 +2337,8 @@ returns the roll message*/
     //applies critical results to token/actor
     static async critEffects(token,num,hitLoc,type,ignoreSON,activeEffects=null,source=""){
         console.log(token,num,hitLoc,type,ignoreSON,activeEffects,source)
-        if(game.user.isGM||token.owner){
-            
+        if(game.user.isGM||token.isOwner){
+
             let actor=token.actor;
             if(actor.type!=="vehicle"){
                 switch(type){
@@ -4319,10 +4329,10 @@ returns the roll message*/
 
                         let effectInstance=effects[i];
                         if(effectInstance.duration.rounds){
-                           new ActiveEffectCounter(effectInstance.duration.rounds,effectInstance.icon,effectInstance); 
+                            new ActiveEffectCounter(effectInstance.duration.rounds,effectInstance.icon,effectInstance); 
                         }
-                        
-                        
+
+
                     }
                 }
 
@@ -4338,7 +4348,7 @@ returns the roll message*/
         }
     }
     static async applyDead(target,actor,cause=""){
-        if(game.user.isGM||target.owner){
+        if(game.user.isGM||target.isOwner){
 
             let msg=target.name+" is killed";
             if(cause!==""){
@@ -4381,7 +4391,7 @@ returns the roll message*/
     static async _addFatigue(actor,newfatigue){
         console.log(newfatigue,actor)
         newfatigue=parseInt(newfatigue)+parseInt(actor.system.secChar.fatigue.value);
-        if(game.user.isGM||actor.owner){
+        if(game.user.isGM||actor.isOwner){
             await actor.update({"system.secChar.fatigue.value":newfatigue});
         }else{
             let tokenId=null;

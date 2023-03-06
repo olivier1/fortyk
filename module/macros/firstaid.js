@@ -48,8 +48,8 @@ if(test.value){
     }
     chatFirstAid.content=`${characterActor.name} successfully healed ${targetActor.name} for ${healing} wounds!`
     tarWounds=Math.min(tarWounds+healing,targetActor.system.secChar.wounds.max);
-    if(game.user.isGM||actor.owner){
-        await actor.update({"system.secChar.wounds.value":tarWounds});
+    if(game.user.isGM||targetActor.isOwner){
+        await targetActor.update({"system.secChar.wounds.value":tarWounds});
     }else{
         let tokenId=targetToken.id;
 

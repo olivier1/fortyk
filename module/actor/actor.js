@@ -314,7 +314,7 @@ export class FortyKActor extends Actor {
                     data.characteristics["inf"].advance= parseInt(data.characteristics["inf"].advance)+parseInt(item.system.inf.value);
                 }
                 if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="wargear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
-                     console.log(item)
+                     
                     //total weight calcs
                     item.system.weight.total=(parseInt(item.system.amount.value)*parseFloat(item.system.weight.value)).toFixed(2);
                     data.carry.value=(parseFloat(data.carry.value)+parseFloat(item.system.weight.total)).toFixed(2);

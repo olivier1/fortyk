@@ -285,6 +285,16 @@ Hooks.once('ready', async function() {
                     options[path]=value;
                     await actor.update(options);
                     break;
+                case "setFlag":
+                    let flag=data.package.flag;
+                    let scope=data.package.scope;
+                    id=data.package.token;
+                    value=data.package.value;
+                    token=canvas.tokens.get(id);
+                    actor=token.actor;
+                    console.log(scope,flag,value)
+                    actor.setFlag(scope,flag,value);
+                    break;
                 case "updateLoans":
                     let loaned=data.package.loans;
                     let update=data.package.update;
@@ -341,6 +351,7 @@ Hooks.on("updateCombat", async (combat) => {
 
     if(game.user.isGM){
         game.user.updateTokenTargets();
+        game.user.broadcastActivity({targets:[]});
         let token=canvas.tokens.get(combat.current.tokenId);
         if(token===undefined){return}
         let actor=token.actor;
