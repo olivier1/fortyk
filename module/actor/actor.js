@@ -195,6 +195,7 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","crawler")){
             data.secChar.movement.multi=parseInt(data.secChar.movement.multi)/2; 
         }
+        
         if(this.getFlag("fortyk","doubleteam")){
             data.secChar.attacks.gangup["1"]=20;
             data.secChar.attacks.gangup["2"]=30;
@@ -342,6 +343,12 @@ export class FortyKActor extends Actor {
                     }
                 }
                 //check if equipped
+                if(item.system.isEquipped){
+                    console.log(this.name,item)
+                    if(item.getFlag("fortyk","encumbering")){
+                        data.secChar.movement.mod-=item.getFlag("fortyk","encumbering");
+                    }
+                }
                 if((item.type==="meleeWeapon"||item.type==="rangedWeapon")&&item.system.isEquipped){
 
                     if(item.system.isEquipped.indexOf("right")!==-1){
@@ -387,6 +394,11 @@ export class FortyKActor extends Actor {
             const data=this.system;
             this.items.forEach((fortykItem,id,items)=>{
                 let item=fortykItem;
+                 if(item.system.isEquipped){
+                    if(item.getFlag("fortyk","encumbering")){
+                        data.secChar.movement.mod-=item.getFlag("fortyk","encumbering");
+                    }
+                }
                 if(item.type==="armor"&&item.system.isEquipped){
                     data.secChar.wornGear.armor=item;
                 }

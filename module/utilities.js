@@ -85,6 +85,7 @@ export const tokenDistance=function(token1,token2){
     let token1y=token1.y;
     let token2x=token2.x;
     let token2y=token2.y;
+    console.log(gridRatio);
     if(token1.w>=200){
         if(token2x>token1x){
             token1x+=Math.ceil(token1.w/2);
@@ -105,8 +106,11 @@ export const tokenDistance=function(token1,token2){
             token2y+=Math.ceil(token2.h/2);
         }
     }
+    console.log(token1x,token1y,token2x,token2y,token1.data.elevation,token2.data.elevation)
     if(canvas.scene.grid.type===0){
-        let distancePx=Math.sqrt((Math.pow(token1x-token2x),2)+Math.pow((token1y-token2y),2)+Math.pow((token1.data.elevation-token2.data.elevation),2))
+        
+        let distancePx=Math.sqrt(Math.pow((token1x-token2x),2)+Math.pow((token1y-token2y),2)+Math.pow((token1.data.elevation-token2.data.elevation),2))
+        console.log(distancePx)
         return distancePx*gridRatio
     }
     if(canvas.scene.grid.type>=1){

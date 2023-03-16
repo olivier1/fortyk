@@ -2188,7 +2188,7 @@ returns the roll message*/
     static async _sON(actor){
         let chatOptions={user: game.user._id,
                          speaker:{actor,alias:actor.name},
-                         content:"Stuff of nightmares ignores stuns, bleeds and cirtical effects!",
+                         content:"Stuff of nightmares ignores stuns, bleeds and critical effects!",
                          classes:["fortyk"],
                          flavor:`Stuff of Nightmares!`,
                          author:actor.name}

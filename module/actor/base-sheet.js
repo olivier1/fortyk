@@ -685,7 +685,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let target=targetIt.next().value;
             let attacker=this.actor.getActiveTokens()[0];
             let targetActor=target.actor;
-
+            
             if(targetActor.type==="vehicle"){
                 attackOptions.vehicle=true;
                 attackOptions.facing=getVehicleFacing(target,attacker);
@@ -705,7 +705,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
             attackOptions.selfBlind=this.actor.getFlag("core","blind");
             attackOptions.distance=tokenDistance(target, attacker);
-
+            console.log(attackOptions.distance)
             let attackerElevation=attacker.elevation;
             let targetElevation=target.elevation;
             attackOptions.elevation=attackerElevation-targetElevation;
