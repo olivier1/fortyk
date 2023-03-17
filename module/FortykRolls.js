@@ -391,12 +391,14 @@ returns the roll message*/
             }else if(attackType==="full"){
                 rof=parseInt(weapon.system.rof[2].value);
             }
-            if(fortykWeapon.getFlag("fortyk","twinlinked")&&testDos>=3){
-                rof++;
+            console.log(fortykWeapon,weapon)
+            if(weapon.getFlag("fortyk","twinlinked")){
+                rof=rof*2;
             }
-            if(fortykWeapon.getFlag("fortyk","storm")){
-                rof*2;
+            if(weapon.getFlag("fortyk","storm")){
+                rof=rof*2;
             }
+            console.log(rof)
             let missedHits=rof-hits;
             var attacker=actor.getActiveTokens()[0];
             if((weapon.system.type==="Launcher"||weapon.system.type==="Grenade")&&blast&&!testResult&&jam){
@@ -1890,6 +1892,7 @@ returns the roll message*/
 
                             damageOptions.results.push(`<span>Righteous fury deals 1 damage through the soak!</span>`);
                             damage=1;
+                            tens=0;
 
 
                         }else if(damage<=0){

@@ -195,14 +195,14 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","crawler")){
             data.secChar.movement.multi=parseInt(data.secChar.movement.multi)/2; 
         }
-        
+
         if(this.getFlag("fortyk","doubleteam")){
             data.secChar.attacks.gangup["1"]=20;
             data.secChar.attacks.gangup["2"]=30;
         }
         data.evasion=0;
         data.evasionMod=0;
-        
+
         //initialize skill modifiers from active events so that they are integers
         this.items.forEach((fortykItem,id,items)=>{
             let item=fortykItem;
@@ -253,7 +253,7 @@ export class FortyKActor extends Actor {
         }*/
         data.evasion=0;
         data.evasionMod=0;
-        
+
         //prepare base stats for imperial knights if they have a chassis selected
         if(data.knight.chassis){
             data.chassis=this.getEmbeddedDocument("Item",data.knight.chassis);
@@ -315,7 +315,7 @@ export class FortyKActor extends Actor {
                     data.characteristics["inf"].advance= parseInt(data.characteristics["inf"].advance)+parseInt(item.system.inf.value);
                 }
                 if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="wargear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
-                     
+
                     //total weight calcs
                     item.system.weight.total=(parseInt(item.system.amount.value)*parseFloat(item.system.weight.value)).toFixed(2);
                     data.carry.value=(parseFloat(data.carry.value)+parseFloat(item.system.weight.total)).toFixed(2);
@@ -394,7 +394,7 @@ export class FortyKActor extends Actor {
             const data=this.system;
             this.items.forEach((fortykItem,id,items)=>{
                 let item=fortykItem;
-                 if(item.system.isEquipped){
+                if(item.system.isEquipped){
                     if(item.getFlag("fortyk","encumbering")){
                         data.secChar.movement.mod-=item.getFlag("fortyk","encumbering");
                     }
@@ -584,8 +584,8 @@ export class FortyKActor extends Actor {
         if(this.getFlag("fortyk","neverquit")){
             data.secChar.fatigue.max+=2;
         }
-       
-       
+
+
         //modify total characteristics depending on fatigue
         var fatigueMult=1;
         if(this.getFlag("fortyk","unrelenting")){
@@ -732,7 +732,7 @@ export class FortyKActor extends Actor {
                 char.total=Math.ceil(char.value/2);
             }
         }
-        
+
         //prepare parry/dodge
         data.parry.total=data.characteristics.ws.total+parseInt(data.parry.mod)+data.evasionMod;
         data.dodge.total=data.characteristics.agi.total+parseInt(data.dodge.mod)+data.evasionMod;
@@ -784,7 +784,7 @@ export class FortyKActor extends Actor {
         let knight=data.knight;
         var armorRatio=1;
         this.preparePilot();
-        
+
         if(knight.chassis){
             if(knight.core){
                 data.knight.core=this.getEmbeddedDocument("Item",knight.core);
@@ -1055,15 +1055,16 @@ export class FortyKActor extends Actor {
         if(!preparedData.isPrepared){
             preparedData.prepareData();
         }
+
         // Call prepareItems first to organize and process Items
         if(preparedData.type==='dwPC'||preparedData.type==='dhPC'||preparedData.type==='owPC'){
-            mergeObject(preparedData, this.preparePCItems(preparedData));
+            this.preparePCItems(preparedData);
         }else if(preparedData.type==='npc'){
-            mergeObject(preparedData, this.prepareNPCItems(preparedData));
+            this.prepareNPCItems(preparedData);
         }else if(preparedData.type==="spaceship"){
-            mergeObject(preparedData, this.prepareSpaceshipItems(preparedData));
+            this.prepareSpaceshipItems(preparedData);
         }else if(preparedData.type==="vehicle"){
-            mergeObject(preparedData, this.prepareVehicleItems(preparedData));
+            this.prepareVehicleItems(preparedData);
         }
         return preparedData;
     }
@@ -1166,8 +1167,8 @@ export class FortyKActor extends Actor {
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="wargear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
                 //total weight calcs
-               
-                item.system.weight.total=(parseInt(item.system.amount.value)*parseFloat(item.system.weight.value)).toFixed(2);
+
+                // item.system.weight.total=(parseInt(item.system.amount.value)*parseFloat(item.system.weight.value)).toFixed(2);
             }
             if(item.type==="meleeWeapon"){
                 meleeweapons.push(item);
@@ -1197,31 +1198,31 @@ export class FortyKActor extends Actor {
         let sortedSkills=skills;
         let sortedTnt=talentsntraits;
         let sortedGear=wargear;
-        let preparedItems={skills:sortedSkills,
-                           wargear:sortedGear,
-                           cybernetics:cybernetics,
-                           forceFields:forceFields,
-                           mods:mods,
-                           consummables:consummables,
-                           psychicPowers:psychicPowers,
-                           mutations:mutations,
-                           malignancies:malignancies,
-                           injuries:injuries,
-                           disorders:disorders,
-                           talentsntraits:sortedTnt,
-                           missions:missions,
-                           advancements:advancements,
-                           meleeWeapons:meleeweapons,
-                           rangedWeapons:rangedWeapons,
-                           armors:armors,
-                           ammunitions:ammunitions,
-                           equippableAmmo:equippableAmmo,
-                           wornGear:wornGear,
-                           favoritePowers:favoritePowers};
+        actorData.skills=sortedSkills
+        actorData.wargear=sortedGear
+        actorData.cybernetics=cybernetics
+        actorData.forceFields=forceFields
+        actorData.mods=mods
+        actorData.consummables=consummables
+        actorData.psychicPowers=psychicPowers
+        actorData.mutations=mutations
+        actorData.malignancies=malignancies
+        actorData.injuries=injuries
+        actorData.disorders=disorders
+        actorData.talentsntraits=sortedTnt
+        actorData.missions=missions
+        actorData.advancements=advancements
+        actorData.meleeWeapons=meleeweapons
+        actorData.rangedWeapons=rangedWeapons
+        actorData.armors=armors
+        actorData.ammunitions=ammunitions
+        actorData.equippableAmmo=equippableAmmo
+        actorData.wornGear=wornGear
+        actorData.favoritePowers=favoritePowers;
         try{
-            this._sortItems(preparedItems);
+            this._sortItems(actorData);
         }catch(err){}
-        return preparedItems;
+        return actorData;
     }
     prepareNPCItems(actorData){
         let data=this.system;           
@@ -1258,18 +1259,18 @@ export class FortyKActor extends Actor {
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
             }
         })
-        let preparedItems={
-            psychicPowers:psychicPowers,
-            meleeWeapons:meleeweapons,
-            rangedWeapons:rangedWeapons,
-            talentsntraits:talentsntraits,
-            armors:armors,
-            forceFields:forceFields
-        };
+      
+            actorData.psychicPowers=psychicPowers
+            actorData.meleeWeapons=meleeweapons
+            actorData.rangedWeapons=rangedWeapons
+            actorData.talentsntraits=talentsntraits
+            actorData.armors=armors
+            actorData.forceFields=forceFields
+      
         try{
-            this._sortItems(preparedItems);
+            this._sortItems(actorData);
         }catch(err){}
-        return preparedItems;
+        return actorData;
     }
     //sort spaceship items and apply light logic
     prepareSpaceshipItems(actorData){
@@ -1324,18 +1325,18 @@ export class FortyKActor extends Actor {
                 }
             }
         });
-        let preparedItems={
-            weapons:weapons,
-            components:components,
-            cargo:cargo,
-            squadrons:squadrons,
-            torpedoes:torpedoes,
-            bombers:bombers
-        }
+        
+            actorData.weapons=weapons
+            actorData.components=components
+            actorData.cargo=cargo
+            actorData.squadrons=squadrons
+            actorData.torpedoes=torpedoes
+            actorData.bombers=bombers
+       
         try{
-            this._sortItems(preparedItems);
+            this._sortItems(actorData);
         }catch(err){}
-        return preparedItems
+        return actorData
     }
     prepareVehicleItems(actorData){
         let data=this.system;    
@@ -1372,17 +1373,17 @@ export class FortyKActor extends Actor {
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
             }
         })
-        let preparedItems={
-            upgrades:upgrades,
-            meleeWeapons:meleeWeapons,
-            rangedWeapons:rangedWeapons,
-            talentsntraits:talentsntraits,
-            forceFields:forceFields
-        };
+  
+            actorData.upgrades=upgrades
+            actorData.meleeWeapons=meleeWeapons
+            actorData.rangedWeapons=rangedWeapons
+            actorData.talentsntraits=talentsntraits
+            actorData.forceFields=forceFields
+        
         try{
-            this._sortItems(preparedItems);
+            this._sortItems(actorData);
         }catch(err){}
-        return preparedItems;
+        return actorData;
     }
     //function to sort the item containers for display
     _sortItems(itemContainers){

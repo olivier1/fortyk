@@ -180,13 +180,14 @@ export class FortyKItem extends Item {
 
                 }
                 */
+                item.system.clip.consumption=item._source.system.clip.consumption;
                 if(this.getFlag("fortyk","twinlinked")){
 
 
-                    item.system.clip.consumption=item._source.system.clip.consumption*2;
+                    item.system.clip.consumption=item.system.clip.consumption*2;
                 }
                 if(this.getFlag("fortyk","storm")){
-                    item.system.clip.consumption=item._source.system.clip.consumption*2;
+                    item.system.clip.consumption=item.system.clip.consumption*2;
                 }
                 if(this.getFlag("fortyk","lasModal")){
                     if(this.getFlag("fortyk","lasMode")===0){

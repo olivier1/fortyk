@@ -430,11 +430,10 @@ export class FortykRollDialogs{
 
         let rofSingle=item.system.rof[0].value;
         let rofSemi=parseInt(item.system.rof[1].value);
-        if(isNaN(rofSingle)){
-            rofSingle=1;
-        }
+        
         let rofFull=parseInt(item.system.rof[2].value);
         let canShoot=false;
+        console.log(rofSingle);
         if(parseInt(rofSingle)===0||rofSingle==="-"){
             templateOptions["single"]=false;
         }else{
