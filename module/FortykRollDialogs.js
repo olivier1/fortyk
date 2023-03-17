@@ -437,7 +437,7 @@ export class FortykRollDialogs{
         if(parseInt(rofSingle)===0||rofSingle==="-"){
             templateOptions["single"]=false;
         }else{
-
+            rofSingle=1;
             if(rofSingle*consump>curAmmo){
                 templateOptions["single"]=false;
             }else{
