@@ -483,8 +483,10 @@ returns the roll message*/
                             let xDistance=-(pixelDistance*Math.sin(radianAngle));
                             let yDistance=(pixelDistance*Math.cos(radianAngle));
                             contentStr+=`<div>Shot #${i+1} scatters (${distanceRoll._total}x${mult})m to the ${directionRoll._total}</div>`;
-                            template.x=xDistance+targetx;
-                            template.y=yDistance+targety;
+                            template.x=Math.min(xDistance+targetx,canvas.dimensions.width);
+                            if(template.x<0){template.x=0};
+                            template.y=Math.min(yDistance+targety,canvas.dimensions.height);
+                            if(template.y<0){template.y=0};
                         }else{
                             contentStr+=`<div>Shot #${i+1} is a direct hit!</div>`;
                             template.x=targetx;
