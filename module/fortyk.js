@@ -195,6 +195,7 @@ Hooks.once('ready', async function() {
     }
     //SOCKET used to update actors via the damage scripts
     game.socket.on("system.fortyk",async(data) => {
+        
         if(data.type==="cardSplash"){
             var options = {
                 width: "auto",
@@ -691,6 +692,7 @@ Hooks.on("createToken", async (document, data, options, userId) =>{
 
 });
 Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
+    /*
     let effects=null;
     let data=null;
     if(changes.actorData!==undefined){
@@ -764,7 +766,7 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
                 data["token.width"] = size;
             }
         }
-    }
+    }*/
 });
 //drag ruler integration
 Hooks.once("dragRuler.ready", (Speedprovider) => {

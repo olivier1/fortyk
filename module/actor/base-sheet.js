@@ -486,7 +486,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                 let spec=itemData.system.specialisation.value;
                                 let flag=itemData.system.flagId.value;
                                 if(!actor.getFlag("fortyk",flag)){
-
+                                    /*
                                     if(spec==="N/A"){
 
                                         await actor.setFlag("fortyk",flag,true);
@@ -512,7 +512,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                                                           );
                                         itemData.system.specialisation.value= chosenSpec;
 
-                                    }
+                                    }*/
                                     talentsNTraits.push(itemData);
                                 }
 

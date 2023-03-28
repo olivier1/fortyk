@@ -17,11 +17,11 @@ export class SpendExpDialog extends Application {
     }
 
     async getData(){
-        
+
         let data=this;
         let actor=this.options.actor;
         if(!this.options.cost){this.options.cost=0}
-      
+
         data.actorExp=actor.system.experience.value;
         data.cost=this.options.cost;
         data.remainingExp=data.actorExp-data.cost;
@@ -265,10 +265,17 @@ export class SpendExpDialog extends Application {
             let flag=tntData.flagId.value;
 
 
-            if(spec==="N/A"){
+            /*if(spec==="N/A"){
 
                 await actor.setFlag("fortyk",flag,true);
             }else{
+
+
+                itemData.system.specialisation.value=chosenSpec;
+
+            }*/
+            let talentId=""
+            if(actor.getFlag("fortyk",flag)&&spec!=="N/A"){
                 var chosenSpec=await Dialog.prompt({
                     title: "Choose specialisation",
                     content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${tntData.specialisation.value}" autofocus/></p>`,
@@ -293,12 +300,6 @@ export class SpendExpDialog extends Application {
 
                     width:100}
                                                   );
-                
-                itemData.system.specialisation.value=chosenSpec;
-
-            }
-            let talentId=""
-            if(chosenSpec&&actor.getFlag("fortyk",flag)){
 
                 let actorTalent=actor.itemTypes["talentntrait"].filter(function(tlnt){
                     if(tlnt.name===talent.name){
@@ -315,9 +316,10 @@ export class SpendExpDialog extends Application {
 
             }else{
                 let actorTalent=await actor.createEmbeddedDocuments("Item",[duplicate(talent)]);
-                talentId=actorTalent[0].id;
+                let talentId=actorTalent[0].id;
+
             }
-            await actor.setFlag("fortyk",flag,chosenSpec);
+            //await actor.setFlag("fortyk",flag,chosenSpec);
             const advData = {
                 name: `${advanceName}`,
                 type: type,
@@ -428,9 +430,9 @@ export class SpendExpDialog extends Application {
         for(const apt in actorAptitudes){
 
             let apti=actorAptitudes[apt];
-            
+
             splitAptitudes.forEach(function(aptStr){
-                
+
                 if(aptStr.includes(apti)){matchingAptitudes+=1;}
             });
         }
@@ -477,7 +479,7 @@ export class SpendExpDialog extends Application {
     }
     async calculateSkillCost(aptitudes,training){
         training=parseInt(training);
-       
+
         let splitAptitudes=aptitudes.toLowerCase().replace(/\s/g, '').split(",");
         let actorAptitudes=this.options.actor.system.aptitudes;
         let matchingAptitudes=0;
@@ -507,7 +509,7 @@ export class SpendExpDialog extends Application {
         let quality=document.getElementById("quality").value;
         let rarity=parseFloat(document.getElementById("rarity").value);
         let cost=0;
-        
+
         if(rarity>=-20){
             cost=200;  
         }else if(rarity>=-40){

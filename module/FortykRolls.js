@@ -299,7 +299,7 @@ returns the roll message*/
 
             evadepenalty=Math.max(evadepenalty,-60);
             console.log(evadepenalty,tarActor)
-            if(tarActor&&evadepenalty!==0){
+            if(tarActor){
                 if(game.user.isGM||tarActor.isOwner){
                     await tarActor.setFlag("fortyk","evadeMod",evadepenalty);
                 }else{
@@ -799,6 +799,9 @@ returns the roll message*/
         if(breakOnOverload&&overloaded){
             await forcefield.update({"system.broken.value":true});
             templateOptions.breaks=`${forcefield.name} breaks!`
+        }
+        if(remainingHits===0){
+            actor.setFlag("fortyk","evadeMod",0);
         }
         templateOptions.results=hitResults;
         templateOptions.remainingHits=remainingHits;
@@ -4259,6 +4262,7 @@ returns the roll message*/
         console.log(effect)
         if(effect.length>0){
             if(game.user.isGM||token.isOwner){
+                console.log(game.user)
 
                 let actor
                 if(token instanceof Token){
