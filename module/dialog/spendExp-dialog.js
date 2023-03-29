@@ -12,7 +12,7 @@ export class SpendExpDialog extends Application {
             height: 280,
             mode:"Custom",
             default:null,
-            heights:{"Custom":280,"Characteristic Upgrade":275,"Skill Upgrade":275,"New Skill":805,"Talent":795, "Signature Wargear":360}
+            heights:{"Custom":280,"Characteristic Upgrade":275,"Skill Upgrade":275,"New Skill":805,"Talent":795, "Signature Wargear":360,"Psy Rating":300,"Psychic Power":765}
         });
     }
 
@@ -29,6 +29,15 @@ export class SpendExpDialog extends Application {
         data.advancementTypes=duplicate(data.FORTYK.advancementTypes);
         if(actor.type==="dwPC"){
             data.advancementTypes.push("Signature Wargear");
+        }
+        if(actor.system.psykana.pr.value>0){
+            data.pr=actor.system.psykana.pr.value;
+            data.pr1=actor.system.psykana.pr.value+1;
+            data.advancementTypes.push("Psy Rating");
+            data.advancementTypes.push("Psychic Power");
+            data.disciplines=data.FORTYK.psychicDisciplines;
+            data.psyPowers=await this._loadPsyPowers();
+            this.psyPowers=data.psyPowers;
         }
         data.mode=this.options.mode;
         data.skills=actor.skills;
@@ -86,6 +95,9 @@ export class SpendExpDialog extends Application {
         html.find('.talentfilter').keyup(this._onTntFilterChange.bind(this));
         html.find('.talentfilter').ready(this._onTalentLoad.bind(this));
         html.find('.tntdescr-button').click(this._onTntDescrClick.bind(this));
+        //select discipline change
+        html.find('.discipline-select').change(this._onDisciplineChange.bind(this));
+        html.find('.powercheckbox').click(this._onPowerChoice.bind(this));
         //new skill children
         html.find('.children').click(this._onChildrenClick.bind(this));
         //create advance
@@ -120,7 +132,7 @@ export class SpendExpDialog extends Application {
         else if(this.options.mode==="Signature Wargear"){
             let input=document.getElementById("name").select();
         }
-        if(this.options.mode==="Talent"||this.options.mode==="Skill Upgrade"||this.options.mode==="Characteristic Upgrade"){
+        if(this.options.mode==="Talent"||this.options.mode==="Skill Upgrade"||this.options.mode==="Characteristic Upgrade"||this.options.mode==="Psychic Power"){
             document.getElementById("submitButton").setAttribute("disabled",true);
         }
 
@@ -258,7 +270,7 @@ export class SpendExpDialog extends Application {
         }else if(this.options.mode==="Talent"){
 
             let talent=this.options.chosenTalent;
-            let advanceName=talent.name;
+            let advanceName="Talent: "+talent.name;
             let itemData=duplicate(talent);
             let tntData=talent.system;
             let spec=tntData.specialisation.value;
@@ -332,6 +344,7 @@ export class SpendExpDialog extends Application {
             };
             await actor.createEmbeddedDocuments("Item",[advData]);
             this.options.cost=0;
+
         }else if(this.options.mode==="Signature Wargear"){
             const wargearName = document.getElementById("name").value;
             const itemData = {
@@ -346,13 +359,70 @@ export class SpendExpDialog extends Application {
             let item=await FortyKItem.create(itemData,{temporary:true});
             await actor.createEmbeddedDocuments("Item",[duplicate(item)]);
             this.options.cost=0;
+        }else if(this.options.mode==="Psy Rating"){
+            let pr=actor.system.psykana.pr.value;
+            let newPr=pr+1;
+            const itemData = {
+                name: `Psy Rating Upgrade: ${newPr}`,
+                type: type,
+                data:{
+                    type:{value:"Psy Rating"},
+                    cost:{value:this.options.cost}
+                }
+            };
+
+            let item=await FortyKItem.create(itemData,{temporary:true});
+            await actor.createEmbeddedDocuments("Item",[duplicate(item)]);
+            await actor.update({"system.psykana.pr.value":newPr});
+            this._prCost();
+        }else if(this.options.mode==="Psychic Power"){
+
+            let power=this.options.chosenPower;
+            let advanceName="Psychic Power: "+power.name;
+            let itemData=duplicate(power);
+            let powerData=power.system;
+
+
+
+
+            
+
+            let actorPower=await actor.createEmbeddedDocuments("Item",[duplicate(power)]);
+            let powerId=actorPower[0].id;
+
+
+
+            const advData = {
+                name: `${advanceName}`,
+                type: type,
+                data:{
+                    type:{value:"Psychic Power"},
+                    cost:{value:this.options.cost},
+                    itemId:{value:powerId}
+
+                }
+            };
+            await actor.createEmbeddedDocuments("Item",[advData]);
+            this.options.cost=0;
+
         }
         await this._render();
+    }
+
+    _prCost() {
+        let actor=this.options.actor;
+        let pr=actor.system.psykana.pr.value;
+        if(actor.getFlag("fortyk","librariantraining")){
+            this.options.cost=(pr+1)*100;
+        }else{
+            this.options.cost=(pr+1)*200;
+        }
     }
 
     async _onModeChange(event){
         event.preventDefault();
         let newMode=event.target.value;
+        console.log(newMode)
         this.options.mode=newMode;
         this.options.cost=0;
         let mode=this.options.mode;
@@ -360,12 +430,15 @@ export class SpendExpDialog extends Application {
             this.baseSkillCost();
         }else if(mode==="Signature Wargear"){
             this.options.cost=200;
+        }else if(mode==="Psy Rating"){
+            this._prCost();
         }
 
         this.position.height=this.options.heights[newMode];
         this.options.chosenSkill=undefined;
         this.options.chosenChar=undefined;
         this.options.chosenTalent=undefined;
+        this.options.chosenPower=undefined;
         this._updateCost();
         await this._render();
 
@@ -410,6 +483,18 @@ export class SpendExpDialog extends Application {
         this.calculateCharCost(charAptitudes,charAdv);
         document.getElementById("submitButton").removeAttribute("disabled");
     }
+    async _onPowerChoice(event){
+        let node=event.target;
+        let pack=node.attributes["data-compendium"];
+        let id=node.value;
+        console.log(this)
+        let power=this.psyPowers[id];
+        this.options.chosenPower=power;
+        let cost=power.system.cost.value;
+        this.options.cost=cost;
+        this._updateCost();
+        document.getElementById("submitButton").removeAttribute("disabled");
+    }
     async _onTalentChoice(event){
         let node=event.target;
         let pack=node.attributes["data-compendium"];
@@ -422,6 +507,7 @@ export class SpendExpDialog extends Application {
         this.calculateTalentCost(aptitudes,tier);
         document.getElementById("submitButton").removeAttribute("disabled");
     }
+
     async calculateTalentCost(aptitudes,tier){
         let splitAptitudes=aptitudes.toLowerCase().replace(/\s/g, '').split(",");
         let actorAptitudes=this.options.actor.system.aptitudes;
@@ -596,6 +682,24 @@ export class SpendExpDialog extends Application {
         }
 
     }
+    _onDisciplineChange(event){
+        let powers=document.getElementsByName("tntEntry");
+        console.log(event);
+        let discipline=event.target.value;
+        for(let i=0;i<powers.length;i++){
+            let power=powers[i];
+
+            let disc=power.attributes["data-discipline"].value;
+            if(discipline==="All"){
+                power.style.display="";
+            }else if(disc===discipline){
+                power.style.display="";
+            }else{
+                power.style.display="none";
+            }
+
+        }
+    }
     async _onCustomCost(event){
         let newcost=parseInt(event.target.value);
 
@@ -609,6 +713,30 @@ export class SpendExpDialog extends Application {
         document.getElementById("remainingExp").textContent=this.remainingExp
 
 
+    }
+    async _loadPsyPowers(){
+        let actor=this.options.actor;
+        const psyPowers=await game.packs.get("fortyk.psychic-powers");
+        let powers=await psyPowers.getDocuments();
+
+        powers=powers.sort(function compare(a, b) {
+            if (a.name<b.name) {
+                return -1;
+            }
+            if (a.name>b.name) {
+                return 1;
+            }
+            // a must be equal to b
+            return 0;
+        });
+
+        let map=powers.reduce(function(map,power){
+
+            map[power.id]=power;
+            return map;
+        },{});
+        console.log(map)
+        return map;
     }
     async _loadTalents(){
         let actor=this.options.actor;
@@ -653,6 +781,7 @@ export class SpendExpDialog extends Application {
 
             return map;
         },{});
+        console.log(map)
         return map;
     }
 

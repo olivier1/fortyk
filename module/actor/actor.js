@@ -1551,43 +1551,54 @@ export class FortyKActor extends Actor {
 
     //when deleting talents, remove the flag associated with each of them.
     _onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId){
-        let actor=this;
-        if(embeddedName==="Item"){
-            documents.forEach(async function(item,i){
-                if(item.type==="talentntrait"){
-                    let flag=item.system.flagId.value;
-                    await actor.setFlag("fortyk",flag,false); 
-                }else if(item.type==="advancement"){
-                    let advType=item.system.type.value
-                    let data=item.system;
-                    if(advType==="Skill Upgrade"){
-                        let skill=actor.getEmbeddedDocument("Item",data.itemId.value);
-                        let skillAdv=parseInt(skill.system.value);
-                        if(skillAdv===0){skillAdv=-20}else{skillAdv-=10}
-                        skill.update({"system.value":skillAdv});
-                    }else if(advType==="New Skill"){
-                        try{
-                            actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
-                        }catch(err){}
-                    }else if(advType==="Talent"){
-                        try{
-                            actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
-                        }catch(err){}
-                    }else if(advType==="Characteristic Upgrade"){
-                        let char=data.characteristic.value;
-                        let charAdv=actor.system.characteristics[char].advance;
-                        charAdv-=5;
-                        let path=`system.characteristics.${char}.advance`;
-                        let upd={}
-                        upd[path]=charAdv;
-                        actor.update(upd);
+        if(userId===game.user.id){
+            let actor=this;
+            if(embeddedName==="Item"){
+                documents.forEach(async function(item,i){
+                    if(item.type==="talentntrait"){
+                        let flag=item.system.flagId.value;
+                        await actor.setFlag("fortyk",flag,false); 
+                    }else if(item.type==="advancement"){
+                        let advType=item.system.type.value
+                        let data=item.system;
+                        if(advType==="Skill Upgrade"){
+                            let skill=actor.getEmbeddedDocument("Item",data.itemId.value);
+                            let skillAdv=parseInt(skill.system.value);
+                            if(skillAdv===0){skillAdv=-20}else{skillAdv-=10}
+                            skill.update({"system.value":skillAdv});
+                        }else if(advType==="New Skill"){
+                            try{
+                                actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
+                            }catch(err){}
+                        }else if(advType==="Talent"){
+                            try{
+                                actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
+                            }catch(err){}
+                        }else if(advType==="Characteristic Upgrade"){
+                            let char=data.characteristic.value;
+                            let charAdv=actor.system.characteristics[char].advance;
+                            charAdv-=5;
+                            let path=`system.characteristics.${char}.advance`;
+                            let upd={}
+                            upd[path]=charAdv;
+                            actor.update(upd);
+                        }else if(advType==="Psy Rating"){
+                            let pr=actor.system.psykana.pr.value;
+                            let newPr=pr-1;
+                            actor.update({"system.psykana.pr.value":newPr});
+                        }else if(advType==="Psychic Power"){
+                            try{
+                                actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
+                            }catch(err){} 
+                        }
                     }
-                }
-            })
+                })
+            }
+            if(this.type==="knightHouse"){
+                this.updateKnights();
+            } 
         }
-        if(this.type==="knightHouse"){
-            this.updateKnights();
-        }
+
         super._onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId);
     }
     _onUpdate(changed, options, userId){

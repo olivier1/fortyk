@@ -409,7 +409,8 @@
                     "phenomena": {
                         "value": 0,
                         "type": "Number"
-                    }
+                    },
+                    "disciplines":[]
                 },
                 "suddenDeath": {
                     "value": false,

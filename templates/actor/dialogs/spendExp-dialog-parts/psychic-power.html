@@ -1,0 +1,31 @@
+<span>Disciplines:</span>
+<select class="discipline-select">
+    <option>All</option>
+    {{#each disciplines}}
+    <option>{{this}}</option>
+    {{/each}}
+</select>
+<div class="tntselect flexcol">
+    <div class="tntgrid grid grid-8col">
+        <span class="tntcheckbox tntheaderitem">Add</span>
+        <span class="tntname tntheaderitem">Name</span>
+        <span class="tntprereqs tntheaderitem">Prerequisites</span>
+        <span class="tntdescr tntheaderitem">Descr</span>
+
+        {{#each psyPowers}}
+        <div class="tntitem" name="tntEntry" data-discipline="{{this.system.discipline.value}}" data-search="{{this.name}}{{this.system.tags.value}}{{this.system.aptitudes.value}}"><input type="radio" class="powercheckbox" name="power-choice"  data-compendium="fortyk.psychic-powers" value="{{this.id}}"></div>
+
+        <span name="tntEntry" class="tntname tntitem" data-discipline="{{this.system.discipline.value}}" data-search="{{this.name}}{{this.system.tags.value}}">{{this.name}}</span>
+        <span name="tntEntry" class="tntprereqs tntitem" data-discipline="{{this.system.discipline.value}}" data-search="{{this.name}}{{this.system.tags.value}}">{{this.system.reqs.value}}</span>
+        <a name="tntEntry" class="tntdescr tntitem tntdescr-button" class="tnt-desscription" data-discipline="{{this.system.discipline.value}}" data-name="{{this.name}}" data-description="{{this.system.description.value}}" data-search="{{this.name}}{{this.system.tags.value}}">Descr</a>
+
+
+
+
+        {{/each}}
+    </div>
+</div>
+<div class="flexcol">
+    <span>Discount:</span>
+    <input id="discount" class="discount" type="text"  value="0">
+</div>

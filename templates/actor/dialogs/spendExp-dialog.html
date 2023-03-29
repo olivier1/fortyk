@@ -25,6 +25,12 @@
     {{#if (compareString mode "Signature Wargear")}}
     {{> "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/signature-wargear.html"}}
     {{/if}}
+    {{#if (compareString mode "Psy Rating")}}
+    {{> "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/psy-rating.html"}}
+    {{/if}}
+    {{#if (compareString mode "Psychic Power")}}
+    {{> "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/psychic-power.html"}}
+    {{/if}}
     <div class="grid grid-3col">
         <span class="cost-header">Cost </span><span class="cost-header">Character Exp </span><span class="cost-header">Remaining Exp </span>
         <span class="cost-span" id="cost">{{cost}} EXP</span><span class="cost-span" id="actorExp">{{actorExp}} EXP</span><span class="cost-span" id="remainingExp">{{remainingExp}} EXP</span>

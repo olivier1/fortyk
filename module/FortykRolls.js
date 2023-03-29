@@ -298,12 +298,10 @@ returns the roll message*/
             }
 
             evadepenalty=Math.max(evadepenalty,-60);
-            console.log(evadepenalty,tarActor)
             if(tarActor){
                 if(game.user.isGM||tarActor.isOwner){
                     await tarActor.setFlag("fortyk","evadeMod",evadepenalty);
                 }else{
-                    console.log("hey")
                     //if user isnt GM use socket to have gm update the actor
                     let tokenId=attackTarget.id;
                     let socketOp={type:"setFlag",package:{token:tokenId,value:evadepenalty,scope:"fortyk",flag:"evadeMod"}}
