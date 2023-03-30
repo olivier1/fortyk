@@ -820,6 +820,7 @@ returns the roll message*/
     static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0, user=game.users.current, lastHit=null, targets=null){
         let weapon=deepClone(fortykWeapon);
         let righteous=10;
+        let damageType=weapon.system.damageType.value.toLowerCase();
         if(fortykWeapon.getFlag("fortyk","vengeful")){
             righteous=fortykWeapon.getFlag("fortyk","vengeful");
         }
@@ -1307,7 +1308,7 @@ returns the roll message*/
                             }else{
                                 soak=parseInt(data.characterHitLocations[curHit.value].value);
                             }
-                            let damageType=weapon.system.damageType.value.toLowerCase();
+                            
                             //reactive plating
                             console.log(tarActor.getFlag("fortyk","reactiveplating"))
                             if(tarActor.getFlag("fortyk","reactiveplating")&&((damageType==="explosive")||damageType==="impact")){
@@ -1351,7 +1352,10 @@ returns the roll message*/
                             damageOptions.results.push(`</div>`) 
                         }
                         let damage=roll._total;
-
+                        if(tarActor.getFlag("fortyk","moltenman")&&(damageType==="energy")){
+                            damage=Math.ceil(damage/2);
+                            damageOptions.results.push(`<span>Molten man reduces energy damage by half!</span>`);
+                        }
                         let chatDamage=damage;
 
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
@@ -1360,6 +1364,7 @@ returns the roll message*/
                             if(!isNaN(tarActor.getFlag("fortyk","fear"))){
                                 damage+=parseInt(tarActor.getFlag("fortyk","fear"));
                                 chatDamage+=parseInt(tarActor.getFlag("fortyk","fear"));
+                                damageOptions.results.push(`<span>Smite the Unholy increases damage by ${parseInt(tarActor.getFlag("fortyk","fear"))}</span>`);
                             }
                         }
                         //volkite logic

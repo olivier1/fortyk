@@ -1588,6 +1588,7 @@ export class FortyKActor extends Actor {
                             actor.update({"system.psykana.pr.value":newPr});
                         }else if(advType==="Psychic Power"){
                             try{
+                                await actor.setFlag("fortyk",data.flagId,false);
                                 actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
                             }catch(err){} 
                         }

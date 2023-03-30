@@ -38,6 +38,12 @@ export class SpendExpDialog extends Application {
             data.disciplines=data.FORTYK.psychicDisciplines;
             data.psyPowers=await this._loadPsyPowers();
             this.psyPowers=data.psyPowers;
+            console.log(data.discipline)
+            if(!data.discipline||this.options.discipline===undefined){
+                data.discipline="All"
+            }else{
+                data.discipline=this.options.discipline;
+            }
         }
         data.mode=this.options.mode;
         data.skills=actor.skills;
@@ -378,6 +384,7 @@ export class SpendExpDialog extends Application {
         }else if(this.options.mode==="Psychic Power"){
 
             let power=this.options.chosenPower;
+            let flagId=power.id;
             let advanceName="Psychic Power: "+power.name;
             let itemData=duplicate(power);
             let powerData=power.system;
@@ -386,7 +393,7 @@ export class SpendExpDialog extends Application {
 
 
             
-
+            await actor.setFlag("fortyk",flagId,true);
             let actorPower=await actor.createEmbeddedDocuments("Item",[duplicate(power)]);
             let powerId=actorPower[0].id;
 
@@ -398,7 +405,8 @@ export class SpendExpDialog extends Application {
                 data:{
                     type:{value:"Psychic Power"},
                     cost:{value:this.options.cost},
-                    itemId:{value:powerId}
+                    itemId:{value:powerId},
+                    flagId:flagId
 
                 }
             };
@@ -686,6 +694,7 @@ export class SpendExpDialog extends Application {
         let powers=document.getElementsByName("tntEntry");
         console.log(event);
         let discipline=event.target.value;
+        this.options.discipline=discipline;
         for(let i=0;i<powers.length;i++){
             let power=powers[i];
 
@@ -731,11 +740,12 @@ export class SpendExpDialog extends Application {
         });
 
         let map=powers.reduce(function(map,power){
-
-            map[power.id]=power;
+            if(!actor.getFlag("fortyk",power.id)){
+              map[power.id]=power;  
+            }
+            
             return map;
         },{});
-        console.log(map)
         return map;
     }
     async _loadTalents(){

@@ -205,6 +205,10 @@ export class FortykRollDialogs{
             }
             let tarActor=target.actor;
             let tar=tarActor;
+            if(!actor.getFlag("fortyk","blindfight")&&tarActor.getFlag("fortyk","invisible")){
+                miscMods+=parseInt(tarActor.getFlag("fortyk","invisible"));
+                modifierTracker.push({"value":tarActor.getFlag("fortyk","invisible"),"label":"Invisible"});
+            }
             if(tarActor.type==="vehicle"){
                 vehicle=true;
                 templateOptions.vehicle=true;
@@ -311,7 +315,7 @@ export class FortykRollDialogs{
                             };
                             FortykRolls.applyActiveEffect(actor,[aeData]);
                         }
-                        
+
                         if(guarded){
                             let guardActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("holyShield")]);
                             guardActiveEffect.duration={
@@ -396,7 +400,7 @@ export class FortykRollDialogs{
         modifierTracker.push({"value":`${testTarget}`,"label":`Base Target Value`});
         modifierTracker.push({"value":`${item.system.testMod.value}`,"label":"Weapon Bonus"});
         miscMods+=item.system.testMod.value;
-        
+
         if(item.getFlag("fortyk","twinlinked")){
 
             miscMods+=20;
@@ -430,7 +434,7 @@ export class FortykRollDialogs{
 
         let rofSingle=item.system.rof[0].value;
         let rofSemi=parseInt(item.system.rof[1].value);
-        
+
         let rofFull=parseInt(item.system.rof[2].value);
         let canShoot=false;
         console.log(rofSingle);
@@ -557,6 +561,10 @@ export class FortykRollDialogs{
             if(tarActor.type==="vehicle"){
                 vehicle=true;
                 templateOptions.vehicle=true;
+            }
+            if(tarActor.getFlag("fortyk","invisible")){
+                miscMods+=parseInt(tarActor.getFlag("fortyk","invisible"));
+                modifierTracker.push({"value":tarActor.getFlag("fortyk","invisible"),"label":"Invisible"});
             }
             if(!vehicle&&tar.system.horde.value){
                 let hordeSize=tar.system.secChar.wounds.value;
