@@ -151,8 +151,9 @@ export class FortyKActor extends Actor {
             }
 
 
-            return super.update(data, options);
+            
         }
+        return super.update(data, options);
     }
     /**
    * Augment the basic actor data with additional dynamic data.

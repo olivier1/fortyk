@@ -529,6 +529,10 @@
             "currency": {
                 "value": 0,
                 "income": 0
+            },
+            "goal":{
+                "value":"",
+                "type":"String"
             }
 
         },
