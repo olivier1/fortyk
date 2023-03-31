@@ -195,7 +195,7 @@ Hooks.once('ready', async function() {
     }
     //SOCKET used to update actors via the damage scripts
     game.socket.on("system.fortyk",async(data) => {
-        
+
         if(data.type==="cardSplash"){
             var options = {
                 width: "auto",
@@ -376,13 +376,14 @@ Hooks.on("updateCombat", async (combat) => {
                 let remaining=Math.ceil(activeEffect.duration.remaining);
                 if(remaining<1){remaining=0}
                 let content="";
+
                 if(activeEffect.label!=="Evasion"){
+
                     if(remaining===0){
                         content=`${activeEffect.label} expires.`;
                     }else{
                         content=`${activeEffect.label} has ${remaining} rounds remaining.`;
                     }
-
                     let activeEffectOptions={user: game.user._id,
                                              speaker:{actor,alias:actor.name},
                                              content:content,

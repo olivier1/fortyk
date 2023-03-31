@@ -236,7 +236,7 @@ export class FortykRollDialogs{
                 if(!vehicle&&actor.getFlag("fortyk","fieldvivisection")){
 
 
-                    var tarRace=targetActor.system.race.value.toLowerCase();
+                    var tarRace=tarActor.system.race.value.toLowerCase();
                     if(actor.getFlag("fortyk","fieldvivisection").includes(tarRace)){
                         templateOptions["modifiers"].called+=actor.system.fieldVivisection;
                         if(actor.getFlag("fortyk","fieldpractitioner")){
