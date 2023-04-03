@@ -758,6 +758,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             if(fortykWeapon.getFlag("fortyk","brutalcharge")&&actor.system.secChar.lastHit.attackType==="charge"){
                 dmg+=parseInt(fortykWeapon.getFlag("fortyk","brutalcharge"));
             }
+            if(actor.getFlag("fortyk","twohandedbrutality")&&fortykWeapon.system.twohanded.value&&(actor.system.secChar.lastHit.attackType==="charge"||actor.system.secChar.lastHit.attackType==="allout")){
+                dmg+=actor.system.characteristics.s.bonus;
+            }
             let options={dfa:dfa};
             options.dmg=dmg;
             let hits=actor.system.secChar.lastHit.hits;

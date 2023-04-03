@@ -54,10 +54,10 @@ export class FortyKItemSheet extends ItemSheet {
 
             data.knights=[];
             let knights=this.actor.system.knights;
-         
+
             for(let i=0;i<knights.length;i++){
                 let actor=game.actors.get(knights[i]);
-           
+
                 if(actor){
 
                     data.knights.push(actor.name);
@@ -100,6 +100,7 @@ export class FortyKItemSheet extends ItemSheet {
         html.find('.special').click(this._onSpecialClick.bind(this));
         html.find('.modifier').click(this._onModifierClick.bind(this));
         html.find('.clone').click(this._onCloneClick.bind(this));
+        html.find('.make-ammo').click(this._onMakeAmmoClick.bind(this));
         html.find('.knight-Hardpoint').keydown(this._onHardpointEnter.bind(this));
         html.find('.knight-Hardpoint').focusout(this._onHardpointEdit.bind(this));
         //handles melee weapon mod
@@ -116,6 +117,23 @@ export class FortyKItemSheet extends ItemSheet {
     _onCloneClick(event){
         let item=this.item.clone();
         Item.create(duplicate(item));
+    }
+    _onMakeAmmoClick(event){
+        let weapon=this.item;
+        let ammoData={};
+        ammoData["name"]=`${weapon.name} Ammunition`;
+        ammoData["type"]="ammunition";
+        ammoData["flags"]=weapon.flags;
+        ammoData["system.class.value"]=weapon.system.class.value;
+        ammoData["system.damageType.value"]=weapon.system.damageType.value;
+        ammoData["system.type.value"]=weapon.system.type.value;
+       // Math.round((data.knight.armorValues.value*armorRatio + Number.EPSILON) * 100) / 100;
+        ammoData["system.weight.value"]=Math.round((parseFloat(weapon.system.weight.value)*0.1 + Number.EPSILON) * 100) / 100;;
+        ammoData["system.damageFormula.formula"]=weapon.system.damageFormula.formula;
+        ammoData["system.pen.formula"]=weapon.system.pen.formula;
+        ammoData["system.range.formula"]=weapon.system.range.formula;
+        this.actor.createEmbeddedDocuments("Item",[ammoData],{"renderSheet":true});
+        
     }
     async _onModifierClick(event){
         let item=this.item;
@@ -267,9 +285,9 @@ export class FortyKItemSheet extends ItemSheet {
 
         }
         let updateNmbr=Object.keys(this.updateObj).length;
-       
+
         if(updateNmbr>0&&(!event.relatedTarget||($(event.relatedTarget).prop("class").indexOf("weapon-mod") === -1))) {
-           
+
             await item.update(this.updateObj);
             this.updateObj=undefined;
 
@@ -396,7 +414,7 @@ export class FortyKItemSheet extends ItemSheet {
             let target=`system.hardPoints.${location}.${type}`;
             let oldValue=item.system.hardPoints[location][type].length;
             let oldArray=item.system.hardPoints[location][type];
-           
+
 
             if((newAmt>oldValue)){
                 for(let i=oldValue;i<newAmt;i++){

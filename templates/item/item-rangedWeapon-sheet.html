@@ -6,7 +6,12 @@
     {{#if isGM}}
     <label class="button clone">Copy Item</label>
     {{/if}}
-    <span>You will have to create an ammunition item in order to fire your ranged weapon, unless it is a thrown weapon in which case it will use the amount of the weapon as ammo.</span>
+     {{#if actor}}
+    <label class="button make-ammo">Make Ammunition</label>
+    {{else}}
+     <span>You will have to create an ammunition item in order to fire your ranged weapon, unless it is a thrown weapon in which case it will use the amount of the weapon as ammo.</span>
+    {{/if}}
+   
     <div class="grid grid-3col">
         <div class="flexcol">
             <label>Name:</label>
