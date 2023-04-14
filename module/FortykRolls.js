@@ -724,7 +724,18 @@ returns the roll message*/
                 speaker: ChatMessage.getSpeaker({ user: game.users.current }),
                 flavor: "Soulbound perils of the Warp dice result"
             },{rollMode:rollMode})
+            let tensDigit=soulboundRoll.terms[0].values[0];
+            let onesDigit=soulboundRoll.terms[0].values[1];
+            let extraDie=soulboundRoll.terms[0].values[2];
+            if(tensDigit>extradie){
+                tensDigit=extraDie;
+            }else if(onesDigit>=extraDie){
+                onesDigit=extraDie;
+            }
+            
+             /*
             let digits=[];
+           
             digits.push(soulboundRoll.terms[0].values[0]);
             digits.push(soulboundRoll.terms[0].values[1]);
             digits.push(soulboundRoll.terms[0].values[2]);
@@ -738,8 +749,8 @@ returns the roll message*/
                 }else if(digit>digits[i]){
                     digit=digits[i];
                 }
-            }
-            perilsResult=10*tensDigit+digit;
+            }*/
+            perilsResult=10*tensDigit+onesDigit;
         }else{
             let perilsRoll=new Roll("1d100",{});
            
