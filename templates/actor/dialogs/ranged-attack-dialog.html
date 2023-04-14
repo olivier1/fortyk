@@ -141,11 +141,19 @@
                 <input type="checkbox" name="surprised" value="30" {{#if options.helpless}} checked{{/if}}><label>Surprised/Unaware: +30</label>
 
             </div>
+            {{#if hardTarget}}
+            <div class="list-item flexrow">
+
+                <input type="checkbox" name="running" value="-40" {{#if options.running}} checked{{/if}}><label>Running: -40</label>
+
+            </div>
+            {{else}}
             <div class="list-item flexrow">
 
                 <input type="checkbox" name="running" value="-20" {{#if options.running}} checked{{/if}}><label>Running: -20</label>
 
             </div>
+            {{/if}}
             <div class="list-item flexrow">
 
                 <input type="checkbox" name="stunned" value="20" {{#if options.stunned}} checked{{/if}}><label>Stunned: +20</label>
@@ -182,6 +190,6 @@
 </div>
 <div class="flexcol">
     <label class="section-title">Misc Modifiers: {{#if (greaterThan modifiers.miscMods -1)}}+{{/if}}{{modifiers.miscMods}}</label>
-<label class="section-title">Other Modifiers</label>
-<input type="text" id="modifier" name="other" value="{{modifiers.testMod}}">
+    <label class="section-title">Other Modifiers</label>
+    <input type="text" id="modifier" name="other" value="{{modifiers.testMod}}">
 </div>

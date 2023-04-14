@@ -390,7 +390,7 @@ export class FortykRollDialogs{
         }else{
             templateOptions["modifiers"].supp=false;
         }
-
+        
         templateOptions["modifiers"].suppressive=parseInt(item.system.attackMods.suppressive);
         templateOptions["modifiers"].full=parseInt(item.system.attackMods.full);
         templateOptions["modifiers"].semi=parseInt(item.system.attackMods.semi);
@@ -555,6 +555,7 @@ export class FortykRollDialogs{
 
 
             }
+            
             let target=targets.values().next().value;
             let tarActor=target.actor;
             let tar=tarActor;
@@ -562,6 +563,12 @@ export class FortykRollDialogs{
                 vehicle=true;
                 templateOptions.vehicle=true;
             }
+            if(tarActor.getFlag("fortyk","hardtargetEvasion")){
+                miscMods+=-20;
+                modifierTracker.push({"value":`-20`,"label":"Hard target modifier"});
+            }
+            templateOptions["hardTarget"]=tarActor.getFlag("fortyk","hardtarget");
+            
             if(tarActor.getFlag("fortyk","invisible")){
                 miscMods+=parseInt(tarActor.getFlag("fortyk","invisible"));
                 modifierTracker.push({"value":tarActor.getFlag("fortyk","invisible"),"label":"Invisible"});

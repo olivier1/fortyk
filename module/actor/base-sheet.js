@@ -647,6 +647,12 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const dataset = element.dataset;
         let testType=dataset["rollType"];
         var testTarget=parseInt(dataset["target"]);
+        let tempMod=this.actor.system.secChar.tempMod.value;
+        if(tempMod){
+            testTarget+=this.actor.system.secChar.tempMod.value;
+            this.actor.update({"system.secChar.tempMod.value":0});
+        }
+
         console.log(testType)
         var testLabel=dataset["label"];
         var testChar=dataset["char"];
@@ -685,7 +691,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let target=targetIt.next().value;
             let attacker=this.actor.getActiveTokens()[0];
             let targetActor=target.actor;
-            
+
             if(targetActor.type==="vehicle"){
                 attackOptions.vehicle=true;
                 attackOptions.facing=getVehicleFacing(target,attacker);
@@ -751,6 +757,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             if(actor.getFlag("fortyk","deathfromabove")&&actor.system.secChar.lastHit.attackType==="charge"){
                 dfa=true;
             }
+           
             let dmg=0;
             if(actor.getFlag("fortyk","brutalcharge")&&actor.system.secChar.lastHit.attackType==="charge"){
                 dmg=parseInt(actor.getFlag("fortyk","brutalcharge"));
@@ -779,16 +786,17 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                             const dmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
                             const pen = parseInt(Number($(el).find('input[name="pen"]').val()));
                             const magdmg = parseInt(Number($(el).find('input[name="magdmg"]').val()));
+                            const rerollNum = parseInt(Number($(el).find('input[name="reroll"]').val()));
                             if(dmg>0){
                                 formula.value+=`+${dmg}`
                             }
                             if(game.user.isGM){
-                                FortykRolls.damageRoll(formula,actor,fortykWeapon,hits,false,false,magdmg,pen); 
+                                FortykRolls.damageRoll(formula,actor,fortykWeapon,hits,false,false,magdmg,pen,rerollNum); 
                             }else{
                                 //if user isnt GM use socket to have gm process the damage roll
                                 let targets=game.user.targets.ids;
                                 let lastHit=this.actor.system.secChar.lastHit
-                                let socketOp={type:"damageRoll",package:{formula:formula,actor:actor.id,fortykWeapon:fortykWeapon.id,hits:hits,magdmg:magdmg,pen:pen,user:game.user.id,lastHit:lastHit,targets:targets}}
+                                let socketOp={type:"damageRoll",package:{formula:formula,actor:actor.id,fortykWeapon:fortykWeapon.id,hits:hits,magdmg:magdmg,pen:pen,user:game.user.id,lastHit:lastHit,targets:targets,rerollNum:rerollNum}};
                                 game.socket.emit("system.fortyk",socketOp);
                             }
 

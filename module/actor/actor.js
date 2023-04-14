@@ -151,7 +151,7 @@ export class FortyKActor extends Actor {
             }
 
 
-            
+
         }
         return super.update(data, options);
     }
@@ -608,11 +608,25 @@ export class FortyKActor extends Actor {
             data.secChar.wounds.max=parseInt(data.secChar.wounds.max)+parseInt(this.getFlag("fortyk","soundconstitution"));
         }
         data.secChar.wounds.heavy=false;
-        if(!this.getFlag("fortyk","hardy")){
-            let damage=data.secChar.wounds.max-data.secChar.wounds.value;
-            if(damage>data.characteristics.t.bonus*2){
-                data.secChar.wounds.heavy=true;
+
+        let damage=data.secChar.wounds.max-data.secChar.wounds.value;
+        if(damage>data.characteristics.t.bonus*2){
+            data.secChar.wounds.heavy=true;
+        }
+        if(this.getFlag("fortyk","desperatestrength")&&data.secChar.wounds.heavy){
+            data.characteristics.s.bonus++;
+            data.characteristics.s.uB++;
+            data.characteristics.t.bonus++;
+            data.characteristics.t.uB++;
+            if(data.secChar.wounds.value<0){
+                data.characteristics.s.bonus++;
+                data.characteristics.s.uB++;
+                data.characteristics.t.bonus++;
+                data.characteristics.t.uB++;
             }
+        }
+        if(this.getFlag("fortyk","hardy")){
+            data.secChar.wounds.heavy=false; 
         }
         //parse skill modifiers from active effects
         for (let [key, char] of Object.entries(data.skillmods)){
@@ -738,7 +752,24 @@ export class FortyKActor extends Actor {
                 char.total=Math.ceil(char.value/2);
             }
         }
+        data.secChar.wounds.heavy=false;
 
+        let damage=data.secChar.wounds.max-data.secChar.wounds.value;
+        if(damage>data.characteristics.t.bonus*2){
+            data.secChar.wounds.heavy=true;
+        }
+        if(this.getFlag("fortyk","desperatestrength")&&data.secChar.wounds.heavy){
+            data.characteristics.s.bonus++;
+            data.characteristics.s.uB++;
+            data.characteristics.t.bonus++;
+            data.characteristics.t.uB++;
+            if(data.secChar.wounds.value<0){
+                data.characteristics.s.bonus++;
+                data.characteristics.s.uB++;
+                data.characteristics.t.bonus++;
+                data.characteristics.t.uB++;
+            }
+        }
         //prepare parry/dodge
         data.parry.total=data.characteristics.ws.total+parseInt(data.parry.mod)+data.evasionMod;
         data.dodge.total=data.characteristics.agi.total+parseInt(data.dodge.mod)+data.evasionMod;

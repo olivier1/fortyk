@@ -253,9 +253,10 @@ Hooks.once('ready', async function() {
                     hits=data.package.hits;
                     let magdamage=data.package.magdmg;
                     let extraPen=data.package.pen;
+                    let rerollNum=data.package.rerollNum;
                     targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
                     targets=new Set(targets);
-                    FortykRolls.damageRoll(formula,actor,fortykWeapon,hits, false, false,magdamage,extraPen, user, lastHit, targets);
+                    FortykRolls.damageRoll(formula,actor,fortykWeapon,hits, false, false,magdamage,extraPen,rerollNum, user, lastHit, targets);
                     break;
                 case "reportDamage":
                     let targetId=data.package.target;
@@ -340,7 +341,9 @@ Hooks.once('ready', async function() {
                     break;
                 case "perilsRoll":
                     let ork=data.package.ork;
-                    FortykRolls.perilsOfTheWarp(ork);
+                    let actorId=data.package.actorId;
+                    actor=game.actors.get(actorId);
+                    FortykRolls.perilsOfTheWarp(actor,ork);
                     break;
 
             }
@@ -353,6 +356,14 @@ Hooks.on("updateCombat", async (combat) => {
     if(game.user.isGM){
         game.user.updateTokenTargets();
         game.user.broadcastActivity({targets:[]});
+        //previous combatant stuff
+        let previousToken=canvas.tokens.get(combat.previous.tokenId);
+        let previousActor=previousToken.actor;
+        let tempMod=previousActor.system.secChar.tempMod.value;
+        if(tempMod){
+           previousActor.update({"system.secChar.tempMod.value":0}); 
+        }
+        //current combatant stuff
         let token=canvas.tokens.get(combat.current.tokenId);
         if(token===undefined){return}
         let actor=token.actor;
@@ -367,6 +378,9 @@ Hooks.on("updateCombat", async (combat) => {
 
             actor.sheet.render(true);
 
+        }
+        if(actor.getFlag("fortyk","hardtargetEvasion")){
+           await actor.setFlag("fortyk","hardtargetEvasion",false);
         }
         var dead={};
         for(let activeEffect of actor.effects){
@@ -589,6 +603,10 @@ Hooks.on("preDeleteCombat", async (combat,options,id) =>{
     let combatants=combat.combatants;
     combatants.forEach(async (combatant)=>{
         let actor=combatant.actor;
+        let tempMod=actor.system.secChar.tempMod.value;
+        if(tempMod){
+           await actor.update({"system.secChar.tempMod.value":0}); 
+        }
         for(let activeEffect of actor.effects){
             if(activeEffect.label==="Evasion"){
                 await activeEffect.delete({});

@@ -307,11 +307,13 @@ returns the roll message*/
                     let socketOp={type:"setFlag",package:{token:tokenId,value:evadepenalty,scope:"fortyk",flag:"evadeMod"}}
                     await game.socket.emit("system.fortyk",socketOp);
                 }
-                
+
             }
 
         }
-
+        if(attackType==="charge"&&actor.getFlag("fortyk","hardtarget")){
+            actor.setFlag("fortyk","hardtargetEvasion",true);
+        }
 
         //give the chat object options and stuff
         let result={}
@@ -426,7 +428,7 @@ returns the roll message*/
                     let attackTarget=game.user.targets.first();
 
 
-                    
+
                     let attackAngle=getAttackAngle(attackTarget,attacker);
                     let scatterDice="1d5";
                     if(attackTarget!==undefined){
@@ -640,10 +642,10 @@ returns the roll message*/
                 }
                 if(perils){
                     if(game.user.isGM){
-                        this.perilsOfTheWarp(ork);
+                        this.perilsOfTheWarp(actor,ork);
                     }else{
                         //if user isnt GM use socket to have gm roll the perils result
-                        let socketOp={type:"perilsRoll",package:{ork:ork}}
+                        let socketOp={type:"perilsRoll",package:{actorId:actor.id,ork:ork}}
                         await game.socket.emit("system.fortyk",socketOp);
                     }
                 }  
@@ -705,24 +707,54 @@ returns the roll message*/
         return result;
     }
     //rolls a result on the perils of the warp table, checks if the roll should be private or not
-    static async perilsOfTheWarp(ork=false){
+    static async perilsOfTheWarp(actor,ork=false){
+        let perilsResult
         let rollMode="";
+         let perilsFlavor="Perils of the Warp!!";
         if(game.settings.get("fortyk","privatePerils")){
             rollMode="gmroll";
         }else{
             rollMode="default";
         }
-        let perilsRoll=new Roll("1d100",{});
-        let perilsFlavor="Perils of the Warp!!";
-        if(ork){
-            perilsFlavor="'Eadbang!";
+
+        if(actor.getFlag("fortyk","soulbound")){
+            let soulboundRoll=new Roll("3d10",{});
+            await soulboundRoll.evaluate({async: true});
+            await soulboundRoll.toMessage({
+                speaker: ChatMessage.getSpeaker({ user: game.users.current }),
+                flavor: "Soulbound perils of the Warp dice result"
+            },{rollMode:rollMode})
+            let digits=[];
+            digits.push(soulboundRoll.terms[0].values[0]);
+            digits.push(soulboundRoll.terms[0].values[1]);
+            digits.push(soulboundRoll.terms[0].values[2]);
+            let tensDigit=Infinity;
+            let digit=Infinity;
+            for(let i=0;i<digits.length;i++){
+                if(tensDigit>digits[i]){
+                    digit=tensDigit;
+                    tensDigit=digits[i];
+
+                }else if(digit>digits[i]){
+                    digit=digits[i];
+                }
+            }
+            perilsResult=10*tensDigit+digit;
+        }else{
+            let perilsRoll=new Roll("1d100",{});
+           
+            if(ork){
+                perilsFlavor="'Eadbang!";
+            }
+            await perilsRoll.evaluate({async: true});
+            await perilsRoll.toMessage({
+                speaker: ChatMessage.getSpeaker({ user: game.users.current }),
+                flavor: perilsFlavor
+            },{rollMode:rollMode});
+            perilsResult=parseInt(perilsRoll._total);  
         }
-        await perilsRoll.evaluate({async: true});
-        await perilsRoll.toMessage({
-            speaker: ChatMessage.getSpeaker({ user: game.users.current }),
-            flavor: perilsFlavor
-        },{rollMode:rollMode});
-        let perilsResult=parseInt(perilsRoll._total);
+
+
         if(perilsResult>100){perilsResult=100}
         let perilsMessage=FORTYKTABLES.perils[perilsResult];
         if(ork){perilsMessage=FORTYKTABLES.eadBang[perilsResult]}
@@ -730,7 +762,7 @@ returns the roll message*/
                         speaker:{user: game.users.current},
                         content:perilsMessage,
                         classes:["fortyk"],
-                        flavor:perilsFlavor,
+                        flavor:perilsFlavor+` #${perilsResult}`,
                         author:game.users.current
                        }
         if(game.settings.get("fortyk","privatePerils")){
@@ -817,7 +849,7 @@ returns the roll message*/
 
     }
     //handles damage rolls and applies damage to the target, generates critical effects
-    static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0, user=game.users.current, lastHit=null, targets=null){
+    static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0,rerollNum=0, user=game.users.current, lastHit=null, targets=null){
         let weapon=deepClone(fortykWeapon);
         let righteous=10;
         let damageType=weapon.system.damageType.value.toLowerCase();
@@ -902,6 +934,17 @@ returns the roll message*/
 
             form=startstr+"r1"+endstr; 
 
+        }
+        if(rerollNum>0){
+            let dPos = form.indexOf('d10');
+
+
+
+            let afterD=dPos+3;
+            let startstr=form.slice(0,afterD);
+            let endstr=form.slice(afterD);
+
+            form=startstr+`r<=${rerollNum}`+endstr;
         }
         //change formula for shredding weapons 
         if(fortykWeapon.getFlag("fortyk","shredding")){
@@ -1308,7 +1351,7 @@ returns the roll message*/
                             }else{
                                 soak=parseInt(data.characterHitLocations[curHit.value].value);
                             }
-                            
+
                             //reactive plating
                             console.log(tarActor.getFlag("fortyk","reactiveplating"))
                             if(tarActor.getFlag("fortyk","reactiveplating")&&((damageType==="explosive")||damageType==="impact")){
@@ -1745,6 +1788,19 @@ returns the roll message*/
                             damageOptions.results.push(`Peerless Killer increases critical damage by 4 on called shots.`);
                         }
                         damageOptions.results.push(`</div>`); 
+                         //impenetrable armor logic
+                        if(armorSuit.getFlag("fortyk","impenetrable")){
+                            damage=Math.ceil(damage/2);
+                            if(damage>0){
+                                let impOptions={user: user._id,
+                                                speaker:{actor,alias:tarActor.name},
+                                                content:"Impenetrable reduces damage taken by half!",
+                                                classes:["fortyk"],
+                                                flavor:`${armorSuit.name} is impenetrable!`,
+                                                author:tarActor.name}
+                                messages.push(impOptions);
+                            }
+                        }
                         // true grit!@!!@
                         if(!vehicle&&!data.suddenDeath.value&&!isHordelike&&(damage>0)&&(newWounds[tarNumbr]-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
                             let trueSoak=data.characteristics.t.bonus;
@@ -1763,19 +1819,7 @@ returns the roll message*/
                                              author:tarActor.name}
                             messages.push(chatOptions);
                         }
-                        //impenetrable armor logic
-                        if(armorSuit.getFlag("fortyk","impenetrable")){
-                            damage=Math.ceil(damage/2);
-                            if(damage>0){
-                                let impOptions={user: user._id,
-                                                speaker:{actor,alias:tarActor.name},
-                                                content:"Impenetrable reduces damage taken by half!",
-                                                classes:["fortyk"],
-                                                flavor:`${armorSuit.name} is impenetrable!`,
-                                                author:tarActor.name}
-                                messages.push(impOptions);
-                            }
-                        }
+                       
                         //artificer hull
                         if(vehicle&&damage>0&&damage>newWounds[tarNumbr]&&tarActor.getFlag("fortyk","artificerhull")){
                             let critDamage=0;
@@ -1906,6 +1950,18 @@ returns the roll message*/
                         }else if(damage<=0){
                             damage=0;
                             damageOptions.results.push(`<span>Damage is fully absorbed.</span>`);
+                        }
+                        //cleansing pain
+                        if(damage>0&&tarActor.getFlag("fortyk","cleansingpain")){
+                            let tempMod=tarActor.system.secChar.tempMod.value+10;
+                            await tarActor.update({"system.secChar.tempMod.value":tempMod});
+                            let chatOptions={user: user._id,
+                                             speaker:{tarActor,alias:tarActor.name},
+                                             content:"Cleansing Pain grants a +10 bonus to next test!",
+                                             classes:["fortyk"],
+                                             flavor:`Cleansing Pain`,
+                                             author:tarActor.name}
+                            messages.push(chatOptions);
                         }
                         damageOptions.results.push(`</div>`) 
                         let renderedDamageTemplate= await renderTemplate(damageTemplate,damageOptions);

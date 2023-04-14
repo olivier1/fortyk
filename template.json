@@ -117,6 +117,10 @@
             "characters": {
                 "skillmods": {},
                 "secChar": {
+                    "tempMod":{
+                        "value":0,
+                        "type":"Number"
+                    },
                     "wounds": {
                         "type": "Number",
                         "min": -10,
@@ -581,6 +585,10 @@
                 "sorting"
             ],
             "secChar": {
+                "tempMod":{
+                    "value":0,
+                    "type":"Number"
+                },
                 "wounds": {
                     "value": 2,
                     "min": 0,
@@ -788,6 +796,10 @@
                 "type": "String"
             },
             "secChar": {
+                "tempMod":{
+                    "value":0,
+                    "type":"Number"
+                },
                 "speed": {
                     "tactical": 0,
                     "cruising": 0,
