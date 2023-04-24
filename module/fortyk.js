@@ -239,24 +239,87 @@ Hooks.once('ready', async function() {
             let value=0;
             let targets=null;
             let hits=null;
+            let user;
+            let formula;
+            let fortykWeapon;
+            let lastHit;
+            let magdamage;
+            let extraPen;
+            let rerollNum;
             switch(data.type){
                 case "damageRoll":
-                    let user=await game.users.get(data.package.user);
-                    let formula=await data.package.formula;
+                    user=await game.users.get(data.package.user);
+                    formula=await data.package.formula;
                     actor=await game.actors.get(data.package.actor);
-                    let fortykWeapon=actor.getEmbeddedDocument("Item",data.package.fortykWeapon);
+                    fortykWeapon=actor.getEmbeddedDocument("Item",data.package.fortykWeapon);
                     if(!fortykWeapon.system.isPrepared){
                         fortykWeapon.prepareData();
                     }
                     targetIds=data.package.targets;
-                    let lastHit=data.package.lastHit;
+                    lastHit=data.package.lastHit;
                     hits=data.package.hits;
-                    let magdamage=data.package.magdmg;
-                    let extraPen=data.package.pen;
-                    let rerollNum=data.package.rerollNum;
+                    magdamage=data.package.magdmg;
+                    extraPen=data.package.pen;
+                    rerollNum=data.package.rerollNum;
                     targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
                     targets=new Set(targets);
+
                     FortykRolls.damageRoll(formula,actor,fortykWeapon,hits, false, false,magdamage,extraPen,rerollNum, user, lastHit, targets);
+                    break;
+                case "blastDamageRoll":
+                    user=await game.users.get(data.package.user);
+                    formula=await data.package.formula;
+                    actor=await game.actors.get(data.package.actor);
+                    fortykWeapon=actor.getEmbeddedDocument("Item",data.package.fortykWeapon);
+                    if(!fortykWeapon.system.isPrepared){
+                        fortykWeapon.prepareData();
+                    }
+                    targetIds=data.package.targets;
+                    lastHit=data.package.lastHit;
+                    hits=data.package.hits;
+                    magdamage=data.package.magdmg;
+                    extraPen=data.package.pen;
+                    rerollNum=data.package.rerollNum;
+                    for(let i=0; i<targetIds.length;i++){
+                        let curTargets=targetIds[i];
+                        let targetNames="";
+                        let targetTokens=game.canvas.tokens.children[0].children.filter(token=>curTargets.includes(token.id));
+                        let targetSet=new Set(targetTokens);
+                        for(let j=0; j<targetTokens.length;j++){
+                            let token=targetTokens[j];
+                            if(j===targetTokens.length-1){
+
+                                targetNames+=token.name;
+                            }else if(j===targetTokens.length-2){
+                                targetNames+=token.name+" and "
+                            }else{
+                                targetNames+=token.name+", " 
+                            }
+                        }
+                        if(curTargets.length!==0){
+
+                            game.user.updateTokenTargets(curTargets);
+
+                            let chatBlast2={user: game.user._id,
+                                            speaker:{actor,alias:actor.name},
+                                            content:`Template #${i} hits `+targetNames,
+                                            classes:["fortyk"],
+                                            flavor:`Blast Weapon Damage`,
+                                            author:actor.name};
+                            await ChatMessage.create(chatBlast2,{});
+                            await FortykRolls.damageRoll(formula,actor,fortykWeapon,hits, false, false,magdamage,extraPen,rerollNum, user, lastHit, targetSet); 
+                        }
+                        //if user isnt GM use socket to have gm process the damage roll
+
+
+
+
+                    }
+                    targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
+                    targets=new Set(targets);
+
+
+
                     break;
                 case "reportDamage":
                     let targetId=data.package.target;
@@ -361,7 +424,7 @@ Hooks.on("updateCombat", async (combat) => {
         let previousActor=previousToken.actor;
         let tempMod=previousActor.system.secChar.tempMod.value;
         if(tempMod){
-           previousActor.update({"system.secChar.tempMod.value":0}); 
+            previousActor.update({"system.secChar.tempMod.value":0}); 
         }
         //current combatant stuff
         let token=canvas.tokens.get(combat.current.tokenId);
@@ -380,7 +443,7 @@ Hooks.on("updateCombat", async (combat) => {
 
         }
         if(actor.getFlag("fortyk","hardtargetEvasion")){
-           await actor.setFlag("fortyk","hardtargetEvasion",false);
+            await actor.setFlag("fortyk","hardtargetEvasion",false);
         }
         var dead={};
         for(let activeEffect of actor.effects){
@@ -605,7 +668,7 @@ Hooks.on("preDeleteCombat", async (combat,options,id) =>{
         let actor=combatant.actor;
         let tempMod=actor.system.secChar.tempMod.value;
         if(tempMod){
-           await actor.update({"system.secChar.tempMod.value":0}); 
+            await actor.update({"system.secChar.tempMod.value":0}); 
         }
         for(let activeEffect of actor.effects){
             if(activeEffect.label==="Evasion"){

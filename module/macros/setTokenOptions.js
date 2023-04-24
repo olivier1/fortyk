@@ -5,6 +5,29 @@ new Dialog({
     content: `
 <form>
 <div class="form-group">
+<label>Display Name Type</label>
+<select id="name-type" name="name-type">
+<option value="nochange">No Change</option>
+<option value="0">Never Displayed</option>
+<option value="10">When Controlled</option>
+<option value="20">Hovered By Owner</option>
+<option value="30">Hovered by Anyone</option>
+<option value="40">Always For Owner</option>
+<option value="50">Always for Everyone</option>
+</select>
+</div>
+<div class="form-group">
+<label>Display Bars Type</label>
+<select id="bar-type" name="bar-type">
+<option value="nochange">No Change</option>
+<option value="0">Never Displayed</option>
+<option value="10">When Controlled</option>
+<option value="20">Hovered By Owner</option>
+<option value="30">Hovered by Anyone</option>
+<option value="40">Always For Owner</option>
+<option value="50">Always for Everyone</option>
+</select>
+</div>
 <label>Vision Type</label>
 <select id="vision-type" name="vision-type">
 <option value="nochange">No Change</option>
@@ -60,6 +83,9 @@ new Dialog({
                 let visionMode = 'basic';
                 let lightAngle = 360;
                 let lockRotation = token.data.lockRotation;
+                let nameType = parseInt(html.find('[name="name-type"]')[0].value || "none");
+                let barType = parseInt(html.find('[name="bar-type"]')[0].value || "none");
+               
 
                 // Set the color
 
@@ -164,7 +190,16 @@ new Dialog({
                         lockRotation = token.data.lockRotation;
                         lightColor = token.data.lightColor;
                 }
+                 if(isNaN(nameType)){
+                    nameType=token.data.displayName;
+                }
+                if(isNaN(barType)){
+                    barType=token.data.displayBars;
+                }
 
+
+
+               
                 // Update Token
                 token.document.update({
                     vision: true,
@@ -176,6 +211,8 @@ new Dialog({
                     lightAngle: lightAngle,
                     lockRotation: lockRotation,
                     lightColor: lightColor,
+                    displayBars:barType,
+                    displayName:nameType
                 });
 
                 if (!radiant && token.data.effects.includes(radiantEffect)) {

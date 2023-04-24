@@ -421,7 +421,7 @@ returns the roll message*/
                                 flavor:"Fumble or Dud!",
                                 author:actor.name}
                 await ChatMessage.create(chatFumble,{});
-            }else if(attack&&fortykWeapon.getFlag("fortyk","blast")){
+            }else if(attack&&blast){
 
                 let targets=game.user.targets;
                 if(targets.size>0){
@@ -452,6 +452,7 @@ returns the roll message*/
                     let gridRatio=canvas.dimensions.size/canvas.dimensions.distance;
                     let templates=[];
                     let contentStr="<div class='flexcol'><img class='fortyk' src='../systems/fortyk/icons/scatter.png'>";
+
                     for(let i=0;i<rof;i++){
                         let template={};
                         template.angle=0;
@@ -502,13 +503,14 @@ returns the roll message*/
 
                     }
                     contentStr+="</div>"
-                    let scene=game.scenes.active;
-                    scene.createEmbeddedDocuments("MeasuredTemplate",templates);
-                    let chatScatter={user: game.user._id,
-                                     speaker:{actor,alias:actor.name},
-                                     content:contentStr,
-                                     flavor:"Shot Scatters!",
-                                     author:actor.name}
+                    let scene= game.scenes.active;
+                    let instancedTemplates= await scene.createEmbeddedDocuments("MeasuredTemplate",templates);
+                   
+                    let chatScatter= {user: game.user._id,
+                                      speaker:{actor,alias:actor.name},
+                                      content:contentStr,
+                                      flavor:"Shot Scatters!",
+                                      author:actor.name}
                     await ChatMessage.create(chatScatter,{});
                 }
 
@@ -706,11 +708,12 @@ returns the roll message*/
         }
         return result;
     }
+   
     //rolls a result on the perils of the warp table, checks if the roll should be private or not
     static async perilsOfTheWarp(actor,ork=false){
         let perilsResult
         let rollMode="";
-         let perilsFlavor="Perils of the Warp!!";
+        let perilsFlavor="Perils of the Warp!!";
         if(game.settings.get("fortyk","privatePerils")){
             rollMode="gmroll";
         }else{
@@ -732,10 +735,10 @@ returns the roll message*/
             }else if(onesDigit>=extraDie){
                 onesDigit=extraDie;
             }
-            
-             /*
+
+            /*
             let digits=[];
-           
+
             digits.push(soulboundRoll.terms[0].values[0]);
             digits.push(soulboundRoll.terms[0].values[1]);
             digits.push(soulboundRoll.terms[0].values[2]);
@@ -753,7 +756,7 @@ returns the roll message*/
             perilsResult=10*tensDigit+onesDigit;
         }else{
             let perilsRoll=new Roll("1d100",{});
-           
+
             if(ork){
                 perilsFlavor="'Eadbang!";
             }
@@ -1799,7 +1802,7 @@ returns the roll message*/
                             damageOptions.results.push(`Peerless Killer increases critical damage by 4 on called shots.`);
                         }
                         damageOptions.results.push(`</div>`); 
-                         //impenetrable armor logic
+                        //impenetrable armor logic
                         if(armorSuit.getFlag("fortyk","impenetrable")){
                             damage=Math.ceil(damage/2);
                             if(damage>0){
@@ -1830,7 +1833,7 @@ returns the roll message*/
                                              author:tarActor.name}
                             messages.push(chatOptions);
                         }
-                       
+
                         //artificer hull
                         if(vehicle&&damage>0&&damage>newWounds[tarNumbr]&&tarActor.getFlag("fortyk","artificerhull")){
                             let critDamage=0;

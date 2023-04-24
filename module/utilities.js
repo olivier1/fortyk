@@ -88,24 +88,24 @@ export const tokenDistance=function(token1,token2){
     let token2x=token2.x;
     let token2y=token2.y;
     console.log(gridRatio);
-    if(token1.w>=200){
+    if(token1.width*100>=200){
         if(token2x>token1x){
-            token1x+=Math.ceil(token1.w/2);
+            token1x+=Math.ceil(token1.width*100/2);
         }
     }
-    if(token1.h>=200){
+    if(token1.height*100>=200){
         if(token2y>token1y){
-            token1y+=Math.ceil(token1.h/2);
+            token1y+=Math.ceil(token1.height*100/2);
         }
     }
-    if(token2.w>=200){
+    if(token2.width*100>=200){
         if(token1x>token2x){
-            token2x+=Math.ceil(token2.w/2);
+            token2x+=Math.ceil(token2.width*100/2);
         }
     }
-    if(token2.h>=200){
+    if(token2.height*100>=200){
         if(token1y>token2y){
-            token2y+=Math.ceil(token2.h/2);
+            token2y+=Math.ceil(token2.height*100/2);
         }
     }
     console.log(token1x,token1y,token2x,token2y,token1.data.elevation,token2.data.elevation)

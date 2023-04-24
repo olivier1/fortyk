@@ -752,12 +752,20 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 await fortykWeapon.prepareData();
 
             }
+            let blast=false;
+            if(Number.isInteger(parseInt(fortykWeapon.getFlag("fortyk","blast")))){
+                blast=true;
+            }
+            if(blast){
+                this._onBlastDamageRoll(event,fortykWeapon);
+                return;
+            }
             let weapon=fortykWeapon;
             let dfa=false;
             if(actor.getFlag("fortyk","deathfromabove")&&actor.system.secChar.lastHit.attackType==="charge"){
                 dfa=true;
             }
-           
+
             let dmg=0;
             if(actor.getFlag("fortyk","brutalcharge")&&actor.system.secChar.lastHit.attackType==="charge"){
                 dmg=parseInt(actor.getFlag("fortyk","brutalcharge"));
@@ -773,6 +781,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let hits=actor.system.secChar.lastHit.hits;
             if(!hits){hits=1};
             options.hits=hits;
+            
             let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
             let formula=duplicate(weapon.system.damageFormula);
             renderedTemplate.then(content => {new Dialog({
@@ -815,6 +824,124 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 flavor: label
             });
         }
+    }
+    async _onBlastDamageRoll(event, weapon){
+        let scene=game.scenes.active;
+        let templates=scene.templates.reduce(function(templates,template){
+            if(template.isOwner){
+                templates.push(template);
+            }
+            return templates;
+        },[]);
+
+        let targets=this.getBlastTargets(templates, scene);
+        let actor=this.actor;
+        let oldTargets=game.user.targets;
+        let options={dfa:false};
+        let hits 
+        let dmg 
+        let pen 
+        let magdmg
+        let rerollNum 
+        options.dmg=0;
+        options.blast=true;
+        options.hits=1;
+        let chatBlast={user: game.user._id,
+                       speaker:{actor,alias:actor.name},
+                       content:`Starting Blast weapon damage rolls`,
+                       classes:["fortyk"],
+                       flavor:`Blast Weapon Damage`,
+                       author:actor.name};
+        await ChatMessage.create(chatBlast,{});
+        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
+        let formula=duplicate(weapon.system.damageFormula);
+        renderedTemplate.then(content => {new Dialog({
+            title: `Number of Hits & Bonus Damage`,
+            content: content,
+            buttons: {
+                submit: {
+                    label: 'OK',
+                    callback: async (el) => {
+                        hits = parseInt(Number($(el).find('input[name="hits"]').val()));
+                        dmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
+                        pen = parseInt(Number($(el).find('input[name="pen"]').val()));
+                        magdmg = parseInt(Number($(el).find('input[name="magdmg"]').val()));
+                        rerollNum = parseInt(Number($(el).find('input[name="reroll"]').val()));
+                        if(dmg>0){
+                            formula.value+=`+${dmg}`
+                        }
+                        if(game.user.isGM){
+                            for(let i=0; i<targets.length;i++){
+                                let curTargets=targets[i];
+                                let targetNames="";
+                                let targetTokens=game.canvas.tokens.children[0].children.filter(token=>curTargets.includes(token.id));
+                                for(let j=0; j<targetTokens.length;j++){
+                                    let token=targetTokens[j];
+                                    if(j===targetTokens.length-1){
+
+                                        targetNames+=token.name;
+                                    }else if(j===targetTokens.length-2){
+                                        targetNames+=token.name+" and "
+                                    }else{
+                                        targetNames+=token.name+", " 
+                                    }
+                                }
+                                if(curTargets.length!==0){
+
+                                    game.user.updateTokenTargets(curTargets);
+
+                                    let chatBlast2={user: game.user._id,
+                                                    speaker:{actor,alias:actor.name},
+                                                    content:`Template #${i} hits `+targetNames,
+                                                    classes:["fortyk"],
+                                                    flavor:`Blast Weapon Damage`,
+                                                    author:actor.name};
+                                    await ChatMessage.create(chatBlast2,{});
+                                    await FortykRolls.damageRoll(formula,actor,weapon,hits,false,false,magdmg,pen,rerollNum); 
+                                }
+                                //if user isnt GM use socket to have gm process the damage roll
+
+
+
+
+                            }
+
+                        }else{
+                            let lastHit=this.actor.system.secChar.lastHit
+                            let socketOp={type:"blastDamageRoll",package:{formula:formula,actor:actor.id,fortykWeapon:weapon.id,hits:hits,magdmg:magdmg,pen:pen,user:game.user.id,lastHit:lastHit,targets:targets,rerollNum:rerollNum}};
+                            await game.socket.emit("system.fortyk",socketOp);
+
+                        }
+
+                    }
+                }
+            },
+            default: "submit",
+            width:100}).render(true)});
+
+        game.user.updateTokenTargets(oldTargets);
+
+    }
+    getBlastTargets(templates, scene){
+        let tokens=scene.tokens;
+        let targets=[];
+        console.log(templates);
+        for(let i=0;i<templates.length;i++){
+            let targetted=[];
+            let bounds=templates[i]._object.bounds;
+            console.log(bounds)
+            tokens.forEach((token,id,tokens)=>{
+                console.log(token,id)
+                let tokenBounds=token._object.bounds;
+                console.log(tokenBounds)
+                if(bounds.overlaps(tokenBounds)){
+                    targetted.push(token.id);
+                }
+            });
+            targets.push(targetted);
+        }
+        return targets;
+        console.log(targets)
     }
     //handles applying active effects from psychic powers
     async _onBuffDebuff(event){
