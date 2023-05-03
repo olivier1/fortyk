@@ -781,7 +781,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let hits=actor.system.secChar.lastHit.hits;
             if(!hits){hits=1};
             options.hits=hits;
-            
+
             let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
             let formula=duplicate(weapon.system.damageFormula);
             renderedTemplate.then(content => {new Dialog({
@@ -846,13 +846,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         options.dmg=0;
         options.blast=true;
         options.hits=1;
-        let chatBlast={user: game.user._id,
-                       speaker:{actor,alias:actor.name},
-                       content:`Starting Blast weapon damage rolls`,
-                       classes:["fortyk"],
-                       flavor:`Blast Weapon Damage`,
-                       author:actor.name};
-        await ChatMessage.create(chatBlast,{});
+
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
         let formula=duplicate(weapon.system.damageFormula);
         renderedTemplate.then(content => {new Dialog({
@@ -870,6 +864,13 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         if(dmg>0){
                             formula.value+=`+${dmg}`
                         }
+                        let chatBlast={user: game.user._id,
+                                       speaker:{actor,alias:actor.name},
+                                       content:`Starting Blast weapon damage rolls`,
+                                       classes:["fortyk"],
+                                       flavor:`Blast Weapon Damage`,
+                                       author:actor.name};
+                        await ChatMessage.create(chatBlast,{});
                         if(game.user.isGM){
                             for(let i=0; i<targets.length;i++){
                                 let curTargets=targets[i];
@@ -892,14 +893,13 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
                                     let chatBlast2={user: game.user._id,
                                                     speaker:{actor,alias:actor.name},
-                                                    content:`Template #${i} hits `+targetNames,
+                                                    content:`Template #${i+1} hits `+targetNames,
                                                     classes:["fortyk"],
                                                     flavor:`Blast Weapon Damage`,
                                                     author:actor.name};
                                     await ChatMessage.create(chatBlast2,{});
                                     await FortykRolls.damageRoll(formula,actor,weapon,hits,false,false,magdmg,pen,rerollNum); 
                                 }
-                                //if user isnt GM use socket to have gm process the damage roll
 
 
 
@@ -907,6 +907,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                             }
 
                         }else{
+                            //if user isnt GM use socket to have gm process the damage roll
+
                             let lastHit=this.actor.system.secChar.lastHit
                             let socketOp={type:"blastDamageRoll",package:{formula:formula,actor:actor.id,fortykWeapon:weapon.id,hits:hits,magdmg:magdmg,pen:pen,user:game.user.id,lastHit:lastHit,targets:targets,rerollNum:rerollNum}};
                             await game.socket.emit("system.fortyk",socketOp);
@@ -925,18 +927,37 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     getBlastTargets(templates, scene){
         let tokens=scene.tokens;
         let targets=[];
+        let gridRatio=scene.dimensions.size/scene.dimensions.distance;
         console.log(templates);
         for(let i=0;i<templates.length;i++){
             let targetted=[];
-            let bounds=templates[i]._object.bounds;
-            console.log(bounds)
+            let template=templates[i];
+            let bounds=template._object._getCircleShape(template.distance*gridRatio);
+            bounds.x=template.x;
+            bounds.y=template.y;
             tokens.forEach((token,id,tokens)=>{
-                console.log(token,id)
+                
                 let tokenBounds=token._object.bounds;
-                console.log(tokenBounds)
-                if(bounds.overlaps(tokenBounds)){
+                let bottomIn=false;
+                let topIn=false;
+                let rightIn=false;
+                let leftIn=false;
+                
+                let bottomIntersect=lineCircleIntersection(tokenBounds.bottomEdge.A,tokenBounds.bottomEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
+                bottomIn=!bottomIntersect.outside;
+                let topIntersect=lineCircleIntersection(tokenBounds.topEdge.A,tokenBounds.topEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
+                topIn=!topIntersect.outside;
+                let leftIntersect=lineCircleIntersection(tokenBounds.leftEdge.A,tokenBounds.leftEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
+                leftIn=!leftIntersect.outside;
+                let rightIntersect=lineCircleIntersection(tokenBounds.rightEdge.A,tokenBounds.rightEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
+                rightIn=!rightIntersect.outside;
+                if(bottomIn||topIn||leftIn||rightIn){
                     targetted.push(token.id);
                 }
+                //console.log(bounds.overlaps(tokenBounds))
+                /*if(bounds.overlaps(tokenBounds)){
+                    targetted.push(token.id);
+                }*/
             });
             targets.push(targetted);
         }

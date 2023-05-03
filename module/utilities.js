@@ -82,43 +82,45 @@ export const parseHtmlForInline=function(html){
     return intArray;
 }
 export const tokenDistance=function(token1,token2){
-    let gridRatio=canvas.dimensions.distance/canvas.dimensions.size;
+    let gridRatio=(canvas.dimensions.distance/canvas.dimensions.size);
     let token1x=token1.x;
     let token1y=token1.y;
     let token2x=token2.x;
     let token2y=token2.y;
     console.log(gridRatio);
-    if(token1.width*100>=200){
+    console.log(token1)
+    if(token1.w*100>=200){
         if(token2x>token1x){
-            token1x+=Math.ceil(token1.width*100/2);
+            token1x+=Math.ceil(token1.w/2);
         }
     }
-    if(token1.height*100>=200){
+    if(token1.h*100>=200){
         if(token2y>token1y){
-            token1y+=Math.ceil(token1.height*100/2);
+            token1y+=Math.ceil(token1.h/2);
         }
     }
-    if(token2.width*100>=200){
+    if(token2.w*100>=200){
         if(token1x>token2x){
-            token2x+=Math.ceil(token2.width*100/2);
+            token2x+=Math.ceil(token2.w/2);
         }
     }
-    if(token2.height*100>=200){
+    if(token2.h*100>=200){
         if(token1y>token2y){
-            token2y+=Math.ceil(token2.height*100/2);
+            token2y+=Math.ceil(token2.h/2);
         }
     }
     console.log(token1x,token1y,token2x,token2y,token1.data.elevation,token2.data.elevation)
     if(canvas.scene.grid.type===0){
         
         let distancePx=Math.sqrt(Math.pow((token1x-token2x),2)+Math.pow((token1y-token2y),2)+Math.pow((token1.data.elevation-token2.data.elevation),2))
-        console.log(distancePx)
-        return distancePx*gridRatio
+        console.log(distancePx, distancePx*gridRatio)
+        return distancePx*gridRatio;
     }
     if(canvas.scene.grid.type>=1){
         let xDistance=Math.abs(gridRatio*(token1x-token2x));
         let yDistance=Math.abs(gridRatio*(token1y-token2y));
         let zDistance=Math.abs(gridRatio*(token1.data.elevation-token2.data.elevation));
+        console.log(xDistance,yDistance);
         return Math.max(xDistance,yDistance,zDistance); 
     }
 

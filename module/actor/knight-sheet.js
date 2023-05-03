@@ -238,6 +238,8 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             li.addEventListener("dragover", this._onDragOverSlot.bind(this), false);
 
         });
+        
+        
         html.find('.component-slot').each((i, li) => {
 
 
@@ -246,7 +248,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         });
     }
     _onDragComponent(event){
-
+        console.log(event);
         let type="."+event.target.attributes["name"].value;
         let targetId=event.target.dataset["id"];
         let actor=this.actor;
@@ -283,7 +285,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
     }
 
     async _onDropComponent(event){
-
+        console.log(event)
         let draggedId=event.dataTransfer.getData("text");
 
 

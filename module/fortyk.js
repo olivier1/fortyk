@@ -302,7 +302,7 @@ Hooks.once('ready', async function() {
 
                             let chatBlast2={user: game.user._id,
                                             speaker:{actor,alias:actor.name},
-                                            content:`Template #${i} hits `+targetNames,
+                                            content:`Template #${i+1} hits `+targetNames,
                                             classes:["fortyk"],
                                             flavor:`Blast Weapon Damage`,
                                             author:actor.name};

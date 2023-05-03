@@ -459,7 +459,7 @@ returns the roll message*/
                         template.borderColor="#000000";
                         template.direction=2;
                         template.distance=fortykWeapon.getFlag("fortyk","blast");
-                        template.fillColor="#FF0000";
+                        template.fillColor=game.user.color;
                         template.hidden=false;
                         template.t="circle";
                         if(i<missedHits){

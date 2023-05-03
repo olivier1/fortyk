@@ -56,103 +56,103 @@ export class FortyKActor extends Actor {
     }
     //@Override the update function to modify token size for hordes and larger entities
     async update(data, options={}) {
-        if(game.user.isGM){
-            let actor=this;
-            let actorData=actor;
-            if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC' || actorData.type === 'npc'|| actorData.type === 'vehicle'){
 
-                //check for fatigue unconsciousness/death
-                let newFatigue=false;
-                try{
-                    newFatigue=data["system.secChar.fatigue.value"];
-                }catch(err){
-                    newFatigue=false;
+        let actor=this;
+        let actorData=actor;
+        if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC' || actorData.type === 'npc'|| actorData.type === 'vehicle'){
+
+            //check for fatigue unconsciousness/death
+            let newFatigue=false;
+            try{
+                newFatigue=data["system.secChar.fatigue.value"];
+            }catch(err){
+                newFatigue=false;
+            }
+            if(newFatigue){
+                let token=null;
+                if(this.isToken){
+                    token=this.token;
+                }else{
+                    token=this.getActiveTokens()[0]
                 }
-                if(newFatigue){
-                    let token=null;
-                    if(this.isToken){
-                        token=this.token;
+                if(newFatigue>=this.system.secChar.fatigue.max*2){
+                    await game.fortyk.FortykRolls.applyDead(token,this,"fatigue");
+                }else if(!this.getFlag("core","frenzy")&&!this.getFlag("core","unconscious")&&newFatigue>=this.system.secChar.fatigue.max){
+                    let effect=[];
+                    effect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("unconscious")]));
+                    let chatUnconscious={user: game.user._id,
+                                         speaker:{actor,alias:actor.name},
+                                         content:`${actor.name} falls unconscious from fatigue!`,
+                                         classes:["fortyk"],
+                                         flavor:`Fatigue pass out`,
+                                         author:actor.name};
+                    await ChatMessage.create(chatUnconscious,{});
+                    await actor.createEmbeddedDocuments("ActiveEffect",effect);
+                }
+            }
+            // Apply changes in Actor size to Token width/height
+            let newSize= 0;
+            let wounds=false;
+            try{
+                wounds=data["system.secChar.wounds.value"];
+            }catch(err){
+                wounds=false;
+            }
+            let size=false;
+            try{
+                size=data["system.secChar.size.value"]; 
+            }catch(err){
+                size=false;
+            }
+            let vehicle=false;
+            if(actorData.type==='vehicle'){
+                vehicle=true
+            }
+            if(vehicle){
+                newSize= data["system.secChar.size.value"];
+                if(newSize && (newSize !== this.system.secChar.size.value)){
+                    let size= 0;
+                    size= game.fortyk.FORTYK.size[newSize].size;
+                    if ( this.isToken ) this.token.update({height: size, width: size});
+                    else if ( !data["token.width"] && !hasProperty(data, "token.width") ) {
+                        data["token.height"] = size;
+                        data["token.width"] = size;
+                    }
+                }
+            }else{
+                if(wounds&&(this.system.horde.value||this.system.formation.value)||size){
+                    if(this.system.horde.value||this.system.formation.value){
+                        newSize= data["system.secChar.wounds.value"];
+                        if(newSize<0){newSize=0}
                     }else{
-                        token=this.getActiveTokens()[0]
+                        newSize= data["system.secChar.size.value"];
                     }
-                    if(newFatigue>=this.system.secChar.fatigue.max*2){
-                        await game.fortyk.FortykRolls.applyDead(token,this,"fatigue");
-                    }else if(!this.getFlag("core","frenzy")&&!this.getFlag("core","unconscious")&&newFatigue>=this.system.secChar.fatigue.max){
-                        let effect=[];
-                        effect.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("unconscious")]));
-                        let chatUnconscious={user: game.user._id,
-                                             speaker:{actor,alias:actor.name},
-                                             content:`${actor.name} falls unconscious from fatigue!`,
-                                             classes:["fortyk"],
-                                             flavor:`Fatigue pass out`,
-                                             author:actor.name};
-                        await ChatMessage.create(chatUnconscious,{});
-                        await actor.createEmbeddedDocuments("ActiveEffect",effect);
-                    }
-                }
-                // Apply changes in Actor size to Token width/height
-                let newSize= 0;
-                let wounds=false;
-                try{
-                    wounds=data["system.secChar.wounds.value"];
-                }catch(err){
-                    wounds=false;
-                }
-                let size=false;
-                try{
-                    size=data["system.secChar.size.value"]; 
-                }catch(err){
-                    size=false;
-                }
-                let vehicle=false;
-                if(actorData.type==='vehicle'){
-                    vehicle=true
-                }
-                if(vehicle){
-                    newSize= data["system.secChar.size.value"];
-                    if(newSize && (newSize !== this.system.secChar.size.value)){
+                    if ( (!this.system.horde.value&&!this.system.formation.value&&newSize && (newSize !== this.system.secChar.size.value))||((this.system.horde.value||this.system.formation.value)&&newSize!==undefined && (newSize !== this.system.secChar.wounds.value)) ) {
                         let size= 0;
-                        size= game.fortyk.FORTYK.size[newSize].size;
+                        if(this.system.horde.value||this.system.formation.value){
+                            size= FORTYKTABLES.hordeSizes[newSize];
+                            if(this.isToken){
+                                //modify token dimensions if scene ratio isnt 1
+                                let gridRatio=canvas.dimensions.distance;
+                                size=Math.max(1,size/gridRatio);
+                            }
+
+                        }else{
+                            size= game.fortyk.FORTYK.size[newSize].size;
+                        }
                         if ( this.isToken ) this.token.update({height: size, width: size});
                         else if ( !data["token.width"] && !hasProperty(data, "token.width") ) {
                             data["token.height"] = size;
                             data["token.width"] = size;
                         }
                     }
-                }else{
-                    if(wounds&&(this.system.horde.value||this.system.formation.value)||size){
-                        if(this.system.horde.value||this.system.formation.value){
-                            newSize= data["system.secChar.wounds.value"];
-                            if(newSize<0){newSize=0}
-                        }else{
-                            newSize= data["system.secChar.size.value"];
-                        }
-                        if ( (!this.system.horde.value&&!this.system.formation.value&&newSize && (newSize !== this.system.secChar.size.value))||((this.system.horde.value||this.system.formation.value)&&newSize!==undefined && (newSize !== this.system.secChar.wounds.value)) ) {
-                            let size= 0;
-                            if(this.system.horde.value||this.system.formation.value){
-                                size= FORTYKTABLES.hordeSizes[newSize];
-                                if(this.isToken){
-                                    //modify token dimensions if scene ratio isnt 1
-                                    let gridRatio=canvas.dimensions.distance;
-                                    size=Math.max(1,size/gridRatio);
-                                }
-
-                            }else{
-                                size= game.fortyk.FORTYK.size[newSize].size;
-                            }
-                            if ( this.isToken ) this.token.update({height: size, width: size});
-                            else if ( !data["token.width"] && !hasProperty(data, "token.width") ) {
-                                data["token.height"] = size;
-                                data["token.width"] = size;
-                            }
-                        }
-                    }
                 }
             }
-
-
-
         }
+
+
+
+
         return super.update(data, options);
     }
     /**

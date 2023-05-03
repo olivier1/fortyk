@@ -383,17 +383,15 @@
                             <input type="text" class="combat-resources" data-target="system.dodge.mod" value="{{system.dodge.mod}}" data-dtype="Number"/>
                         </div>
                     </div>
-                    <span class="section-title">SIZE</span>
-                    <select class="sizeSelect" name="system.secChar.size.value" data-dtype="Number">
-                        {{#select system.secChar.size.value}}
-
-                        {{#each size}}
-
-                        <option value="{{@index}}">{{this.name}}</option>
-
+                    <span class="section-title">COVER</span>
+                    <select class="cover"  name="system.secChar.cover.value">
+                        {{#select system.secChar.cover.value}}
+                        {{#each coverTypes}}
+                        <option value="{{value}}">{{label}}</option>
                         {{/each}}
                         {{/select}}
                     </select>
+
                     <div class="flexcol flex-group-center">
                         <span class="section-title">MOVEMENT</span>
                         <div class="flexrow movement">
@@ -476,17 +474,20 @@
                             {{/if}}
 
                         </div>
+                        <span class="section-title">SIZE</span>
+                        <select class="sizeSelect" name="system.secChar.size.value" data-dtype="Number">
+                            {{#select system.secChar.size.value}}
 
+                            {{#each size}}
+
+                            <option value="{{@index}}">{{this.name}}</option>
+
+                            {{/each}}
+                            {{/select}}
+                        </select>
 
                         <div class="flexcol">
-                            <span class="section-title">COVER</span>
-                            <select class="cover"  name="system.secChar.cover.value">
-                                {{#select system.secChar.cover.value}}
-                                {{#each coverTypes}}
-                                <option value="{{value}}">{{label}}</option>
-                                {{/each}}
-                                {{/select}}
-                            </select>
+
                             <div class="flexrow flex-group-center">
                                 <div class="armor flexcol flex-group-center">
 
