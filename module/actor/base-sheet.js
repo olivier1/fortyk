@@ -942,7 +942,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 let topIn=false;
                 let rightIn=false;
                 let leftIn=false;
-                
+                let tempInToken=false;
+                if(bounds.x>tokenBounds.left&&bounds.x<tokenBounds.right&&bounds.y>tokenBounds.top&&bounds.y<tokenBounds.bottom){
+                    tempInToken=true;
+                }
                 let bottomIntersect=lineCircleIntersection(tokenBounds.bottomEdge.A,tokenBounds.bottomEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
                 bottomIn=!bottomIntersect.outside;
                 let topIntersect=lineCircleIntersection(tokenBounds.topEdge.A,tokenBounds.topEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
@@ -951,7 +954,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 leftIn=!leftIntersect.outside;
                 let rightIntersect=lineCircleIntersection(tokenBounds.rightEdge.A,tokenBounds.rightEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
                 rightIn=!rightIntersect.outside;
-                if(bottomIn||topIn||leftIn||rightIn){
+                if(bottomIn||topIn||leftIn||rightIn||tempInToken){
                     targetted.push(token.id);
                 }
                 //console.log(bounds.overlaps(tokenBounds))
