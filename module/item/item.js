@@ -405,7 +405,7 @@ export class FortyKItem extends Item {
                         let corruptBonus=Math.floor(parseInt(actor.system.secChar.corruption.value)/10);
                         let daemonic=parseFloat(actor.getFlag("fortyk","daemonic"));
                         if(isNaN(daemonic)){daemonic=0};
-                        var taintbonus=Math.Max(corruptBonus,daemonic);
+                        var taintbonus=Math.max(corruptBonus,daemonic);
                         item.system.damageFormula.value+=`+${taintbonus}`;
                         item.system.pen.value+=taintbonus;
                     }

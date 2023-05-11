@@ -458,7 +458,8 @@ returns the roll message*/
                         template.angle=0;
                         template.borderColor="#000000";
                         template.direction=2;
-                        template.distance=fortykWeapon.getFlag("fortyk","blast");
+                        template.distance=Math.max(0.1,fortykWeapon.getFlag("fortyk","blast"));
+                        
                         template.fillColor=game.user.color;
                         template.hidden=false;
                         template.t="circle";
@@ -730,7 +731,7 @@ returns the roll message*/
             let tensDigit=soulboundRoll.terms[0].values[0];
             let onesDigit=soulboundRoll.terms[0].values[1];
             let extraDie=soulboundRoll.terms[0].values[2];
-            if(tensDigit>extradie){
+            if(tensDigit>extraDie){
                 tensDigit=extraDie;
             }else if(onesDigit>=extraDie){
                 onesDigit=extraDie;
@@ -1414,7 +1415,7 @@ returns the roll message*/
                             damageOptions.results.push(`<span>Molten man reduces energy damage by half!</span>`);
                         }
                         let chatDamage=damage;
-
+                        console.log(damage)
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
                         //damage part of smite the unholy
                         if(actor.getFlag("fortyk","smitetheunholy")&&tarActor.getFlag("fortyk","fear")&&weapon.type==="meleeWeapon"){
@@ -1478,7 +1479,9 @@ returns the roll message*/
                             damage=Math.ceil(damage/2);
                             damageOptions.results.push(`<span>Swarm enemies take reduced damage against non blast, spray, flame or scatter weapons.</span>`);
                         }
+                        console.log(damage)
                         damage=damage-soak;
+                        console.log(damage)
                         //gauss weapon logic
                         if(fortykWeapon.getFlag("fortyk","gauss")&&tens&&!isHordelike){
                             let gaussAmt=new Roll("1d5",{});
@@ -1532,6 +1535,7 @@ returns the roll message*/
                             }
                         }
                         damageOptions.results.push(`</div>`) 
+                        console.log(damage)
                         //toxic weapon logic
                         if(!vehicle&&damage>0&&!isNaN(parseInt(toxic))&&!tarActor.getFlag("fortyk","stuffofnightmares")&&!tarActor.getFlag("fortyk","undying")&&!isHordelike){
                             damageOptions.results.push(`<div class="chat-target flexcol">`)
@@ -1701,6 +1705,7 @@ returns the roll message*/
                             }
                             damageOptions.results.push(`</div>`) 
                         }
+                        console.log(damage)
                         //flame weapon
                         if(!armorSuit.getFlag("fortyk","flamerepellent")&&fortykWeapon.getFlag("fortyk","flame")&&!isHordelike){
                             damageOptions.results.push(`<div class="chat-target flexcol">`)
@@ -1802,6 +1807,7 @@ returns the roll message*/
                             damageOptions.results.push(`Peerless Killer increases critical damage by 4 on called shots.`);
                         }
                         damageOptions.results.push(`</div>`); 
+                        console.log(damage)
                         //impenetrable armor logic
                         if(armorSuit.getFlag("fortyk","impenetrable")){
                             damage=Math.ceil(damage/2);
@@ -1833,7 +1839,7 @@ returns the roll message*/
                                              author:tarActor.name}
                             messages.push(chatOptions);
                         }
-
+                        console.log(damage)
                         //artificer hull
                         if(vehicle&&damage>0&&damage>newWounds[tarNumbr]&&tarActor.getFlag("fortyk","artificerhull")){
                             let critDamage=0;
@@ -1952,7 +1958,7 @@ returns the roll message*/
                                 superheavyOptions.threshold=5;
                             }
                         }
-
+                        console.log(damage)
                         //if righteous fury ensure attack deals atleast 1 dmg
                         if(tens&&damage<=0){
 
