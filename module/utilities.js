@@ -109,17 +109,17 @@ export const tokenDistance=function(token1,token2){
             token2y+=Math.ceil(token2.h/2);
         }
     }
-    console.log(token1x,token1y,token2x,token2y,token1.data.elevation,token2.data.elevation)
+    console.log(token1x,token1y,token2x,token2y,token1.document.elevation,token2.document.elevation)
     if(canvas.scene.grid.type===0){
         
-        let distancePx=Math.sqrt(Math.pow((token1x-token2x),2)+Math.pow((token1y-token2y),2)+Math.pow((token1.data.elevation-token2.data.elevation),2))
+        let distancePx=Math.sqrt(Math.pow((token1x-token2x),2)+Math.pow((token1y-token2y),2)+Math.pow((token1.document.elevation-token2.document.elevation),2))
         console.log(distancePx, distancePx*gridRatio)
         return distancePx*gridRatio;
     }
     if(canvas.scene.grid.type>=1){
         let xDistance=Math.abs(gridRatio*(token1x-token2x));
         let yDistance=Math.abs(gridRatio*(token1y-token2y));
-        let zDistance=Math.abs(gridRatio*(token1.data.elevation-token2.data.elevation));
+        let zDistance=Math.abs(gridRatio*(token1.document.elevation-token2.document.elevation));
         console.log(xDistance,yDistance);
         return Math.max(xDistance,yDistance,zDistance); 
     }

@@ -611,20 +611,20 @@ FORTYK.ACTIVE_EFFECT_MODES = {
 FORTYK.StatusEffects = [
     {
         id: "dead",
-        label: "Dead",
+        name: "Dead",
         icon: "icons/svg/skull.svg",
         overlay: true,
         flags: { core: { statusId: "dead" , overlay: true} }
     },
     {
         id: "unconscious",
-        label: "Unconscious",
+        name: "Unconscious",
         icon: "icons/svg/unconscious.svg",
         flags: { core: { statusId: "unconscious" } }
     },
     {
         id: "running",
-        label: "Running",
+        name: "Running",
         icon: "systems/fortyk/icons/running.png",
         flags: { core: { statusId: "running" } },
         duration:{
@@ -634,7 +634,7 @@ FORTYK.StatusEffects = [
     },
     {
         id: "totalDef",
-        label: "Total Defense",
+        name: "Total Defense",
         icon: "systems/fortyk/icons/defense.png",
         flags: { core: { statusId: "totalDef" } },
         duration:{
@@ -644,37 +644,37 @@ FORTYK.StatusEffects = [
     },
     {
         id: "stunned",
-        label: "Stunned",
+        name: "Stunned",
         icon: "icons/svg/daze.svg",
         flags: { core: { statusId: "stunned" } }
     },
     {
         id: "prone",
-        label: "Prone",
+        name: "Prone",
         icon: "icons/svg/falling.svg",
         flags: { core: { statusId: "prone" } }
     },
     {
         id: "snare",
-        label: "Snare",
+        name: "Snare",
         icon: "icons/svg/net.svg",
         flags: { core: { statusId: "snare" } }
     },
     {
         id: "blind",
-        label: "Blind",
+        name: "Blind",
         icon: "icons/svg/blind.svg",
         flags: { core: { statusId: "blind" } }
     },
     {
         id: "deaf",
-        label: "Deaf",
+        name: "Deaf",
         icon: "icons/svg/deaf.svg",
         flags: { core: { statusId: "deaf" } }
     },
     {
         id: "shock",
-        label: "Shocked",
+        name: "Shocked",
         icon: "icons/svg/terror.svg",
         flags: { core: { statusId: "shock" } },
         changes:[
@@ -683,45 +683,45 @@ FORTYK.StatusEffects = [
     },
     {
         id: "fire",
-        label: "Fire",
+        name: "Fire",
         icon: "icons/svg/fire.svg",
         flags: { core: { statusId: "fire" } }
     },
     {
         id: "corrode",
-        label: "Corroded",
+        name: "Corroded",
         icon: "icons/svg/acid.svg",
         flags: { core: { statusId: "corrode" } }
     },
     {
         id: "bleeding",
-        label: "Bleeding",
+        name: "Bleeding",
         icon: "icons/svg/blood.svg",
         tint:"#8a0303",
         flags: { core: { statusId: "bleeding" }}
     },
     {
         id: "cryogenic",
-        label: "Cryogenic",
+        name: "Cryogenic",
         icon: "systems/fortyk/icons/cryo.png",
         flags: { core: { statusId: "cryogenic" } }
     },
     {
         id: "toxic",
-        label: "Toxic",
+        name: "Toxic",
         icon: "icons/svg/poison.svg",
         flags: { core: { statusId: "toxic" } }
     },
 
     {
         id: "rad",
-        label: "Radiation",
+        name: "Radiation",
         icon: "icons/svg/radiation.svg",
         flags: { core: { statusId: "rad" } }
     },
     {
         id: "frenzy",
-        label: "Frenzy",
+        name: "Frenzy",
         icon: "systems/fortyk/icons/frenzy.png",
         flags: { core: { statusId: "frenzy" } },
         changes:[
@@ -736,151 +736,151 @@ FORTYK.StatusEffects = [
     },
     {
         id: "hallucinogenic",
-        label: "Hallucinogenic",
+        name: "Hallucinogenic",
         icon: "systems/fortyk/icons/spiral.png",
         flags: { core: { statusId: "hallucinogenic" } }
     },
     {
         id: "buff",
-        label: "Buff",
+        name: "Buff",
         icon: "icons/svg/upgrade.svg",
         flags: { core: { statusId: "buff" } }
     },
     {
         id: "weakened",
-        label: "Weakened",
+        name: "Weakened",
         icon: "icons/svg/downgrade.svg",
         flags: { core: { statusId: "weakened" } }
     },
     {
         id: "target",
-        label: "Target",
+        name: "Target",
         icon: "icons/svg/target.svg",
         flags: { core: { statusId: "target" } }
     },
     {
         id: "marked",
-        label: "Marked",
+        name: "Marked",
         icon: "icons/svg/eye.svg",
         flags: { core: { statusId: "marked" } }
     },
     {
         id: "crippled",
-        label: "Crippled",
+        name: "Crippled",
         icon: "icons/svg/sun.svg",
         flags: { core: { statusId: "crippled" } }
     },
     {
         id: "blessed",
-        label: "Blessed",
+        name: "Blessed",
         icon: "icons/svg/angel.svg",
         flags: { core: { statusId: "blessed" } }
     },
     {
         id: "fireShield",
-        label: "FireShield",
+        name: "FireShield",
         icon: "icons/svg/fire-shield.svg",
         flags: { core: { statusId: "fireShield" } }
     },
     {
         id: "coldShield",
-        label: "IceShield",
+        name: "IceShield",
         icon: "icons/svg/ice-shield.svg",
         flags: { core: { statusId: "coldShield" } }
     },
     {
         id: "magicShield",
-        label: "MagicShield",
+        name: "MagicShield",
         icon: "icons/svg/mage-shield.svg",
         flags: { core: { statusId: "magicShield" } }
     },
     {
         id: "holyShield",
-        label: "HolyShield",
+        name: "HolyShield",
         icon: "icons/svg/holy-shield.svg",
         flags: { core: { statusId: "holyShield" } }
     },
     {
         id: "ws",
-        label: "Weapon Skill Damage",
+        name: "Weapon Skill Damage",
         icon: "systems/fortyk/icons/ws.png",
         flags: { core: { statusId: "ws" } }
     },
     {
         id: "bs",
-        label: "Ballistic Skill Damage",
+        name: "Ballistic Skill Damage",
         icon: "systems/fortyk/icons/bs.png",
         flags: { core: { statusId: "bs" } }
     },
     {
         id: "s",
-        label: "Strength Damage",
+        name: "Strength Damage",
         icon: "systems/fortyk/icons/s.png",
         flags: { core: { statusId: "s" } }
     },
     {
         id: "t",
-        label: "Toughness Damage",
+        name: "Toughness Damage",
         icon: "systems/fortyk/icons/t.png",
         flags: { core: { statusId: "t" } }
     },
     {
         id: "agi",
-        label: "Agility Damage",
+        name: "Agility Damage",
         icon: "systems/fortyk/icons/agi.png",
         flags: { core: { statusId: "agi" } }
     },
     {
         id: "int",
-        label: "Intelligence Damage",
+        name: "Intelligence Damage",
         icon: "systems/fortyk/icons/int.png",
         flags: { core: { statusId: "int" } }
     },
     {
         id: "per",
-        label: "Perception Damage",
+        name: "Perception Damage",
         icon: "systems/fortyk/icons/per.png",
         flags: { core: { statusId: "per" } }
     },
     {
         id: "wp",
-        label: "Willpower Damage",
+        name: "Willpower Damage",
         icon: "systems/fortyk/icons/wp.png",
         flags: { core: { statusId: "wp" } }
     },
     {
         id: "fel",
-        label: "Fellowship Damage",
+        name: "Fellowship Damage",
         icon: "systems/fortyk/icons/fel.png",
         flags: { core: { statusId: "fel" } }
     },
     {
         id: "arm",
-        label: "Arm Injury",
+        name: "Arm Injury",
         icon: "systems/fortyk/icons/arm.png",
         flags: { core: { statusId: "arm" } }
     },
     {
         id: "leg",
-        label: "Leg Injury",
+        name: "Leg Injury",
         icon: "systems/fortyk/icons/leg.png",
         flags: { core: { statusId: "leg" } }
     },
     {
         id: "rough",
-        label: "Rough Terrain",
+        name: "Rough Terrain",
         icon: "systems/fortyk/icons/sticky-boot.png",
         flags: { core: { statusId: "rough" } }
     },
     {
         id: "tough",
-        label: "Tough Terrain",
+        name: "Tough Terrain",
         icon: "systems/fortyk/icons/232784.png",
         flags: { core: { statusId: "tough" } }
     },
     {
         id: "severe",
-        label: "Severe Terrain",
+        name: "Severe Terrain",
         icon: "systems/fortyk/icons/quarry-512.png",
         flags: { core: { statusId: "severe" } }
     }

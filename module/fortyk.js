@@ -483,11 +483,11 @@ Hooks.on("updateCombat", async (combat) => {
             //check for flags
             if(activeEffect.flags.core){
 
-                if(activeEffect.flags.core.statusId==="unconscious"){
+                if(activeEffect.statuses.has("unconscious")){
                     dead=activeEffect;
                 }
                 //check for fire
-                if(activeEffect.flags.core.statusId==="fire"){
+                if(activeEffect.statuses.has("fire")){
 
                     if(actor.type!=="vehicle"){
                         let onFireOptions={user: game.user._id,
@@ -547,7 +547,7 @@ Hooks.on("updateCombat", async (combat) => {
                     }
                 }
                 //check for bleeding
-                if(activeEffect.flags.core.statusId==="bleeding"){
+                if(activeEffect.statuses.has("bleeding")){
                     let bleed=true;
                     if(actor.getFlag("fortyk","diehard")){
                         let diehrd= await FortykRolls.fortykTest("wp", "char", actor.system.characteristics.wp.total,actor, "Die Hard");
@@ -583,7 +583,7 @@ Hooks.on("updateCombat", async (combat) => {
                     }
                 }
                 //check for cryo
-                if(activeEffect.flags.core.statusId==="cryogenic"){
+                if(activeEffect.statuses.has("cryogenic")){
                     let cryoContent=`<span>On round start, take [[2d10]]  toughness damage!</span>`;
                     let cryoOptions={user: game.user._id,
                                      speaker:{actor,alias:actor.name},
@@ -698,24 +698,29 @@ Hooks.on('preCreateItem', (actor, data,options) =>{
 Hooks.on('createActiveEffect',async (ae,options,id)=>{
     if(game.user.isGM){
         let actor=ae.parent;
-        if(ae.flags.core){
-            let flag=ae.flags.core.statusId;
-            if(flag){
-                await actor.setFlag("core",flag,true);
-            } 
-        }
+        console.log(ae)
+
+        ae.statuses.forEach(async function (value1, value2,ae){
+            let flag=value1;
+
+            await actor.setFlag("core",flag,true);
+
+        })
+
+
     }
 });
 //unset flags on the actor when removing an active effect if it had a flag
 Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
     if(game.user.isGM){
         let actor=ae.parent;
-        if(ae.flags.core){
-            let flag=ae.flags.core.statusId;
-            if(flag){
-                await actor.setFlag("core",flag,false);
-            }
-        }
+
+         ae.statuses.forEach(async function (value1, value2,ae){
+            let flag=value1;
+
+            await actor.setFlag("core",flag,false);
+
+        })
     }
 });
 /**

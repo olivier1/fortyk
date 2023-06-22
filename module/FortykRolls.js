@@ -29,6 +29,7 @@ returns the roll message*/
         }
         let roll=new Roll("1d100ms<@tar",{tar:target});
         await roll.evaluate({async: true});
+        
         let weapon
         if(fortykWeapon){
             weapon=fortykWeapon
@@ -459,7 +460,7 @@ returns the roll message*/
                         template.borderColor="#000000";
                         template.direction=2;
                         template.distance=Math.max(0.1,fortykWeapon.getFlag("fortyk","blast"));
-                        
+
                         template.fillColor=game.user.color;
                         template.hidden=false;
                         template.t="circle";
@@ -506,7 +507,7 @@ returns the roll message*/
                     contentStr+="</div>"
                     let scene= game.scenes.active;
                     let instancedTemplates= await scene.createEmbeddedDocuments("MeasuredTemplate",templates);
-                   
+
                     let chatScatter= {user: game.user._id,
                                       speaker:{actor,alias:actor.name},
                                       content:contentStr,
@@ -709,7 +710,7 @@ returns the roll message*/
         }
         return result;
     }
-   
+
     //rolls a result on the perils of the warp table, checks if the roll should be private or not
     static async perilsOfTheWarp(actor,ork=false){
         let perilsResult
@@ -1286,19 +1287,7 @@ returns the roll message*/
                         }else{
                             armor=parseInt(data.characterHitLocations[curHit.value].armor); 
                         }
-                        //scatter weapon logic
 
-                        if(fortykWeapon.getFlag("fortyk","scatter")){
-
-
-
-                            if(distance>=parseInt(weapon.system.range.value)/2){
-                                damageOptions.results.push(`<div class="chat-target flexcol">`);
-                                damageOptions.results.push(`<span> Armor is doubled against Scatter weapon at this distance!</span>`);
-                                armor=armor*2;
-                                damageOptions.results.push(`</div>`);
-                            }
-                        }
 
                         //check if weapon ignores soak
                         let ignoreSoak=false;
@@ -1365,6 +1354,22 @@ returns the roll message*/
                                 }
                             }else{
                                 soak=parseInt(data.characterHitLocations[curHit.value].value);
+                                
+                                
+
+
+                            }
+                            //scatter weapon logic
+                            if(fortykWeapon.getFlag("fortyk","scatter")){
+
+
+
+                                if(distance>=parseInt(weapon.system.range.value)/2){
+                                    damageOptions.results.push(`<div class="chat-target flexcol">`);
+                                    damageOptions.results.push(`<span> Armor is doubled against Scatter weapon at this distance!</span>`);
+                                    soak+=armor;
+                                    damageOptions.results.push(`</div>`);
+                                }
                             }
 
                             //reactive plating
@@ -1655,7 +1660,7 @@ returns the roll message*/
                             damageOptions.results.push(`<div class="chat-target flexcol">`)
                             let luminagenActiveEffect={
                                 id: "luminagen",
-                                label: "Luminagen",
+                                name: "Luminagen",
                                 icon: "icons/svg/eye.svg",
                                 flags: { core: { statusId: "luminagen" } }
                             };
@@ -4355,7 +4360,7 @@ returns the roll message*/
                     let newAe=effect[index];
                     for(let ae of actor.effects){
                         if(ae.flags.core){
-                            if(ae.flags.core.statusId!=="weakened"&&ae.flags.core.statusId!=="buff"&&ae.flags.core.statusId===newAe.flags.core.statusId){
+                            if(!ae.statuses.has("weakened")&&!ae.statuses.has("buff")&&ae.flags.core.statusId===newAe.flags.core.statusId){
                                 dupp=true;
                                 let change=false;
                                 let upg=false;

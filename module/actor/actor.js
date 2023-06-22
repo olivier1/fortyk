@@ -1262,7 +1262,8 @@ export class FortyKActor extends Actor {
         return actorData;
     }
     prepareNPCItems(actorData){
-        let data=this.system;           
+        let data=this.system; 
+       
         const psychicPowers=[];
         const meleeweapons=[];
         const rangedWeapons=[];
@@ -1272,7 +1273,7 @@ export class FortyKActor extends Actor {
         //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
-        this.items.forEach((fortykItem,id,items)=>{
+      this.items.forEach((fortykItem,id,items)=>{
             let item=fortykItem;
             fortykItem.prepareData();
             if(item.type==="talentntrait"){
@@ -1516,6 +1517,7 @@ export class FortyKActor extends Actor {
                 this.updateKnights();
             }
         }
+        /*
         if(userId===game.user.id){
             if(embeddedName==="Item"){
                 var actor=this;
@@ -1523,15 +1525,16 @@ export class FortyKActor extends Actor {
                     if(item.type==="talentntrait"){
                         let flag=item.system.flagId.value;
                         let spec=item.system.specialisation.value;
-
+                        console.log(flag,spec)
 
                         if(spec==="N/A"){
 
                             await actor.setFlag("fortyk",flag,true);
                         }else{
+                            console.log("lmao")
                             let chosenSpec=await Dialog.prompt({
                                 title: `Choose specialisation for ${item.name}`,
-                                content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${item.system.specialisation.value}" autofocus/></p>`,
+                                content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${item.system.specialisation.value}" /></p>`,
 
 
 
@@ -1542,6 +1545,7 @@ export class FortyKActor extends Actor {
                                 },
                                 render: (html)=>{
                                     document.getElementById('specInput').select();
+                                    
                                 },
 
 
@@ -1549,7 +1553,8 @@ export class FortyKActor extends Actor {
 
 
 
-                                width:100});
+                                width:100,
+                                bringToTop:true});
                             await item.update({"system.specialisation.value":chosenSpec});
                         }
                     }
@@ -1558,7 +1563,7 @@ export class FortyKActor extends Actor {
             } 
         }
 
-
+    */
 
         super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
     }

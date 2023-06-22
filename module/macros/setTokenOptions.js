@@ -31,6 +31,7 @@ new Dialog({
 <label>Vision Type</label>
 <select id="vision-type" name="vision-type">
 <option value="nochange">No Change</option>
+<option value="novision">No Vision</option>
 <option value="dim0">Normal Vision</option>
 <option value="dim30">Dark-sight (20 m)</option>
 <option value="dim60">Dark-sight (40 m)</option>
@@ -85,12 +86,16 @@ new Dialog({
                 let lockRotation = token.data.lockRotation;
                 let nameType = parseInt(html.find('[name="name-type"]')[0].value || "none");
                 let barType = parseInt(html.find('[name="bar-type"]')[0].value || "none");
+                let vision = true;
                
 
                 // Set the color
 
                 // Get Vision Type Values
                 switch (visionType) {
+                    case "novision":
+                        vision = false;
+                        break;
                     case "dim0":
                         dimSight = 0;
                         brightSight = 0;
@@ -202,7 +207,7 @@ new Dialog({
                
                 // Update Token
                 token.document.update({
-                    vision: true,
+                    vision: vision,
                     dimSight: dimSight,
                     brightSight: brightSight,
                     dimLight: dimLight,

@@ -283,17 +283,9 @@ export class SpendExpDialog extends Application {
             let flag=tntData.flagId.value;
 
 
-            /*if(spec==="N/A"){
 
-                await actor.setFlag("fortyk",flag,true);
-            }else{
-
-
-                itemData.system.specialisation.value=chosenSpec;
-
-            }*/
-            let talentId=""
-            if(actor.getFlag("fortyk",flag)&&spec!=="N/A"){
+           var talentId=""
+            if(spec!=="N/A"){
                 var chosenSpec=await Dialog.prompt({
                     title: "Choose specialisation",
                     content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${tntData.specialisation.value}" autofocus/></p>`,
@@ -310,14 +302,11 @@ export class SpendExpDialog extends Application {
                     render: (html)=>{
                         document.getElementById('specInput').select();
                     },
+                    width:100});
+
+                itemData.system.specialisation.value=chosenSpec;
 
 
-
-
-
-
-                    width:100}
-                                                  );
 
                 let actorTalent=actor.itemTypes["talentntrait"].filter(function(tlnt){
                     if(tlnt.name===talent.name){
@@ -330,14 +319,17 @@ export class SpendExpDialog extends Application {
                     talentId=actorTalent[0].id;
                     spec2+=", "+chosenSpec;
                     await actorTalent[0].update({"system.specialisation.value":spec2}); 
+                }else{
+                    let actorTalent=await actor.createEmbeddedDocuments("Item",[itemData]);
+                    talentId=actorTalent[0].id;
                 }
 
             }else{
                 let actorTalent=await actor.createEmbeddedDocuments("Item",[duplicate(talent)]);
-                let talentId=actorTalent[0].id;
+                talentId=actorTalent[0].id;
 
             }
-            //await actor.setFlag("fortyk",flag,chosenSpec);
+            await actor.setFlag("fortyk",flag,chosenSpec);
             const advData = {
                 name: `${advanceName}`,
                 type: type,
@@ -392,7 +384,7 @@ export class SpendExpDialog extends Application {
 
 
 
-            
+
             await actor.setFlag("fortyk",flagId,true);
             let actorPower=await actor.createEmbeddedDocuments("Item",[duplicate(power)]);
             let powerId=actorPower[0].id;
@@ -741,9 +733,9 @@ export class SpendExpDialog extends Application {
 
         let map=powers.reduce(function(map,power){
             if(!actor.getFlag("fortyk",power.id)){
-              map[power.id]=power;  
+                map[power.id]=power;  
             }
-            
+
             return map;
         },{});
         return map;
