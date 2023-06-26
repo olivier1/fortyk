@@ -263,17 +263,17 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let actor=this.actor;
         let items=actor[itemType];
         let update={};
-        let updatePath="sort."+itemType;
+        let updatePath="system.sort."+itemType;
 
         update[updatePath]={};
         update[updatePath].type=sortType;
         update[updatePath].path=path;
-        if(!actor.sort[itemType]||actor.sort[itemType].type!==sortType||actor.sort[itemType].reverse){
+        if(!actor.system.sort[itemType]||actor.system.sort[itemType].type!==sortType||actor.system.sort[itemType].reverse){
             update[updatePath].reverse=false;
         }else{
             update[updatePath].reverse=true;
         }
-
+        console.log(update)
         await this.actor.update(update);
 
     }
@@ -792,13 +792,13 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         label: 'OK',
                         callback: (el) => {
                             const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
-                            const dmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
+                            const dmg = $(el).find('input[name="dmg"]').val();
                             const pen = parseInt(Number($(el).find('input[name="pen"]').val()));
                             const magdmg = parseInt(Number($(el).find('input[name="magdmg"]').val()));
                             const rerollNum = parseInt(Number($(el).find('input[name="reroll"]').val()));
-                            if(dmg>0){
-                                formula.value+=`+${dmg}`
-                            }
+                            
+                            formula.value+=`+${dmg}`;
+                            
                             if(game.user.isGM){
                                 FortykRolls.damageRoll(formula,actor,fortykWeapon,hits,false,false,magdmg,pen,rerollNum); 
                             }else{

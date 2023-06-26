@@ -99,10 +99,10 @@
     <label class="section-title">Advancements</label>
     <a class="spend-exp button" data-type="advancement" title="Add a new Advancement">Add Advancement</a>
     <div class="list list4col grid grid-4col">
-        <a class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="advancements">Name</a>
-        <a class="list-item sort-button" data-sort-type="cost" data-path="system.cost.value" data-item-type="advancements">Cost</a>
-        <span class="list-button"></span>
-        <span class="list-button"></span>
+        <a class="list-item-header sort-button" data-sort-type="name" data-path="name" data-item-type="advancements">Name</a>
+        <a class="list-item-header sort-button" data-sort-type="cost" data-path="system.cost.value" data-item-type="advancements">Cost</a>
+        <span class="list-item-header"></span>
+        <span class="list-item-header-last"></span>
         {{#each actor.advancements as |a key|}}
         
             <a class="item-descr list-item" data-name="{{a.name}}" data-item-descr="{{a.system.description.value}}">{{a.name}}</a>
@@ -120,11 +120,11 @@
     <span class="section-title">Missions</span>
     <a class="item-create button" data-type="mission" title="Add a new Mission">Add Mission</a>
     <div class="list list5col grid grid-5col">
-        <a class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="missions">Name</a>
-        <a class="list-item sort-button" data-sort-type="exp" data-path="system.exp.value" data-item-type="missions">Exp</a>
-        <a class="list-item sort-button" data-sort-type="inf" data-path="system.inf.value" data-item-type="missions">Inf</a>
-        <span class="list-button"></span>
-        <span class="list-button"></span>
+        <a class="list-item-header sort-button" data-sort-type="name" data-path="name" data-item-type="missions">Name</a>
+        <a class="list-item-header sort-button" data-sort-type="exp" data-path="system.exp.value" data-item-type="missions">Exp</a>
+        <a class="list-item-header sort-button" data-sort-type="inf" data-path="system.inf.value" data-item-type="missions">Inf</a>
+        <span class="list-item-header"></span>
+        <span class="list-item-header-last"></span>
         {{#each actor.missions as |m key|}}
        
             <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.system.description.value}}">{{m.name}}</a>

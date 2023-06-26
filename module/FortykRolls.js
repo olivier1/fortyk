@@ -29,7 +29,7 @@ returns the roll message*/
         }
         let roll=new Roll("1d100ms<@tar",{tar:target});
         await roll.evaluate({async: true});
-        
+
         let weapon
         if(fortykWeapon){
             weapon=fortykWeapon
@@ -1019,6 +1019,7 @@ returns the roll message*/
 
             let roll=new Roll(form,actor.system);
             let label = weapon.name ? `Rolling ${weapon.name} damage to ${curHit.label}.` : 'damage';
+            console.log(roll)
             await roll.evaluate({async: true});
             //calculate righteous for non targetted rolls
             let tenz=0;
@@ -1210,22 +1211,34 @@ returns the roll message*/
                         let tens=0;
                         let dieResults=[];
                         let discards=[];
-                        try{
-                            for ( let r of roll.dice[0].results ) {
-                                if(!r.active){
-                                    discards.push(true);
-                                }else{
-                                    discards.push(false);
-                                }
-                                dieResults.push(r.result);
-                                if(r.active){
-                                    if(r.result>=tarRighteous){
-                                        tens+=1;
+                        let terms=roll.terms;
+                        let numbers=[]
+                        console.log(terms)
+
+                        for ( let t=0; t<terms.length;t++){
+                            console.log(terms[t])
+                            if(terms[t] instanceof Die){
+                                console.log(terms[t])
+                                for ( let r of roll.terms[t].results ) {
+                                    if(!r.active){
+                                        discards.push(true);
+                                    }else{
+                                        discards.push(false);
                                     }
-                                }
-                            } 
-                        }catch(err){
+                                    dieResults.push(r.result);
+                                    if(r.active){
+                                        if(r.result>=tarRighteous){
+                                            tens+=1;
+                                        }
+                                    }
+                                } 
+                            }else if(terms[t] instanceof NumericTerm){
+                                numbers.push(terms[t].number);
+                            }
+
                         }
+
+
                         let damageString="";
                         if(dieResults.length<1){
                             damageString=roll.result.replace(/\s+/g, '');
@@ -1249,8 +1262,11 @@ returns the roll message*/
                                 }
                             }
                             if(roll.terms.length!==1){
-                                damageString=roll.result.replace(/\s+/g, '')
-                                damageString="+"+damageString.substring(damageString.indexOf("+") + 1)
+                                for(let n=0;n<numbers.length;n++){
+                                    damageString=`+${numbers[n]}`
+                                }
+                                //damageString=roll.result.replace(/\s+/g, '')
+                                //damageString="+"+damageString.substring(damageString.indexOf("+") + 1)
                             }
                             damageString ="("+rollString+")"+damageString;
                         }
@@ -1354,8 +1370,8 @@ returns the roll message*/
                                 }
                             }else{
                                 soak=parseInt(data.characterHitLocations[curHit.value].value);
-                                
-                                
+
+
 
 
                             }
@@ -4354,6 +4370,7 @@ returns the roll message*/
                 }else{
                     actor=token;
                 }
+                console.log(actor, token)
                 let aEs=[];
                 for(let index=0; index <effect.length;index++){
                     let dupp=false;
@@ -4434,7 +4451,7 @@ returns the roll message*/
 
             }else{
                 //if user isnt GM use socket to have gm update the actor
-                let tokenId=token._id;
+                let tokenId=token.id;
                 let socketOp={type:"applyActiveEffect",package:{token:tokenId,effect:effect}}
                 await game.socket.emit("system.fortyk",socketOp);
             }

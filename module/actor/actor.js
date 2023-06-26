@@ -377,7 +377,9 @@ export class FortyKActor extends Actor {
                 if(item.type==="armor"&&item.system.isEquipped){
                     data.secChar.wornGear.armor=item;
                     //set max agi from equipped armor
+
                     data.characteristics.agi.max=item.system.maxAgi.value;
+                    console.log(this.name,data)
                 }
                 if(item.type==="forceField"&&item.system.isEquipped){
                     data.secChar.wornGear.forceField=item;
@@ -721,7 +723,12 @@ export class FortyKActor extends Actor {
             hitLoc.armor+=hitLoc.armorMod;
             hitLoc.armor+=Math.max(machine,natural);
             hitLoc.armor=Math.max(0,hitLoc.armor);
-            hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;
+            if(this.getFlag("fortyk","glancingblow")&&data.characteristics.agi.max===100){
+                hitLoc.value=hitLoc.armor+data.characteristics.agi.bonus;
+            }else{
+                hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;  
+            }
+
             let daemonic=this.getFlag("fortyk","daemonic");
             if(daemonic){
                 if(!isNaN(daemonic)){
@@ -1263,7 +1270,7 @@ export class FortyKActor extends Actor {
     }
     prepareNPCItems(actorData){
         let data=this.system; 
-       
+
         const psychicPowers=[];
         const meleeweapons=[];
         const rangedWeapons=[];
@@ -1273,7 +1280,7 @@ export class FortyKActor extends Actor {
         //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
-      this.items.forEach((fortykItem,id,items)=>{
+        this.items.forEach((fortykItem,id,items)=>{
             let item=fortykItem;
             fortykItem.prepareData();
             if(item.type==="talentntrait"){
@@ -1425,8 +1432,8 @@ export class FortyKActor extends Actor {
     }
     //function to sort the item containers for display
     _sortItems(itemContainers){
-        let data=this;
-        let sorts=system.sort;
+        let data=this.system;
+        let sorts=data.sort;
         let containers=Object.entries(itemContainers);
         containers.forEach((container, index )=>{
             if(sorts[container[0]]){
@@ -1545,7 +1552,7 @@ export class FortyKActor extends Actor {
                                 },
                                 render: (html)=>{
                                     document.getElementById('specInput').select();
-                                    
+
                                 },
 
 

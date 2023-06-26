@@ -332,7 +332,9 @@ Hooks.once('ready', async function() {
                 case "applyActiveEffect":
                     id=data.package.token;
                     token=canvas.tokens.get(id);
+                    console.log(id, token)
                     let aeffect=data.package.effect;
+                    console.log(aeffect)
                     await FortykRolls.applyActiveEffect(token,aeffect);
                     break;
                 case "updateValue":

@@ -9,10 +9,10 @@
         <span class="section-title">CYBERNETICS</span>
         <a class="item-create button" data-type="cybernetic" title="Add a new Cybernetic">Add Cybernetic</a>
         <div class="list list4col grid grid-4col">
-            <a class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="cybernetics">Name</a>
-            <a class="list-item sort-button" data-sort-type="location" data-path="system.location.value" data-item-type="cybernetics">Location</a>
-            <span class="list-button"></span>
-            <span class="list-button"></span>
+            <a class="list-item-header sort-button" data-sort-type="name" data-path="name" data-item-type="cybernetics">Name</a>
+            <a class="list-item-header sort-button" data-sort-type="location" data-path="system.location.value" data-item-type="cybernetics">Location</a>
+            <span class="list-item-header"></span>
+            <span class="list-item-header-last"></span>
             {{#each actor.cybernetics as |c key|}}
 
             <a class="item-descr list-item" data-name="{{c.name}}" data-item-descr="{{c.system.description.value}}">{{c.name}}</a>
@@ -46,11 +46,11 @@
         <a class="wargear-create button" title="Add a new Wargear">Add Wargear</a>
 
         <div class="list list5col grid grid-5col">
-            <a class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="wargear">Name</a>
-            <a class="list-item sort-button" data-sort-type="amount" data-path="system.amount.value" data-item-type="wargear">Amount</a>
-            <a class="list-item sort-button" data-sort-type="weight" data-path="system.weight.total" data-item-type="wargear">Weight</a>
-            <span class="list-button"></span>
-            <span class="list-button"></span>
+            <a class="list-item-header sort-button" data-sort-type="name" data-path="name" data-item-type="wargear">Name</a>
+            <a class="list-item-header sort-button" data-sort-type="amount" data-path="system.amount.value" data-item-type="wargear">Amount</a>
+            <a class="list-item-header sort-button" data-sort-type="weight" data-path="system.weight.total" data-item-type="wargear">Weight</a>
+            <span class="list-item-header"></span>
+            <span class="list-item-header-last"></span>
             {{#each actor.wargear as |w key|}}
 
 

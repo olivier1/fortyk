@@ -3,9 +3,9 @@ new Dialog({
     content: `<div><label>Cover:</label> <select id="cover"  name="cover">
 
 <option value="0">None</option>
-<option value="0.25">Light Cover</option>
-<option value="0.5">Medium Cover</option>
-<option value="0.75">Heavy Cover</option>
+<option value="0.1">Light Cover</option>
+<option value="0.3">Medium Cover</option>
+<option value="0.5">Heavy Cover</option>
 
 </select></div>`,
     buttons: {

@@ -426,8 +426,11 @@
         border-bottom: 3px solid #999;
         border-left: 3px solid #999;
     }
-    .list-item-header:nth-child(n){
-        border-left: 3px solid #999;
+    
+    .fortyk .list-item-header-last{
+         border-top: 3px solid #999;
+        border-bottom: 3px solid #999;
+        border-right: 3px solid #999;
     }
     .fortyk .list-item-header2{
         border-top: 3px solid #999;

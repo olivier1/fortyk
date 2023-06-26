@@ -16,9 +16,9 @@
         </div>
         <a class="corr-item item-create button" data-type="malignancy" title="Add new malignancy">Add Malignancy</a>
         <div class="list list3col grid grid-3col">
-            <span class="list-item">Name</span>
-            <span class="list-button"></span>
-            <span class="list-button"></span>
+            <span class="list-item-header">Name</span>
+            <span class="list-item-header"></span>
+            <span class="list-item-header-last"></span>
             {{#each actor.malignancies as |m key|}}
 
             <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.system.description.value}}">{{m.name}}</a>
@@ -32,9 +32,9 @@
         </div>
         <a class="corr-item item-create button" data-type="mutation" title="Add new mutation">Add Mutation</a>
         <div class="list list3col grid grid-3col">
-            <span class="list-item">Name</span>
-            <span class="list-button"></span>
-            <span class="list-button"></span>
+            <span class="list-item-header">Name</span>
+            <span class="list-item-header"></span>
+            <span class="list-item-header-last"></span>
             {{#each actor.mutations as |m key|}}
 
             <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.system.description.value}}">{{m.name}}</a>
@@ -66,9 +66,9 @@
             </div>
             <a class="corr-item item-create button" data-type="disorder" title="Add new disorder">Add Disorder</a>
             <div class="list list3col grid grid-3col">
-                <span class="list-item">Name</span>
-                <span class="list-button"></span>
-                <span class="list-button"></span>
+                <span class="list-item-header">Name</span>
+                <span class="list-item-header"></span>
+                <span class="list-item-header-last"></span>
                 {{#each actor.disorders as |d key|}}
 
                 <a class="item-descr list-item" data-name="{{d.name}}" data-item-descr="{{d.system.description.value}}">{{d.name}}</a>
@@ -86,9 +86,9 @@
         <div class="corruption flexcol">
             <a class="corr-item item-create button" data-type="injury" title="Add new Injury">Add Injury</a>
             <div class="list list3col grid grid-3col">
-                <span class="list-item">Name</span>
-                <span class="list-button"></span>
-                <span class="list-button"></span>
+                <span class="list-item-header">Name</span>
+                <span class="list-item-header"></span>
+                <span class="list-item-header-last"></span>
 
                 {{#each actor.injuries as |m key|}}
 

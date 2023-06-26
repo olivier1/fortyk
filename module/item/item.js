@@ -244,9 +244,12 @@ export class FortyKItem extends Item {
                         }
                     }
                     if(data.psykana.psykerType.value.toLowerCase()==="navigator"){
+                        console.log("hey")
                         let range=item.system.range.formula.toLowerCase();
+                        let wp=data.characteristics.wp.bonus;
+                        let per=data.characteristics.per.bonus;
                         try{
-                            item.system.range.value=Math.ceil(Function(`let wp=${wp};return `+range)());
+                            item.system.range.value=Math.ceil(Function(`let wp=${wp};let per=${per};return `+range)());
                         }catch(err){
                             item.system.range.value=0; 
                         }
@@ -277,8 +280,10 @@ export class FortyKItem extends Item {
                             char=parseInt(data.characteristics[item.system.testChar.value].total);
                             item.system.testChar.type=item.system.testChar.value;
                         }
-
-                        item.system.target.value=char+training;
+                        let temp;
+                        temp=item.system.damageFormula.formula.replace(/pr/gmi,pr);
+                        item.system.damageFormula.value=temp.replace(/wp/gmi,wp);
+                        item.system.target.value=char+training+parseInt(item.system.testMod.value);
                     }else{
                         try{
 
