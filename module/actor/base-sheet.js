@@ -899,6 +899,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                                     author:actor.name};
                                     await ChatMessage.create(chatBlast2,{});
                                     await FortykRolls.damageRoll(formula,actor,weapon,hits,false,false,magdmg,pen,rerollNum); 
+                                    game.user.updateTokenTargets();
                                 }
 
 
@@ -921,7 +922,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             default: "submit",
             width:100}).render(true)});
 
-        game.user.updateTokenTargets(oldTargets);
+        
 
     }
     getBlastTargets(templates, scene){
@@ -932,7 +933,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         for(let i=0;i<templates.length;i++){
             let targetted=[];
             let template=templates[i];
-            let bounds=template._object._getCircleShape(template.distance*gridRatio);
+            console.log(MeasuredTemplate)
+            let bounds=template._object._computeShape();
             bounds.x=template.x;
             bounds.y=template.y;
             tokens.forEach((token,id,tokens)=>{
@@ -994,11 +996,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 if(change.value>=0){
                     aeData.icon="icons/svg/upgrade.svg";
                     aeData.id="buff";
-                    aeData.flags.core={ statusId: "buff" }
+                    aeData.statuses=["buff"]
                 }else{
                     aeData.icon="icons/svg/downgrade.svg";
                     aeData.id="weakened";
-                    aeData.flags.core={ statusId: "weakened" }
+                    aeData.statuses= ["weakened"]
                 }
             })
 

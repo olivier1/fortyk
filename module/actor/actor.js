@@ -424,6 +424,7 @@ export class FortyKActor extends Actor {
             data.shipPoints.spent=0;
             data.shipPoints.remaining=0;
             this.items.forEach((fortykItem,id,items)=>{
+                fortykItem.prepareData();
                 let item=fortykItem;
                 if(item.type==="spaceshipComponent"||item.type==="spaceshipWeapon"){
                     data.power.value+=parseInt(item.system.power.value);
@@ -431,7 +432,7 @@ export class FortyKActor extends Actor {
                     data.shipPoints.spent+=parseInt(item.system.sp.value);
                 }else if(item.type==="spaceshipCargo"){
                     data.cargo.value+=parseInt(item.system.space.value);
-                    item.system.pf.total=parseFloat(item.system.pf.value)*parseFloat(item.system.space.value);
+                    //item.system.pf.total=parseFloat(item.system.pf.value)*parseFloat(item.system.space.value);
                     data.cargo.profit+=item.system.pf.total;
                 }
             });
@@ -1027,10 +1028,7 @@ export class FortyKActor extends Actor {
         for(let i=0;i<meleeWeapons.length;i++){
             meleeWeapons[i].prepareData();
         }
-        let psychicPowers=this.itemTypes.psychicPower;
-        for(let i=0;i<psychicPowers.length;i++){
-            psychicPowers[i].prepareData();
-        }
+
         //prepare skills
         let skills=this.itemTypes.skill;
         data.skills={};
@@ -1070,6 +1068,10 @@ export class FortyKActor extends Actor {
             item.system.total.value+=parseInt(item.system.value)+parseInt(item.system.mod.value)+parseInt(data.characteristics[item.system.characteristic.value].total);
 
             data.skills[name]=item.system.total.value;
+        }
+        let psychicPowers=this.itemTypes.psychicPower;
+        for(let i=0;i<psychicPowers.length;i++){
+            psychicPowers[i].prepareData();
         }
     }
     prepareMovement(data) {
@@ -1507,23 +1509,23 @@ export class FortyKActor extends Actor {
         return parry; 
     }
     //when creating active effects check if they are transferred from an item, if so give the active effect flag to the item for referrence.
-    _onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId){
-        console.log(embeddedName, documents, result, options, userId)
-        if(game.user.isGM){
-            if(embeddedName==="ActiveEffect"){
-                let actor=this;
-                documents.forEach(async function(item,i){
-                    if(item&&item.origin){
-                        let powerId=item.origin.split('.')[3];
-                        let power=actor.getEmbeddedDocument("Item",powerId);
-                        await power.update({"system.transferId":item.id})
-                    }
-                })
-            }
-            if(this.type==="knightHouse"){
-                this.updateKnights();
-            }
+    _onCreateDescendantDocuments(parent, collection, documents, data, options, userId){
+        console.log(collection)
+
+        if(collection==="effects"){
+            let actor=this;
+            documents.forEach(async function(item,i){
+                if(item&&item.origin){
+                    let powerId=item.origin.split('.')[3];
+                    let power=actor.getEmbeddedDocument("Item",powerId);
+                    await power.update({"system.transferId":item.id})
+                }
+            })
         }
+        if(this.type==="knightHouse"){
+            this.updateKnights();
+        }
+
         /*
         if(userId===game.user.id){
             if(embeddedName==="Item"){
@@ -1572,10 +1574,10 @@ export class FortyKActor extends Actor {
 
     */
 
-        super._onCreateEmbeddedDocuments(embeddedName, documents, result, options, userId);
+        super._onCreateDescendantDocuments(parent, collection, documents, data, options, userId);
     }
 
-    _onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId){
+    _onUpdateDescendantDocuments(parent, collection, documents, changes, options, userId){
 
         if(this.dialog){
             this.dialog.updateDialog(this);
@@ -1589,15 +1591,15 @@ export class FortyKActor extends Actor {
             }
         }
 
-        super._onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId);
+        super._onUpdateDescendantDocuments(parent, collection, documents, changes, options, userId);
     }
 
 
     //when deleting talents, remove the flag associated with each of them.
-    _onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId){
+    _onDeleteDescendantDocuments(parent, collection, documents, ids, options, userId){
         if(userId===game.user.id){
             let actor=this;
-            if(embeddedName==="Item"){
+            if(collection==="Item"){
                 documents.forEach(async function(item,i){
                     if(item.type==="talentntrait"){
                         let flag=item.system.flagId.value;
@@ -1609,14 +1611,14 @@ export class FortyKActor extends Actor {
                             let skill=actor.getEmbeddedDocument("Item",data.itemId.value);
                             let skillAdv=parseInt(skill.system.value);
                             if(skillAdv===0){skillAdv=-20}else{skillAdv-=10}
-                            skill.update({"system.value":skillAdv});
+                            await skill.update({"system.value":skillAdv});
                         }else if(advType==="New Skill"){
                             try{
-                                actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
+                                await actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
                             }catch(err){}
                         }else if(advType==="Talent"){
                             try{
-                                actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
+                                await actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
                             }catch(err){}
                         }else if(advType==="Characteristic Upgrade"){
                             let char=data.characteristic.value;
@@ -1625,15 +1627,15 @@ export class FortyKActor extends Actor {
                             let path=`system.characteristics.${char}.advance`;
                             let upd={}
                             upd[path]=charAdv;
-                            actor.update(upd);
+                            await actor.update(upd);
                         }else if(advType==="Psy Rating"){
                             let pr=actor.system.psykana.pr.value;
                             let newPr=pr-1;
-                            actor.update({"system.psykana.pr.value":newPr});
+                            await actor.update({"system.psykana.pr.value":newPr});
                         }else if(advType==="Psychic Power"){
                             try{
                                 await actor.setFlag("fortyk",data.flagId,false);
-                                actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
+                                await actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
                             }catch(err){} 
                         }
                     }
@@ -1644,7 +1646,7 @@ export class FortyKActor extends Actor {
             } 
         }
 
-        super._onDeleteEmbeddedDocuments(embeddedName, documents, result, options, userId);
+        super._onDeleteDescendantDocuments(parent, collection, documents, ids, options, userId);
     }
     _onUpdate(changed, options, userId){
         if(this.system.riding){

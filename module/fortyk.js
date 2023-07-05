@@ -169,7 +169,7 @@ Hooks.once("setup", function() {
 Hooks.once('ready', async function() {
     //change dice so nice setting
     try{
-        game.settings.set("dice-so-nice","enabledSimultaneousRollForMessage",false);
+        //game.settings.set("dice-so-nice","enabledSimultaneousRollForMessage",false);
     }catch(err){
 
     }
@@ -422,6 +422,7 @@ Hooks.on("updateCombat", async (combat) => {
         game.user.updateTokenTargets();
         game.user.broadcastActivity({targets:[]});
         //previous combatant stuff
+        console.log(combat)
         let previousToken=canvas.tokens.get(combat.previous.tokenId);
         let previousActor=previousToken.actor;
         let tempMod=previousActor.system.secChar.tempMod.value;
@@ -433,15 +434,16 @@ Hooks.on("updateCombat", async (combat) => {
         if(token===undefined){return}
         let actor=token.actor;
         //PAN CAMERA TO ACTIVE TOKEN
-        canvas.animatePan({x:token.x,y:token.y});
+        await canvas.animatePan({x:token.x,y:token.y});
         const currentWindows = Object.values(ui.windows);
-
+        console.log(currentWindows)
         for (let window of currentWindows) {
-            if (window.actor) window.close()
+            console.log(window)
+            if (window.actor) await window.close()
         }
         if(actor.type==="npc"){
 
-            actor.sheet.render(true);
+           await actor.sheet.render(true);
 
         }
         if(actor.getFlag("fortyk","hardtargetEvasion")){

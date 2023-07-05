@@ -152,7 +152,6 @@ FORTYK.knightComponentTypes=[{"value":"rangedWeapon","label":"Ranged Weapons"},{
 FORTYK.spaceshipWeaponTypes=["Macrocannon","Lance","Torpedo","Hangar"]
 FORTYK.spaceshipCargoTypes=["Food Supplies","Unrefined Materials","Refined Materials","Military Technology","Manufacturing Technology","Survival Technology","Ship Parts","Energy Source","Entertainment","Contraband","Livestock","Xeno-Artifacts","Archeotech","Torpedoes"]
 FORTYK.spaceshipComponentStatuses=["Online", "Damaged", "Destroyed"]
-FORTYK.spaceshipCargoRarity=["Poor","Common","Rare","Unique"]
 FORTYK.spaceshipSquadronTypes=["Fighter","Bomber","Assault Boat","Civilian"]
 FORTYK.aptitudes=[{"key":"weaponskill","label":"Weapon Skill"}, {"key":"ballisticskill","label":"Ballistic Skill"}, {"key":"strength","label":"Strength"},{"key":"toughness","label":"Toughness"} ,{"key":"agility","label":"Agility"} ,{"key":"intelligence","label": "Intelligence"},{"key":"perception","label":"Perception"} ,{"key":"willpower","label":"Willpower"} ,{"key":"fellowship","label":"Fellowship"} ,{"key":"offence","label":"Offence"} ,{"key":"finesse","label":"Finesse"} ,{"key":"defence","label":"Defence"} ,{"key":"tech","label":"Tech"},{"key":"knowledge","label":"Knowledge"} ,{"key":"leadership","label":"Leadership"} ,{"key":"fieldcraft","label":"Fieldcraft"} ,{"key":"social","label":"Social"} ,{"key":"psyker","label":"Psyker"}]
 FORTYK.advancementTypes=["Custom","Characteristic Upgrade","Skill Upgrade","New Skill", "Talent"]
@@ -614,19 +613,20 @@ FORTYK.StatusEffects = [
         name: "Dead",
         icon: "icons/svg/skull.svg",
         overlay: true,
-        flags: { core: { statusId: "dead" , overlay: true} }
+        status:["dead"],
+        flags: { core: {overlay: true} }
     },
     {
         id: "unconscious",
         name: "Unconscious",
         icon: "icons/svg/unconscious.svg",
-        flags: { core: { statusId: "unconscious" } }
+        status:["unconscious"]
     },
     {
         id: "running",
         name: "Running",
         icon: "systems/fortyk/icons/running.png",
-        flags: { core: { statusId: "running" } },
+        status:["running"],
         duration:{
 
             rounds:0
@@ -636,7 +636,7 @@ FORTYK.StatusEffects = [
         id: "totalDef",
         name: "Total Defense",
         icon: "systems/fortyk/icons/defense.png",
-        flags: { core: { statusId: "totalDef" } },
+        status:["totalDef"],
         duration:{
 
             rounds:0
@@ -646,37 +646,37 @@ FORTYK.StatusEffects = [
         id: "stunned",
         name: "Stunned",
         icon: "icons/svg/daze.svg",
-        flags: { core: { statusId: "stunned" } }
+        status:["stunned"]
     },
     {
         id: "prone",
         name: "Prone",
         icon: "icons/svg/falling.svg",
-        flags: { core: { statusId: "prone" } }
+        status:["prone"]
     },
     {
         id: "snare",
         name: "Snare",
         icon: "icons/svg/net.svg",
-        flags: { core: { statusId: "snare" } }
+        status:["snare"]
     },
     {
         id: "blind",
         name: "Blind",
         icon: "icons/svg/blind.svg",
-        flags: { core: { statusId: "blind" } }
+        status:["blind"]
     },
     {
         id: "deaf",
         name: "Deaf",
         icon: "icons/svg/deaf.svg",
-        flags: { core: { statusId: "deaf" } }
+        status:["deaf"]
     },
     {
         id: "shock",
         name: "Shocked",
         icon: "icons/svg/terror.svg",
-        flags: { core: { statusId: "shock" } },
+        status:["shock"],
         changes:[
             {key: "system.globalMOD.value", value: -10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}            
         ]
@@ -685,45 +685,45 @@ FORTYK.StatusEffects = [
         id: "fire",
         name: "Fire",
         icon: "icons/svg/fire.svg",
-        flags: { core: { statusId: "fire" } }
+        status:["fire"]
     },
     {
         id: "corrode",
         name: "Corroded",
         icon: "icons/svg/acid.svg",
-        flags: { core: { statusId: "corrode" } }
+        status:["corrode"]
     },
     {
         id: "bleeding",
         name: "Bleeding",
         icon: "icons/svg/blood.svg",
         tint:"#8a0303",
-        flags: { core: { statusId: "bleeding" }}
+        status:["bleeding"]
     },
     {
         id: "cryogenic",
         name: "Cryogenic",
         icon: "systems/fortyk/icons/cryo.png",
-        flags: { core: { statusId: "cryogenic" } }
+        status:["cryogenic"]
     },
     {
         id: "toxic",
         name: "Toxic",
         icon: "icons/svg/poison.svg",
-        flags: { core: { statusId: "toxic" } }
+        status:["toxic"]
     },
 
     {
         id: "rad",
         name: "Radiation",
         icon: "icons/svg/radiation.svg",
-        flags: { core: { statusId: "rad" } }
+        status:["rad"]
     },
     {
         id: "frenzy",
         name: "Frenzy",
         icon: "systems/fortyk/icons/frenzy.png",
-        flags: { core: { statusId: "frenzy" } },
+        status:["frenzy"],
         changes:[
             {key: "system.characteristics.s.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
             {key: "system.characteristics.t.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
@@ -738,152 +738,155 @@ FORTYK.StatusEffects = [
         id: "hallucinogenic",
         name: "Hallucinogenic",
         icon: "systems/fortyk/icons/spiral.png",
-        flags: { core: { statusId: "hallucinogenic" } }
+        status:["hallucinogenic"]
     },
     {
         id: "buff",
         name: "Buff",
         icon: "icons/svg/upgrade.svg",
-        flags: { core: { statusId: "buff" } }
+        status:["buff"]
     },
     {
         id: "weakened",
         name: "Weakened",
         icon: "icons/svg/downgrade.svg",
-        flags: { core: { statusId: "weakened" } }
+        status:["weakened"]
     },
     {
         id: "target",
         name: "Target",
         icon: "icons/svg/target.svg",
-        flags: { core: { statusId: "target" } }
+        status:["target"]
     },
     {
         id: "marked",
         name: "Marked",
         icon: "icons/svg/eye.svg",
-        flags: { core: { statusId: "marked" } }
+        status:["marked"]
     },
     {
         id: "crippled",
         name: "Crippled",
         icon: "icons/svg/sun.svg",
-        flags: { core: { statusId: "crippled" } }
+        status:["crippled"]
     },
     {
         id: "blessed",
         name: "Blessed",
         icon: "icons/svg/angel.svg",
-        flags: { core: { statusId: "blessed" } }
+        status:["blessed"]
     },
     {
         id: "fireShield",
         name: "FireShield",
         icon: "icons/svg/fire-shield.svg",
-        flags: { core: { statusId: "fireShield" } }
+        status:["fireShield"]
     },
     {
         id: "coldShield",
         name: "IceShield",
         icon: "icons/svg/ice-shield.svg",
-        flags: { core: { statusId: "coldShield" } }
+        status:["coldShield"]
     },
     {
         id: "magicShield",
         name: "MagicShield",
         icon: "icons/svg/mage-shield.svg",
-        flags: { core: { statusId: "magicShield" } }
+        status:["magicShield"]
     },
     {
         id: "holyShield",
         name: "HolyShield",
         icon: "icons/svg/holy-shield.svg",
-        flags: { core: { statusId: "holyShield" } }
+        status:["holyShield"]
     },
     {
         id: "ws",
         name: "Weapon Skill Damage",
         icon: "systems/fortyk/icons/ws.png",
-        flags: { core: { statusId: "ws" } }
+        status:["ws"]
     },
     {
         id: "bs",
         name: "Ballistic Skill Damage",
         icon: "systems/fortyk/icons/bs.png",
-        flags: { core: { statusId: "bs" } }
+        status:["bs"]
     },
     {
         id: "s",
         name: "Strength Damage",
         icon: "systems/fortyk/icons/s.png",
-        flags: { core: { statusId: "s" } }
+        status:["s"]
     },
     {
         id: "t",
         name: "Toughness Damage",
         icon: "systems/fortyk/icons/t.png",
-        flags: { core: { statusId: "t" } }
+        status:["t"]
     },
     {
         id: "agi",
         name: "Agility Damage",
         icon: "systems/fortyk/icons/agi.png",
-        flags: { core: { statusId: "agi" } }
+        status:["agi"]
     },
     {
         id: "int",
         name: "Intelligence Damage",
         icon: "systems/fortyk/icons/int.png",
-        flags: { core: { statusId: "int" } }
+        status:["int"]
     },
     {
         id: "per",
         name: "Perception Damage",
         icon: "systems/fortyk/icons/per.png",
-        flags: { core: { statusId: "per" } }
+        status:["per"]
     },
     {
         id: "wp",
         name: "Willpower Damage",
         icon: "systems/fortyk/icons/wp.png",
-        flags: { core: { statusId: "wp" } }
+        status:["wp"]
     },
     {
         id: "fel",
         name: "Fellowship Damage",
         icon: "systems/fortyk/icons/fel.png",
-        flags: { core: { statusId: "fel" } }
+        status:["fel"]
     },
     {
         id: "arm",
         name: "Arm Injury",
         icon: "systems/fortyk/icons/arm.png",
-        flags: { core: { statusId: "arm" } }
+        status:["arm"]
     },
     {
         id: "leg",
         name: "Leg Injury",
         icon: "systems/fortyk/icons/leg.png",
-        flags: { core: { statusId: "leg" } }
+        status:["leg"]
     },
     {
         id: "rough",
         name: "Rough Terrain",
         icon: "systems/fortyk/icons/sticky-boot.png",
-        flags: { core: { statusId: "rough" } }
+        status:["rough"]
     },
     {
         id: "tough",
         name: "Tough Terrain",
         icon: "systems/fortyk/icons/232784.png",
-        flags: { core: { statusId: "tough" } }
+        status:["tough"]
     },
     {
         id: "severe",
         name: "Severe Terrain",
         icon: "systems/fortyk/icons/quarry-512.png",
-        flags: { core: { statusId: "severe" } }
+        status:["severe"]
     }
 ];
+FORTYK.itemRarityLabels = {"100":"Ubiquitous","30":"Abundant","20":"Plentiful","10":"Common","0":"Average","-10":"Scarce","-20":"Rare","-30":"Very Rare","-40":"Extremely Rare","-50":"Near Unique","-60":"Unique"}
+FORTYK.cargoRarityValue = {"100":2,"30":5,"20":10,"10":20,"0":50,"-10":100,"-20":200,"-30":400,"-40":1000,"-50":3000,"-60":6000}
+FORTYK.cargoQualityMultiplier = {"Poor":0.5,"Common":1,"Good":2,"Best":4};
 FORTYK.comradeRanks=["Green","Guardsman","Veteran"]
 FORTYK.vehicleTypes=["Tracked","Wheeled","Skimmer","Walker","Aircraft","Spacecraft"]

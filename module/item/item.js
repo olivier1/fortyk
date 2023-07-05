@@ -92,6 +92,20 @@ export class FortyKItem extends Item {
             const data = this.actor.system;
             let actor=this.actor;
             item.isPrepared=true;
+            if(actor.type==="spaceship"){
+                if(item.type==="spaceshipCargo"){
+                    try{
+                        item.system.pf.value=item.FORTYK.cargoRarityValue[this.system.rarity.value];
+                        let craftMultiplier=item.FORTYK.cargoQualityMultiplier[this.system.quality.value];
+                        console.log(item.system.pf.value, item.system.space.value, craftMultiplier)
+                        item.system.pf.total=item.system.pf.value*parseFloat(item.system.space.value)*craftMultiplier;
+                        item.system.rarity.label=item.FORTYK.itemRarityLabels[item.system.rarity.value];
+                    }catch(err){
+                        console.log(err)
+                    }
+
+                }
+            }
             if(actor.type==="knightHouse"){
                 if(item.type!=="repairEntry"&&item.type!=="cadetHouse"&&item.type!=="outpost"){
                     item.system.amount.left=item.system.amount.value-item.system.amount.taken; 
@@ -220,11 +234,15 @@ export class FortyKItem extends Item {
 
             if(actor.type!=="vehicle"&&actor.type!=="knightHouse"){
                 if(item.type==="psychicPower"){
+                    var psyniscience=0;
+
                     try{
-                        var psyniscience=actor.system.skills.psyniscience;
+                        psyniscience=actor.system.skills.psyniscience;
                     }catch(err){
-                        var psyniscience=0;
+
                     }
+
+
 
                     let pr=parseInt(item.system.curPR.value);
                     //iterate through item flags to evaluate PR strings
@@ -312,6 +330,7 @@ export class FortyKItem extends Item {
                         let derivedPR=Math.abs(parseInt(data.psykana.pr.effective)-parseInt(item.system.curPR.value));
                         let char=0;
                         if(item.system.testChar.value==="psy"){
+                            console.log(actor,char,psyniscience,"hey")
                             char=psyniscience;
                             item.system.testChar.type="per";
                         }else{

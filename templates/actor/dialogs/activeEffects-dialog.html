@@ -4,7 +4,7 @@
     {{#each actor.effects as |ae key|}}
     <div class="flexrow">
         
-        <a class="ae" data-ae-id="{{this.id}}" data-actor-id="{{../actor.id}}" data-token-id="{{../actor.token.id}}">{{this.label}}</a>
+        <a class="ae" data-ae-id="{{this.id}}" data-actor-id="{{../actor.id}}" data-token-id="{{../actor.token.id}}">{{this.name}}</a>
         <a class="ae-delete item-delete" title="Delete" data-actor-id="{{../actor.id}}" data-ae-id="{{this.id}}" data-token-id="{{../actor.token.id}}"></a>
     </div>
     {{/each}}

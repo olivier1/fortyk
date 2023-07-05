@@ -1,5 +1,3 @@
-2023/06/22-11:17:19.845 dbc Recovering log #153
-2023/06/22-11:17:19.845 dbc Level-0 table #155: started
-2023/06/22-11:17:19.851 dbc Level-0 table #155: 11009 bytes OK
-2023/06/22-11:17:19.865 dbc Delete type=0 #153
-2023/06/22-11:17:19.866 dbc Delete type=3 #152
+2023/07/04-11:09:21.516 590 Recovering log #268
+2023/07/04-11:09:21.531 590 Delete type=0 #268
+2023/07/04-11:09:21.531 590 Delete type=3 #267

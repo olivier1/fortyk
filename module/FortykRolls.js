@@ -867,6 +867,9 @@ returns the roll message*/
     //handles damage rolls and applies damage to the target, generates critical effects
     static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0,rerollNum=0, user=game.users.current, lastHit=null, targets=null){
         let weapon=deepClone(fortykWeapon);
+        if(!weapon.system.isPrepared){
+            weapon.prepareData();
+        }
         let righteous=10;
         let damageType=weapon.system.damageType.value.toLowerCase();
         if(fortykWeapon.getFlag("fortyk","vengeful")){
@@ -1214,7 +1217,7 @@ returns the roll message*/
                         let terms=roll.terms;
                         let numbers=[]
                         console.log(terms)
-
+                        //parsing the roll result
                         for ( let t=0; t<terms.length;t++){
                             console.log(terms[t])
                             if(terms[t] instanceof Die){
@@ -1237,8 +1240,8 @@ returns the roll message*/
                             }
 
                         }
-
-
+                        console.log(numbers)
+                        //compiling the roll output
                         let damageString="";
                         if(dieResults.length<1){
                             damageString=roll.result.replace(/\s+/g, '');
@@ -1261,13 +1264,16 @@ returns the roll message*/
                                     rollString+="+";  
                                 }
                             }
-                            if(roll.terms.length!==1){
-                                for(let n=0;n<numbers.length;n++){
-                                    damageString=`+${numbers[n]}`
+
+                            for(let n=0;n<numbers.length;n++){
+                                if(numbers[n]!==0){
+                                    damageString+=`+${numbers[n]}`
                                 }
-                                //damageString=roll.result.replace(/\s+/g, '')
-                                //damageString="+"+damageString.substring(damageString.indexOf("+") + 1)
+
                             }
+                            //damageString=roll.result.replace(/\s+/g, '')
+                            //damageString="+"+damageString.substring(damageString.indexOf("+") + 1)
+
                             damageString ="("+rollString+")"+damageString;
                         }
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
@@ -1815,14 +1821,19 @@ returns the roll message*/
 
                         }
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
+                        let tempDmg= damage;
+                        if(armorSuit.getFlag("fortyk","impenetrable")){
+                            tempDmg=Math.ceil(damage/2);
+                        }
                         //deathdealer
-                        if(!vehicle&&damage>0&&damage>newWounds[tarNumbr]&&actor.getFlag("fortyk","deathdealer")&&(weapon.type.toLowerCase().includes(actor.getFlag("fortyk","deathdealer").toLowerCase()))){
+                        if(!vehicle&&tempDmg>0&&tempDmg>newWounds[tarNumbr]&&actor.getFlag("fortyk","deathdealer")&&(weapon.type.toLowerCase().includes(actor.getFlag("fortyk","deathdealer").toLowerCase()))){
                             damage+=actor.system.characteristics.per.bonus;
                             chatDamage+=actor.system.characteristics.per.bonus;
+                            tempDmg+=Math.ceil(actor.system.characteristics.per.bonus/2);
                             damageOptions.results.push(`Deathdealer increases critical damage by ${actor.system.characteristics.per.bonus}.`);
                         }
                         //peerless killer
-                        if(!vehicle&&damage>0&&damage>newWounds[tarNumbr]&&actor.getFlag("fortyk","peerlesskiller")&&lastHit.attackType==="called"){
+                        if(!vehicle&&tempDmg>0&&tempDmg>newWounds[tarNumbr]&&actor.getFlag("fortyk","peerlesskiller")&&lastHit.attackType==="called"){
                             damage+=4;
                             chatDamage+=4;
                             damageOptions.results.push(`Peerless Killer increases critical damage by 4 on called shots.`);

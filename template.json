@@ -1577,6 +1577,10 @@
                 "value": "Common",
                 "type": "String"
             },
+            "quality": {
+                "value": "Common",
+                "type": "String"
+            },
             "damage": {
                 "value": "",
                 "type": "String"

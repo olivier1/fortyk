@@ -324,7 +324,7 @@
                     </div>
                 </div>
                 <div class=" flex-group-center">
-                    <label for="system.secChar.fatigue.value" class="resource-label">Cargo Value</label>
+                    <label for="system.secChar.fatigue.value" class="resource-label">Cargo Value (base)</label>
                     <div class="resource-content flexcol flex-center flex-between">
                         {{system.cargo.profit}}
 
@@ -351,12 +351,13 @@
             </div>
 
             <a class="item-create button" data-type="spaceshipCargo" title="Add Cargo">Add Cargo</a>
-            <div class="list list7col grid grid-7col">
+            <div class="list list8col grid grid-8col">
                 <a class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="cargo">Name</a>
                 <a class="list-item sort-button" data-sort-type="type" data-path="system.type.value" data-item-type="cargo">Type</a>
                 <a class="list-item sort-button" data-sort-type="space" data-path="system.space.value" data-item-type="cargo">Quantity</a>
                 <a class="list-item sort-button" data-sort-type="value" data-path="t.system.pf.total" data-item-type="cargo">Value</a>
                 <a class="list-item sort-button" data-sort-type="rarity" data-path="system.rarity.value" data-item-type="cargo">Rarity</a>
+                <a class="list-item sort-button" data-sort-type="quality" data-path="system.quality.value" data-item-type="cargo">Quality</a>
                 <span class="list-button"></span>
                 <span class="list-button"></span>
                 {{#each actor.cargo as |t key|}}
@@ -365,7 +366,8 @@
                 <span class="list-item">{{t.system.type.value}}</span>
                 <input type="text" class="item-text-input list-item" data-target="system.space.value" value="{{t.system.space.value}}" data-item-id="{{t._id}}" data-dtype="Number">
                 <span class="list-item">{{t.system.pf.total}}</span>
-                <span class="list-item">{{t.system.rarity.value}}</span>
+                <span class="list-item">{{t.system.rarity.label}}</span>
+                <span class="list-item">{{t.system.quality.value}}</span>
                 <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
                 <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
 
