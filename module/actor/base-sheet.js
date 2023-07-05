@@ -985,6 +985,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 ae=this.actor.effects.get(power.system.transferId);
             }
             let aeData=duplicate(ae);
+            
+            aeData.name=ae.name+" Buff"
             let pr=power.system.curPR.value;
             aeData.changes.forEach(function(change){
                 try{

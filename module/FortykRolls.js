@@ -4388,7 +4388,7 @@ returns the roll message*/
                     let newAe=effect[index];
                     for(let ae of actor.effects){
                         if(ae.flags.core){
-                            if(!ae.statuses.has("weakened")&&!ae.statuses.has("buff")&&ae.flags.core.statusId===newAe.flags.core.statusId){
+                            if(!ae.statuses.has("weakened")&&!ae.statuses.has("buff")&&ae.statuses===newAe.status){
                                 dupp=true;
                                 let change=false;
                                 let upg=false;
