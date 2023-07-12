@@ -190,6 +190,11 @@ FORTYK.armorFlags={
         "label": "Impact Resistant",
         "description": "This armor is built to resist impacts, its armor value counts as double against impact damage."
     },
+    "irongrip": {
+        "value": false,
+        "label": "Iron Grip",
+        "description": "This armor grants great arm strength to the wearer which allows him to wield two handed weapons in one hand."
+    },
     "energy": {
         "value": false,
         "label": "Energy Resistant",
@@ -308,7 +313,8 @@ FORTYK.weaponFlags={
         "value": false,
         "label": "Force",
         "description": "A force weapon relies on the user’s mind to unlock its true potential, suddenly turning a sword or staff into a device burning with eldritch energies able to reave tanks. Force weapons count as Best craftsmanship Mono variants of the equivalent Low-Tech weapon. In the hands of a psyker, the weapon also deals bonus damage and gains bonus penetration equal to the psyker’s base psy rating (so a psy rating 3 would grant +3 damage and +3 penetration), and the damage type changes to Energy. In addition, whenever a psyker damages an opponent, he may take a Focus Power action (Opposed with Willpower) as a Half Action. If he wins the test, then for every degree of success, the Force weapon’s wielder deals an additional 1d10 Energy damage, ignoring Armour and Toughness bonus. Psykers always use their base psy rating when determining psychic strength for this test, and cannot generate Psychic Phenomena on this test. Force weapons cannot be destroyed by weapons with the Power Field quality."
-    },"gauss": {
+    },
+    "gauss": {
         "value": false,
         "label": "Gauss",
         "description": "Gauss weapons are terrifying examples of advanced technology. Gauss weapons generate Righteous Fury on a 9 or 10, and reduce the armor of the struck location by 1d5 on a Righteous Fury."
@@ -329,6 +335,11 @@ FORTYK.weaponFlags={
         "num": 0,
         "label": "Haywire",
         "description": "A foul affront to the Omnissiah in the eyes of many Tech-Priests, devices with this quality seek to cripple machine spirits and make metal as weak as flesh. Everything within the field’s radius, indicated by the number in parentheses, is affected; Haywire (3), for example, would affect an area with a three metre radius. Roll 1d10 on Table 5–4: Haywire Field Effects (adding any modifiers from the weapon) to determine the strength of the effect. As the field slowly dissipates, the strength lessens one step in severity each round until it becomes Insignificant (i.e., a result of Major Disruption would become Minor Disruption the following round and then cease to have an effect the round after that). Additional Haywire attacks in the same area do not stack but instead create a new effect that is either ignored if lower than the current effect or replaces the old one if higher."
+    },
+    "heavy": {
+        "value": false,
+        "label": "Heavy",
+        "description": "This weapon is extremely weighty and impactful, as such it applies three times it's wielder's strength bonus in melee combat. These weapons are so heavy that the wielder needs at least a strength bonus of 10 to wield it effectively. These weapons can never be one handed."
     },
     "ignoreCover": {
         "value": false,
@@ -372,7 +383,7 @@ FORTYK.weaponFlags={
         "label": "Luminagen",
         "description": "Targets hit with these weapons gain a -10 penalty to evasion tests for 1d5 rounds."
     },
-     "mastercrafted": {
+    "mastercrafted": {
         "value": false,
         "label": "Master Crafted",
         "description": "Weapons with this quality have been made by a legendary artisan ensuring their deadliness. Weapons with this quality reroll 1s when rolling for damage. Only best quality weapons may have this quality."
@@ -402,6 +413,11 @@ FORTYK.weaponFlags={
         "value": false,
         "label": "Overheats",
         "description": "Through inefficient shielding, defective venting, or simply inherent design, the weapon often becomes overcome with the heat of its ammunition or firing methods. On an attack roll of 91 or higher, this weapon overheats. The wielder suffers Energy damage equal to the weapon’s damage with a penetration of 0 to an arm location (the arm holding the weapon if the weapon was fired one-handed, or a random arm if the weapon was fired with two hands). The wielder may choose to avoid taking the damage by dropping the weapon as a Free Action. A weapon that overheats must spend the round afterwards cooling down, and cannot be fired again until the second round after overheating. A weapon with this quality does not jam, and any effect that would cause the weapon to jam instead causes the weapon to overheat."
+    },
+    "purifyingflame": {
+        "value": false,
+        "label": "Purifying Flame",
+        "description": "This weapon roars with blessed psychic flames. Those hit must succeed a Willpower test or be afflicted by Purifying Flames which deal 1d10+PR ignoring both armor and toughness every round. These flames also cause the target to make a willpower test on each of their turn or flail around in panic."
     },
     "powerfield": {
         "value": false,
@@ -570,7 +586,7 @@ FORTYK.weaponFlags={
         "label": "Volkite",
         "description": "Damage rolls of 10 add another d10 to the damage, extra d10s do not generate further d10s."
     },
-     "voidstrike": {
+    "voidstrike": {
         "value": false,
         "label": "Voidstrike",
         "description": "Weapons with the Voidstrike quality score an additional degree of success on a successful attack roll."
@@ -580,7 +596,7 @@ FORTYK.weaponFlags={
         "label": "Warp",
         "description": "Creatures with this trait have weapons that are partially insubstantial, able to ignore such mundane things as armour or cover. Natural weapons and attacks made by a creature with this trait ignore physical armour, unless the armour is created from psychoactive materials or is somehow warded against the Warp. Force fields still work against these attacks normally."
     },
-     "wpSoak": {
+    "wpSoak": {
         "value": false,
         "label": "Willpower Soak",
         "description": "Certain psychic powers have their damage reduced by the target's willpower bonus instead of toughness. This trait represents that ability."
@@ -613,20 +629,20 @@ FORTYK.StatusEffects = [
         name: "Dead",
         icon: "icons/svg/skull.svg",
         overlay: true,
-        status:["dead"],
+        statuses:["dead"],
         flags: { core: {overlay: true} }
     },
     {
         id: "unconscious",
         name: "Unconscious",
         icon: "icons/svg/unconscious.svg",
-        status:["unconscious"]
+        statuses:["unconscious"]
     },
     {
         id: "running",
         name: "Running",
         icon: "systems/fortyk/icons/running.png",
-        status:["running"],
+        statuses:["running"],
         duration:{
 
             rounds:0
@@ -636,7 +652,7 @@ FORTYK.StatusEffects = [
         id: "totalDef",
         name: "Total Defense",
         icon: "systems/fortyk/icons/defense.png",
-        status:["totalDef"],
+        statuses:["totalDef"],
         duration:{
 
             rounds:0
@@ -646,37 +662,37 @@ FORTYK.StatusEffects = [
         id: "stunned",
         name: "Stunned",
         icon: "icons/svg/daze.svg",
-        status:["stunned"]
+        statuses:["stunned"]
     },
     {
         id: "prone",
         name: "Prone",
         icon: "icons/svg/falling.svg",
-        status:["prone"]
+        statuses:["prone"]
     },
     {
         id: "snare",
         name: "Snare",
         icon: "icons/svg/net.svg",
-        status:["snare"]
+        statuses:["snare"]
     },
     {
         id: "blind",
         name: "Blind",
         icon: "icons/svg/blind.svg",
-        status:["blind"]
+        statuses:["blind"]
     },
     {
         id: "deaf",
         name: "Deaf",
         icon: "icons/svg/deaf.svg",
-        status:["deaf"]
+        statuses:["deaf"]
     },
     {
         id: "shock",
         name: "Shocked",
         icon: "icons/svg/terror.svg",
-        status:["shock"],
+        statuses:["shock"],
         changes:[
             {key: "system.globalMOD.value", value: -10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}            
         ]
@@ -685,45 +701,51 @@ FORTYK.StatusEffects = [
         id: "fire",
         name: "Fire",
         icon: "icons/svg/fire.svg",
-        status:["fire"]
+        statuses:["fire"]
+    },
+    {
+        id: "purifyingflame",
+        name: "Purifying Flame",
+        icon: "systems/fortyk/icons/purefire.png",
+        statuses:["purifyingflame"]
     },
     {
         id: "corrode",
         name: "Corroded",
         icon: "icons/svg/acid.svg",
-        status:["corrode"]
+        statuses:["corrode"]
     },
     {
         id: "bleeding",
         name: "Bleeding",
         icon: "icons/svg/blood.svg",
         tint:"#8a0303",
-        status:["bleeding"]
+        statuses:["bleeding"]
     },
     {
         id: "cryogenic",
         name: "Cryogenic",
         icon: "systems/fortyk/icons/cryo.png",
-        status:["cryogenic"]
+        statuses:["cryogenic"]
     },
     {
         id: "toxic",
         name: "Toxic",
         icon: "icons/svg/poison.svg",
-        status:["toxic"]
+        statuses:["toxic"]
     },
 
     {
         id: "rad",
         name: "Radiation",
         icon: "icons/svg/radiation.svg",
-        status:["rad"]
+        statuses:["rad"]
     },
     {
         id: "frenzy",
         name: "Frenzy",
         icon: "systems/fortyk/icons/frenzy.png",
-        status:["frenzy"],
+        statuses:["frenzy"],
         changes:[
             {key: "system.characteristics.s.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
             {key: "system.characteristics.t.value", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD},
@@ -738,151 +760,151 @@ FORTYK.StatusEffects = [
         id: "hallucinogenic",
         name: "Hallucinogenic",
         icon: "systems/fortyk/icons/spiral.png",
-        status:["hallucinogenic"]
+        statuses:["hallucinogenic"]
     },
     {
         id: "buff",
         name: "Buff",
         icon: "icons/svg/upgrade.svg",
-        status:["buff"]
+        statuses:["buff"]
     },
     {
         id: "weakened",
         name: "Weakened",
         icon: "icons/svg/downgrade.svg",
-        status:["weakened"]
+        statuses:["weakened"]
     },
     {
         id: "target",
         name: "Target",
         icon: "icons/svg/target.svg",
-        status:["target"]
+        statuses:["target"]
     },
     {
         id: "marked",
         name: "Marked",
         icon: "icons/svg/eye.svg",
-        status:["marked"]
+        statuses:["marked"]
     },
     {
         id: "crippled",
         name: "Crippled",
         icon: "icons/svg/sun.svg",
-        status:["crippled"]
+        statuses:["crippled"]
     },
     {
         id: "blessed",
         name: "Blessed",
         icon: "icons/svg/angel.svg",
-        status:["blessed"]
+        statuses:["blessed"]
     },
     {
         id: "fireShield",
         name: "FireShield",
         icon: "icons/svg/fire-shield.svg",
-        status:["fireShield"]
+        statuses:["fireShield"]
     },
     {
         id: "coldShield",
         name: "IceShield",
         icon: "icons/svg/ice-shield.svg",
-        status:["coldShield"]
+        statuses:["coldShield"]
     },
     {
         id: "magicShield",
         name: "MagicShield",
         icon: "icons/svg/mage-shield.svg",
-        status:["magicShield"]
+        statuses:["magicShield"]
     },
     {
         id: "holyShield",
         name: "HolyShield",
         icon: "icons/svg/holy-shield.svg",
-        status:["holyShield"]
+        statuses:["holyShield"]
     },
     {
         id: "ws",
         name: "Weapon Skill Damage",
         icon: "systems/fortyk/icons/ws.png",
-        status:["ws"]
+        statuses:["ws"]
     },
     {
         id: "bs",
         name: "Ballistic Skill Damage",
         icon: "systems/fortyk/icons/bs.png",
-        status:["bs"]
+        statuses:["bs"]
     },
     {
         id: "s",
         name: "Strength Damage",
         icon: "systems/fortyk/icons/s.png",
-        status:["s"]
+        statuses:["s"]
     },
     {
         id: "t",
         name: "Toughness Damage",
         icon: "systems/fortyk/icons/t.png",
-        status:["t"]
+        statuses:["t"]
     },
     {
         id: "agi",
         name: "Agility Damage",
         icon: "systems/fortyk/icons/agi.png",
-        status:["agi"]
+        statuses:["agi"]
     },
     {
         id: "int",
         name: "Intelligence Damage",
         icon: "systems/fortyk/icons/int.png",
-        status:["int"]
+        statuses:["int"]
     },
     {
         id: "per",
         name: "Perception Damage",
         icon: "systems/fortyk/icons/per.png",
-        status:["per"]
+        statuses:["per"]
     },
     {
         id: "wp",
         name: "Willpower Damage",
         icon: "systems/fortyk/icons/wp.png",
-        status:["wp"]
+        statuses:["wp"]
     },
     {
         id: "fel",
         name: "Fellowship Damage",
         icon: "systems/fortyk/icons/fel.png",
-        status:["fel"]
+        statuses:["fel"]
     },
     {
         id: "arm",
         name: "Arm Injury",
         icon: "systems/fortyk/icons/arm.png",
-        status:["arm"]
+        statuses:["arm"]
     },
     {
         id: "leg",
         name: "Leg Injury",
         icon: "systems/fortyk/icons/leg.png",
-        status:["leg"]
+        statuses:["leg"]
     },
     {
         id: "rough",
         name: "Rough Terrain",
         icon: "systems/fortyk/icons/sticky-boot.png",
-        status:["rough"]
+        statuses:["rough"]
     },
     {
         id: "tough",
         name: "Tough Terrain",
         icon: "systems/fortyk/icons/232784.png",
-        status:["tough"]
+        statuses:["tough"]
     },
     {
         id: "severe",
         name: "Severe Terrain",
         icon: "systems/fortyk/icons/quarry-512.png",
-        status:["severe"]
+        statuses:["severe"]
     }
 ];
 FORTYK.itemRarityLabels = {"100":"Ubiquitous","30":"Abundant","20":"Plentiful","10":"Common","0":"Average","-10":"Scarce","-20":"Rare","-30":"Very Rare","-40":"Extremely Rare","-50":"Near Unique","-60":"Unique"}

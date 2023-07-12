@@ -1,7 +1,11 @@
-for(let token of canvas.tokens.controlled){
-    console.log(token)
+(async () => { 
+
+    const darkness = 0.5; 
+    // set darkness level here 
+    const weather = "rain"; 
+    // set weather here; 
+    let scene=canvas.scene;
 
 
-
-    token.document.update({rotation: 0});
-}
+    await scene.update({darkness, weather}); 
+})();

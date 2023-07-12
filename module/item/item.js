@@ -261,6 +261,9 @@ export class FortyKItem extends Item {
                             }
                         }
                     }
+                    if(this.getFlag("fortyk","purifyingflame")){
+                        item.flags.fortyk.purifyingflame=`1d10+${pr}`;
+                    }
                     if(data.psykana.psykerType.value.toLowerCase()==="navigator"){
                         console.log("hey")
                         let range=item.system.range.formula.toLowerCase();
@@ -356,13 +359,17 @@ export class FortyKItem extends Item {
 
                     if(this.getFlag("fortyk","crushing")){
                         item.system.damageFormula.value+="+"+2*data.characteristics.s.bonus;
+                    }else if(this.getFlag("fortyk","heavy")){
+                        item.system.damageFormula.value+="+"+3*data.characteristics.s.bonus;
                     }else{
                         item.system.damageFormula.value+="+"+data.characteristics.s.bonus;
                     }
                     if(actor.getFlag("fortyk","crushingblow")){
                         item.system.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
                     }
-                    if(!actor.getFlag("fortyk","irongrip")){
+                    let wp=data.characteristics.wp.bonus;
+                    item.system.damageFormula.value=item.system.damageFormula.value.replace("wp",wp);
+                    /*if(!actor.getFlag("fortyk","irongrip")){
                         if(item.system.class.value==="Melee Two-handed"){
                             item.system.twohanded.value=true;
                         }else{
@@ -370,7 +377,7 @@ export class FortyKItem extends Item {
                         }
                     }else{
                         item.system.twohanded.value=false; 
-                    }
+                    }*/
 
 
 
@@ -395,12 +402,13 @@ export class FortyKItem extends Item {
                     if(actor.getFlag("fortyk","mightyshot")){
                         item.system.damageFormula.value+="+"+Math.ceil(data.characteristics.bs.bonus/2);
                     }
+                    let wp=data.characteristics.wp.bonus;
+                    item.system.damageFormula.value=item.system.damageFormula.value.replace("wp",wp);
 
 
 
 
-
-                    if(!actor.getFlag("fortyk","irongrip")){
+                    /*if(!actor.getFlag("fortyk","irongrip")){
                         if((actor.getFlag("fortyk","firmgrip")&&item.system.class.value!=="Heavy")||item.system.class.value==="Pistol"||item.system.class.value==="Thrown"){
 
                             item.system.twohanded.value=false;
@@ -411,7 +419,7 @@ export class FortyKItem extends Item {
                         }
                     }else{
                         item.system.twohanded.value=false;
-                    }
+                    }*/
 
 
                 }
@@ -452,10 +460,14 @@ export class FortyKItem extends Item {
                     }
 
                     try{
+                        let pr=parseInt(data.psykana.pr.value);
                         if(this.getFlag("fortyk","force")){
-                            let pr=parseInt(data.psykana.pr.value);
+
                             item.system.pen.value=parseInt(item.system.pen.value)+pr;
                             item.system.damageFormula.value+=`+${pr}`;
+                        }
+                        if(this.getFlag("fortyk","purifyingflame")){
+                            item.flags.fortyk.purifyingflame=`1d10+${pr}`;
                         }
                     }catch(err){
                         item.system.pen.value="";

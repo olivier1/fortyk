@@ -145,7 +145,19 @@ export const getSkills= async function(){
         await pack.getDocument(sk._id).then(skill => skillItem = skill);
         skillCollection.push(skillItem);
     }
-    return skillCollection;
+    let sorted=skillCollection.sort(function compare(a, b) {
+                        let valueA=a.name;
+                        let valueB=b.name;
+                        if (valueA>valueB) {
+                            return 1;
+                        }
+                        if (valueA<valueB) {
+                            return -1;
+                        }
+                        // a must be equal to b
+                        return 0;
+                    });
+    return sorted;
 };
 export const objectByString = function(o, s) {
 

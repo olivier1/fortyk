@@ -181,6 +181,8 @@ export class FortyKActor extends Actor {
         data.secChar.wornGear.armor={};
         data.secChar.wornGear.weapons=[{},{}];
         data.secChar.wornGear.forceField={};
+        data.secChar.corruption.mod=FORTYKTABLES.malignancyModifiers[parseInt(data.secChar.corruption.value)];
+        data.secChar.insanity.mod=FORTYKTABLES.traumaModifiers[parseInt(data.secChar.insanity.value)];
         if(this.getFlag("fortyk","marksman")||this.getFlag("fortyk","marksmanshonor")){
             data.secChar.attacks.range.long=0;
             data.secChar.attacks.range.extreme=0;
@@ -337,7 +339,9 @@ export class FortyKActor extends Actor {
                     }
                 }
                 if(item.type==="meleeWeapon"){
-                    if(!this.getFlag("fortyk","irongrip")){
+                    if(item.getFlag("fortyk","heavy")){
+                        item.system.twohanded.value=true;
+                    }else if(!this.getFlag("fortyk","irongrip")){
                         if(item.system.class.value==="Melee Two-handed"){
                             item.system.twohanded.value=true;
                         }else{
@@ -379,7 +383,10 @@ export class FortyKActor extends Actor {
                     //set max agi from equipped armor
 
                     data.characteristics.agi.max=item.system.maxAgi.value;
-                    console.log(this.name,data)
+                    if(this.setFlag("fortyk", "irongrip")!==item.getFlag("fortyk","irongrip")){
+                        this.setFlag("fortyk", "irongrip",item.getFlag("fortyk","irongrip"));
+                    }
+                    
                 }
                 if(item.type==="forceField"&&item.system.isEquipped){
                     data.secChar.wornGear.forceField=item;
@@ -580,10 +587,13 @@ export class FortyKActor extends Actor {
         //prepare characteristics data
         for (let [key, char] of Object.entries(data.characteristics)){
             if(key==="inf"){
-                char.total=Math.min(char.total,char.max);
+                //char.total=Math.min(char.total,char.max);
             }else{
                 char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod);
-                char.total=Math.min(char.total,char.max);
+                if(key==="agi"&&char.max!==100){
+                    char.total=Math.min(char.total,char.max);
+                }
+
                 char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
                 char.total+=parseInt(data.globalMOD.value);
 
@@ -1599,8 +1609,9 @@ export class FortyKActor extends Actor {
     _onDeleteDescendantDocuments(parent, collection, documents, ids, options, userId){
         if(userId===game.user.id){
             let actor=this;
-            if(collection==="Item"){
+            if(collection==="items"){
                 documents.forEach(async function(item,i){
+
                     if(item.type==="talentntrait"){
                         let flag=item.system.flagId.value;
                         await actor.setFlag("fortyk",flag,false); 

@@ -22,9 +22,18 @@ returns the roll message*/
     static async fortykTest(char, type, target, actor, label, fortykWeapon=null, reroll=false, fireRate="",delayMsg=false, modifiers=null){
 
         //cap target at 100 or floor at 1
-        if(target>100){
+        /*if(target>100){
             target=100;
-        }else if(target<1){
+        }else*/ 
+        try{
+            let base=actor.system.characteristics[char].total;
+            target=Math.max(base-60,target);
+            target=Math.min(base+60,target);
+        }catch(err){
+            
+        }
+       
+        if(target<1){
             target=1;
         }
         let roll=new Roll("1d100ms<@tar",{tar:target});
@@ -699,8 +708,8 @@ returns the roll message*/
                 let shockEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("shock")]);
                 let ae=[];
                 ae.push(shockEffect);
-                let token=await Token.fromActor(actor);
-                await this.applyActiveEffect(token,ae);
+                
+                await this.applyActiveEffect(actor,ae);
             }
         }
         result.dos=testDos;
@@ -991,7 +1000,7 @@ returns the roll message*/
             }
         }
         //change formula for cleanse with fire for flame weapons
-        if(actor.getFlag("fortyk","cleansewithfire")&&fortykWeapon.getFlag("fortyk","flame")){
+        if(actor.getFlag("fortyk","cleansewithfire")&&(fortykWeapon.getFlag("fortyk","flame")||fortykWeapon.getFlag("fortyk","purifyingflame"))){
             let wpb=actor.system.characteristics.wp.bonus;
             let dPos = form.indexOf('d');
             let afterD=dPos+3;
@@ -1502,7 +1511,7 @@ returns the roll message*/
 
                         }
                         //logic against swarm enemies
-                        if(tarActor.getFlag("fortyk","swarm")&&!(fortykWeapon.getFlag("fortyk","spray")||fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","flame")||fortykWeapon.getFlag("fortyk","scatter"))){
+                        if(tarActor.getFlag("fortyk","swarm")&&!(fortykWeapon.getFlag("fortyk","spray")||fortykWeapon.getFlag("fortyk","blast")||fortykWeapon.getFlag("fortyk","flame")||fortykWeapon.getFlag("fortyk","purifyingflame")||fortykWeapon.getFlag("fortyk","scatter"))){
                             damage=Math.ceil(damage/2);
                             damageOptions.results.push(`<span>Swarm enemies take reduced damage against non blast, spray, flame or scatter weapons.</span>`);
                         }
@@ -1753,6 +1762,31 @@ returns the roll message*/
                                 activeEffects.push(fireActiveEffect);
                                 let id=randomID(5);
                                 damageOptions.results.push(`Catches fire!`)
+                            } 
+                            damageOptions.results.push(`</div>`) 
+                        } 
+                        //purifying flame
+                        if(!armorSuit.getFlag("fortyk","flamerepellent")&&fortykWeapon.getFlag("fortyk","purifyingflame")&&!isHordelike){
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
+                            let fire
+                            if(vehicle){
+
+                                fire=await this.fortykTest("wp", "char", tarActor.system.crew.ratingTotal+facing.armor,tarActor, "Resist fire",null,false,"",true);
+
+
+                            }else{
+                                fire=await this.fortykTest("wp", "char", tarActor.system.characteristics.wp.total,tarActor, "Resist fire",null,false,"",true);
+
+
+                            }
+                            damageOptions.results.push(fire.template);
+                            if(!fire.value){
+                                let fireActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("purifyingflame")]);
+                               
+                                fireActiveEffect.flags={"fortyk":{"damageString":fortykWeapon.getFlag("fortyk","purifyingflame")}}
+                                activeEffects.push(fireActiveEffect);
+                                let id=randomID(5);
+                                damageOptions.results.push(`Bursts in purifying flames!`)
                             } 
                             damageOptions.results.push(`</div>`) 
                         } 

@@ -683,6 +683,7 @@
 }
 .fortyk .weapons{
     text-align: left;
+    width:100%;
 }
 .fortyk .item-sheet{
     flex: 1;

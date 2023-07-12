@@ -443,7 +443,7 @@ Hooks.on("updateCombat", async (combat) => {
         }
         if(actor.type==="npc"){
 
-           await actor.sheet.render(true);
+            await actor.sheet.render(true);
 
         }
         if(actor.getFlag("fortyk","hardtargetEvasion")){
@@ -485,7 +485,7 @@ Hooks.on("updateCombat", async (combat) => {
 
             }
             //check for flags
-            if(activeEffect.flags.core){
+            if(activeEffect.statuses){
 
                 if(activeEffect.statuses.has("unconscious")){
                     dead=activeEffect;
@@ -509,6 +509,67 @@ Hooks.on("updateCombat", async (combat) => {
                         fire.flags.fortyk={};
                         fire.system.damageType.value="Energy";
                         fire.system.pen.value=99999;
+                        await FortykRolls.damageRoll(fire.system.damageFormula,actor,fire,1, true);
+                    }else{
+                        if(actor.getFlag("fortyk","superheavy")){
+                            let heat=parseInt(actor.system.knight.heat.value)+1;
+                            await actor.update({"system.knight.heat.value":heat});
+                            let onFireOptions={user: game.user._id,
+                                               speaker:{actor,alias:actor.name},
+                                               content:"On round start, gain 1 heat.",
+                                               classes:["fortyk"],
+                                               flavor:`On Fire!`,
+                                               author:actor.name};
+                            await ChatMessage.create(onFireOptions,{});
+                        }else{
+
+                            let duration=activeEffect.getFlag("fortyk","vehicleFireExplosionTimer");
+                            console.log(duration)
+                            if(duration===undefined){
+                                duration=0;
+                            }
+                            let fireForm=`1d10+${duration}`;
+                            let fireRoll=new Roll(fireForm,{});
+                            await fireRoll.evaluate({async: false});
+                            fireRoll.toMessage({flavor:"Testing for explosion"});
+                            let result=fireRoll._total; 
+                            if(result>=10){
+                                let onFireOptions={user: game.user._id,
+                                                   speaker:{actor,alias:actor.name},
+                                                   content:"The vehicle explodes!",
+                                                   classes:["fortyk"],
+                                                   flavor:`On Fire!`,
+                                                   author:actor.name};
+                                await ChatMessage.create(onFireOptions,{}); 
+                                let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
+                                await FortykRolls.applyActiveEffect(actor,activeEffect);
+
+                            }
+                            duration++;
+                            console.log(await activeEffect.setFlag("fortyk","vehicleFireExplosionTimer",duration));
+                        }
+                    }
+                }
+                //check for purifying flames
+                if(activeEffect.statuses.has("purifyingflame")){
+
+                    if(actor.type!=="vehicle"){
+                        let onFireOptions={user: game.user._id,
+                                           speaker:{actor,alias:actor.name},
+                                           content:"On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
+                                           classes:["fortyk"],
+                                           flavor:`On Fire!`,
+                                           author:actor.name};
+                        await ChatMessage.create(onFireOptions,{});
+                        await FortykRolls.fortykTest("wp", "char", actor.system.characteristics.wp.total,actor, "On Fire! Panic");
+                        //let fatigue=parseInt(actor.system.secChar.fatigue.value)+1;
+                        //await actor.update({"system.secChar.fatigue.value":fatigue});
+                        let fireData={name:"Purifying Fire",type:"rangedWeapon"}
+                        let fire=await Item.create(fireData, {temporary: true});
+                        fire.flags.fortyk={"ignoreSoak":true};
+                        fire.system.damageType.value="Energy";
+                        fire.system.pen.value=0;
+                        fire.system.damageFormula.value=activeEffect.flags.fortyk.damageString;
                         await FortykRolls.damageRoll(fire.system.damageFormula,actor,fire,1, true);
                     }else{
                         if(actor.getFlag("fortyk","superheavy")){
@@ -719,7 +780,7 @@ Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
     if(game.user.isGM){
         let actor=ae.parent;
 
-         ae.statuses.forEach(async function (value1, value2,ae){
+        ae.statuses.forEach(async function (value1, value2,ae){
             let flag=value1;
 
             await actor.setFlag("core",flag,false);
