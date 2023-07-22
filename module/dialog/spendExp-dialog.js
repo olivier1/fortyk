@@ -285,8 +285,9 @@ export class SpendExpDialog extends Application {
 
 
            var talentId=""
+           var chosenSpec=true;
             if(spec!=="N/A"){
-                var chosenSpec=await Dialog.prompt({
+                chosenSpec=await Dialog.prompt({
                     title: "Choose specialisation",
                     content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${tntData.specialisation.value}" autofocus/></p>`,
 
@@ -329,6 +330,7 @@ export class SpendExpDialog extends Application {
                 talentId=actorTalent[0].id;
 
             }
+            console.log(flag,chosenSpec)
             await actor.setFlag("fortyk",flag,chosenSpec);
             const advData = {
                 name: `${advanceName}`,

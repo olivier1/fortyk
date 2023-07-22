@@ -65,8 +65,8 @@ export const getActorToken=function(actor){
     return t;
 }
 export const parseHtmlForInline=function(html){
-    console.log(html)
-    console.log($(html).find(`a.inline-roll.inline-result`))
+  
+    
     let inlineStr=$(html).find(`a.inline-roll.inline-result`);
     
     let strArray=[];
@@ -87,8 +87,6 @@ export const tokenDistance=function(token1,token2){
     let token1y=token1.y;
     let token2x=token2.x;
     let token2y=token2.y;
-    console.log(gridRatio);
-    console.log(token1)
     if(token1.w*100>=200){
         if(token2x>token1x){
             token1x+=Math.ceil(token1.w/2);
@@ -109,18 +107,18 @@ export const tokenDistance=function(token1,token2){
             token2y+=Math.ceil(token2.h/2);
         }
     }
-    console.log(token1x,token1y,token2x,token2y,token1.document.elevation,token2.document.elevation)
+    
     if(canvas.scene.grid.type===0){
         
         let distancePx=Math.sqrt(Math.pow((token1x-token2x),2)+Math.pow((token1y-token2y),2)+Math.pow((token1.document.elevation-token2.document.elevation),2))
-        console.log(distancePx, distancePx*gridRatio)
+        
         return distancePx*gridRatio;
     }
     if(canvas.scene.grid.type>=1){
         let xDistance=Math.abs(gridRatio*(token1x-token2x));
         let yDistance=Math.abs(gridRatio*(token1y-token2y));
         let zDistance=Math.abs(gridRatio*(token1.document.elevation-token2.document.elevation));
-        console.log(xDistance,yDistance);
+        
         return Math.max(xDistance,yDistance,zDistance); 
     }
 

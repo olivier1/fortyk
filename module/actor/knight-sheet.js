@@ -248,7 +248,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         });
     }
     _onDragComponent(event){
-        console.log(event);
         let type="."+event.target.attributes["name"].value;
         let targetId=event.target.dataset["id"];
         let actor=this.actor;
@@ -285,7 +284,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
     }
 
     async _onDropComponent(event){
-        console.log(event)
         let draggedId=event.dataTransfer.getData("text");
 
 
@@ -314,7 +312,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             let loanedArray=componentBase.system.loaned;
 
             loanedArray.push({"knightId":actor.id,"itemId":newComponent[0]._id});
-            console.log(loanedArray)
+            
             comUpdate["system.loaned"]=loanedArray;
             component.update(comUpdate);
             let newComUpdate={};
@@ -535,7 +533,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
             }
             let category=tab.dataset["tab"];
-            console.log(this)
+          
             this.document.mechtab=category;
             tabClasses.add("active2");
             let lists=document.getElementsByName("mechInventoryTab");

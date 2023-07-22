@@ -51,7 +51,7 @@ export class FortyKItem extends Item {
                             let knight=await game.actors.get(loaned[i].knightId);
                             let update=duplicate(data);
                             update["_id"]=loaned[i].itemId;
-                            console.log(update)
+                            
                             try{
                                 await knight.updateEmbeddedDocuments("Item",[update]);
                             }catch(err){
@@ -333,7 +333,6 @@ export class FortyKItem extends Item {
                         let derivedPR=Math.abs(parseInt(data.psykana.pr.effective)-parseInt(item.system.curPR.value));
                         let char=0;
                         if(item.system.testChar.value==="psy"){
-                            console.log(actor,char,psyniscience,"hey")
                             char=psyniscience;
                             item.system.testChar.type="per";
                         }else{

@@ -332,15 +332,14 @@ Hooks.once('ready', async function() {
                 case "applyActiveEffect":
                     id=data.package.token;
                     token=canvas.tokens.get(id);
-                    console.log(id, token)
                     let aeffect=data.package.effect;
-                    console.log(aeffect)
+
                     await FortykRolls.applyActiveEffect(token,aeffect);
                     break;
                 case "updateValue":
                     id=data.package.token;
                     value=data.package.value;
-                    console.log(value)
+
                     let parsedValue=parseFloat(value);
                     if(!isNaN(parsedValue)){
                         value=parsedValue;
@@ -359,7 +358,6 @@ Hooks.once('ready', async function() {
                     value=data.package.value;
                     token=canvas.tokens.get(id);
                     actor=token.actor;
-                    console.log(scope,flag,value)
                     actor.setFlag(scope,flag,value);
                     break;
                 case "updateLoans":
@@ -369,7 +367,7 @@ Hooks.once('ready', async function() {
                         let knight=await game.actors.get(loaned[i].knightId);
                         let update1=duplicate(update);
                         update1["_id"]=loaned[i].itemId;
-                        console.log(update1)
+
                         try{
                             await knight.updateEmbeddedDocuments("Item",[update1]);
                         }catch(err){
@@ -422,13 +420,17 @@ Hooks.on("updateCombat", async (combat) => {
         game.user.updateTokenTargets();
         game.user.broadcastActivity({targets:[]});
         //previous combatant stuff
-        console.log(combat)
-        let previousToken=canvas.tokens.get(combat.previous.tokenId);
-        let previousActor=previousToken.actor;
-        let tempMod=previousActor.system.secChar.tempMod.value;
-        if(tempMod){
-            previousActor.update({"system.secChar.tempMod.value":0}); 
+        try{
+            let previousToken=canvas.tokens.get(combat.previous.tokenId);
+            let previousActor=previousToken.actor;
+            let tempMod=previousActor.system.secChar.tempMod.value;
+            if(tempMod){
+                previousActor.update({"system.secChar.tempMod.value":0}); 
+            }  
+        }catch (err){
+
         }
+
         //current combatant stuff
         let token=canvas.tokens.get(combat.current.tokenId);
         if(token===undefined){return}
@@ -436,9 +438,9 @@ Hooks.on("updateCombat", async (combat) => {
         //PAN CAMERA TO ACTIVE TOKEN
         await canvas.animatePan({x:token.x,y:token.y});
         const currentWindows = Object.values(ui.windows);
-        console.log(currentWindows)
+
         for (let window of currentWindows) {
-            console.log(window)
+
             if (window.actor) await window.close()
         }
         if(actor.type==="npc"){
@@ -524,7 +526,7 @@ Hooks.on("updateCombat", async (combat) => {
                         }else{
 
                             let duration=activeEffect.getFlag("fortyk","vehicleFireExplosionTimer");
-                            console.log(duration)
+
                             if(duration===undefined){
                                 duration=0;
                             }
@@ -546,7 +548,7 @@ Hooks.on("updateCombat", async (combat) => {
 
                             }
                             duration++;
-                            console.log(await activeEffect.setFlag("fortyk","vehicleFireExplosionTimer",duration));
+                            await activeEffect.setFlag("fortyk","vehicleFireExplosionTimer",duration);
                         }
                     }
                 }
@@ -585,7 +587,7 @@ Hooks.on("updateCombat", async (combat) => {
                         }else{
 
                             let duration=activeEffect.getFlag("fortyk","vehicleFireExplosionTimer");
-                            console.log(duration)
+
                             if(duration===undefined){
                                 duration=0;
                             }
@@ -607,7 +609,7 @@ Hooks.on("updateCombat", async (combat) => {
 
                             }
                             duration++;
-                            console.log(await activeEffect.setFlag("fortyk","vehicleFireExplosionTimer",duration));
+                            await activeEffect.setFlag("fortyk","vehicleFireExplosionTimer",duration);
                         }
                     }
                 }
@@ -763,7 +765,7 @@ Hooks.on('preCreateItem', (actor, data,options) =>{
 Hooks.on('createActiveEffect',async (ae,options,id)=>{
     if(game.user.isGM){
         let actor=ae.parent;
-        console.log(ae)
+
 
         ae.statuses.forEach(async function (value1, value2,ae){
             let flag=value1;

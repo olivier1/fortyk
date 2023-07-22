@@ -197,9 +197,8 @@ export class FortykRollDialogs{
         let target=targets.values().next().value;
         let vehicle=false;
         if(targets.size>0){
-            console.log(modifiers)
             miscMods+=-modifiers.tarEvasion;
-            console.log(miscMods)
+            
             if(modifiers.tarEvasion){
                 modifierTracker.push({"value":`${-modifiers.tarEvasion}`,"label":"Target Speed Modifier"});
             }
@@ -376,7 +375,7 @@ export class FortykRollDialogs{
                   ).render(true);
     }
     static async callRangedAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
-        console.log(testTarget)
+      
         let template="systems/fortyk/templates/actor/dialogs/ranged-attack-dialog.html"
         let templateOptions={};
         let itemData=item;
@@ -437,7 +436,6 @@ export class FortykRollDialogs{
 
         let rofFull=parseInt(item.system.rof[2].value);
         let canShoot=false;
-        console.log(rofSingle);
         if(parseInt(rofSingle)===0||rofSingle==="-"){
             templateOptions["single"]=false;
         }else{
@@ -861,7 +859,7 @@ export class FortykRollDialogs{
                   ).render(true);
     }
     static async callSprayAttackDialog(actor, testLabel, weapon, options, title="Enter test modifier"){
-        console.log("hey")
+      
         new Dialog({
             title: title,
             content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="0" autofocus/></p>`,
@@ -872,7 +870,6 @@ export class FortykRollDialogs{
                         let targets=game.user.targets;
                         let mod = Number($(html).find('input[name="modifier"]').val());
                         let psy=false;
-                        console.log(weapon)
                         if(weapon.type==="psychicPower"){
                             psy=true;
                         }

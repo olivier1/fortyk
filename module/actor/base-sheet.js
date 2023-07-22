@@ -273,7 +273,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }else{
             update[updatePath].reverse=true;
         }
-        console.log(update)
+   
         await this.actor.update(update);
 
     }
@@ -653,7 +653,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             this.actor.update({"system.secChar.tempMod.value":0});
         }
 
-        console.log(testType)
+    
         var testLabel=dataset["label"];
         var testChar=dataset["char"];
         let rating=dataset["rating"];
@@ -711,7 +711,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
             attackOptions.selfBlind=this.actor.getFlag("core","blind");
             attackOptions.distance=tokenDistance(target, attacker);
-            console.log(attackOptions.distance)
+            
             let attackerElevation=attacker.elevation;
             let targetElevation=target.elevation;
             attackOptions.elevation=attackerElevation-targetElevation;
@@ -732,7 +732,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
 
         if(testType==="sprayAttack"){
-            console.log(testType)
             FortykRollDialogs.callSprayAttackDialog(this.actor, testLabel, item, attackOptions);
         }
 
@@ -929,11 +928,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let tokens=scene.tokens;
         let targets=[];
         let gridRatio=scene.dimensions.size/scene.dimensions.distance;
-        console.log(templates);
+     
         for(let i=0;i<templates.length;i++){
             let targetted=[];
             let template=templates[i];
-            console.log(MeasuredTemplate)
             let bounds=template._object._computeShape();
             bounds.x=template.x;
             bounds.y=template.y;
@@ -967,7 +965,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             targets.push(targetted);
         }
         return targets;
-        console.log(targets)
     }
     //handles applying active effects from psychic powers
     async _onBuffDebuff(event){

@@ -84,6 +84,7 @@
 .flex-group-center,
 .flex-group-left,
 .flex-group-right {
+    width: -webkit-fill-available;
     -webkit-box-pack: center;
     -ms-flex-pack: center;
     justify-content: center;

@@ -30,9 +30,9 @@ returns the roll message*/
             target=Math.max(base-60,target);
             target=Math.min(base+60,target);
         }catch(err){
-            
+
         }
-       
+
         if(target<1){
             target=1;
         }
@@ -401,14 +401,14 @@ returns the roll message*/
             }else if(attackType==="full"){
                 rof=parseInt(weapon.system.rof[2].value);
             }
-            console.log(fortykWeapon,weapon)
+
             if(weapon.getFlag("fortyk","twinlinked")){
                 rof=rof*2;
             }
             if(weapon.getFlag("fortyk","storm")){
                 rof=rof*2;
             }
-            console.log(rof)
+
             let missedHits=rof-hits;
             var attacker=actor.getActiveTokens()[0];
             if((weapon.system.type==="Launcher"||weapon.system.type==="Grenade")&&blast&&!testResult&&jam){
@@ -573,7 +573,7 @@ returns the roll message*/
         //if attack has target, check if target has forcefield and do forcefield tests if so
         /*
         if(attack&&game.user.targets.size!==0){
-            console.log("hey")
+
             if(game.user.isGM){
                 for(let tar of game.user.targets){
                     let tarActor=tar.actor;
@@ -708,7 +708,7 @@ returns the roll message*/
                 let shockEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("shock")]);
                 let ae=[];
                 ae.push(shockEffect);
-                
+
                 await this.applyActiveEffect(actor,ae);
             }
         }
@@ -828,7 +828,7 @@ returns the roll message*/
             await roll.evaluate();
             roll.dice[0].options.rollOrder = i+1;
             rolls.push(roll);
-            console.log(roll)
+
             let roll1=roll.dice[0].values[0];
             let pass=roll.dice[0].results[0].success;
             overloaded=false;
@@ -963,6 +963,7 @@ returns the roll message*/
             form=startstr+"r1"+endstr; 
 
         }
+
         if(rerollNum>0){
             let dPos = form.indexOf('d10');
 
@@ -1031,7 +1032,7 @@ returns the roll message*/
 
             let roll=new Roll(form,actor.system);
             let label = weapon.name ? `Rolling ${weapon.name} damage to ${curHit.label}.` : 'damage';
-            console.log(roll)
+
             await roll.evaluate({async: true});
             //calculate righteous for non targetted rolls
             let tenz=0;
@@ -1212,7 +1213,7 @@ returns the roll message*/
                         let daemonic=tarActor.getFlag("fortyk","daemonic");
                         if(fortykWeapon.getFlag("fortyk","daemonbane")){
                             if(daemonic){
-                                tarRighteous-=1;
+                                tarRighteous-=2;
                             }
                         }
                         //graviton increased crit against vehicles
@@ -1225,12 +1226,12 @@ returns the roll message*/
                         let discards=[];
                         let terms=roll.terms;
                         let numbers=[]
-                        console.log(terms)
+
                         //parsing the roll result
                         for ( let t=0; t<terms.length;t++){
-                            console.log(terms[t])
+
                             if(terms[t] instanceof Die){
-                                console.log(terms[t])
+
                                 for ( let r of roll.terms[t].results ) {
                                     if(!r.active){
                                         discards.push(true);
@@ -1249,7 +1250,7 @@ returns the roll message*/
                             }
 
                         }
-                        console.log(numbers)
+
                         //compiling the roll output
                         let damageString="";
                         if(dieResults.length<1){
@@ -1291,7 +1292,7 @@ returns the roll message*/
                             damageOptions.results.push(`<span class="chat-righteous">Righteous Fury!</span>`)
                         }
                         damageOptions.results.push(`</div>`);
-                        console.log(armorSuit)
+
                         if(jQuery.isEmptyObject(armorSuit)){
                             armorSuit=await Item.create({type:"armor",name:"standin"},{temporary:true});
                         }
@@ -1404,7 +1405,7 @@ returns the roll message*/
                             }
 
                             //reactive plating
-                            console.log(tarActor.getFlag("fortyk","reactiveplating"))
+
                             if(tarActor.getFlag("fortyk","reactiveplating")&&((damageType==="explosive")||damageType==="impact")){
                                 soak+=Math.ceil(armor*0.1);
                                 damageOptions.results.push(`<span>Reactive Plating is resistant against this damage type.</span>`);
@@ -1451,7 +1452,6 @@ returns the roll message*/
                             damageOptions.results.push(`<span>Molten man reduces energy damage by half!</span>`);
                         }
                         let chatDamage=damage;
-                        console.log(damage)
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
                         //damage part of smite the unholy
                         if(actor.getFlag("fortyk","smitetheunholy")&&tarActor.getFlag("fortyk","fear")&&weapon.type==="meleeWeapon"){
@@ -1493,6 +1493,8 @@ returns the roll message*/
                                 damageOptions.results.push(`<span>Accurate extra damage: ${accRoll.dice[0].values.join("+")}</span>`);
                                 damage+=accRoll._total;
                                 chatDamage+=accRoll._total;
+                            }else{
+                                damageOptions.results.push(`<span>Too close for accurate bonus damage.</span>`); 
                             }
                         }
                         //handle cover
@@ -1515,9 +1517,8 @@ returns the roll message*/
                             damage=Math.ceil(damage/2);
                             damageOptions.results.push(`<span>Swarm enemies take reduced damage against non blast, spray, flame or scatter weapons.</span>`);
                         }
-                        console.log(damage)
+
                         damage=damage-soak;
-                        console.log(damage)
                         //gauss weapon logic
                         if(fortykWeapon.getFlag("fortyk","gauss")&&tens&&!isHordelike){
                             let gaussAmt=new Roll("1d5",{});
@@ -1570,8 +1571,7 @@ returns the roll message*/
                                 chatDamage+=corrosiveDamage;
                             }
                         }
-                        damageOptions.results.push(`</div>`) 
-                        console.log(damage)
+                        damageOptions.results.push(`</div>`);
                         //toxic weapon logic
                         if(!vehicle&&damage>0&&!isNaN(parseInt(toxic))&&!tarActor.getFlag("fortyk","stuffofnightmares")&&!tarActor.getFlag("fortyk","undying")&&!isHordelike){
                             damageOptions.results.push(`<div class="chat-target flexcol">`)
@@ -1733,6 +1733,7 @@ returns the roll message*/
                                     if(warpdmg>newWounds){
                                         damageOptions.results.push(`${actor.name} is banished to the warp!`);
                                         await this.applyDead(tar,tarActor,"banishment");
+                                        tarActor.flags.core.dead=true;
                                     }else{
                                         damage+=warpdmg;
                                         chatDamage+=warpdmg;
@@ -1741,7 +1742,6 @@ returns the roll message*/
                             }
                             damageOptions.results.push(`</div>`) 
                         }
-                        console.log(damage)
                         //flame weapon
                         if(!armorSuit.getFlag("fortyk","flamerepellent")&&fortykWeapon.getFlag("fortyk","flame")&&!isHordelike){
                             damageOptions.results.push(`<div class="chat-target flexcol">`)
@@ -1782,7 +1782,10 @@ returns the roll message*/
                             damageOptions.results.push(fire.template);
                             if(!fire.value){
                                 let fireActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("purifyingflame")]);
-                               
+                                //if target is not daemon apply normal fire instead
+                                if(!tarActor.getFlag("fortyk","daemonic")){
+                                    fireActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fire")]);
+                                }
                                 fireActiveEffect.flags={"fortyk":{"damageString":fortykWeapon.getFlag("fortyk","purifyingflame")}}
                                 activeEffects.push(fireActiveEffect);
                                 let id=randomID(5);
@@ -1872,8 +1875,7 @@ returns the roll message*/
                             chatDamage+=4;
                             damageOptions.results.push(`Peerless Killer increases critical damage by 4 on called shots.`);
                         }
-                        damageOptions.results.push(`</div>`); 
-                        console.log(damage)
+                        damageOptions.results.push(`</div>`);
                         //impenetrable armor logic
                         if(armorSuit.getFlag("fortyk","impenetrable")){
                             damage=Math.ceil(damage/2);
@@ -1905,7 +1907,6 @@ returns the roll message*/
                                              author:tarActor.name}
                             messages.push(chatOptions);
                         }
-                        console.log(damage)
                         //artificer hull
                         if(vehicle&&damage>0&&damage>newWounds[tarNumbr]&&tarActor.getFlag("fortyk","artificerhull")){
                             let critDamage=0;
@@ -2024,7 +2025,6 @@ returns the roll message*/
                                 superheavyOptions.threshold=5;
                             }
                         }
-                        console.log(damage)
                         //if righteous fury ensure attack deals atleast 1 dmg
                         if(tens&&damage<=0){
 
@@ -2122,14 +2122,19 @@ returns the roll message*/
                         //Xenos Bane Logic #2
                         if(!vehicle&&tens&&deathwatch&actor.getFlag("fortyk","xenosbane")&&(actor.system.secChar.wounds.value>=curWounds)&&!isHordelike){
                             let banetest=await this.fortykTest("t", "char", (tarActor.system.characteristics.t.total),tarActor, `Resist Xenos Bane instant death`,null,false,"",true);
+                            
+                            damageOptions.results.push(banetest.template);
                             if(!banetest.value){
-                                this.applyDead(tar,tarActor,"Xenos Bane");
+                                await this.applyDead(tar,tarActor,"Xenos Bane");
+                                tarActor.flags.core.dead=true;
                             }
                         }
                         if((isHordelike)&&newWounds[tarNumbr]<=0){
                             await this.applyDead(tar,tarActor,`${actor.name}`);
+                            tarActor.flags.core.dead=true;
                         }else if(!vehicle&&data.suddenDeath.value&&newWounds[tarNumbr]<=0){
                             await this.applyDead(tar,tarActor,`${actor.name}`);
+                            tarActor.flags.core.dead=true;
                         }else if(newWounds[tarNumbr]<0&&damage>0){
                             let crit=Math.abs(newWounds[tarNumbr])-1;
                             if(tarActor.getFlag("fortyk","superheavy")){
@@ -2253,7 +2258,8 @@ returns the roll message*/
         if(!vehicle&&tar!==null&&(tar.actor.system.horde.value||tar.actor.system.formation.value)){crit=false}
         //if righteous fury roll the d5 and spew out the crit result
         if(!vehicle&&tar!==null&&crit&&tar.actor.system.suddenDeath.value){
-            this.applyDead(tar,tar.actor,'<span class="chat-righteous">Righteous Fury</span>');
+            await this.applyDead(tar,tar.actor,'<span class="chat-righteous">Righteous Fury</span>');
+            tar.actor.flags.core.dead=true;
             return false;
         }
         if((crit&&damage>0)){
@@ -2332,7 +2338,7 @@ returns the roll message*/
         let critMsg=await ChatMessage.create(chatOptions,{});
         let inlineResults={}
         //parse any inline rolls and give them to the crit function to apply critical effects
-        console.log(critMsg)
+
         inlineResults.rolls=parseHtmlForInline(critMsg.content);
         inlineResults.tests=tests;
         return inlineResults;
@@ -2489,7 +2495,7 @@ returns the roll message*/
     }
     //applies critical results to token/actor
     static async critEffects(token,num,hitLoc,type,ignoreSON,activeEffects=null,source=""){
-        console.log(token,num,hitLoc,type,ignoreSON,activeEffects,source)
+
         if(game.user.isGM||token.isOwner){
 
             let actor=token.actor;
@@ -2630,12 +2636,15 @@ returns the roll message*/
                 break;
             case 8:
                 await this.applyDead(actorToken,actor,"an energy head critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 9:
                 await this.applyDead(actorToken,actor,"an energy head critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"an energy head critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -2753,9 +2762,11 @@ returns the roll message*/
                 break;
             case 9:
                 await this.applyDead(actorToken,actor,"an energy body critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"an energy body critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -2862,6 +2873,7 @@ returns the roll message*/
                 tTest=rolls.tests[0];
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor,"an energy arm critical hit");
+                    actor.flags.core.dead=true;
                     return;
                 }else{
                     if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
@@ -2880,6 +2892,7 @@ returns the roll message*/
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"an energy arm critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -2988,6 +3001,7 @@ returns the roll message*/
                 tTest=rolls.tests[0];
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor,"an energy leg critical hit");
+                    actor.flags.core.dead=true;
                 }else{
                     if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
                         await this._sON(actor);
@@ -3000,6 +3014,7 @@ returns the roll message*/
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"an energy leg critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -3104,18 +3119,23 @@ returns the roll message*/
                 break;
             case 6:
                 await this.applyDead(actorToken,actor,"an explosive head critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 7:
                 await this.applyDead(actorToken,actor,"an explosive head critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 8:
                 await this.applyDead(actorToken,actor,"an explosive head critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 9:
                 await this.applyDead(actorToken,actor,"an explosive head critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"an explosive head critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -3207,12 +3227,15 @@ returns the roll message*/
                 break;
             case 8:
                 await this.applyDead(actorToken,actor,"an explosive body critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 9:
                 await this.applyDead(actorToken,actor,"an explosive body critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"an explosive body critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -3296,6 +3319,7 @@ returns the roll message*/
                 tTest=rolls.tests[0];
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor,"an explosive arm critical hit");
+                    actor.flags.core.dead=true;
                 }else{
                     if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
                         await this._sON(actor);
@@ -3315,12 +3339,15 @@ returns the roll message*/
                 break;
             case 8:
                 await this.applyDead(actorToken,actor,"an explosive arm critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 9:
                 await this.applyDead(actorToken,actor,"an explosive arm critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"an explosive arm critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -3417,6 +3444,7 @@ returns the roll message*/
                 tTest=rolls.tests[0];
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor,"an explosive leg critical hit");
+                    actor.flags.core.dead=true;
                 }else{
                     if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
                         await this._sON(actor);
@@ -3438,12 +3466,15 @@ returns the roll message*/
                 break;
             case 8:
                 await this.applyDead(actorToken,actor,"an explosive leg critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 9:
                 await this.applyDead(actorToken,actor,"an explosive leg critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"an explosive leg critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -3571,12 +3602,15 @@ returns the roll message*/
                 break;
             case 8:
                 await this.applyDead(actorToken,actor,"an impact head critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 9:
                 await this.applyDead(actorToken,actor,"an impact head critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"an impact head critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -3668,9 +3702,11 @@ returns the roll message*/
                 break;
             case 9:
                 await this.applyDead(actorToken,actor,"an impact body critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"an impact body critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -3743,6 +3779,7 @@ returns the roll message*/
                 tTest=rolls.tests[0];
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor,"an impact arm critical hit");
+                    actor.flags.core.dead=true;
                 }else{
                     if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
                         await this._sON(actor);
@@ -3762,9 +3799,11 @@ returns the roll message*/
                 break;
             case 9:
                 await this.applyDead(actorToken,actor,"an impact arm critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"an impact arm critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -3865,6 +3904,7 @@ returns the roll message*/
                 tTest=rolls.tests[0];
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor,"an impact leg critical hit");
+                    actor.flags.core.dead=true;
                 }else{
                     if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
                         await this._sON(actor);
@@ -3883,9 +3923,11 @@ returns the roll message*/
                 break;
             case 9:
                 await this.applyDead(actorToken,actor,"an impact leg critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"an impact leg critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -3999,7 +4041,6 @@ returns the roll message*/
                 }
                 break;
             case 6:
-                console.log(rolls)
                 this._addFatigue(actor,rolls.rolls[0]);
                 ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("bleeding")]);
                 activeEffects.push(ae);
@@ -4032,12 +4073,15 @@ returns the roll message*/
                 break;
             case 8:
                 await this.applyDead(actorToken,actor,"a rending head critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 9:
                 await this.applyDead(actorToken,actor,"a rending head critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"a rending head critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -4125,6 +4169,7 @@ returns the roll message*/
                 tTest=rolls.tests[0];
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor,"a rending body critical hit");
+                    actor.flags.core.dead=true;
                 }else{
                     if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
                         await this._sON(actor);
@@ -4144,9 +4189,11 @@ returns the roll message*/
                 break;
             case 9:
                 await this.applyDead(actorToken,actor,"a rending body critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"a rending body critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -4225,6 +4272,7 @@ returns the roll message*/
                 tTest=rolls.tests[0];
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor,"a rending arm critical hit");
+                    actor.flags.core.dead=true;
                 }else{
                     if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
                         await this._sON(actor);
@@ -4243,9 +4291,11 @@ returns the roll message*/
                 break;
             case 9:
                 await this.applyDead(actorToken,actor,"a rending arm critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"a rending arm critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -4334,6 +4384,7 @@ returns the roll message*/
                 tTest=rolls.tests[0];
                 if(!tTest.value){
                     await this.applyDead(actorToken,actor,"a rending leg critical hit");
+                    actor.flags.core.dead=true;
                 }else{
                     if(!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
                         await this._sON(actor);
@@ -4354,9 +4405,11 @@ returns the roll message*/
                 break;
             case 9:
                 await this.applyDead(actorToken,actor,"a rending leg critical hit");
+                actor.flags.core.dead=true;
                 break;
             case 10:
                 await this.applyDead(actorToken,actor,"a rending leg critical hit");
+                actor.flags.core.dead=true;
                 break;
         }
         if(upd){
@@ -4407,7 +4460,7 @@ returns the roll message*/
         console.log(effect)
         if(effect.length>0){
             if(game.user.isGM||token.isOwner){
-                console.log(game.user)
+
 
                 let actor
                 if(token instanceof Token){
@@ -4415,52 +4468,55 @@ returns the roll message*/
                 }else{
                     actor=token;
                 }
-                console.log(actor, token)
                 let aEs=[];
                 for(let index=0; index <effect.length;index++){
                     let dupp=false;
                     let newAe=effect[index];
+                    console.log(actor)
                     for(let ae of actor.effects){
-                        if(ae.flags.core){
-                            if(!ae.statuses.has("weakened")&&!ae.statuses.has("buff")&&ae.statuses===newAe.status){
-                                dupp=true;
-                                let change=false;
-                                let upg=false;
-                                let changes=ae.changes
-                                if(ae.icon!==newAe.icon){
-                                    change=true;
-                                }
-                                for(let i=0;i<ae.changes.length;i++){
-                                    for(let z=0;z<newAe.changes.length;z++){
-                                        if((ae.changes[i].key===newAe.changes[z].key)&&ae.changes[i].mode===newAe.changes[z].mode){
+                        console.log(ae)
 
-                                            if(ae.changes[i].mode===5||ae.changes[i].mode===0){
 
+                        console.log(ae,newAe)
+                        if(!ae.statuses.has("weakened")&&!ae.statuses.has("buff")&&newAe.statuses&&ae.statuses.has(newAe.statuses[0])){
+                            dupp=true;
+                            let change=false;
+                            let upg=false;
+                            let changes=ae.changes
+                            if(ae.icon!==newAe.icon){
+                                change=true;
+                            }
+                            for(let i=0;i<ae.changes.length;i++){
+                                for(let z=0;z<newAe.changes.length;z++){
+                                    if((ae.changes[i].key===newAe.changes[z].key)&&ae.changes[i].mode===newAe.changes[z].mode){
+
+                                        if(ae.changes[i].mode===5||ae.changes[i].mode===0){
+
+                                        }else{
+                                            if(!isNaN(parseInt(newAe.changes[z].value))){
+
+                                                newAe.changes[z].value=parseInt(newAe.changes[z].value)+parseInt(ae.changes[i].value);
                                             }else{
-                                                if(!isNaN(parseInt(newAe.changes[z].value))){
 
-                                                    newAe.changes[z].value=parseInt(newAe.changes[z].value)+parseInt(ae.changes[i].value);
-                                                }else{
-
-                                                    newAe.changes[z].value+=ae.changes[i].value;
-                                                }
+                                                newAe.changes[z].value+=ae.changes[i].value;
                                             }
+                                        }
 
 
 
-                                            upg=true;
-                                        } 
-                                    }
-                                }
-                                if(effect[index].duration&&(effect[index].duration.rounds>ae.duration.remaining)){
-                                    change=true;
-                                }
-                                if(change||upg){
-                                    aEs.push(newAe);
-                                    await ae.delete();
+                                        upg=true;
+                                    } 
                                 }
                             }
+                            if(effect[index].duration&&(effect[index].duration.rounds>ae.duration.remaining)){
+                                change=true;
+                            }
+                            if(change||upg){
+                                aEs.push(newAe);
+                                await ae.delete();
+                            }
                         }
+
                     }
                     let skip=false;
                     if(effect[index].id==="stunned"&&actor.getFlag("fortyk","ironjaw")){
@@ -4479,7 +4535,6 @@ returns the roll message*/
                 }
                 let effects=await actor.createEmbeddedDocuments("ActiveEffect",aEs);
                 if (window.EffectCounter) {
-                    console.log(window.EffectCounter)
                     for(let i=0;i<effects.length;i++){
 
                         let effectInstance=effects[i];
@@ -4518,22 +4573,24 @@ returns the roll message*/
                              flavor:`Death Report`,
                              author:actor.name}
             await ChatMessage.create(chatOptions,{});
-            let id=target._id;
+            let id=target.id;
 
             if(actor.getFlag("fortyk","regeneration")&&actor.system.race.value==="Necron"){
                 let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("unconscious")])];
                 await this.applyActiveEffect(actor,activeEffect);
             }else{
                 let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
+
                 await this.applyActiveEffect(actor,activeEffect);
-                /*try{
+                try{
                     let combatant = await game.combat.getCombatantByToken(id);
                     let combatid=combatant.id;
                     let update=[];
                     update.push({"_id":combatid, 'defeated':true})
-                    await game.combat.updateEmbeddedDocuments("Combatant",update) 
+                    console.log(await game.combat.updateEmbeddedDocuments("Combatant",update))
                 }catch(err){
-                } */
+                    console.log(err)
+                } 
             }
 
 
@@ -4544,7 +4601,7 @@ returns the roll message*/
         }
     }
     static async _addFatigue(actor,newfatigue){
-        console.log(newfatigue,actor)
+
         newfatigue=parseInt(newfatigue)+parseInt(actor.system.secChar.fatigue.value);
         if(game.user.isGM||actor.isOwner){
             await actor.update({"system.secChar.fatigue.value":newfatigue});

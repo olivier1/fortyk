@@ -417,7 +417,7 @@ FORTYK.weaponFlags={
     "purifyingflame": {
         "value": false,
         "label": "Purifying Flame",
-        "description": "This weapon roars with blessed psychic flames. Those hit must succeed a Willpower test or be afflicted by Purifying Flames which deal 1d10+PR ignoring both armor and toughness every round. These flames also cause the target to make a willpower test on each of their turn or flail around in panic."
+        "description": "This weapon roars with blessed psychic flames. Daemons hit must succeed a Willpower test or be afflicted by Purifying Flames which deal 1d10+PR ignoring both armor and toughness every round. These flames also cause the target to make a willpower test on each of their turn or flail around in panic. The fire debuff deals normal damage against non daemonic targets."
     },
     "powerfield": {
         "value": false,

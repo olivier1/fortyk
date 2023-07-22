@@ -353,7 +353,6 @@ export class FortyKActor extends Actor {
                 }
                 //check if equipped
                 if(item.system.isEquipped){
-                    console.log(this.name,item)
                     if(item.getFlag("fortyk","encumbering")){
                         data.secChar.movement.mod-=item.getFlag("fortyk","encumbering");
                     }
@@ -759,7 +758,7 @@ export class FortyKActor extends Actor {
                 char.total=parseInt(char.value);
                 char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
                 char.total+=parseInt(data.globalMOD.value);
-                char.total=Math.min(char.total,char.max);
+                //char.total=Math.min(char.total,char.max);
             }
         }
         data.secChar.fatigue.max=parseInt(data.characteristics.wp.bonus)+parseInt(data.characteristics.t.bonus);
@@ -1520,7 +1519,7 @@ export class FortyKActor extends Actor {
     }
     //when creating active effects check if they are transferred from an item, if so give the active effect flag to the item for referrence.
     _onCreateDescendantDocuments(parent, collection, documents, data, options, userId){
-        console.log(collection)
+       
 
         if(collection==="effects"){
             let actor=this;

@@ -20,7 +20,9 @@ export const _getInitiativeFormula = function() {
     if(actor.getFlag("fortyk","constantvigilance")){
         init= `2d10kh + @characteristics.${actor.getFlag("fortyk","constantvigilance")}.bonus + @secChar.initiative.value + (@characteristics.${actor.getFlag("fortyk","constantvigilance")}.total / 100)`;
     } 
-
+    if(actor.getFlag("fortyk","firsttofight")){
+        init=`2d10 + @characteristics.agi.bonus + @secChar.initiative.value + (@characteristics.agi.total / 100)`;
+    }
 
 
     return init;
