@@ -727,6 +727,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             return;
         }
         if(testType==="focuspower"){
+            let pr=dataset["pr"];
+            console.log(dataset)
+            testLabel+=` at PR ${pr}`;
             FortykRollDialogs.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
             return;
         }

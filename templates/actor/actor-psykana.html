@@ -135,7 +135,7 @@
 
                 <div class="list-item flexcol">
                     <label>Test Target: </label>
-                    <span data-item-id="{{power._id}}" class="rollable powerItem button{{#if (greaterThan power.system.curPR.value ../system.psykana.pr.effective)}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-target="{{power.system.target.value}}" data-label="{{power.name}}" data-char="{{power.system.testChar.type}}">{{power.system.target.value}}</span>
+                    <span data-item-id="{{power._id}}" class="rollable powerItem button{{#if (greaterThan power.system.curPR.value ../system.psykana.pr.effective)}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-PR="{{power.system.curPR.value}}" data-target="{{power.system.target.value}}" data-label="{{power.name}}" data-char="{{power.system.testChar.type}}">{{power.system.target.value}}</span>
                 </div>
                 {{#if (contains power.system.class.value "psychic")}}
                 {{#if power.flags.fortyk.spray}}
