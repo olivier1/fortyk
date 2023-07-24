@@ -72,7 +72,7 @@ export class FortykRollDialogs{
             buttons: {
                 submit: {
                     label: 'OK',
-                    callback: (html) => {
+                    callback: async (html) => {
                         const bonus = Number($(html).find('input[name="modifier"]').val());
                         if(isNaN(bonus)){
                             this.callRollDialog(testChar, testType, testTarget, actor, testLabel, item, reroll,"Invalid Number ");
@@ -88,25 +88,39 @@ export class FortykRollDialogs{
 
                                 if(testType==="evasion"){
                                     if(actor.getFlag("fortyk","evadeMod")){
-                                        actor.setFlag("fortyk","evadeMod",false);
+                                        await actor.setFlag("fortyk","evadeMod",false);
                                     }
                                     let aeData={};
                                     aeData.id="evasion";
                                     aeData.label= "Evasion";
-                                    if(actor.getFlag("core","evasion")){
-                                        aeData.icon= "systems/fortyk/icons/evasion2.png";
+                                    if(!actor.getFlag("core","evasion")){
+                                        aeData.icon= "systems/fortyk/icons/evasion.png";
+                                        aeData.flags={"fortyk":{"evasion":1}};
+                                        aeData.statuses=["evasion"];
+                                        aeData.duration={
+
+                                            rounds:0
+                                        };
+                                        await FortykRolls.applyActiveEffect(actor,[aeData]);
                                     }else{
-                                        aeData.icon= "systems/fortyk/icons/evasion.png"; 
+                                        console.log(actor)
+
+                                        for(let ae of actor.effects){
+
+                                            if(ae.statuses.has("evasion")){
+                                                let count=ae.getFlag("fortyk","evasion");
+                                                console.log(count)
+                                                count++;
+                                                if(count>9){
+                                                    count=9;
+                                                }
+                                                let update={};
+                                                update["icon"]=`systems/fortyk/icons/evasion${count}.png`;
+                                                update["flags.fortyk.evasion"]=count;
+                                                await ae.update(update);
+                                            }
+                                        }
                                     }
-
-
-                                    aeData.flags= { core: { statusId: "evasion" } }
-                                    aeData.duration={
-
-                                        rounds:0
-                                    };
-                                    FortykRolls.applyActiveEffect(actor,[aeData]);
-
                                 }
                             }
                             FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, reroll);
@@ -198,7 +212,7 @@ export class FortykRollDialogs{
         let vehicle=false;
         if(targets.size>0){
             miscMods+=-modifiers.tarEvasion;
-            
+
             if(modifiers.tarEvasion){
                 modifierTracker.push({"value":`${-modifiers.tarEvasion}`,"label":"Target Speed Modifier"});
             }
@@ -300,19 +314,31 @@ export class FortykRollDialogs{
                             let aeData={};
                             aeData.id="evasion";
                             aeData.label= "Evasion";
-                            if(actor.getFlag("core","evasion")){
-                                aeData.icon= "systems/fortyk/icons/evasion2.png";
+                            if(!actor.getFlag("core","evasion")){
+                                aeData.icon= "systems/fortyk/icons/evasion.png";
+                                aeData.flags={"fortyk":{"evasion":1}};
+                                aeData.statuses=["evasion"];
+                                aeData.duration={
+                                    rounds:0
+                                };
+                                await FortykRolls.applyActiveEffect(actor,[aeData]);
                             }else{
-                                aeData.icon= "systems/fortyk/icons/evasion.png"; 
+                                for(let ae of actor.effects){
+
+                                    if(ae.statuses.has("evasion")){
+                                        let count=ae.getFlag("fortyk","evasion");
+                                        console.log(count)
+                                        count++;
+                                        if(count>9){
+                                            count=9;
+                                        }
+                                        let update={};
+                                        update["icon"]=`systems/fortyk/icons/evasion${count}.png`;
+                                        update["flags.fortyk.evasion"]=count;
+                                        await ae.update(update);
+                                    }
+                                }
                             }
-
-
-                            aeData.flags= { core: { statusId: "evasion" } }
-                            aeData.duration={
-
-                                rounds:0
-                            };
-                            FortykRolls.applyActiveEffect(actor,[aeData]);
                         }
 
                         if(guarded){
@@ -375,7 +401,7 @@ export class FortykRollDialogs{
                   ).render(true);
     }
     static async callRangedAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
-      
+
         let template="systems/fortyk/templates/actor/dialogs/ranged-attack-dialog.html"
         let templateOptions={};
         let itemData=item;
@@ -389,7 +415,7 @@ export class FortykRollDialogs{
         }else{
             templateOptions["modifiers"].supp=false;
         }
-        
+
         templateOptions["modifiers"].suppressive=parseInt(item.system.attackMods.suppressive);
         templateOptions["modifiers"].full=parseInt(item.system.attackMods.full);
         templateOptions["modifiers"].semi=parseInt(item.system.attackMods.semi);
@@ -553,7 +579,7 @@ export class FortykRollDialogs{
 
 
             }
-            
+
             let target=targets.values().next().value;
             let tarActor=target.actor;
             let tar=tarActor;
@@ -566,7 +592,7 @@ export class FortykRollDialogs{
                 modifierTracker.push({"value":`-20`,"label":"Hard target modifier"});
             }
             templateOptions["hardTarget"]=tarActor.getFlag("fortyk","hardtarget");
-            
+
             if(tarActor.getFlag("fortyk","invisible")){
                 miscMods+=parseInt(tarActor.getFlag("fortyk","invisible"));
                 modifierTracker.push({"value":tarActor.getFlag("fortyk","invisible"),"label":"Invisible"});
@@ -859,7 +885,7 @@ export class FortykRollDialogs{
                   ).render(true);
     }
     static async callSprayAttackDialog(actor, testLabel, weapon, options, title="Enter test modifier"){
-      
+
         new Dialog({
             title: title,
             content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="0" autofocus/></p>`,

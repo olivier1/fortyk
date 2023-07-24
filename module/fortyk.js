@@ -765,16 +765,10 @@ Hooks.on('preCreateItem', (actor, data,options) =>{
 Hooks.on('createActiveEffect',async (ae,options,id)=>{
     if(game.user.isGM){
         let actor=ae.parent;
-
-
         ae.statuses.forEach(async function (value1, value2,ae){
             let flag=value1;
-
-            await actor.setFlag("core",flag,true);
-
+            await actor.setFlag("core",flag,true); 
         })
-
-
     }
 });
 //unset flags on the actor when removing an active effect if it had a flag
