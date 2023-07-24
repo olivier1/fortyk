@@ -4582,7 +4582,7 @@ returns the roll message*/
                 let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
 
                 await this.applyActiveEffect(actor,activeEffect);
-                try{
+               /* try{
                     let combatant = await game.combat.getCombatantByToken(id);
                     let combatid=combatant.id;
                     let update=[];
@@ -4590,7 +4590,7 @@ returns the roll message*/
                     console.log(await game.combat.updateEmbeddedDocuments("Combatant",update))
                 }catch(err){
                     console.log(err)
-                } 
+                } */
             }
 
 
