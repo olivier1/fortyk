@@ -2,7 +2,7 @@
     "id": "fortyk",
     "title": "fortyk",
     "description": "The fortyk system for FoundryVTT!",
-    "version": "0.10.6.1",
+    "version": "0.10.6.2",
     "compatibility": {
         "minimum": "11",
         "verified": "11.305",
@@ -25,7 +25,7 @@
             "label": "Skills",
             "system": "fortyk",
             "module": "fortyk",
-            "path": "./packs/skills.db",
+            "path": "packs/skills",
             "type": "Item",
             "tag" : "skill"
         },
@@ -34,7 +34,7 @@
             "label": "Talents (Core DH2)",
             "system": "fortyk",
             "module": "fortyk",
-            "path": "./packs/talent-core-dh2.db",
+            "path": "packs/talent-core-dh2",
             "type": "Item",
             "tag" : "talentdh2core"
         },
@@ -42,7 +42,7 @@
             "label": "Traits (Core DH2)",
             "type": "Item",
             "name": "traits-core-dh2",
-            "path": "./packs/traits-core-dh2.db",
+            "path": "packs/traits-core-dh2",
             "system": "fortyk",
             "module": "fortyk",
             "tag" : "traitdh2core"  
@@ -51,7 +51,7 @@
             "label": "Role, Homeworld & Background Bonus(Core DH2)",
             "type": "Item",
             "name": "role-homeworld-and-background-bonuscore-dh2",
-            "path": "./packs/role-homeworld-and-background-bonuscore-dh2.db",
+            "path": "packs/role-homeworld-and-background-bonuscore-dh2",
             "system": "fortyk",
             "module": "fortyk",
             "tag" : "bonusdh2core"
@@ -60,7 +60,7 @@
             "label": "Talents (Enemies Within)",
             "type": "Item",
             "name": "talents-enemies-within",
-            "path": "./packs/talents-enemies-within.db",
+            "path": "packs/talents-enemies-within",
             "system": "fortyk",
             "module": "fortyk",
             "tag" : "talentenemywithin"
@@ -69,7 +69,7 @@
             "label": "Role, Homeworld & Background Bonus(Enemies Within)",
             "type": "Item",
             "name": "role-homeworld-and-background-bonusenemies-within",
-            "path": "./packs/role-homeworld-and-background-bonusenemies-within.db",
+            "path": "packs/role-homeworld-and-background-bonusenemies-within",
             "system": "fortyk",
             "module": "fortyk",
             "tag" : "bonusenemywithin"
@@ -78,7 +78,7 @@
             "label": "Role, Homeworld & Background Bonus(Enemies Without)",
             "type": "Item",
             "name": "role-homeworld-and-background-bonusenemies-without",
-            "path": "./packs/role-homeworld-and-background-bonusenemies-without.db",
+            "path": "packs/role-homeworld-and-background-bonusenemies-without",
             "system": "fortyk",
             "module": "fortyk",
             "tag" : "bonusenemywithout"
@@ -87,7 +87,7 @@
             "label": "Talents (Enemies Without)",
             "type": "Item",
             "name": "talents-enemies-without",
-            "path": "./packs/talents-enemies-without.db",
+            "path": "packs/talents-enemies-without",
             "system": "fortyk",
             "module": "fortyk",
             "tag" : "talentenemywithout"
@@ -96,7 +96,7 @@
             "label": "Talents (Enemies Beyond)",
             "type": "Item",
             "name": "talents-enemies-beyond",
-            "path": "./packs/talents-enemies-beyond.db",
+            "path": "packs/talents-enemies-beyond",
             "system": "fortyk",
             "module": "fortyk",
             "tag" : "talentenemybeyond"
@@ -105,7 +105,7 @@
             "label": "Role, Homeworld & Background Bonus(Enemies Beyond)",
             "type": "Item",
             "name": "role-homeworld-and-background-bonusenemies-beyond",
-            "path": "./packs/role-homeworld-and-background-bonusenemies-beyond.db",
+            "path": "packs/role-homeworld-and-background-bonusenemies-beyond",
             "system": "fortyk",
             "module": "fortyk",
             "tag" : "bonusenemybeyond"
@@ -114,7 +114,7 @@
             "label": "Deathwatch Bonus and Drawbacks",
             "type": "Item",
             "name": "deathwatch-bonus-and-drawbacks",
-            "path": "./packs/deathwatch-bonus-and-drawbacks.db",
+            "path": "packs/deathwatch-bonus-and-drawbacks",
             "system": "fortyk",
             "module": "fortyk",
             "tag" : "deathwatchbonusdrawbacks"
@@ -123,7 +123,7 @@
             "label": "Deathwatch Talents",
             "type": "Item",
             "name": "deathwatch-talents",
-            "path": "./packs/deathwatch-talents.db",
+            "path": "packs/deathwatch-talents",
             "system": "fortyk",
             "module": "fortyk",
             "tag" : "deathwatchtalents"
@@ -132,7 +132,7 @@
             "label": "Homeworld and specialty Abilities (Core OW)",
             "type": "Item",
             "name": "homeworld-and-specialty-abilities-core-ow",
-            "path": "./packs/homeworld-and-specialty-abilities-core-ow.db",
+            "path": "packs/homeworld-and-specialty-abilities-core-ow",
             "system": "fortyk",
             "module": "fortyk"
 
@@ -141,7 +141,7 @@
             "label": "Talents (OW Core)",
             "type": "Item",
             "name": "talents-ow-core",
-            "path": "./packs/talents-ow-core.db",
+            "path": "packs/talents-ow-core",
             "system": "fortyk",
             "module": "fortyk"
         },
@@ -149,7 +149,7 @@
             "label": "Homeworld and Specialty Abilities (Hammer of the Emperor)",
             "type": "Item",
             "name": "homeworld-and-specialty-abilities-hammer-of-the-emperor",
-            "path": "./packs/homeworld-and-specialty-abilities-hammer-of-the-emperor.db",
+            "path": "packs/homeworld-and-specialty-abilities-hammer-of-the-emperor",
             "system": "fortyk",
             "module": "fortyk"
         },
@@ -157,7 +157,7 @@
             "label": "Talents (Hammer of the Emperor)",
             "type": "Item",
             "name": "talents-hammer-of-the-emperor",
-            "path": "./packs/talents-hammer-of-the-emperor.db",
+            "path": "packs/talents-hammer-of-the-emperor",
             "system": "fortyk",
             "module": "fortyk"
         },
@@ -165,7 +165,7 @@
             "label": "Orders (Hammer of the Emperor)",
             "type": "Item",
             "name": "orders-hammer-of-the-emperor",
-            "path": "./packs/orders-hammer-of-the-emperor.db",
+            "path": "packs/orders-hammer-of-the-emperor",
             "system": "fortyk",
             "module": "fortyk"
         },
@@ -173,7 +173,7 @@
             "label": "Homeworld and Specialty Abilities (Shield of Humanity)",
             "type": "Item",
             "name": "homeworld-and-specialty-abilities-shield-of-humanity",
-            "path": "./packs/homeworld-and-specialty-abilities-shield-of-humanity.db",
+            "path": "packs/homeworld-and-specialty-abilities-shield-of-humanity",
             "system": "fortyk",
             "module": "fortyk"
         },
@@ -181,7 +181,7 @@
             "label": "Talents (Shield of Humanity)",
             "type": "Item",
             "name": "talents-shield-of-humanity",
-            "path": "./packs/talents-shield-of-humanity.db",
+            "path": "packs/talents-shield-of-humanity",
             "system": "fortyk",
             "module": "fortyk"
         },
@@ -189,7 +189,7 @@
             "label": "Orders (Shield of Humanity)",
             "type": "Item",
             "name": "orders-shield-of-humanity",
-            "path": "./packs/orders-shield-of-humanity.db",
+            "path": "packs/orders-shield-of-humanity",
             "system": "fortyk",
             "module": "fortyk"
         },
@@ -197,7 +197,7 @@
             "label": "Melee Weapons",
             "type": "Item",
             "name": "melee-weapons",
-            "path": "./packs/melee-weapons.db",
+            "path": "packs/melee-weapons",
             "system": "fortyk",
             "module": "fortyk"
         },
@@ -205,7 +205,7 @@
             "label": "Ranged Weapons",
             "type": "Item",
             "name": "ranged-weapons",
-            "path": "./packs/ranged-weapons.db",
+            "path": "packs/ranged-weapons",
             "system": "fortyk",
             "module": "fortyk"
         },
@@ -213,7 +213,7 @@
             "label": "Custom Talents",
             "type": "Item",
             "name": "custom-talents",
-            "path": "./packs/custom-talents.db",
+            "path": "packs/custom-talents",
             "system": "fortyk",
             "module": "fortyk"
         },
@@ -221,7 +221,7 @@
             "label": "Custom Bonus And Drawbacks",
             "type": "Item",
             "name": "custom-bonus-and-drawbacks",
-            "path": "./packs/custom-bonus-and-drawbacks.db",
+            "path": "packs/custom-bonus-and-drawbacks",
             "system": "fortyk",
             "module": "fortyk"
         },
@@ -229,7 +229,7 @@
             "label": "fortykMacros",
             "type": "Macro",
             "name": "fortymacros",
-            "path": "./packs/fortykmacros.db",
+            "path": "packs/fortykmacros",
             "system": "fortyk",
             "module": "fortyk"
         },
@@ -237,14 +237,14 @@
             "label": "Vehicle Traits",
             "type": "Item",
             "name": "vehicle-traits",
-            "path": "./packs/vehicle-traits.db",
+            "path": "packs/vehicle-traits",
             "system": "fortyk"
         },
         {
             "label": "Knight Chassis",
             "type": "Item",
             "name": "knight-chassis",
-            "path": "packs/knight-chassis.db",
+            "path": "packs/knight-chassis",
             "system": "fortyk",
             "package": "system",
             "private": false
@@ -253,7 +253,7 @@
             "label": "Knight Spirits",
             "type": "Item",
             "name": "knight-spirits",
-            "path": "packs/knight-spirits.db",
+            "path": "packs/knight-spirits",
             "system": "fortyk",
             "package": "system",
             "private": false
@@ -263,7 +263,7 @@
             "label": "Knight Ranged Weapons",
             "type": "Item",
             "name": "knight-ranged-weapons",
-            "path": "packs/knight-ranged-weapons.db",
+            "path": "packs/knight-ranged-weapons",
             "system": "fortyk",
             "package": "system",
             "private": false
@@ -273,7 +273,7 @@
             "label": "Knight Melee Weapons",
             "type": "Item",
             "name": "knight-melee-weapons",
-            "path": "packs/knight-melee-weapons.db",
+            "path": "packs/knight-melee-weapons",
             "system": "fortyk",
             "package": "system",
             "private": false
@@ -282,7 +282,7 @@
             "label": "Knight Components",
             "type": "Item",
             "name": "knight-components",
-            "path": "packs/knight-components.db",
+            "path": "packs/knight-components",
             "system": "fortyk",
             "package": "system",
             "private": false
@@ -291,7 +291,7 @@
             "label": "Knight Cores",
             "type": "Item",
             "name": "knight-cores",
-            "path": "packs/knight-cores.db",
+            "path": "packs/knight-cores",
             "system": "fortyk",
             "package": "system",
             "private": false
@@ -300,7 +300,7 @@
             "label": "Wargear",
             "type": "Item",
             "name": "wargear",
-            "path": "packs/wargear.db",
+            "path": "packs/wargear",
             "system": "fortyk",
             "package": "system",
             "private": false
@@ -309,7 +309,7 @@
             "label": "Cybernetics",
             "type": "Item",
             "name": "cybernetics",
-            "path": "packs/cybernetics.db",
+            "path": "packs/cybernetics",
             "system": "fortyk",
             "package": "system",
             "private": false
@@ -318,7 +318,7 @@
             "label": "Armor",
             "type": "Item",
             "name": "armor",
-            "path": "packs/armor.db",
+            "path": "packs/armor",
             "system": "fortyk",
             "package": "system",
             "private": false
@@ -327,7 +327,7 @@
             "label": "Forcefields",
             "type": "Item",
             "name": "forcefields",
-            "path": "packs/forcefields.db",
+            "path": "packs/forcefields",
             "system": "fortyk",
             "package": "system",
             "private": false
@@ -336,7 +336,7 @@
             "label": "Drugs & Consumables",
             "type": "Item",
             "name": "drugs-and-consumables",
-            "path": "packs/drugs-and-consumables.db",
+            "path": "packs/drugs-and-consumables",
             "system": "fortyk",
             "package": "system",
             "private": false
@@ -345,7 +345,7 @@
             "label": "Psychic Powers",
             "type": "Item",
             "name": "psychic-powers",
-            "path": "packs/psychic-powers.db",
+            "path": "packs/psychic-powers",
             "system": "fortyk",
             "private": false,
             "flags": {}
@@ -368,6 +368,6 @@
     "socket": true,
     "url": "https://github.com/olivier1/fortyk",
     "manifest": "https://raw.githubusercontent.com/olivier1/fortyk/master/system.json",
-    "download": "https://github.com/olivier1/fortyk/archive/0.10.6.1.zip",
+    "download": "https://github.com/olivier1/fortyk/archive/0.10.6.2.zip",
     "license": "LICENSE.txt"
 }
