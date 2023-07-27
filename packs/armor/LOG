@@ -1,1 +1,5 @@
-2023/07/27-15:01:20.580 40c4 Delete type=3 #1
+2023/07/27-15:07:42.158 c9c Recovering log #3
+2023/07/27-15:07:42.158 c9c Level-0 table #5: started
+2023/07/27-15:07:42.166 c9c Level-0 table #5: 19489 bytes OK
+2023/07/27-15:07:42.177 c9c Delete type=0 #3
+2023/07/27-15:07:42.178 c9c Delete type=3 #2

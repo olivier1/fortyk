@@ -2,7 +2,7 @@
     "id": "fortyk",
     "title": "fortyk",
     "description": "The fortyk system for FoundryVTT!",
-    "version": "0.10.6.3.1",
+    "version": "0.10.6.3.2",
     "compatibility": {
         "minimum": "11",
         "verified": "11.305",
@@ -320,8 +320,12 @@
             "name": "armor",
             "path": "packs/armor",
             "system": "fortyk",
-            "package": "system",
-            "private": false
+            "ownership": {
+                "PLAYER": "OBSERVER",
+                "ASSISTANT": "OWNER"
+            },
+            "flags": {},
+            "package": "system"
         },
         {
             "label": "Forcefields",
@@ -368,6 +372,6 @@
     "socket": true,
     "url": "https://github.com/olivier1/fortyk",
     "manifest": "https://raw.githubusercontent.com/olivier1/fortyk/master/system.json",
-    "download": "https://github.com/olivier1/fortyk/archive/0.10.6.3.1.zip",
+    "download": "https://github.com/olivier1/fortyk/archive/0.10.6.3.2.zip",
     "license": "LICENSE.txt"
 }
