@@ -2,7 +2,7 @@
     "id": "fortyk",
     "title": "fortyk",
     "description": "The fortyk system for FoundryVTT!",
-    "version": "0.10.6.3.4",
+    "version": "0.10.6.3.5",
     "compatibility": {
         "minimum": "11",
         "verified": "11.305",
@@ -372,6 +372,6 @@
     "socket": true,
     "url": "https://github.com/olivier1/fortyk",
     "manifest": "https://raw.githubusercontent.com/olivier1/fortyk/master/system.json",
-    "download": "https://github.com/olivier1/fortyk/archive/0.10.6.3.4.zip",
+    "download": "https://github.com/olivier1/fortyk/archive/0.10.6.3.5.zip",
     "license": "LICENSE.txt"
 }
