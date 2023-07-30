@@ -92,7 +92,7 @@ export class FortykRollDialogs{
                                     }
                                     let aeData={};
                                     aeData.id="evasion";
-                                    aeData.label= "Evasion";
+                                    aeData.name= "Evasion";
                                     if(!actor.getFlag("core","evasion")){
                                         aeData.icon= "systems/fortyk/icons/evasion.png";
                                         aeData.flags={"fortyk":{"evasion":1}};
@@ -313,7 +313,7 @@ export class FortykRollDialogs{
                         if(attackType==="allout"){
                             let aeData={};
                             aeData.id="evasion";
-                            aeData.label= "Evasion";
+                            aeData.name= "Evasion";
                             if(!actor.getFlag("core","evasion")){
                                 aeData.icon= "systems/fortyk/icons/evasion.png";
                                 aeData.flags={"fortyk":{"evasion":1}};

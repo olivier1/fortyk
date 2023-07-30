@@ -25,8 +25,9 @@ returns the roll message*/
         /*if(target>100){
             target=100;
         }else*/ 
+        console.log(char,type,target,fortykWeapon)
         try{
-            let base=actor.system.characteristics[char].total;
+            let base=actor.system.characteristics[char].preGlobal;
             target=Math.max(base-60,target);
             target=Math.min(base+60,target);
         }catch(err){
@@ -4582,7 +4583,7 @@ returns the roll message*/
                 let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
 
                 await this.applyActiveEffect(actor,activeEffect);
-               /* try{
+              try{
                     let combatant = await game.combat.getCombatantByToken(id);
                     let combatid=combatant.id;
                     let update=[];
@@ -4590,7 +4591,7 @@ returns the roll message*/
                     console.log(await game.combat.updateEmbeddedDocuments("Combatant",update))
                 }catch(err){
                     console.log(err)
-                } */
+                } 
             }
 
 

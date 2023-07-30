@@ -595,6 +595,7 @@ export class FortyKActor extends Actor {
                 }
 
                 char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
+                char.preGlobal=char.total;
                 char.total+=parseInt(data.globalMOD.value);
 
             }
@@ -758,6 +759,7 @@ export class FortyKActor extends Actor {
             }else{
                 char.total=parseInt(char.value);
                 char.bonus=Math.floor(char.total/10)+parseInt(char.uB);  
+                char.preGlobal=char.total;
                 char.total+=parseInt(data.globalMOD.value);
                 //char.total=Math.min(char.total,char.max);
             }

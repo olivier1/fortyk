@@ -463,15 +463,15 @@ Hooks.on("updateCombat", async (combat) => {
                 if(activeEffect.label!=="Evasion"){
 
                     if(remaining===0){
-                        content=`${activeEffect.label} expires.`;
+                        content=`${activeEffect.name} expires.`;
                     }else{
-                        content=`${activeEffect.label} has ${remaining} rounds remaining.`;
+                        content=`${activeEffect.name} has ${remaining} rounds remaining.`;
                     }
                     let activeEffectOptions={user: game.user._id,
                                              speaker:{actor,alias:actor.name},
                                              content:content,
                                              classes:["fortyk"],
-                                             flavor:`${activeEffect.label} duration.`,
+                                             flavor:`${activeEffect.name} duration.`,
                                              author:actor.name};
                     await ChatMessage.create(activeEffectOptions,{});
                 }
