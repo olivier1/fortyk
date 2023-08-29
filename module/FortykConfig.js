@@ -144,7 +144,7 @@ FORTYK.meleeWeaponTypes=["Chain", "Force", "Power", "Shock", "Low-tech", "Exotic
 FORTYK.rangedWeaponTypes=["Bolt","Grenade", "Flame", "Las", "Melta", "Plasma", "Solid projectile", "Launcher", "Low-tech", "Exotic"]
 FORTYK.rangedWeaponClasses=[ "Basic","Pistol", "Heavy", "Thrown", "Titanic Ranged Weapon", "Titanic Artillery Weapon"]
 FORTYK.meleeWeaponClasses=["Melee", "Melee Two-handed", "Shield", "Titanic Melee Weapon"]
-FORTYK.psychicPowerTypes=["Psychic Bolt", "Psychic Barrage", "Psychic Storm", "Psychic Blast", "Buff/Debuff", "Other"]
+FORTYK.psychicPowerTypes=["Psychic Bolt", "Psychic Barrage", "Psychic Storm", "Psychic Blast", "Buff/Debuff", "Other", "Macro"]
 FORTYK.psychicDisciplines=["Biomancy","Divination","Pyromancy","Telekinesis","Telepathy","Sanctic Daemonology","Malefic Daemonology","Tzeench","Slaanesh","Nurgle","Chapter","WAAAGH!","Navigator"]
 FORTYK.spaceshipWeaponLocations=["Dorsal","Prow","Keel","Port","Starboard"]
 FORTYK.outpostTypes=["Outpost","Enclave","Stronghold"];
@@ -238,6 +238,12 @@ FORTYK.weaponFlags={
         "num": 0,
         "label": "Blast",
         "description": "Attacks from this weapon explode on impact, hurling debris and shrapnel in all directions. When working out a hit from a Blast weapon, anyone within the weapon’s blast radius in metres, indicated by the number in parentheses, is also suffers a single hit from the weapon. Roll damage once and apply it to each character affected by the blast. A Blast weapon also scatters when the user fails his Ballistic Skill test when firing it (see page 230)."
+    },
+    "blinding": {
+        "value": false,
+        "label": "Blinding",
+        "num": 0,
+        "description": "These weapons emit bliding flashes of light or toxic fumes that blind their targets. When hit with such a weapon a creature must pass an agility test with a difficulty equal to -10 times the X value of this trait or be blinded for a number of rounds equal to the degrees of failure on the test."
     },
     "bulwark": {
         "value":false,

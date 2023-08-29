@@ -107,6 +107,18 @@
             <a class="modifier button">Buff/Debuff</a>
         </div>
         {{/if}}
+        {{else if (contains system.class.value "Macro")}}
+         <div class="flexcol">
+            <label>Macro:</label>
+
+            <select class="power-char" name="system.macro.id">
+                {{#select system.macro.id}}
+                {{#each psyMacros}}
+                <option value="{{this._id}}">{{this.name}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+        </div>
         {{/if}}
     </div>
     <div class="item-description">

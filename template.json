@@ -397,6 +397,7 @@
                 "psykana": {
                     "pr": {
                         "value": 0,
+                        "bonus":0,
                         "maxPush": 0,
                         "sustain": 0,
                         "effective": 0,
@@ -1358,6 +1359,9 @@
             "cost": {
                 "value":0,
                 "type":"Number"
+            },
+            "macro":{
+                "id":""
             }
         },
         "skill": {

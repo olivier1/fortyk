@@ -93,6 +93,7 @@ export class FortykRollDialogs{
                                     let aeData={};
                                     aeData.id="evasion";
                                     aeData.name= "Evasion";
+                                    console.log(actor.flags)
                                     if(!actor.getFlag("core","evasion")){
                                         aeData.icon= "systems/fortyk/icons/evasion.png";
                                         aeData.flags={"fortyk":{"evasion":1}};
@@ -102,6 +103,8 @@ export class FortykRollDialogs{
                                             rounds:0
                                         };
                                         await FortykRolls.applyActiveEffect(actor,[aeData]);
+                                     
+                                       
                                     }else{
                                         console.log(actor)
 

@@ -748,6 +748,9 @@ Hooks.on("preDeleteCombat", async (combat,options,id) =>{
         if(actor.getFlag("fortyk","evadeMod")){
             await actor.setFlag("fortyk","evadeMod",false);
         }
+        if(actor.getFlag("core","evasion")){
+            await actor.setFlag("core","evasion",false);
+        }
     })
     for(let index = 0; index < combat.combatants.length; index++){
 

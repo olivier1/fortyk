@@ -166,6 +166,8 @@
                     <label class="list-item">Damage: <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this._id}}">{{this.system.damageFormula.value}}</a></label>
                     {{else if (contains this.system.class.value "Buff/Debuff")}}
                     <label class="list-item"><a class="buff-debuff button" data-label="{{this.name}}"data-power="{{this._id}}">Apply Buff/Debuff</a></label>
+                    {{else if (contains power.system.class.value "Macro")}}
+                    <label class="list-item"><a class="psy-macro button" data-label="{{power.name}}"data-macro="{{power.system.macro.id}}"data-power="{{this._id}}">Macro</a></label>
                     {{/if}}
 
 

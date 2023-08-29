@@ -68,6 +68,13 @@ export class FortyKItemSheet extends ItemSheet {
         if(this.actor&&this.actor.type==="vehicle"){
             data.vehicle=true;
         }
+        if(this.item.type==="psychicPower"){
+            let macroCompendium=game.packs.get("fortyk.fortykmacros");
+            let psyFolder=macroCompendium.folders.get("MQBztfL3KvhTnCw9");
+            let content=psyFolder.contents;
+            console.log(content);
+            data.psyMacros=content;
+        }
         data.item=this.item;
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];

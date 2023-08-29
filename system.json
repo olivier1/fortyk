@@ -6,7 +6,7 @@
     "compatibility": {
         "minimum": "11",
         "verified": "11.305",
-        "maximum": "11.305"
+        "maximum": "11.308"
     },
     "templateVersion": 9,
     "authors": 
@@ -228,7 +228,7 @@
         {
             "label": "fortykMacros",
             "type": "Macro",
-            "name": "fortymacros",
+            "name": "fortykmacros",
             "path": "packs/fortykmacros",
             "system": "fortyk",
             "module": "fortyk"

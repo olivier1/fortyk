@@ -82,6 +82,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.damage-roll').click(this._onDamageRoll.bind(this));
         //Psychic power buff/debuffs
         html.find('.buff-debuff').click(this._onBuffDebuff.bind(this));
+        //Psychic power macros
+        html.find('.psy-macro').click(this._onPsyMacro.bind(this));
         //autofcus modifier input
         html.find('.rollable').click(this._onRoll.bind(this));
         //repair forcefield
@@ -1015,6 +1017,16 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             });
 
         }
+    }
+    //handles executing psychic power macros
+    async _onPsyMacro(event){
+        event.preventDefault();
+        let powerId=event.currentTarget.attributes["data-power"].value;
+        let power=this.actor.getEmbeddedDocument("Item",powerId);
+        let macroId=event.currentTarget.attributes["data-macro"].value;
+        let macroCompendium=await game.packs.get("fortyk.fortykmacros");
+        let macro=await macroCompendium.getDocument(macroId);
+        macro.execute({actor:this.actor, power:power});
     }
     //handles repairing broken forcefields
     async _onRepairForcefield(event){

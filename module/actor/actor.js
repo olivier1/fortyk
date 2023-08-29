@@ -647,7 +647,8 @@ export class FortyKActor extends Actor {
             char=parseInt(char);
         }
         //prepare psyker stuff
-        data.psykana.pr.effective=parseInt(data .psykana.pr.value)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
+        console.log(data)
+        data.psykana.pr.effective=parseInt(data.psykana.pr.value)+parseInt(data.psykana.pr.bonus)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
         data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
         //get max carry weight ensure it is not out of bounds
         if((data.characteristics["s"].bonus+data.characteristics["t"].bonus)>19){
@@ -794,7 +795,7 @@ export class FortyKActor extends Actor {
         data.parry.total=data.characteristics.ws.total+parseInt(data.parry.mod)+data.evasionMod;
         data.dodge.total=data.characteristics.agi.total+parseInt(data.dodge.mod)+data.evasionMod;
         //prepare psyker stuff
-        data.psykana.pr.effective=parseInt(data .psykana.pr.value)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
+        data.psykana.pr.effective=parseInt(data.psykana.pr.value)+parseInt(data.psykana.pr.bonus)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
         data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
         data.secChar.wounds.heavy=false;
         if(!this.getFlag("fortyk","hardy")){

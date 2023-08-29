@@ -9,14 +9,20 @@
 
         </div>
         <div class="flexrow list-item">
-            <label>Sustained Powers:</label>
-            <input type="text" class="combat-resources" data-target="system.psykana.pr.sustain" value="{{system.psykana.pr.sustain}}" data-dtype="Number"/>
+            <label>Bonus PR:</label>
+            <input type="text" class="combat-resources" data-target="system.psykana.pr.bonus" value="{{system.psykana.pr.bonus}}" data-dtype="Number"/>
 
         </div>
         <div class="flexrow list-item">
             <label>Effective PR: {{system.psykana.pr.effective}}</label>
 
         </div>
+        <div class="flexrow list-item">
+            <label>Sustained Powers:</label>
+            <input type="text" class="combat-resources" data-target="system.psykana.pr.sustain" value="{{system.psykana.pr.sustain}}" data-dtype="Number"/>
+
+        </div>
+        
         <div class="flexrow list-item">
             <label>Phenomena Modifier:</label>
             <input type="text" class="combat-resources" data-target="system.psykana.phenomena.value" value="{{system.psykana.phenomena.value}}" data-dtype="Number"/>
@@ -40,7 +46,7 @@
             <label>Psy Modifier:</label>
             <input type="text" name="system.psykana.mod.value" value="{{system.psykana.mod.value}}">
         </div>
-        <div class="flexrow list-item2">
+        <div class="flexrow list-item">
             <label>Show:</label>
             <select class="psyType-select" name="system.psykana.filter" data-dtype="String">
 
@@ -147,6 +153,8 @@
                 <label class="list-item">Damage: <a class="damage-roll button" data-label="{{power.name}}"data-formula="{{power.system.damageFormula.value}}" data-weapon="{{power._id}}">{{power.system.damageFormula.value}}</a></label>
                 {{else if (contains power.system.class.value "Buff/Debuff")}}
                 <label class="list-item"><a class="buff-debuff button" data-label="{{power.name}}"data-power="{{power._id}}">Apply Buff/Debuff</a></label>
+                {{else if (contains power.system.class.value "Macro")}}
+                <label class="list-item"><a class="psy-macro button" data-label="{{power.name}}"data-macro="{{power.system.macro.id}}"data-power="{{this._id}}">Macro</a></label>
                 {{/if}}
                 <div class="list-item flexrow">
                     <span>Favorite <input type="checkbox" class="favorite" data-item-id="{{this._id}}"  {{checked this.system.favorite}}></span>

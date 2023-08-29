@@ -1824,6 +1824,23 @@ returns the roll message*/
                             }
                             damageOptions.results.push(`</div>`);
                         }
+                        //blinding weapon
+                        if(!vehicle&&!isNaN(parseInt(fortykWeapon.getFlag("fortyk","blinding")))&&!isHordelike){
+                            damageOptions.results.push(`<div class="chat-target flexcol">`)
+                            let blindMod=parseInt(fortykWeapon.getFlag("fortyk","blinding"))*10;
+                            let blind=await this.fortykTest("agi", "char", (tarActor.system.characteristics.agi.total-blindMod),tarActor, "Resist blind",null,false,"",true);
+                            damageOptions.results.push(blind.template);
+                            if(!blind.value){
+                                let id=randomID(5);
+                                damageOptions.results.push(`<label class="popup" data-id="${id}"> Blinded for ${blind.dos} rounds. <span class="popuptext chat-background" id="${id}">${tar.name} is blinded for ${blind.dos} rounds!</span></label>`)
+                                let blindActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("blind")]);
+                                blindActiveEffect.duration={
+                                    rounds:blind.dos
+                                }
+                                activeEffects.push(blindActiveEffect);
+                            }
+                            damageOptions.results.push(`</div>`) 
+                        }
                         //concussive weapon
                         if(!vehicle&&!isNaN(parseInt(fortykWeapon.getFlag("fortyk","concussive")))&&!isHordelike){
                             damageOptions.results.push(`<div class="chat-target flexcol">`)
@@ -2123,7 +2140,7 @@ returns the roll message*/
                         //Xenos Bane Logic #2
                         if(!vehicle&&tens&&deathwatch&actor.getFlag("fortyk","xenosbane")&&(actor.system.secChar.wounds.value>=curWounds)&&!isHordelike){
                             let banetest=await this.fortykTest("t", "char", (tarActor.system.characteristics.t.total),tarActor, `Resist Xenos Bane instant death`,null,false,"",true);
-                            
+
                             damageOptions.results.push(banetest.template);
                             if(!banetest.value){
                                 await this.applyDead(tar,tarActor,"Xenos Bane");
@@ -4535,6 +4552,17 @@ returns the roll message*/
                     }
                 }
                 let effects=await actor.createEmbeddedDocuments("ActiveEffect",aEs);
+                /*if(actor.isToken){
+                    console.log(actor.token)
+                    actor.token._object._refreshEffects();
+                }else{
+                    let tokens=actor.getActiveTokens();
+                    console.log(tokens)
+                    for(let i=0;i<tokens.length;i++){
+                        let token=tokens[i];
+                        token._refreshEffects();
+                    }
+                }*/
                 if (window.EffectCounter) {
                     for(let i=0;i<effects.length;i++){
 
@@ -4583,7 +4611,7 @@ returns the roll message*/
                 let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
 
                 await this.applyActiveEffect(actor,activeEffect);
-              try{
+                try{
                     let combatant = await game.combat.getCombatantByToken(id);
                     let combatid=combatant.id;
                     let update=[];
