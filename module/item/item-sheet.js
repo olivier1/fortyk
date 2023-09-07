@@ -134,13 +134,13 @@ export class FortyKItemSheet extends ItemSheet {
         ammoData["system.class.value"]=weapon.system.class.value;
         ammoData["system.damageType.value"]=weapon.system.damageType.value;
         ammoData["system.type.value"]=weapon.system.type.value;
-       // Math.round((data.knight.armorValues.value*armorRatio + Number.EPSILON) * 100) / 100;
+        // Math.round((data.knight.armorValues.value*armorRatio + Number.EPSILON) * 100) / 100;
         ammoData["system.weight.value"]=Math.round((parseFloat(weapon.system.weight.value)*0.1 + Number.EPSILON) * 100) / 100;;
         ammoData["system.damageFormula.formula"]=weapon.system.damageFormula.formula;
         ammoData["system.pen.formula"]=weapon.system.pen.formula;
         ammoData["system.range.formula"]=weapon.system.range.formula;
         this.actor.createEmbeddedDocuments("Item",[ammoData],{"renderSheet":true});
-        
+
     }
     async _onModifierClick(event){
         let item=this.item;
@@ -158,13 +158,11 @@ export class FortyKItemSheet extends ItemSheet {
                 disabled:disabled}
             await item.createEmbeddedDocuments("ActiveEffect",[modifiersData]);
         }
-        let ae={};
+        let ae=item.effects.entries().next().value[1];
 
-        if(this.item.system.transferId){
-            ae=this.item.actor.getEmbeddedDocument("ActiveEffect",this.item.system.transferId);
-        }else{
-            ae=item.effects.entries().next().value[1];
-        }
+
+        
+
 
         new ActiveEffectConfig(ae).render(true);
 

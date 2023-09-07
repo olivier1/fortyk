@@ -360,6 +360,12 @@ Hooks.once('ready', async function() {
                     actor=token.actor;
                     actor.setFlag(scope,flag,value);
                     break;
+                case "psyBuff":
+                    FortyKItem.applyPsyBuffs(data.package.actorId,data.package.powerId,data.package.targetIds);
+                    break;
+                case "cancelPsyBuff":
+                    FortyKItem.cancelPsyBuffs(data.package.actorId, data.package.powerId);
+                    break;
                 case "updateLoans":
                     let loaned=data.package.loans;
                     let update=data.package.update;
@@ -450,6 +456,24 @@ Hooks.on("updateCombat", async (combat) => {
         }
         if(actor.getFlag("fortyk","hardtargetEvasion")){
             await actor.setFlag("fortyk","hardtargetEvasion",false);
+        }
+        if(actor.system.psykana.pr.sustain>0){
+            let sustainedIds=actor.system.psykana.pr.sustained;
+           
+            let content="<span>Sustaining the following Powers: </span>"
+            for(let i=0;i<sustainedIds.length;i++){
+                let powerId=sustainedIds[i];
+                let power=actor.getEmbeddedDocument("Item",powerId);;
+                content+=`<p>${power.name} as a ${power.system.sustain.value} </p>`;
+
+            }
+            let sustainedPowersOptions={user: game.user._id,
+                                     speaker:{actor,alias:actor.name},
+                                     content:content,
+                                     classes:["fortyk"],
+                                     flavor:`Sustained Psychic Powers`,
+                                     author:actor.name};
+            await ChatMessage.create(sustainedPowersOptions,{});
         }
         var dead={};
         for(let activeEffect of actor.effects){

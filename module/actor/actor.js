@@ -18,7 +18,7 @@ export class FortyKActor extends Actor {
         }
         data.items = [];
         //initialise starting skills
-        
+
         if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship" && data.type!=="vehicle" && data.type!=="knightHouse"){
             let startingSkills= await getSkills();
             for(let s of startingSkills){
@@ -210,7 +210,7 @@ export class FortyKActor extends Actor {
         }
         data.evasion=0;
         data.evasionMod=0;
-
+        data.psykana.pr.sustain=data.psykana.pr.sustained.length;
         //initialize skill modifiers from active events so that they are integers
         this.items.forEach((fortykItem,id,items)=>{
             let item=fortykItem;
@@ -386,7 +386,7 @@ export class FortyKActor extends Actor {
                     if(this.setFlag("fortyk", "irongrip")!==item.getFlag("fortyk","irongrip")){
                         this.setFlag("fortyk", "irongrip",item.getFlag("fortyk","irongrip"));
                     }
-                    
+
                 }
                 if(item.type==="forceField"&&item.system.isEquipped){
                     data.secChar.wornGear.forceField=item;
@@ -497,14 +497,23 @@ export class FortyKActor extends Actor {
     //OVERRIDE
     //custom function to manage effects that are linked to equippable items
     applyActiveEffects(){
+
         let actor=this;
         let actorData=this;
         let data=this.system;
+        let selfPsy=[];
         this.effects.forEach(function(ae,id){
             if(!ae.disabled){
+                var powerActor=fromUuidSync(ae.origin);
+                if(powerActor&&(powerActor.id===actor.id)){
+                    console.log("hey")
+                    selfPsy.push(ae);
+                    return;
+                }
                 let proceed=false;
-                //check if ae is from an item
-                if(ae.origin){
+                //check if ae is from an item if it origins drom a psychic power skip
+                if(!ae.getFlag("fortyk","psy")&&ae.origin){
+
                     let itemId=ae.origin.split('.')[3];
                     let item=actor.getEmbeddedDocument("Item",itemId);
                     if(item){
@@ -521,6 +530,21 @@ export class FortyKActor extends Actor {
                 //if item is equipped and/or not disabled
                 if(proceed){
                     ae.changes.forEach(function(change,i){
+                        if(ae.getFlag("fortyk","psy")){
+                            let adjustment=ae.getFlag("fortyk","adjustment");
+
+                            if(!powerActor.isPrepared){
+                                powerActor.prepareData();
+                            }
+                            let actorPr=powerActor.system.psykana.pr.effective;
+                            let pr=actorPr-adjustment
+                            try{
+                                change.value=Math.ceil(Function(`let pr=${pr};return `+change.value)());
+                                console.log(change)
+                            }catch (err){
+                                change.value=0; 
+                            }
+                        }
                         let basevalue=parseFloat(objectByString(actorData,change.key));
 
                         let newvalue=parseFloat(change.value);
@@ -537,6 +561,7 @@ export class FortyKActor extends Actor {
                                 setNestedKey(actorData,path,changedValue);
                             }else if(change.mode===2){
                                 changedValue=basevalue+newvalue;
+                                console.log(actorData,path,changedValue);
                                 setNestedKey(actorData,path,changedValue);
                             }else if(change.mode===3){
                                 if(change.value<basevalue){
@@ -555,13 +580,73 @@ export class FortyKActor extends Actor {
                             }
                         }else{
                             if(change.mode===0){
+                                console.log(path)
                                 setNestedKey(actorData,path,change.value);
                             }
                         }
                     })
                 }
             }
-        })
+        });
+        if(selfPsy.length>0){
+            let pr=this.system.psykana.pr.value+this.system.psykana.pr.bonus-Math.max(0,this.system.psykana.pr.sustain-1);
+            for(let i=0;i<selfPsy.length;i++){
+                let ae=selfPsy[i];
+                ae.changes.forEach(function(change,i){
+                    if(ae.getFlag("fortyk","psy")){
+                        let adjustment=ae.getFlag("fortyk","adjustment");
+
+
+
+                        pr=pr-adjustment;
+                        try{
+                            change.value=Math.ceil(Function(`let pr=${pr};return `+change.value)());
+                            console.log(change)
+                        }catch (err){
+                            change.value=0; 
+                        }
+                    }
+                    let basevalue=parseFloat(objectByString(actorData,change.key));
+
+                    let newvalue=parseFloat(change.value);
+                    let path=change.key.split(".");
+                    /*if(newvalue>=0){
+                            newvalue=Math.ceil(newvalue);
+                        }else{
+                            newvalue=Math.floor(newvalue);
+                        }*/
+                    if((!isNaN(basevalue)&&!isNaN(newvalue))){
+                        let changedValue=0;
+                        if(change.mode===1){
+                            changedValue=basevalue*newvalue
+                            setNestedKey(actorData,path,changedValue);
+                        }else if(change.mode===2){
+                            changedValue=basevalue+newvalue;
+                            setNestedKey(actorData,path,changedValue);
+                        }else if(change.mode===3){
+                            if(change.value<basevalue){
+                                changedValue=newvalue;
+                                setNestedKey(actorData,path,changedValue);
+                            }
+                        }else if(change.mode===4){
+                            if(change.value>basevalue){
+                                changedValue=newvalue;
+                                setNestedKey(actorData,path,changedValue);
+                            }
+                        }else if(change.mode===5){
+                            setNestedKey(actorData,path,newvalue);
+                        }else if(change.mode===0){
+                            setNestedKey(actorData,path,change.value);
+                        }
+                    }else{
+                        if(change.mode===0){
+                            console.log(path)
+                            setNestedKey(actorData,path,change.value);
+                        }
+                    }
+                })
+            }
+        }
     }
     prepareDerivedData() {
         const actorData = this;
@@ -1523,18 +1608,9 @@ export class FortyKActor extends Actor {
     }
     //when creating active effects check if they are transferred from an item, if so give the active effect flag to the item for referrence.
     _onCreateDescendantDocuments(parent, collection, documents, data, options, userId){
-       
 
-        if(collection==="effects"){
-            let actor=this;
-            documents.forEach(async function(item,i){
-                if(item&&item.origin){
-                    let powerId=item.origin.split('.')[3];
-                    let power=actor.getEmbeddedDocument("Item",powerId);
-                    await power.update({"system.transferId":item.id})
-                }
-            })
-        }
+
+
         if(this.type==="knightHouse"){
             this.updateKnights();
         }

@@ -124,12 +124,16 @@
 }
 .button{
     text-align:center;
+    align-items: center;
     border-style:inset;
     border-color:dimgray;
     border-width: medium;
     padding:5px;
     display:grid;
     background-image: url(../../../ui/parchment.jpg);
+}
+.psy-macro{
+    height: 100%;
 }
 .flex-between {
     -webkit-box-pack: justify;

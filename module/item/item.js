@@ -51,7 +51,7 @@ export class FortyKItem extends Item {
                             let knight=await game.actors.get(loaned[i].knightId);
                             let update=duplicate(data);
                             update["_id"]=loaned[i].itemId;
-                            
+
                             try{
                                 await knight.updateEmbeddedDocuments("Item",[update]);
                             }catch(err){
@@ -483,6 +483,83 @@ export class FortyKItem extends Item {
 
     }
 
+    static async applyPsyBuffs(actorId, powerId, targetIds){
+        if(game.user.isGM){
+            let actor=await fromUuid(actorId);
+            let power=actor.getEmbeddedDocument("Item",powerId);
+            let targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
 
+            let ae=power.effects.entries().next().value[1];
+            console.log(ae)
+            let aeData=deepClone(ae).data;
+
+            aeData.name=ae.name+" Buff"
+            let actorPR=actor.system.psykana.pr.effective;
+            let powerPR=power.system.curPR.value;
+            let adjustment=actorPR-powerPR;
+
+            aeData.flags={fortyk:{adjustment:adjustment,psy:true}};
+            aeData.disabled=false;
+            aeData.origin=actorId;
+            let effectUuIds=[]
+            for(let i=0; i<targets.length;i++){
+                let target=targets[i];
+
+                let targetActor=target.actor;
+                let effect=await targetActor.createEmbeddedDocuments("ActiveEffect",[aeData]);
+
+                let ae=effect[0];
+                let effectuuid=await ae.uuid
+
+                effectUuIds.push(effectuuid);
+            }
+
+
+
+            await power.setFlag("fortyk","sustained",effectUuIds);
+            if(power.system.sustain.value!=="No"){
+                let sustained=actor.system.psykana.pr.sustained;
+                sustained.push(power.id);
+                actor.update({"system.psykana.pr.sustained":sustained});
+            }
+
+        }else{
+            //if user isnt GM use socket to have gm apply the buffs/debuffs
+
+
+            let socketOp={type:"psyBuff",package:{actorId:actorId, powerId:powerId, targetIds:targetIds}};
+            await game.socket.emit("system.fortyk",socketOp);
+
+        }
+    }
+    static async cancelPsyBuffs(actorId, powerId){
+        if(game.user.isGM){
+            let power=await fromUuid(powerId);
+            let buffs=power.getFlag("fortyk","sustained");
+            for(let i=0;i<buffs.length;i++){
+                let buffId=buffs[i];
+                let buff=await fromUuid(buffId);
+                try{
+                    await buff.delete();
+                }catch(err){
+
+                }
+
+            }
+            await power.setFlag("fortyk","sustained",false);
+            let actor=await fromUuid(actorId);
+            let sustained=actor.system.psykana.pr.sustained;
+            let powerIndex=sustained.indexOf(power.id);
+            sustained.splice(powerIndex,1);
+            console.log(sustained)
+            actor.update({"system.psykana.pr.sustained":sustained});
+        }else{
+            //if user isnt GM use socket to have gm cancel the buffs/debuffs
+
+
+            let socketOp={type:"cancelPsyBuff",package:{actorId:actorId, powerId:powerId}};
+            await game.socket.emit("system.fortyk",socketOp); 
+        }
+    }
 }
 

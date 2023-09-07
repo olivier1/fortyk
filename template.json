@@ -400,6 +400,7 @@
                         "bonus":0,
                         "maxPush": 0,
                         "sustain": 0,
+                        "sustained":[],
                         "effective": 0,
                         "type": "Number"
                     },

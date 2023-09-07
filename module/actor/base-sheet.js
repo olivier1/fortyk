@@ -82,6 +82,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.damage-roll').click(this._onDamageRoll.bind(this));
         //Psychic power buff/debuffs
         html.find('.buff-debuff').click(this._onBuffDebuff.bind(this));
+        //Cancel Sustained buffs/debuffs
+        html.find('.cancel-buff').click(this._onCancelBuffs.bind(this));
         //Psychic power macros
         html.find('.psy-macro').click(this._onPsyMacro.bind(this));
         //autofcus modifier input
@@ -275,7 +277,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }else{
             update[updatePath].reverse=true;
         }
-   
+
         await this.actor.update(update);
 
     }
@@ -488,7 +490,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                 let spec=itemData.system.specialisation.value;
                                 let flag=itemData.system.flagId.value;
                                 if(!actor.getFlag("fortyk",flag)){
-                                    
+
                                     if(spec==="N/A"){
 
                                         await actor.setFlag("fortyk",flag,true);
@@ -655,7 +657,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             this.actor.update({"system.secChar.tempMod.value":0});
         }
 
-    
+
         var testLabel=dataset["label"];
         var testChar=dataset["char"];
         let rating=dataset["rating"];
@@ -713,7 +715,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
             attackOptions.selfBlind=this.actor.getFlag("core","blind");
             attackOptions.distance=tokenDistance(target, attacker);
-            
+
             let attackerElevation=attacker.elevation;
             let targetElevation=target.elevation;
             attackOptions.elevation=attackerElevation-targetElevation;
@@ -729,9 +731,16 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             return;
         }
         if(testType==="focuspower"){
-            let pr=dataset["pr"];
-            console.log(dataset)
-            testLabel+=` at PR ${pr}`;
+            if(this.actor.system.psykana.psykerType.value!=="navigator"){
+                console.log(this.actor)
+                let pr=dataset["pr"];
+                console.log(dataset)
+                testLabel+=` at PR ${pr}`; 
+            }else{
+                let training=item.system.training.value;
+                testLabel+=` at ${training} training`; 
+            }
+
             FortykRollDialogs.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
             return;
         }
@@ -800,9 +809,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                             const pen = parseInt(Number($(el).find('input[name="pen"]').val()));
                             const magdmg = parseInt(Number($(el).find('input[name="magdmg"]').val()));
                             const rerollNum = parseInt(Number($(el).find('input[name="reroll"]').val()));
-                            
+
                             formula.value+=`+${dmg}`;
-                            
+
                             if(game.user.isGM){
                                 FortykRolls.damageRoll(formula,actor,fortykWeapon,hits,false,false,magdmg,pen,rerollNum); 
                             }else{
@@ -926,14 +935,14 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             default: "submit",
             width:100}).render(true)});
 
-        
+
 
     }
     getBlastTargets(templates, scene){
         let tokens=scene.tokens;
         let targets=[];
         let gridRatio=scene.dimensions.size/scene.dimensions.distance;
-     
+
         for(let i=0;i<templates.length;i++){
             let targetted=[];
             let template=templates[i];
@@ -941,7 +950,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             bounds.x=template.x;
             bounds.y=template.y;
             tokens.forEach((token,id,tokens)=>{
-                
+
                 let tokenBounds=token._object.bounds;
                 let bottomIn=false;
                 let topIn=false;
@@ -977,9 +986,12 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let targets=game.user.targets;
         if(targets.size>0){
 
+
+
             const element = event.currentTarget;
             const dataset = element.dataset;
             let powerId=dataset["power"];
+            /*
             let label=dataset["label"];
             let power=this.actor.getEmbeddedDocument("Item",powerId);
             let ae=power.effects.entries().next().value[1];
@@ -987,7 +999,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 ae=this.actor.effects.get(power.system.transferId);
             }
             let aeData=duplicate(ae);
-            
+
             aeData.name=ae.name+" Buff"
             let pr=power.system.curPR.value;
             aeData.changes.forEach(function(change){
@@ -1015,8 +1027,19 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 FortykRolls.applyActiveEffect(target,[aeData]);
 
             });
-
+            */
+            FortyKItem.applyPsyBuffs(this.actor.uuid, powerId, targets.ids)
+        }else{
+            ui.notifications.error("You must have targets to apply buffs or debuffs.");
         }
+    }
+    //handles cancelling buff/debuffs
+    async _onCancelBuffs(event){
+        event.preventDefault();
+        const element = event.currentTarget;
+        const dataset = element.dataset;
+        let powerId=dataset["power"];
+        FortyKItem.cancelPsyBuffs(this.actor.uuid, powerId);
     }
     //handles executing psychic power macros
     async _onPsyMacro(event){

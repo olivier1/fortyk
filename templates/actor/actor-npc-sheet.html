@@ -717,7 +717,11 @@
                         {{/if}}
                         <label class="list-item">Damage: <a class="damage-roll button" data-label="{{power.name}}"data-formula="{{power.system.damageFormula.value}}" data-weapon="{{power._id}}">{{power.system.damageFormula.value}}</a></label>
                         {{else if (contains power.system.class.value "Buff/Debuff")}}
+                        {{#if power.flags.fortyk.sustained}}
+                        <label class="list-item"><a class="cancel-buff button" data-label="{{power.name}}"data-power="{{power.uuid}}">Dispel Power</a></label>
+                        {{else}}
                         <label class="list-item"><a class="buff-debuff button" data-label="{{power.name}}"data-power="{{power._id}}">Apply Buff/Debuff</a></label>
+                        {{/if}}
                         {{else if (contains power.system.class.value "Macro")}}
                         <label class="list-item"><a class="psy-macro button" data-label="{{power.name}}"data-macro="{{power.system.macro.id}}"data-power="{{this._id}}">Macro</a></label>
                         {{/if}}

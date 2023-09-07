@@ -1358,7 +1358,7 @@ returns the roll message*/
                             //razor sharp weapons
                             if(fortykWeapon.getFlag("fortyk","razorsharp")&&lastHit.dos>=3){
                                 pen=pen*2;
-                                damageOptions.results.push(`Razor Sharp doubles penetration to ${pen}</span>`);
+                                damageOptions.results.push(`<span>Razor Sharp doubles penetration to ${pen}</span>`);
                             }
                             //lance weapons
                             if(fortykWeapon.getFlag("fortyk","lance")){
