@@ -366,6 +366,8 @@ Hooks.once('ready', async function() {
                 case "cancelPsyBuff":
                     FortyKItem.cancelPsyBuffs(data.package.actorId, data.package.powerId);
                     break;
+                case "psyMacro":
+                    FortyKItem.executePsyMacro(data.package.powerId, data.package.macroId, data.package.actorId, data.package.targetIds);
                 case "updateLoans":
                     let loaned=data.package.loans;
                     let update=data.package.update;

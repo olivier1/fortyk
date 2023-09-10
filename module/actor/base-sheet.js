@@ -1045,11 +1045,23 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     async _onPsyMacro(event){
         event.preventDefault();
         let powerId=event.currentTarget.attributes["data-power"].value;
-        let power=this.actor.getEmbeddedDocument("Item",powerId);
         let macroId=event.currentTarget.attributes["data-macro"].value;
-        let macroCompendium=await game.packs.get("fortyk.fortykmacros");
-        let macro=await macroCompendium.getDocument(macroId);
-        macro.execute({actor:this.actor, power:power});
+        let targetIds=game.user.targets.ids;
+        if(targetsIds.size===0){
+            ui.notifications.error("You must have targets to run psychic power macros.");
+            return;
+        }
+        if(game.user.isGM){
+
+            FortyKItem.executePsyMacro(powerId, macroId, this.actor.uuid, targetIds);
+        }else{
+            //if user isnt GM use socket to have gm process the damage roll
+
+           
+            let socketOp={type:"psyMacro",package:{powerId:powerId, macroId:macroId, actorId:this.actor.uuid, targetIds:targetIds}};
+            await game.socket.emit("system.fortyk",socketOp);
+        }
+
     }
     //handles repairing broken forcefields
     async _onRepairForcefield(event){

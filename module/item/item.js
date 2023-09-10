@@ -78,6 +78,7 @@ export class FortyKItem extends Item {
    * Augment the basic Item data model with additional dynamic data.
    */
     async prepareData() {
+
         super.prepareData();
 
         // Get the Item's data
@@ -89,6 +90,7 @@ export class FortyKItem extends Item {
         //ensure this is an owned item
 
         if(this.actor){
+            
             const data = this.actor.system;
             let actor=this.actor;
             item.isPrepared=true;
@@ -128,7 +130,32 @@ export class FortyKItem extends Item {
                     item.system.knightComponentType=item.type;
                 }
             }
+            if(item.type==="forceField"){
+                //logic for the sanctuary forcefields
+                if(item.getFlag("fortyk","adjustment")){
+                    let caster=fromUuidSync(item.getFlag("fortyk","origin"));
+                    let actorPr
+                    if(caster.uuid!==actor.uuid){
+                        if(!caster.isPrepared){
+                            caster.prepareData();
+                        }
+                        actorPr=caster.system.psykana.pr.effective;
+                    }else{
+                        actorPr=actor.system.psykana.pr.value+actor.system.psykana.pr.bonus-Math.max(0,actor.system.psykana.pr.sustain-1);
+                    }
+                    let adjustment=item.getFlag("fortyk","adjustment");
 
+                    let pr=actorPr-adjustment
+                    let max=80;
+                    if(item.getFlag("fortyk","sanctuary")){
+                        item.system.rating.value=Math.min(max,5*pr);
+                    } 
+                    if(item.getFlag("fortyk","sanctuaryDaemon")){
+                        item.system.rating.value=Math.min(max,10*pr);
+                    }
+                }
+
+            }
             if(item.type==="meleeWeapon"){
                 item.system.damageFormula.value=item.system.damageFormula.formula;
                 item.system.range.value=item.system.range.formula;
@@ -560,6 +587,14 @@ export class FortyKItem extends Item {
             let socketOp={type:"cancelPsyBuff",package:{actorId:actorId, powerId:powerId}};
             await game.socket.emit("system.fortyk",socketOp); 
         }
+    }
+    static async executePsyMacro(powerId,macroId,actorId,targets){
+        let actor=fromUuidSync(actorId);
+        let power=actor.getEmbeddedDocument("Item",powerId);
+        console.log(actor)
+        let macroCompendium=await game.packs.get("fortyk.fortykmacros");
+        let macro=await macroCompendium.getDocument(macroId);
+        macro.execute({actor:actor, power:power, targets:targets});
     }
 }
 

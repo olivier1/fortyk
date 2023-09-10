@@ -1,8 +1,8 @@
 let actor=scope.power.actor;
 let power=scope.power;
 let healing=Math.ceil(power.system.curPR.value/2);
-
-let targets=game.user.targets;
+let targetIds=scope.targets;
+let targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
 for(const target of targets){
     let chatFirstAid={user: game.users.current,
                       speaker:{user: game.users.current},

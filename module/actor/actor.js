@@ -159,12 +159,12 @@ export class FortyKActor extends Actor {
     /**
    * Augment the basic actor data with additional dynamic data.
    */
-    prepareData(){
+    prepareData(refresh=false){
         if (!this.img) this.img = CONST.DEFAULT_TOKEN;
         if ( !this.name ) this.name = "New " + this.entity;
 
         this.prepareBaseData();
-        this.prepareEmbeddedEntities();
+        this.prepareEmbeddedEntities(refresh);
         this.prepareDerivedData();
         this.isPrepared=true;
     }
@@ -290,11 +290,11 @@ export class FortyKActor extends Actor {
     }
     /*OVERRIDE
     *Prepare the sub documents and apply changes to the actor resulting*/
-    prepareEmbeddedEntities(){
+    prepareEmbeddedEntities(refresh=false){
 
         let actorData=this;
         if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC'){
-            this.applyActiveEffects();
+            this.applyActiveEffects(refresh);
             let items=this.items;
             const data=this.system;
             data.experience.earned=0;
@@ -403,7 +403,7 @@ export class FortyKActor extends Actor {
             data.experience.value=parseInt(data.experience.starting)+parseInt(data.experience.earned)-parseInt(data.experience.spent);
         }
         else if(actorData.type === 'npc'){
-            this.applyActiveEffects();
+            this.applyActiveEffects(refresh);
             let items=this.items;
             const data=this.system;
             this.items.forEach((fortykItem,id,items)=>{
@@ -496,7 +496,7 @@ export class FortyKActor extends Actor {
     }
     //OVERRIDE
     //custom function to manage effects that are linked to equippable items
-    applyActiveEffects(){
+    applyActiveEffects(refresh=false){
 
         let actor=this;
         let actorData=this;
@@ -530,11 +530,13 @@ export class FortyKActor extends Actor {
                 //if item is equipped and/or not disabled
                 if(proceed){
                     ae.changes.forEach(function(change,i){
-                        if(ae.getFlag("fortyk","psy")){
+                        if(!refresh&&ae.getFlag("fortyk","psy")){
                             let adjustment=ae.getFlag("fortyk","adjustment");
-
+                            console.log(refresh,actor, powerActor)
                             if(!powerActor.isPrepared){
-                                powerActor.prepareData();
+                                let clone=deepClone(powerActor);
+                                clone.prepareData(true);
+                                powerActor=clone;
                             }
                             let actorPr=powerActor.system.psykana.pr.effective;
                             let pr=actorPr-adjustment

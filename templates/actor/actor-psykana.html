@@ -158,7 +158,11 @@
                 <label class="list-item"><a class="buff-debuff button" data-label="{{power.name}}"data-power="{{power._id}}">Apply Buff/Debuff</a></label>
                 {{/if}}
                 {{else if (contains power.system.class.value "Macro")}}
+                {{#if power.flags.fortyk.sustained}}
+                <label class="list-item"><a class="cancel-buff button" data-label="{{power.name}}"data-power="{{power.uuid}}">Dispel Power</a></label>
+                {{else}}
                 <label class="list-item"><a class="psy-macro button" data-label="{{power.name}}"data-macro="{{power.system.macro.id}}"data-power="{{this._id}}">Macro</a></label>
+                {{/if}}
                 {{/if}}
                 <div class="list-item flexrow">
                     <span>Favorite <input type="checkbox" class="favorite" data-item-id="{{this._id}}"  {{checked this.system.favorite}}></span>
