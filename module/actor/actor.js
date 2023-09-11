@@ -57,7 +57,7 @@ export class FortyKActor extends Actor {
     }
     //@Override the update function to modify token size for hordes and larger entities
     async update(data, options={}) {
-
+        
         let actor=this;
         let actorData=actor;
         if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC' || actorData.type === 'npc'|| actorData.type === 'vehicle'){
@@ -160,9 +160,10 @@ export class FortyKActor extends Actor {
    * Augment the basic actor data with additional dynamic data.
    */
     prepareData(refresh=false){
+        
         if (!this.img) this.img = CONST.DEFAULT_TOKEN;
         if ( !this.name ) this.name = "New " + this.entity;
-
+        //this.reset();
         this.prepareBaseData();
         this.prepareEmbeddedEntities(refresh);
         this.prepareDerivedData();
@@ -506,7 +507,7 @@ export class FortyKActor extends Actor {
             if(!ae.disabled){
                 var powerActor=fromUuidSync(ae.origin);
                 if(powerActor&&(powerActor.id===actor.id)){
-                    console.log("hey")
+                    
                     selfPsy.push(ae);
                     return;
                 }
@@ -532,9 +533,8 @@ export class FortyKActor extends Actor {
                     ae.changes.forEach(function(change,i){
                         if(!refresh&&ae.getFlag("fortyk","psy")){
                             let adjustment=ae.getFlag("fortyk","adjustment");
-                            console.log(refresh,actor, powerActor)
                             if(!powerActor.isPrepared){
-                                let clone=deepClone(powerActor);
+                                let clone=powerActor.clone();
                                 clone.prepareData(true);
                                 powerActor=clone;
                             }
@@ -1744,7 +1744,55 @@ export class FortyKActor extends Actor {
         if(this.system.riding){
             this.updateVehicle();
         }
+        //handle if psy rating changed to update sustained powers
+        let psy=false;
+        try{
+            psy=changed.system.psykana.pr.sustained;
+        }catch(err){}
+        if(psy!==undefined){
+            this.updateSustainedActors();
+        }
+        let pr=false;
+        try{
+            pr=changed.system.psykana.pr.bonus;
+        }catch(err){}
+        if(pr!==undefined){
+            this.updateSustainedActors();
+        }
+        try{
+            pr=changed.system.psykana.pr.value;
+        }catch(err){}
+        if(pr!==undefined){
+            this.updateSustainedActors();
+        }
         super._onUpdate(changed, options, userId);
+    }
+    updateSustainedActors(){
+       
+        let sustained=this.system.psykana.pr.sustained;
+        let actors=[];
+        for(let i=0; i<sustained.length; i++){
+            let power=this.getEmbeddedDocument("Item", sustained[i]);
+            let effectIds=power.getFlag("fortyk","sustained");
+            for(let j=0; j<effectIds.length; j++){
+                let effect=fromUuidSync(effectIds[j]);
+                if(effect){
+                    let effectActor=effect.parent;
+                   
+                    if(effectActor.id!==this.id){
+                        effectActor._initialize(); 
+                    }
+                    let apps=effectActor.apps;
+                    Object.values(apps).forEach(app => {
+                        app.render(true);
+                    }); 
+                    actors.push(effectActor.uuid);
+                }
+
+            }
+        }
+        let socketOp={type:"prepActors",package:{actors:actors}}
+        game.socket.emit("system.fortyk",socketOp);
     }
     async updateVehicle(){
         let actor=game.actors.get(this.system.riding.id);

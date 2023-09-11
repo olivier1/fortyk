@@ -216,8 +216,22 @@ Hooks.once('ready', async function() {
             }, options);
             dlg.render(true); 
         }
+        let actors
+        if(data.type==="prepActors"){
+            actors=data.package.actors;
+            for(let i=0; i<actors.length; i++){
+                let actor=fromUuidSync(actors[i]);
+                actor._initialize();
+                if(actor){
+                    let apps=actor.apps;
+                    Object.values(apps).forEach(app => {
+                        app.render(true);
+                    }); 
+                }
+            }
+        }
         if(data.type==="renderSheets"){
-            let actors=data.package.actors;
+            actors=data.package.actors;
 
             for(let i=0;i<actors.length;i++){
                 let actor=await game.actors.get(actors[i]);
