@@ -518,7 +518,7 @@ export class FortyKItem extends Item {
 
             let ae=power.effects.entries().next().value[1];
             console.log(ae)
-            let aeData=deepClone(ae).data;
+            let aeData=ae.clone().data;
 
             aeData.name=ae.name+" Buff"
             let actorPR=actor.system.psykana.pr.effective;
