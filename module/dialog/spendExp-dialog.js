@@ -727,9 +727,11 @@ export class SpendExpDialog extends Application {
             // a must be equal to b
             return 0;
         });
-
+        let disciplines=Object.values(actor.system.psykana.disciplines);
+        
+        console.log(disciplines)
         let map=powers.reduce(function(map,power){
-            if(!actor.getFlag("fortyk",power.id)){
+            if(!actor.getFlag("fortyk",power.id)&&(disciplines.includes(power.system.discipline.value))){
                 map[power.id]=power;  
             }
 

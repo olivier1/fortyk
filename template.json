@@ -416,7 +416,7 @@
                         "value": 0,
                         "type": "Number"
                     },
-                    "disciplines":[]
+                    "disciplines":{}
                 },
                 "suddenDeath": {
                     "value": false,

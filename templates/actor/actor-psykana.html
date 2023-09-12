@@ -22,7 +22,7 @@
             <input type="text" class="combat-resources" data-target="system.psykana.pr.sustain" value="{{system.psykana.pr.sustain}}" data-dtype="Number" disabled/>
 
         </div>
-        
+
         <div class="flexrow list-item">
             <label>Phenomena Modifier:</label>
             <input type="text" class="combat-resources" data-target="system.psykana.phenomena.value" value="{{system.psykana.phenomena.value}}" data-dtype="Number"/>
@@ -61,7 +61,72 @@
 
 
     </div>
-    <a class="item-create button" data-type="psychicPower" title="Add a new Psychic Power">Add Psychic Power</a>
+    {{#unless (contains system.psykana.psykerType.value "navigator")}}
+    <div class="flex-group-center">
+        <span class="section-title">Psychic Disciplines</span>
+        <div class="grid grid-3col">
+
+            <select class="apt1-select" name="system.psykana.disciplines.0" data-dtype="String">
+                {{#select system.psykana.disciplines.[0]}}
+                <option value="">None</option>
+                {{#each psyDisciplines as |apt|}}
+
+                <option value="{{apt}}">{{apt}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+            <select class="apt1-select" name="system.psykana.disciplines.1" data-dtype="String">
+                {{#select system.psykana.disciplines.[1]}}
+                <option value="">None</option>
+                {{#each psyDisciplines as |apt|}}
+
+                <option value="{{apt}}">{{apt}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+            <select class="apt1-select" name="system.psykana.disciplines.2" data-dtype="String">
+                {{#select system.psykana.disciplines.[2]}}
+                <option value="">None</option>
+                {{#each psyDisciplines as |apt|}}
+
+                <option value="{{apt}}">{{apt}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+            <select class="apt1-select" name="system.psykana.disciplines.3" data-dtype="String">
+                {{#select system.psykana.disciplines.[3]}}
+                <option value="">None</option>
+                {{#each psyDisciplines as |apt|}}
+
+                <option value="{{apt}}">{{apt}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+            <select class="apt1-select" name="system.psykana.disciplines.4" data-dtype="String">
+                {{#select system.psykana.disciplines.[4]}}
+                <option value="">None</option>
+                {{#each psyDisciplines as |apt|}}
+
+                <option value="{{apt}}">{{apt}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+            <select class="apt1-select" name="ssystem.psykana.disciplines.5" data-dtype="String">
+                {{#select system.psykana.disciplines.[5]}}
+                <option value="">None</option>
+                {{#each psyDisciplines as |apt|}}
+
+                <option value="{{apt}}">{{apt}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+
+
+        </div>
+    </div>
+
+    {{/unless}}
+    <a class="item-create button" data-type="psychicPower" title="Add a new Psychic Power">Add Custom Psychic Power</a>
     <div class="psy-powers grid grid-2col">
         {{#each actor.psychicPowers as |power key|}}
         <div class="list-item flexcol">
@@ -145,7 +210,7 @@
                 </div>
                 {{#if (contains power.system.class.value "psychic")}}
                 {{#if power.flags.fortyk.spray}}
-                
+
                 <label class="list-item">
                     <label>Attack: </label>
                     <span class="spray-attack rollable powerItem button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span></label>
