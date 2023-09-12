@@ -63,8 +63,8 @@
     </div>
     {{#unless (contains system.psykana.psykerType.value "navigator")}}
     <div class="flex-group-center">
-        <span class="section-title">Psychic Disciplines</span>
-        <div class="grid grid-3col">
+        <span class="section-title">Known Psychic Disciplines</span>
+        <div class="grid grid-4col">
 
             <select class="apt1-select" name="system.psykana.disciplines.0" data-dtype="String">
                 {{#select system.psykana.disciplines.[0]}}
@@ -113,6 +113,24 @@
             </select>
             <select class="apt1-select" name="ssystem.psykana.disciplines.5" data-dtype="String">
                 {{#select system.psykana.disciplines.[5]}}
+                <option value="">None</option>
+                {{#each psyDisciplines as |apt|}}
+
+                <option value="{{apt}}">{{apt}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+            <select class="apt1-select" name="ssystem.psykana.disciplines.6" data-dtype="String">
+                {{#select system.psykana.disciplines.[6]}}
+                <option value="">None</option>
+                {{#each psyDisciplines as |apt|}}
+
+                <option value="{{apt}}">{{apt}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+            <select class="apt1-select" name="ssystem.psykana.disciplines.7" data-dtype="String">
+                {{#select system.psykana.disciplines.[7]}}
                 <option value="">None</option>
                 {{#each psyDisciplines as |apt|}}
 
