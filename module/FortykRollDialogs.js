@@ -93,7 +93,6 @@ export class FortykRollDialogs{
                                     let aeData={};
                                     aeData.id="evasion";
                                     aeData.name= "Evasion";
-                                    console.log(actor.flags)
                                     if(!actor.getFlag("core","evasion")){
                                         aeData.icon= "systems/fortyk/icons/evasion.png";
                                         aeData.flags={"fortyk":{"evasion":1}};
@@ -106,13 +105,11 @@ export class FortykRollDialogs{
                                      
                                        
                                     }else{
-                                        console.log(actor)
 
                                         for(let ae of actor.effects){
 
                                             if(ae.statuses.has("evasion")){
                                                 let count=ae.getFlag("fortyk","evasion");
-                                                console.log(count)
                                                 count++;
                                                 if(count>9){
                                                     count=9;
@@ -330,7 +327,6 @@ export class FortykRollDialogs{
 
                                     if(ae.statuses.has("evasion")){
                                         let count=ae.getFlag("fortyk","evasion");
-                                        console.log(count)
                                         count++;
                                         if(count>9){
                                             count=9;

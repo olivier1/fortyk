@@ -99,11 +99,9 @@ export class FortyKItem extends Item {
                     try{
                         item.system.pf.value=item.FORTYK.cargoRarityValue[this.system.rarity.value];
                         let craftMultiplier=item.FORTYK.cargoQualityMultiplier[this.system.quality.value];
-                        console.log(item.system.pf.value, item.system.space.value, craftMultiplier)
                         item.system.pf.total=item.system.pf.value*parseFloat(item.system.space.value)*craftMultiplier;
                         item.system.rarity.label=item.FORTYK.itemRarityLabels[item.system.rarity.value];
                     }catch(err){
-                        console.log(err)
                     }
 
                 }
@@ -292,7 +290,6 @@ export class FortyKItem extends Item {
                         item.flags.fortyk.purifyingflame=`1d10+${pr}`;
                     }
                     if(data.psykana.psykerType.value.toLowerCase()==="navigator"){
-                        console.log("hey")
                         let range=item.system.range.formula.toLowerCase();
                         let wp=data.characteristics.wp.bonus;
                         let per=data.characteristics.per.bonus;
@@ -517,7 +514,6 @@ export class FortyKItem extends Item {
             let targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
 
             let ae=power.effects.entries().next().value[1];
-            console.log(ae)
             let aeData=ae.clone().data;
 
             aeData.name=ae.name+" Buff"
@@ -578,7 +574,6 @@ export class FortyKItem extends Item {
             let sustained=actor.system.psykana.pr.sustained;
             let powerIndex=sustained.indexOf(power.id);
             sustained.splice(powerIndex,1);
-            console.log(sustained)
             actor.update({"system.psykana.pr.sustained":sustained});
         }else{
             //if user isnt GM use socket to have gm cancel the buffs/debuffs
@@ -591,7 +586,6 @@ export class FortyKItem extends Item {
     static async executePsyMacro(powerId,macroId,actorId,targets){
         let actor=fromUuidSync(actorId);
         let power=actor.getEmbeddedDocument("Item",powerId);
-        console.log(actor)
         let macroCompendium=await game.packs.get("fortyk.fortykmacros");
         let macro=await macroCompendium.getDocument(macroId);
         macro.execute({actor:actor, power:power, targets:targets});

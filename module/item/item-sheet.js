@@ -72,7 +72,6 @@ export class FortyKItemSheet extends ItemSheet {
             let macroCompendium=game.packs.get("fortyk.fortykmacros");
             let psyFolder=macroCompendium.folders.get("MQBztfL3KvhTnCw9");
             let content=psyFolder.contents;
-            console.log(content);
             data.psyMacros=content;
         }
         data.item=this.item;

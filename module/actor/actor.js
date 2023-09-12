@@ -563,7 +563,6 @@ export class FortyKActor extends Actor {
                                 setNestedKey(actorData,path,changedValue);
                             }else if(change.mode===2){
                                 changedValue=basevalue+newvalue;
-                                console.log(actorData,path,changedValue);
                                 setNestedKey(actorData,path,changedValue);
                             }else if(change.mode===3){
                                 if(change.value<basevalue){
@@ -582,7 +581,6 @@ export class FortyKActor extends Actor {
                             }
                         }else{
                             if(change.mode===0){
-                                console.log(path)
                                 setNestedKey(actorData,path,change.value);
                             }
                         }
@@ -603,7 +601,6 @@ export class FortyKActor extends Actor {
                         pr=pr-adjustment;
                         try{
                             change.value=Math.ceil(Function(`let pr=${pr};return `+change.value)());
-                            console.log(change)
                         }catch (err){
                             change.value=0; 
                         }
@@ -642,7 +639,6 @@ export class FortyKActor extends Actor {
                         }
                     }else{
                         if(change.mode===0){
-                            console.log(path)
                             setNestedKey(actorData,path,change.value);
                         }
                     }
@@ -734,7 +730,6 @@ export class FortyKActor extends Actor {
             char=parseInt(char);
         }
         //prepare psyker stuff
-        console.log(data)
         data.psykana.pr.effective=parseInt(data.psykana.pr.value)+parseInt(data.psykana.pr.bonus)-(Math.max(0,(parseInt(data.psykana.pr.sustain)-1)));
         data.psykana.pr.maxPush=parseInt(data.psykana.pr.effective)+parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
         //get max carry weight ensure it is not out of bounds

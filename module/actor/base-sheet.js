@@ -732,9 +732,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
         if(testType==="focuspower"){
             if(this.actor.system.psykana.psykerType.value!=="navigator"){
-                console.log(this.actor)
                 let pr=dataset["pr"];
-                console.log(dataset)
                 testLabel+=` at PR ${pr}`; 
             }else{
                 let training=item.system.training.value;

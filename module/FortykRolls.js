@@ -25,7 +25,6 @@ returns the roll message*/
         /*if(target>100){
             target=100;
         }else*/ 
-        console.log(char,type,target,fortykWeapon)
         try{
             let base=actor.system.characteristics[char].preGlobal;
             target=Math.max(base-60,target);
@@ -1228,7 +1227,6 @@ returns the roll message*/
                         let terms=roll.terms;
                         let numbers=[];
                         let operators=[];
-                        console.log(roll)
                         //parsing the roll result
                         for ( let t=0; t<terms.length;t++){
 
@@ -1250,7 +1248,6 @@ returns the roll message*/
                             }else if(terms[t] instanceof NumericTerm){
                                 numbers.push(terms[t].number);
                             }else{
-                                console.log(terms[t])
                                 operators.push(terms[t].operator)
                             }
 
@@ -1263,7 +1260,6 @@ returns the roll message*/
                         }else{
                             let rollString=""
 
-                            console.log(operators)
                             for(let i=0;i<dieResults.length;i++){
                                 let htmlString=`<span class="`
                                 if(discards[i]){
@@ -1277,13 +1273,11 @@ returns the roll message*/
                                     htmlString+=`">${dieResults[i]}</span>`
                                 }
                                 rollString+=htmlString;
-                                console.log(dieResults)
                                 if(i+1<dieResults.length){
                                     rollString+="+"; 
 
                                 }
                             }
-                            console.log(numbers)
                             let operatorCounter=0;
                             damageString ="("+rollString+")";
                             if(numbers[0]!==0){
@@ -1295,7 +1289,7 @@ returns the roll message*/
                                 if(numbers[n]!==0){
 
                                     damageString+=`${numbers[n]}`;
-                                    console.log(n, operators[n+dieResults.length-1])
+                                   
                                     if((operatorCounter<operators.length)&&(numbers[n+1]!==0)){
                                         damageString+=`${operators[operatorCounter]}`;  
                                         operatorCounter++
@@ -4497,7 +4491,7 @@ returns the roll message*/
 
     }
     static async applyActiveEffect(token,effect,ignoreSON=false){
-        console.log(effect)
+      
         if(effect.length>0){
             if(game.user.isGM||token.isOwner){
 
@@ -4512,12 +4506,7 @@ returns the roll message*/
                 for(let index=0; index <effect.length;index++){
                     let dupp=false;
                     let newAe=effect[index];
-                    console.log(actor)
                     for(let ae of actor.effects){
-                        console.log(ae)
-
-
-                        console.log(ae,newAe)
                         if(!ae.statuses.has("weakened")&&!ae.statuses.has("buff")&&newAe.statuses&&ae.statuses.has(newAe.statuses[0])){
                             dupp=true;
                             let change=false;
@@ -4638,9 +4627,8 @@ returns the roll message*/
                     let combatid=combatant.id;
                     let update=[];
                     update.push({"_id":combatid, 'defeated':true})
-                    console.log(await game.combat.updateEmbeddedDocuments("Combatant",update))
+                    await game.combat.updateEmbeddedDocuments("Combatant",update)
                 }catch(err){
-                    console.log(err)
                 } 
             }
 

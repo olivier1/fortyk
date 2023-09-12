@@ -38,7 +38,6 @@ export class SpendExpDialog extends Application {
             data.disciplines=data.FORTYK.psychicDisciplines;
             data.psyPowers=await this._loadPsyPowers();
             this.psyPowers=data.psyPowers;
-            console.log(data.discipline)
             if(!data.discipline||this.options.discipline===undefined){
                 data.discipline="All"
             }else{
@@ -330,7 +329,6 @@ export class SpendExpDialog extends Application {
                 talentId=actorTalent[0].id;
 
             }
-            console.log(flag,chosenSpec)
             await actor.setFlag("fortyk",flag,chosenSpec);
             const advData = {
                 name: `${advanceName}`,
@@ -424,7 +422,6 @@ export class SpendExpDialog extends Application {
     async _onModeChange(event){
         event.preventDefault();
         let newMode=event.target.value;
-        console.log(newMode)
         this.options.mode=newMode;
         this.options.cost=0;
         let mode=this.options.mode;
@@ -489,7 +486,6 @@ export class SpendExpDialog extends Application {
         let node=event.target;
         let pack=node.attributes["data-compendium"];
         let id=node.value;
-        console.log(this)
         let power=this.psyPowers[id];
         this.options.chosenPower=power;
         let cost=power.system.cost.value;
@@ -686,7 +682,6 @@ export class SpendExpDialog extends Application {
     }
     _onDisciplineChange(event){
         let powers=document.getElementsByName("tntEntry");
-        console.log(event);
         let discipline=event.target.value;
         this.options.discipline=discipline;
         for(let i=0;i<powers.length;i++){
@@ -785,7 +780,6 @@ export class SpendExpDialog extends Application {
 
             return map;
         },{});
-        console.log(map)
         return map;
     }
 
