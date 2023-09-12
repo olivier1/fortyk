@@ -1045,7 +1045,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let powerId=event.currentTarget.attributes["data-power"].value;
         let macroId=event.currentTarget.attributes["data-macro"].value;
         let targetIds=game.user.targets.ids;
-        if(targetsIds.size===0){
+        if(targetIds.size===0){
             ui.notifications.error("You must have targets to run psychic power macros.");
             return;
         }
