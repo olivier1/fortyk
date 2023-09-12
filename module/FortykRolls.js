@@ -1226,8 +1226,9 @@ returns the roll message*/
                         let dieResults=[];
                         let discards=[];
                         let terms=roll.terms;
-                        let numbers=[]
-
+                        let numbers=[];
+                        let operators=[];
+                        console.log(roll)
                         //parsing the roll result
                         for ( let t=0; t<terms.length;t++){
 
@@ -1248,6 +1249,9 @@ returns the roll message*/
                                 } 
                             }else if(terms[t] instanceof NumericTerm){
                                 numbers.push(terms[t].number);
+                            }else{
+                                console.log(terms[t])
+                                operators.push(terms[t].operator)
                             }
 
                         }
@@ -1258,6 +1262,8 @@ returns the roll message*/
                             damageString=roll.result.replace(/\s+/g, '');
                         }else{
                             let rollString=""
+
+                            console.log(operators)
                             for(let i=0;i<dieResults.length;i++){
                                 let htmlString=`<span class="`
                                 if(discards[i]){
@@ -1271,21 +1277,37 @@ returns the roll message*/
                                     htmlString+=`">${dieResults[i]}</span>`
                                 }
                                 rollString+=htmlString;
+                                console.log(dieResults)
                                 if(i+1<dieResults.length){
-                                    rollString+="+";  
+                                    rollString+="+"; 
+
                                 }
                             }
+                            console.log(numbers)
+                            let operatorCounter=0;
+                            damageString ="("+rollString+")";
+                            if(numbers[0]!==0){
+                                damageString+=operators[operatorCounter];
+                            }
 
+                            operatorCounter++;
                             for(let n=0;n<numbers.length;n++){
                                 if(numbers[n]!==0){
-                                    damageString+=`+${numbers[n]}`
-                                }
 
+                                    damageString+=`${numbers[n]}`;
+                                    console.log(n, operators[n+dieResults.length-1])
+                                    if((operatorCounter<operators.length)&&(numbers[n+1]!==0)){
+                                        damageString+=`${operators[operatorCounter]}`;  
+                                        operatorCounter++
+                                    }
+                                }else{
+                                    operatorCounter++
+                                }
                             }
                             //damageString=roll.result.replace(/\s+/g, '')
                             //damageString="+"+damageString.substring(damageString.indexOf("+") + 1)
 
-                            damageString ="("+rollString+")"+damageString;
+                            // damageString =rollString+damageString;
                         }
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
                         damageOptions.results.push(`<div style="flex:none">Weapon damage roll: ${damageString}</div>`)
