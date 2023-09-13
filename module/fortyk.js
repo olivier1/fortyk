@@ -49,6 +49,7 @@ Hooks.once('init', async function() {
         }
         return statusFlags;
     })();
+    CONFIG.MeasuredTemplate.defaults.angle = 30; 
     /**
        * Set an initiative formula for the system
        * @type {String}

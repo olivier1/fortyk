@@ -19,6 +19,13 @@
     "esmodules": ["module/fortyk.js"],
     "styles": ["css/fortyk.css"],
     "scripts": [],
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json"
+        }
+    ],
     "packs": [ 
         {
             "name": "skills",
