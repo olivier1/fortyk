@@ -1740,17 +1740,18 @@ export class FortyKActor extends Actor {
             this.updateVehicle();
         }
         //handle if psy rating changed to update sustained powers
-        let psy=false;
+        let psy=undefined;
         try{
             psy=changed.system.psykana.pr.sustained;
         }catch(err){}
         if(psy!==undefined){
             this.updateSustainedActors();
         }
-        let pr=false;
+        let pr=undefined;
         try{
             pr=changed.system.psykana.pr.bonus;
         }catch(err){}
+        
         if(pr!==undefined){
             this.updateSustainedActors();
         }
