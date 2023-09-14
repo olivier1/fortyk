@@ -28,7 +28,7 @@ export class FortyKOWRegimentSheet extends ActorSheet {
         const data = super.getData().actor;
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
-        
+        data.editable = this.options.editable;
         return data;
     }
     /** @override */

@@ -88,7 +88,10 @@
         </div>
 
         <div class="tab kit" data-group="primary" data-tab="kit">
-            {{editor system.srgk.value target="system.srgk.value" button=true owner=owner editable=editable rollData=rollData}}
+            <div class="item-description">
+                {{editor system.srgk.value target="system.srgk.value" button=true owner=owner editable=editable rollData=rollData}}
+            </div>
+
         </div>
         <div class="tab logistics" data-group="primary" data-tab="logistics">
             <div class="descr flexcol">
@@ -202,17 +205,17 @@
                 <div class="flex-group-center">
                     <label>Cause of Death</label>
                 </div>
-            {{#each system.personnel.squad}}
-                 <input type="text" value="{{this.name}}" name="system.personnel.squad.{{@index}}.name" placeholder="Name"/>
+                {{#each system.personnel.squad}}
+                <input type="text" value="{{this.name}}" name="system.personnel.squad.{{@index}}.name" placeholder="Name"/>
                 <input type="text" value="{{this.status}}" name="system.personnel.squad.{{@index}}.status" placeholder="Status"/>
                 <div class="flexrow">
                     <input class="cod"type="text" value="{{this.cod}}" name="system.personnel.squad.{{@index}}.cod" placeholder="C.O.D."/>
-                <a class="list-button item-delete deleteguard" title="Delete" data-index="{{@index}}"></a></div>
-            {{/each}}
+                    <a class="list-button item-delete deleteguard" title="Delete" data-index="{{@index}}"></a></div>
+                {{/each}}
             </div>
-            
+
         </div>
-        
+
 
     </section>
 </form>
