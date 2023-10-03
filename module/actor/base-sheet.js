@@ -684,6 +684,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             return;
         }
         if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"&&testType!=="sprayAttack"){
+            console.log(testChar, testType, testTarget, this.actor, testLabel, item)
             await FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
             return;
         }

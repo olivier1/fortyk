@@ -102,8 +102,8 @@ export class FortykRollDialogs{
                                             rounds:0
                                         };
                                         await FortykRolls.applyActiveEffect(actor,[aeData]);
-                                     
-                                       
+
+
                                     }else{
 
                                         for(let ae of actor.effects){
@@ -153,8 +153,18 @@ export class FortykRollDialogs{
             modifierTracker.push({"value":`${miscMods}`,"label":"Weapon Bonus"});
         }
         templateOptions["options"]={}
-        templateOptions["options"].swift=actor.getFlag("fortyk","swiftattack");
-        templateOptions["options"].lightning=actor.getFlag("fortyk","lightningattack");
+        if(item.getFlag("fortyk","heavy")){
+            templateOptions["options"].swift=false;
+        }else{
+            templateOptions["options"].swift=actor.getFlag("fortyk","swiftattack");
+        }
+
+        if(item.getFlag("fortyk","heavy")||item.getFlag("fortyk","unwieldy")||item.getFlag("fortyk","unbalanced")){
+            templateOptions["options"].lightning=false;
+        }else{
+            templateOptions["options"].lightning=actor.getFlag("fortyk","lightningattack");
+        }
+
         templateOptions["options"].prone=modifiers.prone;
         templateOptions["options"].selfProne=modifiers.selfProne;
         templateOptions["options"].stunned=modifiers.stunned;

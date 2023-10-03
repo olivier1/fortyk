@@ -11,21 +11,12 @@
         <label>Name:</label>
         <input type="text" value="{{name}}" name="name">
     </div>
+    
+    {{#if isGM}}
     <div class="flexcol">
-        <label>Table Range:</label>
-        <div class="flexrow">
-            <div class="flexcol">
-                <label>Min:</label>
-                <input type="text" value="{{system.min.value}}" name="system.min.value">
-            </div>
-            <div class="flexcol">
-                <label>Max:</label>
-                <input type="text" value="{{system.max.value}}" name="system.max.value">
-            </div>
-        </div>
-
+        <a class="modifier button">Active Effects</a>
     </div>
-
+    {{/if}}
     <div class="item-description">
         <label>Description:</label>
         {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}

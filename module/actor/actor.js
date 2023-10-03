@@ -671,6 +671,7 @@ export class FortyKActor extends Actor {
         for (let [key, char] of Object.entries(data.characteristics)){
             if(key==="inf"){
                 //char.total=Math.min(char.total,char.max);
+                char.preGlobal=char.total;
             }else{
                 char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod);
                 if(key==="agi"&&char.max!==100){
@@ -908,7 +909,11 @@ export class FortyKActor extends Actor {
             hitLoc.armor+=hitLoc.armorMod;
             hitLoc.armor+=Math.max(machine,natural);
             hitLoc.armor=Math.max(0,hitLoc.armor);
-            hitLoc.value=parseInt(hitLoc.armor)+data.characteristics.t.bonus;
+            if(this.getFlag("fortyk","glancingblow")&&data.characteristics.agi.max===100){
+                hitLoc.value=hitLoc.armor+data.characteristics.agi.bonus;
+            }else{
+                hitLoc.value=hitLoc.armor+data.characteristics.t.bonus;  
+            }
             let daemonic=this.getFlag("fortyk","daemonic");
             if(daemonic){
                 if(!isNaN(daemonic)){

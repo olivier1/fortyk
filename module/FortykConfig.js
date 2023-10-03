@@ -345,7 +345,7 @@ FORTYK.weaponFlags={
     "heavy": {
         "value": false,
         "label": "Heavy",
-        "description": "This weapon is extremely weighty and impactful, as such it applies three times it's wielder's strength bonus in melee combat. These weapons are so heavy that the wielder needs at least a strength bonus of 10 to wield it effectively. These weapons can never be one handed."
+        "description": "This weapon is extremely weighty and impactful, as such it applies three times it's wielder's strength bonus in melee combat. These weapons are so heavy that the wielder needs at least a strength bonus of 10 to wield it effectively. These weapons can never be one handed and cannot be used to parry, swift attack or lightning attack."
     },
     "ignoreCover": {
         "value": false,
