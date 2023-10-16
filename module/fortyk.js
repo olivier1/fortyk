@@ -476,7 +476,7 @@ Hooks.on("updateCombat", async (combat) => {
         }
         if(actor.system.psykana.pr.sustain>0){
             let sustainedIds=actor.system.psykana.pr.sustained;
-           
+
             let content="<span>Sustaining the following Powers: </span>"
             for(let i=0;i<sustainedIds.length;i++){
                 let powerId=sustainedIds[i];
@@ -485,11 +485,11 @@ Hooks.on("updateCombat", async (combat) => {
 
             }
             let sustainedPowersOptions={user: game.user._id,
-                                     speaker:{actor,alias:actor.name},
-                                     content:content,
-                                     classes:["fortyk"],
-                                     flavor:`Sustained Psychic Powers`,
-                                     author:actor.name};
+                                        speaker:{actor,alias:actor.name},
+                                        content:content,
+                                        classes:["fortyk"],
+                                        flavor:`Sustained Psychic Powers`,
+                                        author:actor.name};
             await ChatMessage.create(sustainedPowersOptions,{});
         }
         var dead={};
@@ -803,6 +803,117 @@ Hooks.on("preUpdateActor", (data, updatedData) =>{
 Hooks.on('renderChatLog', (log, html, data) => FortykRollDialogs.chatListeners(html));
 //add listeners to dialogs to allow searching and the like
 Hooks.on('renderDialog', (dialog, html, data) => ActorDialogs.chatListeners(html));
+//add listeners to compendiums for knight sheet interaction
+Hooks.on('renderCompendium', (compendium, html, data)=>{
+    let knightComponentSlot=function(component){
+        let componentType=component.type;
+        if(componentType==="meleeWeapon"){
+            return ".melee-slot";
+        }
+        if(componentType==="rangedWeapon"){
+            let weaponClass=component.system.class.value;
+            if(weaponClass==="Titanic Ranged Weapon"){
+                return ".ranged-slot";
+            }else if(weaponClass==="Titanic Artillery Weapon"){
+                return ".artillery-slot";
+            }else{
+                return ".auxiliary-slot";
+            }
+        }
+        if(componentType==="knightCore"){
+            return ".core-slot";
+        }
+        if(componentType==="knightArmor"){
+            return ".armor-slot";
+        }
+        if(componentType==="knightStructure"){
+            return ".structure-slot";
+        }
+        if(componentType==="forceField"){
+            return ".forceField-slot";
+        }
+        if(componentType==="knightComponent"){
+            let componentSubType=component.system.type.value;
+            if(componentSubType==="other"){
+                return ".other-slot";
+            }
+            if(componentSubType==="core-mod"){
+                return ".core-mod-slot";
+            }
+            if(componentSubType==="throne-mod"){
+                return ".throne-mod-slot";
+            }
+            if(componentSubType==="plating"){
+                return ".plating-slot";
+            }
+            if(componentSubType==="sensor"){
+                return ".sensor-slot";
+            }
+            if(componentSubType==="arm-actuator"){
+                return ".arm-actuator-slot";
+            }
+            if(componentSubType==="leg-actuator"){
+                return ".leg-actuator-slot";
+            }
+        }
+        if(componentType==="ammunition"){
+            return ".other-slot";
+        }
+        return false;
+    }
+    let onDragComponent=async function(event){
+        console.log(compendium.id)
+       
+        let compendiumId=compendium.id.replace("compendium-","");
+
+        let compendiumObj=await game.packs.get(compendiumId);
+        let transfer={}
+        transfer.compendium=true;
+        transfer.compendiumId=compendiumId;
+        transfer.componentId=event.target.dataset["entryId"];
+
+        let item=await compendiumObj.getDocument(event.target.dataset["entryId"]);
+        let type=knightComponentSlot(item);
+        event.target.attributes["name"]=type;
+        let validSlots= document.querySelectorAll(type);
+        validSlots.forEach(function(item) {
+            item.classList.add("highlight-slot");
+        });
+        //let transferString=JSON.stringify(transfer);
+        //console.log(transferString)
+        // event.dataTransfer.setData("text1", transferString);
+        //event.dataTransfer.effectAllowed="copy";
+    }
+    let onStopDragComponent=function(event){
+        if(compendium.id.indexOf("knight")===-1){
+            return
+        }
+        let type=event.target.attributes["name"];
+        let validSlots= document.querySelectorAll(type);
+        validSlots.forEach(function(item) {
+            item.classList.remove("highlight-slot");
+        });
+    }
+
+
+
+    html.find('.directory-item').each((i, li) => {
+
+        li.addEventListener("dragstart", onDragComponent.bind(compendium), false);
+        li.addEventListener("dragend", onStopDragComponent.bind(compendium), false);
+        //li.addEventListener("dragover", this._onDragOverSlot.bind(compendium), false);
+
+    });
+})
+//disable default drop behaviour for knight sheets
+Hooks.on('renderFortyKKnightSheet', (sheet, html, actor) =>{
+   /* if(html.find('.window-content').length===0){return}
+    let _handleDrop=html.find('.window-content')[0].ondrop;
+    console.log(_handleDrop)
+    console.log(html.find('.window-content')[0].removeEventListener("drop", _handleDrop, true));
+    console.log(html.find('.window-content')[0].removeEventListener("drop", _handleDrop, false));
+    console.log(html.find('.window-content'))*/
+})
 Hooks.on('preCreateItem', (actor, data,options) =>{
 });
 //set flags on the actor when adding an active effect if it should activate a flag

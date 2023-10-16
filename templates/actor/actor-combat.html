@@ -253,7 +253,22 @@
 
             <div class="weapons grid grid-2col">
                 <div class="weapon-name">
+                    {{#if flags.fortyk.alternateprofiles}}
+
+                    <select class="profile-select" data-id="{{this.id}}">
+                        {{#select flags.fortyk.currentprofile}}
+                        <option value="">{{this._source.name}}</option>
+
+                        {{#each flags.fortyk.profiles}}
+                        <option value="{{this.uuid}}">{{this.name}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
+                    {{else}}
+
                     <span>{{this.name}}</span>
+
+                    {{/if}}
                 </div>
 
                 <div class="list-item">

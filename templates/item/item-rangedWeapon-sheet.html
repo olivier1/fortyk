@@ -6,12 +6,12 @@
     {{#if isGM}}
     <label class="button clone">Copy Item</label>
     {{/if}}
-     {{#if actor}}
+    {{#if actor}}
     <label class="button make-ammo">Make Ammunition</label>
     {{else}}
-     <span>You will have to create an ammunition item in order to fire your ranged weapon, unless it is a thrown weapon in which case it will use the amount of the weapon as ammo.</span>
+    <span>You will have to create an ammunition item in order to fire your ranged weapon, unless it is a thrown weapon in which case it will use the amount of the weapon as ammo.</span>
     {{/if}}
-   
+
     <div class="grid grid-3col">
         <div class="flexcol">
             <label>Name:</label>
@@ -38,8 +38,9 @@
             <label>Reload:</label>
             <input type="text" value="{{system.reload.value}}" name="system.reload.value">
         </div>
+
         <div class="flexcol">
-            <a class="special button">Special</a>
+            <a class="special button">Special Qualities</a>
         </div>
         {{#if isGM}}
         <div class="flexcol">
@@ -57,6 +58,10 @@
             </div>
 
 
+        </div>
+        <div class="flexcol">
+            <label>Ammo Consumption:</label>
+            <input type="text" value="{{system.clip.consumption}}" name="system.clip.consumption">
         </div>
         <div class="flexcol">
             <label>Damage Type:</label>
@@ -154,7 +159,34 @@
             <label>Space:</label>
             <input type="text" value="{{system.space.value}}" name="system.space.value">
         </div>
-        
+        <div class="flexrow">
+            <label>Has alternate profiles:</label>
+            <input type="checkbox" name="flags.fortyk.alternateprofiles" {{checked flags.fortyk.alternateprofiles}}>
+        </div>
+        {{#if flags.fortyk.alternateprofiles}}
+        <div class="flexrow simple-grid3">
+            <div class="flexcol">
+                <a class="addProfile plus-button button"></a>
+            </div>
+            <div class="flexcol">
+                <a class="removeProfile minus-button button"></a>
+            </div>
+            <div class="flexcol">
+                {{#each flags.fortyk.profiles}}
+                <select class="profile-select" data-index="{{@index}}">
+                    {{#select this}}
+
+                    {{#each ../rangedWeapons}}
+                    <option value="{{this.uuid}}">{{this.name}}</option>
+                    {{/each}}
+                    {{/select}}
+                </select>
+                {{/each}}
+            </div>
+
+        </div>
+
+        {{/if}}
         <div class="flexcol simple-grid3">
             <label>Attack Modifiers:</label>
             <div class="flexrow">

@@ -26,9 +26,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     }
     /* -------------------------------------------- */
     /** @override */
-    getData() {
+    async getData() {
         const data = super.getData().actor;
-        data.actor=this.actor.prepare();
+        data.actor=await this.actor.prepare();
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
         data.races=game.fortyk.FORTYK.races;
@@ -94,6 +94,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.force-roll').click(this._onForceRoll.bind(this));
         //creating a tnt
         html.find('.tnt-create').click(this._onTntCreate.bind(this));
+        html.find('.profile-select').change(this._onWeaponProfileChange.bind(this));
         //sorting
         html.find('.sort-button').click(this._onSortClick.bind(this));
         html.find('.drag').each((i, li) => {
@@ -1056,7 +1057,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }else{
             //if user isnt GM use socket to have gm process the damage roll
 
-           
+
             let socketOp={type:"psyMacro",package:{powerId:powerId, macroId:macroId, actorId:this.actor.uuid, targetIds:targetIds}};
             await game.socket.emit("system.fortyk",socketOp);
         }
@@ -1069,7 +1070,15 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const item = this.actor.items.find(i => i._id == itemId);
         await item.update({"system.broken.value":false});
     }
-
+    async _onWeaponProfileChange(event){
+        event.preventDefault();
+        let uuid=event.currentTarget.value;
+        let itemId=event.currentTarget.attributes["data-id"].value;
+        let item=this.actor.getEmbeddedDocument("Item",itemId);
+        
+        await item.setFlag("fortyk","currentprofile",uuid);
+        
+    }
     //handle enabling and disabling active effects associated with armor
     async _onArmorChange(event){
         let actor=this.actor;

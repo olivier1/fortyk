@@ -199,23 +199,7 @@
             "path": "packs/orders-shield-of-humanity",
             "system": "fortyk",
             "module": "fortyk"
-        },
-        {
-            "label": "Melee Weapons",
-            "type": "Item",
-            "name": "melee-weapons",
-            "path": "packs/melee-weapons",
-            "system": "fortyk",
-            "module": "fortyk"
-        },
-        {
-            "label": "Ranged Weapons",
-            "type": "Item",
-            "name": "ranged-weapons",
-            "path": "packs/ranged-weapons",
-            "system": "fortyk",
-            "module": "fortyk"
-        },
+        },        
         {
             "label": "Custom Talents",
             "type": "Item",
@@ -264,41 +248,12 @@
             "system": "fortyk",
             "package": "system",
             "private": false
-        }
-        ,
-        {
-            "label": "Knight Ranged Weapons",
-            "type": "Item",
-            "name": "knight-ranged-weapons",
-            "path": "packs/knight-ranged-weapons",
-            "system": "fortyk",
-            "package": "system",
-            "private": false
-        }
-        ,
-        {
-            "label": "Knight Melee Weapons",
-            "type": "Item",
-            "name": "knight-melee-weapons",
-            "path": "packs/knight-melee-weapons",
-            "system": "fortyk",
-            "package": "system",
-            "private": false
         },
         {
             "label": "Knight Components",
             "type": "Item",
             "name": "knight-components",
             "path": "packs/knight-components",
-            "system": "fortyk",
-            "package": "system",
-            "private": false
-        },
-        {
-            "label": "Knight Cores",
-            "type": "Item",
-            "name": "knight-cores",
-            "path": "packs/knight-cores",
             "system": "fortyk",
             "package": "system",
             "private": false
@@ -311,47 +266,7 @@
             "system": "fortyk",
             "package": "system",
             "private": false
-        },
-        {
-            "label": "Cybernetics",
-            "type": "Item",
-            "name": "cybernetics",
-            "path": "packs/cybernetics",
-            "system": "fortyk",
-            "package": "system",
-            "private": false
-        },
-        {
-            "label": "Armor",
-            "type": "Item",
-            "name": "armor",
-            "path": "packs/armor",
-            "system": "fortyk",
-            "ownership": {
-                "PLAYER": "OBSERVER",
-                "ASSISTANT": "OWNER"
-            },
-            "flags": {},
-            "package": "system"
-        },
-        {
-            "label": "Forcefields",
-            "type": "Item",
-            "name": "forcefields",
-            "path": "packs/forcefields",
-            "system": "fortyk",
-            "package": "system",
-            "private": false
-        },
-        {
-            "label": "Drugs & Consumables",
-            "type": "Item",
-            "name": "drugs-and-consumables",
-            "path": "packs/drugs-and-consumables",
-            "system": "fortyk",
-            "package": "system",
-            "private": false
-        },
+        },        
         {
             "label": "Psychic Powers",
             "type": "Item",
@@ -369,6 +284,50 @@
             "system": "fortyk",
             "private": false,
             "flags": {}
+        }
+
+    ],
+    "packFolders": [
+        {
+            "name": "Fortyk",
+            "sorting": "m",
+            "color": "#d4af37",
+            
+            "folders":[
+                {
+                    "name":"Items",
+                    "sorting":"m",
+                    "color":"#7a4810",
+                    "packs":["wargear", "psychic-powers", "skills"],
+                    "folders":[
+                        
+                        {
+                            "name":"Knight Items",
+                            "sorting":"m",
+                            "color":"#AF2413",
+                            "packs":["knight-components", "knight-spirits", "knight-chassis"]
+                        },
+                        {
+                            "name":"Talents and Traits",
+                            "sorting":"a",
+                            "color":"#AE9E7B",
+                            "packs":["vehicle-traits", "custom-bonus-and-drawbacks", "custom-talents", "orders-shield-of-humanity", "talents-shield-of-humanity", "homeworld-and-specialty-abilities-shield-of-humanity", "orders-hammer-of-the-emperor", "talents-hammer-of-the-emperor", "homeworld-and-specialty-abilities-hammer-of-the-emperor", "talents-ow-core", "homeworld-and-specialty-abilities-core-ow", "deathwatch-talents", "deathwatch-bonus-and-drawbacks", "role-homeworld-and-background-bonusenemies-beyond", "talents-enemies-beyond", "talents-enemies-without", "role-homeworld-and-background-bonusenemies-without", "role-homeworld-and-background-bonusenemies-within", "talents-enemies-within", "role-homeworld-and-background-bonuscore-dh2", "traits-core-dh2", "talent-core-dh2"]
+                        }
+                    ]
+                },
+                {
+                    "name":"Macros",
+                    "sorting":"m",
+                    "color":"#07575b",
+                    "packs":["fortykmacros"]
+                },
+                {
+                    "name":"Actors",
+                    "sorting":"m",
+                    "color":"#228B22",
+                    "packs":["fortyk-actors"]
+                }
+            ]
         }
 
     ],

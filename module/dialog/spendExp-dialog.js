@@ -69,9 +69,9 @@ export class SpendExpDialog extends Application {
         data.upgradeableChars=this._upgradeableChars(actorChars,data.FORTYK.characteristics);
         data.aptitudes=data.FORTYK.aptitudes;
 
-        if(!this.options.talents){
-            this.options.talents=await this._loadTalents();
-        }
+
+        this.options.talents=await this._loadTalents();
+
         data.talents=this.options.talents;
         return data;
     }
@@ -283,8 +283,8 @@ export class SpendExpDialog extends Application {
 
 
 
-           var talentId=""
-           var chosenSpec=true;
+            var talentId=""
+            var chosenSpec=true;
             if(spec!=="N/A"){
                 chosenSpec=await Dialog.prompt({
                     title: "Choose specialisation",
@@ -342,6 +342,9 @@ export class SpendExpDialog extends Application {
             };
             await actor.createEmbeddedDocuments("Item",[advData]);
             this.options.cost=0;
+            this.options.talents=await this._loadTalents();
+
+            this.talents=this.options.talents;
 
         }else if(this.options.mode==="Signature Wargear"){
             const wargearName = document.getElementById("name").value;
@@ -728,7 +731,7 @@ export class SpendExpDialog extends Application {
             return 0;
         });
         let disciplines=Object.values(actor.system.psykana.disciplines);
-        
+
         console.log(disciplines)
         let map=powers.reduce(function(map,power){
             if(!actor.getFlag("fortyk",power.id)&&(disciplines.includes(power.system.discipline.value))){

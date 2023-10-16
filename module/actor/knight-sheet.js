@@ -24,7 +24,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
     }
     /** @override */
     async getData() {
-        const data = super.getData();
+        const data = await super.getData();
         const actor=this.actor;
         const system=actor.system;
         data.isGM=game.user.isGM;
@@ -113,8 +113,9 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         if(data.others2===undefined){
             data.others2=true;
         }
-
+        data.house=false;
         if(system.knight.house){
+            data.house=true;
             let house=game.actors.get(system.knight.house);
             data.meleeWeapons=house.itemTypes.meleeWeapon;
             data.rangedWeapons=house.itemTypes.rangedWeapon.filter(weapon=>weapon.system.class.value==="Titanic Ranged Weapon");
@@ -156,18 +157,23 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
+                        await wpnType[i].prepareData();
                         if(wpnType[i].type==="rangedWeapon"){
+                            
                             wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
                         }
                     }
                 }
             }
             data.leftArmHardPoints=duplicate(system.chassis.system.hardPoints.leftArm);
+            console.log(data.leftArmHardPoints)
             for (let [key, wpnType] of Object.entries(data.leftArmHardPoints)){
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
+                        await wpnType[i].prepareData();
                         if(wpnType[i].type==="rangedWeapon"){
+                            
                             wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
                         }
                     }
@@ -178,6 +184,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
+                        await wpnType[i].prepareData();
                         if(wpnType[i].type==="rangedWeapon"){
                             wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
                         }
@@ -189,6 +196,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
+                        await wpnType[i].prepareData();
                         if(wpnType[i].type==="rangedWeapon"){
                             wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
                         }
@@ -238,8 +246,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             li.addEventListener("dragover", this._onDragOverSlot.bind(this), false);
 
         });
-        
-        
         html.find('.component-slot').each((i, li) => {
 
 
@@ -260,7 +266,9 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             validSlots.forEach(function(item) {
                 item.classList.add("highlight-slot");
             });
-            event.dataTransfer.setData("text", event.target.dataset["id"]);
+            let transfer={};
+            transfer.uuid=component.uuid;
+            event.dataTransfer.setData("text", JSON.stringify(transfer));
             event.dataTransfer.effectAllowed="copy";
         }else{
             event.dataTransfer.effectAllowed="none";
@@ -282,9 +290,17 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         event.preventDefault();
 
     }
-
+    /*TODO:
+    make the function work with items dragged from a compendium
+    */
     async _onDropComponent(event){
-        let draggedId=event.dataTransfer.getData("text");
+        console.log(event.dataTransfer)
+        console.log(event.dataTransfer.getData("text"))
+
+        let transfer=JSON.parse(event.dataTransfer.getData("text"));
+        console.log(transfer);
+        let draggedId=transfer.uuid;
+
 
 
         let index=parseInt(event.target.dataset["index"]);
@@ -292,29 +308,38 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         let actor=this.actor;
         let data=actor.system;
         let house=game.actors.get(data.knight.house);
+        let component=await fromUuid(draggedId);
 
-        let component=house.getEmbeddedDocument("Item",draggedId);
+
         let chassis=actor.getEmbeddedDocument("Item",data.knight.chassis);
 
         let ok=this._authorizeComponent(component,event.target.className);
 
         if(ok){
-            let amtTaken=component.system.amount.taken;
-            let newAmt=parseInt(amtTaken)+1;
+            if(house){
+                var amtTaken=component.system.amount.taken;
+                var newAmt=parseInt(amtTaken)+1;
+            }
 
 
-            let componentBase=duplicate(component)
-            componentBase.system.originalId=component.id;
-
+            let componentBase=duplicate(component);
+            if(house){
+                componentBase.system.originalId=component.id;
+            }
             let newComponent=await actor.createEmbeddedDocuments("Item",[componentBase]);
-            let comUpdate={};
-            comUpdate["system.amount.taken"]=newAmt
-            let loanedArray=componentBase.system.loaned;
+            if(house){
+                let comUpdate={};
 
-            loanedArray.push({"knightId":actor.id,"itemId":newComponent[0]._id});
-            
-            comUpdate["system.loaned"]=loanedArray;
-            component.update(comUpdate);
+                comUpdate["system.amount.taken"]=newAmt
+
+                let loanedArray=componentBase.system.loaned;
+
+                loanedArray.push({"knightId":actor.id,"itemId":newComponent[0]._id});
+
+                comUpdate["system.loaned"]=loanedArray;
+
+                component.update(comUpdate);
+            }
             let newComUpdate={};
             if(newComponent[0].type==="rangedWeapon"||newComponent[0].type==="meleeWeapon"){
                 let facing=event.target.dataset["facing"];
@@ -533,7 +558,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
             }
             let category=tab.dataset["tab"];
-          
+
             this.document.mechtab=category;
             tabClasses.add("active2");
             let lists=document.getElementsByName("mechInventoryTab");
@@ -585,6 +610,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         var chassisPack=await game.packs.get("fortyk.knight-chassis");
         var vehicletraitsPack=await game.packs.get("fortyk.vehicle-traits");
         let chassis=await chassisPack.getDocuments();
+        chassis=chassis.filter((chassis)=>chassis.type==="knightChassis");
         let templateOptions={"chassis":chassis};
         let actor=this.actor;
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/knight-chassis-dialog.html', templateOptions);
@@ -734,34 +760,32 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let actor=this.actor;
                             let data=actor.system;
                             let house=await game.actors.get(data.knight.house);
-
-                            let component=await house.getEmbeddedDocument("Item",item.system.originalId);
                             let chassis=await actor.getEmbeddedDocument("Item",data.knight.chassis);
-
-                            let amtTaken=component.system.amount.taken;
-                            let newAmt=amtTaken-1;
-
-
-
-
-
-                            let componentUpdate={};
-                            if(item.system.state.value==="X"||item.system.state.value===0){
-                                let amt=parseInt(component.system.amount.value);
-                                componentUpdate["system.amount.value"]=amt-1;
+                            //if the knight is linked to a house update the house inventory
+                            if(house){
+                                let component=await house.getEmbeddedDocument("Item",item.system.originalId);
+                                let amtTaken=component.system.amount.taken;
+                                let newAmt=amtTaken-1;
+                                let componentUpdate={};
+                                if(item.system.state.value==="X"||item.system.state.value===0){
+                                    let amt=parseInt(component.system.amount.value);
+                                    componentUpdate["system.amount.value"]=amt-1;
+                                }
+                                componentUpdate["system.amount.taken"]=newAmt;
+                                let loans=component.system.loaned;
+                                let newLoans=loans.filter(loan=>loan.knightId!==actor.id&&loan.itemId!==itemId);
+                                componentUpdate["system.loaned"]=newLoans;
+                                await component.update(componentUpdate);
                             }
-                            componentUpdate["system.amount.taken"]=newAmt;
-                            let loans=component.system.loaned;
-                            let newLoans=loans.filter(loan=>loan.knightId!==actor.id&&loan.itemId!==itemId);
-                            componentUpdate["system.loaned"]=newLoans;
+
                             let array=objectByString(chassis,path);
                             array[index]="";
 
                             let chassisUpdate={};
                             chassisUpdate[path]=array;
 
-                            component.update(componentUpdate);
-                            chassis.update(chassisUpdate);
+
+                            await chassis.update(chassisUpdate);
 
                             await actor.deleteEmbeddedDocuments("Item",[itemId]);
 
@@ -795,31 +819,35 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let actor=this.actor;
                             let data=actor.system;
                             let house=await game.actors.get(data.knight.house);
+                            //if the knight is linked to a house update the house inventory
+                            if(house){
+                                let component=await house.getEmbeddedDocument("Item",item.system.originalId);
+                                if(component){
+                                    let amtTaken=component.system.amount.taken;
+                                    let newAmt=amtTaken-1;
 
-                            let component=await house.getEmbeddedDocument("Item",item.system.originalId);
-                            if(component){
-                                let amtTaken=component.system.amount.taken;
-                                let newAmt=amtTaken-1;
 
+                                    var componentUpdate={};
 
-                                var componentUpdate={};
-
-                                if(item.system.state.value==="X"||item.system.state.value===0){
-                                    let amt=parseInt(component.system.amount.value);
-                                    componentUpdate["system.amount.value"]=amt-1;
+                                    if(item.system.state.value==="X"||item.system.state.value===0){
+                                        let amt=parseInt(component.system.amount.value);
+                                        componentUpdate["system.amount.value"]=amt-1;
+                                    }
+                                    componentUpdate["system.amount.taken"]=newAmt;
+                                    let loans=component.system.loaned;
+                                    let newLoans=loans.filter(loan=>loan.knightId!==actor.id&&loan.itemId!==itemId);
+                                    componentUpdate["system.loaned"]=newLoans;
+                                    await component.update(componentUpdate);
                                 }
-                                componentUpdate["system.amount.taken"]=newAmt;
-                                component.update(componentUpdate);
+
                             }
-                            let loans=component.system.loaned;
-                            let newLoans=loans.filter(loan=>loan.knightId!==actor.id&&loan.itemId!==itemId);
-                            componentUpdate["system.loaned"]=newLoans;
+
 
 
                             let update={};
                             update[path]="";
 
-                            this.actor.update(update);
+                            await actor.update(update);
 
                             await actor.deleteEmbeddedDocuments("Item",[itemId]);
 
@@ -854,31 +882,35 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let actor=this.actor;
                             let data=actor.system;
                             let house=await game.actors.get(data.knight.house);
+                            //if the knight is linked to a house, update the house inventory
+                            if(house){
+                                let component=await house.getEmbeddedDocument("Item",item.system.originalId);
+                                let amtTaken=component.system.amount.taken;
+                                let newAmt=amtTaken-1;
 
-                            let component=await house.getEmbeddedDocument("Item",item.system.originalId);
-                            let amtTaken=component.system.amount.taken;
-                            let newAmt=amtTaken-1;
+                                let array=objectByString(this.actor,path);
+                                array.splice(index,1);
+                                let componentUpdate={};
 
-                            let array=objectByString(this.actor,path);
-                            array.splice(index,1);
-                            let componentUpdate={};
-
-                            if(item.system.state.value==="X"||item.system.state.value===0){
-                                let amt=parseInt(component.system.amount.value);
-                                componentUpdate["system.amount.value"]=amt-1;
+                                if(item.system.state.value==="X"||item.system.state.value===0){
+                                    let amt=parseInt(component.system.amount.value);
+                                    componentUpdate["system.amount.value"]=amt-1;
+                                }
+                                componentUpdate["system.amount.taken"]=newAmt;
+                                let loans=component.system.loaned;
+                                let newLoans=loans.filter(loan=>!(loan.knightId===actor.id&&loan.itemId===itemId));
+                                componentUpdate["system.loaned"]=newLoans;
+                                await component.update(componentUpdate);
                             }
-                            componentUpdate["system.amount.taken"]=newAmt;
-                            let loans=component.system.loaned;
-                            let newLoans=loans.filter(loan=>!(loan.knightId===actor.id&&loan.itemId===itemId));
-                            componentUpdate["system.loaned"]=newLoans;
+
 
 
 
 
                             let update={};
                             update[path]=array;
-                            component.update(componentUpdate);
-                            this.actor.update(update);
+
+                            await actor.update(update);
 
                             await actor.deleteEmbeddedDocuments("Item",[itemId]);
 
@@ -916,7 +948,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
     //handles when swapping ammo type in a ranged weapon
     async _onAmmoChange(event){
 
-        event.preventDefault;
+        event.preventDefault();
         const dataset=event.currentTarget.dataset;
         const weapon=this.actor.getEmbeddedDocument("Item",dataset["weapon"]);
         if(!weapon){return};
@@ -966,24 +998,28 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         const dataset=event.currentTarget.dataset;
         let actor=this.actor;
         let data=actor.system;
-        let weapon=this.actor.getEmbeddedDocument("Item",dataset.weapon);
-        let house=await game.actors.get(data.knight.house);
+        let weapon=actor.getEmbeddedDocument("Item",dataset.weapon);
+
 
         let ammo=actor.getEmbeddedDocument("Item",weapon.system.ammo._id);
 
         let update={};
         let weaponUpdate={};
         let ammoUpdate={};
-        let houseUpdate={};
+
         weaponUpdate["system.ammo._id"]="";
-        weapon.update(weaponUpdate);
+        await weapon.update(weaponUpdate);
         let components=actor.system.knight.components.filter(component=>component!==ammo.id);
-        actor.update({"system.knight.components":components});
-        let originalAmmo=house.getEmbeddedDocument("Item",ammo.system.originalId);
-        originalAmmo.update({"system.amount.taken":originalAmmo.system.amount.taken-1,"system.amount.value":parseInt(originalAmmo.system.amount.value)-1});
-        ammo.delete();
+        await actor.update({"system.knight.components":components});
 
+        await ammo.delete();
 
+        let house=await game.actors.get(data.knight.house);
+        //if knight is linked to a house update the inventory
+        if(house){
+            let originalAmmo=house.getEmbeddedDocument("Item",ammo.system.originalId);
+            originalAmmo.update({"system.amount.taken":originalAmmo.system.amount.taken-1,"system.amount.value":parseInt(originalAmmo.system.amount.value)-1});
+        }
 
     }
 
@@ -1109,6 +1145,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
     }
+    /*
     async _updateHouse(){
         let data=this.actor.system;
         let house=await game.actors.get(data.knight.house);
@@ -1120,7 +1157,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             await game.socket.emit("system.fortyk",socketOp);
 
         }
-    }
+    }*/
     getValidAmmo(weapon){
         let ammos=this.actor.itemTypes.ammunition;
         let validAmmos=[];
@@ -1141,6 +1178,12 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             }
         }
         return validAmmos;
+    }
+    /*OVERRIDE
+    *Disable default drop behaviour
+    */
+    async _onDrop(event){
+        event.preventDefault();
     }
     /* async _render(force, options){
 

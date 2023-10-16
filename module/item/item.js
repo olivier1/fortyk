@@ -90,10 +90,10 @@ export class FortyKItem extends Item {
         //ensure this is an owned item
 
         if(this.actor){
-            
+
             const data = this.actor.system;
             let actor=this.actor;
-            item.isPrepared=true;
+
             if(actor.type==="spaceship"){
                 if(item.type==="spaceshipCargo"){
                     try{
@@ -176,6 +176,27 @@ export class FortyKItem extends Item {
                 }
             }
             if(item.type==="rangedWeapon"){
+                if(item.getFlag("fortyk","currentprofile")){
+                    let currentProfileUuid=item.getFlag("fortyk","currentprofile");
+                    console.log(currentProfileUuid);
+                    let currentProfile=item.getFlag("fortyk","currentprofile");
+                    if(typeof currentProfile === 'string' || currentProfile instanceof String){
+                        currentProfile= await fromUuid(item.getFlag("fortyk","currentprofile"));
+                    }
+                    item.name=currentProfile.name;
+                    item.system.damageType.value=currentProfile.system.damageType.value;
+                    item.system.range.value=currentProfile.system.range.formula;
+                    item.system.range.formula=currentProfile.system.range.formula;
+                    item.system.pen.value=currentProfile.system.pen.formula;
+                    item.system.damageFormula.formula=currentProfile.system.damageFormula.formula;
+                    item.system.rof=currentProfile.system.rof;
+                    item.system.clip.consumption=currentProfile.system.clip.consumption;
+                    let profiles=item.getFlag("fortyk","profiles");
+                    item.flags=currentProfile.flags;
+                    item.flags.fortyk.profiles=profiles;
+                    item.flags.fortyk.alternateprofiles=true;
+                    item.flags.fortyk.currentprofile=currentProfileUuid;
+                }
                 let ammo=actor.getEmbeddedDocument("Item",item.system.ammo._id);
                 if(ammo){
                     item.system.ammo.name=ammo.name;
@@ -500,7 +521,7 @@ export class FortyKItem extends Item {
             }
 
 
-
+            item.isPrepared=true;
 
 
         }

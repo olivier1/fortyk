@@ -33,7 +33,7 @@ export class FortyKItemSheet extends ItemSheet {
     /* -------------------------------------------- */
 
     /** @override */
-    getData() {
+    async getData() {
 
 
 
@@ -74,12 +74,45 @@ export class FortyKItemSheet extends ItemSheet {
             let content=psyFolder.contents;
             data.psyMacros=content;
         }
+        if(item.getFlag("fortyk","alternateprofiles")){
+            data.rangedWeapons=await this.getRangedWeapons()
+        }
         data.item=this.item;
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
         data.FORTYK=game.fortyk.FORTYK;
         data.editable = this.options.editable;
         return data;
+    }
+    async getRangedWeapons(){
+        let wargear=await game.packs.get("fortyk.wargear");
+        let wargearDocuments=await wargear.getDocuments();
+        let knightComponents=await game.packs.get("fortyk.knight-components");
+        let knightComponentDocuments=await knightComponents.getDocuments();
+        let documents=wargearDocuments.concat(knightComponentDocuments);
+        documents.sort(function compare(a, b) {
+            let valueA=a.name;
+            let valueB=b.name;
+            if (valueA<valueB) {
+                return -1;
+            }
+            if (valueA>valueB) {
+                return 1;
+            }
+            // a must be equal to b
+            return 0;
+        });
+        let rangedWeapons=documents.reduce(function(rangedWeapons,document){
+            if(document.type==="rangedWeapon"){
+                rangedWeapons[document.uuid]=document;  
+            }
+
+            return rangedWeapons;
+        },{});
+
+
+
+        return rangedWeapons;
     }
 
     /* -------------------------------------------- */
@@ -105,10 +138,13 @@ export class FortyKItemSheet extends ItemSheet {
         html.find('.skill-children').click(this._onChildrenClick.bind(this));
         html.find('.special').click(this._onSpecialClick.bind(this));
         html.find('.modifier').click(this._onModifierClick.bind(this));
+        html.find('.addProfile').click(this._onAddProfileClick.bind(this));
+        html.find('.removeProfile').click(this._onRemoveProfileClick.bind(this));
         html.find('.clone').click(this._onCloneClick.bind(this));
         html.find('.make-ammo').click(this._onMakeAmmoClick.bind(this));
         html.find('.knight-Hardpoint').keydown(this._onHardpointEnter.bind(this));
         html.find('.knight-Hardpoint').focusout(this._onHardpointEdit.bind(this));
+        html.find('.profile-select').change(this._onProfileChange.bind(this));
         //handles melee weapon mod
 
         html.find('.weapon-mod').focusout(this._weaponModEdit.bind(this));
@@ -123,6 +159,37 @@ export class FortyKItemSheet extends ItemSheet {
     _onCloneClick(event){
         let item=this.item.clone();
         Item.create(duplicate(item));
+    }
+    async _onAddProfileClick(event){
+        let item=this.item;
+        if(!item.getFlag("fortyk","profiles")){
+            await item.setFlag("fortyk","profiles",[]); 
+        }else{
+            let profiles=item.getFlag("fortyk","profiles");
+            profiles.push("");
+            await item.setFlag("fortyk","profiles",profiles); 
+        }
+
+    }
+    async _onRemoveProfileClick(event){
+        let item=this.item;
+
+        let profiles=item.getFlag("fortyk","profiles");
+        profiles.pop();
+        await item.setFlag("fortyk","profiles",profiles); 
+
+
+    }
+    _onProfileChange(event){
+        event.preventDefault();
+        const dataset=event.currentTarget.dataset;
+        const uuid=event.currentTarget.value;
+        console.log(uuid)
+        let index=dataset.index;
+        let item=this.item;
+        let profiles=item.getFlag("fortyk","profiles");
+        profiles.splice(index,1,uuid);
+        item.setFlag("fortyk","profiles",profiles);
     }
     _onMakeAmmoClick(event){
         let weapon=this.item;
@@ -160,7 +227,7 @@ export class FortyKItemSheet extends ItemSheet {
         let ae=item.effects.entries().next().value[1];
 
 
-        
+
 
 
         new ActiveEffectConfig(ae).render(true);
