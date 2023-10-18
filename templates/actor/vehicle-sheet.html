@@ -86,9 +86,23 @@
                     <div>
                         <div class="weapons grid grid-2col">
                             <div class="weapon-name">
-                                <span>Name: {{this.name}}</span>
-                            </div>
+                                {{#if flags.fortyk.alternateprofiles}}
 
+                                <select class="profile-select" data-id="{{this.id}}">
+                                    {{#select flags.fortyk.currentprofile}}
+                                    <option value="">{{this._source.name}}</option>
+
+                                    {{#each flags.fortyk.profiles}}
+                                    <option value="{{this.uuid}}">{{this.name}}</option>
+                                    {{/each}}
+                                    {{/select}}
+                                </select>
+                                {{else}}
+
+                                <span>{{this.name}}</span>
+
+                                {{/if}}
+                            </div>
 
                             <div class="list-item">
                                 <span>Attack: </span>
@@ -154,7 +168,22 @@
 
                         <div class="weapons grid grid-2col">
                             <div class="weapon-name">
-                                <span>Name: {{this.name}}</span>
+                                {{#if flags.fortyk.alternateprofiles}}
+
+                                <select class="profile-select" data-id="{{this.id}}">
+                                    {{#select flags.fortyk.currentprofile}}
+                                    <option value="">{{this._source.name}}</option>
+
+                                    {{#each flags.fortyk.profiles}}
+                                    <option value="{{this.uuid}}">{{this.name}}</option>
+                                    {{/each}}
+                                    {{/select}}
+                                </select>
+                                {{else}}
+
+                                <span>{{this.name}}</span>
+
+                                {{/if}}
                             </div>
 
 

@@ -269,6 +269,7 @@ export class FortyKActor extends Actor {
             let chassis=data.chassis.system;
             data.secChar.wounds.max=parseInt(chassis.structuralIntegrity.value);
             data.secChar.speed.tactical=parseInt(chassis.speed.value);
+            data.secChar.manoeuvrability.value=parseInt(chassis.manoeuvrability.value);
             data.knight.armorValues={};
             data.knight.armorValues.value=0;
             data.knight.armorValues.max=parseInt(chassis.armor.value);
@@ -279,6 +280,7 @@ export class FortyKActor extends Actor {
             data.knight.tonnage={};
             data.knight.tonnage.max=parseInt(chassis.tonnage.value);
             data.knight.tonnage.value=0;
+            
         }
         if(data.knight.spirit){
             data.spirit=this.getEmbeddedDocument("Item",data.knight.spirit);
@@ -1092,6 +1094,7 @@ export class FortyKActor extends Actor {
                 }
                 data.crew.ws=parseInt(pilot.system.characteristics.ws.total);
                 data.crew.bs=parseInt(pilot.system.characteristics.bs.total);
+                data.secChar.initiative=pilot.system.secChar.initiative;
                 let operate=parseInt(pilot.system.skills[data.knight.operate]);
                 if(isNaN(operate)){
                     operate=0;
@@ -1243,9 +1246,14 @@ export class FortyKActor extends Actor {
         let psyniscience=0;
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
-        this.items.forEach(async (fortykItem,id,items)=>{
-            let item=fortykItem;
-            await fortykItem.prepareData();
+        
+            
+        
+        for(const item of this.items){
+            
+            
+            await item.prepareData();
+            console.log(item)
             if(item._id===data.secChar.wornGear.armor.id){
                 wornGear["armor"]=item;
             }
@@ -1314,28 +1322,20 @@ export class FortyKActor extends Actor {
                 // item.system.weight.total=(parseInt(item.system.amount.value)*parseFloat(item.system.weight.value)).toFixed(2);
             }
             if(item.type==="meleeWeapon"){
+
                 meleeweapons.push(item);
                 wargear.push(item);
+                await this.prepareAlternateProfiles(item);
             }
             if(item.type==="rangedWeapon"){
-                if(item.getFlag("fortyk","alternateprofiles")){
-
-                    let profiles=item.getFlag("fortyk","profiles");
-                    for(let i=0; i<profiles.length; i++){
-                        console.log(profiles[i]);
-                        if(typeof profiles[i] === 'string' || profiles[i] instanceof String){
-                            profiles[i]=fromUuidSync(profiles[i]);
-                        }
-
-                    }
-                    item.flags.fortyk.profiles=profiles;
-                }
+                await this.prepareAlternateProfiles(item);
                 rangedWeapons.push(item);
                 wargear.push(item);
+                
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
                 if(item.system.isEquipped){
-                    wornGear.weapons.push(fortykItem);
+                    wornGear.weapons.push(item);
                 }
             }
             if(item.type==="armor"){
@@ -1349,7 +1349,7 @@ export class FortyKActor extends Actor {
                     equippableAmmo.push(item);
                 }
             }
-        })
+        }
         let sortedSkills=skills;
         let sortedTnt=talentsntraits;
         let sortedGear=wargear;
@@ -1379,6 +1379,21 @@ export class FortyKActor extends Actor {
         }catch(err){}
         return actorData;
     }
+    prepareAlternateProfiles(item) {
+        if(item.getFlag("fortyk","alternateprofiles")){
+
+            let profiles=item.getFlag("fortyk","profiles");
+            for(let i=0; i<profiles.length; i++){
+                console.log(profiles[i]);
+                if(typeof profiles[i] === 'string' || profiles[i] instanceof String){
+                    profiles[i]=fromUuidSync(profiles[i]);
+                }
+
+            }
+            item.flags.fortyk.profiles=profiles;
+        }
+    }
+
     async prepareNPCItems(actorData){
         let data=this.system; 
 
@@ -1391,9 +1406,11 @@ export class FortyKActor extends Actor {
         //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
-        this.items.forEach(async (fortykItem,id,items)=>{
-            let item=fortykItem;
-            await fortykItem.prepareData();
+        for(const item of this.items){
+            
+            
+            await item.prepareData();
+            
             if(item.type==="talentntrait"){
                 talentsntraits.push(item);
             }
@@ -1408,25 +1425,16 @@ export class FortyKActor extends Actor {
             }
             if(item.type==="meleeWeapon"){
                 meleeweapons.push(item);
+                this.prepareAlternateProfiles(item);
             }
             if(item.type==="rangedWeapon"){
-                if(item.getFlag("fortyk","alternateprofiles")){
-
-                    let profiles=item.getFlag("fortyk","profiles");
-                    for(let i=0; i<profiles.length; i++){
-                        console.log(profiles[i]);
-                        if(typeof profiles[i] === 'string' || profiles[i] instanceof String){
-                            profiles[i]=fromUuidSync(profiles[i]);
-                        }
-
-                    }
-                    item.flags.fortyk.profiles=profiles;
-                }
+                
                 rangedWeapons.push(item);
+                this.prepareAlternateProfiles(item);
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
             }
-        })
+        }
 
         actorData.psychicPowers=psychicPowers
         actorData.meleeWeapons=meleeweapons
@@ -1449,8 +1457,8 @@ export class FortyKActor extends Actor {
         const squadrons=[];
         const torpedoes=[];
         const bombers=[];
-        this.items.forEach((fortykItem,id,items)=>{
-            let item=fortykItem;
+        for(const item of this.items){
+            
             let unmodItem=item._source;
             if(item.type==="spaceshipComponent"){
                 components.push(item);
@@ -1492,7 +1500,7 @@ export class FortyKActor extends Actor {
                     bombers.push(item);
                 }
             }
-        });
+        }
 
         actorData.weapons=weapons
         actorData.components=components
@@ -1517,10 +1525,10 @@ export class FortyKActor extends Actor {
         //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
-        this.items.forEach(async (fortykItem,id,items)=>{
-            let item=fortykItem;
-            await fortykItem.prepareData();
-
+       for(const item of this.items){
+            
+            await item.prepareData();
+            
             if(item.type==="talentntrait"){
                 talentsntraits.push(item);
             }
@@ -1532,28 +1540,18 @@ export class FortyKActor extends Actor {
             }
             if(item.type==="meleeWeapon"){
                 meleeWeapons.push(item);
+                this.prepareAlternateProfiles(item);
             }
             if(item.type==="rangedWeapon"){
                 rangedWeapons.push(item);
-                if(item.getFlag("fortyk","alternateprofiles")){
-
-                    let profiles=item.getFlag("fortyk","profiles");
-                    for(let i=0; i<profiles.length; i++){
-                        console.log(profiles[i]);
-                        if(typeof profiles[i] === 'string' || profiles[i] instanceof String){
-                            profiles[i]=fromUuidSync(profiles[i]);
-                        }
-
-                    }
-                    item.flags.fortyk.profiles=profiles;
-                }
+                this.prepareAlternateProfiles(item);
             }
             if(item.type==="upgrade"){
                 upgrades.push(item);
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
             }
-        })
+        }
 
         actorData.upgrades=upgrades
         actorData.meleeWeapons=meleeWeapons

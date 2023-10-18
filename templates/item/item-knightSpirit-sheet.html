@@ -1,7 +1,7 @@
 <form class="{{cssClass}} item-sheet flexcol">
-     <header class="sheet-header">
+    <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
-        
+
     </header>
     {{#if isGM}}
     <label class="button clone">Copy Item</label>
@@ -22,8 +22,15 @@
         <label>Meld Bonus:</label>
         <input type="text" value="{{system.meldBonus.value}}" name="system.meldBonus.value">
     </div>
-    
-
+    <div class="flexcol">
+        <label>Id:</label>
+        <input type="text" value="{{system.id}}" name="system.id">
+    </div>
+    {{#if isGM}}
+    <div class="flexcol">
+        <a class="modifier button">Active Effect</a>
+    </div>
+    {{/if}}
     <div class="item-description">
         <label>Description:</label>
         {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}

@@ -75,7 +75,11 @@ export class FortyKItemSheet extends ItemSheet {
             data.psyMacros=content;
         }
         if(item.getFlag("fortyk","alternateprofiles")){
-            data.rangedWeapons=await this.getRangedWeapons()
+            data.rangedWeapons=await this.getRangedWeapons();
+            data.meleeWeapons=await this.getMeleeWeapons();
+        }
+        if(item.type==="knightChassis"){
+            data.quirks= await this.getQuirks();
         }
         data.item=this.item;
         data.isGM=game.user.isGM;
@@ -83,6 +87,33 @@ export class FortyKItemSheet extends ItemSheet {
         data.FORTYK=game.fortyk.FORTYK;
         data.editable = this.options.editable;
         return data;
+    }
+    async getQuirks(){
+        let chassis=await game.packs.get("fortyk.knight-chassis");
+        let chassisDocuments=await chassis.getDocuments();
+        chassisDocuments.sort(function compare(a, b) {
+            let valueA=a.name;
+            let valueB=b.name;
+            if (valueA<valueB) {
+                return -1;
+            }
+            if (valueA>valueB) {
+                return 1;
+            }
+            // a must be equal to b
+            return 0;
+        });
+        let quirks=chassisDocuments.reduce(function(quirks,document){
+            if(document.type==="talentntrait"){
+                quirks[document.uuid]=document;  
+            }
+
+            return quirks;
+        },{});
+
+
+
+        return quirks;
     }
     async getRangedWeapons(){
         let wargear=await game.packs.get("fortyk.wargear");
@@ -113,6 +144,36 @@ export class FortyKItemSheet extends ItemSheet {
 
 
         return rangedWeapons;
+    }
+    async getMeleeWeapons(){
+        let wargear=await game.packs.get("fortyk.wargear");
+        let wargearDocuments=await wargear.getDocuments();
+        let knightComponents=await game.packs.get("fortyk.knight-components");
+        let knightComponentDocuments=await knightComponents.getDocuments();
+        let documents=wargearDocuments.concat(knightComponentDocuments);
+        documents.sort(function compare(a, b) {
+            let valueA=a.name;
+            let valueB=b.name;
+            if (valueA<valueB) {
+                return -1;
+            }
+            if (valueA>valueB) {
+                return 1;
+            }
+            // a must be equal to b
+            return 0;
+        });
+        let meleeWeapons=documents.reduce(function(meleeWeapons,document){
+            if(document.type==="meleeWeapon"){
+                meleeWeapons[document.uuid]=document;  
+            }
+
+            return meleeWeapons;
+        },{});
+
+
+
+        return meleeWeapons;
     }
 
     /* -------------------------------------------- */

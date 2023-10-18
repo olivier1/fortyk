@@ -137,6 +137,30 @@ export class FortykRollDialogs{
                   ).render(true);
 
     }
+    static async callMeldDialog(actor, testTarget){
+
+
+        let modifier=0;
+
+        return await Dialog.prompt({
+            title: "Melding test",
+            content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="${modifier}" autofocus/></p>`,
+            callback: async(html) => {
+                const bonus = Number($(html).find('input[name="modifier"]').val());
+                if(isNaN(bonus)){
+                    return await this.callMeldDialog(actor, testTarget);
+                }else{
+                    testTarget=parseInt(testTarget)+parseInt(bonus);
+                    return await FortykRolls.fortykTest("wp", "skill", testTarget, actor, "Melding", null, false);
+                }
+
+            },
+            default: "submit",
+
+
+            width:100});
+
+    }
     //handles the melee attack dialog WHEW
     static async callMeleeAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
 

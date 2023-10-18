@@ -474,7 +474,7 @@ Hooks.on("updateCombat", async (combat) => {
         if(actor.getFlag("fortyk","hardtargetEvasion")){
             await actor.setFlag("fortyk","hardtargetEvasion",false);
         }
-        if(actor.system.psykana.pr.sustain>0){
+        if(actor.type!=="vehicle"&&actor.system.psykana.pr.sustain>0){
             let sustainedIds=actor.system.psykana.pr.sustained;
 
             let content="<span>Sustaining the following Powers: </span>"

@@ -93,7 +93,6 @@ export class FortyKItem extends Item {
 
             const data = this.actor.system;
             let actor=this.actor;
-
             if(actor.type==="spaceship"){
                 if(item.type==="spaceshipCargo"){
                     try{
@@ -155,6 +154,25 @@ export class FortyKItem extends Item {
 
             }
             if(item.type==="meleeWeapon"){
+                if(item.getFlag("fortyk","currentprofile")){
+                    let currentProfileUuid=item.getFlag("fortyk","currentprofile");
+                    console.log(currentProfileUuid);
+                    let currentProfile=item.getFlag("fortyk","currentprofile");
+                    if(typeof currentProfile === 'string' || currentProfile instanceof String){
+                        currentProfile= await fromUuid(item.getFlag("fortyk","currentprofile"));
+                    }
+                    item.name=currentProfile.name;
+                    item.system.damageType.value=currentProfile.system.damageType.value;
+                    item.system.range.value=currentProfile.system.range.formula;
+                    item.system.range.formula=currentProfile.system.range.formula;
+                    item.system.pen.value=currentProfile.system.pen.formula;
+                    item.system.damageFormula.formula=currentProfile.system.damageFormula.formula;
+                    let profiles=item.getFlag("fortyk","profiles");
+                    item.flags=currentProfile.flags;
+                    item.flags.fortyk.profiles=profiles;
+                    item.flags.fortyk.alternateprofiles=true;
+                    item.flags.fortyk.currentprofile=currentProfileUuid;
+                }
                 item.system.damageFormula.value=item.system.damageFormula.formula;
                 item.system.range.value=item.system.range.formula;
                 item.system.pen.value=item.system.pen.formula;
@@ -176,6 +194,7 @@ export class FortyKItem extends Item {
                 }
             }
             if(item.type==="rangedWeapon"){
+
                 if(item.getFlag("fortyk","currentprofile")){
                     let currentProfileUuid=item.getFlag("fortyk","currentprofile");
                     console.log(currentProfileUuid);
@@ -196,6 +215,23 @@ export class FortyKItem extends Item {
                     item.flags.fortyk.profiles=profiles;
                     item.flags.fortyk.alternateprofiles=true;
                     item.flags.fortyk.currentprofile=currentProfileUuid;
+                    if(actor.getFlag("fortyk","filltheairwithdeath")){
+                        if(item.system.rof[1].value>0){
+                            item.system.rof[1].value++;
+                        }
+                        if(item.system.rof[2].value>0){
+                            item.system.rof[2].value++;
+                        }
+                    }
+                }else{
+                    if(actor.getFlag("fortyk","filltheairwithdeath")){
+                        if(item.system.rof[1].value>0){
+                            item.system.rof[1].value=parseInt(item._source.system.rof[1].value)+1;
+                        }
+                        if(item.system.rof[2].value>0){
+                            item.system.rof[2].value=parseInt(item._source.system.rof[2].value)+1;
+                        }
+                    } 
                 }
                 let ammo=actor.getEmbeddedDocument("Item",item.system.ammo._id);
                 if(ammo){
@@ -223,6 +259,7 @@ export class FortyKItem extends Item {
 
 
                 }
+
                 if(item.system.damTyp===undefined){item.system.damTyp=item.system.damageType.value}
 
                 item.system.testMod.value=parseInt(item._source.system.testMod.value);
@@ -516,6 +553,16 @@ export class FortyKItem extends Item {
                     }catch(err){
                         item.system.pen.value="";
                         item.system.damageFormula.value="";
+                    }
+                }
+            }else if(actor.type==="vehicle"){
+                if(item.type==="meleeWeapon"){
+                    if(actor.getFlag("fortyk","meleeWeaponBonus")){
+                        item.system.damageFormula.value+=`+${actor.getFlag("fortyk","meleeWeaponBonus")}`;
+                    }
+                }else if(item.type==="rangedWeapon"){
+                    if(actor.getFlag("fortyk","rangedWeaponBonus")){
+                        item.system.damageFormula.value+=`+${actor.getFlag("fortyk","rangedWeaponBonus")}`;
                     }
                 }
             }

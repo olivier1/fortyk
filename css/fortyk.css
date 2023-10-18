@@ -567,6 +567,7 @@
 .delete-weapon,
 .delete-component,
 .delete-chassis, 
+.delete-spirit, 
 .delete-other-component,
 .item-delete{
     background-image: url("../icons/deleteicon.png") !important; 
@@ -1133,10 +1134,10 @@
     border: dotted;
 }
 .sheet-content-knight{
-    height:78%;
+    height:66%;
     overflow: scroll;
 }
 .header-knight{
-    height:22%;
+    height:34%;
 }
 [hidden] { display: none !important; }

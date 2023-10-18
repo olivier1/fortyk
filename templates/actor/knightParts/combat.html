@@ -1,9 +1,45 @@
 <form class="{{cssClass}} charSheet flexcol" autocomplete="off">
 
     {{!-- Sheet Header --}}
-    <header class="header-knight no-flex">
+    <header class="header-knight flexcol">
+
+        <div class="flexcol">
+            <span class="section-title">Pilot</span>
 
 
+            <div class="descr flexrow">
+
+                <div class="descrRow flexcol">
+                    <span class="char-total" data-roll-type="char" data-target="{{system.crew.ratingTotal}}" data-label="Crew Rating" data-char="">Pilot Rating:</span>
+                    <span class="descrSpan"></span>
+                    <input type="text" class="combat-resources" data-target="system.crew.rating" value="{{system.crew.rating}}" data-dtype="Number" {{#if system.crew.pilotID}}disabled{{/if}}/>
+                </div>
+
+                <div class="descrRow flexcol">
+                    <span class="char-total" data-roll-type="char" data-target="{{system.crew.ws}}" data-label="Crew WS" data-char="">Pilot WS:</span>
+                    <span class="descrSpan"></span>
+                    <input type="text" class="combat-resources" data-target="system.crew.ws" value="{{system.crew.ws}}" data-dtype="Number" {{#if system.crew.pilotID}}disabled{{/if}}/>
+                </div>
+
+                <div class="descrRow flexcol">
+                    <span class="char-total" data-roll-type="char" data-target="{{system.crew.bs}}" data-label="Crew BS" data-char="">Pilot BS:</span>
+                    <span class="descrSpan"></span>
+                    <input type="text" class="combat-resources" data-target="system.crew.bs" value="{{system.crew.bs}}" data-dtype="Number" {{#if system.crew.pilotID}}disabled{{/if}}/>
+                </div>
+                {{#if system.crew.pilotID}}
+                {{#if flags.fortyk.melded}}
+                <span class="unmeld button">Unmeld</span>
+                {{else}}
+                <span class="meld button">Meld</span>
+                {{/if}}
+                {{/if}}
+
+            </div>
+
+
+
+
+        </div>
 
         <div class="descr grid grid-5col">
 
@@ -16,7 +52,7 @@
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Manoeuvrability:</span>
-                <input type="text" class="combat-resources" data-target="system.secChar.manoeuvrability.value" value="{{system.secChar.manoeuvrability.value}}" data-dtype="Number"/>
+                <input type="text" class="combat-resources" data-target="system.secChar.manoeuvrability.value" value="{{system.secChar.manoeuvrability.value}}" data-dtype="Number" disabled/>
             </div>
 
             <div class="descrRow flexcol">
@@ -108,28 +144,8 @@
                 <span class="descrSpan">Titanic Feet:</span>
                 <span class="stomp button" data-formula="1d10+{{stomp}}" >1d10+{{stomp}}</span>
 
-
             </div>
-
-
-
-
-
-
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
     </header>
 
 
@@ -144,11 +160,27 @@
                     {{#each leftArmHardPoints}}
 
                     {{#each this}}
+                    {{#unless this.flags.fortyk.hidden}}
                     {{#if (compareString this.type "meleeWeapon")}}
                     <div>
                         <div class="weapons grid grid-2col">
                             <div class="weapon-name">
+                                {{#if flags.fortyk.alternateprofiles}}
+
+                                <select class="profile-select" data-id="{{this.id}}">
+                                    {{#select flags.fortyk.currentprofile}}
+                                    <option value="">{{this._source.name}}</option>
+
+                                    {{#each flags.fortyk.profiles}}
+                                    <option value="{{this.uuid}}">{{this.name}}</option>
+                                    {{/each}}
+                                    {{/select}}
+                                </select>
+                                {{else}}
+
                                 <span>{{this.name}}</span>
+
+                                {{/if}}
                             </div>
 
 
@@ -206,11 +238,11 @@
                         <div class="weapon-name">
                             {{debug this}}
                             {{#if flags.fortyk.alternateprofiles}}
-                          
+
                             <select class="profile-select" data-id="{{this.id}}">
                                 {{#select flags.fortyk.currentprofile}}
                                 <option value="">{{this._source.name}}</option>
-                                
+
                                 {{#each flags.fortyk.profiles}}
                                 <option value="{{this.uuid}}">{{this.name}}</option>
                                 {{/each}}
@@ -359,6 +391,7 @@
 
                     </div>
                     {{/if}}
+                    {{/unless}}
                     {{/each}}
                     {{/each}}
 
@@ -370,11 +403,28 @@
                     {{#each carapaceHardPoints}}
 
                     {{#each this}}
+                    {{debug this}}
+                    {{#unless this.flags.fortyk.hidden}}
                     {{#if (compareString this.type "meleeWeapon")}}
                     <div>
                         <div class="weapons grid grid-2col">
                             <div class="weapon-name">
+                                {{#if flags.fortyk.alternateprofiles}}
+
+                                <select class="profile-select" data-id="{{this.id}}">
+                                    {{#select flags.fortyk.currentprofile}}
+                                    <option value="">{{this._source.name}}</option>
+
+                                    {{#each flags.fortyk.profiles}}
+                                    <option value="{{this.uuid}}">{{this.name}}</option>
+                                    {{/each}}
+                                    {{/select}}
+                                </select>
+                                {{else}}
+
                                 <span>{{this.name}}</span>
+
+                                {{/if}}
                             </div>
 
 
@@ -432,11 +482,11 @@
                     <div class="weapons grid grid-2col">
                         <div class="weapon-name">
                             {{#if flags.fortyk.alternateprofiles}}
-                            
+
                             <select class="profile-select" data-id="{{this.id}}">
                                 {{#select flags.fortyk.currentprofile}}
                                 <option value="">{{this._source.name}}</option>
-                               
+
                                 {{#each flags.fortyk.profiles}}
                                 <option value="{{this.uuid}}">{{this.name}}</option>
                                 {{/each}}
@@ -582,16 +632,33 @@
 
                     </div>
                     {{/if}}
+                    {{/unless}}
                     {{/each}}
                     {{/each}}
                     {{#each torsoHardPoints}}
 
                     {{#each this}}
+                    {{#unless this.flags.fortyk.hidden}}
                     {{#if (compareString this.type "meleeWeapon")}}
                     <div>
                         <div class="weapons grid grid-2col">
                             <div class="weapon-name">
+                                {{#if flags.fortyk.alternateprofiles}}
+
+                                <select class="profile-select" data-id="{{this.id}}">
+                                    {{#select flags.fortyk.currentprofile}}
+                                    <option value="">{{this._source.name}}</option>
+
+                                    {{#each flags.fortyk.profiles}}
+                                    <option value="{{this.uuid}}">{{this.name}}</option>
+                                    {{/each}}
+                                    {{/select}}
+                                </select>
+                                {{else}}
+
                                 <span>{{this.name}}</span>
+
+                                {{/if}}
                             </div>
 
 
@@ -649,11 +716,11 @@
                     <div class="weapons grid grid-2col">
                         <div class="weapon-name">
                             {{#if flags.fortyk.alternateprofiles}}
-                            
+
                             <select class="profile-select" data-id="{{this.id}}">
                                 {{#select flags.fortyk.currentprofile}}
                                 <option value="">{{this._source.name}}</option>
-                               
+
                                 {{#each flags.fortyk.profiles}}
                                 <option value="{{this.uuid}}">{{this.name}}</option>
                                 {{/each}}
@@ -802,6 +869,7 @@
 
                     </div>
                     {{/if}}
+                    {{/unless}}
                     {{/each}}
                     {{/each}}
 
@@ -813,11 +881,27 @@
                     {{#each rightArmHardPoints}}
 
                     {{#each this}}
+                    {{#unless this.flags.fortyk.hidden}}
                     {{#if (compareString this.type "meleeWeapon")}}
                     <div>
                         <div class="weapons grid grid-2col">
                             <div class="weapon-name">
+                                {{#if flags.fortyk.alternateprofiles}}
+
+                                <select class="profile-select" data-id="{{this.id}}">
+                                    {{#select flags.fortyk.currentprofile}}
+                                    <option value="">{{this._source.name}}</option>
+
+                                    {{#each flags.fortyk.profiles}}
+                                    <option value="{{this.uuid}}">{{this.name}}</option>
+                                    {{/each}}
+                                    {{/select}}
+                                </select>
+                                {{else}}
+
                                 <span>{{this.name}}</span>
+
+                                {{/if}}
                             </div>
 
 
@@ -873,14 +957,14 @@
                     </div>
                     {{else if (compareString this.type "rangedWeapon")}}
                     <div class="weapons grid grid-2col">
-                        
+
                         <div class="weapon-name">
                             {{#if flags.fortyk.alternateprofiles}}
-                          
+
                             <select class="profile-select" data-id="{{this.id}}">
                                 {{#select flags.fortyk.currentprofile}}
                                 <option value="">{{this._source.name}}</option>
-                              
+
                                 {{#each flags.fortyk.profiles}}
                                 <option value="{{this.uuid}}">{{this.name}}</option>
                                 {{/each}}
@@ -1030,6 +1114,7 @@
 
                     </div>
                     {{/if}}
+                    {{/unless}}
                     {{/each}}
                     {{/each}}
 

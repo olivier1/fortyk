@@ -1711,6 +1711,10 @@
                 "value":0,
                 "type":"Number"
             },
+            "quirk":{
+                "uuid":"",
+                "type":"String"
+            },
             "size":{
                 "value":9
             },
@@ -1789,7 +1793,8 @@
             "meldBonus":{
                 "value":"",
                 "type":"String"
-            }
+            },
+            "id":""
         }
     }
 }

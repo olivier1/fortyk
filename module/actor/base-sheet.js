@@ -27,7 +27,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     /* -------------------------------------------- */
     /** @override */
     async getData() {
-        const data = super.getData().actor;
+        const data = await super.getData().actor;
         data.actor=await this.actor.prepare();
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
@@ -40,7 +40,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.editable = this.options.editable;
         data.money=game.settings.get("fortyk","dhMoney");
         data.coverTypes=game.fortyk.FORTYK.coverTypes;
-
+        console.log(data)
         return data;
     }
     /** @override */
@@ -513,8 +513,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
 
 
-                                            width:100}
-                                                                          );
+                                            width:100});
                                         itemData.system.specialisation.value= chosenSpec;
 
                                     }

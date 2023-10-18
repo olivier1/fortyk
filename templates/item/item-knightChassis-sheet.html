@@ -12,6 +12,18 @@
         <input type="text" value="{{name}}" name="name">
     </div>
     <div class="flexcol">
+            <label>Quirk:</label>
+
+            <select class="quirk"  name="system.quirk.uuid">
+                {{#select system.quirk.uuid}}
+                <option value="">None</option>
+                {{#each quirks}}
+                <option value="{{this.uuid}}">{{this.name}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+        </div>
+    <div class="flexcol">
         <label>Tonnage:</label>
         <input type="text" value="{{system.tonnage.value}}" name="system.tonnage.value">
     </div>

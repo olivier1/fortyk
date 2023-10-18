@@ -159,7 +159,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
                         await wpnType[i].prepareData();
                         if(wpnType[i].type==="rangedWeapon"){
-                            
+
                             wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
                         }
                     }
@@ -173,7 +173,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
                         await wpnType[i].prepareData();
                         if(wpnType[i].type==="rangedWeapon"){
-                            
+
                             wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
                         }
                     }
@@ -222,6 +222,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         html.find('.pick-chassis').click(this._onChassisPick.bind(this));
         html.find('.pick-spirit').click(this._onSpiritPick.bind(this));
         html.find('.delete-chassis').click(this._onDeleteChassis.bind(this));
+        html.find('.delete-spirit').click(this._onDeleteSpirit.bind(this));
         html.find('.delete-weapon').click(this._onDeleteWeapon.bind(this));
         html.find('.delete-component').click(this._onDeleteComponent.bind(this));
         html.find('.delete-other-component').click(this._onDeleteOtherComponent.bind(this));
@@ -231,6 +232,8 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         html.find('.pilotSelect').change(this._onPilotChange.bind(this));
         html.find('.knight-overheat').click(this._onKnightOverheat.bind(this));
         html.find('.state').change(this._onComponentStateChange.bind(this));
+        html.find('.meld').click(this._onMeldClick.bind(this));
+        html.find('.unmeld').click(this._onUnmeldClick.bind(this));
         //handles changing ammo type
         html.find('.weapon-ammo').change(this._onAmmoChange.bind(this));
         //handles reloading a ranged weapon
@@ -290,9 +293,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         event.preventDefault();
 
     }
-    /*TODO:
-    make the function work with items dragged from a compendium
-    */
+
     async _onDropComponent(event){
         console.log(event.dataTransfer)
         console.log(event.dataTransfer.getData("text"))
@@ -610,6 +611,18 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         var chassisPack=await game.packs.get("fortyk.knight-chassis");
         var vehicletraitsPack=await game.packs.get("fortyk.vehicle-traits");
         let chassis=await chassisPack.getDocuments();
+        chassis.sort(function compare(a, b) {
+            let valueA=a.name;
+            let valueB=b.name;
+            if (valueA<valueB) {
+                return -1;
+            }
+            if (valueA>valueB) {
+                return 1;
+            }
+            // a must be equal to b
+            return 0;
+        });
         chassis=chassis.filter((chassis)=>chassis.type==="knightChassis");
         let templateOptions={"chassis":chassis};
         let actor=this.actor;
@@ -637,12 +650,23 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let enclosedDoc=await vehicletraitsPack.getDocument("cR1t6ioQMPr9QEe5");
                             let superHeavyDoc=await vehicletraitsPack.getDocument("AVUMiYtUvUQQAQrc");
                             let walkerDoc=await vehicletraitsPack.getDocument("3DbsJhqN8KbUXZLd");
+                            let quirkDoc= await fromUuid(chassisDoc.system.quirk.uuid);
+                            let quirkFlag=quirkDoc.system.flagId.value;
 
                             let itemDatas=[];
+
                             itemDatas.push(duplicate(chassisDoc));
                             itemDatas.push(duplicate(enclosedDoc));
                             itemDatas.push(duplicate(superHeavyDoc));
                             itemDatas.push(duplicate(walkerDoc));
+                            itemDatas.push(duplicate(quirkDoc));
+                            if(quirkFlag==="preysensors"){
+                                let preysenseDoc=await vehicletraitsPack.getDocument("kIoenKWL7sdMndi2");
+
+                                let preysenseCopy=duplicate(preysenseDoc);
+                                preysenseCopy.system.specialisation.value=1;
+                                itemDatas.push(preysenseCopy);
+                            }
                             let createdChassis=await actor.createEmbeddedDocuments("Item",itemDatas);
 
                             let id=createdChassis[0].id;
@@ -654,6 +678,10 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             update["token.actorLink"]=true;
                             update["token.vision"]=true;
                             await actor.update(update);
+                            await actor.setFlag("fortyk", quirkFlag, true);
+                            if(quirkFlag==="preysensors"){
+                                await actor.setFlag("fortyk", "preysense", 1); 
+                            }
                             await actor.setFlag("fortyk","superheavy",true);
                             await actor.setFlag("fortyk","enclosed",true);
                             await actor.setFlag("fortyk","walker",true);
@@ -668,6 +696,18 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
     async _onSpiritPick(event){
         var spiritPack=await game.packs.get("fortyk.knight-spirits");
         let spirit=await spiritPack.getDocuments();
+        spirit.sort(sort(function compare(a, b) {
+            let valueA=a.name;
+            let valueB=b.name;
+            if (valueA<valueB) {
+                return -1;
+            }
+            if (valueA>valueB) {
+                return 1;
+            }
+            // a must be equal to b
+            return 0;
+        }));
         let templateOptions={"spirit":spirit};
         let actor=this.actor;
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/knight-spirit-dialog.html', templateOptions);
@@ -709,6 +749,233 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             },options).render(true)
         });
     }
+    async _onMeldClick(event){
+        let FORTYK=game.fortyk.FORTYK;
+        let knight=this.actor;
+        let pilot=game.actors.get(knight.system.crew.pilotID);
+        let spirit=knight.getEmbeddedDocument('Item',knight.system.knight.spirit);
+        let meldMod=parseInt(spirit.system.meldMod.value);
+        let result=await FortykRollDialogs.callMeldDialog(pilot,pilot.system.skills.melding+meldMod);
+        let pass=result.value;
+        let meldBonus=spirit.system.meldBonus.value;
+        let meldType=pilot.getFlag("fortyk","meldtype");
+        let manoeuvrability=FORTYK.meldTypes[meldType];
+
+
+        let meldContent
+        let knightAeData={name:"Meld Bonuses",
+                          changes:[]};
+        knightAeData.changes.push({key: "system.secChar.manoeuvrability.value", value: manoeuvrability, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD});
+        if(meldType==="default"){
+            meldContent=`<p><b>Melding Bonus:</b> +${manoeuvrability} manoeuvrability and ${meldBonus}</p>`;
+
+        }else if(meldType==="experimental"){
+            meldContent=`<p><b>Melding Bonus:</b> May use Melding instead of Operate: Titanic Walker, +${manoeuvrability} manoeuvrability and ${meldBonus}</p>`;
+
+        }else if(meldType==="safe"){
+            meldContent=`<p><b>Melding Bonus:</b> +${manoeuvrability} manoeuvrability.</p>`;
+        }
+
+        let meldFlavor="";
+
+        if(pass){
+            meldFlavor="Sucessful meld test";
+
+        }else{
+            meldFlavor="Failed meld test";
+            let meldFailure=spirit.system.failure.value;
+            meldContent+=`<p><b>Melding Failure Effect:</b> Gain 1 insanity and ${meldFailure}</p>`;
+            if(meldType==="experimental"){
+                meldContent+=`<p><b>Experimental Implant:</b> Gain ${result.dos} extra insanity.</p>`;
+
+            }
+        }
+        let chatMeld={user: game.users.current,
+                      speaker:{user: game.users.current},
+                      content:meldContent,
+                      classes:["fortyk"],
+                      flavor:meldFlavor,
+                      author:game.users.current
+                     }
+
+        await ChatMessage.create(chatMeld,{});
+        let knightItemIds=[];
+        let knightAeId
+        let pilotAeId
+        let pilotItemIds=[];
+        if(meldType==="safe"){
+            let knightAe=await knight.createEmbeddedDocuments("ActiveEffect",[knightAeData]);
+            await knight.setFlag("fortyk","knightMeldedIds",knightItemIds);
+            await knight.setFlag("fortyk","melded",true);
+            return}
+        let spiritId=spirit.system.id;
+        let pilotAeData={"name":"Meld Bonus",
+                         "changes":[]};
+
+        switch(spiritId){
+            case "ancientwisdom":
+                pilotAeData.changes.push({key: "system.characteristics.int.mod", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD})
+                break;
+            case "blasphemoustendencies":
+                let items=pilot.items;
+                console.log(items)
+                let psy;
+                for(const skill of items){
+                    console.log(skill)
+                    if(skill.name==="Psyniscience"){
+                        psy=skill;
+                    }
+
+                }
+                let update={}
+                if(psy.system.value===-20){
+                    update["system.value"]=0;
+                }else{
+                    update["system.value"]=psy.system.value+10;
+                }
+                psy.update(update);
+                break;
+            case "bloodthirsty":
+                let knightItems=knight.items;
+                let preysense
+                for(const item of knightItems){
+                    if(item.type==="talentntrait"&&item.system.flagId.value==="preysense"){
+                        preysense=item;
+                    }
+                }
+                if(preysense){
+                    let preyValue=parseInt(preysense.system.specialisation.value);
+                    preysense.update({"system.specialisation.value":preyValue+2});
+                }else{
+                    let vehicletraitsPack=await game.packs.get("fortyk.vehicle-traits");
+                    let preysenseDoc=await vehicletraitsPack.getDocument("kIoenKWL7sdMndi2");
+
+                    let preysenseCopy=duplicate(preysenseDoc);
+                    preysenseCopy.system.specialisation.value=2;
+
+                    let preysenseItem= await knight.createEmbeddedDocuments("Item",[preysenseCopy]);
+                    await knight.setFlag("fortyk","preysense",2);
+                    knightItemIds.push(preysenseItem[0].id);
+                }
+
+                break;
+            case "knightshonor":
+                pilotAeData.changes.push({key: "system.characteristics.wp.mod", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD});
+                break;
+            case "martialhubris":
+                pilotAeData.changes.push({key: "system.characteristics.ws.mod", value: 5, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD});
+                pilotAeData.changes.push({key: "system.characteristics.bs.mod", value: 5, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD});
+                break;
+            case "nosefortrouble":
+                pilotAeData.changes.push({key: "system.characteristics.per.mod", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD});
+                break;
+            case "rebellious":
+                pilotAeData.changes.push({key: "system.secChar.initiative.value", value: 5, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD});
+                if(game.combats.active){
+                    for(const combatant of game.combats.active.combatants){
+                        console.log(combatant)
+                        if(combatant.actorId===knight.id||combatant.actorId===pilot.id){
+                            console.log(combatant)
+                            if(combatant.initiative){
+                                combatant.update({"initiative":combatant.initiative+5});
+                            }
+                            
+                        }
+                    }
+                }
+                break;
+            case "skittish":
+                knightAeData.changes.push({key: "system.secChar.speed.mod", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD});
+                if(!pilot.getFlag("fortyk","sprint")){
+                    let dh2pack=await game.packs.get("fortyk.talent-core-dh2");
+                    let sprintDoc=await dh2pack.getDocument("4xt7RDt82Gy3X9UH");
+
+                    let sprintCopy=duplicate(sprintDoc);
+
+                    let sprintItem= await pilot.createEmbeddedDocuments("Item",[sprintCopy]);
+                    await pilot.setFlag("fortyk","sprint",true);
+                    pilotItemIds.push(sprintItem[0].id);
+
+                }
+                break;
+            case "stoic":
+                knightAeData.changes.push({key: "system.knight.heat.mod", value: 2, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD});
+                if(!pilot.getFlag("fortyk","unrelenting")){
+                    let dwPack=await game.packs.get("fortyk.deathwatch-bonus-and-drawbacks");
+                    let unrelentDoc=await dwPack.getDocument('WTnYNv2XaRSyxSKR');
+
+                    let unrelentCopy=duplicate(unrelentDoc);
+
+                    let unrelentItem= await pilot.createEmbeddedDocuments("Item",[unrelentCopy]);
+                    await pilot.setFlag("fortyk","unrelenting",true);
+                    pilotItemIds.push(unrelentItem[0].id);
+
+                }
+                break;
+            case "wrothful":
+                knightAeData.changes.push({key: "flags.fortyk.wrothful", value: true, mode:FORTYK.ACTIVE_EFFECT_MODES.CUSTOM});
+                pilotAeData.changes.push({key: "flags.fortyk.wrothful", value: true, mode:FORTYK.ACTIVE_EFFECT_MODES.CUSTOM});
+                break;
+        }
+        let knightAe=await knight.createEmbeddedDocuments("ActiveEffect",[knightAeData]);
+        let pilotAe=await pilot.createEmbeddedDocuments("ActiveEffect",[pilotAeData]);
+        knightAeId=knightAe[0].id;
+        pilotAeId=pilotAe[0].id;
+
+        await knight.setFlag("fortyk","knightMeldedItemIds",knightItemIds);
+        await knight.setFlag("fortyk","pilotMeldedItemIds",pilotItemIds);
+        await knight.setFlag("fortyk","knightMeldedAeId",knightAeId);
+        await knight.setFlag("fortyk","pilotMeldedAeId",pilotAeId);
+        await knight.setFlag("fortyk","melded",true);
+
+    }
+    async _onUnmeldClick(event){
+        let knight=this.actor;
+        let pilot=game.actors.get(knight.system.crew.pilotID);
+        let spirit=knight.getEmbeddedDocument('Item',knight.system.knight.spirit);
+        let spiritId=spirit.system.id;
+        switch(spiritId){
+            case "blasphemoustendencies":
+                let items=pilot.items;
+                let psy;
+                for(const skill of items){
+                    if(skill.name==="Psyniscience"){
+                        psy=skill;
+                    }
+
+                }
+                let update={}
+                if(psy.system.value===0){
+                    update["system.value"]=-20;
+                }else{
+                    update["system.value"]=psy.system.value-10;
+                }
+                psy.update(update);
+                break;
+            case "bloodthirsty":
+                let knightItems=knight.items;
+                let preysense
+                for(const item of knightItems){
+                    if(item.type==="talentntrait"&&item.system.flagId.value==="preysense"){
+                        preysense=item;
+                    }
+                }
+                if(preysense.system.specialisation.value>2){
+                    let preyValue=parseInt(preysense.system.specialisation.value);
+                    preysense.update({"system.specialisation.value":preyValue-2});
+                }
+                break;
+        }
+        await knight.deleteEmbeddedDocuments("ActiveEffect",[knight.getFlag("fortyk","knightMeldedAeId")]);
+        await pilot.deleteEmbeddedDocuments("ActiveEffect",[knight.getFlag("fortyk","pilotMeldedAeId")]);
+        await knight.deleteEmbeddedDocuments("Item",knight.getFlag("fortyk","knightMeldedItemIds"));
+        await pilot.deleteEmbeddedDocuments("Item",knight.getFlag("fortyk","pilotMeldedItemIds"));
+        await knight.setFlag("fortyk","knightMeldedItemIds",false);
+        await knight.setFlag("fortyk","pilotMeldedItemIds",false);
+        await knight.setFlag("fortyk","knightMeldedAeId",false);
+        await knight.setFlag("fortyk","pilotMeldedAeId",false);
+        await knight.setFlag("fortyk","melded",false);
+    }
     async _onDeleteChassis(event){
         //deletes the selected item from the actor
 
@@ -726,6 +993,38 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                         label:"Yes",
                         callback: async dlg => { 
                             await this.actor.update({"system.knight.chassis":""});
+                            await this.actor.deleteEmbeddedDocuments("Item",[itemId]);
+
+                            this.render(true);
+                        }
+                    },
+                    cancel:{
+                        label: "No",
+                        callback: null
+                    }
+                },
+                default: "submit"
+            }).render(true)
+        });
+
+    }
+    async _onDeleteSpirit(event){
+        //deletes the selected item from the actor
+
+        event.preventDefault();
+        let itemId = event.currentTarget.attributes["data-item-id"].value;
+        let item=await this.actor.getEmbeddedDocument("Item",itemId);
+
+        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
+        renderedTemplate.then(content => {
+            new Dialog({
+                title: "Deletion Confirmation",
+                content: content,
+                buttons:{
+                    submit:{
+                        label:"Yes",
+                        callback: async dlg => { 
+                            await this.actor.update({"system.knight.spirit":""});
                             await this.actor.deleteEmbeddedDocuments("Item",[itemId]);
 
                             this.render(true);

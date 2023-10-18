@@ -253,6 +253,9 @@ returns the roll message*/
                     rof=parseInt(weapon.system.rof[1].value)-1;
                     hits+=Math.min(rof,Math.floor((testDos-1)/2));
                 }else if(attackType==="full"){
+                    if(actor.getFlag("fortyk","overwhelmingfirepower")){
+                        testDos++;
+                    }
                     rof=parseInt(weapon.system.rof[2].value);
                     hits=Math.min(rof,(testDos));
                 }
@@ -300,6 +303,10 @@ returns the roll message*/
                 tarActor=attackTarget.actor;
                 let tarSize=tarActor.system.secChar.size.value;
                 let attackerSize=actor.system.secChar.size.value;
+                if(actor.getFlag("fortyk","desolationprotocols")){
+                    evadepenalty+=-10;
+                    templateOptions["sizePenalty"]=`Evasion penalty due to Desolation protocols: ${-10}`
+                }
                 if(attackerSize>tarSize){
                     let penalty=(tarSize-attackerSize)*10;
                     evadepenalty+=penalty;

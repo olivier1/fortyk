@@ -919,3 +919,4 @@ FORTYK.cargoRarityValue = {"100":2,"30":5,"20":10,"10":20,"0":50,"-10":100,"-20"
 FORTYK.cargoQualityMultiplier = {"Poor":0.5,"Common":1,"Good":2,"Best":4};
 FORTYK.comradeRanks=["Green","Guardsman","Veteran"]
 FORTYK.vehicleTypes=["Tracked","Wheeled","Skimmer","Walker","Aircraft","Spacecraft"]
+FORTYK.meldTypes={"default":20,"experimental":20,"safe":10}
