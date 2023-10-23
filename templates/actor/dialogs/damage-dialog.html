@@ -2,7 +2,7 @@
     <div class="flexrow"><label>Number of Hits:</label> <input type="text" id="modifier" name="hits" value="{{hits}}" data-dtype="Number"{{debug}}{{#if blast}} disabled {{/if}} autofocus/></div>
     <div class="flexrow"><label>Bonus Damage:</label> <input type="text" id="dmg" name="dmg" value="{{dmg}}" data-dtype="Number" /></div>
     <div class="flexrow"><label>Bonus Penetration:</label> <input type="text" id="pen" name="pen" value="0" data-dtype="Number" /></div>
-    <div class="flexrow"><label>Reroll damage equal or below:</label> <input type="text" id="reroll" name="reroll" value="0" data-dtype="Number" /></div>
+    <div class="flexrow"><label>Reroll damage equal or below:</label> <input type="text" id="reroll" name="reroll" value={{reroll}} data-dtype="Number" /></div>
     <div class="flexrow"{{#unless dfa}}hidden{{/unless}}><label>Magnitude Damage:</label> <input type="text" id="magdmg" name="magdmg" value="0" data-dtype="Number" /></div>
     
 </div>

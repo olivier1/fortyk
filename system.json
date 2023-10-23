@@ -2,7 +2,7 @@
     "id": "fortyk",
     "title": "fortyk",
     "description": "The fortyk system for FoundryVTT!",
-    "version": "0.11.0.1.1",
+    "version": "0.11.0.2",
     "compatibility": {
         "minimum": "11",
         "verified": "11.305",
@@ -238,7 +238,7 @@
             "path": "packs/knight-chassis",
             "system": "fortyk",
             "package": "system",
-            "private": false
+            "private": true
         },
         {
             "label": "Knight Spirits",
@@ -247,7 +247,7 @@
             "path": "packs/knight-spirits",
             "system": "fortyk",
             "package": "system",
-            "private": false
+            "private": true
         },
         {
             "label": "Knight Components",
@@ -273,7 +273,7 @@
             "name": "psychic-powers",
             "path": "packs/psychic-powers",
             "system": "fortyk",
-            "private": false,
+            "private": true,
             "flags": {}
         },
         {
@@ -338,6 +338,6 @@
     "socket": true,
     "url": "https://github.com/olivier1/fortyk",
     "manifest": "https://raw.githubusercontent.com/olivier1/fortyk/master/system.json",
-    "download": "https://github.com/olivier1/fortyk/archive/0.11.0.1.1.zip",
+    "download": "https://github.com/olivier1/fortyk/archive/0.11.0.2.zip",
     "license": "LICENSE.txt"
 }

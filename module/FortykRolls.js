@@ -16,8 +16,11 @@ export class FortykRolls{
 @target: the target number for the test
 @actor: the calling actor
 @label: what to name the test
-@Weapon: the weapon is needed for attack rolls, this is where psy powers are put also
+@fortykWeapon: the weapon is needed for attack rolls, this is where psy powers are put also
 @reroll: if the roll is a reroll or not
+@fireRate: declares which fire rate was used for ranged attacks
+@delayMsg: tells if the message should be delayed, used for popup tests
+@modifiers: object that keeps track of modifiers and their origin for attack rolls
 returns the roll message*/
     static async fortykTest(char, type, target, actor, label, fortykWeapon=null, reroll=false, fireRate="",delayMsg=false, modifiers=null){
 
@@ -168,6 +171,16 @@ returns the roll message*/
             if(attack&&fortykWeapon&&fortykWeapon.getFlag("fortyk","voidstrike")){
                 testDos+=1;
             }
+            //extra dos from flags
+            if(type==="evasion"&&actor.getFlag("fortyk","bonusevasiondos")){
+                testDos+=parseInt(actor.getFlag("fortyk","bonusevasiondos"));
+            }
+            if(type==="rangedAttack"&&actor.getFlag("fortyk","bonusrangedattackdos")){
+                testDos+=parseInt(actor.getFlag("fortyk","bonusrangedattackdos"));
+            }
+            if(type==="meleeAttack"&&actor.getFlag("fortyk","bonusmeleeattackdos")){
+                testDos+=parseInt(actor.getFlag("fortyk","bonusmeleeattackdos"));
+            }
             templateOptions["dos"]="with "+testDos.toString()+" degree";
             if(testDos===1){}else{templateOptions["dos"]+="s";}
             templateOptions["dos"]+=" of success!";
@@ -298,15 +311,21 @@ returns the roll message*/
                 evadepenalty+=inescPenalty;
                 templateOptions["inescapableAttack"]=`Inescapable attack evasion penalty: ${inescPenalty}`; 
             }
+            if(actor.getFlag("fortyk","desolationprotocols")){
+                evadepenalty+=-10;
+                templateOptions["desolationPenalty"]=`Evasion penalty due to Desolation protocols: ${-10}`;
+            }
+            if(type==="meleeAttack"&&actor.getFlag("fortyk","huntergyro")){
+                let hunterPenalty=parseInt(actor.getFlag("fortyk","huntergyro"));
+                evadepenalty+=hunterPenalty;
+                templateOptions["huntergyroPenalty"]=`Evasion penalty due to Hunter Gyro: ${hunterPenalty}`;
+            }
             let tarActor;
             if(attackTarget!==undefined){
                 tarActor=attackTarget.actor;
                 let tarSize=tarActor.system.secChar.size.value;
                 let attackerSize=actor.system.secChar.size.value;
-                if(actor.getFlag("fortyk","desolationprotocols")){
-                    evadepenalty+=-10;
-                    templateOptions["sizePenalty"]=`Evasion penalty due to Desolation protocols: ${-10}`
-                }
+
                 if(attackerSize>tarSize){
                     let penalty=(tarSize-attackerSize)*10;
                     evadepenalty+=penalty;
@@ -1296,7 +1315,7 @@ returns the roll message*/
                                 if(numbers[n]!==0){
 
                                     damageString+=`${numbers[n]}`;
-                                   
+
                                     if((operatorCounter<operators.length)&&(numbers[n+1]!==0)){
                                         damageString+=`${operators[operatorCounter]}`;  
                                         operatorCounter++
@@ -1431,7 +1450,7 @@ returns the roll message*/
                             //reactive plating
 
                             if(tarActor.getFlag("fortyk","reactiveplating")&&((damageType==="explosive")||damageType==="impact")){
-                                soak+=Math.ceil(armor*0.1);
+                                soak+=Math.ceil(armor*0.2);
                                 damageOptions.results.push(`<span>Reactive Plating is resistant against this damage type.</span>`);
                             }
                             //resistant armor
@@ -1930,6 +1949,36 @@ returns the roll message*/
                                 messages.push(impOptions);
                             }
                         }
+                        //weakness trait
+                        if(tarActor.getFlag("fortyk","weakness")){
+                            if(tarActor.getFlag("fortyk","weakness").toLowerCase().includes(damageType)){
+                                damage=damage*2;
+                                if(damage>0){
+                                    let weaknessOptions={user: user._id,
+                                                    speaker:{actor,alias:tarActor.name},
+                                                    content:"Weakness doubles damage taken!",
+                                                    classes:["fortyk"],
+                                                    flavor:`${tarActor} is weak to damage type!`,
+                                                    author:tarActor.name}
+                                    messages.push(weaknessOptions);
+                                }
+                            }
+                        }
+                        //resilience trait
+                        if(tarActor.getFlag("fortyk","resilience")){
+                            if(tarActor.getFlag("fortyk","resilience").toLowerCase().includes(damageType)){
+                                damage=Math.ceil*(damage/2);
+                                if(damage>0){
+                                    let weaknessOptions={user: user._id,
+                                                    speaker:{actor,alias:tarActor.name},
+                                                    content:"Resilience halves damage taken!",
+                                                    classes:["fortyk"],
+                                                    flavor:`${tarActor} is resilient to damage type!`,
+                                                    author:tarActor.name}
+                                    messages.push(weaknessOptions);
+                                }
+                            }
+                        }
                         // true grit!@!!@
                         if(!vehicle&&!data.suddenDeath.value&&!isHordelike&&(damage>0)&&(newWounds[tarNumbr]-damage)<0&&tarActor.getFlag("fortyk","truegrit")){
                             let trueSoak=data.characteristics.t.bonus;
@@ -2048,22 +2097,25 @@ returns the roll message*/
                         damageOptions.results.push(`</div>`) 
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
                         damageOptions.results.push(`<span>Total Damage: ${chatDamage}.</span>`);
-                        let superheavyOptions={};
+                        let vehicleOptions={};
+                        if(vehicle){
+                            vehicleOptions.targetWeapon=targetWpn;
+                            vehicleOptions.facing=facing;
+                        }
                         if(tarActor.getFlag("fortyk","superheavy")){
-                            superheavyOptions.targetWeapon=targetWpn;
-                            superheavyOptions.facing=facing;
-                            superheavyOptions.threshold=0;
+
+                            vehicleOptions.threshold=0;
                             let thresholds=data.secChar.wounds.thresholds;
                             if(curWounds>thresholds["1"]){
-                                superheavyOptions.threshold=1;
+                                vehicleOptions.threshold=1;
                             }else if(curWounds>thresholds["2"]){
-                                superheavyOptions.threshold=2;
+                                vehicleOptions.threshold=2;
                             }else if(curWounds>thresholds["3"]){
-                                superheavyOptions.threshold=3;
+                                vehicleOptions.threshold=3;
                             }else if(curWounds>thresholds["4"]){
-                                superheavyOptions.threshold=4;
+                                vehicleOptions.threshold=4;
                             }else{
-                                superheavyOptions.threshold=5;
+                                vehicleOptions.threshold=5;
                             }
                         }
                         //if righteous fury ensure attack deals atleast 1 dmg
@@ -2106,7 +2158,7 @@ returns the roll message*/
                         }
 
                         //check for righteous fury
-                        let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar,ignoreSON,activeEffects,superheavyOptions);
+                        let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar,ignoreSON,activeEffects,vehicleOptions);
                         if(crit){
                             await ChatMessage.create(crit,[]);
                         }
@@ -2135,7 +2187,7 @@ returns the roll message*/
                                 crossed.push(3);
                             }
                             if(crossed.length>0){
-                                await this.thresholdCrits(crossed,curHit.value,tar,activeEffects);
+                                await this.thresholdCrits(crossed,curHit.value,tar,activeEffects, vehicleOptions);
                                 if(weapon.system.damageType.value.toLowerCase()==="energy"){
 
                                     heat++;
@@ -2181,7 +2233,12 @@ returns the roll message*/
                             if(tarActor.getFlag("fortyk","superheavy")){
                                 crit=Math.floor(crit/10);
                             }
-                            await this.critEffects(tar,crit+1,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects);
+                            if(vehicle){
+                                await this.vehicleCrits(tar,crit+1,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects,vehicleOptions);
+                            }else{
+                                await this.critEffects(tar,crit+1,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects);
+                            }
+
                         }
                         //report damage dealt to gm and the target's owner
                         if(game.user.isGM){
@@ -2285,7 +2342,7 @@ returns the roll message*/
         }
     }
     //handles righteous fury
-    static async _righteousFury(actor,label,weapon,curHit,tens, damage=1, tar=null, ignoreSON=false,activeEffects=null,superHeavyOptions={}){
+    static async _righteousFury(actor,label,weapon,curHit,tens, damage=1, tar=null, ignoreSON=false,activeEffects=null,vehicleOptions={}){
         var crit=false;
         if(tens>0){
             crit=true;
@@ -2313,7 +2370,9 @@ returns the roll message*/
             let res=rightRoll._total;
             if(tar!==null){
                 if(tar.actor.getFlag("fortyk","superheavy")){
-                    await this.superHeavyRightEffects(tar,res,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`,superHeavyOptions);
+                    await this.superHeavyRightEffects(tar,res,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`,vehicleOptions);
+                }else if(vehicle){
+                    await this.vehicleCrits(tar,res,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`, vehicleOptions);
                 }else{
                     await this.critEffects(tar,res,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`);
                 }
@@ -2347,9 +2406,7 @@ returns the roll message*/
         }else{
             rightMes=FORTYKTABLES.crits[mesDmgType][hitLoc][mesRes-1];
         }
-        if(rightMes){
 
-        }
         //parse for tests inside the crit message
         let testStr=rightMes.match(/(?<=\#)(.*?)(?=\^)/g);
         let tests=[]
@@ -2540,24 +2597,22 @@ returns the roll message*/
         if(game.user.isGM||token.isOwner){
 
             let actor=token.actor;
-            if(actor.type!=="vehicle"){
-                switch(type){
-                    case "Energy":
-                        await this.energyCrits(actor,num,hitLoc,ignoreSON,activeEffects,source);
-                        break;
-                    case "Explosive":
-                        await this.explosiveCrits(actor,num,hitLoc,ignoreSON,activeEffects,source);
-                        break;
-                    case "Impact":
-                        await this.impactCrits(actor,num,hitLoc,ignoreSON,activeEffects,source);
-                        break;
-                    case "Rending":
-                        await this.rendingCrits(actor,num,hitLoc,ignoreSON,activeEffects,source);
-                        break;
-                }
-            }else{
-                await this.vehicleCrits(token,num,hitLoc,ignoreSON,activeEffects,source);
+
+            switch(type){
+                case "Energy":
+                    await this.energyCrits(actor,num,hitLoc,ignoreSON,activeEffects,source);
+                    break;
+                case "Explosive":
+                    await this.explosiveCrits(actor,num,hitLoc,ignoreSON,activeEffects,source);
+                    break;
+                case "Impact":
+                    await this.impactCrits(actor,num,hitLoc,ignoreSON,activeEffects,source);
+                    break;
+                case "Rending":
+                    await this.rendingCrits(actor,num,hitLoc,ignoreSON,activeEffects,source);
+                    break;
             }
+
         }else{
             //if user isnt GM use socket to have gm update the actor
             let tokenId=token.id;
@@ -4457,25 +4512,118 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async vehicleCrits(token,num,hitLoc,ignoreSON,activeEffects,source){
+    static async vehicleCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions){
         let actor=token.actor;
 
         switch(hitLoc){
             case "hull":
                 await this._critMsg("hull","Hull", num, "",actor,source);
+                this.hullCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions);
                 break;
             case "weapon":
                 await this._critMsg("weapon","Weapon", num, "",actor,source);
+                this.weaponCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions);
                 break;
             case "motive":
                 await this._critMsg("motive","Motive System", num, "",actor,source);
+                this.motiveCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions);
                 break;
             case "turret":
                 await this._critMsg("turret","Turret", num, "",actor,source);
+                this.turretCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions);
                 break;
         }
     }
-    static async thresholdCrits(crossed,hitLoc,tar,activeEffects){
+    static async hullCrits(token,num,hitLoc,ignoreSON,activeEffects,source){
+        switch(num){
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
+        }
+    }
+    static async weaponCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions){
+        switch(num){
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
+        }
+    }
+
+    static async motiveCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions){
+        switch(num){
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
+        }
+    }
+    static async turretCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions){
+        switch(num){
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
+        }
+    }
+    static async thresholdCrits(crossed,hitLoc,tar,activeEffects, vehicleOptions){
         let actor=tar.actor;
         let source="Threshold crit ";
 
@@ -4483,22 +4631,168 @@ returns the roll message*/
             switch(hitLoc){
                 case "hull":
                     await this._critMsg("hull","Hull", crossed[i], "",actor,source,true);
+                    //await thresholdHullCrits(crossed[i],tar,activeEffects, vehicleOptions);
                     break;
                 case "weapon":
                     await this._critMsg("weapon","Weapon", crossed[i], "",actor,source,true);
+                    //await thresholdWeaponCrits(crossed[i],tar,activeEffects, vehicleOptions);
                     break;
                 case "motive":
                     await this._critMsg("motive","Motive System", crossed[i], "",actor,source,true);
+                    //await thresholdMotiveCrits(crossed[i],tar,activeEffects, vehicleOptions);
                     break;
                 case "turret":
                     await this._critMsg("turret","Turret", crossed[i], "",actor,source,true);
+                    //await thresholdTurretCrits(crossed[i],tar,activeEffects, vehicleOptions);
                     break;
             }
         }
 
     }
+    static async thresholdHullCrits(crossed,tar,activeEffects, vehicleOptions){
+        let vehicle=tar.actor;
+        let pilot=game.actors.get(vehicle.system.crew.pilotID);
+        let components
+        let size
+        let compRoll
+        let component
+        switch(crossed){
+            case 1:
+                if(pilot){
+                    let toughness=pilot.system.characteristics.t.total;
+                    let testTarget=toughness+10;
+                    if(vehicle.getFlag("fortyk","motiondampening")){
+                        testTarget+=30;
+                    }
+                    let test=await this.fortykTest("t", "Test", testTarget, pilot, "Resist stun", null, false);
+
+                }
+                break;
+            case 2:
+                components=[];
+                components=components.concat(vehicle.itemTypes.ammunition,vehicle.itemTypes.forceField,vehicle.itemTypes.knightComponent,vehicle.itemTypes.knightCore);
+                components=components.filter(component=>(component.system.state!=="X")&&(component.system.state!==0));
+                size=components.length;
+
+                compRoll=new Roll(`1d${size}-1`,{});
+
+                await compRoll.evaluate({async: true});
+                component=components[compRoll._total];
+                if(component){
+                    let compData=component.system;
+                    let compUpdate={};
+                    if(component.type==="ammunition"){
+                        compUpdate["system.state.value"]="X";
+                        rightMes=`${component.name} explodes dealing weapon damage!`;
+                    }else if(compData.state.value==="O"||compData.state.value===""){
+                        compUpdate["system.state.value"]="D";
+                        rightMes=`${component.name} is damaged.`;
+                    }else if(compData.state.value==="D"){
+                        compUpdate["system.state.value"]="X";
+                        rightMes=`${component.name} is destroyed.`;
+                    }else if(!isNaN(parseInt(compData.state.value))){
+                        compUpdate["system.state.value"]=parseInt(compData.state.value)-1;
+                        if(compUpdate["system.state.value"]===0){
+                            rightMes=`${component.name} is destroyed.`;
+                        }else{
+                            rightMes=`${component.name} is damaged.`; 
+                        }
+                    }
+                    component.update(compUpdate);
+                }
+                break;
+            case 3:
+                let armorRoll=new Roll(`2d10`,{});
+
+                await armorRoll.evaluate({async: true});
+                let armorReduction=armorRoll._total;
+                rightMes=`Righteous fury reduces ${facing.label} armor by ${armorReduction}!`
+                let armor=facing.armor;
+                armor=armor-armorReduction;
+                let update={};
+                update[`system.facings.${facing.path}.armor`]=armor;
+                await vehicle.update(update);
+                break;
+            case 4:
+                components=[];
+                components=components.concat(vehicle.itemTypes.ammunition,vehicle.itemTypes.forceField,vehicle.itemTypes.knightComponent,vehicle.itemTypes.knightCore);
+                components=components.filter(component=>(component.system.state!=="X")&&(component.system.state!==0));
+                size=components.length;
+
+                compRoll=new Roll(`1d${size}-1`,{});
+
+                await compRoll.evaluate({async: true});
+                component=components[compRoll._total];
+                if(component){
+                    let compData=component.system;
+                    let compUpdate={};
+                    if(component.type==="ammunition"){
+                        compUpdate["system.state.value"]="X";
+                        rightMes=`${component.name} explodes dealing weapon damage!`;
+                    }else if(compData.state.value==="O"||compData.state.value===""){
+                        compUpdate["system.state.value"]="D";
+                        rightMes=`${component.name} is damaged.`;
+                    }else if(compData.state.value==="D"){
+                        compUpdate["system.state.value"]="X";
+                        rightMes=`${component.name} is destroyed.`;
+                    }else if(!isNaN(parseInt(compData.state.value))){
+                        compUpdate["system.state.value"]=parseInt(compData.state.value)-1;
+                        if(compUpdate["system.state.value"]===0){
+                            rightMes=`${component.name} is destroyed.`;
+                        }else{
+                            rightMes=`${component.name} is damaged.`; 
+                        }
+                    }
+                    component.update(compUpdate);
+                }
+                break;
+
+        }
+    }
+    static async thresholdWeaponCrits(crossed,tar,activeEffects, vehicleOptions){
+        switch(crossed){
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+
+        }
+
+    }
+    static async thresholdMotiveCrits(crossed,tar,activeEffects, vehicleOptions){
+        switch(crossed){
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+
+        }
+
+    }
+    static async thresholdTurretCrits(crossed,tar,activeEffects, vehicleOptions){
+        switch(crossed){
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+
+        }
+
+    }
     static async applyActiveEffect(token,effect,ignoreSON=false){
-      
+
         if(effect.length>0){
             if(game.user.isGM||token.isOwner){
 

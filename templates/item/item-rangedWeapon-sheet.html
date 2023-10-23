@@ -20,23 +20,23 @@
 
         <div class="flexcol">
             <label>Range:</label>
-            <input type="text" value="{{system.range.formula}}" name="system.range.formula">
+            <input type="text" class="weapon-mod" value="{{system.range.formula}}" data-target="system.range.formula" data-dtype="String">
         </div>
         <div class="flexcol">
             <label>Damage:</label>
-            <input type="text" value="{{system.damageFormula.formula}}" name="system.damageFormula.formula">
+            <input type="text" class="weapon-mod" value="{{system.damageFormula.formula}}" data-target="system.damageFormula.formula" data-dtype="String">
         </div>
         <div class="flexcol">
             <label>Penetration:</label>
-            <input type="text" value="{{system.pen.formula}}" name="system.pen.formula" data-dtype="String">
+            <input type="text" class="weapon-mod" value="{{system.pen.formula}}" data-target="system.pen.formula" data-dtype="String">
         </div>
         <div class="flexcol">
             <label>Clip Size:</label>
-            <input type="text" value="{{system.clip.formula}}" name="system.clip.formula" data-dtype="Number">
+            <input type="text" class="weapon-mod" value="{{system.clip.formula}}" data-target="system.clip.formula" data-dtype="Number">
         </div>
         <div class="flexcol">
             <label>Reload:</label>
-            <input type="text" value="{{system.reload.value}}" name="system.reload.value">
+            <input type="text" class="weapon-mod" value="{{system.reload.value}}" data-target="system.reload.value" data-dtype="String">
         </div>
 
         <div class="flexcol">
@@ -50,18 +50,18 @@
         <div class="flexcol">
             <label>Rate of Fire:</label>
             <div class="flexrow">
-                <input type="text" value="{{system.rof.[0].value}}" name="system.rof.0.value">
+                <input type="text" class="weapon-mod" value="{{system.rof.[0].value}}" data-target="system.rof.0.value" data-dtype="Number">
                 <span>/</span>
-                <input type="text" value="{{system.rof.[1].value}}" name="system.rof.1.value">
+                <input type="text" class="weapon-mod" value="{{system.rof.[1].value}}" data-target="system.rof.1.value" data-dtype="Number">
                 <span>/</span>
-                <input type="text" value="{{system.rof.[2].value}}" name="system.rof.2.value">
+                <input type="text" class="weapon-mod" value="{{system.rof.[2].value}}" data-target="system.rof.2.value" data-dtype="Number">
             </div>
 
 
         </div>
         <div class="flexcol">
             <label>Ammo Consumption:</label>
-            <input type="text" value="{{system.clip.consumption}}" name="system.clip.consumption">
+            <input type="text" class="weapon-mod" value="{{system.clip.consumption}}" data-target="system.clip.consumption" data-dtype="Number">
         </div>
         <div class="flexcol">
             <label>Damage Type:</label>
@@ -153,15 +153,15 @@
         </div>
         <div class="flexcol">
             <label>Weight:</label>
-            <input type="text" value="{{system.weight.value}}" name="system.weight.value">
+            <input type="text" class="weapon-mod" value="{{system.weight.value}}" data-target="system.weight.value" data-dtype="Number">
         </div>
         <div class="flexcol">
             <label>Space:</label>
-            <input type="text" value="{{system.space.value}}" name="system.space.value">
+            <input type="text" class="weapon-mod" value="{{system.space.value}}" data-target="system.space.value" data-dtype="Number">
         </div>
          <div class="flexrow">
             <label>is Hidden:</label>
-            <input type="checkbox" name="flags.fortyk.hidden" {{checked flags.fortyk.hidden}}>
+            <input type="checkbox" class="weapon-mod" name="flags.fortyk.hidden" {{checked flags.fortyk.hidden}}>
         </div>
         <div class="flexrow">
             <label>Has alternate profiles:</label>
@@ -196,23 +196,23 @@
             <div class="flexrow">
                 <div class="flexcol">
                     <label>Single Shot:</label>
-                    <input type="text" value="{{system.attackMods.single}}" name="system.attackMods.single">
+                    <input type="text" class="weapon-mod" value="{{system.attackMods.single}}" data-target="system.attackMods.single" data-dtype="Number">
                 </div>
                 <div class="flexcol">
                     <label>Semi Auto:</label>
-                    <input type="text" value="{{system.attackMods.semi}}" name="system.attackMods.semi">
+                    <input type="text" class="weapon-mod" value="{{system.attackMods.semi}}" data-target="system.attackMods.semi" data-dtype="Number">
                 </div>
                 <div class="flexcol">
                     <label>Full Auto:</label>
-                    <input type="text" value="{{system.attackMods.full}}" name="system.attackMods.full">
+                    <input type="text" class="weapon-mod" value="{{system.attackMods.full}}" data-target="system.attackMods.full" data-dtype="Number">
                 </div>
                 <div class="flexcol">
                     <label>Suppressive:</label>
-                    <input type="text" value="{{system.attackMods.suppressive}}" name="system.attackMods.suppressive">
+                    <input type="text" class="weapon-mod" value="{{system.attackMods.suppressive}}" data-target="system.attackMods.suppressive" data-dtype="Number">
                 </div>
                 <div class="flexcol">
                     <label>Test Mod:</label>
-                    <input type="text" value="{{system.testMod.value}}" name="system.testMod.value">
+                    <input type="text" class="weapon-mod" value="{{system.testMod.value}}" data-target="system.testMod.value" data-dtype="Number">
                 </div>
             </div>
         </div>

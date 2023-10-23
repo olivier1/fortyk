@@ -4,6 +4,7 @@
  */
 
 import {objectByString} from "../utilities.js";
+import {ActiveEffectDialog} from "../dialog/activeEffect-dialog.js";
 export class FortyKItemSheet extends ItemSheet {
 
     /** @override */
@@ -270,7 +271,7 @@ export class FortyKItemSheet extends ItemSheet {
 
     }
     async _onModifierClick(event){
-        let item=this.item;
+        /*let item=this.item;
 
         if(item.effects.size===0){
             let disabled=false;
@@ -291,7 +292,29 @@ export class FortyKItemSheet extends ItemSheet {
 
 
 
-        new ActiveEffectConfig(ae).render(true);
+        new ActiveEffectConfig(ae).render(true);*/
+        let item=this.item;
+        let sheet=this;
+
+        var options = {
+            id:"aeDialog"
+        };
+        var d=new ActiveEffectDialog({
+            title: "Active Effects",
+            item:item,
+            buttons:{
+                button:{
+                    label:"Ok",
+                    callback: async html => {
+                        sheet.item.dialog=undefined;
+                    }
+                },
+            },
+            close:function(){
+                sheet.item.dialog=undefined;
+            }
+        },options).render(true)
+        sheet.item.dialog=d;
 
 
     }

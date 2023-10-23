@@ -23,8 +23,8 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         });
     }
     /** @override */
-    getData() {
-        const data = super.getData();
+    async getData() {
+        const data = await super.getData();
         let actor=this.actor;
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
@@ -48,7 +48,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         }
         data.repairEntries=actor.itemTypes.repairEntry.sort(function(a,b){return a.sort-b.sort});
         data.knightComponentTypes=FORTYK.knightComponentTypes;
-       
+       console.log(data)
         return data;
     }
     /** @override */

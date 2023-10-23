@@ -245,10 +245,16 @@ export class FortykRollDialogs{
         let target=targets.values().next().value;
         let vehicle=false;
         if(targets.size>0){
-            miscMods+=-modifiers.tarEvasion;
 
+            let speed=modifiers.tarEvasion;
+            if(actor.getFlag("fortyk","ignorespeed")){
+                let ignoreSpeed=parseInt(actor.getFlag("fortyk","ignorespeed"));
+                speed=Math.max(0,speed-ignoreSpeed);
+
+            }
+            miscMods+=-speed;
             if(modifiers.tarEvasion){
-                modifierTracker.push({"value":`${-modifiers.tarEvasion}`,"label":"Target Speed Modifier"});
+                modifierTracker.push({"value":`${-speed}`,"label":"Target Speed Modifier"});
             }
             let tarActor=target.actor;
             let tar=tarActor;
@@ -591,7 +597,13 @@ export class FortykRollDialogs{
         if(targets.size>0){
             if(actor.getFlag("fortyk","gyro")){
                 let gyro=parseInt(actor.getFlag("fortyk","gyro"))*10;
-                miscMods+=-modifiers.tarEvasion;
+                let speed=modifiers.tarEvasion;
+                if(actor.getFlag("fortyk","ignorespeed")){
+                    let ignoreSpeed=parseInt(actor.getFlag("fortyk","ignorespeed"));
+                    speed=Math.max(0,speed-ignoreSpeed);
+
+                }
+                miscMods+=-speed;
                 miscMods+=-Math.max(0,modifiers.selfEvasion-gyro);
 
 
@@ -599,15 +611,22 @@ export class FortykRollDialogs{
                     modifierTracker.push({"value":`${-Math.max(0,modifiers.selfEvasion-gyro)}`,"label":"Speed Modifier"});
                 }
                 if(modifiers.tarEvasion){
-                    modifierTracker.push({"value":`${-modifiers.tarEvasion}`,"label":"Target Speed Modifier"});
+                    modifierTracker.push({"value":`${-speed}`,"label":"Target Speed Modifier"});
                 }
             }else{
-                miscMods+=-modifiers.tarEvasion-modifiers.selfEvasion; 
+                let speed=modifiers.tarEvasion;
+                if(actor.getFlag("fortyk","ignorespeed")){
+                    let ignoreSpeed=parseInt(actor.getFlag("fortyk","ignorespeed"));
+                    speed=Math.max(0,speed-ignoreSpeed);
+
+                }
+                miscMods+=-speed;
+                miscMods+=-modifiers.selfEvasion; 
                 if(modifiers.selfEvasion){
                     modifierTracker.push({"value":`${-modifiers.selfEvasion}`,"label":"Speed Modifier"});
                 }
                 if(modifiers.tarEvasion){
-                    modifierTracker.push({"value":`${-modifiers.tarEvasion}`,"label":"Target Speed Modifier"});
+                    modifierTracker.push({"value":`${-speed}`,"label":"Target Speed Modifier"});
                 }
 
 

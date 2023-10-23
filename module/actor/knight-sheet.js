@@ -101,6 +101,9 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         if(data.sensors2===undefined){
             data.sensors2=true;
         }
+        if(data.gyros2===undefined){
+            data.gyros2=true;
+        }
         if(data.coremods2===undefined){
             data.coremods2=true;
         }
@@ -157,7 +160,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
-                        await wpnType[i].prepareData();
+                        //await wpnType[i].prepareData();
                         if(wpnType[i].type==="rangedWeapon"){
 
                             wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
@@ -171,7 +174,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
-                        await wpnType[i].prepareData();
+                       // await wpnType[i].prepareData();
                         if(wpnType[i].type==="rangedWeapon"){
 
                             wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
@@ -184,19 +187,22 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
-                        await wpnType[i].prepareData();
+                       // await wpnType[i].prepareData();
                         if(wpnType[i].type==="rangedWeapon"){
                             wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
                         }
                     }
                 }
             }
+            console.log(system.chassis)
             data.rightArmHardPoints=duplicate(system.chassis.system.hardPoints.rightArm);
             for (let [key, wpnType] of Object.entries(data.rightArmHardPoints)){
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
+                        console.log(wpnType[i])
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
-                        await wpnType[i].prepareData();
+                        console.log(wpnType[i])
+                        //await wpnType[i].prepareData();
                         if(wpnType[i].type==="rangedWeapon"){
                             wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
                         }
@@ -324,6 +330,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
             let componentBase=duplicate(component);
+            componentBase.system.path=path;
             if(house){
                 componentBase.system.originalId=component.id;
             }
@@ -402,6 +409,10 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
                 }
                 if(componentSubType==="sensor"){
+                    knightUpdate[path]=newComponent[0].id;              
+
+                }
+                if(componentSubType==="gyro"){
                     knightUpdate[path]=newComponent[0].id;              
 
                 }
@@ -510,6 +521,12 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             }
             if(componentSubType==="sensor"){
                 if(slotType.indexOf("sensor-slot")!==-1){
+                    return true;
+                }                
+
+            }
+            if(componentSubType==="gyro"){
+                if(slotType.indexOf("gyro-slot")!==-1){
                     return true;
                 }                
 
@@ -674,7 +691,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             update["system.knight.chassis"]=id;
                             update["system.secChar.wounds.value"]=createdChassis[0].system.structuralIntegrity.value;
                             update["system.secChar.size.value"]=parseInt(createdChassis[0].system.size.value)-1;
-                            update["system.manoeuvrability.value"]=createdChassis[0].system.manoeuvrability.value;
                             update["token.actorLink"]=true;
                             update["token.vision"]=true;
                             await actor.update(update);

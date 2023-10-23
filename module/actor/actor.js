@@ -582,6 +582,7 @@ export class FortyKActor extends Actor {
                                 setNestedKey(actorData,path,change.value);
                             }
                         }else{
+                            //custom mode
                             if(change.mode===0){
                                 setNestedKey(actorData,path,change.value);
                             }
@@ -989,6 +990,11 @@ export class FortyKActor extends Actor {
                 data.knight.space.value+=parseFloat(data.knight.sensor.system.space.value);
                 data.knight.tonnage.value+=parseFloat(data.knight.sensor.system.weight.value);
             }
+            if(knight.gyro){
+                data.knight.gyro=this.getEmbeddedDocument("Item",knight.gyro);
+                data.knight.space.value+=parseFloat(data.knight.gyro.system.space.value);
+                data.knight.tonnage.value+=parseFloat(data.knight.gyro.system.weight.value);
+            }
             if(knight.throneMod){
                 data.knight.throneMod=this.getEmbeddedDocument("Item",knight.throneMod);
                 data.knight.space.value+=parseFloat(data.knight.throneMod.system.space.value);
@@ -1252,7 +1258,7 @@ export class FortyKActor extends Actor {
         for(const item of this.items){
             
             
-            await item.prepareData();
+            //await item.prepareData();
             console.log(item)
             if(item._id===data.secChar.wornGear.armor.id){
                 wornGear["armor"]=item;

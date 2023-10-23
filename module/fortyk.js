@@ -493,10 +493,9 @@ Hooks.on("updateCombat", async (combat) => {
             await ChatMessage.create(sustainedPowersOptions,{});
         }
         var dead={};
-        for(let activeEffect of actor.effects){
-
+        let aeTime=async function (activeEffect, actor) {
             if(activeEffect.duration.rounds!==null){
-
+                console.log(activeEffect);
                 let remaining=Math.ceil(activeEffect.duration.remaining);
                 if(remaining<1){remaining=0}
                 let content="";
@@ -504,9 +503,9 @@ Hooks.on("updateCombat", async (combat) => {
                 if(activeEffect.label!=="Evasion"){
 
                     if(remaining===0){
-                        content=`${activeEffect.name} expires.`;
+                        content=`${activeEffect.name}, affecting ${activeEffect.parent.name} expires.`;
                     }else{
-                        content=`${activeEffect.name} has ${remaining} rounds remaining.`;
+                        content=`${activeEffect.name}, affecting ${activeEffect.parent.name} has ${remaining} rounds remaining.`;
                     }
                     let activeEffectOptions={user: game.user._id,
                                              speaker:{actor,alias:actor.name},
@@ -527,6 +526,12 @@ Hooks.on("updateCombat", async (combat) => {
 
 
             }
+        }
+
+        for(let activeEffect of actor.effects){
+
+
+            aeTime(activeEffect, actor);
             //check for flags
             if(activeEffect.statuses){
 
@@ -709,6 +714,11 @@ Hooks.on("updateCombat", async (combat) => {
                 }
             }
         }
+        for (let item of actor.items){
+            for(let ae of item.effects){
+                aeTime(ae,actor);
+            }
+        }
         //check for regeneration
         if(actor.getFlag("fortyk","regeneration")){
             let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
@@ -849,6 +859,9 @@ Hooks.on('renderCompendium', (compendium, html, data)=>{
             if(componentSubType==="sensor"){
                 return ".sensor-slot";
             }
+            if(componentSubType==="gyro"){
+                return ".gyro-slot";
+            }
             if(componentSubType==="arm-actuator"){
                 return ".arm-actuator-slot";
             }
@@ -863,7 +876,7 @@ Hooks.on('renderCompendium', (compendium, html, data)=>{
     }
     let onDragComponent=async function(event){
         console.log(compendium.id)
-       
+
         let compendiumId=compendium.id.replace("compendium-","");
 
         let compendiumObj=await game.packs.get(compendiumId);
@@ -905,15 +918,7 @@ Hooks.on('renderCompendium', (compendium, html, data)=>{
 
     });
 })
-//disable default drop behaviour for knight sheets
-Hooks.on('renderFortyKKnightSheet', (sheet, html, actor) =>{
-   /* if(html.find('.window-content').length===0){return}
-    let _handleDrop=html.find('.window-content')[0].ondrop;
-    console.log(_handleDrop)
-    console.log(html.find('.window-content')[0].removeEventListener("drop", _handleDrop, true));
-    console.log(html.find('.window-content')[0].removeEventListener("drop", _handleDrop, false));
-    console.log(html.find('.window-content'))*/
-})
+
 Hooks.on('preCreateItem', (actor, data,options) =>{
 });
 //set flags on the actor when adding an active effect if it should activate a flag
@@ -940,7 +945,7 @@ Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
     }
 });
 /**
-     * Add the mane active effects button to actor sheets
+     * Add the manage active effects button to actor sheets
      */
 Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
     if(game.user.isGM){

@@ -231,6 +231,13 @@
                         <span class="list-item sensors2" {{#unless ../sensors2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
                         <span class="list-item sensors2" {{#unless ../sensors2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
                         {{/each}}
+                        <a class="mechbay-grid-section gyro-color list-item-header4" name="gyros2"><span class="{{#unless gyros2}}plus-button{{else}}minus-button{{/unless}}"></span>Gyros</a>
+                        {{#each gyros}}
+                        <span class="list-item mechbay-component gyros2" {{#unless ../gyros2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="gyro-slot">{{this.name}}</span>
+                        <span class="list-item gyros2" {{#unless ../gyros2}}style="display: none"{{/unless}}>{{this.system.amount.left}}</span>
+                        <span class="list-item gyros2" {{#unless ../gyros2}}style="display: none"{{/unless}}>{{this.system.weight.value}}</span>
+                        <span class="list-item gyros2" {{#unless ../gyros2}}style="display: none"{{/unless}}>{{this.system.space.value}}</span>
+                        {{/each}}
                         <a class="mechbay-grid-section plating-color list-item-header4" name="platings2"><span class="{{#unless platings2}}plus-button{{else}}minus-button{{/unless}}"></span>Platings</a>
                         {{#each platings}}
                         <span class="list-item mechbay-component platings2" {{#unless ../platings2}}style="display: none"{{/unless}} data-id="{{this.id}}" name="plating-slot">{{this.name}}</span>
@@ -405,7 +412,7 @@
             <div class="info2 mechgrid-child flexcol flex-group-center">
                 <span>Tonnage: {{system.knight.tonnage.value}}/{{system.knight.tonnage.max}}</span>
                 <span>Space: {{system.knight.space.value}}/{{system.knight.space.max}}</span>
-                <span class="flexrow">Heat: {{system.knight.heat.value}}/{{system.knight.heat.cap}}+<input type="text" class="combat-resources" data-target="system.knight.heat.mod" value="{{system.knight.heat.mod}}" data-dtype="Number"/></span>
+                <span class="flexrow">Heat: {{system.knight.heat.value}}/{{system.knight.heat.max}}</span>
             </div>
             <div class="left-weapon mechgrid-child flex-group-center">
                 {{#each leftArmHardPoints.titanicRanged}}
@@ -643,6 +650,29 @@
                 {{else}}
                 <div class="sensor-slot sensor-color component-slot" data-index="{{@index}}" data-path="system.knight.sensor">
                     Sensor Slot
+                </div>
+                {{/if}}
+                {{#if system.knight.gyro}}
+
+                <div class="gyro gyro-color filled-slot">
+                    <select class="state"  data-item-id="{{system.knight.gyro.id}}" data-dtype="Number">
+                        {{#select system.knight.gyro.system.state.value}}
+
+                        {{#each itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
+                    <span>{{system.knight.gyro.name}}</span>
+                    {{#if isGM}}
+                    <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.gyro.id}}"></a>
+                    {{/if}}
+                    <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.gyro.id}}" data-path="system.knight.gyro" ></a>
+                </div>
+                {{else}}
+                <div class="gyro-slot gyro-color component-slot" data-index="{{@index}}" data-path="system.knight.gyro">
+                    Gyro Slot
                 </div>
                 {{/if}}
                 {{#if system.knight.plating}}

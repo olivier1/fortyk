@@ -966,6 +966,7 @@
                 "armActuator":"",
                 "legActuator":"",
                 "throneMod":"",
+                "gyro":"",
                 "components":[""],
                 "spirit":"",
                 "operate":"operate:titanicwalker",

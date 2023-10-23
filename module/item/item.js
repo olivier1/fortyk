@@ -4,7 +4,8 @@
  */
 import {getItem} from "../utilities.js";
 import {isEmpty} from "../utilities.js";
-
+import {objectByString} from "../utilities.js";
+import {setNestedKey} from "../utilities.js";
 export class FortyKItem extends Item {
     //@Override the create function to add an activeeffect for modifiers to an item
     static async create(data, options) {
@@ -79,7 +80,7 @@ export class FortyKItem extends Item {
    */
     async prepareData() {
 
-        super.prepareData();
+        //super.prepareData();
 
         // Get the Item's data
         const item = this;
@@ -90,6 +91,8 @@ export class FortyKItem extends Item {
         //ensure this is an owned item
 
         if(this.actor){
+
+            item.system=duplicate(item._source.system)
 
             const data = this.actor.system;
             let actor=this.actor;
@@ -104,6 +107,7 @@ export class FortyKItem extends Item {
                     }
 
                 }
+                return
             }
             if(actor.type==="knightHouse"){
                 if(item.type!=="repairEntry"&&item.type!=="cadetHouse"&&item.type!=="outpost"){
@@ -126,6 +130,7 @@ export class FortyKItem extends Item {
                 }else{
                     item.system.knightComponentType=item.type;
                 }
+                return
             }
             if(item.type==="forceField"){
                 //logic for the sanctuary forcefields
@@ -151,28 +156,34 @@ export class FortyKItem extends Item {
                         item.system.rating.value=Math.min(max,10*pr);
                     }
                 }
-
+                return
             }
-            if(item.type==="meleeWeapon"){
-                if(item.getFlag("fortyk","currentprofile")){
-                    let currentProfileUuid=item.getFlag("fortyk","currentprofile");
-                    console.log(currentProfileUuid);
-                    let currentProfile=item.getFlag("fortyk","currentprofile");
-                    if(typeof currentProfile === 'string' || currentProfile instanceof String){
-                        currentProfile= await fromUuid(item.getFlag("fortyk","currentprofile"));
-                    }
-                    item.name=currentProfile.name;
-                    item.system.damageType.value=currentProfile.system.damageType.value;
-                    item.system.range.value=currentProfile.system.range.formula;
-                    item.system.range.formula=currentProfile.system.range.formula;
-                    item.system.pen.value=currentProfile.system.pen.formula;
-                    item.system.damageFormula.formula=currentProfile.system.damageFormula.formula;
-                    let profiles=item.getFlag("fortyk","profiles");
-                    item.flags=currentProfile.flags;
-                    item.flags.fortyk.profiles=profiles;
-                    item.flags.fortyk.alternateprofiles=true;
-                    item.flags.fortyk.currentprofile=currentProfileUuid;
+            if(item.getFlag("fortyk","currentprofile")){
+                let currentProfileUuid=item.getFlag("fortyk","currentprofile");
+                console.log(currentProfileUuid);
+                let currentProfile=item.getFlag("fortyk","currentprofile");
+                if(typeof currentProfile === 'string' || currentProfile instanceof String){
+                    currentProfile= await fromUuid(item.getFlag("fortyk","currentprofile"));
                 }
+                currentProfile=duplicate(currentProfile);
+                item.name=currentProfile.name;
+                item.system.damageType.value=currentProfile.system.damageType.value;
+                item.system.range.value=currentProfile.system.range.formula;
+                item.system.range.formula=currentProfile.system.range.formula;
+                item.system.pen.formula=currentProfile.system.pen.formula;
+                if(item.type==="rangedWeapon"){
+                    item.system.rof=currentProfile.system.rof;
+                }
+                item.system.damageFormula.formula=currentProfile.system.damageFormula.formula;
+                let profiles=item.getFlag("fortyk","profiles");
+                item.flags=currentProfile.flags;
+                item.flags.fortyk.profiles=profiles;
+                item.flags.fortyk.alternateprofiles=true;
+                item.flags.fortyk.currentprofile=currentProfileUuid;
+            }
+            item.applyActiveEffects();
+            if(item.type==="meleeWeapon"){
+
                 item.system.damageFormula.value=item.system.damageFormula.formula;
                 item.system.range.value=item.system.range.formula;
                 item.system.pen.value=item.system.pen.formula;
@@ -195,44 +206,16 @@ export class FortyKItem extends Item {
             }
             if(item.type==="rangedWeapon"){
 
-                if(item.getFlag("fortyk","currentprofile")){
-                    let currentProfileUuid=item.getFlag("fortyk","currentprofile");
-                    console.log(currentProfileUuid);
-                    let currentProfile=item.getFlag("fortyk","currentprofile");
-                    if(typeof currentProfile === 'string' || currentProfile instanceof String){
-                        currentProfile= await fromUuid(item.getFlag("fortyk","currentprofile"));
+
+                if(actor.getFlag("fortyk","filltheairwithdeath")){
+                    if(item.system.rof[1].value>0){
+                        item.system.rof[1].value=parseInt(item.system.rof[1].value)+1;
                     }
-                    item.name=currentProfile.name;
-                    item.system.damageType.value=currentProfile.system.damageType.value;
-                    item.system.range.value=currentProfile.system.range.formula;
-                    item.system.range.formula=currentProfile.system.range.formula;
-                    item.system.pen.value=currentProfile.system.pen.formula;
-                    item.system.damageFormula.formula=currentProfile.system.damageFormula.formula;
-                    item.system.rof=currentProfile.system.rof;
-                    item.system.clip.consumption=currentProfile.system.clip.consumption;
-                    let profiles=item.getFlag("fortyk","profiles");
-                    item.flags=currentProfile.flags;
-                    item.flags.fortyk.profiles=profiles;
-                    item.flags.fortyk.alternateprofiles=true;
-                    item.flags.fortyk.currentprofile=currentProfileUuid;
-                    if(actor.getFlag("fortyk","filltheairwithdeath")){
-                        if(item.system.rof[1].value>0){
-                            item.system.rof[1].value++;
-                        }
-                        if(item.system.rof[2].value>0){
-                            item.system.rof[2].value++;
-                        }
+                    if(item.system.rof[2].value>0){
+                        item.system.rof[2].value=parseInt(item.system.rof[2].value)+1;
                     }
-                }else{
-                    if(actor.getFlag("fortyk","filltheairwithdeath")){
-                        if(item.system.rof[1].value>0){
-                            item.system.rof[1].value=parseInt(item._source.system.rof[1].value)+1;
-                        }
-                        if(item.system.rof[2].value>0){
-                            item.system.rof[2].value=parseInt(item._source.system.rof[2].value)+1;
-                        }
-                    } 
-                }
+                } 
+
                 let ammo=actor.getEmbeddedDocument("Item",item.system.ammo._id);
                 if(ammo){
                     item.system.ammo.name=ammo.name;
@@ -262,9 +245,19 @@ export class FortyKItem extends Item {
 
                 if(item.system.damTyp===undefined){item.system.damTyp=item.system.damageType.value}
 
-                item.system.testMod.value=parseInt(item._source.system.testMod.value);
+                item.system.testMod.value=parseInt(item.system.testMod.value);
 
                 item.system.clip.max=item.system.clip.formula;
+                console.log(item)
+
+                if(actor.getFlag("fortyk","dampeningarms")&&item.system.path&&item.system.path.includes("Arm")){
+                    item.system.attackMods.semi=parseInt(item.system.attackMods.semi)+10;
+                    item.system.attackMods.full=parseInt(item.system.attackMods.full)+10;
+                }
+                if(actor.getFlag("fortyk","lethalisgarms")&&item.system.path&&item.system.path.includes("Arm")){
+                    item.system.attackMods.single=parseInt(item.system.attackMods.single)+10;
+
+                }
                 if(this.getFlag("fortyk","accurate")){
                     item.system.attackMods.aim.half=20;
                     item.system.attackMods.aim.full=30;
@@ -277,7 +270,7 @@ export class FortyKItem extends Item {
 
                 }
                 */
-                item.system.clip.consumption=item._source.system.clip.consumption;
+                item.system.clip.consumption=item.system.clip.consumption;
                 if(this.getFlag("fortyk","twinlinked")){
 
 
@@ -448,6 +441,9 @@ export class FortyKItem extends Item {
                     if(actor.getFlag("fortyk","crushingblow")){
                         item.system.damageFormula.value+="+"+Math.ceil(data.characteristics.ws.bonus/2);
                     }
+                    if(actor.getFlag("fortyk","meleedamagebonus")){
+                        item.system.damageFormula.value+="+"+parseInt(actor.getFlag("fortyk","meleedamagebonus"));
+                    }
                     let wp=data.characteristics.wp.bonus;
                     item.system.damageFormula.value=item.system.damageFormula.value.replace("wp",wp);
                     /*if(!actor.getFlag("fortyk","irongrip")){
@@ -574,7 +570,61 @@ export class FortyKItem extends Item {
         }
 
     }
+    applyActiveEffects(){
 
+        let item=this;
+        let itemData=this;
+        let data=this.system;
+        this.effects.forEach(function(ae,id){
+            console.log(ae)
+            if(!ae.disabled&&!ae.transfer){
+
+
+                //if item is equipped and/or not disabled
+                ae.changes.forEach(function(change,i){
+                    let basevalue=parseFloat(objectByString(itemData,change.key));
+
+                    let newvalue=parseFloat(change.value);
+                    let path=change.key.split(".");
+                    /*if(newvalue>=0){
+                            newvalue=Math.ceil(newvalue);
+                        }else{
+                            newvalue=Math.floor(newvalue);
+                        }*/
+                    if((!isNaN(basevalue)&&!isNaN(newvalue))){
+                        let changedValue=0;
+                        if(change.mode===1){
+                            changedValue=basevalue*newvalue
+                            setNestedKey(itemData,path,changedValue);
+                        }else if(change.mode===2){
+                            changedValue=basevalue+newvalue;
+                            setNestedKey(itemData,path,changedValue);
+                        }else if(change.mode===3){
+                            if(change.value<basevalue){
+                                changedValue=newvalue;
+                                setNestedKey(itemData,path,changedValue);
+                            }
+                        }else if(change.mode===4){
+                            if(change.value>basevalue){
+                                changedValue=newvalue;
+                                setNestedKey(itemData,path,changedValue);
+                            }
+                        }else if(change.mode===5){
+                            setNestedKey(itemData,path,newvalue);
+                        }else if(change.mode===0){
+                            setNestedKey(itemData,path,change.value);
+                        }
+                    }else{
+                        if(change.mode===0){
+                            setNestedKey(itemData,path,change.value);
+                        }
+                    }
+                })
+
+            }
+        });
+
+    }
     static async applyPsyBuffs(actorId, powerId, targetIds){
         if(game.user.isGM){
             let actor=await fromUuid(actorId);

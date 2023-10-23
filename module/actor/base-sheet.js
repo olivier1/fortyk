@@ -793,7 +793,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let hits=actor.system.secChar.lastHit.hits;
             if(!hits){hits=1};
             options.hits=hits;
-
+            let rerolls=0;
+            if(this.actor.getFlag("fortyk","wrothful")){
+                rerolls++;
+            }
+            options.rerolls=rerolls;
             let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
             let formula=duplicate(weapon.system.damageFormula);
             renderedTemplate.then(content => {new Dialog({
