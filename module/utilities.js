@@ -112,8 +112,8 @@ export const tokenDistance=function(token1,token2){
     if(canvas.scene.grid.type===0){
         
         let distancePx=Math.sqrt(Math.pow(gridRatio*(token1x-token2x),2)+Math.pow(gridRatio*(token1y-token2y),2)+Math.pow((token1.document.elevation-token2.document.elevation),2))
-        
-        return distancePx*gridRatio;
+        console.log(distancePx)
+        return distancePx;
     }
     if(canvas.scene.grid.type>=1){
         //convert from pixels to map units
