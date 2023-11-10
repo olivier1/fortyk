@@ -21,15 +21,17 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
     }
     /* -------------------------------------------- */
     /** @override */
-    getData() {
-        const data = super.getData();
-        data.vehicleTypes=game.fortyk.FORTYK.vehicleTypes;
+    async getData() {
+        const data = await super.getData();
+        
+        
         let actor=this.actor;
         if(actor.getFlag("fortyk","superheavy")){
             let components=[]
             data.components=components.concat(actor.itemTypes.ammunition,actor.itemTypes.forceField,actor.itemTypes.knightComponent,actor.itemTypes.knightCore);
         }
-
+        data.vehicleTypes=game.fortyk.FORTYK.vehicleTypes;
+        console.log(data)
         return data;
     }
 

@@ -1307,8 +1307,8 @@ returns the roll message*/
                             }
                             let operatorCounter=0;
                             damageString ="("+rollString+")";
-                            if(operators.size&&numbers[0]!==0){
-                                damageString+=operators[operatorCounter];
+                            if(numbers[0]!==0){
+                                damageString+="+";
                             }
 
                             operatorCounter++;

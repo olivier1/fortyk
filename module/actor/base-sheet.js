@@ -755,7 +755,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         event.preventDefault();
         const element = event.currentTarget;
         const dataset = element.dataset;
-
+        console.log(dataset)
         if(dataset.weapon){
 
             let actor=this.actor;
@@ -797,6 +797,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             if(this.actor.getFlag("fortyk","wrothful")){
                 reroll++;
             }
+            console.log(reroll)
             options.reroll=reroll;
             let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
             let formula=duplicate(weapon.system.damageFormula);
@@ -862,6 +863,12 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         options.dmg=0;
         options.blast=true;
         options.hits=1;
+        let reroll=0;
+        if(this.actor.getFlag("fortyk","wrothful")){
+            reroll++;
+        }
+        console.log(reroll)
+        options.reroll=reroll;
 
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
         let formula=duplicate(weapon.system.damageFormula);
@@ -1078,9 +1085,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let uuid=event.currentTarget.value;
         let itemId=event.currentTarget.attributes["data-id"].value;
         let item=this.actor.getEmbeddedDocument("Item",itemId);
-        
+
         await item.setFlag("fortyk","currentprofile",uuid);
-        
+
     }
     //handle enabling and disabling active effects associated with armor
     async _onArmorChange(event){

@@ -776,7 +776,11 @@ export class FortykRollDialogs{
                         let guarded = Number($(html).find('input[name="guarded"]:checked').val());
                         let overwatch = Number($(html).find('input[name="overwatch"]:checked').val());
                         let aimBonus = Number($(html).find('input[name="aim-type"]:checked').val());
-                        let aimType = html.find('input[name=aim-type]:checked')[0].attributes["aimtype"].value;
+                        try {
+                            var aimType = html.find('input[name=aim-type]:checked')[0].attributes["aimtype"].value;
+                        } catch (e) {
+                            var aimType = 0;
+                        }
                         const rangeBonus = Number($(html).find('input[name="distance"]:checked').val());
                         let rangeType= html.find('input[name=distance]:checked')[0].attributes["rangetype"].value;
                         if(isNaN(aimBonus)){
