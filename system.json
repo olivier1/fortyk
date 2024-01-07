@@ -6,7 +6,7 @@
     "compatibility": {
         "minimum": "11",
         "verified": "11.305",
-        "maximum": "11.309"
+        "maximum": "11.315"
     },
     "templateVersion": 9,
     "authors": 
@@ -282,7 +282,6 @@
             "name": "fortyk-actors",
             "path": "packs/fortyk-actors",
             "system": "fortyk",
-            "private": false,
             "flags": {}
         }
 

@@ -280,7 +280,7 @@ export class FortyKActor extends Actor {
             data.knight.tonnage={};
             data.knight.tonnage.max=parseInt(chassis.tonnage.value);
             data.knight.tonnage.value=0;
-            
+
         }
         if(data.knight.spirit){
             data.spirit=this.getEmbeddedDocument("Item",data.knight.spirit);
@@ -331,28 +331,26 @@ export class FortyKActor extends Actor {
                     item.system.weight.total=(parseInt(item.system.amount.value)*parseFloat(item.system.weight.value)).toFixed(2);
                     data.carry.value=(parseFloat(data.carry.value)+parseFloat(item.system.weight.total)).toFixed(2);
                 }
+                var twohand=false;
                 if(item.type==="rangedWeapon"){
                     if(!this.getFlag("fortyk","irongrip")){
                         if((this.getFlag("fortyk","firmgrip")&&item.system.class.value!=="Heavy")||item.system.class.value==="Pistol"||item.system.class.value==="Thrown"){
-                            item.system.twohanded.value=false;
+
                         }else{
-                            item.system.twohanded.value=true;
+
+                            twohand=true;
                         }
-                    }else{
-                        item.system.twohanded.value=false;
                     }
                 }
                 if(item.type==="meleeWeapon"){
                     if(item.getFlag("fortyk","heavy")){
-                        item.system.twohanded.value=true;
+
+                        twohand=true;
                     }else if(!this.getFlag("fortyk","irongrip")){
                         if(item.system.class.value==="Melee Two-handed"){
-                            item.system.twohanded.value=true;
-                        }else{
-                            item.system.twohanded.value=false;
+
+                            twohand=true;
                         }
-                    }else{
-                        item.system.twohanded.value=false; 
                     }
                 }
                 //check if equipped
@@ -362,24 +360,24 @@ export class FortyKActor extends Actor {
                     }
                 }
                 if((item.type==="meleeWeapon"||item.type==="rangedWeapon")&&item.system.isEquipped){
-
+                    console.log(item.system)
                     if(item.system.isEquipped.indexOf("right")!==-1){
-                        data.secChar.wornGear.weapons[0]=fortykItem; 
-                        if(item.system.twohanded.value){
-                            data.secChar.wornGear.weapons[1]=fortykItem;
+                        data.secChar.wornGear.weapons[1]=fortykItem; 
+                        if(twohand){
+                            data.secChar.wornGear.weapons[0]=fortykItem;
                         }
                     }else if(item.system.isEquipped.indexOf("left")!==-1){
-                        data.secChar.wornGear.weapons[1]=fortykItem;  
-                        if(item.system.twohanded.value){
-                            data.secChar.wornGear.weapons[0]=fortykItem;
+                        data.secChar.wornGear.weapons[0]=fortykItem;  
+                        if(twohand){
+                            data.secChar.wornGear.weapons[1]=fortykItem;
                         }
                     }else if(item.system.isEquipped.includes("extra")){
                         let index=parseInt(item.system.isEquipped.substring(5));
                         data.secChar.wornGear.extraWeapons[index]=fortykItem;
                     }
-                    if(item.system.twohanded.value){
+                    /*if(twohand){
                         data.secChar.wornGear.weapons.push(item);
-                    }
+                    }*/
                 }
                 if(item.type==="armor"&&item.system.isEquipped){
                     data.secChar.wornGear.armor=item;
@@ -1122,7 +1120,7 @@ export class FortyKActor extends Actor {
         catch(err){var rightHandWeapon= undefined;}
         try{
             var leftHandWeapon= data.secChar.wornGear.weapons[1];
-        }
+        }   
         catch(err){var leftHandWeapon= undefined;}
         //figure out parry bonus from equipped weapons
         let leftParry=this.weaponParry(leftHandWeapon);
@@ -1252,14 +1250,14 @@ export class FortyKActor extends Actor {
         let psyniscience=0;
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
-        
-            
-        
+
+
+
         for(const item of this.items){
-            
-            
-            //await item.prepareData();
-            console.log(item)
+
+
+            //item.prepareData();
+
             if(item._id===data.secChar.wornGear.armor.id){
                 wornGear["armor"]=item;
             }
@@ -1324,7 +1322,7 @@ export class FortyKActor extends Actor {
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="wargear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
                 //total weight calcs
-
+                item.system.weight.total=(parseInt(item.system.amount.value)*parseFloat(item.system.weight.value)).toFixed(2);
                 // item.system.weight.total=(parseInt(item.system.amount.value)*parseFloat(item.system.weight.value)).toFixed(2);
             }
             if(item.type==="meleeWeapon"){
@@ -1337,7 +1335,7 @@ export class FortyKActor extends Actor {
                 await this.prepareAlternateProfiles(item);
                 rangedWeapons.push(item);
                 wargear.push(item);
-                
+
             }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
                 if(item.system.isEquipped){
@@ -1390,7 +1388,6 @@ export class FortyKActor extends Actor {
 
             let profiles=item.getFlag("fortyk","profiles");
             for(let i=0; i<profiles.length; i++){
-                console.log(profiles[i]);
                 if(typeof profiles[i] === 'string' || profiles[i] instanceof String){
                     profiles[i]=fromUuidSync(profiles[i]);
                 }
@@ -1413,10 +1410,10 @@ export class FortyKActor extends Actor {
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
         for(const item of this.items){
-            
-            
+
+
             await item.prepareData();
-            
+
             if(item.type==="talentntrait"){
                 talentsntraits.push(item);
             }
@@ -1434,7 +1431,7 @@ export class FortyKActor extends Actor {
                 this.prepareAlternateProfiles(item);
             }
             if(item.type==="rangedWeapon"){
-                
+
                 rangedWeapons.push(item);
                 this.prepareAlternateProfiles(item);
             }
@@ -1464,7 +1461,7 @@ export class FortyKActor extends Actor {
         const torpedoes=[];
         const bombers=[];
         for(const item of this.items){
-            
+
             let unmodItem=item._source;
             if(item.type==="spaceshipComponent"){
                 components.push(item);
@@ -1531,10 +1528,10 @@ export class FortyKActor extends Actor {
         //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
-       for(const item of this.items){
-            
+        for(const item of this.items){
+
             await item.prepareData();
-            
+
             if(item.type==="talentntrait"){
                 talentsntraits.push(item);
             }

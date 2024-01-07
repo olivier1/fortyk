@@ -40,7 +40,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.editable = this.options.editable;
         data.money=game.settings.get("fortyk","dhMoney");
         data.coverTypes=game.fortyk.FORTYK.coverTypes;
-        console.log(data)
+        
         return data;
     }
     /** @override */
@@ -755,7 +755,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         event.preventDefault();
         const element = event.currentTarget;
         const dataset = element.dataset;
-        console.log(dataset)
+        
         if(dataset.weapon){
 
             let actor=this.actor;
@@ -788,6 +788,26 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             if(actor.getFlag("fortyk","twohandedbrutality")&&fortykWeapon.system.twohanded.value&&(actor.system.secChar.lastHit.attackType==="charge"||actor.system.secChar.lastHit.attackType==="allout")){
                 dmg+=actor.system.characteristics.s.bonus;
             }
+            if(actor.getFlag("fortyk","versatile")&&actor.getFlag("fortyk","lethality")){
+                let damBonus
+                if(actor.system.secChar.lastHit.type==="rangedAttack"){
+                    if(actor.type==="vehicle"){
+                        damBonus=Math.ceil(actor.system.crew.ws/20);
+                    }else{
+                        damBonus=Math.ceil(actor.system.characteristics.ws.bonus/2);
+                    }
+                }else if(actor.system.secChar.lastHit.type==="meleeAttack"){
+                    if(actor.type==="vehicle"){
+                        damBonus=Math.ceil(actor.system.crew.bs/20);
+                    }else{
+                        damBonus=Math.ceil(actor.system.characteristics.bs.bonus/2);
+                    }
+                }
+                if(actor.type==="vehicle"&&actor.getFlag("fortyk","terribleoffensive")){
+                    damBonus=damBonus*3;
+                }
+                dmg+=damBonus;
+            }
             let options={dfa:dfa};
             options.dmg=dmg;
             let hits=actor.system.secChar.lastHit.hits;
@@ -797,7 +817,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             if(this.actor.getFlag("fortyk","wrothful")){
                 reroll++;
             }
-            console.log(reroll)
             options.reroll=reroll;
             let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
             let formula=duplicate(weapon.system.damageFormula);

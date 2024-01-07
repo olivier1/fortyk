@@ -345,12 +345,6 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let actor=this.actor;
         let weapon=actor.items.get(event.currentTarget.value);
 
-        if(weapon){
-
-
-
-            weapon=weapon;
-        }
        
         const weaponID=event.currentTarget.value;
         const hand=event.currentTarget.dataset["hand"];
@@ -359,13 +353,17 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         var update=[];
         var previousWeaponID="";
         if(hand==="right"){
-            previousWeaponID=data.secChar.wornGear.weapons[0].id;
+            previousWeaponID=data.secChar.wornGear.weapons[1].id;
             if(previousWeaponID){
                 update.push({"_id":previousWeaponID,"system.isEquipped":false});
             }
             if(weaponID!==""){
                 if(weapon.system.twohanded.value){
                     update.push({"_id":weaponID,"system.isEquipped":"rightleft"});
+                    let offHandWeaponId=data.secChar.wornGear.weapons[0].id;
+                    if(offHandWeaponId){
+                        update.push({"_id":offHandWeaponId,"system.isEquipped":false});
+                    }
                 }else{
                     update.push({"_id":weaponID,"system.isEquipped":"right"});
                 }
@@ -374,13 +372,17 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         }else if(hand==="left"){
 
-            previousWeaponID=data.secChar.wornGear.weapons[1].id;
+            previousWeaponID=data.secChar.wornGear.weapons[0].id;
             if(previousWeaponID){
                 update.push({"_id":previousWeaponID,"system.isEquipped":false});
             }
             if(weaponID!==""){
                 if(weapon.system.twohanded.value){
                     update.push({"_id":weaponID,"system.isEquipped":"rightleft"});
+                    let offHandWeaponId=data.secChar.wornGear.weapons[1].id;
+                    if(offHandWeaponId){
+                        update.push({"_id":offHandWeaponId,"system.isEquipped":false});
+                    }
                 }else{
                     update.push({"_id":weaponID,"system.isEquipped":"left"});
                 }

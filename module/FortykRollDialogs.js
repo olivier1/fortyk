@@ -15,7 +15,6 @@ export class FortykRollDialogs{
 
         const weapon=actor.items.get(dataset["weapon"]);
         const fireRate=dataset["fire"];
-
         this.callRollDialog(char, type, target, actor, label, weapon , true, fireRate);
 
     }
@@ -62,6 +61,9 @@ export class FortykRollDialogs{
                 modifier-=10;
             }
             if(actor.getFlag("core","holyShield")){
+                modifier+=10;
+            }
+            if(actor.getFlag("fortyk","versatile")&&actor.getFlag("fortyk","expertise")){
                 modifier+=10;
             }
         }
@@ -183,6 +185,15 @@ export class FortykRollDialogs{
             templateOptions["options"].swift=actor.getFlag("fortyk","swiftattack");
         }
 
+        if(actor.getFlag("fortyk","versatility")){
+            var versatile=false;
+            let previousAttackType=actor.system.secChar.lastHit.type;
+            if(previousAttackType==="rangedAttack"){
+                miscMods+=10;
+                modifierTracker.push({"value":`10`,"label":"Versatility Bonus"});
+                versatile=true;
+            }
+        }
         if(item.getFlag("fortyk","heavy")||item.getFlag("fortyk","unwieldy")||item.getFlag("fortyk","unbalanced")){
             templateOptions["options"].lightning=false;
         }else{
@@ -258,6 +269,9 @@ export class FortykRollDialogs{
             }
             let tarActor=target.actor;
             let tar=tarActor;
+            if(tar.getFlag("fortyk","combatmaster")){
+                templateOptions["options"].combatmaster=true;
+            }
             if(!actor.getFlag("fortyk","blindfight")&&tarActor.getFlag("fortyk","invisible")){
                 miscMods+=parseInt(tarActor.getFlag("fortyk","invisible"));
                 modifierTracker.push({"value":tarActor.getFlag("fortyk","invisible"),"label":"Invisible"});
@@ -342,6 +356,9 @@ export class FortykRollDialogs{
                                 let preysense=parseInt(actor.getFlag("fortyk","preysense"))*10
                                 size=Math.min(0,size+preysense)
                             }
+                        }
+                        if(actor.getFlag("fortyk","versatility")){
+                            actor.setFlag("fortyk","versatile",versatile);
                         }
                         let other = Number($(html).find('input[name="other"]').val());
                         let addLabel=html.find('input[name=attack-type]:checked')[0].attributes["label"].value;
@@ -464,7 +481,16 @@ export class FortykRollDialogs{
         modifierTracker.push({"value":`${testTarget}`,"label":`Base Target Value`});
         modifierTracker.push({"value":`${item.system.testMod.value}`,"label":"Weapon Bonus"});
         miscMods+=item.system.testMod.value;
-
+        if(actor.getFlag("fortyk","versatility")){
+            let previousAttackType=actor.system.secChar.lastHit.type;
+            var versatile=false;
+            if(previousAttackType==="meleeAttack"){
+                miscMods+=10;
+                modifierTracker.push({"value":`10`,"label":"Versatility Bonus"});
+                await actor.setFlag("fortyk","versatile",true);
+                versatile=true;
+            }
+        }
         if(item.getFlag("fortyk","twinlinked")){
 
             miscMods+=20;
@@ -809,6 +835,9 @@ export class FortykRollDialogs{
                             if(size<0){
                                 size=0;
                             }
+                        }
+                        if(actor.getFlag("fortyk","versatility")){
+                            actor.setFlag("fortyk","versatile",versatile);
                         }
                         if(guarded){
                             let guardActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("holyShield")]);

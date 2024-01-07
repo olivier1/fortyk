@@ -133,6 +133,15 @@ export class FortyKItem extends Item {
                 return
             }
             if(item.type==="forceField"){
+                if(actor.type==="vehicle"){
+                    if(actor.getFlag("fortyk","ionovercharge")){
+                        let heatCap=actor.system.knight.heat.max;
+                        let currentHeat=actor.system.knight.heat.value;
+                        if(currentHeat>=(heatCap/2)){
+                            item.system.rating.value+=10;
+                        }
+                    }
+                }
                 //logic for the sanctuary forcefields
                 if(item.getFlag("fortyk","adjustment")){
                     let caster=fromUuidSync(item.getFlag("fortyk","origin"));
@@ -248,7 +257,7 @@ export class FortyKItem extends Item {
                 item.system.testMod.value=parseInt(item.system.testMod.value);
 
                 item.system.clip.max=item.system.clip.formula;
-                console.log(item)
+             
 
                 if(actor.getFlag("fortyk","dampeningarms")&&item.system.path&&item.system.path.includes("Arm")){
                     item.system.attackMods.semi=parseInt(item.system.attackMods.semi)+10;
@@ -446,7 +455,10 @@ export class FortyKItem extends Item {
                     }
                     let wp=data.characteristics.wp.bonus;
                     item.system.damageFormula.value=item.system.damageFormula.value.replace("wp",wp);
-                    /*if(!actor.getFlag("fortyk","irongrip")){
+                    
+                    if(item.getFlag("fortyk","heavy")){
+                        item.system.twohanded.value=true;
+                    }else if(!actor.getFlag("fortyk","irongrip")){
                         if(item.system.class.value==="Melee Two-handed"){
                             item.system.twohanded.value=true;
                         }else{
@@ -454,11 +466,12 @@ export class FortyKItem extends Item {
                         }
                     }else{
                         item.system.twohanded.value=false; 
-                    }*/
+                    }
 
 
 
                 }
+               
                 if(item.type==="rangedWeapon"){
 
 
@@ -485,7 +498,7 @@ export class FortyKItem extends Item {
 
 
 
-                    /*if(!actor.getFlag("fortyk","irongrip")){
+                    if(!actor.getFlag("fortyk","irongrip")){
                         if((actor.getFlag("fortyk","firmgrip")&&item.system.class.value!=="Heavy")||item.system.class.value==="Pistol"||item.system.class.value==="Thrown"){
 
                             item.system.twohanded.value=false;
@@ -496,8 +509,7 @@ export class FortyKItem extends Item {
                         }
                     }else{
                         item.system.twohanded.value=false;
-                    }*/
-
+                    }
 
                 }
                 if(item.type==="meleeWeapon"||item.type==="rangedWeapon"){
@@ -556,9 +568,24 @@ export class FortyKItem extends Item {
                     if(actor.getFlag("fortyk","meleeWeaponBonus")){
                         item.system.damageFormula.value+=`+${actor.getFlag("fortyk","meleeWeaponBonus")}`;
                     }
+                    if(actor.getFlag("fortyk","crushingblow")){
+                       let bonus=Math.ceil(data.crew.ws/20)
+                        if(actor.getFlag("fortyk","terribleoffensive")){
+                            bonus=bonus*3;
+                        }
+                        item.system.damageFormula.value+="+"+bonus;
+                    }
+                    
                 }else if(item.type==="rangedWeapon"){
                     if(actor.getFlag("fortyk","rangedWeaponBonus")){
                         item.system.damageFormula.value+=`+${actor.getFlag("fortyk","rangedWeaponBonus")}`;
+                    }
+                    if(actor.getFlag("fortyk","mightyshot")){
+                        let bonus=Math.ceil(data.crew.bs/20)
+                        if(actor.getFlag("fortyk","terribleoffensive")){
+                            bonus=bonus*3;
+                        }
+                        item.system.damageFormula.value+="+"+bonus;
                     }
                 }
             }
@@ -576,7 +603,7 @@ export class FortyKItem extends Item {
         let itemData=this;
         let data=this.system;
         this.effects.forEach(function(ae,id){
-            console.log(ae)
+         
             if(!ae.disabled&&!ae.transfer){
 
 
@@ -642,6 +669,7 @@ export class FortyKItem extends Item {
             aeData.flags={fortyk:{adjustment:adjustment,psy:true}};
             aeData.disabled=false;
             aeData.origin=actorId;
+            aeData.statuses=[ae.name]
             let effectUuIds=[]
             for(let i=0; i<targets.length;i++){
                 let target=targets[i];

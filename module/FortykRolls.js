@@ -56,6 +56,37 @@ returns the roll message*/
             attack=true;
 
         }
+         //prepare chat output
+        let title=""
+        if(delayMsg){
+            title=label.charAt(0).toUpperCase()+label.slice(1)+" test";
+        }else if(reroll){
+            title="Rerolling "+label+" test";
+        }else{
+            title="Rolling "+label+" test";
+        }
+        if(type==="rangedAttack"||type==="meleeAttack"){
+            title+=` using ${weapon.name}`;
+            if(weapon.type==="rangedWeapon"){
+                if(weapon.system.ammo.name){
+                    title+=` with ${weapon.system.ammo.name}`;
+                }
+            }
+        }
+        var isVehicle=false;
+        //check for vehicle target and if attacker is vehicle
+       
+        if(actor.type!=="spaceship"){
+            var vehicle=actor.system.secChar.lastHit.vehicle;
+
+            if(actor.type==="vehicle"){
+                isVehicle=true;
+            }
+        }
+        if(vehicle){
+            var facing=actor.system.secChar.lastHit.facing;
+            title+=` against ${facing.label} armor`
+        }
         let template='systems/fortyk/templates/chat/chat-test.html';
         var templateOptions={
             title:"",
@@ -77,36 +108,8 @@ returns the roll message*/
             templateOptions["targetNumber"]=target;
             templateOptions["label"]=label;
         }
-        //prepare chat output
-        let title=""
-        if(delayMsg){
-            title=label.charAt(0).toUpperCase()+label.slice(1)+" test";
-        }else if(reroll){
-            title="Rerolling "+label+" test";
-        }else{
-            title="Rolling "+label+" test";
-        }
-        if(type==="rangedAttack"||type==="meleeAttack"){
-            title+=` using ${weapon.name}`;
-            if(weapon.type==="rangedWeapon"){
-                if(weapon.system.ammo.name){
-                    title+=` with ${weapon.system.ammo.name}`;
-                }
-            }
-        }
-        var isVehicle=false;
-        //check for vehicle target and if attacker is vehicle
-        if(actor.type!=="spaceship"){
-            var vehicle=actor.system.secChar.lastHit.vehicle;
+       
 
-            if(actor.type==="vehicle"){
-                isVehicle=true;
-            }
-        }
-        if(vehicle){
-            let facing=actor.system.secChar.lastHit.facing;
-            title+=` against ${facing.label} armor`
-        }
         templateOptions["title"]=title+".";
         const testRoll=target-roll._total;
         //check for jams
@@ -398,7 +401,7 @@ returns the roll message*/
                 hitlocation=FORTYKTABLES.hitLocations[1];
                 vehicleHitlocation=FORTYKTABLES.vehicleHitLocations[81];
             }
-            await actor.update({"system.secChar.lastHit.value":hitlocation.value,"system.secChar.lastHit.label":hitlocation.label,"system.secChar.lastHit.dos":testDos,"system.secChar.lastHit.hits":hits,"system.secChar.lastHit.vehicleHitLocation":vehicleHitlocation});
+            await actor.update({"system.secChar.lastHit.value":hitlocation.value,"system.secChar.lastHit.label":hitlocation.label,"system.secChar.lastHit.dos":testDos,"system.secChar.lastHit.hits":hits,"system.secChar.lastHit.vehicleHitLocation":vehicleHitlocation, "system.secChar.lastHit.vehicle":vehicle, "system.secChar.lastHit.facing":facing, "system.secChar.lastHit.type":type});
             let content="";
             if(vehicle){
                 content=`Location: ${vehicleHitlocation.label}`
@@ -412,6 +415,8 @@ returns the roll message*/
                         flavor:"Hit location",
                         author:actor.name}
             await ChatMessage.create(chatOp,{});
+        }else if(attack){
+            actor.update({"system.secChar.lastHit.vehicle":vehicle,"system.secChar.lastHit.facing":facing, "system.secChar.lastHit.type":type})
         }
 
         if(attack&&type==="rangedAttack"){
@@ -4629,12 +4634,14 @@ returns the roll message*/
     }
     static async thresholdCrits(crossed,hitLoc,tar,activeEffects, vehicleOptions){
         let actor=tar.actor;
+
         let source="Threshold crit ";
+
 
         for(let i=0;i<crossed.length;i++){
             switch(hitLoc){
                 case "hull":
-                   
+
                     await thresholdHullCrits(crossed[i],tar,activeEffects, source, vehicleOptions);
                     break;
                 case "weapon":
@@ -4664,6 +4671,7 @@ returns the roll message*/
         let ae
         let rolls=await this._critMsg("hull","Hull", crossed, "",vehicle,source,true);
         let facing=vehicleOptions.facing;
+        let rightMes;
         switch(crossed){
             case 1:
                 if(pilot){
@@ -4726,9 +4734,9 @@ returns the roll message*/
                 }
                 break;
             case 3:
-                
+
                 let armorReduction=rolls.rolls[0];
-                
+
                 let armor=facing.armor;
                 armor=armor-armorReduction;
                 let update={};
@@ -4770,16 +4778,34 @@ returns the roll message*/
                 break;
 
         }
+        let chatOptions={user: game.user._id,
+                         speaker:{actor,alias:actor.name},
+                         content:rightMes,
+                         classes:["fortyk"],
+                         flavor:`Threshold Crit Effect`,
+                         author:actor.name}
+        await ChatMessage.create(chatOptions,{});
+
     }
     static async thresholdWeaponCrits(crossed,tar,activeEffects, source, vehicleOptions){
+        let weapon=vehicleOptions.targetWeapon;
         switch(crossed){
             case 1:
                 break;
             case 2:
+                let targetAe= {
+                    name: "Targetting Damaged",
+                    changes:[
+                        {key: "system.testMod.value", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}            
+                    ]
+                }
+                weapon.createEmbeddedDocuments("ActiveEffect",[targetAe]);
                 break;
             case 3:
+                weapon.update({"system.state.value":"D"});
                 break;
             case 4:
+                weapon.update({"system.state.value":"X"});
                 break;
 
         }

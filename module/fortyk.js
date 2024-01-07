@@ -418,6 +418,7 @@ Hooks.once('ready', async function() {
                     token=canvas.tokens.get(id);
                     await FortykRolls.critEffects(token,data.package.num,data.package.hitLoc,data.package.type,data.package.ignoreSON);
                     break;
+                
                 case "applyDead":
                     id=data.package.token;
                     token=canvas.tokens.get(id);
@@ -549,7 +550,14 @@ Hooks.on("updateCombat", async (combat) => {
                                            flavor:`On Fire!`,
                                            author:actor.name};
                         await ChatMessage.create(onFireOptions,{});
-                        await FortykRolls.fortykTest("wp", "char", actor.system.characteristics.wp.total,actor, "On Fire! Panic");
+                        if(!(actor.getFlag("core","frenzy")||actor.getFlag("fortyk","fearless")||actor.getFlag("fortyk","frombeyond"))){
+                            let wp=actor.system.characteristics.wp.total;
+                            if(actor.getFlag("fortyk","resistance").toLowerCase().includes("fear")){
+                                wp+=10;
+                            }
+                            await FortykRolls.fortykTest("wp", "char", wp,actor, "On Fire! Panic");
+                        }
+                        
                         let fatigue=parseInt(actor.system.secChar.fatigue.value)+1;
                         await actor.update({"system.secChar.fatigue.value":fatigue});
                         let fireData={name:"Fire",type:"rangedWeapon"}
@@ -802,6 +810,10 @@ Hooks.on("preDeleteCombat", async (combat,options,id) =>{
         if(actor.getFlag("core","evasion")){
             await actor.setFlag("core","evasion",false);
         }
+        if(actor.getFlag("fortyk","versatile")){
+            await actor.setFlag("fortyk","versatile",false);
+        }
+        await actor.update({"system.secChar.lastHit.type":null});
     })
     for(let index = 0; index < combat.combatants.length; index++){
 

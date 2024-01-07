@@ -281,7 +281,7 @@ FORTYK.weaponFlags={
     "cryogenic": {
         "value": false,
         "label": "Cryogenic",
-        "description": "Targets who suffer damage from this weapon must pass a -40 toughness test or suffer 2d10 toughness damage per round for 1d5 rounds. Creatures reduced to 0 toughness by the grenade are frozen solid."
+        "description": "Targets who suffer damage from this weapon must pass a -40 toughness test or suffer 2d10 toughness damage per round for 1d5 rounds. Creatures reduced to 0 toughness by this effect are frozen solid."
     },
     "daemonbane": {
         "value": false,
@@ -537,7 +537,7 @@ FORTYK.weaponFlags={
     "tarHead": {
         "value": false,
         "label": "Targets Head",
-        "description": "Some weapons always hit the head, this trait reprsesents that."
+        "description": "Some weapons always hit the head, this trait represents that."
     }, 
     "taxing": {
         "value": false,
