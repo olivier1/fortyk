@@ -513,14 +513,24 @@ export class FortyKActor extends Actor {
                 }
                 let proceed=false;
                 //check if ae is from an item if it origins drom a psychic power skip
+                console.log(ae)
                 if(!ae.getFlag("fortyk","psy")&&ae.origin){
 
                     let itemId=ae.origin.split('.')[3];
                     let item=actor.getEmbeddedDocument("Item",itemId);
                     if(item){
                         let equipped=item.system.isEquipped;
-                        if(equipped===undefined||equipped){
+                        if(equipped===undefined){
                             proceed=true;
+                        }else if(equipped){
+                            if(item.system.state){
+                                let state=item.system.state.value;
+                                if(state!=="0"&&state!=="X"&&state!=="D"){
+                                   proceed=true; 
+                                }
+                            }else{
+                                proceed=true;
+                            }
                         }else{
                             proceed=false;
                         }

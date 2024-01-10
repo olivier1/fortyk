@@ -263,7 +263,7 @@ export class FortyKItem extends Item {
                     item.system.attackMods.semi=parseInt(item.system.attackMods.semi)+10;
                     item.system.attackMods.full=parseInt(item.system.attackMods.full)+10;
                 }
-                if(actor.getFlag("fortyk","lethalisgarms")&&item.system.path&&item.system.path.includes("Arm")){
+                if(actor.getFlag("fortyk","lethalisarms")&&item.system.path&&item.system.path.includes("Arm")){
                     item.system.attackMods.single=parseInt(item.system.attackMods.single)+10;
 
                 }

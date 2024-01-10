@@ -66,7 +66,22 @@ FORTYK.size=[
      "mod":60,
      "stealth":-60,
      "movement":6,
-     "size":15}]
+     "size":15},
+    {"name":"Gargantuan",
+     "mod":70,
+     "stealth":-70,
+     "movement":7,
+     "size":20},
+    {"name":"Colossal",
+     "mod":80,
+     "stealth":-80,
+     "movement":8,
+     "size":25},
+    {"name":"Immeasurable",
+     "mod":90,
+     "stealth":-90,
+     "movement":9,
+     "size":30}]
 FORTYK.carry=[
     {"carry":0.9,
      "lift":2.25,
