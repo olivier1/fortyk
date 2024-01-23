@@ -17,6 +17,7 @@ new Dialog({
                     ui.notifications.error("This macro requires a player character to be impersonated.");
                     return; 
                 }
+                console.log(characterActor);
                 let medicae=characterActor.system.skills.medicae+mod;
                 let pass=false;
                 let dos=0;
@@ -77,7 +78,3 @@ new Dialog({
 
     width:100}
           ).render(true);
-
-
-
-

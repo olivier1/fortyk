@@ -978,7 +978,16 @@ export class FortykRollDialogs{
                 submit: {
                     label: 'OK',
                     callback: async(html) => {
-                        let targets=game.user.targets;
+                        let scene=game.scenes.active;
+                        let templates=scene.templates.reduce(function(templates,template){
+                            if(template.isOwner){
+                                templates.push(template);
+                            }
+                            return templates;
+                        },[]);
+
+                        let targets=this.getSprayTargets(templates,scene)[0];
+                        console.log(targets);
                         let mod = Number($(html).find('input[name="modifier"]').val());
                         let psy=false;
                         if(weapon.type==="psychicPower"){
@@ -1007,7 +1016,9 @@ export class FortykRollDialogs{
                         let updatedtargets=[];
                         let rolls=[];
                         let i=1;
-                        for(let token of targets){
+                        for(let tokenId of targets){
+                            console.log(tokenId)
+                            let token=canvas.tokens.get(tokenId);
                             let tokenActor=token.actor;
                             let tokenActorData=token.actor;
                             let data=token.actor.system;
@@ -1060,6 +1071,69 @@ export class FortykRollDialogs{
 
             width:100}
                   ).render(true);
+    }
+    static getSprayTargets(templates, scene){
+        let tokens=scene.tokens;
+        let targets=[];
+        let gridRatio=scene.dimensions.size/scene.dimensions.distance;
+
+        for(let i=0;i<templates.length;i++){
+            let targetted=[];
+            let template=templates[i];
+            console.log(template)
+            let bounds=template._object.shape;
+            bounds.x=template.x;
+            bounds.y=template.y;
+            tokens.forEach((token,id,tokens)=>{
+
+                let tokenBounds=token._object.bounds;
+                let isTargetted=false;
+                if(bounds.contains(token._object.center.x,token._object.center.y)){
+                    isTargetted=true;
+                }
+                if(!isTargetted){
+                    isTargetted=this.rectangleIntersectsPolygon(bounds,tokenBounds);
+                }
+                if(isTargetted){targetted.push(token.id)}
+                console.log(token);
+                //console.log(bounds.overlaps(tokenBounds))
+                /*if(bounds.overlaps(tokenBounds)){
+                    targetted.push(token.id);
+                }*/
+            });
+            targets.push(targetted);
+        }
+        return targets;
+    }
+    static rectangleIntersectsPolygon(polygon,rectangle){
+        console.log(polygon, rectangle)
+        let lineIntersect=function(rectangle, polygon, index){
+            
+            let points=polygon.points;
+            if(!points[index+2]){return false}
+            let pX=polygon.x;
+            let pY=polygon.y;
+            let firstPoint={x:pX+points[index],y:pY+points[index+1]}
+            let secondPoint={x:pX+points[index+2],y:pY+points[index+3]}
+            let topEdge=rectangle.topEdge;
+            let bottomEdge=rectangle.bottomEdge;
+            let leftEdge=rectangle.leftEdge;
+            let rightEdge=rectangle.rightEdge;
+            if(lineSegmentIntersects(topEdge.A, topEdge.B, firstPoint, secondPoint)){
+                return true;
+            }
+            if(lineSegmentIntersects(bottomEdge.A, bottomEdge.B, firstPoint, secondPoint)){
+                return true;
+            }
+            if(lineSegmentIntersects(leftEdge.A, leftEdge.B, firstPoint, secondPoint)){
+                return true;
+            }
+            if(lineSegmentIntersects(rightEdge.A, rightEdge.B, firstPoint, secondPoint)){
+                return true;
+            }
+            return lineIntersect(rectangle, polygon,index+2);
+        }
+        return lineIntersect(rectangle, polygon, 0);
     }
     static async callForcefieldDialog(forcefield,actor,title="Enter number of hits"){
         new Dialog({

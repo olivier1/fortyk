@@ -225,7 +225,7 @@ export class FortyKItemSheet extends ItemSheet {
     async _onAddProfileClick(event){
         let item=this.item;
         if(!item.getFlag("fortyk","profiles")){
-            await item.setFlag("fortyk","profiles",[]); 
+            await item.setFlag("fortyk","profiles",[""]); 
         }else{
             let profiles=item.getFlag("fortyk","profiles");
             profiles.push("");
@@ -253,9 +253,10 @@ export class FortyKItemSheet extends ItemSheet {
         profiles.splice(index,1,uuid);
         item.setFlag("fortyk","profiles",profiles);
     }
-    _onMakeAmmoClick(event){
+    async _onMakeAmmoClick(event){
         let weapon=this.item;
         let ammoData={};
+        let actor=this.actor;
         ammoData["name"]=`${weapon.name} Ammunition`;
         ammoData["type"]="ammunition";
         ammoData["flags"]=weapon.flags;
@@ -263,11 +264,24 @@ export class FortyKItemSheet extends ItemSheet {
         ammoData["system.damageType.value"]=weapon.system.damageType.value;
         ammoData["system.type.value"]=weapon.system.type.value;
         // Math.round((data.knight.armorValues.value*armorRatio + Number.EPSILON) * 100) / 100;
-        ammoData["system.weight.value"]=Math.round((parseFloat(weapon.system.weight.value)*0.1 + Number.EPSILON) * 100) / 100;;
+        if(actor.system.knight){
+            ammoData["system.weight.value"]=1;
+            ammoData["system.space.value"]=1;
+        }else{
+            ammoData["system.weight.value"]=Math.round((parseFloat(weapon.system.weight.value)*0.1 + Number.EPSILON) * 100) / 100; 
+        }
+
         ammoData["system.damageFormula.formula"]=weapon.system.damageFormula.formula;
         ammoData["system.pen.formula"]=weapon.system.pen.formula;
         ammoData["system.range.formula"]=weapon.system.range.formula;
-        this.actor.createEmbeddedDocuments("Item",[ammoData],{"renderSheet":true});
+        let ammo=await actor.createEmbeddedDocuments("Item",[ammoData],{"renderSheet":true});
+
+        if(actor.system.knight){
+            let components=actor.system.knight.components;
+            components[components.length-1]=ammo[0].id;
+            components.push("");
+            await actor.update({"system.knight.components":components});
+        }
 
     }
     async _onModifierClick(event){

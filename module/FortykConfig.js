@@ -658,7 +658,9 @@ FORTYK.StatusEffects = [
         id: "unconscious",
         name: "Unconscious",
         icon: "icons/svg/unconscious.svg",
-        statuses:["unconscious"]
+        statuses:["unconscious"],
+        flags: { core: {overlay: true
+                       } }
     },
     {
         id: "running",

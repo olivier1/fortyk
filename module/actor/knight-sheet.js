@@ -136,6 +136,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             data.armActuators=house.itemTypes.knightComponent.filter(component=>component.system.type.value==="arm-actuator");
             data.legActuators=house.itemTypes.knightComponent.filter(component=>component.system.type.value==="leg-actuator");
             data.platings=house.itemTypes.knightComponent.filter(component=>component.system.type.value==="plating");
+            data.gyros=house.itemTypes.knightComponent.filter(component=>component.system.type.value==="gyro");
             data.others=house.itemTypes.knightComponent.filter(component=>component.system.type.value==="other");
 
         }
@@ -712,7 +713,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
     async _onSpiritPick(event){
         var spiritPack=await game.packs.get("fortyk.knight-spirits");
         let spirit=await spiritPack.getDocuments();
-        spirit.sort(sort(function compare(a, b) {
+        spirit.sort(function compare(a, b) {
             let valueA=a.name;
             let valueB=b.name;
             if (valueA<valueB) {
@@ -723,7 +724,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             }
             // a must be equal to b
             return 0;
-        }));
+        });
         let templateOptions={"spirit":spirit};
         let actor=this.actor;
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/knight-spirit-dialog.html', templateOptions);
@@ -1197,14 +1198,14 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let actor=this.actor;
                             let data=actor.system;
                             let house=await game.actors.get(data.knight.house);
+                            
                             //if the knight is linked to a house, update the house inventory
                             if(house){
                                 let component=await house.getEmbeddedDocument("Item",item.system.originalId);
                                 let amtTaken=component.system.amount.taken;
                                 let newAmt=amtTaken-1;
 
-                                let array=objectByString(this.actor,path);
-                                array.splice(index,1);
+                                
                                 let componentUpdate={};
 
                                 if(item.system.state.value==="X"||item.system.state.value===0){
@@ -1219,7 +1220,8 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             }
 
 
-
+                            var array=objectByString(this.actor,path);
+                                array.splice(index,1);
 
 
                             let update={};

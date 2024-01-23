@@ -1020,43 +1020,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             const element = event.currentTarget;
             const dataset = element.dataset;
             let powerId=dataset["power"];
-            /*
-            let label=dataset["label"];
-            let power=this.actor.getEmbeddedDocument("Item",powerId);
-            let ae=power.effects.entries().next().value[1];
-            if(power.system.transferId){
-                ae=this.actor.effects.get(power.system.transferId);
-            }
-            let aeData=duplicate(ae);
-
-            aeData.name=ae.name+" Buff"
-            let pr=power.system.curPR.value;
-            aeData.changes.forEach(function(change){
-                try{
-                    change.value=Function(`let pr=${pr};return `+change.value)();
-                }catch (err){
-                    change.value=0; 
-                }
-
-                if(change.value>=0){
-                    aeData.icon="icons/svg/upgrade.svg";
-                    aeData.id="buff";
-                    aeData.statuses=["buff"]
-                }else{
-                    aeData.icon="icons/svg/downgrade.svg";
-                    aeData.id="weakened";
-                    aeData.statuses= ["weakened"]
-                }
-            })
-
-            aeData.disabled=false;
-            aeData.origin=null;
-            targets.forEach(async function(target){
-                let actor=target.actor;
-                FortykRolls.applyActiveEffect(target,[aeData]);
-
-            });
-            */
+           
             FortyKItem.applyPsyBuffs(this.actor.uuid, powerId, targets.ids)
         }else{
             ui.notifications.error("You must have targets to apply buffs or debuffs.");

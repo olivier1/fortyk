@@ -418,7 +418,7 @@ Hooks.once('ready', async function() {
                     token=canvas.tokens.get(id);
                     await FortykRolls.critEffects(token,data.package.num,data.package.hitLoc,data.package.type,data.package.ignoreSON);
                     break;
-                
+
                 case "applyDead":
                     id=data.package.token;
                     token=canvas.tokens.get(id);
@@ -431,6 +431,27 @@ Hooks.once('ready', async function() {
                     let actorId=data.package.actorId;
                     actor=game.actors.get(actorId);
                     FortykRolls.perilsOfTheWarp(actor,ork);
+                    break;
+                case "rotateShield":
+                    id=data.package.tokenId;
+                    token=canvas.tokens.get(id);
+                    let rotation=data.package.angle;
+                    let lightId=await tokenAttacher.getAllAttachedElementsByTypeOfToken(token, "AmbientLight")[0];
+                    let lightObj=game.canvas.lighting.get(lightId);
+                    let lightData=duplicate(lightObj.document);
+
+                    tokenAttacher.detachElementFromToken(lightObj, token, true);
+                    lightObj.document.delete();
+
+
+                    let tokenRotation=token.document.rotation;
+                    rotation+=tokenRotation;
+                    lightData.rotation=rotation;
+
+                    let newLights=await game.canvas.scene.createEmbeddedDocuments("AmbientLight",[lightData]);
+
+                    let newLight=newLights[0];
+                    await tokenAttacher.attachElementToToken(newLight, token, true);
                     break;
 
             }
@@ -557,7 +578,7 @@ Hooks.on("updateCombat", async (combat) => {
                             }
                             await FortykRolls.fortykTest("wp", "char", wp,actor, "On Fire! Panic");
                         }
-                        
+
                         let fatigue=parseInt(actor.system.secChar.fatigue.value)+1;
                         await actor.update({"system.secChar.fatigue.value":fatigue});
                         let fireData={name:"Fire",type:"rangedWeapon"}
@@ -999,18 +1020,21 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
 })
 Hooks.on("preCreateActor", (createData) =>{
 })
-Hooks.on("createToken", async (document, data, options, userId) =>{
+Hooks.on("preCreateToken", async (document, data, options, userId) =>{
+    console.log(document,data,options,userId)
     if(game.user.isGM){
         //modify token dimensions if scene ratio isnt 1
         let gridRatio=canvas.dimensions.distance;
         let newHeight=Math.max(0.1,document.height/gridRatio);
         let newWidth=Math.max(0.1,document.width/gridRatio);
         if(newHeight!==document.height||newWidth!==document.width){
-            await document.update({"_id":randomID(6),"height":newHeight,"width":newWidth});
+            await document.updateSource({"height":newHeight,"width":newWidth});
+
         }
     }
 
 });
+
 Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
     /*
     let effects=null;

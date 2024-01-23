@@ -643,7 +643,8 @@ export class FortyKItem extends Item {
                         }
                     }else{
                         if(change.mode===0){
-                            setNestedKey(itemData,path,change.value);
+                            console.log(item)
+                           setNestedKey(itemData,path,change.value);
                         }
                     }
                 })
@@ -669,7 +670,7 @@ export class FortyKItem extends Item {
             aeData.flags={fortyk:{adjustment:adjustment,psy:true}};
             aeData.disabled=false;
             aeData.origin=actorId;
-            aeData.statuses=[ae.name]
+            aeData.statuses=[ae.name];
             let effectUuIds=[]
             for(let i=0; i<targets.length;i++){
                 let target=targets[i];
