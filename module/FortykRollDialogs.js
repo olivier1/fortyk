@@ -1110,7 +1110,7 @@ export class FortykRollDialogs{
         let lineIntersect=function(rectangle, polygon, index){
             
             let points=polygon.points;
-            if(!points[index+2]){return false}
+            if(points[index+2]===undefined){return false}
             let pX=polygon.x;
             let pY=polygon.y;
             let firstPoint={x:pX+points[index],y:pY+points[index+1]}

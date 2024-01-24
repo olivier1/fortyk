@@ -124,6 +124,18 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             data.rangedWeapons=house.itemTypes.rangedWeapon.filter(weapon=>weapon.system.class.value==="Titanic Ranged Weapon");
             data.artilleryWeapons=house.itemTypes.rangedWeapon.filter(weapon=>weapon.system.class.value==="Titanic Artillery Weapon");
             data.auxiliaryWeapons=house.itemTypes.rangedWeapon.filter(weapon=>weapon.system.class.value!=="Titanic Ranged Weapon"&&weapon.system.class.value!=="Titanic Artillery Weapon");
+            console.log(data.auxiliaryWeapons)
+            data.auxiliaryWeapons=data.auxiliaryWeapons.map((x)=>{
+                let y=1;
+                console.log(x)
+                if(x.system.class.value==="Heavy"){
+                    y=2;
+                }
+                x.system.weight.value=y;
+                x.system.space.value=y;
+                return x;
+            })
+            console.log(data.auxiliaryWeapons)
             data.ammunition=house.itemTypes.ammunition;
             data.components=house.itemTypes.knightComponent;
             data.armors=house.itemTypes.knightArmor;
@@ -175,7 +187,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
-                       // await wpnType[i].prepareData();
+                        // await wpnType[i].prepareData();
                         if(wpnType[i].type==="rangedWeapon"){
 
                             wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
@@ -188,7 +200,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
-                       // await wpnType[i].prepareData();
+                        // await wpnType[i].prepareData();
                         if(wpnType[i].type==="rangedWeapon"){
                             wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
                         }
@@ -896,7 +908,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             if(combatant.initiative){
                                 combatant.update({"initiative":combatant.initiative+5});
                             }
-                            
+
                         }
                     }
                 }
@@ -1198,14 +1210,14 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let actor=this.actor;
                             let data=actor.system;
                             let house=await game.actors.get(data.knight.house);
-                            
+
                             //if the knight is linked to a house, update the house inventory
                             if(house){
                                 let component=await house.getEmbeddedDocument("Item",item.system.originalId);
                                 let amtTaken=component.system.amount.taken;
                                 let newAmt=amtTaken-1;
 
-                                
+
                                 let componentUpdate={};
 
                                 if(item.system.state.value==="X"||item.system.state.value===0){
@@ -1221,7 +1233,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
                             var array=objectByString(this.actor,path);
-                                array.splice(index,1);
+                            array.splice(index,1);
 
 
                             let update={};
