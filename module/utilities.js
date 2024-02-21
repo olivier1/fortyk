@@ -30,6 +30,7 @@ export const preloadHandlebarsTemplates = async function() {
         "systems/fortyk/templates/actor/knightParts/mech-bay.html",
         "systems/fortyk/templates/actor/knightParts/combat.html",
         "systems/fortyk/templates/actor/knightParts/traits.html",
+        "systems/fortyk/templates/actor/knightParts/damage-report.html",
         "systems/fortyk/templates/actor/knightParts/melee-weapon-template.html",
         "systems/fortyk/templates/actor/knightParts/ranged-weapon-template.html"
 
@@ -49,7 +50,7 @@ export const sleep=function(ms) {
 export const getActorToken=function(actor){
 
     if(actor.token!==null){
-        return actor.token; 
+        return actor.token._object; 
     }
     let tokens=[];
     if(canvas.tokens.children.length>0){
@@ -58,17 +59,17 @@ export const getActorToken=function(actor){
 
     let t=null;
     for(let token of tokens){
-        if(token.actor.id===actor.id){
+        if(token.actor&&token.actor.id===actor.id){
             t=token;
         }
     }
     return t;
 }
 export const parseHtmlForInline=function(html){
-  
-    
+
+
     let inlineStr=$(html).find(`a.inline-roll.inline-result`);
-    
+
     let strArray=[];
     for(let i=0;i<inlineStr.length;i++){
         strArray.push(inlineStr[i].text);
@@ -108,9 +109,9 @@ export const tokenDistance=function(token1,token2){
             token2y+=Math.ceil(token2.h/2);
         }
     }
-    
+
     if(canvas.scene.grid.type===0){
-        
+
         let distancePx=Math.sqrt(Math.pow(gridRatio*(token1x-token2x),2)+Math.pow(gridRatio*(token1y-token2y),2)+Math.pow((token1.document.elevation-token2.document.elevation),2))
         console.log(distancePx)
         return distancePx;
@@ -121,9 +122,30 @@ export const tokenDistance=function(token1,token2){
         let yDistance=Math.abs(gridRatio*(token1y-token2y));
         //Z DISTANCE IS NOT IN PIXELS
         let zDistance=Math.abs((token1.document.elevation-token2.document.elevation));
-        
+
         return Math.max(xDistance,yDistance,zDistance); 
     }
+
+}
+export const smallestDistance= function(token, points){
+    let distances=[]
+    console.log(points)
+    let pairs={}
+    for(let i=0;i<points.length;i++){
+        let point=points[i];
+        if(point){
+            let distance=Math.sqrt(Math.pow((point.x-token.x),2)+Math.pow((point.y-token.y),2));
+            distances.push(distance);
+            pairs[distance]=point;
+        }
+        console.log(point)
+
+    }
+    console.log(distances)
+    if(distances.length>0){
+        let min=Math.min(...distances);
+        return pairs[min]
+    }else{return null;}
 
 }
 export const getItem= function(actor, name){
@@ -147,17 +169,17 @@ export const getSkills= async function(){
         skillCollection.push(skillItem);
     }
     let sorted=skillCollection.sort(function compare(a, b) {
-                        let valueA=a.name;
-                        let valueB=b.name;
-                        if (valueA>valueB) {
-                            return 1;
-                        }
-                        if (valueA<valueB) {
-                            return -1;
-                        }
-                        // a must be equal to b
-                        return 0;
-                    });
+        let valueA=a.name;
+        let valueB=b.name;
+        if (valueA>valueB) {
+            return 1;
+        }
+        if (valueA<valueB) {
+            return -1;
+        }
+        // a must be equal to b
+        return 0;
+    });
     return sorted;
 };
 export const objectByString = function(o, s) {
@@ -272,6 +294,102 @@ export const getAttackAngle=function (targetToken,attackerToken){
         }
     }
     return attackAngle;
+}
+const getKnockbackAngle=function(attackToken, targetToken){
+    let attackMid=attackToken;
+    let targetMid=targetToken.center;
+    let angle=0;
+    if(targetMid.x<=attackMid.x){
+        //target is left
+        if(targetMid.y>attackMid.y){
+            console.log("bot left")
+            //target is below
+            angle=Math.atan((attackMid.x-targetMid.x)/(attackMid.y-targetMid.y));
+        }else{
+            console.log("top left")
+            angle=Math.PI+Math.atan((attackMid.x-targetMid.x)/(attackMid.y-targetMid.y));
+            //target is above
+        }
+    }else{
+        //target is right
+        if(targetMid.y>attackMid.y){
+            console.log("bot right")
+            //target is below
+            angle=Math.atan((attackMid.x-targetMid.x)/(attackMid.y-targetMid.y));
+        }else{
+            console.log("top right")
+            //targte is above
+            angle=Math.PI+Math.atan((attackMid.x-targetMid.x)/(attackMid.y-targetMid.y));
+        }
+    }
+    return angle;
+}
+export const knockbackPoint=function (knockbackPoint, token2, knockbackDistance,random=false){
+    let angle
+    let x=token2.x;
+    let y=token2.y;
+    if(token2.center.x===knockbackPoint.x&&token2.center.y===knockbackPoint.y){
+        random=true;
+    }
+    if(random){
+        angle=degToRad(Math.random()*(360));
+    }else{
+        angle=getKnockbackAngle(knockbackPoint,token2);
+    }
+
+    
+    console.log(x,y,knockbackDistance,angle)
+    x+=knockbackDistance*Math.sin(angle);
+    y+=knockbackDistance*Math.cos(angle);
+    console.log(x,y)
+    return{x:Math.ceil(x),y:Math.ceil(y)}
+}
+export const collisionPoint= function(token, destination){
+    let origin={x:token.x,y:token.y};
+    let walls=game.canvas.walls.objects.children;
+    let intersections=[];
+    for(let i=0;i<walls.length;i++){
+        let wall=walls[i];
+        if(wall.document.move){
+            let workingOr=duplicate(origin);
+            let workingDest=duplicate(destination);
+            //test all 4 corners of the token for collision, adjust the collision point after for top left corner of token
+            //top left corner
+            intersections.push(lineSegmentIntersection(origin,destination,wall.A,wall.B));
+            //top right
+            workingOr.x+=token.width;
+            workingDest.x+=token.width;
+            let topright=lineSegmentIntersection(workingOr,workingDest,wall.A,wall.B)
+            if(topright){
+                topright.x-=token.width;
+                intersections.push(topright)
+            }
+            //botleft
+            workingOr=duplicate(origin);
+            workingDest=duplicate(destination);
+            workingOr.y+=token.height;
+            workingDest.y+=token.height;
+            let botleft=lineSegmentIntersection(workingOr,workingDest,wall.A,wall.B);
+            if(botleft){
+                botleft.y-=token.height;
+                intersections.push(botleft);
+            }
+            //botright
+            workingOr=duplicate(origin);
+            workingDest=duplicate(destination);
+            workingOr.y+=token.height;
+            workingDest.y+=token.height;
+            workingOr.x+=token.width;
+            workingDest.x+=token.width;
+            let botright=lineSegmentIntersection(workingOr,workingDest,wall.A,wall.B);
+            if(botright){
+                botright.y-=token.height;
+                botright.x-=token.width;
+                intersections.push(botright);
+            }
+        }
+    }
+    return intersections;
 }
 //
 //for looping through items to give them flags

@@ -1,12 +1,16 @@
 /* provides functions for doing tests or damage rolls
 */
 import {FORTYKTABLES} from "./FortykTables.js";
+import {FORTYK} from "./FortykConfig.js";
 import {getActorToken} from "./utilities.js";
 import {tokenDistance} from "./utilities.js";
 import {getVehicleFacing} from "./utilities.js";
 import {getAttackAngle} from "./utilities.js";
 import {sleep} from "./utilities.js";
 import {parseHtmlForInline} from "./utilities.js";
+import {knockbackPoint}  from "./utilities.js";
+import {collisionPoint} from "./utilities.js";
+import {smallestDistance} from "./utilities.js";
 import {FortykRollDialogs} from "./FortykRollDialogs.js";
 
 export class FortykRolls{
@@ -44,6 +48,19 @@ returns the roll message*/
 
         let weapon
         if(fortykWeapon){
+            if(fortykWeapon.getFlag("fortyk","explosion")){
+                let explosionRoll=new Roll("1d10");
+                await explosionRoll.evaluate({async: true});
+                await explosionRoll.toMessage({
+                    speaker: ChatMessage.getSpeaker({ actor: actor }),
+                    flavor: "On a 3 or higher the weapon explodes"
+                });
+                if(explosionRoll.total>=3){
+                    await fortykWeapon.update({"system.state.value":"X"});
+                    await this.ammoExplosion(actor, fortykWeapon,fortykWeapon.system.facing);
+                    return
+                }
+            }
             weapon=fortykWeapon
         }
         let weaponid=""
@@ -51,12 +68,13 @@ returns the roll message*/
         }else{
             weaponid=weapon._id;
         }
+
         let attack=false;
         if((type==="rangedAttack"||type==="meleeAttack"||type==="focuspower"&&(fortykWeapon.system.class.value==="Psychic Bolt"||fortykWeapon.system.class.value==="Psychic Barrage"||fortykWeapon.system.class.value==="Psychic Storm"||fortykWeapon.system.class.value==="Psychic Blast"))){
             attack=true;
 
         }
-         //prepare chat output
+        //prepare chat output
         let title=""
         if(delayMsg){
             title=label.charAt(0).toUpperCase()+label.slice(1)+" test";
@@ -75,7 +93,7 @@ returns the roll message*/
         }
         var isVehicle=false;
         //check for vehicle target and if attacker is vehicle
-       
+
         if(actor.type!=="spaceship"){
             var vehicle=actor.system.secChar.lastHit.vehicle;
 
@@ -83,7 +101,7 @@ returns the roll message*/
                 isVehicle=true;
             }
         }
-        if(vehicle){
+        if(vehicle&&attack){
             var facing=actor.system.secChar.lastHit.facing;
             title+=` against ${facing.label} armor`
         }
@@ -108,7 +126,7 @@ returns the roll message*/
             templateOptions["targetNumber"]=target;
             templateOptions["label"]=label;
         }
-       
+
 
         templateOptions["title"]=title+".";
         const testRoll=target-roll._total;
@@ -923,6 +941,13 @@ returns the roll message*/
             lastHit=actor.system.secChar.lastHit;
         }
         let attackerToken=actor.getActiveTokens()[0];
+        //prepare attacker coords for knockbacks
+        let attacker={x:attackerToken.center.x,y:attackerToken.center.y};
+
+        //if weapon is blast the knockback origin is different
+        if(weapon.getFlag("fortyk","blast")||weapon.getFlag("fortyk","blast")===0){
+            attacker=fortykWeapon.template;
+        }
         let curHit={}
         var hammer=false;
         if(actor.getFlag("fortyk","hammerblow")&&lastHit.attackType==="allout"){
@@ -949,8 +974,7 @@ returns the roll message*/
             }else{
                 curHit=game.fortyk.FORTYK.extraHits["body"][0];
             }
-            targets.clear();
-            targets.add(attackerToken);
+            targets=new Set([attackerToken]);
         }else{
             curHit=lastHit;
         }
@@ -1042,23 +1066,36 @@ returns the roll message*/
         }
         //make an array to store the wounds of all targets so that they can all be updated together once done
         var newWounds=[]
-        for(let i=0;i<targets.size;i++){
-            newWounds.push(false);
-        }
+        var extraDamage=[]
+        //make and array to track which walker vehicles have fallen
+        var fallen=[]
+
         if(self){
             newWounds.push(false);
+            extraDamage.push([]);
+            fallen.push(false);
+        }else{
+            for(let i=0;i<targets.size;i++){
+                newWounds.push(false);
+                extraDamage.push([]);
+                fallen.push(false);
+            }  
         }
+
+
         let hitNmbr=0;
         let selfToxic=false;
+        let damageDone=[];
+
         //loop for the number of hits
         for(let h=0;h<(hits);h++){
-            if(!self){
-                if(h>0){
-                    var randomLocation=new Roll("1d100",{});
-                    await randomLocation.evaluate({async: true});
-                    //curHit=game.fortyk.FORTYKTABLES.hitLocations[randomLocation._total];
-                }
+
+            if(h>0||fortykWeapon.getFlag("fortyk","randomlocation")){
+                var randomLocation=new Roll("1d100",{});
+                await randomLocation.evaluate({async: true});
+                //curHit=game.fortyk.FORTYKTABLES.hitLocations[randomLocation._total];
             }
+
 
 
             let roll=new Roll(form,actor.system);
@@ -1081,6 +1118,15 @@ returns the roll message*/
             roll._total=Math.ceil(roll._total);
             //handle spray weapon jams
             if(fortykWeapon.getFlag("fortyk","spray")&&weapon.type==="rangedWeapon"){
+                //delete templates for spray weapons
+                let scene=game.scenes.active;
+                let templates=scene.templates;
+                for(const template of templates){
+                    if(template.isOwner){
+
+                        await template.delete()
+                    }
+                }
                 let jam=false;
                 try{
                     for ( let r of roll.dice[0].results ) {
@@ -1114,13 +1160,18 @@ returns the roll message*/
                     //check if target is dead
                     if(!tarActor.getFlag("core","dead")){
                         //check if target is vehicle
-                        let vehicle=false;
+                        var vehicle=false;
                         if(tarActor.type==="vehicle"){
                             vehicle=true
                         }
                         let facing=null;
                         if(vehicle){
-                            facing=getVehicleFacing(tar,attackerToken);
+                            if(fortykWeapon.getFlag("fortyk","setfacing")){
+                                facing=fortykWeapon.getFlag("fortyk","setfacing");
+                            }else{
+                                facing=getVehicleFacing(tar,attackerToken);
+                            }
+
                         }
                         let armorSuit=undefined;
                         let isHordelike=false;
@@ -1139,15 +1190,15 @@ returns the roll message*/
                         let tarRighteous=righteous;
                         //calc distance
                         let distance=tokenDistance(attackerToken,tar);
-                        if(h>0){
+                        if(h>0||fortykWeapon.getFlag("fortyk","randomlocation")){
                             if(!vehicle){
                                 curHit.value=game.fortyk.FORTYKTABLES.hitLocations[randomLocation._total].value;
                                 curHit.label=game.fortyk.FORTYKTABLES.hitLocations[randomLocation._total].label;
                             }else{
                                 if(!data.hasTurret.value){
                                     if(randomLocation._total>=81){
-                                        curHit.value=FORTYKTABLES.vehicleHitLocations[59];
-                                        curHit.value=FORTYKTABLES.vehicleHitLocations[59];
+                                        curHit.value=FORTYKTABLES.vehicleHitLocations[59].value;
+                                        curHit.label=FORTYKTABLES.vehicleHitLocations[59].label;
                                     }else{
                                         curHit.value=game.fortyk.FORTYKTABLES.vehicleHitLocations[randomLocation._total].value;
                                         curHit.label=game.fortyk.FORTYKTABLES.vehicleHitLocations[randomLocation._total].label;
@@ -1196,23 +1247,52 @@ returns the roll message*/
                                 }else if(facing.path==="rSide"){
                                     facingWeapons=data.rightSideWeapons;
                                 }
+                                facingWeapons=facingWeapons.filter(weapon=>(weapon.system.state!=="X"));
                                 //if there are weapons proceed to randomly select one, if not proceed with normal armor facing
                                 if(facingWeapons.length>0){
+
                                     let wpnnmbr=facingWeapons.length;
                                     let wpnRoll=new Roll(`1d${wpnnmbr}-1`,{});
                                     await wpnRoll.evaluate({async: true});
                                     targetWpn=facingWeapons[wpnRoll._total];
                                     newFacingString=targetWpn.name;
                                     if(targetWpn.system.mounting.value==="turret"){
-                                        facing=data.facings["front"];
+                                        if(targetWpn.getFlag("fortyk","rear")){
+                                            facing=data.facings["rear"]; 
+                                        }else{
+                                            facing=data.facings["front"];
+                                        }
+
                                     }
                                     damageOptions.facing=newFacingString;
                                 }else{
                                     damageOptions.facing=facing.label;
                                 }
+                            }else if(curHit.value==="turret"){
+                                let turretWeapons=tarActor.itemTypes.rangedWeapon.filter(weapon=>(weapon.system.mounting.value==="turret"&&weapon.system.state.value!=="X"))
+                                let wpnnmbr=turretWeapons.length;
+                                if(turretWeapons.length>0){
+                                    let wpnRoll=new Roll(`1d${wpnnmbr}-1`,{});
+                                    await wpnRoll.evaluate({async: true});
+                                    targetWpn=turretWeapons[wpnRoll._total];
+                                    damageOptions.facing=targetWpn.name;
+                                    if(targetWpn.getFlag("fortyk","rear")){
+                                        facing=data.facings["rear"]; 
+                                    }else{
+                                        facing=data.facings["front"];
+                                    }
+                                }
                             }else{
                                 damageOptions.facing=facing.label; 
                             }
+                            var vehicleOptions={};
+
+                            vehicleOptions.explosions=extraDamage[tarNumbr];
+                            vehicleOptions.targetWeapon=targetWpn;
+                            vehicleOptions.facing=facing;
+                            vehicleOptions.fallen=fallen;
+                            vehicleOptions.targetNumber=tarNumbr;
+
                         }
                         let damageTemplate='systems/fortyk/templates/chat/chat-damage.html';
                         let deathwatch=false;
@@ -1259,7 +1339,7 @@ returns the roll message*/
                         let numbers=[];
                         let operators=[];
                         //parsing the roll result
-                        console.log(roll)
+
                         for ( let t=0; t<terms.length;t++){
 
                             if(terms[t] instanceof Die){
@@ -1284,7 +1364,6 @@ returns the roll message*/
                             }
 
                         }
-                        console.log(dieResults,discards,numbers,operators)
                         //compiling the roll output
                         let damageString="";
                         if(dieResults.length<1){
@@ -1312,7 +1391,7 @@ returns the roll message*/
                             }
                             let operatorCounter=0;
                             damageString ="("+rollString+")";
-                            if(numbers[0]!==0){
+                            if(numbers[0]){
                                 damageString+="+";
                             }
 
@@ -1355,13 +1434,18 @@ returns the roll message*/
                             let randomKiller=new Roll("1d5",{});
                             await randomKiller.evaluate({async: true});
                             let killerCrit=randomKiller._total;
-                            await this.critEffects(tar,killerCrit,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects,"Killer's Eye ");
+                            await this.critEffects(attacker, tar, killerCrit, curHit.value, weapon.system.damageType.value, ignoreSON, activeEffects, "Killer's Eye ");
                         }
                         let soak=0;
                         let armor
                         if(vehicle){
                             if(curHit.value==="turret"){
-                                armor=data.facings["front"].armor; 
+                                if(targetWpn&&targetWpn.getFlag("fortyk","rear")){
+                                    armor=data.facings["rear"].armor; 
+                                }else{
+                                    armor=data.facings["front"].armor; 
+                                }
+
                             }else{
                                 armor=facing.armor;
                             }
@@ -1428,11 +1512,9 @@ returns the roll message*/
                             }
                             let maxPen=Math.min(armor,pen);
                             if(vehicle){
-                                if(curHit.value==="turret"){
-                                    soak=data.facings["front"].value; 
-                                }else{
-                                    soak=facing.value;
-                                }
+
+                                soak=facing.value;
+
                             }else{
                                 soak=parseInt(data.characterHitLocations[curHit.value].value);
 
@@ -1609,6 +1691,9 @@ returns the roll message*/
                             }
                             let corrodeActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("corrode")]);
                             corrodeActiveEffect.changes=[];
+                            if(vehicle){
+                                corrodeActiveEffect.flags={fortyk:{repair:"armordmg"}};
+                            }
                             let changes={key:path,value:corrosiveAmount,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}
                             corrodeActiveEffect.changes.push(changes);
                             activeEffects.push(corrodeActiveEffect);
@@ -1779,7 +1864,7 @@ returns the roll message*/
                                 damageOptions.results.push(warpinst.template);
                                 if(!warpinst.value){
                                     let warpdmg=warpinst.dos;
-                                    if(warpdmg>newWounds){
+                                    if(warpdmg>newWounds[tarNumbr]){
                                         damageOptions.results.push(`${actor.name} is banished to the warp!`);
                                         await this.applyDead(tar,tarActor,"banishment");
                                         tarActor.flags.core.dead=true;
@@ -1917,6 +2002,10 @@ returns the roll message*/
                             damageOptions.results.push(knockdown.template);
                             if(!knockdown.value){
                                 let proneActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("prone")]);
+                                if(!tarActor.getFlag("core","prone")){
+                                    fallen[tarNumbr]=true;
+                                }
+
                                 activeEffects.push(proneActiveEffect);
                                 damageOptions.results.push(`<span>Knocked down.</span>`)
                             }
@@ -2103,11 +2192,7 @@ returns the roll message*/
                         damageOptions.results.push(`</div>`) 
                         damageOptions.results.push(`<div class="chat-target flexcol">`)
                         damageOptions.results.push(`<span>Total Damage: ${chatDamage}.</span>`);
-                        let vehicleOptions={};
-                        if(vehicle){
-                            vehicleOptions.targetWeapon=targetWpn;
-                            vehicleOptions.facing=facing;
-                        }
+
                         if(tarActor.getFlag("fortyk","superheavy")){
 
                             vehicleOptions.threshold=0;
@@ -2215,7 +2300,7 @@ returns the roll message*/
 
                         //apply field practitioner critical
                         if(lastHit.fieldPractice&&damage>0){
-                            await this.critEffects(tar,lastHit.fieldPractice,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects,"Field practice ");
+                            await this.critEffects(attacker, tar, lastHit.fieldPractice, curHit.value, weapon.system.damageType.value, ignoreSON, activeEffects, "Field practice ");
                         }
                         //handle critical effects and death
                         //Xenos Bane Logic #2
@@ -2240,12 +2325,13 @@ returns the roll message*/
                                 crit=Math.floor(crit/10);
                             }
                             if(vehicle){
-                                await this.vehicleCrits(tar,crit+1,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects,vehicleOptions);
+                                await this.vehicleCrits(tar,crit+1,curHit.value,ignoreSON,activeEffects,"",vehicleOptions);
                             }else{
-                                await this.critEffects(tar,crit+1,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects);
+                                await this.critEffects(attacker,tar,crit+1,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects);
                             }
 
                         }
+                        damageDone.push(damage);
                         //report damage dealt to gm and the target's owner
                         if(game.user.isGM){
                             this.reportDamage(tarActor, damage);
@@ -2260,7 +2346,19 @@ returns the roll message*/
                     if(h===hits-1){
                         //update wounds
                         if(game.user.isGM||tar.isOwner){
-                            await tarActor.update({"system.secChar.wounds.value":newWounds[tarNumbr]});
+                            if(tarNumbr<=newWounds.length-1){
+                                await tarActor.update({"system.secChar.wounds.value":newWounds[tarNumbr]});
+                                let explosions=extraDamage[tarNumbr];
+
+                                explosions.forEach(async function(params){
+                                    await FortykRolls.ammoExplosion(params.vehicle,params.component,params.facing,params.extraDamage);
+                                })
+                                if(vehicle&&fallen[tarNumbr]){
+                                    await this.fallingWalker(tarActor,tar);
+                                }
+                            }
+
+
                         }else{
                             //if user isnt GM use socket to have gm update the actor
                             let tokenId=tar.id;
@@ -2316,6 +2414,7 @@ returns the roll message*/
                 await this.damageRoll(toxicWpn.system.damageFormula,actor,toxicWpn,1, true);
             }
         }
+        return damageDone
     }
     //reports damage to a target's owners
     static async reportDamage(tarActor, chatDamage){
@@ -2348,7 +2447,7 @@ returns the roll message*/
         }
     }
     //handles righteous fury
-    static async _righteousFury(actor,label,weapon,curHit,tens, damage=1, tar=null, ignoreSON=false,activeEffects=null,vehicleOptions={}){
+    static async _righteousFury(actor,label,weapon,curHit,tens, damage=1, tar=null, ignoreSON=false,activeEffects=[],vehicleOptions={}){
         var crit=false;
         if(tens>0){
             crit=true;
@@ -2376,11 +2475,16 @@ returns the roll message*/
             let res=rightRoll._total;
             if(tar!==null){
                 if(tar.actor.getFlag("fortyk","superheavy")){
-                    await this.superHeavyRightEffects(tar,res,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`,vehicleOptions);
+                    await this.superHeavyRightEffects(tar,res,curHit,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`,vehicleOptions);
                 }else if(vehicle){
-                    await this.vehicleCrits(tar,res,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`, vehicleOptions);
+                    await this.vehicleCrits(tar,res,curHit.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`, vehicleOptions);
                 }else{
-                    await this.critEffects(tar,res,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`);
+                    if(weapon.getFlag("fortyk","blast")||weapon.getFlag("fortyk","blast")===0){
+                        await this.critEffects(weapon.template,tar,res,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`);
+                    }else{
+                        await this.critEffects(actor,tar,res,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects,`<span class="chat-righteous">Righteous Fury </span>`);
+                    }
+
                 }
 
             }
@@ -2420,7 +2524,13 @@ returns the roll message*/
             //do each test and push the result inside the result array
             for(let i=0;i<testStr.length;i++){
                 let testParam=testStr[i].split(";");
-                let target=actor.system.characteristics[testParam[0]].total+parseInt(testParam[1]);
+                let target
+                if(vehicle){
+                    target=actor.system.crew.rating;
+                }else{
+                    target=target=actor.system.characteristics[testParam[0]].total;
+                }
+                target+=parseInt(testParam[1]);
                 let test=await this.fortykTest(testParam[0], "char", (target),actor, testParam[2],null,false,"",true);
                 tests.push(test);
             }
@@ -2460,148 +2570,9 @@ returns the roll message*/
                          author:actor.name}
         await ChatMessage.create(chatOptions,{});
     }
-    static async superHeavyRightEffects(token,num,hitLoc,type,ignoreSON,activeEffects=null,source="",options={}){
 
-        let actor=token.actor;
-        let rightMes="";
-        let facing=options.facing;
-        let weapon=options.targetWeapon;
-        let weaponData;
-        let weaponUpdate
-        let threshold=options.threshold;
-        if(threshold===1){
-            rightMes=`Righteous fury reduces ${facing.label} armor by 1!`
-            let armor=facing.armor;
-            armor--;
-            let update={};
-            update[`system.facings.${facing.path}.armor`]=armor;
-            await actor.update(update);
-        }else if(threshold===2){
-            let armorRoll=new Roll(`1d5`,{});
-
-            await armorRoll.evaluate({async: true});
-            let armorReduction=armorRoll._total;
-            rightMes=`Righteous fury reduces ${facing.label} armor by ${armorReduction}!`
-            let armor=facing.armor;
-            armor=armor-armorReduction;
-            let update={};
-            update[`system.facings.${facing.path}.armor`]=armor;
-            await actor.update(update);
-        }else if(threshold>=3){
-            switch(hitLoc){
-                case "hull":
-                    let components=[];
-                    components=components.concat(actor.itemTypes.ammunition,actor.itemTypes.forceField,actor.itemTypes.knightComponent,actor.itemTypes.knightCore);
-                    components=components.filter(component=>(component.system.state!=="X")&&(component.system.state!==0));
-                    let size=components.length;
-
-                    let compRoll=new Roll(`1d${size}-1`,{});
-
-                    await compRoll.evaluate({async: true});
-                    let component=components[compRoll._total];
-                    if(component){
-                        let compData=component.system;
-                        let compUpdate={};
-                        if(component.type==="ammunition"){
-                            compUpdate["system.state.value"]="X";
-                            rightMes=`${component.name} explodes dealing weapon damage!`;
-                        }else if(compData.state.value==="O"||compData.state.value===""){
-                            compUpdate["system.state.value"]="D";
-                            rightMes=`${component.name} is damaged.`;
-                        }else if(compData.state.value==="D"){
-                            compUpdate["system.state.value"]="X";
-                            rightMes=`${component.name} is destroyed.`;
-                        }else if(!isNaN(parseInt(compData.state.value))){
-                            compUpdate["system.state.value"]=parseInt(compData.state.value)-1;
-                            if(compUpdate["system.state.value"]===0){
-                                rightMes=`${component.name} is destroyed.`;
-                            }else{
-                                rightMes=`${component.name} is damaged.`; 
-                            }
-                        }
-                        component.update(compUpdate);
-                    }
-
-
-                    break;
-                case "weapon":
-                    if(weapon){
-                        weapon=weapon.document;
-                        weaponData=weapon.system;
-                        weaponUpdate={};
-                        if(weaponData.state.value==="O"||weaponData.state.value===""){
-                            weaponUpdate["system.state.value"]="D";
-                            rightMes=`${weapon.name} is damaged.`;
-                        }else if(weaponData.state.value==="D"){
-                            weaponUpdate["system.state.value"]="X";
-                            rightMes=`${weapon.name} is destroyed.`;
-                        }
-                        weapon.update(weaponUpdate);
-                    }
-
-
-                    break;
-                case "motive":
-                    if(activeEffects){
-                        let ae={};
-                        ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
-                        ae.label="Motive System Damage";
-                        if(actor.system.secChar.speed.motive==="O"){
-                            let speedRoll=new Roll(`1d10`,{});
-
-                            await speedRoll.evaluate({async: true});
-                            let speedReduction=speedRoll._total;
-                            ae.changes=[{key:`system.secChar.speed.mod`,value:-speedReduction,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
-                                        {key:`system.secChar.speed.motive`,value:"I",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
-
-                            rightMes=`The motive system is impaired reducing tactical speed by ${speedReduction}!`;
-                        }else if(actor.system.secChar.speed.motive==="I"){
-
-                            ae.changes=[{key:`system.secChar.speed.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
-                                        {key:`system.secChar.speed.motive`,value:"C",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
-
-                            rightMes=`The motive system is crippled reducing tactical speed by half!`;
-                        }else if(actor.system.secChar.speed.motive==="C"){
-
-                            ae.changes=[{key:`system.secChar.speed.multi`,value:"0",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
-                                        {key:`system.secChar.speed.motive`,value:"D",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
-
-                            rightMes=`The motive system is destroyed immobilizing the vehicle!`;
-                        }else{
-                            rightMes="The motive system is already destroyed!";
-                        }
-
-                        activeEffects.push(ae);
-                    }
-
-                    break;
-                case "turret":                    
-                    weapon=weapon.document;
-                    weaponData=weapon.system;
-                    weaponUpdate={};
-                    if(weaponData.state.value==="O"||weaponData.state.value===""){
-                        weaponUpdate["system.state.value"]="D";
-                        rightMes=`${weapon.name} is damaged.`;
-                    }else if(weaponData.state.value==="D"){
-                        weaponUpdate["system.state.value"]="X";
-                        rightMes=`${weapon.name} is destroyed.`;
-                    }
-                    weapon.update(weaponUpdate);
-                    break;
-            }
-        }
-
-        //report crit effect
-        let chatOptions={user: game.user._id,
-                         speaker:{actor,alias:actor.name},
-                         content:rightMes,
-                         classes:["fortyk"],
-                         flavor:`${source} ${hitLoc} Critical effect`,
-                         author:actor.name}
-        let critMsg=await ChatMessage.create(chatOptions,{});
-    }
     //applies critical results to token/actor
-    static async critEffects(token,num,hitLoc,type,ignoreSON,activeEffects=null,source=""){
+    static async critEffects(attacker, token,num,hitLoc,type,ignoreSON,activeEffects=[],source=""){
 
         if(game.user.isGM||token.isOwner){
 
@@ -2609,16 +2580,16 @@ returns the roll message*/
 
             switch(type){
                 case "Energy":
-                    await this.energyCrits(actor,num,hitLoc,ignoreSON,activeEffects,source);
+                    await this.energyCrits(attacker,actor,num,hitLoc,ignoreSON,activeEffects,source);
                     break;
                 case "Explosive":
-                    await this.explosiveCrits(actor,num,hitLoc,ignoreSON,activeEffects,source);
+                    await this.explosiveCrits(attacker,actor,num,hitLoc,ignoreSON,activeEffects,source);
                     break;
                 case "Impact":
-                    await this.impactCrits(actor,num,hitLoc,ignoreSON,activeEffects,source);
+                    await this.impactCrits(attacker,actor,num,hitLoc,ignoreSON,activeEffects,source);
                     break;
                 case "Rending":
-                    await this.rendingCrits(actor,num,hitLoc,ignoreSON,activeEffects,source);
+                    await this.rendingCrits(attacker,actor,num,hitLoc,ignoreSON,activeEffects,source);
                     break;
             }
 
@@ -2629,19 +2600,19 @@ returns the roll message*/
             await game.socket.emit("system.fortyk",socketOp);
         }
     }
-    static async energyCrits(actor,num,hitLoc,ignoreSON,activeEffects=null,source=""){
+    static async energyCrits(attacker,actor,num,hitLoc,ignoreSON,activeEffects=[],source=""){
         switch(hitLoc){
             case "head":
-                await this.energyHeadCrits(actor,num,ignoreSON,activeEffects,source);
+                await this.energyHeadCrits(attacker,actor,num,ignoreSON,activeEffects,source);
                 break;
             case "body":
-                await this.energyBodyCrits(actor,num,ignoreSON,activeEffects,source);
+                await this.energyBodyCrits(attacker,actor,num,ignoreSON,activeEffects,source);
                 break;
             case "lArm":
-                await this.energyArmCrits(actor,num,"left",ignoreSON,activeEffects,source);
+                await this.energyArmCrits(attacker,actor,num,"left",ignoreSON,activeEffects,source);
                 break;
             case "rArm":
-                await this.energyArmCrits(actor,num,"right",ignoreSON,activeEffects,source);
+                await this.energyArmCrits(attacker,actor,num,"right",ignoreSON,activeEffects,source);
                 break;
             case "lLeg":
                 await this.energyLegCrits(actor,num,"left",ignoreSON,activeEffects,source);
@@ -2651,7 +2622,7 @@ returns the roll message*/
                 break;
         }
     }
-    static async energyHeadCrits(actor,num,ignoreSON,activeEffects=null,source=""){
+    static async energyHeadCrits(attacker,actor,num,ignoreSON,activeEffects=[],source=""){
         let actorToken=getActorToken(actor);
         if(num<8&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
             await this._sON(actor);
@@ -2756,7 +2727,7 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async energyBodyCrits(actor,num,ignoreSON,activeEffects=null,source=""){
+    static async energyBodyCrits(attacker,actor,num,ignoreSON,activeEffects=[],source=""){
         let tTest=false;
         let agiTest=false;
         let actorToken=getActorToken(actor);
@@ -2878,7 +2849,7 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async energyArmCrits(actor,num,arm,ignoreSON,activeEffects=null,source=""){
+    static async energyArmCrits(attacker,actor,num,arm,ignoreSON,activeEffects=[],source=""){
         let tTest=false;
         let actorToken=getActorToken(actor);
         let injury=null;
@@ -3004,7 +2975,7 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async energyLegCrits(actor,num,leg,ignoreSON,activeEffects=null,source=""){
+    static async energyLegCrits(attacker,actor,num,leg,ignoreSON,activeEffects=[],source=""){
         let actorToken=getActorToken(actor);
         let critActiveEffect=[];
         let tTest=false;
@@ -3126,29 +3097,29 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async explosiveCrits(actor,num,hitLoc,ignoreSON,activeEffects=null,source=""){
+    static async explosiveCrits(attacker,actor,num,hitLoc,ignoreSON,activeEffects=[],source=""){
         switch(hitLoc){
             case "head":
-                await this.explosiveHeadCrits(actor,num,ignoreSON,activeEffects,source);
+                await this.explosiveHeadCrits(attacker,actor,num,ignoreSON,activeEffects,source);
                 break;
             case "body":
-                await this.explosiveBodyCrits(actor,num,ignoreSON,activeEffects,source);
+                await this.explosiveBodyCrits(attacker,actor,num,ignoreSON,activeEffects,source);
                 break;
             case "lArm":
-                await this.explosiveArmCrits(actor,num,"left",ignoreSON,activeEffects,source);
+                await this.explosiveArmCrits(attacker,actor,num,"left",ignoreSON,activeEffects,source);
                 break;
             case "rArm":
-                await this.explosiveArmCrits(actor,num,"right",ignoreSON,activeEffects,source);
+                await this.explosiveArmCrits(attacker,actor,num,"right",ignoreSON,activeEffects,source);
                 break;
             case "lLeg":
-                await this.explosiveLegCrits(actor,num,"left",ignoreSON,activeEffects,source);
+                await this.explosiveLegCrits(attacker,actor,num,"left",ignoreSON,activeEffects,source);
                 break;
             case "rLeg":
-                await this.explosiveLegCrits(actor,num,"right",ignoreSON,activeEffects,source);
+                await this.explosiveLegCrits(attacker,actor,num,"right",ignoreSON,activeEffects,source);
                 break;
         }
     }
-    static async explosiveHeadCrits(actor,num,ignoreSON,activeEffects=null,source=""){
+    static async explosiveHeadCrits(attacker,actor,num,ignoreSON,activeEffects=[],source=""){
         let actorToken=getActorToken(actor);
         let tTest=false;
         let injury=null;
@@ -3247,8 +3218,9 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async explosiveBodyCrits(actor,num,ignoreSON,activeEffects=null,source=""){
+    static async explosiveBodyCrits(attacker,actor,num,ignoreSON,activeEffects=[],source=""){
         let actorToken=getActorToken(actor);
+
         let tTest=false;
         if(num<8&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
             await this._sON(actor);
@@ -3260,16 +3232,22 @@ returns the roll message*/
             activeEffects=[];
         }
         let ae
+
         let rolls=await this._critMsg("body","Body", num, "Explosive",actor,source);
         switch(num){
             case 1:
                 ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("prone")]);
                 activeEffects.push(ae);
+                this.knockback(rolls.rolls[0], attacker, actorToken);
+
+
+
                 break;
             case 2:
                 ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("prone")]);
                 await this._addFatigue(actor,rolls.rolls[0]);
                 activeEffects.push(ae);
+                this.knockback(rolls.rolls[0], attacker, actorToken);
                 break;
             case 3:
                 ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("prone")]);
@@ -3279,6 +3257,8 @@ returns the roll message*/
                     rounds:1
                 }
                 activeEffects.push(ae);
+                this.knockback(rolls.rolls[0], attacker, actorToken);
+
                 break;
             case 4:
                 tTest=rolls.tests[0];
@@ -3347,7 +3327,7 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async explosiveArmCrits(actor,num,arm,ignoreSON,activeEffects=null,source=""){
+    static async explosiveArmCrits(attacker,actor,num,arm,ignoreSON,activeEffects=[],source=""){
         let actorToken=getActorToken(actor);
         let tTest=false;
         let injury=null;
@@ -3459,8 +3439,9 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async explosiveLegCrits(actor,num,leg,ignoreSON,activeEffects=null,source=""){
+    static async explosiveLegCrits(attacker,actor,num,leg,ignoreSON,activeEffects=[],source=""){
         let actorToken=getActorToken(actor);
+
         let tTest=false;
         let injury=null;
         if(num<8&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
@@ -3473,6 +3454,7 @@ returns the roll message*/
             activeEffects=[];
         }
         let ae
+
         let rolls=await this._critMsg("lLeg",leg+" Leg", num, "Explosive",actor,source);
         switch(num){
             case 1:
@@ -3497,32 +3479,16 @@ returns the roll message*/
                 activeEffects.push(ae);
                 break;
             case 4:
-                let chatScatter={user: game.user._id,
-                                 speaker:{actor,alias:actor.name},
-                                 content:`${actor.name} is blown away! <img class="fortyk" src="../systems/fortyk/icons/scatter.png">`,
-                                 flavor:"Target is blown away!",
-                                 author:actor.name}
-                await ChatMessage.create(chatScatter,{});
-                let distanceRoll=new Roll("1d5");
-                await distanceRoll.evaluate({async: true});
-                await distanceRoll.toMessage({
-                    speaker: ChatMessage.getSpeaker({ actor: actor }),
-                    flavor: "Rolling for scatter distance."
-                });
-                let directionRoll=new Roll("1d10");
-                await directionRoll.evaluate({async: true});
-                await directionRoll.toMessage({
-                    speaker: ChatMessage.getSpeaker({ actor: actor }),
-                    flavor: "Rolling for scatter direction."
-                });
+
                 ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("prone")]);
                 activeEffects.push(ae);
                 ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
                 activeEffects.duration={
-                    rounds:rolls.rolls[0]
+                    rounds:rolls.rolls[1]
                 }
                 ae.changes=[{key:`system.secChar.movement.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                 activeEffects.push(ae);
+                this.knockback(rolls.rolls[0], attacker, actorToken, true);
                 break;
             case 5:
                 tTest=rolls.tests[0];
@@ -3586,31 +3552,32 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async impactCrits(actor,num,hitLoc,ignoreSON,activeEffects=null,source=""){
+    static async impactCrits(attacker,actor,num,hitLoc,ignoreSON,activeEffects=[],source=""){
         let actorToken=getActorToken(actor);
         switch(hitLoc){
             case "head":
-                await this.impactHeadCrits(actor,num,ignoreSON,activeEffects,source);
+                await this.impactHeadCrits(attacker,actor,num,ignoreSON,activeEffects,source);
                 break;
             case "body":
-                await this.impactBodyCrits(actor,num,ignoreSON,activeEffects,source);
+                await this.impactBodyCrits(attacker,actor,num,ignoreSON,activeEffects,source);
                 break;
             case "lArm":
-                await this.impactArmCrits(actor,num,"left",ignoreSON,activeEffects,source);
+                await this.impactArmCrits(attacker,actor,num,"left",ignoreSON,activeEffects,source);
                 break;
             case "rArm":
-                await this.impactArmCrits(actor,num,"right",ignoreSON,activeEffects,source);
+                await this.impactArmCrits(attacker,actor,num,"right",ignoreSON,activeEffects,source);
                 break;
             case "lLeg":
-                await this.impactLegCrits(actor,num,"left",ignoreSON,activeEffects,source);
+                await this.impactLegCrits(attacker,actor,num,"left",ignoreSON,activeEffects,source);
                 break;
             case "rLeg":
-                await this.impactLegCrits(actor,num,"right",ignoreSON,activeEffects,source);
+                await this.impactLegCrits(attacker,actor,num,"right",ignoreSON,activeEffects,source);
                 break;
         }
     }
-    static async impactHeadCrits(actor,num,ignoreSON,activeEffects=null,source=""){
+    static async impactHeadCrits(attacker,actor,num,ignoreSON,activeEffects=[],source=""){
         let actorToken=getActorToken(actor);
+
         let tTest=false;
         let agiTest=false;
         if(num<8&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
@@ -3682,6 +3649,7 @@ returns the roll message*/
                 ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("int")]);
                 ae.changes=[{key:`system.characteristics.int.value`,value:-1,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                 activeEffects.push(ae);
+                this.knockback(rolls.rolls[0], attacker, actorToken);
                 break;
             case 6:
                 ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]);
@@ -3694,6 +3662,7 @@ returns the roll message*/
                     ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("prone")]);
                     activeEffects.push(ae);
                 }
+                this.knockback(rolls.rolls[1], attacker, actorToken);
                 break;
             case 7:
                 ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]);
@@ -3722,8 +3691,9 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async impactBodyCrits(actor,num,ignoreSON,activeEffects=null,source=""){
+    static async impactBodyCrits(attacker,actor,num,ignoreSON,activeEffects=[],source=""){
         let actorToken=getActorToken(actor);
+
         let tTest=false;
         let agiTest=false;
         if(num<9&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
@@ -3789,6 +3759,7 @@ returns the roll message*/
                     rounds:2
                 }
                 activeEffects.push(ae);
+                this.knockback(rolls.rolls[1], attacker, actorToken);
                 break;
             case 7:
                 await this._createInjury(actor,rolls.rolls[0]+" ribs broken",null);
@@ -3812,13 +3783,14 @@ returns the roll message*/
             case 10:
                 await this.applyDead(actorToken,actor,"an impact body critical hit");
                 actor.flags.core.dead=true;
+                this.knockback(rolls.rolls[0], attacker, actorToken);
                 break;
         }
         if(upd){
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async impactArmCrits(actor,num,arm,ignoreSON,activeEffects=null,source=""){
+    static async impactArmCrits(attacker,actor,num,arm,ignoreSON,activeEffects=[],source=""){
         let actorToken=getActorToken(actor);
         let tTest=false;
         let injury=null;
@@ -3915,7 +3887,7 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async impactLegCrits(actor,num,leg,ignoreSON,activeEffects=null,source=""){
+    static async impactLegCrits(attacker,actor,num,leg,ignoreSON,activeEffects=[],source=""){
         let actorToken=getActorToken(actor);
         let tTest=false;
         let injury=null;
@@ -4039,29 +4011,29 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async rendingCrits(actor,num,hitLoc,ignoreSON,activeEffects=null,source=""){
+    static async rendingCrits(attacker,actor,num,hitLoc,ignoreSON,activeEffects=[],source=""){
         switch(hitLoc){
             case "head":
-                await this.rendingHeadCrits(actor,num,ignoreSON,activeEffects,source);
+                await this.rendingHeadCrits(attacker,actor,num,ignoreSON,activeEffects,source);
                 break;
             case "body":
-                await this.rendingBodyCrits(actor,num,ignoreSON,activeEffects,source);
+                await this.rendingBodyCrits(attacker,actor,num,ignoreSON,activeEffects,source);
                 break;
             case "lArm":
-                await this.rendingArmCrits(actor,num,"left",ignoreSON,activeEffects,source);
+                await this.rendingArmCrits(attacker,actor,num,"left",ignoreSON,activeEffects,source);
                 break;
             case "rArm":
-                await this.rendingArmCrits(actor,num,"right",ignoreSON,activeEffects,source);
+                await this.rendingArmCrits(attacker,actor,num,"right",ignoreSON,activeEffects,source);
                 break;
             case "lLeg":
-                await this.rendingLegCrits(actor,num,"left",ignoreSON,activeEffects,source);
+                await this.rendingLegCrits(attacker,actor,num,"left",ignoreSON,activeEffects,source);
                 break;
             case "rLeg":
-                await this.rendingLegCrits(actor,num,"right",ignoreSON,activeEffects,source);
+                await this.rendingLegCrits(attacker,actor,num,"right",ignoreSON,activeEffects,source);
                 break;
         }
     }
-    static async rendingHeadCrits(actor,num,ignoreSON,activeEffects=null,source=""){
+    static async rendingHeadCrits(attacker,actor,num,ignoreSON,activeEffects=[],source=""){
         let actorToken=getActorToken(actor);
         let tTest=false;
         let injury=null;
@@ -4193,7 +4165,7 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async rendingBodyCrits(actor,num,ignoreSON,activeEffects=null,source=""){
+    static async rendingBodyCrits(attacker,actor,num,ignoreSON,activeEffects=[],source=""){
         let actorToken=getActorToken(actor);
         let tTest=false;
         if(num<9&&!ignoreSON&&actor.getFlag("fortyk","stuffoffnightmares")){
@@ -4305,7 +4277,7 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async rendingArmCrits(actor,num,arm,ignoreSON,activeEffects=null,source=""){
+    static async rendingArmCrits(attacker,actor,num,arm,ignoreSON,activeEffects=[],source=""){
         let actorToken=getActorToken(actor);
         let tTest=false;
         let injury=null;
@@ -4407,7 +4379,7 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async rendingLegCrits(actor,num,leg,ignoreSON,activeEffects=null,source=""){
+    static async rendingLegCrits(attacker,actor,num,leg,ignoreSON,activeEffects=[],source=""){
         let actorToken=getActorToken(actor);
         let tTest=false;
         let agiTest=false;
@@ -4521,114 +4493,737 @@ returns the roll message*/
             await this.applyActiveEffect(actorToken,activeEffects);
         }
     }
-    static async vehicleCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions){
+    static async superHeavyRightEffects(token,num,hitLoc,ignoreSON,activeEffects=[],source="",options={}){
+
+        let actor=token.actor;
+        let rightMes="";
+        let facing=options.facing;
+        let weapon=options.targetWeapon;
+        let weaponData;
+        let weaponUpdate
+        let threshold=options.threshold;
+        let ae
+        if(threshold===1){
+            rightMes=`Righteous fury reduces ${facing.label} armor by 1!`
+            ae={};
+            ae.name=`${facing.label} Armor damage`;
+            ae.changes=[{key:`system.facings.${facing.path}.armor`,value:-1,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
+            ae.flags={fortyk:{repair:"armordmg"}}
+            activeEffects.push(ae);
+
+
+        }else if(threshold===2){
+            let armorRoll=new Roll(`1d5`,{});
+
+            await armorRoll.evaluate({async: true});
+            let armorReduction=armorRoll._total;
+            rightMes=`Righteous fury reduces ${facing.label} armor by ${armorReduction}!`
+            ae={};
+            ae.name=`${facing.label} Armor damage`;
+            ae.changes=[{key:`system.facings.${facing.path}.armor`,value:-armorReduction,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
+            ae.flags={fortyk:{repair:"armordmg"}}
+            activeEffects.push(ae);
+        }else if(threshold>=3){
+            switch(hitLoc.value){
+                case "hull":
+                    let components=[];
+                    components=components.concat(actor.itemTypes.ammunition,actor.itemTypes.forceField,actor.itemTypes.knightComponent,actor.itemTypes.knightCore);
+                    components=components.filter(component=>(component.system.state!=="X")&&(component.system.state!==0));
+                    let size=components.length;
+
+                    let compRoll=new Roll(`1d${size}-1`,{});
+
+                    await compRoll.evaluate({async: true});
+                    let component=components[compRoll._total];
+                    if(component){
+                        let compData=component.system;
+                        let compUpdate={};
+                        if(component.type==="ammunition"){
+                            component.system.state.value="X";
+                            compUpdate["system.state.value"]="X";
+                            rightMes=`${component.name} explodes dealing weapon damage!`;
+                            options.explosions.push({vehicle:actor,component:component,facing:facing,extraDmg:""});
+
+                        }else if(compData.state.value==="O"){
+                            compUpdate["system.state.value"]="D";
+                            rightMes=`${component.name} is damaged.`;
+                        }else if(compData.state.value==="D"){
+                            component.system.state.value="X";
+                            compUpdate["system.state.value"]="X";
+                            rightMes=`${component.name} is destroyed.`;
+                        }else if(!isNaN(parseInt(compData.state.value))){
+                            compUpdate["system.state.value"]=parseInt(compData.state.value)-1;
+                            if(compUpdate["system.state.value"]===0){
+                                rightMes=`${component.name} is destroyed.`;
+                            }else{
+                                rightMes=`${component.name} is damaged.`; 
+                            }
+                        }
+                        await component.update(compUpdate);
+                    }
+
+
+                    break;
+                case "weapon":
+                    if(!weapon){return}
+                    if(weapon){
+                        weaponData=weapon.system;
+                        weaponUpdate={};
+                        if(weaponData.state.value==="O"){
+                            weaponUpdate["system.state.value"]="D";
+                            rightMes=`${weapon.name} is damaged.`;
+                        }else if(weaponData.state.value==="D"){
+                            weaponUpdate["system.state.value"]="X";
+                            rightMes=`${weapon.name} is destroyed.`;
+                            vehicleOptions.explosions.push({vehicle:vehicle,component:weapon,facing:facing});
+                        }
+                        await weapon.update(weaponUpdate);
+                    }
+
+
+                    break;
+                case "motive":
+                    if(activeEffects){
+                        let ae={};
+                        ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
+
+                        if(actor.system.secChar.speed.motive==="O"){
+                            ae.name="Motive System Impaired";
+                            let speedRoll=new Roll(`1d10`,{});
+
+                            await speedRoll.evaluate({async: true});
+                            let speedReduction=speedRoll._total;
+                            ae.changes=[{key:`system.secChar.speed.mod`,value:-speedReduction,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                        {key:`system.secChar.speed.motive`,value:"I",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                            ae.flags={fortyk:{repair:"motiveimpaired"}}
+                            rightMes=`The motive system is impaired reducing tactical speed by ${speedReduction}!`;
+                        }else if(actor.system.secChar.speed.motive==="I"){
+                            ae.name="Motive System Crippled";
+                            ae.changes=[{key:`system.secChar.speed.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                        {key:`system.secChar.speed.motive`,value:"C",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                            ae.flags={fortyk:{repair:"motivecrippled"}}
+                            rightMes=`The motive system is crippled reducing tactical speed by half!`;
+                        }else if(actor.system.secChar.speed.motive==="C"){
+                            ae.name="Motive System Destroyed";
+                            ae.changes=[{key:`system.secChar.speed.multi`,value:"0",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                        {key:`system.secChar.speed.motive`,value:"D",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                            ae.flags={fortyk:{repair:"motivedestroyed"}}
+                            rightMes=`The motive system is destroyed immobilizing the vehicle!`;
+                        }else{
+                            rightMes="The motive system is already destroyed!";
+                        }
+
+                        activeEffects.push(ae);
+                    }
+
+                    break;
+                case "turret":                    
+                    weapon=weapon.document;
+                    weaponData=weapon.system;
+                    weaponUpdate={};
+                    if(weaponData.state.value==="O"){
+                        weaponUpdate["system.state.value"]="D";
+                        rightMes=`${weapon.name} is damaged.`;
+                    }else if(weaponData.state.value==="D"){
+                        weaponUpdate["system.state.value"]="X";
+                        rightMes=`${weapon.name} is destroyed.`;
+                        vehicleOptions.explosions.push({vehicle:vehicle,component:weapon,facing:facing});
+                    }
+                    await weapon.update(weaponUpdate);
+                    break;
+            }
+        }
+
+        //report crit effect
+        let chatOptions={user: game.user._id,
+                         speaker:{actor,alias:actor.name},
+                         content:rightMes,
+                         classes:["fortyk"],
+                         flavor:`${source} Threshold:${threshold} ${hitLoc.label} Critical effect`,
+                         author:actor.name}
+        let critMsg=await ChatMessage.create(chatOptions,{});
+    }
+    static async vehicleCrits(token,num,hitLoc,ignoreSON,activeEffects,source="",vehicleOptions){
         let actor=token.actor;
 
         switch(hitLoc){
             case "hull":
-                await this._critMsg("hull","Hull", num, "",actor,source);
-                this.hullCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions);
+
+                await this.hullCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions);
                 break;
             case "weapon":
-                await this._critMsg("weapon","Weapon", num, "",actor,source);
-                this.weaponCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions);
+                await this.weaponCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions);
                 break;
             case "motive":
-                await this._critMsg("motive","Motive System", num, "",actor,source);
-                this.motiveCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions);
+
+                await this.motiveCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions);
                 break;
             case "turret":
-                await this._critMsg("turret","Turret", num, "",actor,source);
-                this.turretCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions);
+
+                await this.turretCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions);
                 break;
         }
     }
-    static async hullCrits(token,num,hitLoc,ignoreSON,activeEffects,source){
+    static async hullCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions){
+        let vehicle=token.actor;
+        let rolls=await this._critMsg("hull","Hull", num, "",vehicle,source);
+        let ae;
+        let facing=vehicleOptions.facing;
+        let pilot;
+        let critEffect;
+        let critEffectData;
+        let ae2;
+        let armor;
         switch(num){
             case 1:
                 break;
             case 2:
                 break;
             case 3:
+                ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("bs")]);
+                ae.changes=[{key:`system.crew.bs`,value:-10,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
+                ae.duration={
+                    rounds:1
+                }
+                activeEffects.push(ae);
                 break;
             case 4:
+
+                if(vehicle.getFlag("fortyk","protectpilot")){
+                    return
+                }
+                if(vehicle.system.crew.pilotID){
+                    pilot=game.actors.get(vehicle.system.crew.pilotID);
+                    await this._addFatigue(pilot,1);
+                    critEffectData={name:"Critical Effect",type:"rangedWeapon"}
+
+                    critEffectData.flags.fortyk={};
+                    critEffectData.flags.fortyk.blast=1;
+                    critEffectData.system={};
+                    critEffectData.system.damageFormula={};
+                    critEffectData.system.damageFormula.value="1d10+6";
+                    critEffectData.system.damageType={};
+                    critEffectData.system.damageType.value="Impact";
+                    critEffect=await Item.create(critEffectData, {temporary: true});
+
+                    await FortykRolls.damageRoll(critEffect.system.damageFormula,pilot,critEffect,1, true);
+                }
+
                 break;
             case 5:
+                let armorRoll=rolls.rolls[0];
+
+                ae={};
+                ae.name=`${facing.label} Armor damage`;
+                ae.changes=[{key:`system.facings.${facing.path}.armor`,value:-armorRoll,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
+                ae.flags={fortyk:{repair:"armordmg"}}
+                activeEffects.push(ae);
+                //reduce facing armor by 1d10
                 break;
             case 6:
+                if(vehicle.getFlag("fortyk","protectpilot")){
+                    return
+                }
+                if(vehicle.system.crew.pilotID){
+                    pilot=game.actors.get(vehicle.system.crew.pilotID);
+                    await this._addFatigue(pilot,1);
+                    critEffectData={name:"Critical Effect",type:"rangedWeapon"}
+
+                    critEffectData.flags.fortyk={};
+                    critEffectData.flags.fortyk.blast=1;
+                    critEffectData.flags.fortyk.flame=true;
+                    critEffectData.system={};
+                    critEffectData.system.damageFormula={};
+                    critEffectData.system.damageFormula.value="1d10+6";
+                    critEffectData.system.damageType={};
+                    critEffectData.system.damageType.value="Explosive";
+                    critEffect=await Item.create(critEffectData, {temporary: true});
+
+                    await FortykRolls.damageRoll(critEffect.system.damageFormula,pilot,critEffect,1, true);
+                }
+                //if pilot code a damaging hit 1d10+6 explosive +1 fatigue that also tests for agility(0) or set on fire
                 break;
             case 7:
+                armor=vehicle.system.facings[facing.path].armor;
+                armor=Math.ceil(armor/2);
+                ae={};
+                ae.name=`${facing.label} Armor damage`;
+                ae.changes=[{key:`system.facings.${facing.path}.armor`,value:armor,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.MULTIPLY}];
+                ae.flags={fortyk:{repair:"armordmg"}}
+                activeEffects.push(ae);
+                //facing loses half armor
                 break;
             case 8:
+                armor=vehicle.system.facings[facing.path].armor;
+                armor=Math.ceil(armor/2);
+                ae={};
+                ae.name=`${facing.label} Armor damage`;
+                ae.changes=[{key:`system.facings.${facing.path}.armor`,value:armor,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.MULTIPLY}]
+                ae.flags={fortyk:{repair:"armordmg"}};
+                activeEffects.push(ae);
+                ae2=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fire")]);
+                activeEffects.push(ae2);
+                // as bove but also set vehicle on fire
                 break;
             case 9:
+                this.applyDead(token, vehicle, "a hull critical effect!");
+                if(vehicle.getFlag("fortyk","protectpilot")){
+                    return
+                }
+                if(vehicle.system.crew.pilotID){
+                    pilot=game.actors.get(vehicle.system.crew.pilotID);
+                    await this._addFatigue(pilot,1);
+                    critEffectData={name:"Critical Effect",type:"rangedWeapon"}
+
+                    critEffectData.flags.fortyk={};
+                    critEffectData.flags.fortyk.blast=1;
+                    critEffectData.flags.fortyk.concussive=1;
+                    critEffectData.system={};
+                    critEffectData.system.damageFormula={};
+                    critEffectData.system.damageFormula.value="1d10+6";
+                    critEffectData.system.damageType={};
+                    critEffectData.system.damageType.value="Explosive";
+                    critEffect=await Item.create(critEffectData, {temporary: true});
+
+                    await FortykRolls.damageRoll(critEffect.system.damageFormula,pilot,critEffect,1, true);
+                }
+                //vehicle explodes set dead pilot takes 1d10+6 explosive with concussive(1)
+                break;
+            case 10:
+                this.applyDead(token, vehicle, "a hull critical effect!");
+                if(vehicle.getFlag("fortyk","protectpilot")){
+                    return
+                }
+                if(vehicle.system.crew.pilotID){
+                    pilot=game.actors.get(vehicle.system.crew.pilotID);
+                    await this._addFatigue(pilot,1);
+                    critEffectData={name:"Critical Effect",type:"rangedWeapon"}
+
+                    critEffectData.flags.fortyk={};
+                    critEffectData.flags.fortyk.blast=1;
+                    critEffectData.system={};
+                    critEffectData.system.damageFormula={};
+                    critEffectData.system.damageFormula.value="2d10+18";
+                    critEffectData.system.damageType={};
+                    critEffectData.system.damageType.value="Explosive";
+                    critEffect=await Item.create(critEffectData, {temporary: true});
+
+                    await FortykRolls.damageRoll(critEffect.system.damageFormula,pilot,critEffect,1, true);
+                }
+                //vehicle explodes set dead, pilot takes 2d10+18
                 break;
         }
+
     }
     static async weaponCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions){
+        let vehicle=token.actor;
+        let weapon=vehicleOptions.targetWeapon;
+        let rolls= await this._critMsg("weapon","Weapon", num, "",vehicle,source);
+        if(!weapon){return}
+
+        let ae;
+        let disabledAe;
+        let facing=vehicleOptions.facing;
+        let pilot;
+        let critEffect;
+        let critEffectData;
+        let ae2;
         switch(num){
             case 1:
+                disabledAe= {
+                    name: "Weapon Disabled",
+                    changes:[
+                        {key: "flags.fortyk.disabled", value: true, mode:FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}            
+                    ],
+                    duration:{
+                        rounds:1
+                    },
+                    transfer:false
+                }
+                weapon.createEmbeddedDocuments("ActiveEffect",[disabledAe]);
                 break;
             case 2:
+                await weapon.update({"system.clip.value":0});
+                //gun jams
                 break;
             case 3:
+                let penaltyAe= {
+                    name: "Weapon Penalised",
+                    changes:[
+                        {key: "system.testMod.value", value: -10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}            
+                    ],
+                    duration:{
+                        rounds:rolls.rolls[0]
+                    },
+                    transfer:false
+                }
+                weapon.createEmbeddedDocuments("ActiveEffect",[penaltyAe]);
+                //gun gets -10 for 1d5 rounds
                 break;
             case 4:
+                //
                 break;
             case 5:
+                if(weapon.system.state.value==="O"){
+                    await weapon.update({"system.state.value":"D"});
+                }else if(weapon.system.state.value==="D"){
+                    await weapon.update({"system.state.value":"X"});
+                }
+                //weapon damaged
                 break;
             case 6:
+                let targettingAe= {
+                    name: "Targetting destroyed",
+                    changes:[
+                        {key: "system.testMod.value", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}            
+                    ],
+                    transfer:false
+                }
+                ae.flags={fortyk:{repair:"targetting"}}
+                weapon.createEmbeddedDocuments("ActiveEffect",[targettingAe]);
+                //weapon gets -20 to hit
                 break;
             case 7:
+                let explosionAe= {
+                    name: "Weapon Explosion",
+                    changes:[
+                        {key: "flags.fortyk.explosion", value: true, mode:FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}            
+                    ],
+                    transfer:false
+                }
+                ae.flags={fortyk:{repair:"explosion"}}
+                weapon.createEmbeddedDocuments("ActiveEffect",[explosionAe]);
+                //weapon gets flag for potential explosions us ae so its eays to remove
                 break;
             case 8:
+                await weapon.update({"system.state.value":"X"});
+                vehicleOptions.explosions.push({vehicle:vehicle,component:weapon,facing:facing});
+                //weapon destroyed
                 break;
             case 9:
+                await weapon.update({"system.state.value":"X"});
+                vehicleOptions.explosions.push({vehicle:vehicle,component:weapon,facing:facing});
+                if(vehicle.getFlag("fortyk","protectpilot")){
+                    return
+                }
+                if(vehicle.system.crew.pilotID){
+                    pilot=game.actors.get(vehicle.system.crew.pilotID);
+                    await this._addFatigue(pilot,1);
+                    critEffectData={name:"Critical Effect",type:"rangedWeapon"}
+
+                    critEffectData.flags.fortyk={};
+                    critEffectData.flags.fortyk.blast=1;
+                    critEffectData.flags.fortyk.flame=true;
+                    critEffectData.system={};
+                    critEffectData.system.damageFormula={};
+                    critEffectData.system.damageFormula.value="1d10+6";
+                    critEffectData.system.damageType={};
+                    critEffectData.system.damageType.value="Explosive";
+                    critEffect=await Item.create(critEffectData, {temporary: true});
+
+                    await FortykRolls.damageRoll(critEffect.system.damageFormula,pilot,critEffect,1, true);
+                }
+                //weapon destroyed, pilot take 1d10+6 explosive, 1 fatigue and tets 0 agi or catch fire
+                break;
+            case 10:
+                this.applyDead(token, vehicle, "a weapon critical effect");
+                if(vehicle.getFlag("fortyk","protectpilot")){
+                    return
+                }
+                if(vehicle.system.crew.pilotID){
+                    pilot=game.actors.get(vehicle.system.crew.pilotID);
+                    await this._addFatigue(pilot,1);
+                    critEffectData={name:"Critical Effect",type:"rangedWeapon"}
+
+                    critEffectData.flags.fortyk={};
+                    critEffectData.flags.fortyk.blast=1;
+                    critEffectData.system={};
+                    critEffectData.system.damageFormula={};
+                    critEffectData.system.damageFormula.value="2d10+18";
+                    critEffectData.system.damageType={};
+                    critEffectData.system.damageType.value="Explosive";
+                    critEffect=await Item.create(critEffectData, {temporary: true});
+
+                    await FortykRolls.damageRoll(critEffect.system.damageFormula,pilot,critEffect,1, true);
+                }
+                //vehicle explodes set dead, pilot takes 2d10+18
                 break;
         }
     }
 
     static async motiveCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions){
+        let vehicle=token.actor;
+        let rolls=await this._critMsg("motive","Motive System", num, "",vehicle,source);
+        let tarNumbr=vehicleOptions.tarNumbr;
+        let fallen=vehicleOptions.fallen;
+        let ae;
+        let disabledAe;
+        let facing=vehicleOptions.facing;
+        let pilot;
+        let critEffect;
+        let critEffectData;
+        let ae2;
         switch(num){
             case 1:
+                if(vehicle.system.crew.pilotID){
+                    pilot=game.actors.get(vehicle.system.crew.pilotID);
+                    await this._addFatigue(pilot,1);
+                }
+
+                //test operate or rotate
+                let rotateRoll=rolls.tests[0];
+                if(!rotateRoll.value){
+
+
+                    token.document.update({"rotation":Math.floor(Math.random()*360)});
+
+                }
                 break;
             case 2:
+                disabledAe= {
+                    name: "Speed hampered",
+                    duration:{
+                        rounds:1
+                    }
+                }
+                activeEffects.push(disabledAe);
+                //ae that reminds of speed limitation
                 break;
             case 3:
+                if(vehicle.system.secChar.speed.motive==="D"){return}
+                ae={};
+
+                ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
+
+                if(vehicle.system.secChar.speed.motive==="O"){
+                    ae.name="Motive System Impaired";
+                    let speedReduction=rolls.rolls[0];
+                    ae.changes=[{key:`system.secChar.speed.mod`,value:-speedReduction,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                {key:`system.secChar.speed.motive`,value:"I",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                    ae.flags={fortyk:{repair:"motiveimpaired"}}
+                }else if(vehicle.system.secChar.speed.motive==="I"){
+                    ae.name="Motive System Crippled";
+                    ae.changes=[{key:`system.secChar.speed.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                {key:`system.secChar.speed.motive`,value:"C",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                    ae.flags={fortyk:{repair:"motivecrippled"}}
+                }else if(vehicle.system.secChar.speed.motive==="C"){
+                    ae.name="Motive System Destroyed";
+                    ae.changes=[{key:`system.secChar.speed.multi`,value:"0",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                {key:`system.secChar.speed.motive`,value:"D",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                    ae.flags={fortyk:{repair:"motivedestroyed"}}
+
+                }
+
+                activeEffects.push(ae);
+                //lower speed by 1d10 and add impaired
                 break;
             case 4:
+                disabledAe= {
+                    name: "Driving hampered"
+                }
+                disabledAe.flags={fortyk:{repair:"motiveimpaired"}}
+                activeEffects.push(disabledAe);
+                //ad status to remind of operate tests
                 break;
             case 5:
+                if(vehicle.system.type.value==="Walker"){
+                    activeEffects.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("prone")]));
+                    if(!vehicle.getFlag("core","prone")){
+                        fallen[tarNumbr]=true;
+                    }
+
+                }
+                //code falling over if walker
                 break;
             case 6:
+                if(vehicle.system.secChar.speed.motive==="D"){return}
+                ae={};
+
+                ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
+                ae.flags={fortyk:{repair:true}}
+                if(vehicle.system.secChar.speed.motive==="O"){
+                    ae.name="Motive System Impaired";
+                    let speedReduction=rolls.rolls[0];
+                    ae.changes=[{key:`system.secChar.speed.mod`,value:-speedReduction,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                {key:`system.secChar.speed.motive`,value:"I",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                    ae.flags={fortyk:{repair:"motiveimpaired"}}
+                }else if(vehicle.system.secChar.speed.motive==="I"){
+                    ae.name="Motive System Crippled";
+                    ae.changes=[{key:`system.secChar.speed.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                {key:`system.secChar.speed.motive`,value:"C",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                    ae.flags={fortyk:{repair:"motivecrippled"}}
+                }else if(vehicle.system.secChar.speed.motive==="C"){
+                    ae.name="Motive System Destroyed";
+                    ae.changes=[{key:`system.secChar.speed.multi`,value:"0",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                {key:`system.secChar.speed.motive`,value:"D",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                    ae.flags={fortyk:{repair:"motivedestroyed"}}
+                }
+
+                activeEffects.push(ae);
+                //damage the motive system
                 break;
             case 7:
+                if(vehicle.getFlag("fortyk","protectpilot")){
+                    return
+                }
+                if(vehicle.system.crew.pilotID){
+                    pilot=game.actors.get(vehicle.system.crew.pilotID);
+                    await this._addFatigue(pilot,1);
+                    critEffectData={name:"Critical Effect",type:"rangedWeapon"}
+
+                    critEffectData.flags.fortyk={};
+                    critEffectData.flags.fortyk.blast=1;
+                    critEffectData.system={};
+                    critEffectData.system.damageFormula={};
+                    critEffectData.system.damageFormula.value="1d10";
+                    critEffectData.system.damageType={};
+                    critEffectData.system.damageType.value="Impact";
+                    critEffect=await Item.create(critEffectData, {temporary: true});
+
+                    await FortykRolls.damageRoll(critEffect.system.damageFormula,pilot,critEffect,1, true);
+                }
+
+                //pilot takes 1d10 damage and 1 fatigue
                 break;
             case 8:
+                if(vehicle.system.secChar.speed.motive==="D"){return}
+                ae={};
+                ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
+                ae.flags={fortyk:{repair:"motivedestroyed"}}
+                ae.name="Motive System Destroyed";
+                ae.changes=[{key:`system.secChar.speed.multi`,value:"0",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                            {key:`system.secChar.speed.motive`,value:"D",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                activeEffects.push(ae);
+                //destroy motive system
                 break;
             case 9:
+
+                ae2=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fire")]);
+                activeEffects.push(ae2);
+                if(vehicle.system.secChar.speed.motive==="D"){return}
+                ae={};
+                ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
+                ae.flags={fortyk:{repair:"motivedestroyed"}}
+                ae.name="Motive System Destroyed";
+                ae.changes=[{key:`system.secChar.speed.multi`,value:"0",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                            {key:`system.secChar.speed.motive`,value:"D",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                activeEffects.push(ae);
+                //destroy motive system +fire
+                break;
+            case 10:
+                if(vehicle.system.type.value==="Walker"){
+                    activeEffects.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("prone")]));
+                    if(!vehicle.getFlag("core","prone")){
+                        fallen[tarNumbr]=true;
+                    }
+
+                }
+                if(vehicle.system.secChar.speed.motive==="D"){return}
+                ae={};
+                ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
+                ae.flags={fortyk:{repair:"motivedestroyed"}}
+                ae.name="Motive System Destroyed";
+                ae.changes=[{key:`system.secChar.speed.multi`,value:"0",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                            {key:`system.secChar.speed.motive`,value:"D",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                activeEffects.push(ae);
+
+                //destroy motive system+FALLING OVER IF WALKER+flipped over if not
                 break;
         }
     }
     static async turretCrits(token,num,hitLoc,ignoreSON,activeEffects,source,vehicleOptions){
+        let vehicle=token.actor;
+        let weapon=vehicleOptions.targetWeapon;
+        let rolls= await this._critMsg("turret","Turret", num, "",vehicle,source);
+        if(!weapon){return}
+
+        let ae;
+        let facing=vehicleOptions.facing;
+        let pilot;
+        let critEffect;
+        let critEffectData;
+        let ae2;
+        let disabledAe
         switch(num){
             case 1:
+                disabledAe= {
+                    name: "Weapon Disabled",
+                    changes:[
+                        {key: "flags.fortyk.disabled", value: true, mode:FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}            
+                    ],
+                    duration:{
+                        rounds:1
+                    },
+                    transfer:false
+                }
+                weapon.createEmbeddedDocuments("ActiveEffect",[disabledAe]);
                 break;
             case 2:
+                await weapon.update({"system.clip.value":0});
                 break;
             case 3:
+                let penaltyAe= {
+                    name: "Weapon Penalised",
+                    changes:[
+                        {key: "system.testMod.value", value: -10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}            
+                    ],
+                    duration:{
+                        rounds:rolls.rolls[0]
+                    },
+                    transfer:false
+                }
+                weapon.createEmbeddedDocuments("ActiveEffect",[penaltyAe]);
                 break;
             case 4:
+
                 break;
             case 5:
+                disabledAe= {
+                    name: "Weapon Disabled",
+                    changes:[
+                        {key: "flags.fortyk.disabled", value: true, mode:FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}            
+                    ],
+
+                    transfer:false
+                }
+                disabledAe.flags={fortyk:{repair:"damagedcomponent"}}
+                weapon.createEmbeddedDocuments("ActiveEffect",[disabledAe]);
                 break;
             case 6:
+                let targettingAe= {
+                    name: "Targetting destroyed",
+                    changes:[
+                        {key: "system.testMod.value", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}            
+                    ],
+                    transfer:false
+                }
+                targettingAe.flags={fortyk:{repair:"targetting"}}
+                weapon.createEmbeddedDocuments("ActiveEffect",[targettingAe]);
                 break;
             case 7:
+                let rearAe= {
+                    name: "Turret Armor Damaged",
+                    changes:[
+                        {key: "flags.fortyk.rear", value: true, mode:FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}            
+                    ],
+                    transfer:false
+                }
+                weapon.createEmbeddedDocuments("ActiveEffect",[rearAe]);
                 break;
             case 8:
+                await weapon.update({"system.state.value":"X"});
+                ae2=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fire")]);
+                activeEffects.push(ae2);
                 break;
             case 9:
+                await weapon.update({"system.state.value":"X"});
+                ae2=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fire")]);
+                activeEffects.push(ae2);
+                break;
+            case 10:
+
+                this.applyDead(token,vehicle,"a turret explosion");
+                //vehicle explodes set dead, pilot takes 2d10+18
                 break;
         }
     }
@@ -4642,26 +5237,26 @@ returns the roll message*/
             switch(hitLoc){
                 case "hull":
 
-                    await thresholdHullCrits(crossed[i],tar,activeEffects, source, vehicleOptions);
+                    await this.thresholdHullCrits(crossed[i],tar,activeEffects, source, vehicleOptions);
                     break;
                 case "weapon":
                     await this._critMsg("weapon","Weapon", crossed[i], "",actor,source,true);
-                    await thresholdWeaponCrits(crossed[i],tar,activeEffects, source, vehicleOptions);
+                    await this.thresholdWeaponCrits(crossed[i],tar,activeEffects, source, vehicleOptions);
                     break;
                 case "motive":
-                    await this._critMsg("motive","Motive System", crossed[i], "",actor,source,true);
-                    await thresholdMotiveCrits(crossed[i],tar,activeEffects, source, vehicleOptions);
+
+                    await this.thresholdMotiveCrits(crossed[i],tar,activeEffects, source, vehicleOptions);
                     break;
                 case "turret":
                     await this._critMsg("turret","Turret", crossed[i], "",actor,source,true);
-                    await thresholdTurretCrits(crossed[i],tar,activeEffects, source, vehicleOptions);
+                    await this.thresholdTurretCrits(crossed[i],tar,activeEffects, source, vehicleOptions);
                     break;
             }
         }
 
     }
     static async thresholdHullCrits(crossed,tar,activeEffects, source, vehicleOptions){
-        console.log(tar)
+
         let vehicle=tar.actor;
         let pilot=game.actors.get(vehicle.system.crew.pilotID);
         let components
@@ -4686,11 +5281,7 @@ returns the roll message*/
                     }
                     let test=await this.fortykTest("t", "Test", testTarget, pilot, "Resist stun", null, false);
                     let result=test.value;
-                    if(!result&&pilot.getFlag("fortyk","ironjaw")){
 
-                        result=(await this.fortykTest("t", "char", (pilot.system.characteristics.t.total),pilot, "Iron Jaw")).value;
-
-                    }
                     if(!result){
                         ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]);
                         ae.duration={
@@ -4716,10 +5307,13 @@ returns the roll message*/
                     if(component.type==="ammunition"){
                         compUpdate["system.state.value"]="X";
                         rightMes=`${component.name} explodes dealing weapon damage!`;
-                    }else if(compData.state.value==="O"||compData.state.value===""){
+                        vehicleOptions.explosions.push({vehicle:vehicle,component:component,facing:facing,extraDmg:""});
+
+                    }else if(compData.state.value==="O"){
                         compUpdate["system.state.value"]="D";
                         rightMes=`${component.name} is damaged.`;
                     }else if(compData.state.value==="D"){
+                        component.system.state.value="X";
                         compUpdate["system.state.value"]="X";
                         rightMes=`${component.name} is destroyed.`;
                     }else if(!isNaN(parseInt(compData.state.value))){
@@ -4730,18 +5324,19 @@ returns the roll message*/
                             rightMes=`${component.name} is damaged.`; 
                         }
                     }
-                    component.update(compUpdate);
+                    await component.update(compUpdate);
                 }
                 break;
             case 3:
 
                 let armorReduction=rolls.rolls[0];
 
-                let armor=facing.armor;
-                armor=armor-armorReduction;
-                let update={};
-                update[`system.facings.${facing.path}.armor`]=armor;
-                await vehicle.update(update);
+
+                ae={};
+                ae.name=`${facing.label} Armor damage`;
+                ae.changes=[{key:`system.facings.${facing.path}.armor`,value:-armorReduction,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
+                ae.flags={fortyk:{repair:"armordmg"}};
+                activeEffects.push(ae);
                 break;
             case 4:
                 components=[];
@@ -4757,12 +5352,16 @@ returns the roll message*/
                     let compData=component.system;
                     let compUpdate={};
                     if(component.type==="ammunition"){
+                        component.system.state.value="X";
                         compUpdate["system.state.value"]="X";
                         rightMes=`${component.name} explodes dealing weapon damage!`;
-                    }else if(compData.state.value==="O"||compData.state.value===""){
-                        compUpdate["system.state.value"]="D";
-                        rightMes=`${component.name} is damaged.`;
+                        vehicleOptions.explosions.push({vehicle:vehicle,component:component,facing:facing,extraDmg:""});
+                    }else if(compData.state.value==="O"){
+                        component.system.state.value="X";
+                        compUpdate["system.state.value"]="X";
+                        rightMes=`${component.name} is destroyed.`;
                     }else if(compData.state.value==="D"){
+                        component.system.state.value="X";
                         compUpdate["system.state.value"]="X";
                         rightMes=`${component.name} is destroyed.`;
                     }else if(!isNaN(parseInt(compData.state.value))){
@@ -4773,53 +5372,156 @@ returns the roll message*/
                             rightMes=`${component.name} is damaged.`; 
                         }
                     }
-                    component.update(compUpdate);
+                    await component.update(compUpdate);
                 }
                 break;
 
         }
-        let chatOptions={user: game.user._id,
-                         speaker:{actor,alias:actor.name},
-                         content:rightMes,
-                         classes:["fortyk"],
-                         flavor:`Threshold Crit Effect`,
-                         author:actor.name}
-        await ChatMessage.create(chatOptions,{});
+        if(rightMes){
+            let chatOptions={user: game.user._id,
+                             speaker:{vehicle,alias:vehicle.name},
+                             content:rightMes,
+                             classes:["fortyk"],
+                             flavor:`Threshold Crit Effect`,
+                             author:vehicle.name}
+            await ChatMessage.create(chatOptions,{});
+
+        }
 
     }
     static async thresholdWeaponCrits(crossed,tar,activeEffects, source, vehicleOptions){
         let weapon=vehicleOptions.targetWeapon;
+        if(!weapon){return}
+        let vehicle=tar.actor;
+        let facing=vehicleOptions.facing;
         switch(crossed){
             case 1:
+                let disabledAe= {
+                    name: "Weapon Disabled",
+                    changes:[
+                        {key: "flags.fortyk.disabled", value: true, mode:FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}            
+                    ],
+                    duration:{
+                        rounds:1
+                    },
+                    transfer:false
+                }
+                weapon.createEmbeddedDocuments("ActiveEffect",[disabledAe]);
                 break;
             case 2:
                 let targetAe= {
                     name: "Targetting Damaged",
                     changes:[
                         {key: "system.testMod.value", value: -20, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD}            
-                    ]
+                    ],
+                    transfer:false
                 }
+                targetAe.flags={fortyk:{repair:"targetting"}};
                 weapon.createEmbeddedDocuments("ActiveEffect",[targetAe]);
                 break;
             case 3:
-                weapon.update({"system.state.value":"D"});
+                await weapon.update({"system.state.value":"D"});
                 break;
             case 4:
-                weapon.update({"system.state.value":"X"});
+                await weapon.update({"system.state.value":"X"});
+                vehicleOptions.explosions.push({vehicle:vehicle,component:weapon,facing:facing,extraDmg:"2d10"});
+
                 break;
 
         }
 
     }
     static async thresholdMotiveCrits(crossed,tar,activeEffects, source, vehicleOptions){
+
+        let vehicle=tar.actor;
+        let tarNumbr=vehicleOptions.tarNumbr;
+        let fallen=vehicleOptions.fallen;
+        let rolls=await this._critMsg("motive","Motive System", crossed, "",vehicle,source,true);
+        let vehicleData=vehicle.system;
+        let ae={name:"Motive system Damage"};
+        let rotateRoll
         switch(crossed){
             case 1:
+                rotateRoll=rolls.tests[0];
+                if(!rotateRoll.value){
+
+                    if(vehicle.system.type.value==="Walker"){
+                        activeEffects.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("prone")]));
+                        if(!vehicle.getFlag("core","prone")){
+                            fallen[tarNumbr]=true;
+                        }
+
+                    }else{
+                        tar.document.update({"rotation":Math.floor(Math.random()*360)});
+                    }
+
+                }
                 break;
             case 2:
+                ae.changes=[{key:`system.secChar.speed.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
+                ae.duration={rounds:1};
+                activeEffects.push(ae);
+
                 break;
             case 3:
+                if(vehicle.system.secChar.speed.motive==="D"){return}
+                ae={};
+
+                ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
+                ae.flags={fortyk:{repair:true}}
+                if(vehicle.system.secChar.speed.motive==="O"){
+                    ae.name="Motive System Impaired";
+                    let speedReduction=rolls.rolls[0];
+                    ae.changes=[{key:`system.secChar.speed.mod`,value:-speedReduction,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                {key:`system.secChar.speed.motive`,value:"I",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                    ae.flags={fortyk:{repair:"motiveimpaired"}}
+                }else if(vehicle.system.secChar.speed.motive==="I"){
+                    ae.name="Motive System Crippled";
+                    ae.changes=[{key:`system.secChar.speed.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                {key:`system.secChar.speed.motive`,value:"C",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                    ae.flags={fortyk:{repair:"motivecrippled"}}
+                }else if(vehicle.system.secChar.speed.motive==="C"){
+                    ae.name="Motive System Destroyed";
+                    ae.changes=[{key:`system.secChar.speed.multi`,value:"0",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                {key:`system.secChar.speed.motive`,value:"D",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                    ae.flags={fortyk:{repair:"motivedestroyed"}}
+                }
+
+                activeEffects.push(ae);
                 break;
             case 4:
+
+                rotateRoll=rolls.tests[0];
+                if(!rotateRoll.value){
+
+                    if(vehicle.system.type.value==="Walker"){
+                        activeEffects.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("prone")]));
+                        if(!vehicle.getFlag("core","prone")){
+                            fallen[tarNumbr]=true;
+                        }
+                    }else{
+                        tar.document.update({"rotation":Math.floor(Math.random()*360)});
+                    }
+
+                }
+                if(vehicle.system.secChar.speed.motive==="D"){return}
+                ae={};
+
+                ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]);
+                ae.flags={fortyk:{repair:true}}
+                if(vehicle.system.secChar.speed.motive==="O"||vehicle.system.secChar.speed.motive==="I"){
+                    ae.name="Motive System Crippled";
+                    ae.changes=[{key:`system.secChar.speed.multi`,value:0.5,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                {key:`system.secChar.speed.motive`,value:"C",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                    ae.flags={fortyk:{repair:"motivecrippled"}}
+                }else if(vehicle.system.secChar.speed.motive==="C"){
+                    ae.name="Motive System Destroyed";
+                    ae.changes=[{key:`system.secChar.speed.multi`,value:"0",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE},
+                                {key:`system.secChar.speed.motive`,value:"D",mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM}];
+                    ae.flags={fortyk:{repair:"motivedestroyed"}}
+                }
+
+                activeEffects.push(ae);
                 break;
 
         }
@@ -4946,6 +5648,120 @@ returns the roll message*/
             }
         }
     }
+    static async fallingWalker(vehicle, token){
+        await sleep(500)
+        let fallAngle=Math.floor(Math.random()*360);
+        let facings=vehicle.system.facings;
+        let facing=null;
+        let split={};
+        for(const face in facings){
+            let f=facings[face];
+            //check for split facing  eg starts at 316 and ends at 45
+            if(f.end<f.start){
+                split=f;
+            }
+            if(fallAngle>=f.start&&fallAngle<=f.end){
+
+                facing=f;
+            }
+        }
+        token.document.update({"rotation":fallAngle});
+        let fallData={name:"Fall",type:"rangedWeapon"}
+        fallData.flags={};
+        fallData.flags.fortyk={};
+        fallData.flags.fortyk.randomlocation=true;
+        fallData.flags.fortyk.setfacing=facing;
+        fallData.system={};
+        fallData.system.damageFormula={};
+        fallData.system.damageFormula.value="2d10";
+        fallData.system.damageType={};
+        fallData.system.damageType.value="Impact";
+        fallData.system.pen={};
+        fallData.system.pen.value=99999;
+        let fall=await Item.create(fallData, {temporary: true});
+        let damageDone=await FortykRolls.damageRoll(fall.system.damageFormula,vehicle,fall,1, true);
+        if(vehicle.getFlag("fortyk","protectpilot")){
+            return
+        }
+        if(vehicle.system.crew.pilotID){
+            let pilot=game.actors.get(vehicle.system.crew.pilotID);
+            fall.system.damageFormula.value=Math.ceil(damageDone[0]/2).toString();
+            await FortykRolls.damageRoll(fall.system.damageFormula,pilot,fall,1, true);
+            let testTarget=pilot.system.characteristics.t.total;
+            if(vehicle.getFlag("fortyk","motiondampening")){
+                testTarget+=30;
+            }
+            let test=await this.fortykTest("t", "Test", testTarget, pilot, "Resist stun", null, false);
+            let result=test.value;
+
+            if(!result){
+                let ae=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]);
+                ae.duration={
+                    rounds:1
+                }
+                this.applyActiveEffect(pilot,[ae]);
+            }
+
+
+        }
+
+
+
+    }
+
+    static async ammoExplosion(vehicle, ammo, facing, extraDmg=""){
+        if(vehicle.getFlag("fortyk","casing")){
+            let chatCasing={user: game.user._id,
+                            speaker:{vehicle,alias:vehicle.name},
+                            content:`${vehicle.name} has casing preventing ammunition and wepon explosions!`,
+                            flavor:"Casing!",
+                            author:vehicle.name}
+            await ChatMessage.create(chatCasing,{});
+            return
+        }
+        if(ammo.getFlag("fortyk","nonexplosive")){
+            let chatCasing={user: game.user._id,
+                            speaker:{vehicle,alias:vehicle.name},
+                            content:`${ammo.name} is non explosive!`,
+                            flavor:"Non explosive",
+                            author:vehicle.name}
+            await ChatMessage.create(chatCasing,{});
+            return
+        }
+        if(ammo.type==="Ammunition"&&ammo.getFlag("fortyk","nonexplosiveammo")){
+            let chatCasing={user: game.user._id,
+                            speaker:{vehicle,alias:vehicle.name},
+                            content:`${ammo.name} is non explosive!`,
+                            flavor:"Non explosive",
+                            author:vehicle.name}
+            await ChatMessage.create(chatCasing,{});
+            return
+        }
+        await sleep(500);
+        let explosionData={
+            name:`${ammo.name} explosion`,
+            type:"rangedWeapon",
+            system:{},
+            flags:{}
+        }
+        explosionData.flags.fortyk={};
+        explosionData.flags.fortyk.randomlocation=true;
+        explosionData.flags.fortyk.setfacing=facing;
+
+        explosionData.system.damageFormula={};
+        explosionData.system.damageFormula.value=ammo.system.damageFormula.formula;
+        if(extraDmg){explosionData.system.damageFormula.value+=`+${extraDmg}`}
+        if(ammo.type==="meleeWeapon"){
+            explosionData.system.damageFormula.value=`(${explosionData.system.damageFormula.value})/2`; 
+        }
+        explosionData.system.damageType={};
+        explosionData.system.damageType.value="Explosive";
+        explosionData.system.pen={};
+        explosionData.system.pen.value=999;
+        let explosion=await Item.create(explosionData, {temporary: true});
+
+        await FortykRolls.damageRoll(explosion.system.damageFormula,vehicle,explosion,1, true);
+    }
     static async applyDead(target,actor,cause=""){
         if(game.user.isGM||target.isOwner){
 
@@ -5013,4 +5829,35 @@ returns the roll message*/
             await actor.createEmbeddedDocuments("Item",[duplicate(injuryItem)]);
         }
     }
+    static async knockback(knockback, attackerToken, actorToken, randomAngle=false) {
+        console.log(knockback)
+        knockback=knockback*canvas.dimensions.distancePixels;
+        let knockbackCoord=knockbackPoint(attackerToken,actorToken,knockback, randomAngle);
+
+        let collisions=collisionPoint(actorToken,knockbackCoord);
+
+        let smallestCollision=smallestDistance(actorToken,collisions);
+        if(smallestCollision){
+
+            actorToken.document.update(smallestCollision);
+        }else{
+            actorToken.document.update(knockbackCoord);
+        }
+
+    }
+    /*static ajustCollisionKnockback(token, collisionPoint){
+        let tokenx=token.x;
+        let tokeny=token.y;
+        let pointx=collisionPoint.x;
+        let pointy=collisionPoint.y;
+        let x=pointx;
+        let y=pointy;
+        if(pointx>tokenx){
+            x-=token.width;
+        }
+        if(pointy>tokeny){
+            y-=token.height;
+        }
+        return{x:x,y:y}
+    }*/
 }

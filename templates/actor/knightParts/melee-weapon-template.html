@@ -39,7 +39,7 @@
 
                 {{#with (lookup ../system.FORTYK.weaponFlags [key])~}}
                 <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
-
+                    
                     {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
                 {{/if}}
                 {{/each}}

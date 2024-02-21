@@ -176,7 +176,7 @@
                 <a class="list-item sort-button" data-sort-type="sp" data-path="system.sp.value" data-item-type="components">SP</a>
                 <span class="list-button"></span>
                 <span class="list-button"></span>
-
+{{debug this}}
                 {{#each actor.components as |t key|}}
 
                 <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.system.description.value}}">{{t.name}}</a>
@@ -184,7 +184,7 @@
 
                     {{#select this.system.status.value}}
 
-
+                    
                     {{#each ../spaceshipComponentStatuses}}
 
                     <option value="{{this}}" >{{this}}</option>

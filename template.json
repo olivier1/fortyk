@@ -998,6 +998,8 @@
             },
             "repairBays":{
                 "value":0,
+                "current":[],
+                "queue":[],
                 "type":"Number"
             },
             "knights":[]
@@ -1139,7 +1141,7 @@
                     "type":"Number"
                 },
                 "state":{
-                    "value":"",
+                    "value":"O",
                     "type":"String"
                 }
             },
@@ -1763,9 +1765,21 @@
                 "value":0,
                 "type":"Number"
             },
+            "cost":{
+                "value":0,
+                "type":"Number"
+            },
+            "calendar":{
+                "calendarId":"",
+                "noteId":""
+            },
             "knight":{
                 "value":"",
                 "type":"String"
+            },
+            "repairs":{
+                "entries":[],
+                "wounds":0
             }
         },
         "outpost":{

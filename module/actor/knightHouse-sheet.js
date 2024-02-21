@@ -3,6 +3,7 @@ import {FortykRolls} from "../FortykRolls.js";
 import FortyKBaseActorSheet from "./base-sheet.js";
 import {FORTYK} from "../FortykConfig.js";
 import {FortyKItem} from "../item/item.js";
+import {CreateRepairEntryDialog} from "../dialog/createRepairEntry-dialog.js";
 export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
 
     /** @override */
@@ -28,9 +29,9 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         let actor=this.actor;
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
-       if(data.inventoryFilter===undefined){
-           data.inventoryFilter="all";
-       }
+        if(data.inventoryFilter===undefined){
+            data.inventoryFilter="all";
+        }
         data.outposts=actor.itemTypes.outpost;
         data.cadetHouses=actor.itemTypes.cadetHouse;
         data.weapons=actor.itemTypes.rangedWeapon.concat(actor.itemTypes.meleeWeapon,actor.itemTypes.ammunition);
@@ -46,9 +47,20 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         for(let i=0;i<data.components.length;i++){
             data.components[i].prepareData();
         }
-        data.repairEntries=actor.itemTypes.repairEntry.sort(function(a,b){return a.sort-b.sort});
+        let currentRepairsObjects=[];
+        let currentRepairs=actor.system.repairBays.current;
+        currentRepairs.forEach(function(repair){
+            currentRepairsObjects.push(actor.getEmbeddedDocument("Item",repair));
+        });
+        data.currentRepairs=currentRepairsObjects;
+        let queueObjects=[];
+        let queue=actor.system.repairBays.queue;
+        queue.forEach(function(repair){
+            queueObjects.push(actor.getEmbeddedDocument("Item",repair));
+        });
+        data.queue=queueObjects;
         data.knightComponentTypes=FORTYK.knightComponentTypes;
-       console.log(data)
+
         return data;
     }
     /** @override */
@@ -58,7 +70,89 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         html.find('.addIncome').click(this._onAddIncome.bind(this));
         html.find('.passTime').click(this._onPassTime.bind(this));
         html.find('.knightComponent-create').click(this._onComponentCreate.bind(this));
+        html.find('.delete-repair').click(this._onRepairDelete.bind(this));
         html.find('.component-select').change(this._onComponentCategoryChange.bind(this));
+        html.find('.repairEntry-create').click(this._repairEntryCreate.bind(this));
+    }
+    async _onRepairDelete(event){
+        event.preventDefault();
+        let itemId = event.currentTarget.attributes["data-item-id"].value;
+        let queue = event.currentTarget.attributes["data-queue"].value;
+        let index = parseInt(event.currentTarget.attributes["data-index"].value);
+        let item=await this.actor.getEmbeddedDocument("Item",itemId);
+        let house=this.actor;
+        let knight=game.actors.get(item.system.knight.value);
+        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
+        renderedTemplate.then(content => {
+            new Dialog({
+                title: "Deletion Confirmation",
+                content: content,
+                buttons:{
+                    submit:{
+                        label:"Yes",
+                        callback: async dlg => { 
+                            if(queue==="queue"){
+                                let queueArray=this.actor.system.repairBays.queue;
+                                queueArray.splice(index,1);
+                                this.actor.update({"system.repairBays.queue":queueArray});
+                            }else{
+                                
+                                let current=house.system.repairBays.current;
+                                let queueArray=this.actor.system.repairBays.queue;
+                                current.splice(index,1);
+                                if(queueArray.length>0){
+                                    current.push(queueArray.pop());
+                                    let newCurrentRepairId=current[current.length-1];
+                                    let newCurrentRepair=this.actor.getEmbeddedDocument("Item",newCurrentRepairId);
+                                    let time=newCurrentRepair.system.time.value;
+                                    let calendar=SimpleCalendar.api.getCurrentCalendar();
+                                    let currentTime=SimpleCalendar.api.timestamp(calendar.id);
+
+                                    let noteTime=currentTime+time;
+
+                                    let formattedTime=SimpleCalendar.api.timestampToDate(noteTime,calendar.id);
+
+                                    let note=await SimpleCalendar.api.addNote(newCurrentRepair.name, newCurrentRepair.system.description.value, formattedTime, formattedTime, true, false, ["Repairs"], calendar.id, '', ["default"], [game.user.id]);
+                                    await newCurrentRepair.update({"system.calendar.noteId":note.uuid});
+                                }
+
+                                await house.update({"system.repairBays.current":current,"system.repairBays.queue":queueArray});
+                            }
+                            console.log(item)
+                            let note=fromUuidSync(item.system.calendar.noteId);
+                            try {
+                                note.delete();
+                            } catch (e) {
+                                //Catch Statement
+                            }
+                            let money=item.system.cost.value;
+                            await this.actor.update({"system.wealth.value":this.actor.system.wealth.value+money});
+                            
+                            let chatMsg={user: game.user._id,
+                                         speaker:{house,alias:house.name},
+                                         content:item.system.description.value,
+                                         classes:["fortyk"],
+                                         flavor:`Deleted repair entry for ${knight.name}, ${money} Imperial bonds are refunded`,
+                                         author:house.name};
+                            await ChatMessage.create(chatMsg,{});
+                            await this.actor.deleteEmbeddedDocuments("Item",[itemId]);
+
+                            this.render(true);
+                        }
+                    },
+                    cancel:{
+                        label: "No",
+                        callback: null
+                    }
+                },
+                default: "submit"
+            }).render(true)
+        });
+    }
+    _repairEntryCreate(evet){
+        event.preventDefault();
+        let dialog=new CreateRepairEntryDialog({actor:this.actor});
+        dialog.render(true,{title:"Create Repair Entry"});
     }
     _onComponentCategoryChange(event){
         let components=document.getElementsByName("component");
@@ -76,7 +170,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
             }
         }
     }
-   async _onComponentCreate(event){
+    async _onComponentCreate(event){
         event.preventDefault();
         let templateOptions={"type":[{"name":"knightComponent","label":"Component"},{"name":"rangedWeapon","label":"Ranged Weapon"},{"name":"meleeWeapon","label":"Melee Weapon"},{"name":"ammunition","label":"Ammunition"},{"name":"knightArmor","label":"Armor"},{"name":"knightStructure","label":"Structure"},{"name":"knightCore","label":"Core"},{"name":"forceField","label":"Force Field"}]};
 
@@ -173,4 +267,4 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
             if(check){repairsDone=true}
         }while(!repairsDone)
     }
-}
+    }

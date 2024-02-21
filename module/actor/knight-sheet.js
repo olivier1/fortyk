@@ -32,6 +32,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         data.houses=Array.from(game.actors.values()).filter(actor=>actor.isOwner&&actor.type==="knightHouse");
         data.pilots=Array.from(game.actors.values()).filter(actor=>actor.isOwner&&actor.type==="dhPC");
         data.itemStates=game.fortyk.FORTYK.itemStates;
+        data.repairEntries=actor.getRepairs();
         if(data.mechtab===undefined){
             data.mechtab="all";
         }
@@ -124,10 +125,9 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             data.rangedWeapons=house.itemTypes.rangedWeapon.filter(weapon=>weapon.system.class.value==="Titanic Ranged Weapon");
             data.artilleryWeapons=house.itemTypes.rangedWeapon.filter(weapon=>weapon.system.class.value==="Titanic Artillery Weapon");
             data.auxiliaryWeapons=house.itemTypes.rangedWeapon.filter(weapon=>weapon.system.class.value!=="Titanic Ranged Weapon"&&weapon.system.class.value!=="Titanic Artillery Weapon");
-            console.log(data.auxiliaryWeapons)
+          
             data.auxiliaryWeapons=data.auxiliaryWeapons.map((x)=>{
                 let y=1;
-                console.log(x)
                 if(x.system.class.value==="Heavy"){
                     y=2;
                 }
@@ -135,7 +135,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 x.system.space.value=y;
                 return x;
             })
-            console.log(data.auxiliaryWeapons)
             data.ammunition=house.itemTypes.ammunition;
             data.components=house.itemTypes.knightComponent;
             data.armors=house.itemTypes.knightArmor;
@@ -156,6 +155,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         if(system.knight.chassis){
             let thresholds=system.secChar.wounds.thresholds;
             let wounds=parseInt(system.secChar.wounds.value);
+            console.log(thresholds,data)
             if(wounds>thresholds["1"]){
                 data.threshold="1st";
             }else if(wounds>thresholds["2"]){
@@ -182,7 +182,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 }
             }
             data.leftArmHardPoints=duplicate(system.chassis.system.hardPoints.leftArm);
-            console.log(data.leftArmHardPoints)
+      
             for (let [key, wpnType] of Object.entries(data.leftArmHardPoints)){
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
@@ -207,14 +207,12 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                     }
                 }
             }
-            console.log(system.chassis)
             data.rightArmHardPoints=duplicate(system.chassis.system.hardPoints.rightArm);
             for (let [key, wpnType] of Object.entries(data.rightArmHardPoints)){
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
-                        console.log(wpnType[i])
                         wpnType[i]=actor.getEmbeddedDocument("Item",wpnType[i]);
-                        console.log(wpnType[i])
+                        
                         //await wpnType[i].prepareData();
                         if(wpnType[i].type==="rangedWeapon"){
                             wpnType[i].validAmmo=this.getValidAmmo(wpnType[i]);
@@ -314,11 +312,9 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
     }
 
     async _onDropComponent(event){
-        console.log(event.dataTransfer)
-        console.log(event.dataTransfer.getData("text"))
 
         let transfer=JSON.parse(event.dataTransfer.getData("text"));
-        console.log(transfer);
+        
         let draggedId=transfer.uuid;
 
 
@@ -704,6 +700,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             update["system.knight.chassis"]=id;
                             update["system.secChar.wounds.value"]=createdChassis[0].system.structuralIntegrity.value;
                             update["system.secChar.size.value"]=parseInt(createdChassis[0].system.size.value)-1;
+                            update["system.type.value"]="Walker";
                             update["token.actorLink"]=true;
                             update["token.vision"]=true;
                             await actor.update(update);
@@ -847,10 +844,8 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 break;
             case "blasphemoustendencies":
                 let items=pilot.items;
-                console.log(items)
                 let psy;
                 for(const skill of items){
-                    console.log(skill)
                     if(skill.name==="Psyniscience"){
                         psy=skill;
                     }
@@ -902,9 +897,9 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 pilotAeData.changes.push({key: "system.secChar.initiative.value", value: 5, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD});
                 if(game.combats.active){
                     for(const combatant of game.combats.active.combatants){
-                        console.log(combatant)
+                     
                         if(combatant.actorId===knight.id||combatant.actorId===pilot.id){
-                            console.log(combatant)
+                       
                             if(combatant.initiative){
                                 combatant.update({"initiative":combatant.initiative+5});
                             }
@@ -995,10 +990,14 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 }
                 break;
         }
-        await knight.deleteEmbeddedDocuments("ActiveEffect",[knight.getFlag("fortyk","knightMeldedAeId")]);
-        await pilot.deleteEmbeddedDocuments("ActiveEffect",[knight.getFlag("fortyk","pilotMeldedAeId")]);
-        await knight.deleteEmbeddedDocuments("Item",knight.getFlag("fortyk","knightMeldedItemIds"));
-        await pilot.deleteEmbeddedDocuments("Item",knight.getFlag("fortyk","pilotMeldedItemIds"));
+        try {
+            await knight.deleteEmbeddedDocuments("ActiveEffect",[knight.getFlag("fortyk","knightMeldedAeId")]);
+            await pilot.deleteEmbeddedDocuments("ActiveEffect",[knight.getFlag("fortyk","pilotMeldedAeId")]);
+            await knight.deleteEmbeddedDocuments("Item",knight.getFlag("fortyk","knightMeldedItemIds"));
+            await pilot.deleteEmbeddedDocuments("Item",knight.getFlag("fortyk","pilotMeldedItemIds"));
+        } catch (e) {
+            //Catch Statement
+        }
         await knight.setFlag("fortyk","knightMeldedItemIds",false);
         await knight.setFlag("fortyk","pilotMeldedItemIds",false);
         await knight.setFlag("fortyk","knightMeldedAeId",false);
@@ -1173,6 +1172,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
                             let update={};
+                            console.log(path)
                             update[path]="";
 
                             await actor.update(update);
@@ -1231,10 +1231,10 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                                 await component.update(componentUpdate);
                             }
 
-
+                            
                             var array=objectByString(this.actor,path);
                             array.splice(index,1);
-
+                            console.log(item)
 
                             let update={};
                             update[path]=array;
@@ -1259,16 +1259,17 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
         let newHouse=await game.actors.get(event.currentTarget.value);
         let oldHouse=await game.actors.get(this.actor.system.knight.house);
-
+       
 
         if(newHouse){
             let newArray=newHouse.system.knights;
             newArray.push(this.actor.id);
             newHouse.update({"system.knights":newArray}); 
+          
         }
         if(oldHouse){
             let oldArray=oldHouse.system.knights;
-            oldArray=oldArray.filter((knight) =>{knight!==this.actor.id});
+            oldArray=oldArray.filter((knight) =>{return knight!==this.actor.id});
             oldHouse.update({"system.knights":oldArray});
         }
 

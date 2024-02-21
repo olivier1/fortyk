@@ -1,3 +1,4 @@
+
 export const FORTYK={};
 FORTYK.races=["Human",
               "Ogryn",
@@ -164,6 +165,276 @@ FORTYK.psychicDisciplines=["Biomancy", "Chronomancy","Divination","Pyromancy","T
 FORTYK.spaceshipWeaponLocations=["Dorsal","Prow","Keel","Port","Starboard"]
 FORTYK.outpostTypes=["Outpost","Enclave","Stronghold"];
 FORTYK.knightComponentTypes=[{"value":"rangedWeapon","label":"Ranged Weapons"},{"value":"meleeWeapon","label":"Melee Weapons"},{"value":"auxiliaryWeapon","label":"Auxiliary Weapons"},{"value":"ammunition","label":"Ammunition"},{"value":"knightArmor","label":"Armors"},{"value":"knightCore","label":"Cores"},{"value":"knightStructure","label":"Structure"},{"value":"forceField","label":"Force Fields"},{"value":"gyro","label":"Gyros"},{"value":"sensor","label":"Sensors"},{"value":"throne-mod","label":"Throne Modifications"},{"value":"plating","label":"Platings"},{"value":"core-mod","label":"Core Modifications"},{"value":"arm-actuator","label":"Arm Actuators"},{"value":"leg-actuator","label":"Leg Actuators"},{"value":"other","label":"Other Components"}]
+FORTYK.vehicleRepairCostTimeDiff={
+    "firstthresholddmg":{
+        amount:10,
+        time:14400,
+        cost:10,
+        hardReq:[],
+        diff:0,
+        hasTech:10,
+        hasAdmech:10,
+        hasTechnAdmech:10
+    },
+    "secondthresholddmg":{
+        amount:10,
+        time:36000,
+        cost:20,
+        hardReq:[],
+        diff:-20,
+        hasTech:0,
+        hasAdmech:10,
+        hasTechnAdmech:10
+    },
+    "thirdthresholddmg":{
+        amount:10,
+        time:54000,
+        cost:40,
+        hardReq:[],
+        diff:-30,
+        hasTech:-10,
+        hasAdmech:0,
+        hasTechnAdmech:0
+    },
+    "fourththresholddmg":{
+        amount:10,
+        time:86400,
+        cost:80,
+        hardReq:[],
+        diff:-40,
+        hasTech:-20,
+        hasAdmech:0,
+        hasTechnAdmech:0
+    },
+    "criticaldmg":{
+        amount:1,
+        time:259200,
+        cost:200,
+        hardReq:["tech-use","commonlore:tech"],
+        diff:-50,
+        hasTech:-50,
+        hasAdmech:-50,
+        hasTechnAdmech:0
+    },
+    "damagedcomponent":{
+        amount:1,
+        time:86400,
+        timePerRarityAboveScarce:86400,
+        cost:50,
+        costPerRarityAboveScarce:100,
+        hardReq:["tech-use","commonlore:adeptusmechanicus"],
+        diff:-20,
+        hasTech:-20,
+        hasAdmech:-20,
+        hasTechnAdmech:10
+    },
+    "firedmg":{
+        amount:6,
+        time:10800,
+        cost:20,
+        hardReq:[],
+        diff:20,
+        hasTech:20,
+        hasAdmech:20,
+        hasTechnAdmech:20
+    },
+    "motiveimpaired":{
+        amount:1,
+        time:86400,
+        cost:50,
+        hardReq:[],
+        diff:0,
+        hasTech:0,
+        hasAdmech:0,
+        hasTechnAdmech:10
+    },
+    "motivecrippled":{
+        amount:1,
+        time:604800,
+        cost:100,
+        hardReq:["tech-use","commonlore:tech"],
+        diff:-30,
+        hasTech:-20,
+        hasAdmech:-20,
+        hasTechnAdmech:-20 
+    },
+    "motivedestroyed":{
+        amount:1,
+        time:3127680,
+        cost:300,
+        hardReq:["tech-use",["commonlore:tech","commonlore:adeptusmechanicus"]],
+        diff:-40,
+        hasTech:-40,
+        hasAdmech:-40,
+        hasTechnAdmech:-20 
+    },
+    "damagedcore":{
+        amount:1,
+        time:172800,
+        cost:200,
+        hardReq:[["tech-use","forbiddenlore:archeotech"]],
+        diff:-20,
+        hasTech:-20,
+        hasAdmech:-20,
+        hasTechnAdmech:-20 
+    },
+    "armordmg":{
+        amount:5,
+        time:86400,
+        cost:30,
+        hardReq:[],
+        diff:-20,
+        hasTech:0,
+        hasAdmech:-20,
+        hasTechnAdmech:0 
+    },
+    "targetting":{
+        amount:1,
+        time:1209600,
+        cost:200,
+        hardReq:["tech-use",["commonlore:adeptusmechanicus","forbiddenlore:archeotech"]],
+        diff:-30,
+        hasTech:-30,
+        hasAdmech:-30,
+        hasTechnAdmech:-30 
+    },
+    "damagedionshield":{
+        amount:1,
+        time:604800,
+        cost:100,
+        hardReq:[["tech-use","forbiddenlore:archeotech"]],
+        diff:-20,
+        hasTech:-20,
+        hasAdmech:-20,
+        hasTechnAdmech:-20 
+    },
+    "destroyedionshield":{
+        amount:1,
+        time:3127680,
+        cost:100,
+        hardReq:[["tech-use","forbiddenlore:archeotech"]],
+        diff:-40,
+        hasTech:-40,
+        hasAdmech:-40,
+        hasTechnAdmech:-40 
+    },
+    "refittitanicweapon":{
+        amount:1,
+        time:86400,
+        cost:10,
+        hardReq:["tech-use"],
+        diff:10,
+        hasTech:10,
+        hasAdmech:10,
+        hasTechnAdmech:10 
+    },
+    "install/removecomponent":{
+        amount:1,
+        time:36000,
+        cost:10,
+        hardReq:["tech-use"],
+        diff:10,
+        hasTech:10,
+        hasAdmech:10,
+        hasTechnAdmech:10 
+    },
+    "changearmor":{
+        amount:1,
+        time:604800,
+        cost:100,
+        hardReq:["commonlore:tech"],
+        diff:0,
+        hasTech:0,
+        hasAdmech:0,
+        hasTechnAdmech:0 
+    },
+    "changecore":{
+        amount:1,
+        time:604800,
+        cost:100,
+        hardReq:[["tech-use","forbiddenlore:archeotech"]],
+        diff:-10,
+        hasTech:-10,
+        hasAdmech:-10,
+        hasTechnAdmech:-10 
+    },
+    "changestructure":{
+        amount:1,
+        time:18766080,
+        cost:1000,
+        hardReq:[["tech-use","forbiddenlore:archeotech","commonlore:tech","commonlore:adeptusmechanicus"]],
+        diff:-40,
+        hasTech:-40,
+        hasAdmech:-40,
+        hasTechnAdmech:-40 
+    }
+
+}
+FORTYK.repairTimeAdjustment=[
+    {
+
+        "upperRange":14400,
+        "adjustment":600
+    },
+    {
+
+        "upperRange":28800,
+        "adjustment":1200
+    },
+    {
+
+        "upperRange":57600,
+        "adjustment":1800
+    },
+    {
+
+        "upperRange":172800,
+        "adjustment":3600
+    },
+    {
+
+        "upperRange":432000,
+        "adjustment":14400
+    },
+    {
+
+        "upperRange":3127680,
+        "adjustment":43200
+    },
+    {
+
+        "upperRange":6255360,
+        "adjustment":86400
+    },
+    {
+
+        "upperRange":18766080,
+        "adjustment":1036800
+    },
+    {
+
+        "upperRange":Infinity,
+        "adjustment":2592000
+    }
+]
+FORTYK.vehicleRepairTypes={
+    "normal":{
+        "time":1,
+        "cost":1,
+        "difficulty":0
+    },
+    "rush":{
+        "time":0.5,
+        "cost":1.5,
+        "difficulty":-30
+    },
+    "careful":{
+        "time":1.5,
+        "cost":0.5,
+        "difficulty":30
+    }
+}
+FORTYK.coreIntegrities={"Common":3,"Poor":1,"Good":4,"Best":5}
 FORTYK.spaceshipWeaponTypes=["Macrocannon","Lance","Torpedo","Hangar"]
 FORTYK.spaceshipCargoTypes=["Food Supplies","Unrefined Materials","Refined Materials","Military Technology","Manufacturing Technology","Survival Technology","Ship Parts","Energy Source","Entertainment","Contraband","Livestock","Xeno-Artifacts","Archeotech","Torpedoes"]
 FORTYK.spaceshipComponentStatuses=["Online", "Damaged", "Destroyed"]
@@ -430,6 +701,16 @@ FORTYK.weaponFlags={
         "label": "Niditus",
         "description": "When a psyker suffers damage from this weapon, he must make a Difficult (–10) Willpower test or be Stunned for a number of rounds equal to his degrees of failure. When a target with the Warp Instability trait suffers damage from this weapon, it must immediately test for Instability with a –10 penalty."
     },
+    "nonexplosive": {
+        "value": false,
+        "label": "Non Explosive",
+        "description": "This weapon and its ammunition do not explode when destroyed."
+    },
+    "nonexplosiveammunition": {
+        "value": false,
+        "label": "Non Explosive Ammunition",
+        "description": "This weapon's ammunition does not explode when destroyed, the weapon itself may still explode and damage the vehicle when destroyed."
+    },
     "overheats": {
         "value": false,
         "label": "Overheats",
@@ -652,7 +933,7 @@ FORTYK.StatusEffects = [
         overlay: true,
         statuses:["dead"],
         flags: { core: {overlay: true,
-                       statusId: "dead"} }
+                        statusId: "dead"} }
     },
     {
         id: "unconscious",

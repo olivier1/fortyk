@@ -11,7 +11,7 @@
                 <span class="descrSpan">Chassis:</span>
 
                 {{#if system.knight.chassis}}
-                <div class="flexrow">
+                <div class="flexrow-nowrap">
 
                     <span class="descrSpan">{{system.chassis.name}}</span>
                     {{#if isGM}}
@@ -29,7 +29,7 @@
                 <span class="descrSpan">Machine Spirit:</span>
 
                 {{#if system.knight.spirit}}
-                <div class="flexrow">
+                <div class="flexrow-nowrap">
 
                     <span class="descrSpan">{{system.spirit.name}}</span>
                     {{#if isGM}}
@@ -98,7 +98,7 @@
                         <span class="list-item-header">Name</span>
                         <span class="list-item-header">Avail</span>
                         <span class="list-item-header">Tonnage</span>
-                        <span class="list-item-header">Space</span>
+                        <span class="list-item-header-last">Space</span>
                         <a class="mechbay-grid-section ranged list-item-header4" name="rangedWeapons1"><span class="{{#unless rangedWeapons1}}plus-button{{else}}minus-button{{/unless}}"></span>Ranged Weapons</a>
                         {{#each rangedWeapons}}
                         <span class="list-item mechbay-component rangedWeapons1" {{#unless ../rangedWeapons1}}style="display: none"{{/unless}} data-id="{{this.id}}" name="ranged-slot">{{this.name}}</span>
@@ -346,11 +346,11 @@
         <div class="mechgrid ">
             <div class="info1 mechgrid-child flexcol flex-group-center">
 
-                <div class="flexrow">
+                <div class="flexrow-nowrap">
                     <span>Tactical Speed: {{system.secChar.speed.tactical}}m</span>
                 </div>
 
-                <div class="flexrow">
+                <div class="flexrow-nowrap">
                     <span>Stuctural integrity: </span> <input type="text" class="combat-resources" data-target="system.secChar.wounds.value" value="{{system.secChar.wounds.value}}" data-dtype="Number"/>/{{system.secChar.wounds.max}}
                 </div>
                 <span>Armor: {{system.knight.armorValues.value}}/{{system.knight.armorValues.max}}</span>
@@ -371,10 +371,12 @@
                         {{/select}}
                     </select>
                     <span>{{this.name}}</span>
-                    {{#if ../isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.carapace.titanicArtillery" data-index="{{@index}}"></a>
+                    <div class="flexrow-nowrap">
+                        {{#if ../isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.carapace.titanicArtillery" data-index="{{@index}}"></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="artillery-slot artillery component-slot" data-facing="front" data-index="{{@index}}" data-path="system.hardPoints.carapace.titanicArtillery">
@@ -396,11 +398,12 @@
                         {{/select}}
                     </select>
                     <span>{{this.name}}</span>
-
-                    {{#if ../isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.carapace.auxiliary" data-index="{{@index}}"></a>
+                    <div class="flexrow-nowrap">
+                        {{#if ../isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.carapace.auxiliary" data-index="{{@index}}"></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="auxiliary-slot auxiliary component-slot"  data-facing="lSide" data-index="{{@index}}" data-path="system.hardPoints.carapace.auxiliary">
@@ -429,10 +432,12 @@
                         {{/select}}
                     </select>
                     <span>{{this.name}}</span>
-                    {{#if ../isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.leftArm.titanicRanged" data-index="{{@index}}"></a>
+                    <div class="flexrow-nowrap">
+                        {{#if ../isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.leftArm.titanicRanged" data-index="{{@index}}"></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="ranged-slot ranged component-slot"  data-facing="lSide" data-index="{{@index}}" data-path="system.hardPoints.leftArm.titanicRanged">
@@ -446,7 +451,7 @@
                 <div class="melee-weapon melee filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
                         {{#select this.system.state.value}}
-                        
+
                         {{#each FORTYK.itemStates}}
 
                         <option value="{{this}}">{{this}}</option>
@@ -454,11 +459,12 @@
                         {{/select}}
                     </select>
                     <span>{{this.name}}</span>
-
-                    {{#if ../isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.leftArm.titanicMelee" data-index="{{@index}}"></a>
+                    <div class="flexrow-nowrap">
+                        {{#if ../isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.leftArm.titanicMelee" data-index="{{@index}}"></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="melee-slot melee component-slot"  data-facing="lSide" data-index="{{@index}}" data-path="system.hardPoints.leftArm.titanicMelee">
@@ -480,11 +486,12 @@
                         {{/select}}
                     </select>
                     <span>{{this.name}}</span>
-
-                    {{#if ../isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.leftArm.auxiliary" data-index="{{@index}}"></a>
+                    <div class="flexrow-nowrap">
+                        {{#if ../isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.leftArm.auxiliary" data-index="{{@index}}"></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="auxiliary-slot auxiliary component-slot"  data-facing="lSide" data-index="{{@index}}" data-path="system.hardPoints.leftArm.auxiliary">
@@ -495,15 +502,17 @@
             </div>
             <div class="torso mechgrid-child flexcol">
                 {{#if system.knight.core}}
-                
+
                 <div class="core core-color filled-slot">
                     <input class="item-text-input core-input" type="text" data-target="system.state.value"  value="{{system.knight.core.system.state.value}}" data-item-id="{{system.knight.core.id}}" data-dtype="Number">
 
                     <span>{{system.knight.core.name}}</span>
-                    {{#if isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.core.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.core.id}}" data-path="system.knight.core"></a>
+                    <div class="flexrow-nowrap">
+                        {{#if isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.core.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.core.id}}" data-path="system.knight.core"></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="core-slot core-color component-slot" data-index="{{@index}}" data-path="system.knight.core">
@@ -514,21 +523,15 @@
 
                 <div class="structure structure-color filled-slot">
 
-                    <select class="state"  data-item-id="{{system.knight.structure.id}}" data-dtype="Number">
-                        {{#select system.knight.structure.system.state.value}}
 
-                        {{#each itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
-                    </select>
 
                     <span>{{system.knight.structure.name}}</span>
-                    {{#if isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.structure.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.structure.id}}" data-path="system.knight.structure"></a>
+                    <div class="flexrow-nowrap">
+                        {{#if isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.structure.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.structure.id}}" data-path="system.knight.structure"></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="structure-slot structure-color component-slot" data-index="{{@index}}" data-path="system.knight.structure">
@@ -538,20 +541,14 @@
                 {{#if system.knight.armor}}
 
                 <div class="armor armor-color filled-slot">
-                    <select class="state"  data-item-id="{{system.knight.armor.id}}" data-dtype="Number">
-                        {{#select system.knight.armor.system.state.value}}
 
-                        {{#each itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
-                    </select>
                     <span>{{system.knight.armor.name}}</span>
-                    {{#if isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.armor.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.armor.id}}" data-path="system.knight.armor" ></a>
+                    <div class="flexrow-nowrap">
+                        {{#if isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.armor.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.armor.id}}" data-path="system.knight.armor" ></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="armor-slot armor-color component-slot" data-index="{{@index}}" data-path="system.knight.armor">
@@ -571,16 +568,45 @@
                         {{/select}}
                     </select>
                     <span>{{system.knight.forceField.name}}</span>
-                    {{#if isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.forceField.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.forceField.id}}" data-path="system.knight.forceField" ></a>
+                    <div class="flexrow-nowrap">
+                        {{#if isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.forceField.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.forceField.id}}" data-path="system.knight.forceField" ></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="forceField-slot forceField-color component-slot" data-index="{{@index}}" data-path="system.knight.forceField">
                     Force Field Slot
                 </div>
                 {{/if}}
+                {{#each torsoHardPoints.titanicRanged}}
+                {{#if this}}
+
+                <div class="ranged-weapon ranged filled-slot">
+                    <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
+                        {{#select this.system.state.value}}
+
+                        {{#each FORTYK.itemStates}}
+
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
+                    <span>{{this.name}}</span>
+                    <div class="flexrow-nowrap">
+                        {{#if ../isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.torso.titanicRanged" data-index="{{@index}}"></a>
+                    </div>
+                </div>
+                {{else}}
+                <div class="ranged-slot ranged component-slot"  data-facing="lSide" data-index="{{@index}}" data-path="system.hardPoints.torso.titanicRanged">
+                    Titanic Ranged Slot
+                </div>
+                {{/if}}
+                {{/each}}
                 {{#each torsoHardPoints.auxiliary}}
                 {{#if this}}
 
@@ -595,10 +621,12 @@
                         {{/select}}
                     </select>
                     <span>{{this.name}}</span>
-                    {{#if ../isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.torso.auxiliary"  data-index="{{@index}}"></a>
+                    <div class="flexrow-nowrap">
+                        {{#if ../isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.torso.auxiliary"  data-index="{{@index}}"></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="auxiliary-slot auxiliary component-slot"  data-facing="front" data-index="{{@index}}" data-path="system.hardPoints.torso.auxiliary">
@@ -620,9 +648,11 @@
                     </select>
                     <span>{{system.knight.throneMod.name}}</span>
                     {{#if isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.throneMod.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.throneMod.id}}" data-path="system.knight.throneMod" ></a>
+                    <div class="flexrow-nowrap">
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.throneMod.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.throneMod.id}}" data-path="system.knight.throneMod" ></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="throne-mod-slot throne-mod-color component-slot" data-index="{{@index}}" data-path="system.knight.throneMod">
@@ -643,9 +673,11 @@
                     </select>
                     <span>{{system.knight.sensor.name}}</span>
                     {{#if isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.sensor.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.sensor.id}}" data-path="system.knight.sensor" ></a>
+                    <div class="flexrow-nowrap">
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.sensor.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.sensor.id}}" data-path="system.knight.sensor" ></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="sensor-slot sensor-color component-slot" data-index="{{@index}}" data-path="system.knight.sensor">
@@ -689,9 +721,11 @@
                     </select>
                     <span>{{system.knight.plating.name}}</span>
                     {{#if isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.plating.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.plating.id}}" data-path="system.knight.plating" ></a>
+                    <div class="flexrow-nowrap">
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.plating.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.plating.id}}" data-path="system.knight.plating" ></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="plating-slot plating-color component-slot" data-index="{{@index}}" data-path="system.knight.plating">
@@ -711,10 +745,12 @@
                         {{/select}}
                     </select>
                     <span>{{system.knight.coreMod.name}}</span>
-                    {{#if isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.coreMod.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.coreMod.id}}" data-path="system.knight.coreMod" ></a>
+                    <div class="flexrow-nowrap">
+                        {{#if isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.coreMod.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.coreMod.id}}" data-path="system.knight.coreMod" ></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="core-mod-slot core-mod-color component-slot" data-index="{{@index}}" data-path="system.knight.coreMod">
@@ -734,10 +770,12 @@
                         {{/select}}
                     </select>
                     <span>{{system.knight.armActuator.name}}</span>
-                    {{#if isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.armActuator.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.armActuator.id}}" data-path="system.knight.armActuator" ></a>
+                    <div class="flexrow-nowrap">
+                        {{#if isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.armActuator.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.armActuator.id}}" data-path="system.knight.armActuator" ></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="arm-actuator-slot arm-actuator-color component-slot" data-index="{{@index}}" data-path="system.knight.armActuator">
@@ -757,10 +795,12 @@
                         {{/select}}
                     </select>
                     <span>{{system.knight.legActuator.name}}</span>
-                    {{#if isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.legActuator.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.legActuator.id}}" data-path="system.knight.legActuator" ></a>
+                    <div class="flexrow-nowrap">
+                        {{#if isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.legActuator.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-component" title="Delete" data-item-id="{{system.knight.legActuator.id}}" data-path="system.knight.legActuator" ></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="leg-actuator-slot leg-actuator-color component-slot" data-index="{{@index}}" data-path="system.knight.legActuator">
@@ -784,10 +824,12 @@
                         {{/select}}
                     </select>
                     <span>{{this.name}}</span>
-                    {{#if ../isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.rightArm.titanicRanged" data-index="{{@index}}"></a>
+                    <div class="flexrow-nowrap">
+                        {{#if ../isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.rightArm.titanicRanged" data-index="{{@index}}"></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="ranged-slot ranged component-slot"  data-facing="rSide" data-index="{{@index}}" data-path="system.hardPoints.rightArm.titanicRanged">
@@ -809,10 +851,12 @@
                         {{/select}}
                     </select>
                     <span>{{this.name}}</span>
-                    {{#if ../isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.rightArm.titanicMelee" data-index="{{@index}}"></a>
+                    <div class="flexrow-nowrap">
+                        {{#if ../isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.rightArm.titanicMelee" data-index="{{@index}}"></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="melee-slot melee component-slot" data-facing="rSide" data-index="{{@index}}" data-path="system.hardPoints.rightArm.titanicMelee">
@@ -834,10 +878,12 @@
                         {{/select}}
                     </select>
                     <span>{{this.name}}</span>
-                    {{#if ../isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.rightArm.auxiliary" data-index="{{@index}}"></a>
+                    <div class="flexrow-nowrap">
+                        {{#if ../isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.rightArm.auxiliary" data-index="{{@index}}"></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="auxiliary-slot auxiliary component-slot" data-facing="rSide" data-index="{{@index}}" data-path="system.hardPoints.rightArm.auxiliary">
@@ -883,10 +929,12 @@
                         {{/select}}
                     </select>
                     <span>{{this.name}}</span>
-                    {{#if ../isGM}}
-                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
-                    {{/if}}
-                    <a class="list-button delete-other-component" title="Delete" data-item-id="{{this.id}}" data-path="system.knight.components" data-index="{{@index}}"></a>
+                    <div class="flexrow-nowrap">
+                        {{#if ../isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-other-component" title="Delete" data-item-id="{{this.id}}" data-path="system.knight.components" data-index="{{@index}}"></a>
+                    </div>
                 </div>
                 {{else}}
                 <div class="other-slot other-component-color component-slot" data-index="{{@index}}" data-path="system.knight.components">

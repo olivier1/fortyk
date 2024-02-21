@@ -25,13 +25,16 @@ import {FORTYKTABLES} from "./FortykTables.js";
 import { registerSystemSettings} from "./settings.js"
 import {ActiveEffectDialog} from "./dialog/activeEffect-dialog.js";
 import {FortyKCards} from "./card/card.js";
+import {FortykTemplate} from "./measuredTemplate/template.js";
+import {objectByString} from "./utilities.js";
 Hooks.once('init', async function() {
     game.fortyk = {
         FortyKActor,
         FortyKItem,
         FortykRolls,
         FORTYK,
-        FORTYKTABLES
+        FORTYKTABLES,
+        FortykTemplate
     };
     //make a map with the indexes of the various status effects
     game.fortyk.FORTYK.StatusEffectsIndex=(function(){
@@ -86,6 +89,7 @@ Hooks.once('init', async function() {
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });
     //setup handcards
     CONFIG.Cards.documentClass=FortyKCards;
+
     //register system settings
     registerSystemSettings();
 
@@ -162,6 +166,13 @@ Hooks.once('init', async function() {
     Handlebars.registerHelper("unescape",function(text){
         var doc = new DOMParser().parseFromString(text, "text/html");
         return doc.documentElement.textContent;
+    });
+    Handlebars.registerHelper("threshold",function(text){
+        if(text==="secondthresholddmg"){return true}
+        if(text==="thirdthresholddmg"){return true}
+        if(text==="fourththresholddmg"){return true}
+        if(text==="criticaldmg"){return true}
+        return false;
     });
 });
 Hooks.once("setup", function() {
@@ -296,7 +307,8 @@ Hooks.once('ready', async function() {
                     extraPen=data.package.pen;
                     rerollNum=data.package.rerollNum;
                     for(let i=0; i<targetIds.length;i++){
-                        let curTargets=targetIds[i];
+                        let curTargets=targetIds[i].targets;
+                        fortykWeapon.template=targetIds[i].template;
                         let targetNames="";
                         let targetTokens=game.canvas.tokens.children[0].children.filter(token=>curTargets.includes(token.id));
                         let targetSet=new Set(targetTokens);
@@ -323,6 +335,15 @@ Hooks.once('ready', async function() {
                                             author:actor.name};
                             await ChatMessage.create(chatBlast2,{});
                             await FortykRolls.damageRoll(formula,actor,fortykWeapon,hits, false, false,magdamage,extraPen,rerollNum, user, lastHit, targetSet); 
+                            //clean templates after
+                            let scene=game.scenes.active;
+                            let templates=scene.templates;
+                            for(const template of templates){
+                                if(template.isOwner){
+
+                                    await template.delete()
+                                }
+                            }
                         }
                         //if user isnt GM use socket to have gm process the damage roll
 
@@ -588,6 +609,11 @@ Hooks.on("updateCombat", async (combat) => {
                         fire.system.pen.value=99999;
                         await FortykRolls.damageRoll(fire.system.damageFormula,actor,fire,1, true);
                     }else{
+                        if(actor.getFlag("fortyk","firedamage")){
+                            actor.setFlag("fortyk","firedamage",actor.getFlag("fortyk","firedamage")+6);
+                        }else{
+                            actor.setFlag("fortyk","firedamage",6);
+                        }
                         if(actor.getFlag("fortyk","superheavy")){
                             let heat=parseInt(actor.system.knight.heat.value)+1;
                             await actor.update({"system.knight.heat.value":heat});
@@ -649,6 +675,11 @@ Hooks.on("updateCombat", async (combat) => {
                         fire.system.damageFormula.value=activeEffect.flags.fortyk.damageString;
                         await FortykRolls.damageRoll(fire.system.damageFormula,actor,fire,1, true);
                     }else{
+                        if(actor.getFlag("fortyk","firedamage")){
+                            actor.setFlag("fortyk","firedamage",actor.getFlag("fortyk","firedamage")+6);
+                        }else{
+                            actor.setFlag("fortyk","firedamage",6);
+                        }
                         if(actor.getFlag("fortyk","superheavy")){
                             let heat=parseInt(actor.system.knight.heat.value)+1;
                             await actor.update({"system.knight.heat.value":heat});
@@ -908,7 +939,7 @@ Hooks.on('renderCompendium', (compendium, html, data)=>{
         return false;
     }
     let onDragComponent=async function(event){
-        console.log(compendium.id)
+
 
         let compendiumId=compendium.id.replace("compendium-","");
 
@@ -1021,7 +1052,7 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
 Hooks.on("preCreateActor", (createData) =>{
 })
 Hooks.on("preCreateToken", async (document, data, options, userId) =>{
-    console.log(document,data,options,userId)
+
     if(game.user.isGM){
         //modify token dimensions if scene ratio isnt 1
         let gridRatio=canvas.dimensions.distance;
@@ -1155,6 +1186,166 @@ Hooks.once("dragRuler.ready", (Speedprovider) => {
 
     }
     dragRuler.registerSystem("fortyk", FortykSpeedProvider);
+})
+Hooks.on("simple-calendar-date-time-change",async (dateData)=>{
+    console.log(dateData)
+    if(!SimpleCalendar.api.isPrimaryGM()){return}
+    let timeElapsed=dateData.diff;
+    let houses=game.actors.filter(function(actor){return actor.type==="knightHouse"});
+    console.log(houses)
+    houses.forEach(async function(house){
+        let currentRepairIds=house.system.repairBays.current;
+        currentRepairIds.forEach(async function(repairId){
+            let repair=house.getEmbeddedDocument("Item",repairId);
+            let time=repair.system.time.value;
+            if(time>timeElapsed){
+                await repair.update({"system.time.value":time-timeElapsed});
+            }else{
+                let knight=game.actors.get(repair.system.knight.value);
+                let wounds=repair.system.repairs.wounds;
+                let repairEntries=repair.system.repairs.entries;
+                if(wounds){
+                    await knight.update({"system.secChar.wounds.value":knight.system.secChar.wounds.value+wounds});
+                }
+                repairEntries.forEach(async function(entry){
+                    let type=entry.type;
+                    let uuid=entry.uuid;
+                    let item=fromUuidSync(uuid);
+
+                    if(type==="damagedionshield"||type==="destroyedionshield"||type==="damagedcomponent"){
+                        await item.update({"system.state.value":"O"});
+                    }else if(type==="install/removecomponent"){
+                        let path=item.system.path;
+
+                        let data=knight.system;
+                        let house=await game.actors.get(data.knight.house);
+                        //if the knight is linked to a house update the house inventory
+                        if(house){
+                            let component=await house.getEmbeddedDocument("Item",item.system.originalId);
+                            if(component){
+                                let amtTaken=component.system.amount.taken;
+                                let newAmt=amtTaken-1;
+
+
+                                var componentUpdate={};
+
+                                if(item.system.state.value==="X"||item.system.state.value===0){
+                                    let amt=parseInt(component.system.amount.value);
+                                    componentUpdate["system.amount.value"]=amt-1;
+                                }
+                                componentUpdate["system.amount.taken"]=newAmt;
+                                let loans=component.system.loaned;
+                                let newLoans=loans.filter(loan=>loan.knightId!==knight.id&&loan.item.id!==itemId);
+                                componentUpdate["system.loaned"]=newLoans;
+                                await component.update(componentUpdate);
+                            }
+
+                        }
+
+
+
+                        let update={};
+                        if(path.indexOf("components")!==-1){
+                            var array=objectByString(knight,path).filter(function(id){return id!==item.id});
+
+
+
+
+                            update[path]=array;
+                        }else{
+                            update[path]="";  
+                        }
+
+
+
+                        await knight.update(update);
+
+                        await knight.deleteEmbeddedDocuments("Item",[item.id]);
+                    }else if(type==="refittitanicweapon"){
+                        let data=knight.system;
+                        let chassis=await knight.getEmbeddedDocument("Item",data.knight.chassis);
+                        let path=item.system.path;
+                        //if the knight is linked to a house update the house inventory
+                        if(house){
+                            let component=await house.getEmbeddedDocument("Item",item.system.originalId);
+                            let amtTaken=component.system.amount.taken;
+                            let newAmt=amtTaken-1;
+                            let componentUpdate={};
+                            if(item.system.state.value==="X"||item.system.state.value===0){
+                                let amt=parseInt(component.system.amount.value);
+                                componentUpdate["system.amount.value"]=amt-1;
+                            }
+                            componentUpdate["system.amount.taken"]=newAmt;
+                            let loans=component.system.loaned;
+                            let newLoans=loans.filter(loan=>loan.knightId!==knight.id&&loan.itemId!==item.id);
+                            componentUpdate["system.loaned"]=newLoans;
+                            await component.update(componentUpdate);
+                        }
+
+                        let array=objectByString(chassis,path).map(function(id){if(id===item.id){return ""}});
+                        console.log(array)
+
+                        let chassisUpdate={};
+                        chassisUpdate[path]=array;
+
+
+                        await chassis.update(chassisUpdate);
+
+                        await knight.deleteEmbeddedDocuments("Item",[item.id]);
+
+
+                    }else if(type==="damagedcore"){
+                        let quality=item.system.quality.value;
+                        let maxInt=game.fortyk.FORTYK.coreIntegrities[quality];
+                        await item.update({"system.state.value":maxInt});
+
+
+
+
+                    }else if(type==="firedamage"){
+                        await knight.setFlag("fortyk","firedamage",0);
+                    }else{
+                        await item.delete();
+                    }
+
+                });
+                let note=fromUuidSync(repair.system.calendar.noteId);
+                try {
+                    await note.delete();
+                } catch (e) {
+                    //Catch Statement
+                }
+
+                let queue=house.system.repairBays.queue;
+                let newCurrent=currentRepairIds.filter(function(id){return id!==repairId});
+                console.log(newCurrent)
+                if(queue.length>0){
+                    newCurrent.push(queue.pop());
+                    let newCurrentRepairId=newCurrent[newCurrent.length-1];
+                    let newCurrentRepair=house.getEmbeddedDocument("Item",newCurrentRepairId);
+                    let time=newCurrentRepair.system.time.value;
+                    let calendar=SimpleCalendar.api.getCurrentCalendar();
+                    let currentTime=SimpleCalendar.api.timestamp(calendar.id);
+
+                    let noteTime=currentTime+time;
+
+                    let formattedTime=SimpleCalendar.api.timestampToDate(noteTime,calendar.id);
+
+                    let note=await SimpleCalendar.api.addNote(newCurrentRepair.name, repair.system.description.value, formattedTime, formattedTime, true, false, ["Repairs"], calendar.id, '', ["default"], [game.user.id]);
+                    await newCurrentRepair.update({"system.calendar.noteId":note.uuid});
+                }
+                let chatMsg={user: game.user._id,
+                             speaker:{house,alias:game.user.character.name},
+                             content:repair.system.description.value,
+                             classes:["fortyk"],
+                             flavor:`Repair entry for ${knight.name} has completed successfully`,
+                             author:game.user.character.name};
+                await ChatMessage.create(chatMsg,{});
+                await house.update({"system.repairBays.current":newCurrent,"system.repairBays.queue":queue});
+                await repair.delete();
+            }
+        });
+    })
 })
 Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
     class FortykSystemRuleProvider extends RuleProvider {

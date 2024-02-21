@@ -96,6 +96,14 @@ export class FortyKItem extends Item {
 
             const data = this.actor.system;
             let actor=this.actor;
+            if(item.system.state){
+                if(item.system.state.value==="X"||item.system.state.value==="D"||item.system.state.value==="0"){
+                    if(!item.flags.fortyk){
+                        item.flags.fortyk={};
+                    }
+                    item.flags.fortyk.disabled=true;
+                }
+            }
             if(actor.type==="spaceship"){
                 if(item.type==="spaceshipCargo"){
                     try{
@@ -113,7 +121,9 @@ export class FortyKItem extends Item {
                 if(item.type!=="repairEntry"&&item.type!=="cadetHouse"&&item.type!=="outpost"){
                     item.system.amount.left=item.system.amount.value-item.system.amount.taken; 
                 }
-
+                if(item.type==="repairEntry"){
+                    item.system.time.label=this.timeString(item.system.time.value,"");
+                }
                 if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="ammunition"){
                     if(item.type==="rangedWeapon"){
                         if(item.system.class.value.indexOf("Titanic")===-1){
@@ -169,7 +179,7 @@ export class FortyKItem extends Item {
             }
             if(item.getFlag("fortyk","currentprofile")){
                 let currentProfileUuid=item.getFlag("fortyk","currentprofile");
-                console.log(currentProfileUuid);
+            
                 let currentProfile=item.getFlag("fortyk","currentprofile");
                 if(typeof currentProfile === 'string' || currentProfile instanceof String){
                     currentProfile= await fromUuid(item.getFlag("fortyk","currentprofile"));
@@ -643,7 +653,6 @@ export class FortyKItem extends Item {
                         }
                     }else{
                         if(change.mode===0){
-                            console.log(item)
                            setNestedKey(itemData,path,change.value);
                         }
                     }
@@ -736,6 +745,61 @@ export class FortyKItem extends Item {
         let macroCompendium=await game.packs.get("fortyk.fortykmacros");
         let macro=await macroCompendium.getDocument(macroId);
         macro.execute({actor:actor, power:power, targets:targets});
+    }
+    timeString(time, timeLabel) {
+        let calendar=SimpleCalendar.api.getCurrentCalendar().id;
+        let timeInterval=SimpleCalendar.api.secondsToInterval(time,calendar);
+        //Returns {year: 0, month: 0, day: 0, hour: 1, minute: 0, seconds: 0}
+        if(timeInterval.year){
+            timeLabel+=`${timeInterval.year} year`;
+            if(timeInterval.year>1){
+                timeLabel+="s ";
+            }else{
+                timeLabel+=" ";
+            }
+        }
+        if(timeInterval.month){
+            timeLabel+=`${timeInterval.month} month`;
+            if(timeInterval.month>1){
+                timeLabel+="s ";
+            }else{
+                timeLabel+=" ";
+            }
+
+        }
+        if(timeInterval.day){
+            timeLabel+=`${timeInterval.day} day`;
+            if(timeInterval.day>1){
+                timeLabel+="s ";
+            }else{
+                timeLabel+=" ";
+            }
+        }
+        if(timeInterval.hour){
+            timeLabel+=`${timeInterval.hour} hour`;
+            if(timeInterval.hour>1){
+                timeLabel+="s ";
+            }else{
+                timeLabel+=" ";
+            }
+        }
+        if(timeInterval.minute){
+            timeLabel+=`${timeInterval.minute} minute`;
+            if(timeInterval.minute>1){
+                timeLabel+="s ";
+            }else{
+                timeLabel+=" ";
+            }
+        }
+        if(timeInterval.second){
+            timeLabel+=`${timeInterval.second} second`;
+            if(timeInterval.second>1){
+                timeLabel+="s ";
+            }else{
+                timeLabel+=" ";
+            }
+        }
+        return timeLabel;
     }
 }
 

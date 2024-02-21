@@ -4,12 +4,12 @@
     <header class="sheet-header flexrow">
         
        
-        <nav class="sheet-tabs tabs grid grid-3col" data-group="primary">
+        <nav class="sheet-tabs tabs grid grid-4col" data-group="primary">
             
             <a class="item bat" data-tab="mechbay">Enginarium</a>
             <a class="item bat" data-tab="combat2">Combat</a>
             <a class="item bat" data-tab="traits">Traits</a>
-            
+            <a class="item bat" data-tab="damage">Damage Report</a>
             
             
         </nav>
@@ -32,6 +32,9 @@
         </div>
         <div class="tab traits"  data-group="primary" data-tab="traits">
             {{> "systems/fortyk/templates/actor/knightParts/traits.html"}}
+        </div>
+        <div class="tab damage"  data-group="primary" data-tab="damage">
+            {{> "systems/fortyk/templates/actor/knightParts/damage-report.html"}}
         </div>
         
       

@@ -1,4 +1,5 @@
 import {FortykRolls} from "./FortykRolls.js";
+import {getActorToken} from "./utilities.js";
 export class FortykRollDialogs{
     //handles test rerolls
     static async _onReroll(event){
@@ -125,6 +126,7 @@ export class FortykRollDialogs{
                                     }
                                 }
                             }
+                            console.log(testLabel)
                             FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, reroll);
                         }
 
@@ -527,6 +529,7 @@ export class FortykRollDialogs{
 
         let rofFull=parseInt(item.system.rof[2].value);
         let canShoot=false;
+        console.log("hi")
         if(parseInt(rofSingle)===0||rofSingle==="-"){
             templateOptions["single"]=false;
         }else{
@@ -706,7 +709,7 @@ export class FortykRollDialogs{
                     templateOptions["options"].prone=false;
                     miscMods-=20;
 
-                    modifierTracker.push({"value":`-20`,"label":"Skyfire Modifier"});
+                    modifierTracker.push({"value":`-20`,"label":"Skyfire against ground Modifier"});
                 }
             }
         }
@@ -969,7 +972,7 @@ export class FortykRollDialogs{
             width:200}
                   ).render(true);
     }
-    static async callSprayAttackDialog(actor, testLabel, weapon, options, title="Enter test modifier"){
+    static async callSprayAttackDialog(actor, testLabel, weapon, options,sheet, title="Enter test modifier"){
 
         new Dialog({
             title: title,
@@ -978,16 +981,36 @@ export class FortykRollDialogs{
                 submit: {
                     label: 'OK',
                     callback: async(html) => {
-                        let scene=game.scenes.active;
-                        let templates=scene.templates.reduce(function(templates,template){
-                            if(template.isOwner){
-                                templates.push(template);
-                            }
-                            return templates;
-                        },[]);
+                        const templateData = {
 
-                        let targets=this.getSprayTargets(templates,scene)[0];
-                        console.log(targets);
+                            t: "cone",
+
+                            user: game.userId,
+
+                            distance: weapon.system.range.value,
+
+                            direction: 45,
+                            angle:30,
+
+                            x: 1000,
+
+                            y: 1000,
+
+                            fillColor: game.user.color
+
+                        };
+
+                        const templateDoc = new MeasuredTemplateDocument(templateData, { parent: canvas.scene });
+
+                        const template = new game.fortyk.FortykTemplate(templateDoc)
+                        sheet.minimize();
+                        await template.drawPreview();
+                        sheet.maximize();
+                        console.log(template, templateDoc)
+
+                        let scene=game.canvas.scene;
+                        let targets=this.getSprayTargets(template,scene, actor)[0];
+
                         let mod = Number($(html).find('input[name="modifier"]').val());
                         let psy=false;
                         if(weapon.type==="psychicPower"){
@@ -1002,12 +1025,12 @@ export class FortykRollDialogs{
                         }
 
                         if(targets.size===0){
-                            this.callSprayAttackDialog(actor, testLabel, weapon, options, "No targets");
+                            this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "No targets");
                             return;
                         }
 
                         if(isNaN(mod)){
-                            this.callSprayAttackDialog(actor, testLabel, weapon, options, "Invalid Number");
+                            this.callSprayAttackDialog(actor, testLabel, weapon, options,sheet, "Invalid Number");
                             return;
                         }
 
@@ -1017,7 +1040,7 @@ export class FortykRollDialogs{
                         let rolls=[];
                         let i=1;
                         for(let tokenId of targets){
-                            console.log(tokenId)
+
                             let token=canvas.tokens.get(tokenId);
                             let tokenActor=token.actor;
                             let tokenActorData=token.actor;
@@ -1041,7 +1064,7 @@ export class FortykRollDialogs{
                             i++;
 
                         }
-                        messageContent+=`<div>Selected targets may attempt to evade if they have a reaction remaining and can move out of the attack's area of effect.</div>`
+                        messageContent+=`<div>Selected targets may attempt to evade if they have a reaction remaining and have enough movement from their half-move to exit the attack's area of effect.</div>`
                         game.user.updateTokenTargets(updatedtargets);
                         game.user.broadcastActivity({targets:updatedtargets});
                         let chatOptions={user: game.user._id,
@@ -1072,43 +1095,45 @@ export class FortykRollDialogs{
             width:100}
                   ).render(true);
     }
-    static getSprayTargets(templates, scene){
+    static getSprayTargets(template, scene, attacker){
+        let attackerToken=getActorToken(attacker);
         let tokens=scene.tokens;
         let targets=[];
         let gridRatio=scene.dimensions.size/scene.dimensions.distance;
 
-        for(let i=0;i<templates.length;i++){
-            let targetted=[];
-            let template=templates[i];
-            console.log(template)
-            let bounds=template._object.shape;
-            bounds.x=template.x;
-            bounds.y=template.y;
-            tokens.forEach((token,id,tokens)=>{
 
-                let tokenBounds=token._object.bounds;
-                let isTargetted=false;
-                if(bounds.contains(token._object.center.x,token._object.center.y)){
-                    isTargetted=true;
-                }
-                if(!isTargetted){
-                    isTargetted=this.rectangleIntersectsPolygon(bounds,tokenBounds);
-                }
-                if(isTargetted){targetted.push(token.id)}
-                console.log(token);
-                //console.log(bounds.overlaps(tokenBounds))
-                /*if(bounds.overlaps(tokenBounds)){
+        let targetted=[];
+
+        let bounds=template.shape;
+        bounds.x=template.document.x;
+        bounds.y=template.document.y;
+        tokens.forEach((token,id,tokens)=>{
+            if(attackerToken.id===token.id){return}
+            if(attacker.getFlag("fortyk","divineprotection")&&token.document.disposition===1){return}
+            let tokenBounds=token._object.bounds;
+            let isTargetted=false;
+
+            if(bounds.contains(token._object.center.x-template.document.x,token._object.center.y-template.document.y)){
+                isTargetted=true;
+            }
+            if(!isTargetted){
+                isTargetted=FortykRollDialogs.rectangleIntersectsPolygon(bounds,tokenBounds);
+            }
+            if(isTargetted){targetted.push(token.id)}
+
+            //console.log(bounds.overlaps(tokenBounds))
+            /*if(bounds.overlaps(tokenBounds)){
                     targetted.push(token.id);
                 }*/
-            });
-            targets.push(targetted);
-        }
+        });
+        targets.push(targetted);
+
         return targets;
     }
     static rectangleIntersectsPolygon(polygon,rectangle){
-        console.log(polygon, rectangle)
+        console.log(polygon,rectangle)
         let lineIntersect=function(rectangle, polygon, index){
-            
+
             let points=polygon.points;
             if(points[index+2]===undefined){return false}
             let pX=polygon.x;

@@ -17,7 +17,6 @@ new Dialog({
                     ui.notifications.error("This macro requires a player character to be impersonated.");
                     return; 
                 }
-                console.log(characterActor);
                 let medicae=characterActor.system.skills.medicae+mod;
                 let pass=false;
                 let dos=0;
@@ -29,13 +28,13 @@ new Dialog({
                         }
                     }else{
                         if(tarWounds<0){
-                            medicae-=10*tarWounds;
+                            medicae+=10*tarWounds;
                         }else if(targetActor.system.secChar.wounds.heavy){
                             medicae-=10;
                         }
                     } 
                 }
-                let test=await game.fortyk.FortykRolls.fortykTest(`First Aid on ${targetActor.name}`,"" , medicae, characterActor, `First Aid on ${targetActor.name}`);
+                let test=await game.fortyk.FortykRolls.fortykTest(`int`,"int" , medicae, characterActor, `First Aid on ${targetActor.name}`);
                 let chatFirstAid={user: game.users.current,
                                   speaker:{user: game.users.current},
                                   content:"",

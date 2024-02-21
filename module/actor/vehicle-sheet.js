@@ -31,7 +31,7 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
             data.components=components.concat(actor.itemTypes.ammunition,actor.itemTypes.forceField,actor.itemTypes.knightComponent,actor.itemTypes.knightCore);
         }
         data.vehicleTypes=game.fortyk.FORTYK.vehicleTypes;
-        console.log(data)
+       
         return data;
     }
 

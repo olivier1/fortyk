@@ -94,6 +94,18 @@
                 {{/select}}
             </select>
         </div>
+        <div class="flexcol">
+            <label>State:</label>
+            <select class="state" name="system.state.value">
+
+                {{#select system.state.value}}
+                
+                <option value="O">O</option>
+                <option value="D">D</option>
+                <option value="X">X</option>
+                {{/select}}
+            </select>
+        </div>
         {{/if}}
         <div class="flexcol">
             <label>Item Quality:</label>

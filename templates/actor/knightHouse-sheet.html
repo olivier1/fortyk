@@ -149,44 +149,50 @@
                     <span class="descrSpan">Repair Bays:</span>
                     <input type="text" class="combat-resources" data-target="system.repairBays.value" value="{{system.repairBays.value}}"placeholder="1" data-dtype="Number"/>
                 </div>
-                <div class="flexcol">
-                    <span class="descrSpan">Days to pass:</span>
-                    <input type="text" id="daysToPass" placeholder="0"/>
-                </div>
+                
             </div>
 
             <div class="flexrow">
                
-                <a class="item-create button" data-type="repairEntry" title="Add a new Repair Entry">Add Repair Entry</a>
-                 <a class="passTime button">Pass Time</a>
+                <a class="repairEntry-create button" title="Add a new Repair Entry">Add Repair Entry</a>
+                
             </div>
 
-            <div class="list grid grid-3col">
+            <div class="list grid grid-2col">
                 <span class="list-item-header">Entry</span>
-                <span class="list-item-header">Knight</span>
-                <span class="list-item-header">Time Left</span>
+                <span class="list-item-header-last">Time Left</span>
               
-                {{#each repairEntries}}
+                {{#each currentRepairs}}
               
-                <div class=" drag {{#if (greaterThan ../system.repairBays.value @index)}}list-emphasis{{else}}list-item{{/if}}"  data-id="{{this.id}}">
+                <div class="drag list-emphasis"  data-id="{{this.id}}">
 
                     <span data-id="{{this.id}}">{{name}}</span>
                 </div>
 
-                <div class="{{#if (greaterThan ../system.repairBays.value @index)}}list-emphasis{{else}}list-item{{/if}}">
+                
 
-                    <span>{{system.knight.value}}</span>
-                </div>
+                <div class="flexrow list-emphasis">
 
-                <div class="flexrow {{#if (greaterThan ../system.repairBays.value @index)}}list-emphasis{{else}}list-item{{/if}}">
-
-                    <span>{{system.time.value}} Days</span>
+                    <span>{{system.time.label}}</span>
                     <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
-                    <a class="list-button item-delete" title="Delete" data-item-id="{{this.id}}"></a>
+                    <a class="list-button delete-repair" title="Delete" data-index="{{@index}}" data-queue="current" data-item-id="{{this.id}}"></a>
                 </div>
 
 
 
+                {{/each}}
+                {{#each queue}}
+                <div class="drag list-item"  data-id="{{this.id}}">
+
+                    <span data-id="{{this.id}}">{{name}}</span>
+                </div>
+
+                <div class="flexrow list-item">
+
+                    <span>{{system.time.label}}</span>
+                    <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
+                    <a class="list-button delete-repair" title="Delete" data-index="{{@index}}" data-queue="queue" data-item-id="{{this.id}}"></a>
+                </div>
                 {{/each}}
             </div>
         </div>

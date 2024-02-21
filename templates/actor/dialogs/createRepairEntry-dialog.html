@@ -1,0 +1,122 @@
+<form class="createRepairEntry-dialog">
+    <div class="flexrow">
+        <div class="flexcol">
+            <label>Knight:</label>
+            <select class="knight-select"  name="knight">
+                {{#select this.knight.id}}
+                <option value="">Select Knight</option>
+                {{#each knights}}
+                <option value="{{this.id}}">{{this.name}}</option>
+                {{/each}}
+                {{/select}}
+            </select>
+        </div>
+        <div class="flexcol">
+            <label>Repair Type:</label>
+            <select class="repair-type-select"  id="repair-type">
+
+                <option value="normal">Normal</option>
+                <option value="rush">Rush Job</option>
+                <option value="careful">Careful Repairs</option>
+
+            </select>
+        </div>
+        <div class="flexcol">
+            <label>Time Modifier(%):</label>
+            <input type="number" class="time-modifier" value="{{timeMod}}" />
+
+
+        </div>
+        <div class="flexcol">
+            <label>Cost Modifier(%):</label>
+            <input type="number" class="cost-modifier" value="{{costMod}}" />
+
+
+        </div>
+    </div>
+
+    <nav class="sheet-tabs tabs grid grid-2col" data-group="primary">
+
+        <a class="item navtab" data-tab="repair">REPAIR</a>
+        <a class="item navtab" data-tab="refit">REFIT</a>
+
+
+    </nav>
+    <section class="sheet-content" style="height:auto">
+        <div class="tab repair" data-group="primary" data-tab="repair">
+            <div class="flexcol">
+                <div class="tntgrid grid grid-11col">
+                    <span class="tntcheckbox tntheaderitem">Select</span>
+                    <span class="tntname tntheaderitem">Name</span>
+                    <span class="tnttier tntheaderitem">Amount</span>
+                    <span class="tntprereqs tntheaderitem">Base Time</span>
+                    <span class="tntaptitudes tntheaderitem">Base Cost</span>
+                    <span class="tntdescr tntheaderitem">Difficulty</span>
+
+                    {{#each repairs}}
+                    {{debug this}}
+                    <div class="tntitem" name="tntEntry" ><input type="checkbox" class="repaircheckbox tntitem" name="{{this.type}}" data-index="{{@index}}" {{#if this.disabled}}disabled{{/if}}></div>
+
+                    <span name="tntEntry" class="tntname tntitem" >{{this.label}}</span>
+                    <span name="tntEntry" class="tnttier tntitem" >{{#if (greaterThan this.amount 1)}}<input type="number" class="repair-amount" id="{{@index}}input" data-index="{{@index}}" min="1" max="{{this.amount}}" value="{{this.amount}}" />{{else}}1{{/if}}</span>
+                    <span id="{{@index}}time" name="tntEntry"  class="tntprereqs tntitem" >{{this.timeLabel}}</span>
+                    <span id="{{@index}}cost" name="tntEntry" class="tntaptitudes tntitem">{{this.cost}}</span>
+                    <span id="{{@index}}diff" name="tntEntry" class="tntdescr tntitem">{{this.difficulty}}</span>
+
+
+
+
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="tab refit" data-group="primary" data-tab="refit"{{#unless knight}}hidden{{/unless}}>
+            <div class="flexcol">
+                <label>Components to Add/Remove:</label>
+                <input type="number" class="refit-input" data-type="components" name="tentacles" min="0" max="999" value="0" />
+            </div>
+            <div class="flexcol">
+                <label>Titanic Weapons to Add/Remove:</label>
+                <input type="number" class="refit-input" data-type="weapons" name="tentacles" min="0" max="999" value="0" />
+            </div>
+            <div class="flexcol">
+                <label>Armor Points to Add/Remove:</label>
+                <input type="number" class="refit-input" data-type="armorpoints" name="tentacles" min="0" max="999" value="0" />
+            </div>
+            <div class="flexcol">
+                <label>Changing Armor:</label>
+                <input type="checkbox" class="repaircheckbox" id="armor" name="tentacles" />
+            </div>
+            <div class="flexcol">
+                <label>Changing Core:</label>
+                <input type="checkbox" class="repaircheckbox" id="core" name="tentacles" />
+            </div>
+            <div class="flexcol">
+                <label>Changing Structure:</label>
+                <input type="checkbox" class="repaircheckbox" id="structure" name="tentacles" />
+            </div>
+        </div>
+    </section>
+    <div class="repair-grid">
+        <span></span>
+        <span class="cost-header">Cost</span>
+        <span class="cost-header">Time</span>
+        <span class="cost-header">Base</span>
+        <span class="cost-span" id="basecost">{{baseCost}}</span>
+        <span class="cost-span" id="basetime">{{baseTime}}</span>
+        <span class="cost-header">Modified</span>
+        <span class="cost-span" id="modcost">{{modifiedCost}}</span>
+        <span class="cost-span" id="modtime">{{modifiedTime}}</span>
+    </div>
+    <div class="flexrow">
+        <span class="cost-header button repair-test" id="testButton">Test</span>
+        <span class="cost-span button repair-test"  id="difficulty">{{difficulty}}</span>
+        <span class="cost-header">DoS/DoF</span>
+        <span class="cost-span" id="dos">{{dos}}</span>
+    </div>
+    <a class="create-entry button"  id="createbutton" style="margin-top:5px" disabled>Create Entry</a>
+    <br/>
+</form>

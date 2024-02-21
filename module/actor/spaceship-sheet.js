@@ -26,8 +26,8 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
     }
     /* -------------------------------------------- */
     /** @override */
-    getData() {
-        const data = super.getData();
+    async getData() {
+        const data = await super.getData();
 
         if(game.user.character===null){
             data.bs=this.actor.system.crew.rating;

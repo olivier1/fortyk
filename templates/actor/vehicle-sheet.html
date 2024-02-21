@@ -84,7 +84,7 @@
                 <div class="flexcol">
                     {{#each actor.meleeWeapons}}
                     <div>
-                        <div class="weapons grid grid-2col">
+                        <div class="weapons grid grid-2col ">
                             <div class="weapon-name">
                                 {{#if flags.fortyk.alternateprofiles}}
 
@@ -104,11 +104,11 @@
                                 {{/if}}
                             </div>
 
-                            <div class="list-item">
+                            <div class="list-item {{#if flags.fortyk.disabled}}disableddiv{{/if}}">
                                 <span>Attack: </span>
                                 <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../system.crew.ws}}" data-item-id="{{this._id}}" data-label="Melee Attack" data-char="ws">Roll</span>
                             </div>
-                            <div class="list-item">
+                            <div class="list-item {{#if flags.fortyk.disabled}}disableddiv{{/if}}">
                                 <span>Damage: </span>
                                 <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.system.damageFormula.value}}</a>
                             </div>
@@ -166,7 +166,7 @@
                     {{#each actor.rangedWeapons}}
                     <div>
 
-                        <div class="weapons grid grid-2col">
+                        <div class="weapons grid grid-2col ">
                             <div class="weapon-name">
                                 {{#if flags.fortyk.alternateprofiles}}
 
@@ -187,7 +187,7 @@
                             </div>
 
 
-                            <div class="list-item">
+                            <div class="list-item {{#if flags.fortyk.disabled}}disableddiv{{/if}}">
                                 <span>Attack: </span>
                                 {{#if this.flags.fortyk.spray}}
                                 <span class="spray-attack rollable button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span>
@@ -197,7 +197,7 @@
 
                                 {{/if}}
                             </div>
-                            <div class="list-item">
+                            <div class="list-item {{#if flags.fortyk.disabled}}disableddiv{{/if}}">
                                 <span>Damage: </span>
                                 <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.system.damageFormula.value}}</a>
 

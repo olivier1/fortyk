@@ -23,6 +23,12 @@
     text-shadow: 0 0 10px red;
     cursor: pointer;
 }
+.disableddiv {
+    pointer-events: none;
+    opacity: 0.4;
+
+}
+
 .grid,
 .grid-2col {
     display: grid;
@@ -36,6 +42,7 @@
     place-items: center;
 }
 .grid-3col {
+    display: grid;
     grid-column: span 3 / span 3;
     grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -74,6 +81,12 @@
 .grid-12col {
     grid-column: span 12 / span 12;
     grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+.repair-grid {
+    display: grid;
+    grid-template-columns: 0.2fr repeat(2, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
 }
 .fortyk .simple-grid3{
     width:100%;
@@ -118,6 +131,12 @@
 }
 .no-flex{
     flex:none;
+}
+.flexrow-nowrap{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
 }
 .margin-left{
     margin-left: 5px;
@@ -230,6 +249,8 @@
 .vehicle-categories{
     align-self:flex-start;
     height: auto;
+    width: -webkit-fill-available;
+    padding: 3px;
 }
 .fortyk  .characteristics{
     margin-top:5px;
@@ -322,6 +343,7 @@
     border-top: 1px solid #AAA;
     border-bottom: 1px solid #AAA;
 }
+
 .fortyk .tabs .item {
     line-height: 12px;
     height:50px;
@@ -339,6 +361,11 @@
     text-shadow: none;
     border: 3px solid #999;
 }
+ .repair {
+    
+    height:268px !important;
+   
+}
 .fortyk .list{
     border-top: 1px solid #999;
     flex:none;
@@ -348,7 +375,7 @@
 .fortyk .list-emphasis{
     text-decoration: underline;
     text-shadow: none;
-    border: 3px solid #7e0404; 
+    border: 3px solid green; 
 }
 .fortyk .list3col{
     grid-gap: 0px;
@@ -396,6 +423,8 @@
     width:100%;
     height:100%;
     padding:3px;
+    font-weight: bold;
+
 }
 .fortyk .list-item-header2{
     border-top: 3px solid #999;
@@ -403,12 +432,14 @@
     height:100%;
     padding:3px;
     grid-column-end :span 2;
+    font-weight: bold;
 }
 .fortyk .list-item-header3{
     border-top: 3px solid #999;
     width:100%;
     height:100%;
     padding:3px;
+    font-weight: bold;
     grid-column-end :span 3;
 }
 .fortyk .list-item-header4{
@@ -416,6 +447,7 @@
     width:100%;
     height:100%;
     padding:3px;
+    font-weight: bold;
     grid-column-end :span 4;
 }
 @media (min-width: 768px) {
@@ -435,22 +467,29 @@
         border-bottom: 3px solid #999;
         border-left: 3px solid #999;
     }
-    
+
     .fortyk .list-item-header-last{
-         border-top: 3px solid #999;
+        border-top: 3px solid #999;
         border-bottom: 3px solid #999;
+        border-left: 3px solid #999;
         border-right: 3px solid #999;
+        font-weight: bold;
+        width:100%;
+        height:100%;
+        padding:3px;
     }
     .fortyk .list-item-header2{
         border-top: 3px solid #999;
         border-bottom: 3px solid #999;
 
+        border-left: 3px solid #999;
         border-right: 3px solid #999;
     }
     .fortyk .list-item-header3{
         border-top: 3px solid #999;
         border-bottom: 3px solid #999;
 
+        border-left: 3px solid #999;
         border-right: 3px solid #999;
     }
     .fortyk .list-item-header4{
@@ -569,7 +608,8 @@
 .delete-chassis, 
 .delete-spirit, 
 .delete-other-component,
-.item-delete{
+.item-delete,
+.delete-repair{
     background-image: url("../icons/deleteicon.png") !important; 
     background-size: contain;
     background-repeat: no-repeat;
@@ -1079,6 +1119,8 @@
     display: flex;
     justify-content: space-between;
     min-width: -webkit-fill-available;
+    padding-left: 5px;
+    padding-top: 2px;
 }
 .state{
     height:fit-content;

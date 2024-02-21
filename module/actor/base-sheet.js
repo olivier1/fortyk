@@ -40,7 +40,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.editable = this.options.editable;
         data.money=game.settings.get("fortyk","dhMoney");
         data.coverTypes=game.fortyk.FORTYK.coverTypes;
-        
+
         return data;
     }
     /** @override */
@@ -684,7 +684,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             return;
         }
         if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"&&testType!=="sprayAttack"){
-            console.log(testChar, testType, testTarget, this.actor, testLabel, item)
+
             await FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
             return;
         }
@@ -745,7 +745,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
 
         if(testType==="sprayAttack"){
-            FortykRollDialogs.callSprayAttackDialog(this.actor, testLabel, item, attackOptions);
+            console.log(this)
+            FortykRollDialogs.callSprayAttackDialog(this.actor, testLabel, item, attackOptions,this);
         }
 
 
@@ -755,7 +756,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         event.preventDefault();
         const element = event.currentTarget;
         const dataset = element.dataset;
-        
+
         if(dataset.weapon){
 
             let actor=this.actor;
@@ -886,7 +887,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         if(this.actor.getFlag("fortyk","wrothful")){
             reroll++;
         }
-        console.log(reroll)
         options.reroll=reroll;
 
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
@@ -898,6 +898,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 submit: {
                     label: 'OK',
                     callback: async (el) => {
+
                         hits = parseInt(Number($(el).find('input[name="hits"]').val()));
                         dmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
                         pen = parseInt(Number($(el).find('input[name="pen"]').val()));
@@ -915,7 +916,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         await ChatMessage.create(chatBlast,{});
                         if(game.user.isGM){
                             for(let i=0; i<targets.length;i++){
-                                let curTargets=targets[i];
+                                let curTargets=targets[i].targets;
+                                weapon.template=targets[i].template;
                                 let targetNames="";
                                 let targetTokens=game.canvas.tokens.children[0].children.filter(token=>curTargets.includes(token.id));
                                 for(let j=0; j<targetTokens.length;j++){
@@ -942,6 +944,15 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                     await ChatMessage.create(chatBlast2,{});
                                     await FortykRolls.damageRoll(formula,actor,weapon,hits,false,false,magdmg,pen,rerollNum); 
                                     game.user.updateTokenTargets();
+                                    //clean templates after
+                                    let scene=game.scenes.active;
+                                    let templates=scene.templates;
+                                    for(const template of templates){
+                                        if(template.isOwner){
+
+                                            await template.delete()
+                                        }
+                                    }
                                 }
 
 
@@ -976,8 +987,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let targetted=[];
             let template=templates[i];
             let bounds=template._object._computeShape();
-            bounds.x=template.x;
-            bounds.y=template.y;
+
             tokens.forEach((token,id,tokens)=>{
 
                 let tokenBounds=token._object.bounds;
@@ -986,9 +996,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 let rightIn=false;
                 let leftIn=false;
                 let tempInToken=false;
+                let tokenInTemp=bounds.contains(token._object.center.x-template.x,token._object.center.y-template.y);
                 if(bounds.x>tokenBounds.left&&bounds.x<tokenBounds.right&&bounds.y>tokenBounds.top&&bounds.y<tokenBounds.bottom){
                     tempInToken=true;
                 }
+
                 let bottomIntersect=lineCircleIntersection(tokenBounds.bottomEdge.A,tokenBounds.bottomEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
                 bottomIn=!bottomIntersect.outside;
                 let topIntersect=lineCircleIntersection(tokenBounds.topEdge.A,tokenBounds.topEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
@@ -997,7 +1009,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 leftIn=!leftIntersect.outside;
                 let rightIntersect=lineCircleIntersection(tokenBounds.rightEdge.A,tokenBounds.rightEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
                 rightIn=!rightIntersect.outside;
-                if(bottomIn||topIn||leftIn||rightIn||tempInToken){
+                if(tokenInTemp||bottomIn||topIn||leftIn||rightIn||tempInToken){
                     targetted.push(token.id);
                 }
                 //console.log(bounds.overlaps(tokenBounds))
@@ -1005,8 +1017,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     targetted.push(token.id);
                 }*/
             });
-            targets.push(targetted);
+            let blastTargets={template:{x:template.x,y:template.y},targets:targetted}
+            targets.push(blastTargets);
         }
+
         return targets;
     }
     //handles applying active effects from psychic powers
@@ -1020,7 +1034,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             const element = event.currentTarget;
             const dataset = element.dataset;
             let powerId=dataset["power"];
-           
+
             FortyKItem.applyPsyBuffs(this.actor.uuid, powerId, targets.ids)
         }else{
             ui.notifications.error("You must have targets to apply buffs or debuffs.");

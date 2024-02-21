@@ -360,7 +360,7 @@ export class FortyKActor extends Actor {
                     }
                 }
                 if((item.type==="meleeWeapon"||item.type==="rangedWeapon")&&item.system.isEquipped){
-                    console.log(item.system)
+
                     if(item.system.isEquipped.indexOf("right")!==-1){
                         data.secChar.wornGear.weapons[1]=fortykItem; 
                         if(twohand){
@@ -513,7 +513,7 @@ export class FortyKActor extends Actor {
                 }
                 let proceed=false;
                 //check if ae is from an item if it origins drom a psychic power skip
-                console.log(ae)
+
                 if(!ae.getFlag("fortyk","psy")&&ae.origin){
 
                     let itemId=ae.origin.split('.')[3];
@@ -526,7 +526,7 @@ export class FortyKActor extends Actor {
                             if(item.system.state){
                                 let state=item.system.state.value;
                                 if(state!=="0"&&state!=="X"&&state!=="D"){
-                                   proceed=true; 
+                                    proceed=true; 
                                 }
                             }else{
                                 proceed=true;
@@ -1149,6 +1149,7 @@ export class FortyKActor extends Actor {
         //prepare skills
         let skills=this.itemTypes.skill;
         data.skills={};
+        data.skillsTraining={};
         for(let i=0;i<skills.length;i++){
             skills[i].prepareData();
             let item=skills[i];
@@ -1183,7 +1184,12 @@ export class FortyKActor extends Actor {
                 data.fieldVivisection=parseInt(item.system.value)+parseInt(item.system.mod.value);
             }
             item.system.total.value+=parseInt(item.system.value)+parseInt(item.system.mod.value)+parseInt(data.characteristics[item.system.characteristic.value].total);
-
+            if(parseInt(item.system.value)>=0){
+               data.skillsTraining[name]=true; 
+            }else{
+                data.skillsTraining[name]=false; 
+            }
+            
             data.skills[name]=item.system.total.value;
         }
         let psychicPowers=this.itemTypes.psychicPower;
@@ -1719,7 +1725,7 @@ export class FortyKActor extends Actor {
             this.dialog.updateDialog(this);
         }
         if(this.type==="knightHouse"){
-            
+
             this.updateKnights();
         }
         if(documents[0].type==="skill"){
@@ -1831,7 +1837,7 @@ export class FortyKActor extends Actor {
                     }
                     let apps=effectActor.apps;
                     Object.values(apps).forEach(app => {
-                        app.render(true);
+                        app.render(true, {focus:false});
                     }); 
                     actors.push(effectActor.uuid);
                 }
@@ -1849,7 +1855,7 @@ export class FortyKActor extends Actor {
             actor.preparePilot();
             let apps=actor.apps;
             Object.values(apps).forEach(app => {
-                app.render(true);
+                app.render(true, {focus:false});
             }); 
         }
 
@@ -1865,12 +1871,141 @@ export class FortyKActor extends Actor {
             if(actor){
                 let apps=actor.apps;
                 Object.values(apps).forEach(app => {
-                    app.render(true);
+                    app.render(true, {focus:false});
                 }); 
             }
 
         }
         let socketOp={type:"renderSheets",package:{actors:actors}}
         await game.socket.emit("system.fortyk",socketOp);
+    }
+    getRepairs(){
+        if(this.type!=="vehicle"){return false};
+        let repairs=[];
+        if(this.getFlag("fortyk","firedamage")){
+            repairs.push({label:"Seconds of Fire Damage",amount:this.getFlag("fortyk","firedamage"),type:"firedamage"});
+        }
+        let integrity=this.system.secChar.wounds;
+
+        //check for damage in each threshold
+        let current=integrity.value;
+        //1st threshold
+        let max=integrity.max;
+        let thresh1=integrity.thresholds["1"];
+        let thresh1dmg=0;
+        let disabled1=false;
+        if(current>=thresh1){
+            thresh1dmg=max-current;
+        }else{
+            disabled1=true;
+            thresh1dmg=max-thresh1;
+        }
+        if(thresh1dmg>0){
+            repairs.push({label:"First Treshold Damage",amount:thresh1dmg,type:"firstthresholddmg", disabled:disabled1});
+        }
+        //2nd threshold
+        let thresh2=integrity.thresholds["2"];
+        let thresh2dmg=0;
+        let disabled2=false;
+        if(current>=thresh2){
+            thresh2dmg=thresh1-current;
+        }else{
+            disabled2=true;
+            thresh2dmg=thresh1-thresh2;
+        }
+        if(thresh2dmg>0){
+            repairs.push({label:"Second Treshold Damage",amount:thresh2dmg,type:"secondthresholddmg", disabled:disabled2});
+        }
+        //3rd threshold
+        let thresh3=integrity.thresholds["3"];
+        let thresh3dmg=0;
+        let disabled3=false;
+        if(current>=thresh3){
+            thresh3dmg=thresh2-current;
+        }else{
+            disabled3=true;
+            thresh3dmg=thresh2-thresh3;
+        }
+        if(thresh3dmg>0){
+            repairs.push({label:"Third Treshold Damage",amount:thresh3dmg,type:"thirdthresholddmg", disabled:disabled3});
+        }
+        //4th threshold
+        let thresh4=integrity.thresholds["4"];
+        let thresh4dmg=0;
+        let disabled4=false;
+        if(current>=0){
+            thresh4dmg=thresh3-current;
+        }else{
+            disabled4=true;
+            thresh4dmg=thresh3;
+        }
+        if(thresh4dmg>0){
+            repairs.push({label:"Fourth Treshold Damage",amount:thresh4dmg,type:"fourththresholddmg", disabled:disabled4});
+        }
+        //critical damage
+        if(current<0){
+            repairs.push({label:"Critical Damage",amount:-current,type:"criticaldmg"});
+        }
+        //check AEs for AEs tagged as repair
+        let AEs=this.effects;
+        AEs.forEach(function(effect){
+            if(effect.getFlag("fortyk","repair")){
+                
+
+                    repairs.push({label:effect.name,type:effect.getFlag("fortyk","repair"),amount:Math.abs(parseInt(effect.changes[0].value)),uuid:effect.uuid});
+              
+            }
+        });
+        //check items for damage and repair active effects
+        let items=this.items;
+        items.forEach(function(item){
+            if(!item.system.state){
+                return;
+            }
+            if(item.type==="forceField"){
+                if(item.system.state.value==="D"){
+                    repairs.push({label:`${item.name} Damaged`,amount:1,type:"damagedionshield",uuid:item.uuid})
+                }
+                if(item.system.state.value==="X"){
+                    repairs.push({label:`${item.name} Destroyed`,amount:1,type:"destroyedionshield",uuid:item.uuid})
+                }
+            }else if((item.type==="rangedWeapon"||item.type==="meleeWeapon")&&(item.system.class.value==="Titanic Ranged Weapon"||item.system.class.value==="Titanic Artillery Weapon"||item.system.class.value==="Titanic Melee Weapon")){
+                if(item.system.state.value==="D"){
+                    repairs.push({label:`${item.name} Damaged`,amount:1,type:"damagedcomponent",rarity:item.system.rarity.value,uuid:item.uuid})
+                }
+                if(item.system.state.value==="X"){
+                    repairs.push({label:`${item.name} Destroyed`,amount:1,type:"refittitanicweapon",uuid:item.uuid})
+                }
+            }else{
+                if(item.system.state.value==="D"){
+                    repairs.push({label:`${item.name} Damaged`,amount:1,type:"damagedcomponent",rarity:item.system.rarity.value,uuid:item.uuid})
+                }
+                if(item.system.state.value==="X"){
+                    repairs.push({label:`${item.name} Destroyed`,amount:parseInt(item.system.space.value),type:"install/removecomponent",uuid:item.uuid})
+                }
+            }
+
+            if(item.type==="knightCore"){
+                let quality=item.system.quality.value;
+                let maxInt=game.fortyk.FORTYK.coreIntegrities[quality];
+                let state=parseInt(item.system.state.value);
+                let coreDmg=maxInt-state;
+                if(coreDmg>0){
+                    repairs.push({label:`${item.name} Damaged`,amount:coreDmg,type:"damagedcore",uuid:item.uuid}) 
+                }
+            }
+            let itemEffects=item.effects;
+            itemEffects.forEach(function(effect){
+                if(effect.getFlag("fortyk","repair")){
+
+
+                    repairs.push({label:`${item.name}: ${effect.name}`,type:effect.getFlag("fortyk","repair"),amount:effect.changes[0]?.value,uuid:effect.uuid});
+
+
+                }
+            });
+        });
+
+        return repairs;
     }
 }

@@ -35,6 +35,10 @@
             <input type="text" class="weapon-mod" value="{{system.clip.formula}}" data-target="system.clip.formula" data-dtype="Number">
         </div>
         <div class="flexcol">
+            <label>Clip cur:</label>
+            <input type="text" class="weapon-mod" value="{{system.clip.value}}" data-target="system.clip.value" data-dtype="Number">
+        </div>
+        <div class="flexcol">
             <label>Reload:</label>
             <input type="text" class="weapon-mod" value="{{system.reload.value}}" data-target="system.reload.value" data-dtype="String">
         </div>
@@ -116,6 +120,18 @@
                 {{#each FORTYK.weaponFacings}}
                 <option value="{{value}}">{{label}}</option>
                 {{/each}}
+                {{/select}}
+            </select>
+        </div>
+        <div class="flexcol">
+            <label>State:</label>
+            <select class="state" name="system.state.value">
+
+                {{#select system.state.value}}
+                
+                <option value="O">O</option>
+                <option value="D">D</option>
+                <option value="X">X</option>
                 {{/select}}
             </select>
         </div>

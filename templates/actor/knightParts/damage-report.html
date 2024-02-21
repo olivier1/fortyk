@@ -1,0 +1,6 @@
+<div class="grid-3col">
+    <div class="list-item-header3">Repair Entries</div>
+    {{#each repairEntries}}
+    <div class="list-item">{{this.label}}{{#if this.amount}}: {{this.amount}}{{/if}}</div>
+    {{/each}}
+</div>
