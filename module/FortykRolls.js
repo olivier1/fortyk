@@ -484,6 +484,15 @@ returns the roll message*/
 
                 let targets=game.user.targets;
                 if(targets.size>0){
+                    //clear templates before proceeding
+                    let scene=game.scenes.active;
+                    let userTemplates=scene.templates;
+                    for(const template of userTemplates){
+                        if(template.isOwner){
+
+                            await template.delete()
+                        }
+                    }
                     let attackTarget=game.user.targets.first();
 
 
@@ -563,7 +572,7 @@ returns the roll message*/
 
                     }
                     contentStr+="</div>"
-                    let scene= game.scenes.active;
+                  
                     let instancedTemplates= await scene.createEmbeddedDocuments("MeasuredTemplate",templates);
 
                     let chatScatter= {user: game.user._id,
@@ -4748,7 +4757,7 @@ returns the roll message*/
                 armor=Math.ceil(armor/2);
                 ae={};
                 ae.name=`${facing.label} Armor damage`;
-                ae.changes=[{key:`system.facings.${facing.path}.armor`,value:armor,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.MULTIPLY}];
+                ae.changes=[{key:`system.facings.${facing.path}.armor`,value:-armor,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
                 ae.flags={fortyk:{repair:"armordmg"}}
                 activeEffects.push(ae);
                 //facing loses half armor
@@ -4758,7 +4767,7 @@ returns the roll message*/
                 armor=Math.ceil(armor/2);
                 ae={};
                 ae.name=`${facing.label} Armor damage`;
-                ae.changes=[{key:`system.facings.${facing.path}.armor`,value:armor,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.MULTIPLY}]
+                ae.changes=[{key:`system.facings.${facing.path}.armor`,value:-armor,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}]
                 ae.flags={fortyk:{repair:"armordmg"}};
                 activeEffects.push(ae);
                 ae2=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fire")]);
@@ -5591,7 +5600,9 @@ returns the roll message*/
                             if(effect[index].duration&&(effect[index].duration.rounds>ae.duration.remaining)){
                                 change=true;
                             }
+
                             if(change||upg){
+
                                 aEs.push(newAe);
                                 await ae.delete();
                             }

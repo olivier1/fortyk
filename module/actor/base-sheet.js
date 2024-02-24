@@ -987,6 +987,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let targetted=[];
             let template=templates[i];
             let bounds=template._object._computeShape();
+            bounds.x=template.x;
+            bounds.y=template.y;
+            console.log(bounds)
 
             tokens.forEach((token,id,tokens)=>{
 

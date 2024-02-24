@@ -1185,11 +1185,11 @@ export class FortyKActor extends Actor {
             }
             item.system.total.value+=parseInt(item.system.value)+parseInt(item.system.mod.value)+parseInt(data.characteristics[item.system.characteristic.value].total);
             if(parseInt(item.system.value)>=0){
-               data.skillsTraining[name]=true; 
+                data.skillsTraining[name]=true; 
             }else{
                 data.skillsTraining[name]=false; 
             }
-            
+
             data.skills[name]=item.system.total.value;
         }
         let psychicPowers=this.itemTypes.psychicPower;
@@ -1403,13 +1403,16 @@ export class FortyKActor extends Actor {
         if(item.getFlag("fortyk","alternateprofiles")){
 
             let profiles=item.getFlag("fortyk","profiles");
+            let instancedProfiles=[];
             for(let i=0; i<profiles.length; i++){
                 if(typeof profiles[i] === 'string' || profiles[i] instanceof String){
-                    profiles[i]=fromUuidSync(profiles[i]);
+                    let uuid=profiles[i];
+                    instancedProfiles.push(fromUuidSync(profiles[i]));
+
                 }
 
             }
-            item.flags.fortyk.profiles=profiles;
+            item.flags.fortyk.instancedProfiles=instancedProfiles;
         }
     }
 
@@ -1946,16 +1949,68 @@ export class FortyKActor extends Actor {
         if(current<0){
             repairs.push({label:"Critical Damage",amount:-current,type:"criticaldmg"});
         }
+        //setup armor damage tracking
+        let frontArmorDmg={amount:0,
+                           effectIds:[],
+                           label:"Front armor damage",
+                           type:"armordmg"}
+        let leftSideArmorDmg={amount:0,
+                              effectIds:[],
+                              label:"Left side armor damage",
+                              type:"armordmg"}
+        let rightSideArmorDmg={amount:0,
+                               effectIds:[],
+                               label:"Right side armor damage",
+                               type:"armordmg"}
+        let rearArmorDmg={amount:0,
+                          effectIds:[],
+                          label:"Rear armor damage",
+                          type:"armordmg"}
         //check AEs for AEs tagged as repair
         let AEs=this.effects;
         AEs.forEach(function(effect){
             if(effect.getFlag("fortyk","repair")){
-                
-
+                console.log(effect)
+                if(effect.getFlag("fortyk","repair")==="armordmg"){
+                    let change=effect.changes[0];
+                    switch(change.key){
+                        case "system.facings.front.armor":
+                            frontArmorDmg.amount+=Math.abs(change.value);
+                            frontArmorDmg.effectIds.push(effect.uuid);
+                            break;
+                        case "system.facings.rSide.armor":
+                            rightSideArmorDmg.amount+=Math.abs(change.value);
+                            rightSideArmorDmg.effectIds.push(effect.uuid);
+                            break;
+                        case "system.facings.lSide.armor":
+                            leftSideArmorDmg.amount+=Math.abs(change.value);
+                            leftSideArmorDmg.effectIds.push(effect.uuid);
+                            break;
+                        case "system.facings.rear.armor":
+                            rearArmorDmg.amount+=Math.abs(change.value);
+                            rearArmorDmg.effectIds.push(effect.uuid);
+                            break;
+                    }
+                }else{
                     repairs.push({label:effect.name,type:effect.getFlag("fortyk","repair"),amount:Math.abs(parseInt(effect.changes[0].value)),uuid:effect.uuid});
-              
+                }
+
+
+
             }
         });
+        if(frontArmorDmg.amount>0){
+            repairs.push(frontArmorDmg);
+        }
+        if(leftSideArmorDmg.amount>0){
+            repairs.push(leftSideArmorDmg);
+        }
+        if(rightSideArmorDmg.amount>0){
+            repairs.push(rightSideArmorDmg);
+        }
+        if(rearArmorDmg.amount>0){
+            repairs.push(rearArmorDmg);
+        }
         //check items for damage and repair active effects
         let items=this.items;
         items.forEach(function(item){

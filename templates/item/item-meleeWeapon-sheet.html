@@ -155,11 +155,15 @@
                 <a class="removeProfile minus-button button"></a>
             </div>
             <div class="flexcol">
+            
                 {{#each flags.fortyk.profiles}}
                 <select class="profile-select" data-index="{{@index}}">
+                  
                     {{#select this}}
+                    <option value="">Select a profile</option>
 
                     {{#each ../meleeWeapons}}
+                    
                     <option value="{{this.uuid}}">{{this.name}}</option>
                     {{/each}}
                     {{/select}}

@@ -179,7 +179,7 @@ export class FortyKItem extends Item {
             }
             if(item.getFlag("fortyk","currentprofile")){
                 let currentProfileUuid=item.getFlag("fortyk","currentprofile");
-            
+                
                 let currentProfile=item.getFlag("fortyk","currentprofile");
                 if(typeof currentProfile === 'string' || currentProfile instanceof String){
                     currentProfile= await fromUuid(item.getFlag("fortyk","currentprofile"));

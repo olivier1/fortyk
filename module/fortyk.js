@@ -345,14 +345,13 @@ Hooks.once('ready', async function() {
                                 }
                             }
                         }
-                        //if user isnt GM use socket to have gm process the damage roll
+                      
 
 
 
 
                     }
-                    targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
-                    targets=new Set(targets);
+                    game.user.updateTokenTargets()
 
 
 
@@ -538,8 +537,10 @@ Hooks.on("updateCombat", async (combat) => {
         var dead={};
         let aeTime=async function (activeEffect, actor) {
             if(activeEffect.duration.rounds!==null){
-                console.log(activeEffect);
-                let remaining=Math.ceil(activeEffect.duration.remaining);
+                activeEffect.duration.remaining??=(activeEffect.duration.rounds+activeEffect.duration.startRound)-combat.round;
+                let remaining=activeEffect.duration.remaining;
+               
+                remaining=Math.ceil(remaining)
                 if(remaining<1){remaining=0}
                 let content="";
 
@@ -559,7 +560,7 @@ Hooks.on("updateCombat", async (combat) => {
                     await ChatMessage.create(activeEffectOptions,{});
                 }
                 try{
-                    if(activeEffect.duration.remaining<=0){
+                    if(remaining<=0){
                         await activeEffect.delete({});
                     } 
                 }catch (err){
@@ -594,7 +595,7 @@ Hooks.on("updateCombat", async (combat) => {
                         await ChatMessage.create(onFireOptions,{});
                         if(!(actor.getFlag("core","frenzy")||actor.getFlag("fortyk","fearless")||actor.getFlag("fortyk","frombeyond"))){
                             let wp=actor.system.characteristics.wp.total;
-                            if(actor.getFlag("fortyk","resistance").toLowerCase().includes("fear")){
+                            if(actor.getFlag("fortyk","resistance")?.toLowerCase().includes("fear")){
                                 wp+=10;
                             }
                             await FortykRolls.fortykTest("wp", "char", wp,actor, "On Fire! Panic");
@@ -1304,6 +1305,12 @@ Hooks.on("simple-calendar-date-time-change",async (dateData)=>{
 
                     }else if(type==="firedamage"){
                         await knight.setFlag("fortyk","firedamage",0);
+                    }else if(type==="armordmg"){
+                        let armorDmgIds=entry.effectIds;
+                        armorDmgIds.forEach(async function(effectId){
+                            let armorEffect=fromUuidSync(effectId);
+                            await armorEffect.delete();
+                        })
                     }else{
                         await item.delete();
                     }

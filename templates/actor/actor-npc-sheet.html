@@ -181,7 +181,7 @@
                                 {{#select flags.fortyk.currentprofile}}
                                 <option value="">{{this._source.name}}</option>
 
-                                {{#each flags.fortyk.profiles}}
+                                {{#each flags.fortyk.instancedProfiles}}
                                 <option value="{{this.uuid}}">{{this.name}}</option>
                                 {{/each}}
                                 {{/select}}
@@ -264,7 +264,7 @@
                                 {{#select flags.fortyk.currentprofile}}
                                 <option value="">{{this._source.name}}</option>
 
-                                {{#each flags.fortyk.profiles}}
+                                {{#each flags.fortyk.instancedProfiles}}
                                 <option value="{{this.uuid}}">{{this.name}}</option>
                                 {{/each}}
                                 {{/select}}
