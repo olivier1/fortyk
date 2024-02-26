@@ -5710,6 +5710,7 @@ returns the roll message*/
                 ae.duration={
                     rounds:1
                 }
+                this.applyActiveEffect(vehicle,[ae]);
                 this.applyActiveEffect(pilot,[ae]);
             }
 
