@@ -345,7 +345,7 @@ Hooks.once('ready', async function() {
                                 }
                             }
                         }
-                      
+
 
 
 
@@ -537,10 +537,10 @@ Hooks.on("updateCombat", async (combat) => {
         var dead={};
         let aeTime=async function (activeEffect, actor) {
             if(activeEffect.duration.rounds!==null){
-                activeEffect.duration.remaining??=(activeEffect.duration.rounds+activeEffect.duration.startRound)-combat.round;
+
                 let remaining=activeEffect.duration.remaining;
-               
-                remaining=Math.ceil(remaining)
+                remaining??=(activeEffect.duration.rounds+activeEffect.duration.startRound)-combat.round;
+                
                 if(remaining<1){remaining=0}
                 let content="";
 
@@ -596,479 +596,479 @@ Hooks.on("updateCombat", async (combat) => {
                         if(!(actor.getFlag("core","frenzy")||actor.getFlag("fortyk","fearless")||actor.getFlag("fortyk","frombeyond"))){
                             let wp=actor.system.characteristics.wp.total;
                             if(actor.getFlag("fortyk","resistance")?.toLowerCase().includes("fear")){
-                                wp+=10;
-                            }
-                            await FortykRolls.fortykTest("wp", "char", wp,actor, "On Fire! Panic");
-                        }
+                               wp+=10;
+                               }
+                               await FortykRolls.fortykTest("wp", "char", wp,actor, "On Fire! Panic");
+                               }
 
-                        let fatigue=parseInt(actor.system.secChar.fatigue.value)+1;
-                        await actor.update({"system.secChar.fatigue.value":fatigue});
-                        let fireData={name:"Fire",type:"rangedWeapon"}
-                        let fire=await Item.create(fireData, {temporary: true});
-                        fire.flags.fortyk={};
-                        fire.system.damageType.value="Energy";
-                        fire.system.pen.value=99999;
-                        await FortykRolls.damageRoll(fire.system.damageFormula,actor,fire,1, true);
-                    }else{
-                        if(actor.getFlag("fortyk","firedamage")){
-                            actor.setFlag("fortyk","firedamage",actor.getFlag("fortyk","firedamage")+6);
+                               let fatigue=parseInt(actor.system.secChar.fatigue.value)+1;
+                               await actor.update({"system.secChar.fatigue.value":fatigue});
+                            let fireData={name:"Fire",type:"rangedWeapon"}
+                            let fire=await Item.create(fireData, {temporary: true});
+                            fire.flags.fortyk={};
+                            fire.system.damageType.value="Energy";
+                            fire.system.pen.value=99999;
+                            await FortykRolls.damageRoll(fire.system.damageFormula,actor,fire,1, true);
                         }else{
-                            actor.setFlag("fortyk","firedamage",6);
+                            if(actor.getFlag("fortyk","firedamage")){
+                                actor.setFlag("fortyk","firedamage",actor.getFlag("fortyk","firedamage")+6);
+                            }else{
+                                actor.setFlag("fortyk","firedamage",6);
+                            }
+                            if(actor.getFlag("fortyk","superheavy")){
+                                let heat=parseInt(actor.system.knight.heat.value)+1;
+                                await actor.update({"system.knight.heat.value":heat});
+                                let onFireOptions={user: game.user._id,
+                                                   speaker:{actor,alias:actor.name},
+                                                   content:"On round start, gain 1 heat.",
+                                                   classes:["fortyk"],
+                                                   flavor:`On Fire!`,
+                                                   author:actor.name};
+                                await ChatMessage.create(onFireOptions,{});
+                            }else{
+
+                                let duration=activeEffect.getFlag("fortyk","vehicleFireExplosionTimer");
+
+                                if(duration===undefined){
+                                    duration=0;
+                                }
+                                let fireForm=`1d10+${duration}`;
+                                let fireRoll=new Roll(fireForm,{});
+                                await fireRoll.evaluate({async: false});
+                                fireRoll.toMessage({flavor:"Testing for explosion"});
+                                let result=fireRoll._total; 
+                                if(result>=10){
+                                    let onFireOptions={user: game.user._id,
+                                                       speaker:{actor,alias:actor.name},
+                                                       content:"The vehicle explodes!",
+                                                       classes:["fortyk"],
+                                                       flavor:`On Fire!`,
+                                                       author:actor.name};
+                                    await ChatMessage.create(onFireOptions,{}); 
+                                    let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
+                                    await FortykRolls.applyActiveEffect(actor,activeEffect);
+
+                                }
+                                duration++;
+                                await activeEffect.setFlag("fortyk","vehicleFireExplosionTimer",duration);
+                            }
                         }
-                        if(actor.getFlag("fortyk","superheavy")){
-                            let heat=parseInt(actor.system.knight.heat.value)+1;
-                            await actor.update({"system.knight.heat.value":heat});
+                    }
+                    //check for purifying flames
+                    if(activeEffect.statuses.has("purifyingflame")){
+
+                        if(actor.type!=="vehicle"){
                             let onFireOptions={user: game.user._id,
                                                speaker:{actor,alias:actor.name},
-                                               content:"On round start, gain 1 heat.",
+                                               content:"On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
                                                classes:["fortyk"],
                                                flavor:`On Fire!`,
                                                author:actor.name};
                             await ChatMessage.create(onFireOptions,{});
+                            await FortykRolls.fortykTest("wp", "char", actor.system.characteristics.wp.total,actor, "On Fire! Panic");
+                            //let fatigue=parseInt(actor.system.secChar.fatigue.value)+1;
+                            //await actor.update({"system.secChar.fatigue.value":fatigue});
+                            let fireData={name:"Purifying Fire",type:"rangedWeapon"}
+                            let fire=await Item.create(fireData, {temporary: true});
+                            fire.flags.fortyk={"ignoreSoak":true};
+                            fire.system.damageType.value="Energy";
+                            fire.system.pen.value=0;
+                            fire.system.damageFormula.value=activeEffect.flags.fortyk.damageString;
+                            await FortykRolls.damageRoll(fire.system.damageFormula,actor,fire,1, true);
                         }else{
-
-                            let duration=activeEffect.getFlag("fortyk","vehicleFireExplosionTimer");
-
-                            if(duration===undefined){
-                                duration=0;
+                            if(actor.getFlag("fortyk","firedamage")){
+                                actor.setFlag("fortyk","firedamage",actor.getFlag("fortyk","firedamage")+6);
+                            }else{
+                                actor.setFlag("fortyk","firedamage",6);
                             }
-                            let fireForm=`1d10+${duration}`;
-                            let fireRoll=new Roll(fireForm,{});
-                            await fireRoll.evaluate({async: false});
-                            fireRoll.toMessage({flavor:"Testing for explosion"});
-                            let result=fireRoll._total; 
-                            if(result>=10){
+                            if(actor.getFlag("fortyk","superheavy")){
+                                let heat=parseInt(actor.system.knight.heat.value)+1;
+                                await actor.update({"system.knight.heat.value":heat});
                                 let onFireOptions={user: game.user._id,
                                                    speaker:{actor,alias:actor.name},
-                                                   content:"The vehicle explodes!",
+                                                   content:"On round start, gain 1 heat.",
                                                    classes:["fortyk"],
                                                    flavor:`On Fire!`,
                                                    author:actor.name};
-                                await ChatMessage.create(onFireOptions,{}); 
-                                let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
-                                await FortykRolls.applyActiveEffect(actor,activeEffect);
+                                await ChatMessage.create(onFireOptions,{});
+                            }else{
 
+                                let duration=activeEffect.getFlag("fortyk","vehicleFireExplosionTimer");
+
+                                if(duration===undefined){
+                                    duration=0;
+                                }
+                                let fireForm=`1d10+${duration}`;
+                                let fireRoll=new Roll(fireForm,{});
+                                await fireRoll.evaluate({async: false});
+                                fireRoll.toMessage({flavor:"Testing for explosion"});
+                                let result=fireRoll._total; 
+                                if(result>=10){
+                                    let onFireOptions={user: game.user._id,
+                                                       speaker:{actor,alias:actor.name},
+                                                       content:"The vehicle explodes!",
+                                                       classes:["fortyk"],
+                                                       flavor:`On Fire!`,
+                                                       author:actor.name};
+                                    await ChatMessage.create(onFireOptions,{}); 
+                                    let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
+                                    await FortykRolls.applyActiveEffect(actor,activeEffect);
+
+                                }
+                                duration++;
+                                await activeEffect.setFlag("fortyk","vehicleFireExplosionTimer",duration);
                             }
-                            duration++;
-                            await activeEffect.setFlag("fortyk","vehicleFireExplosionTimer",duration);
                         }
                     }
-                }
-                //check for purifying flames
-                if(activeEffect.statuses.has("purifyingflame")){
+                    //check for bleeding
+                    if(activeEffect.statuses.has("bleeding")){
+                        let bleed=true;
+                        if(actor.getFlag("fortyk","diehard")){
+                            let diehrd= await FortykRolls.fortykTest("wp", "char", actor.system.characteristics.wp.total,actor, "Die Hard");
+                            if(diehrd.value){
+                                bleed=false;
+                                let dieHardOptions={user: game.user._id,
+                                                    speaker:{actor,alias:actor.name},
+                                                    content:"Resisted bleeding fatigue.",
+                                                    classes:["fortyk"],
+                                                    flavor:`Bleeding`,
+                                                    author:actor.name};
+                                await ChatMessage.create(dieHardOptions,{});
 
-                    if(actor.type!=="vehicle"){
-                        let onFireOptions={user: game.user._id,
-                                           speaker:{actor,alias:actor.name},
-                                           content:"On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
-                                           classes:["fortyk"],
-                                           flavor:`On Fire!`,
-                                           author:actor.name};
-                        await ChatMessage.create(onFireOptions,{});
-                        await FortykRolls.fortykTest("wp", "char", actor.system.characteristics.wp.total,actor, "On Fire! Panic");
-                        //let fatigue=parseInt(actor.system.secChar.fatigue.value)+1;
-                        //await actor.update({"system.secChar.fatigue.value":fatigue});
-                        let fireData={name:"Purifying Fire",type:"rangedWeapon"}
-                        let fire=await Item.create(fireData, {temporary: true});
-                        fire.flags.fortyk={"ignoreSoak":true};
-                        fire.system.damageType.value="Energy";
-                        fire.system.pen.value=0;
-                        fire.system.damageFormula.value=activeEffect.flags.fortyk.damageString;
-                        await FortykRolls.damageRoll(fire.system.damageFormula,actor,fire,1, true);
-                    }else{
-                        if(actor.getFlag("fortyk","firedamage")){
-                            actor.setFlag("fortyk","firedamage",actor.getFlag("fortyk","firedamage")+6);
-                        }else{
-                            actor.setFlag("fortyk","firedamage",6);
+                            }
                         }
-                        if(actor.getFlag("fortyk","superheavy")){
-                            let heat=parseInt(actor.system.knight.heat.value)+1;
-                            await actor.update({"system.knight.heat.value":heat});
-                            let onFireOptions={user: game.user._id,
-                                               speaker:{actor,alias:actor.name},
-                                               content:"On round start, gain 1 heat.",
-                                               classes:["fortyk"],
-                                               flavor:`On Fire!`,
-                                               author:actor.name};
-                            await ChatMessage.create(onFireOptions,{});
-                        }else{
-
-                            let duration=activeEffect.getFlag("fortyk","vehicleFireExplosionTimer");
-
-                            if(duration===undefined){
-                                duration=0;
+                        if(bleed){
+                            let bleedStack=1;
+                            let flavor
+                            if(bleedStack===1){
+                                flavor=`Blood loss`
+                            }else{
+                                flavor=`Blood loss`
                             }
-                            let fireForm=`1d10+${duration}`;
-                            let fireRoll=new Roll(fireForm,{});
-                            await fireRoll.evaluate({async: false});
-                            fireRoll.toMessage({flavor:"Testing for explosion"});
-                            let result=fireRoll._total; 
-                            if(result>=10){
-                                let onFireOptions={user: game.user._id,
-                                                   speaker:{actor,alias:actor.name},
-                                                   content:"The vehicle explodes!",
-                                                   classes:["fortyk"],
-                                                   flavor:`On Fire!`,
-                                                   author:actor.name};
-                                await ChatMessage.create(onFireOptions,{}); 
-                                let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
-                                await FortykRolls.applyActiveEffect(actor,activeEffect);
-
-                            }
-                            duration++;
-                            await activeEffect.setFlag("fortyk","vehicleFireExplosionTimer",duration);
+                            let bleedingOptions={user: game.user._id,
+                                                 speaker:{actor,alias:actor.name},
+                                                 content:`On round start gain ${bleedStack} fatigue.`,
+                                                 classes:["fortyk"],
+                                                 flavor:flavor,
+                                                 author:actor.name};
+                            await ChatMessage.create(bleedingOptions,{});
+                            let fatigue=parseInt(actor.system.secChar.fatigue.value)+bleedStack;
+                            await actor.update({"system.secChar.fatigue.value":fatigue});
                         }
                     }
+                    //check for cryo
+                    if(activeEffect.statuses.has("cryogenic")){
+                        let cryoContent=`<span>On round start, take [[2d10]]  toughness damage!</span>`;
+                        let cryoOptions={user: game.user._id,
+                                         speaker:{actor,alias:actor.name},
+                                         content:cryoContent,
+                                         classes:["fortyk"],
+                                         flavor:`Freezing`,
+                                         author:actor.name};
+                        let cryoMsg=await ChatMessage.create(cryoOptions,{});
+                        let inlineResults=parseHtmlForInline(cryoMsg.content);
+                        let tDmg=inlineResults[0];
+                        let ae=[]
+                        ae.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("t")]));
+                        ae[0].changes=[{key:`system.characteristics.t.value`,value:-1*tDmg,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
+                        await FortykRolls.applyActiveEffect(token,ae);
+                    }
                 }
-                //check for bleeding
-                if(activeEffect.statuses.has("bleeding")){
-                    let bleed=true;
-                    if(actor.getFlag("fortyk","diehard")){
-                        let diehrd= await FortykRolls.fortykTest("wp", "char", actor.system.characteristics.wp.total,actor, "Die Hard");
-                        if(diehrd.value){
-                            bleed=false;
-                            let dieHardOptions={user: game.user._id,
+            }
+            for (let item of actor.items){
+                for(let ae of item.effects){
+                    aeTime(ae,actor);
+                }
+            }
+            //check for regeneration
+            if(actor.getFlag("fortyk","regeneration")){
+                let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
+                if(actor.system.race.value==="Necron"&&actor.getFlag("core","unconscious")){
+                    let reanimation= await FortykRolls.fortykTest("t", "char", actor.system.characteristics.t.total,actor, "Reanimation protocol");
+
+                    if(reanimation.value){
+
+                        let reanimationOptions={user: game.user._id,
                                                 speaker:{actor,alias:actor.name},
-                                                content:"Resisted bleeding fatigue.",
+                                                content:`${actor.name} rises from the dead!`,
                                                 classes:["fortyk"],
-                                                flavor:`Bleeding`,
+                                                flavor:`Reanimation protocol`,
                                                 author:actor.name};
-                            await ChatMessage.create(dieHardOptions,{});
+                        await ChatMessage.create(reanimationOptions,{});
+                        await dead.delete();
+                        await actor.update({"system.secChar.wounds.value":regenAmt});
 
-                        }
+                    }else if((!reanimation.value)&&reanimation.dos>=3){
+                        let reanimationOptions={user: game.user._id,
+                                                speaker:{actor,alias:actor.name},
+                                                content:`${actor.name} is recalled away!`,
+                                                classes:["fortyk"],
+                                                flavor:`Reanimation protocol`,
+                                                author:actor.name};
+                        await ChatMessage.create(reanimationOptions,{});
+                        await dead.delete();
+                        let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
+                        await FortykRolls.applyActiveEffect(actor,activeEffect);
                     }
-                    if(bleed){
-                        let bleedStack=1;
-                        let flavor
-                        if(bleedStack===1){
-                            flavor=`Blood loss`
-                        }else{
-                            flavor=`Blood loss`
-                        }
-                        let bleedingOptions={user: game.user._id,
-                                             speaker:{actor,alias:actor.name},
-                                             content:`On round start gain ${bleedStack} fatigue.`,
-                                             classes:["fortyk"],
-                                             flavor:flavor,
-                                             author:actor.name};
-                        await ChatMessage.create(bleedingOptions,{});
-                        let fatigue=parseInt(actor.system.secChar.fatigue.value)+bleedStack;
-                        await actor.update({"system.secChar.fatigue.value":fatigue});
+                }else{
+                    let regen=await FortykRolls.fortykTest("t", "char", actor.system.characteristics.t.total,actor, "Regeneration");
+                    if(regen.value){
+                        let maxWounds=actor.system.secChar.wounds.max;
+                        let currWounds=actor.system.secChar.wounds.value;
+                        currWounds=Math.min(maxWounds,currWounds+regenAmt);
+                        await actor.update({"system.secChar.wounds.value":currWounds});
                     }
                 }
-                //check for cryo
-                if(activeEffect.statuses.has("cryogenic")){
-                    let cryoContent=`<span>On round start, take [[2d10]]  toughness damage!</span>`;
-                    let cryoOptions={user: game.user._id,
-                                     speaker:{actor,alias:actor.name},
-                                     content:cryoContent,
-                                     classes:["fortyk"],
-                                     flavor:`Freezing`,
-                                     author:actor.name};
-                    let cryoMsg=await ChatMessage.create(cryoOptions,{});
-                    let inlineResults=parseHtmlForInline(cryoMsg.content);
-                    let tDmg=inlineResults[0];
-                    let ae=[]
-                    ae.push(duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("t")]));
-                    ae[0].changes=[{key:`system.characteristics.t.value`,value:-1*tDmg,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}];
-                    await FortykRolls.applyActiveEffect(token,ae);
+
+            }
+            //frigus core
+            if(actor.getFlag("fortyk","friguscore")){
+                let heat=parseInt(actor.system.knight.heat.value);
+                if(heat>0){
+                    await actor.update({"system.knight.heat.value":heat-1});
+                    let frigusOptions={user: game.user._id,
+                                       speaker:{actor,alias:actor.name},
+                                       content:"On round start, lose 1 heat.",
+                                       classes:["fortyk"],
+                                       flavor:`Frigus Core`,
+                                       author:actor.name};
+                    await ChatMessage.create(frigusOptions,{});
                 }
-            }
-        }
-        for (let item of actor.items){
-            for(let ae of item.effects){
-                aeTime(ae,actor);
-            }
-        }
-        //check for regeneration
-        if(actor.getFlag("fortyk","regeneration")){
-            let regenAmt=parseInt(actor.getFlag("fortyk","regeneration"));
-            if(actor.system.race.value==="Necron"&&actor.getFlag("core","unconscious")){
-                let reanimation= await FortykRolls.fortykTest("t", "char", actor.system.characteristics.t.total,actor, "Reanimation protocol");
 
-                if(reanimation.value){
-
-                    let reanimationOptions={user: game.user._id,
-                                            speaker:{actor,alias:actor.name},
-                                            content:`${actor.name} rises from the dead!`,
-                                            classes:["fortyk"],
-                                            flavor:`Reanimation protocol`,
-                                            author:actor.name};
-                    await ChatMessage.create(reanimationOptions,{});
-                    await dead.delete();
-                    await actor.update({"system.secChar.wounds.value":regenAmt});
-
-                }else if((!reanimation.value)&&reanimation.dos>=3){
-                    let reanimationOptions={user: game.user._id,
-                                            speaker:{actor,alias:actor.name},
-                                            content:`${actor.name} is recalled away!`,
-                                            classes:["fortyk"],
-                                            flavor:`Reanimation protocol`,
-                                            author:actor.name};
-                    await ChatMessage.create(reanimationOptions,{});
-                    await dead.delete();
-                    let activeEffect=[duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
-                    await FortykRolls.applyActiveEffect(actor,activeEffect);
-                }
-            }else{
-                let regen=await FortykRolls.fortykTest("t", "char", actor.system.characteristics.t.total,actor, "Regeneration");
-                if(regen.value){
-                    let maxWounds=actor.system.secChar.wounds.max;
-                    let currWounds=actor.system.secChar.wounds.value;
-                    currWounds=Math.min(maxWounds,currWounds+regenAmt);
-                    await actor.update({"system.secChar.wounds.value":currWounds});
-                }
             }
-
-        }
-        //frigus core
-        if(actor.getFlag("fortyk","friguscore")){
-            let heat=parseInt(actor.system.knight.heat.value);
-            if(heat>0){
-                await actor.update({"system.knight.heat.value":heat-1});
-                let frigusOptions={user: game.user._id,
-                                   speaker:{actor,alias:actor.name},
-                                   content:"On round start, lose 1 heat.",
-                                   classes:["fortyk"],
-                                   flavor:`Frigus Core`,
-                                   author:actor.name};
-                await ChatMessage.create(frigusOptions,{});
-            }
-
-        }
-        if(actor.getFlag("fortyk","evadeMod")){
-            await actor.setFlag("fortyk","evadeMod",false);
-        }
-    }
-})
-Hooks.on("preDeleteCombat", async (combat,options,id) =>{
-    let combatants=combat.combatants;
-    combatants.forEach(async (combatant)=>{
-        let actor=combatant.actor;
-        let tempMod=actor.system.secChar.tempMod.value;
-        if(tempMod){
-            await actor.update({"system.secChar.tempMod.value":0}); 
-        }
-        for(let activeEffect of actor.effects){
-            if(activeEffect.label==="Evasion"){
-                await activeEffect.delete({});
-            }
-            if(activeEffect.duration.type!=="none"){
-                await activeEffect.delete({});
+            if(actor.getFlag("fortyk","evadeMod")){
+                await actor.setFlag("fortyk","evadeMod",false);
             }
         }
-        if(actor.getFlag("fortyk","evadeMod")){
-            await actor.setFlag("fortyk","evadeMod",false);
-        }
-        if(actor.getFlag("core","evasion")){
-            await actor.setFlag("core","evasion",false);
-        }
-        if(actor.getFlag("fortyk","versatile")){
-            await actor.setFlag("fortyk","versatile",false);
-        }
-        await actor.update({"system.secChar.lastHit.type":null});
     })
-    for(let index = 0; index < combat.combatants.length; index++){
-
-    }
-})
-Hooks.on("preUpdateActor", (data, updatedData) =>{
-})
-//add listeners to the chatlog for dice rolls
-Hooks.on('renderChatLog', (log, html, data) => FortykRollDialogs.chatListeners(html));
-//add listeners to dialogs to allow searching and the like
-Hooks.on('renderDialog', (dialog, html, data) => ActorDialogs.chatListeners(html));
-//add listeners to compendiums for knight sheet interaction
-Hooks.on('renderCompendium', (compendium, html, data)=>{
-    let knightComponentSlot=function(component){
-        let componentType=component.type;
-        if(componentType==="meleeWeapon"){
-            return ".melee-slot";
-        }
-        if(componentType==="rangedWeapon"){
-            let weaponClass=component.system.class.value;
-            if(weaponClass==="Titanic Ranged Weapon"){
-                return ".ranged-slot";
-            }else if(weaponClass==="Titanic Artillery Weapon"){
-                return ".artillery-slot";
-            }else{
-                return ".auxiliary-slot";
+    Hooks.on("preDeleteCombat", async (combat,options,id) =>{
+        let combatants=combat.combatants;
+        combatants.forEach(async (combatant)=>{
+            let actor=combatant.actor;
+            let tempMod=actor.system.secChar.tempMod.value;
+            if(tempMod){
+                await actor.update({"system.secChar.tempMod.value":0}); 
             }
+            for(let activeEffect of actor.effects){
+                if(activeEffect.label==="Evasion"){
+                    await activeEffect.delete({});
+                }
+                if(activeEffect.duration.type!=="none"){
+                    await activeEffect.delete({});
+                }
+            }
+            if(actor.getFlag("fortyk","evadeMod")){
+                await actor.setFlag("fortyk","evadeMod",false);
+            }
+            if(actor.getFlag("core","evasion")){
+                await actor.setFlag("core","evasion",false);
+            }
+            if(actor.getFlag("fortyk","versatile")){
+                await actor.setFlag("fortyk","versatile",false);
+            }
+            await actor.update({"system.secChar.lastHit.type":null});
+        })
+        for(let index = 0; index < combat.combatants.length; index++){
+
         }
-        if(componentType==="knightCore"){
-            return ".core-slot";
-        }
-        if(componentType==="knightArmor"){
-            return ".armor-slot";
-        }
-        if(componentType==="knightStructure"){
-            return ".structure-slot";
-        }
-        if(componentType==="forceField"){
-            return ".forceField-slot";
-        }
-        if(componentType==="knightComponent"){
-            let componentSubType=component.system.type.value;
-            if(componentSubType==="other"){
+    })
+    Hooks.on("preUpdateActor", (data, updatedData) =>{
+    })
+    //add listeners to the chatlog for dice rolls
+    Hooks.on('renderChatLog', (log, html, data) => FortykRollDialogs.chatListeners(html));
+    //add listeners to dialogs to allow searching and the like
+    Hooks.on('renderDialog', (dialog, html, data) => ActorDialogs.chatListeners(html));
+    //add listeners to compendiums for knight sheet interaction
+    Hooks.on('renderCompendium', (compendium, html, data)=>{
+        let knightComponentSlot=function(component){
+            let componentType=component.type;
+            if(componentType==="meleeWeapon"){
+                return ".melee-slot";
+            }
+            if(componentType==="rangedWeapon"){
+                let weaponClass=component.system.class.value;
+                if(weaponClass==="Titanic Ranged Weapon"){
+                    return ".ranged-slot";
+                }else if(weaponClass==="Titanic Artillery Weapon"){
+                    return ".artillery-slot";
+                }else{
+                    return ".auxiliary-slot";
+                }
+            }
+            if(componentType==="knightCore"){
+                return ".core-slot";
+            }
+            if(componentType==="knightArmor"){
+                return ".armor-slot";
+            }
+            if(componentType==="knightStructure"){
+                return ".structure-slot";
+            }
+            if(componentType==="forceField"){
+                return ".forceField-slot";
+            }
+            if(componentType==="knightComponent"){
+                let componentSubType=component.system.type.value;
+                if(componentSubType==="other"){
+                    return ".other-slot";
+                }
+                if(componentSubType==="core-mod"){
+                    return ".core-mod-slot";
+                }
+                if(componentSubType==="throne-mod"){
+                    return ".throne-mod-slot";
+                }
+                if(componentSubType==="plating"){
+                    return ".plating-slot";
+                }
+                if(componentSubType==="sensor"){
+                    return ".sensor-slot";
+                }
+                if(componentSubType==="gyro"){
+                    return ".gyro-slot";
+                }
+                if(componentSubType==="arm-actuator"){
+                    return ".arm-actuator-slot";
+                }
+                if(componentSubType==="leg-actuator"){
+                    return ".leg-actuator-slot";
+                }
+            }
+            if(componentType==="ammunition"){
                 return ".other-slot";
             }
-            if(componentSubType==="core-mod"){
-                return ".core-mod-slot";
-            }
-            if(componentSubType==="throne-mod"){
-                return ".throne-mod-slot";
-            }
-            if(componentSubType==="plating"){
-                return ".plating-slot";
-            }
-            if(componentSubType==="sensor"){
-                return ".sensor-slot";
-            }
-            if(componentSubType==="gyro"){
-                return ".gyro-slot";
-            }
-            if(componentSubType==="arm-actuator"){
-                return ".arm-actuator-slot";
-            }
-            if(componentSubType==="leg-actuator"){
-                return ".leg-actuator-slot";
-            }
+            return false;
         }
-        if(componentType==="ammunition"){
-            return ".other-slot";
+        let onDragComponent=async function(event){
+
+
+            let compendiumId=compendium.id.replace("compendium-","");
+
+            let compendiumObj=await game.packs.get(compendiumId);
+            let transfer={}
+            transfer.compendium=true;
+            transfer.compendiumId=compendiumId;
+            transfer.componentId=event.target.dataset["entryId"];
+
+            let item=await compendiumObj.getDocument(event.target.dataset["entryId"]);
+            let type=knightComponentSlot(item);
+            event.target.attributes["name"]=type;
+            let validSlots= document.querySelectorAll(type);
+            validSlots.forEach(function(item) {
+                item.classList.add("highlight-slot");
+            });
+            //let transferString=JSON.stringify(transfer);
+            //console.log(transferString)
+            // event.dataTransfer.setData("text1", transferString);
+            //event.dataTransfer.effectAllowed="copy";
         }
-        return false;
-    }
-    let onDragComponent=async function(event){
+        let onStopDragComponent=function(event){
+            if(compendium.id.indexOf("knight")===-1){
+                return
+            }
+            let type=event.target.attributes["name"];
+            let validSlots= document.querySelectorAll(type);
+            validSlots.forEach(function(item) {
+                item.classList.remove("highlight-slot");
+            });
+        }
 
 
-        let compendiumId=compendium.id.replace("compendium-","");
 
-        let compendiumObj=await game.packs.get(compendiumId);
-        let transfer={}
-        transfer.compendium=true;
-        transfer.compendiumId=compendiumId;
-        transfer.componentId=event.target.dataset["entryId"];
+        html.find('.directory-item').each((i, li) => {
 
-        let item=await compendiumObj.getDocument(event.target.dataset["entryId"]);
-        let type=knightComponentSlot(item);
-        event.target.attributes["name"]=type;
-        let validSlots= document.querySelectorAll(type);
-        validSlots.forEach(function(item) {
-            item.classList.add("highlight-slot");
+            li.addEventListener("dragstart", onDragComponent.bind(compendium), false);
+            li.addEventListener("dragend", onStopDragComponent.bind(compendium), false);
+            //li.addEventListener("dragover", this._onDragOverSlot.bind(compendium), false);
+
         });
-        //let transferString=JSON.stringify(transfer);
-        //console.log(transferString)
-        // event.dataTransfer.setData("text1", transferString);
-        //event.dataTransfer.effectAllowed="copy";
-    }
-    let onStopDragComponent=function(event){
-        if(compendium.id.indexOf("knight")===-1){
-            return
-        }
-        let type=event.target.attributes["name"];
-        let validSlots= document.querySelectorAll(type);
-        validSlots.forEach(function(item) {
-            item.classList.remove("highlight-slot");
-        });
-    }
+    })
 
-
-
-    html.find('.directory-item').each((i, li) => {
-
-        li.addEventListener("dragstart", onDragComponent.bind(compendium), false);
-        li.addEventListener("dragend", onStopDragComponent.bind(compendium), false);
-        //li.addEventListener("dragover", this._onDragOverSlot.bind(compendium), false);
-
+    Hooks.on('preCreateItem', (actor, data,options) =>{
     });
-})
+    //set flags on the actor when adding an active effect if it should activate a flag
+    Hooks.on('createActiveEffect',async (ae,options,id)=>{
+        if(game.user.isGM){
+            let actor=ae.parent;
+            ae.statuses.forEach(async function (value1, value2,ae){
+                let flag=value1;
+                await actor.setFlag("core",flag,true); 
+            })
+        }
+    });
+    //unset flags on the actor when removing an active effect if it had a flag
+    Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
+        if(game.user.isGM){
+            let actor=ae.parent;
 
-Hooks.on('preCreateItem', (actor, data,options) =>{
-});
-//set flags on the actor when adding an active effect if it should activate a flag
-Hooks.on('createActiveEffect',async (ae,options,id)=>{
-    if(game.user.isGM){
-        let actor=ae.parent;
-        ae.statuses.forEach(async function (value1, value2,ae){
-            let flag=value1;
-            await actor.setFlag("core",flag,true); 
-        })
-    }
-});
-//unset flags on the actor when removing an active effect if it had a flag
-Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
-    if(game.user.isGM){
-        let actor=ae.parent;
+            ae.statuses.forEach(async function (value1, value2,ae){
+                let flag=value1;
 
-        ae.statuses.forEach(async function (value1, value2,ae){
-            let flag=value1;
+                await actor.setFlag("core",flag,false);
 
-            await actor.setFlag("core",flag,false);
-
-        })
-    }
-});
-/**
+            })
+        }
+    });
+    /**
      * Add the manage active effects button to actor sheets
      */
-Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
-    if(game.user.isGM){
-        let button={}
-        button.class="custom";
-        button.icon="fas fa-asterisk";
-        button.label="Manage AEs";
-        button.onclick=async ()=>{
-            let actor=sheet.actor;
-            if(sheet.token){
-                actor=sheet.token.actor;
-            }
-
-            var options = {
-                id:"aeDialog"
-            };
-            var d=new ActiveEffectDialog({
-                title: "Active Effects",
-                actor:actor,
-                buttons:{
-                    button:{
-                        label:"Ok",
-                        callback: async html => {
-                            sheet.actor.dialog=undefined;
-                        }
-                    },
-                },
-                close:function(){
-                    sheet.actor.dialog=undefined;
+    Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) =>{
+        if(game.user.isGM){
+            let button={}
+            button.class="custom";
+            button.icon="fas fa-asterisk";
+            button.label="Manage AEs";
+            button.onclick=async ()=>{
+                let actor=sheet.actor;
+                if(sheet.token){
+                    actor=sheet.token.actor;
                 }
-            },options).render(true)
-            sheet.actor.dialog=d;
 
+                var options = {
+                    id:"aeDialog"
+                };
+                var d=new ActiveEffectDialog({
+                    title: "Active Effects",
+                    actor:actor,
+                    buttons:{
+                        button:{
+                            label:"Ok",
+                            callback: async html => {
+                                sheet.actor.dialog=undefined;
+                            }
+                        },
+                    },
+                    close:function(){
+                        sheet.actor.dialog=undefined;
+                    }
+                },options).render(true)
+                sheet.actor.dialog=d;
+
+            }
+            let close=buttons.pop();
+            buttons.push(button);
+            buttons.push(close);
         }
-        let close=buttons.pop();
-        buttons.push(button);
-        buttons.push(close);
-    }
-})
-Hooks.on("preCreateActor", (createData) =>{
-})
-Hooks.on("preCreateToken", async (document, data, options, userId) =>{
+    })
+    Hooks.on("preCreateActor", (createData) =>{
+    })
+    Hooks.on("preCreateToken", async (document, data, options, userId) =>{
 
-    if(game.user.isGM){
-        //modify token dimensions if scene ratio isnt 1
-        let gridRatio=canvas.dimensions.distance;
-        let newHeight=Math.max(0.1,document.height/gridRatio);
-        let newWidth=Math.max(0.1,document.width/gridRatio);
-        if(newHeight!==document.height||newWidth!==document.width){
-            await document.updateSource({"height":newHeight,"width":newWidth});
+        if(game.user.isGM){
+            //modify token dimensions if scene ratio isnt 1
+            let gridRatio=canvas.dimensions.distance;
+            let newHeight=Math.max(0.1,document.height/gridRatio);
+            let newWidth=Math.max(0.1,document.width/gridRatio);
+            if(newHeight!==document.height||newWidth!==document.width){
+                await document.updateSource({"height":newHeight,"width":newWidth});
 
+            }
         }
-    }
 
-});
+    });
 
-Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
-    /*
+    Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
+        /*
     let effects=null;
     let data=null;
     if(changes.actorData!==undefined){
@@ -1143,238 +1143,238 @@ Hooks.on('preUpdateToken',async (scene,token,changes,diff,id)=>{
             }
         }
     }*/
-});
-//drag ruler integration
-Hooks.once("dragRuler.ready", (Speedprovider) => {
-    class FortykSpeedProvider extends Speedprovider{
-        get colors(){
-            return[{id:"half",default:0xADD8E6,name:"Half Move"},
-                   {id:"full",default:0x191970,name:"Full Move"},
-                   {id:"charge",default:0xFFA500,name:"Charge Move"},
-                   {id:"run",default:0xFFFF00,name:"Run"}]
-        }
-        getRanges(token){
-            let movement;
-            let ranges;
-            if(token.actor.type==="spaceship"){
-                ranges=[];
-            }else if(token.actor.type==="vehicle"){
-                movement=token.actor.system.secChar.speed;
-                if(token.actor.getFlag("fortyk","enhancedmotivesystem")){
-                    ranges=[
-                        {range:movement.tactical*2,color:"full"},
-                        {range:movement.tactical*3,color:"run"}]
-                }else if(token.actor.getFlag("fortyk","ponderous")){
-                    ranges=[
-                        {range:movement.tactical/2,color:"full"},
-                        {range:movement.tactical,color:"run"}]
-                }else{
-                    ranges=[
-                        {range:movement.tactical,color:"full"},
-                        {range:movement.tactical*2,color:"run"}]
-                }
-
-            }else{
-                movement=token.actor.system.secChar.movement;
-                ranges=[
-                    {range:movement.half,color:"half"},
-                    {range:movement.full,color:"full"},
-                    {range:movement.charge,color:"charge"},
-                    {range:movement.run,color:"run"}]
+    });
+    //drag ruler integration
+    Hooks.once("dragRuler.ready", (Speedprovider) => {
+        class FortykSpeedProvider extends Speedprovider{
+            get colors(){
+                return[{id:"half",default:0xADD8E6,name:"Half Move"},
+                       {id:"full",default:0x191970,name:"Full Move"},
+                       {id:"charge",default:0xFFA500,name:"Charge Move"},
+                       {id:"run",default:0xFFFF00,name:"Run"}]
             }
-            return ranges;
-        }
+            getRanges(token){
+                let movement;
+                let ranges;
+                if(token.actor.type==="spaceship"){
+                    ranges=[];
+                }else if(token.actor.type==="vehicle"){
+                    movement=token.actor.system.secChar.speed;
+                    if(token.actor.getFlag("fortyk","enhancedmotivesystem")){
+                        ranges=[
+                            {range:movement.tactical*2,color:"full"},
+                            {range:movement.tactical*3,color:"run"}]
+                    }else if(token.actor.getFlag("fortyk","ponderous")){
+                        ranges=[
+                            {range:movement.tactical/2,color:"full"},
+                            {range:movement.tactical,color:"run"}]
+                    }else{
+                        ranges=[
+                            {range:movement.tactical,color:"full"},
+                            {range:movement.tactical*2,color:"run"}]
+                    }
 
-    }
-    dragRuler.registerSystem("fortyk", FortykSpeedProvider);
-})
-Hooks.on("simple-calendar-date-time-change",async (dateData)=>{
-    console.log(dateData)
-    if(!SimpleCalendar.api.isPrimaryGM()){return}
-    let timeElapsed=dateData.diff;
-    let houses=game.actors.filter(function(actor){return actor.type==="knightHouse"});
-    console.log(houses)
-    houses.forEach(async function(house){
-        let currentRepairIds=house.system.repairBays.current;
-        currentRepairIds.forEach(async function(repairId){
-            let repair=house.getEmbeddedDocument("Item",repairId);
-            let time=repair.system.time.value;
-            if(time>timeElapsed){
-                await repair.update({"system.time.value":time-timeElapsed});
-            }else{
-                let knight=game.actors.get(repair.system.knight.value);
-                let wounds=repair.system.repairs.wounds;
-                let repairEntries=repair.system.repairs.entries;
-                if(wounds){
-                    await knight.update({"system.secChar.wounds.value":knight.system.secChar.wounds.value+wounds});
+                }else{
+                    movement=token.actor.system.secChar.movement;
+                    ranges=[
+                        {range:movement.half,color:"half"},
+                        {range:movement.full,color:"full"},
+                        {range:movement.charge,color:"charge"},
+                        {range:movement.run,color:"run"}]
                 }
-                repairEntries.forEach(async function(entry){
-                    let type=entry.type;
-                    let uuid=entry.uuid;
-                    let item=fromUuidSync(uuid);
+                return ranges;
+            }
 
-                    if(type==="damagedionshield"||type==="destroyedionshield"||type==="damagedcomponent"){
-                        await item.update({"system.state.value":"O"});
-                    }else if(type==="install/removecomponent"){
-                        let path=item.system.path;
+        }
+        dragRuler.registerSystem("fortyk", FortykSpeedProvider);
+    })
+    Hooks.on("simple-calendar-date-time-change",async (dateData)=>{
+        console.log(dateData)
+        if(!SimpleCalendar.api.isPrimaryGM()){return}
+        let timeElapsed=dateData.diff;
+        let houses=game.actors.filter(function(actor){return actor.type==="knightHouse"});
+        console.log(houses)
+        houses.forEach(async function(house){
+            let currentRepairIds=house.system.repairBays.current;
+            currentRepairIds.forEach(async function(repairId){
+                let repair=house.getEmbeddedDocument("Item",repairId);
+                let time=repair.system.time.value;
+                if(time>timeElapsed){
+                    await repair.update({"system.time.value":time-timeElapsed});
+                }else{
+                    let knight=game.actors.get(repair.system.knight.value);
+                    let wounds=repair.system.repairs.wounds;
+                    let repairEntries=repair.system.repairs.entries;
+                    if(wounds){
+                        await knight.update({"system.secChar.wounds.value":knight.system.secChar.wounds.value+wounds});
+                    }
+                    repairEntries.forEach(async function(entry){
+                        let type=entry.type;
+                        let uuid=entry.uuid;
+                        let item=fromUuidSync(uuid);
 
-                        let data=knight.system;
-                        let house=await game.actors.get(data.knight.house);
-                        //if the knight is linked to a house update the house inventory
-                        if(house){
-                            let component=await house.getEmbeddedDocument("Item",item.system.originalId);
-                            if(component){
+                        if(type==="damagedionshield"||type==="destroyedionshield"||type==="damagedcomponent"){
+                            await item.update({"system.state.value":"O"});
+                        }else if(type==="install/removecomponent"){
+                            let path=item.system.path;
+
+                            let data=knight.system;
+                            let house=await game.actors.get(data.knight.house);
+                            //if the knight is linked to a house update the house inventory
+                            if(house){
+                                let component=await house.getEmbeddedDocument("Item",item.system.originalId);
+                                if(component){
+                                    let amtTaken=component.system.amount.taken;
+                                    let newAmt=amtTaken-1;
+
+
+                                    var componentUpdate={};
+
+                                    if(item.system.state.value==="X"||item.system.state.value===0){
+                                        let amt=parseInt(component.system.amount.value);
+                                        componentUpdate["system.amount.value"]=amt-1;
+                                    }
+                                    componentUpdate["system.amount.taken"]=newAmt;
+                                    let loans=component.system.loaned;
+                                    let newLoans=loans.filter(loan=>loan.knightId!==knight.id&&loan.item.id!==itemId);
+                                    componentUpdate["system.loaned"]=newLoans;
+                                    await component.update(componentUpdate);
+                                }
+
+                            }
+
+
+
+                            let update={};
+                            if(path.indexOf("components")!==-1){
+                                var array=objectByString(knight,path).filter(function(id){return id!==item.id});
+
+
+
+
+                                update[path]=array;
+                            }else{
+                                update[path]="";  
+                            }
+
+
+
+                            await knight.update(update);
+
+                            await knight.deleteEmbeddedDocuments("Item",[item.id]);
+                        }else if(type==="refittitanicweapon"){
+                            let data=knight.system;
+                            let chassis=await knight.getEmbeddedDocument("Item",data.knight.chassis);
+                            let path=item.system.path;
+                            //if the knight is linked to a house update the house inventory
+                            if(house){
+                                let component=await house.getEmbeddedDocument("Item",item.system.originalId);
                                 let amtTaken=component.system.amount.taken;
                                 let newAmt=amtTaken-1;
-
-
-                                var componentUpdate={};
-
+                                let componentUpdate={};
                                 if(item.system.state.value==="X"||item.system.state.value===0){
                                     let amt=parseInt(component.system.amount.value);
                                     componentUpdate["system.amount.value"]=amt-1;
                                 }
                                 componentUpdate["system.amount.taken"]=newAmt;
                                 let loans=component.system.loaned;
-                                let newLoans=loans.filter(loan=>loan.knightId!==knight.id&&loan.item.id!==itemId);
+                                let newLoans=loans.filter(loan=>loan.knightId!==knight.id&&loan.itemId!==item.id);
                                 componentUpdate["system.loaned"]=newLoans;
                                 await component.update(componentUpdate);
                             }
 
-                        }
+                            let array=objectByString(chassis,path).map(function(id){if(id===item.id){return ""}});
+                            console.log(array)
+
+                            let chassisUpdate={};
+                            chassisUpdate[path]=array;
+
+
+                            await chassis.update(chassisUpdate);
+
+                            await knight.deleteEmbeddedDocuments("Item",[item.id]);
+
+
+                        }else if(type==="damagedcore"){
+                            let quality=item.system.quality.value;
+                            let maxInt=game.fortyk.FORTYK.coreIntegrities[quality];
+                            await item.update({"system.state.value":maxInt});
 
 
 
-                        let update={};
-                        if(path.indexOf("components")!==-1){
-                            var array=objectByString(knight,path).filter(function(id){return id!==item.id});
 
-
-
-
-                            update[path]=array;
+                        }else if(type==="firedamage"){
+                            await knight.setFlag("fortyk","firedamage",0);
+                        }else if(type==="armordmg"){
+                            let armorDmgIds=entry.effectIds;
+                            armorDmgIds.forEach(async function(effectId){
+                                let armorEffect=fromUuidSync(effectId);
+                                await armorEffect.delete();
+                            })
                         }else{
-                            update[path]="";  
+                            await item.delete();
                         }
 
-
-
-                        await knight.update(update);
-
-                        await knight.deleteEmbeddedDocuments("Item",[item.id]);
-                    }else if(type==="refittitanicweapon"){
-                        let data=knight.system;
-                        let chassis=await knight.getEmbeddedDocument("Item",data.knight.chassis);
-                        let path=item.system.path;
-                        //if the knight is linked to a house update the house inventory
-                        if(house){
-                            let component=await house.getEmbeddedDocument("Item",item.system.originalId);
-                            let amtTaken=component.system.amount.taken;
-                            let newAmt=amtTaken-1;
-                            let componentUpdate={};
-                            if(item.system.state.value==="X"||item.system.state.value===0){
-                                let amt=parseInt(component.system.amount.value);
-                                componentUpdate["system.amount.value"]=amt-1;
-                            }
-                            componentUpdate["system.amount.taken"]=newAmt;
-                            let loans=component.system.loaned;
-                            let newLoans=loans.filter(loan=>loan.knightId!==knight.id&&loan.itemId!==item.id);
-                            componentUpdate["system.loaned"]=newLoans;
-                            await component.update(componentUpdate);
-                        }
-
-                        let array=objectByString(chassis,path).map(function(id){if(id===item.id){return ""}});
-                        console.log(array)
-
-                        let chassisUpdate={};
-                        chassisUpdate[path]=array;
-
-
-                        await chassis.update(chassisUpdate);
-
-                        await knight.deleteEmbeddedDocuments("Item",[item.id]);
-
-
-                    }else if(type==="damagedcore"){
-                        let quality=item.system.quality.value;
-                        let maxInt=game.fortyk.FORTYK.coreIntegrities[quality];
-                        await item.update({"system.state.value":maxInt});
-
-
-
-
-                    }else if(type==="firedamage"){
-                        await knight.setFlag("fortyk","firedamage",0);
-                    }else if(type==="armordmg"){
-                        let armorDmgIds=entry.effectIds;
-                        armorDmgIds.forEach(async function(effectId){
-                            let armorEffect=fromUuidSync(effectId);
-                            await armorEffect.delete();
-                        })
-                    }else{
-                        await item.delete();
+                    });
+                    let note=fromUuidSync(repair.system.calendar.noteId);
+                    try {
+                        await note.delete();
+                    } catch (e) {
+                        //Catch Statement
                     }
 
-                });
-                let note=fromUuidSync(repair.system.calendar.noteId);
-                try {
-                    await note.delete();
-                } catch (e) {
-                    //Catch Statement
+                    let queue=house.system.repairBays.queue;
+                    let newCurrent=currentRepairIds.filter(function(id){return id!==repairId});
+                    console.log(newCurrent)
+                    if(queue.length>0){
+                        newCurrent.push(queue.pop());
+                        let newCurrentRepairId=newCurrent[newCurrent.length-1];
+                        let newCurrentRepair=house.getEmbeddedDocument("Item",newCurrentRepairId);
+                        let time=newCurrentRepair.system.time.value;
+                        let calendar=SimpleCalendar.api.getCurrentCalendar();
+                        let currentTime=SimpleCalendar.api.timestamp(calendar.id);
+
+                        let noteTime=currentTime+time;
+
+                        let formattedTime=SimpleCalendar.api.timestampToDate(noteTime,calendar.id);
+
+                        let note=await SimpleCalendar.api.addNote(newCurrentRepair.name, repair.system.description.value, formattedTime, formattedTime, true, false, ["Repairs"], calendar.id, '', ["default"], [game.user.id]);
+                        await newCurrentRepair.update({"system.calendar.noteId":note.uuid});
+                    }
+                    let chatMsg={user: game.user._id,
+                                 speaker:{house,alias:game.user.character.name},
+                                 content:repair.system.description.value,
+                                 classes:["fortyk"],
+                                 flavor:`Repair entry for ${knight.name} has completed successfully`,
+                                 author:game.user.character.name};
+                    await ChatMessage.create(chatMsg,{});
+                    await house.update({"system.repairBays.current":newCurrent,"system.repairBays.queue":queue});
+                    await repair.delete();
                 }
-
-                let queue=house.system.repairBays.queue;
-                let newCurrent=currentRepairIds.filter(function(id){return id!==repairId});
-                console.log(newCurrent)
-                if(queue.length>0){
-                    newCurrent.push(queue.pop());
-                    let newCurrentRepairId=newCurrent[newCurrent.length-1];
-                    let newCurrentRepair=house.getEmbeddedDocument("Item",newCurrentRepairId);
-                    let time=newCurrentRepair.system.time.value;
-                    let calendar=SimpleCalendar.api.getCurrentCalendar();
-                    let currentTime=SimpleCalendar.api.timestamp(calendar.id);
-
-                    let noteTime=currentTime+time;
-
-                    let formattedTime=SimpleCalendar.api.timestampToDate(noteTime,calendar.id);
-
-                    let note=await SimpleCalendar.api.addNote(newCurrentRepair.name, repair.system.description.value, formattedTime, formattedTime, true, false, ["Repairs"], calendar.id, '', ["default"], [game.user.id]);
-                    await newCurrentRepair.update({"system.calendar.noteId":note.uuid});
-                }
-                let chatMsg={user: game.user._id,
-                             speaker:{house,alias:game.user.character.name},
-                             content:repair.system.description.value,
-                             classes:["fortyk"],
-                             flavor:`Repair entry for ${knight.name} has completed successfully`,
-                             author:game.user.character.name};
-                await ChatMessage.create(chatMsg,{});
-                await house.update({"system.repairBays.current":newCurrent,"system.repairBays.queue":queue});
-                await repair.delete();
-            }
-        });
+            });
+        })
     })
-})
-Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
-    class FortykSystemRuleProvider extends RuleProvider {
-        calculateCombinedCost(terrain, options) {
-            if(terrain.length===0){
-                return 1;
-            }
+    Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
+        class FortykSystemRuleProvider extends RuleProvider {
+            calculateCombinedCost(terrain, options) {
+                if(terrain.length===0){
+                    return 1;
+                }
 
 
-            let cost=terrain[0].cost;
-            if(!cost){cost=1}
-            let token=options.token;
-            let actor
-            if(token){
-                actor=token.actor;
-            }
+                let cost=terrain[0].cost;
+                if(!cost){cost=1}
+                let token=options.token;
+                let actor
+                if(token){
+                    actor=token.actor;
+                }
 
-            if(actor&&(actor.getFlag("fortyk","jump")||actor.getFlag("fortyk","crawler")||actor.getFlag("fortyk","hoverer")||actor.getFlag("fortyk","flyer")||actor.getFlag("fortyk","skimmer"))){
-                cost=1;
+                if(actor&&(actor.getFlag("fortyk","jump")||actor.getFlag("fortyk","crawler")||actor.getFlag("fortyk","hoverer")||actor.getFlag("fortyk","flyer")||actor.getFlag("fortyk","skimmer"))){
+                    cost=1;
+                }
+                return cost;
             }
-            return cost;
         }
-    }
-    enhancedTerrainLayer.registerSystem("fortyk", FortykSystemRuleProvider);
-});
+        enhancedTerrainLayer.registerSystem("fortyk", FortykSystemRuleProvider);
+    });
