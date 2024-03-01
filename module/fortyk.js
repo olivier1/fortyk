@@ -539,7 +539,7 @@ Hooks.on("updateCombat", async (combat) => {
             if(activeEffect.duration.rounds!==null){
 
                 let remaining=activeEffect.duration.remaining;
-                remaining??=(activeEffect.duration.rounds+activeEffect.duration.startRound)-combat.round;
+                remaining??=Math.ceil((activeEffect.duration.rounds+activeEffect.duration.startRound)-combat.round);
                 
                 if(remaining<1){remaining=0}
                 let content="";

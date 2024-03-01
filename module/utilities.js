@@ -49,7 +49,7 @@ export const sleep=function(ms) {
 //returns an actors token object, not the token document. Will search the active canvas for the current token.
 export const getActorToken=function(actor){
 
-    if(actor.token!==null){
+    if(actor.token){
         return actor.token._object; 
     }
     let tokens=[];
