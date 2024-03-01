@@ -933,7 +933,7 @@ returns the roll message*/
     }
     //handles damage rolls and applies damage to the target, generates critical effects
     static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0,rerollNum=0, user=game.users.current, lastHit=null, targets=null){
-        let weapon=fortykWeapon.clone();
+        let weapon=deepClone(fortykWeapon);
         if(!weapon.system.isPrepared){
             weapon.prepareData();
         }
