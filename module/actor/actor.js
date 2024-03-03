@@ -714,7 +714,7 @@ export class FortyKActor extends Actor {
             }  
         }
         if(this.getFlag("fortyk","soundconstitution")&&!isNaN(parseInt(this.getFlag("fortyk","soundconstitution")))){
-            data.secChar.wounds.max=parseInt(data.secChar.wounds.max)+parseInt(this.getFlag("fortyk","soundconstitution"));
+            data.secChar.wounds.max=parseInt(data.secChar.wounds.max)+2*data.characteristics.t.bonus;
         }
         data.secChar.wounds.heavy=false;
 
@@ -1904,7 +1904,7 @@ export class FortyKActor extends Actor {
             thresh1dmg=max-thresh1;
         }
         if(thresh1dmg>0){
-            repairs.push({label:"First Treshold Damage",amount:thresh1dmg,type:"firstthresholddmg", disabled:disabled1});
+            repairs.push({label:"First Threshold Damage",amount:thresh1dmg,type:"firstthresholddmg", disabled:disabled1});
         }
         //2nd threshold
         let thresh2=integrity.thresholds["2"];
@@ -1917,7 +1917,7 @@ export class FortyKActor extends Actor {
             thresh2dmg=thresh1-thresh2;
         }
         if(thresh2dmg>0){
-            repairs.push({label:"Second Treshold Damage",amount:thresh2dmg,type:"secondthresholddmg", disabled:disabled2});
+            repairs.push({label:"Second Threshold Damage",amount:thresh2dmg,type:"secondthresholddmg", disabled:disabled2});
         }
         //3rd threshold
         let thresh3=integrity.thresholds["3"];
@@ -1930,7 +1930,7 @@ export class FortyKActor extends Actor {
             thresh3dmg=thresh2-thresh3;
         }
         if(thresh3dmg>0){
-            repairs.push({label:"Third Treshold Damage",amount:thresh3dmg,type:"thirdthresholddmg", disabled:disabled3});
+            repairs.push({label:"Third Threshold Damage",amount:thresh3dmg,type:"thirdthresholddmg", disabled:disabled3});
         }
         //4th threshold
         let thresh4=integrity.thresholds["4"];
@@ -1943,7 +1943,7 @@ export class FortyKActor extends Actor {
             thresh4dmg=thresh3;
         }
         if(thresh4dmg>0){
-            repairs.push({label:"Fourth Treshold Damage",amount:thresh4dmg,type:"fourththresholddmg", disabled:disabled4});
+            repairs.push({label:"Fourth Threshold Damage",amount:thresh4dmg,type:"fourththresholddmg", disabled:disabled4});
         }
         //critical damage
         if(current<0){
@@ -2036,7 +2036,8 @@ export class FortyKActor extends Actor {
                     repairs.push({label:`${item.name} Damaged`,amount:1,type:"damagedcomponent",rarity:item.system.rarity.value,uuid:item.uuid})
                 }
                 if(item.system.state.value==="X"){
-                    repairs.push({label:`${item.name} Destroyed`,amount:parseInt(item.system.space.value),type:"install/removecomponent",uuid:item.uuid})
+                    console.log(item)
+                    repairs.push({label:`${item.name} Destroyed`,amount:Math.max(1,parseInt(item.system.space.value)),type:"install/removecomponent",uuid:item.uuid})
                 }
             }
 
