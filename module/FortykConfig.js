@@ -691,6 +691,11 @@ FORTYK.weaponFlags={
         "label": "Mindscrambler",
         "description": "These weapons emit intense electromagnetic and magnetic waves which interfere with the functioning of machine to a dangerous degree. Weapons with this quality ignore all armor and toughness when dealing damage to a creature with the machine trait."
     },
+    "mirror": {
+        "value": false,
+        "label": "Mirror",
+        "description": "A weapon with the Mirror Quality double the number of melee hits that the user scores on a successful attack. For example, when attacking with a weapon with the Mirror quality using a lightning attack, each degree of success yields two additional hits (to a maximum of twice the user's weapon skill bonus). When evading hits from a weapon with the Mirror quality, 2 hits are evaded per degree of success."
+    },
     "melta": {
         "value": false,
         "label": "Melta",

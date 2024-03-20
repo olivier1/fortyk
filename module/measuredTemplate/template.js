@@ -27,53 +27,7 @@ export class FortykTemplate extends MeasuredTemplate {
 
   /* -------------------------------------------- */
 
-  /**
-   * A factory method to create an AbilityTemplate instance using provided data from an Item5e instance
-   * @param {Item5e} item               The Item object for which to construct the template
-   * @returns {AbilityTemplate|null}    The template object, or null if the item does not produce a template
-   */
-  /*static fromItem(item) {
-    const target = item.system.target ?? {};
-    const templateShape = dnd5e.config.areaTargetTypes[target.type]?.template;
-    if ( !templateShape ) return null;
-
-    // Prepare template data
-    const templateData = {
-      t: templateShape,
-      user: game.user.id,
-      distance: target.value,
-      direction: 0,
-      x: 0,
-      y: 0,
-      fillColor: game.user.color,
-      flags: { dnd5e: { origin: item.uuid } }
-    };
-
-    // Additional type-specific data
-    switch ( templateShape ) {
-      case "cone":
-        templateData.angle = CONFIG.MeasuredTemplate.defaults.angle;
-        break;
-      case "rect": // 5e rectangular AoEs are always cubes
-        templateData.distance = Math.hypot(target.value, target.value);
-        templateData.width = target.value;
-        templateData.direction = 45;
-        break;
-      case "ray": // 5e rays are most commonly 1 square (5 ft) in width
-        templateData.width = target.width ?? canvas.dimensions.distance;
-        break;
-    }
-
-    // Return the template constructed from the item data
-    const cls = CONFIG.MeasuredTemplate.documentClass;
-    const template = new cls(templateData, {parent: canvas.scene});
-    const object = new this(template);
-    object.item = item;
-    object.actorSheet = item.actor?.sheet || null;
-    return object;
-  }*/
-
-  /* -------------------------------------------- */
+  
 
   /**
    * Creates a preview of the spell template.

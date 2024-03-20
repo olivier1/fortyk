@@ -1090,19 +1090,23 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             let chassis=await actor.getEmbeddedDocument("Item",data.knight.chassis);
                             //if the knight is linked to a house update the house inventory
                             if(house){
-                                let component=await house.getEmbeddedDocument("Item",item.system.originalId);
-                                let amtTaken=component.system.amount.taken;
-                                let newAmt=amtTaken-1;
-                                let componentUpdate={};
-                                if(item.system.state.value==="X"||item.system.state.value===0){
-                                    let amt=parseInt(component.system.amount.value);
-                                    componentUpdate["system.amount.value"]=amt-1;
+                                try {
+                                    let component=await house.getEmbeddedDocument("Item",item.system.originalId);
+                                    let amtTaken=component.system.amount.taken;
+                                    let newAmt=amtTaken-1;
+                                    let componentUpdate={};
+                                    if(item.system.state.value==="X"||item.system.state.value===0){
+                                        let amt=parseInt(component.system.amount.value);
+                                        componentUpdate["system.amount.value"]=amt-1;
+                                    }
+                                    componentUpdate["system.amount.taken"]=newAmt;
+                                    let loans=component.system.loaned;
+                                    let newLoans=loans.filter(loan=>loan.knightId!==actor.id&&loan.itemId!==itemId);
+                                    componentUpdate["system.loaned"]=newLoans;
+                                    await component.update(componentUpdate);
+                                } catch (e) {
+                                    //Catch Statement
                                 }
-                                componentUpdate["system.amount.taken"]=newAmt;
-                                let loans=component.system.loaned;
-                                let newLoans=loans.filter(loan=>loan.knightId!==actor.id&&loan.itemId!==itemId);
-                                componentUpdate["system.loaned"]=newLoans;
-                                await component.update(componentUpdate);
                             }
 
                             let array=objectByString(chassis,path);
@@ -1219,7 +1223,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
                                 let componentUpdate={};
-
+                                console.log(item.system.state.value)
                                 if(item.system.state.value==="X"||item.system.state.value===0){
                                     let amt=parseInt(component.system.amount.value);
                                     componentUpdate["system.amount.value"]=amt-1;

@@ -237,7 +237,7 @@ Hooks.once('ready', async function() {
                 if(actor){
                     let apps=actor.apps;
                     Object.values(apps).forEach(app => {
-                        app.render(true);
+                        app.render(true,{focus:false});
                     }); 
                 }
             }
@@ -250,7 +250,7 @@ Hooks.once('ready', async function() {
                 if(actor){
                     let apps=actor.apps;
                     Object.values(apps).forEach(app => {
-                        app.render(true);
+                        app.render(true,{focus:false});
                     }); 
                 }
 
@@ -453,21 +453,30 @@ Hooks.once('ready', async function() {
                     FortykRolls.perilsOfTheWarp(actor,ork);
                     break;
                 case "rotateShield":
+                    
+                    
+                  
+                   
+                    
                     id=data.package.tokenId;
                     token=canvas.tokens.get(id);
-                    let rotation=data.package.angle;
+                    console.log(token)
+                    let rotation=parseInt(data.package.angle);
                     let lightId=await tokenAttacher.getAllAttachedElementsByTypeOfToken(token, "AmbientLight")[0];
+                    console.log(lightId);
                     let lightObj=game.canvas.lighting.get(lightId);
+                    console.log(lightObj);
                     let lightData=duplicate(lightObj.document);
 
                     tokenAttacher.detachElementFromToken(lightObj, token, true);
                     lightObj.document.delete();
 
-
                     let tokenRotation=token.document.rotation;
+                    
+                    console.log(rotation,tokenRotation)
                     rotation+=tokenRotation;
                     lightData.rotation=rotation;
-
+                    console.log(rotation,lightData.rotation)
                     let newLights=await game.canvas.scene.createEmbeddedDocuments("AmbientLight",[lightData]);
 
                     let newLight=newLights[0];
@@ -538,7 +547,7 @@ Hooks.on("updateCombat", async (combat) => {
         let aeTime=async function (activeEffect, actor) {
             if(activeEffect.duration.rounds!==null){
 
-                let remaining=activeEffect.duration.remaining;
+                let remaining=Math.ceil(activeEffect.duration.remaining);
                 remaining??=Math.ceil((activeEffect.duration.rounds+activeEffect.duration.startRound)-combat.round);
                 
                 if(remaining<1){remaining=0}
@@ -615,7 +624,7 @@ Hooks.on("updateCombat", async (combat) => {
                             }else{
                                 actor.setFlag("fortyk","firedamage",6);
                             }
-                            if(actor.getFlag("fortyk","superheavy")){
+                            if(actor.getFlag("fortyk","superheavy")&&!actor.getFlag("fortyk","platinginsulation")){
                                 let heat=parseInt(actor.system.knight.heat.value)+1;
                                 await actor.update({"system.knight.heat.value":heat});
                                 let onFireOptions={user: game.user._id,
@@ -681,7 +690,7 @@ Hooks.on("updateCombat", async (combat) => {
                             }else{
                                 actor.setFlag("fortyk","firedamage",6);
                             }
-                            if(actor.getFlag("fortyk","superheavy")){
+                            if(actor.getFlag("fortyk","superheavy")&&!actor.getFlag("fortyk","platinginsulation")){
                                 let heat=parseInt(actor.system.knight.heat.value)+1;
                                 await actor.update({"system.knight.heat.value":heat});
                                 let onFireOptions={user: game.user._id,
@@ -1189,15 +1198,16 @@ Hooks.on("updateCombat", async (combat) => {
         dragRuler.registerSystem("fortyk", FortykSpeedProvider);
     })
     Hooks.on("simple-calendar-date-time-change",async (dateData)=>{
-        console.log(dateData)
+        
         if(!SimpleCalendar.api.isPrimaryGM()){return}
         let timeElapsed=dateData.diff;
         let houses=game.actors.filter(function(actor){return actor.type==="knightHouse"});
-        console.log(houses)
+        
         houses.forEach(async function(house){
             let currentRepairIds=house.system.repairBays.current;
             currentRepairIds.forEach(async function(repairId){
                 let repair=house.getEmbeddedDocument("Item",repairId);
+                if(!repair){return}
                 let time=repair.system.time.value;
                 if(time>timeElapsed){
                     await repair.update({"system.time.value":time-timeElapsed});
@@ -1212,7 +1222,7 @@ Hooks.on("updateCombat", async (combat) => {
                         let type=entry.type;
                         let uuid=entry.uuid;
                         let item=fromUuidSync(uuid);
-
+                        if(!item){return}
                         if(type==="damagedionshield"||type==="destroyedionshield"||type==="damagedcomponent"){
                             await item.update({"system.state.value":"O"});
                         }else if(type==="install/removecomponent"){
@@ -1236,7 +1246,8 @@ Hooks.on("updateCombat", async (combat) => {
                                     }
                                     componentUpdate["system.amount.taken"]=newAmt;
                                     let loans=component.system.loaned;
-                                    let newLoans=loans.filter(loan=>loan.knightId!==knight.id&&loan.item.id!==itemId);
+                                    console.log(loans)
+                                    let newLoans=loans.filter(loan=>loan.knightId!==knight.id&&item.id!==loan.itemId);
                                     componentUpdate["system.loaned"]=newLoans;
                                     await component.update(componentUpdate);
                                 }
@@ -1316,12 +1327,8 @@ Hooks.on("updateCombat", async (combat) => {
                         }
 
                     });
-                    let note=fromUuidSync(repair.system.calendar.noteId);
-                    try {
-                        await note.delete();
-                    } catch (e) {
-                        //Catch Statement
-                    }
+                    SimpleCalendar.api.removeNote(repair.system.calendar.noteId);
+                    
 
                     let queue=house.system.repairBays.queue;
                     let newCurrent=currentRepairIds.filter(function(id){return id!==repairId});
@@ -1339,7 +1346,7 @@ Hooks.on("updateCombat", async (combat) => {
                         let formattedTime=SimpleCalendar.api.timestampToDate(noteTime,calendar.id);
 
                         let note=await SimpleCalendar.api.addNote(newCurrentRepair.name, repair.system.description.value, formattedTime, formattedTime, true, false, ["Repairs"], calendar.id, '', ["default"], [game.user.id]);
-                        await newCurrentRepair.update({"system.calendar.noteId":note.uuid});
+                        await newCurrentRepair.update({"system.calendar.noteId":note.id});
                     }
                     let chatMsg={user: game.user._id,
                                  speaker:{house,alias:game.user.character.name},

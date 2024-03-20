@@ -55,7 +55,7 @@ export class CreateRepairEntryDialog extends Application {
         html.find('.repair-amount').keyup(this._onRepairAmountChange.bind(this));
         html.find('.time-modifier').keyup(this._onTimeModChange.bind(this));
         html.find('.cost-modifier').keyup(this._onCostModChange.bind(this));
-        html.find('refit-input').keyup(this._onRefitChoiceChange.bind(this));
+        html.find('.refit-input').keyup(this._onRefitChoiceChange.bind(this));
         html.find('.repaircheckbox').click(this._onRepairEntryChosen.bind(this));
         html.find('.repair-type-select').change(this._onRepairTypeChange.bind(this));
         html.find('.repair-test').click(this._onRepairTestClick.bind(this));
@@ -306,6 +306,7 @@ export class CreateRepairEntryDialog extends Application {
         let difficulty=50;
         let actor=game.user.character;
         let chatString="<div class='flexcol'>";
+
         if(this.options.mode==="repair"){
             $('.repair input:checkbox:checked').each(function(){
 
@@ -341,7 +342,7 @@ export class CreateRepairEntryDialog extends Application {
             let coreChange=document.getElementById('core').checked;
             const repairTypeConfig=game.fortyk.FORTYK.vehicleRepairCostTimeDiff;
             let armorPointsConfig=repairTypeConfig.armordmg;
-            let difficulty=[]
+            let difficulty=[];
             if(armorPointRefits>0){
                 if(admech&&tech){
                     difficulty.push(armorPointsConfig.hasTechnAdmech);
@@ -354,9 +355,9 @@ export class CreateRepairEntryDialog extends Application {
                 }
                 chatString+=`<span class="chat-line">Armor Points Changed: ${armorPointRefits}</span>`;
             }
-
-            totalCost+=armorPointRefits*armorPointsConfig.cost;
-            totalCost+=armorPointRefits*armorPointsConfig.time;
+            let armorratio=armorPointRefits/armorPointsConfig.amount;
+            totalCost+=armorratio*armorPointsConfig.cost;
+            totalTime+=armorratio*armorPointsConfig.time;
             let weaponsRefitsConfig=repairTypeConfig.refittitanicweapon;
             if(weaponRefits>0){
 
@@ -459,6 +460,16 @@ export class CreateRepairEntryDialog extends Application {
         this.options.difficulty=difficulty;
         let miscTime=this.options.timeMod/100;
         let miscCost=this.options.costMod/100;
+        miscCost*=typeCost;
+        miscTime*=typeTime;
+        let knight=this.options.knight;
+        if(knight&&knight.getFlag("fortyk","rugged")){
+            miscCost*=0.75;
+            miscTime*=0.75;
+
+        }
+        document.getElementById("time-input").value=(miscTime*100).toFixed(2);
+        document.getElementById("cost-input").value=(miscCost*100).toFixed(2);
         let dos=this.options.dos;
         let dosTime=null;
         var i=0;
@@ -471,12 +482,12 @@ export class CreateRepairEntryDialog extends Application {
             i++;
         }while(dosTime===null);
         let moddedTime=totalTime-dos*dosTime;
-        moddedTime*=miscTime*typeTime;
+        moddedTime*=miscTime;
         moddedTime=Math.ceil(moddedTime);
         this.options.totalModdedTime=moddedTime;
         let timeString=this.timeString(moddedTime,"");
         document.getElementById("modtime").innerHTML=timeString;
-        let moddedCost=Math.ceil(totalCost*Math.max(0.2,(typeCost*miscCost*(1-dos*0.05))));
+        let moddedCost=Math.ceil(totalCost*Math.max(0.2,(miscCost*(1-dos*0.05))));
         document.getElementById("modcost").innerHTML=moddedCost;
         this.options.totalModdedCost=moddedCost;
 
@@ -503,67 +514,99 @@ export class CreateRepairEntryDialog extends Application {
         let knight=this.options.knight;
         let house=this.options.actor;
         let calendar=SimpleCalendar.api.getCurrentCalendar();
-        let entryData={
-            name:`${knight.name} repairs`,
-            type:"repairEntry",
-            system:{
-                "time":{
-                    "value":time,
-                    "type":"Number"
-                },
-                "cost":{
-                    "value":cost,
-                    "type":"Number"
-                },
-                "calendar":{
-                    "calendarId":calendar.id,
-                    "noteId":""
-                },
-                "knight":{
-                    "value":knight.id,
-                    "type":"String"
-                },
-                "repairs":{
-                    "entries":repairs,
-                    "wounds":woundRepairs
-                },
-                "description":{
-                    "value":description
-                }
-            }
-        }
-        let entryItem=await house.createEmbeddedDocuments("Item",[entryData]);
-        entryItem=entryItem[0]
-        let activeRepairs=house.system.repairBays.current;
-        let repairNumber=house.system.repairBays.value;
-        let repairQueue=house.system.repairBays.queue;
-        let houseUpdates={};
-        let houseMoney=parseInt(house.system.wealth.value);
-        houseMoney-=cost;
-        houseUpdates["system.wealth.value"]=houseMoney;
-        if(activeRepairs.length>=repairNumber){
-            repairQueue.push(entryItem.id);
-            houseUpdates["system.repairBays.queue"]=repairQueue;
-        }else{
-            activeRepairs.push(entryItem.id);
-            houseUpdates["system.repairBays.current"]=activeRepairs;
+        let entries=house.itemTypes.repairEntry;
+        let entry=entries.filter(entry=>entry.system.knight.value===knight.id)
+        if(entry.length>0){
+            let update={};
+            let updateEntry=entry[0];
+            let entryData=updateEntry.system;
+            update["system.time.value"]=time+entryData.time.value;
+            update["system.cost.value"]=cost+entryData.cost.value;
+            update["system.description.value"]=entryData.description.value+description;
+            update["system.repairs.entries"]=entryData.repairs.entries.concat(repairs);
+            update["system.repairs.wounds"]=entryData.repairs.wounds+woundRepairs;
+            SimpleCalendar.api.removeNote(entryData.calendar.noteId);
             let currentTime=SimpleCalendar.api.timestamp(calendar.id);
 
-            let noteTime=currentTime+time;
+            let noteTime=currentTime+time+entryData.time.value;
 
             let formattedTime=SimpleCalendar.api.timestampToDate(noteTime,calendar.id);
 
-            let note=await SimpleCalendar.api.addNote(entryItem.name, description, formattedTime, formattedTime, true, false, ["Repairs"], calendar.id, '', ["default"], [game.user.id]);
-            await entryItem.update({"system.calendar.noteId":note.uuid});
+            let note=await SimpleCalendar.api.addNote(`${knight.name} repairs`, description, formattedTime, formattedTime, true, false, ["Repairs"], calendar.id, '', ["default"], [game.user.id]);
+            update["system.calendar.noteId"]=note.id;
+            updateEntry.update(update);
+            let chatMsg={user: game.user._id,
+                         speaker:{house,alias:game.user.character.name},
+                         content:description,
+                         classes:["fortyk"],
+                         flavor:`Added repairs for ${knight.name}, Total Cost:${cost}`,
+                         author:game.user.character.name};
+            await ChatMessage.create(chatMsg,{});
+
+        }else{
+            let entryData={
+                name:`${knight.name} repairs`,
+                type:"repairEntry",
+                system:{
+                    "time":{
+                        "value":time,
+                        "type":"Number"
+                    },
+                    "cost":{
+                        "value":cost,
+                        "type":"Number"
+                    },
+                    "calendar":{
+                        "calendarId":calendar.id,
+                        "noteId":""
+                    },
+                    "knight":{
+                        "value":knight.id,
+                        "type":"String"
+                    },
+                    "repairs":{
+                        "entries":repairs,
+                        "wounds":woundRepairs
+                    },
+                    "description":{
+                        "value":description
+                    }
+                }
+            }
+            let entryItem=await house.createEmbeddedDocuments("Item",[entryData]);
+            entryItem=entryItem[0];
+            let activeRepairs=house.system.repairBays.current;
+            let repairNumber=house.system.repairBays.value;
+            let repairQueue=house.system.repairBays.queue;
+            let houseUpdates={};
+            let houseMoney=parseInt(house.system.wealth.value);
+            houseMoney-=cost;
+            houseUpdates["system.wealth.value"]=houseMoney;
+            if(activeRepairs.length>=repairNumber){
+                repairQueue.push(entryItem.id);
+                houseUpdates["system.repairBays.queue"]=repairQueue;
+            }else{
+                activeRepairs.push(entryItem.id);
+                houseUpdates["system.repairBays.current"]=activeRepairs;
+                let currentTime=SimpleCalendar.api.timestamp(calendar.id);
+
+                let noteTime=currentTime+time;
+
+                let formattedTime=SimpleCalendar.api.timestampToDate(noteTime,calendar.id);
+
+                let note=await SimpleCalendar.api.addNote(entryItem.name, description, formattedTime, formattedTime, true, false, ["Repairs"], calendar.id, '', ["default"], [game.user.id]);
+                await entryItem.update({"system.calendar.noteId":note.id});
+            }
+            await house.update(houseUpdates);
+            let chatMsg={user: game.user._id,
+                         speaker:{house,alias:game.user.character.name},
+                         content:description,
+                         classes:["fortyk"],
+                         flavor:`Created repair entry for ${knight.name}, Total Cost:${cost}`,
+                         author:game.user.character.name};
+            await ChatMessage.create(chatMsg,{});
         }
-        await house.update(houseUpdates);
-        let chatMsg={user: game.user._id,
-                        speaker:{house,alias:game.user.character.name},
-                        content:description,
-                        classes:["fortyk"],
-                        flavor:`Created repair entry for ${knight.name}, Total Cost:${cost}`,
-                        author:game.user.character.name};
-        await ChatMessage.create(chatMsg,{});
+
         this.close();
     }
     async _onRepairTestClick(event){
@@ -668,5 +711,6 @@ export class CreateRepairEntryDialog extends Application {
         let knight=game.actors.get(knightId);
         this.options.knight=knight;
         await this._render();
+        this.updateCosts();
     }
 }

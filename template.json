@@ -998,6 +998,8 @@
             },
             "repairBays":{
                 "value":0,
+                "cost":100,
+                "time":100,
                 "current":[],
                 "queue":[],
                 "type":"Number"

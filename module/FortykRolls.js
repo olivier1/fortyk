@@ -272,6 +272,7 @@ returns the roll message*/
                     hits=Math.min(testDos,wsBonus);
                 }
 
+
                 if(attackTarget!==undefined&&attackTarget.actor.type!=="vehicle"){
                     let horde=attackTarget.actor.system.horde.value;
                     if(horde){
@@ -280,6 +281,9 @@ returns the roll message*/
                             hits+=testDos*3;
                         }
                     }
+                }
+                if(fortykWeapon.getFlag("fortyk","mirror")){
+                    hits=hits*2;
                 }
             }else if(type==="rangedAttack"){
                 let rof=1;
@@ -572,7 +576,7 @@ returns the roll message*/
 
                     }
                     contentStr+="</div>"
-                  
+
                     let instancedTemplates= await scene.createEmbeddedDocuments("MeasuredTemplate",templates);
 
                     let chatScatter= {user: game.user._id,
@@ -1483,10 +1487,22 @@ returns the roll message*/
                             }else{
                                 pen=parseInt(weapon.system.pen.value); 
                             }
+
                             damageOptions.results.push(`<span>Base weapon penetration: ${pen}</span>`);
                             pen+=extraPen;
                             if(extraPen){
                                 damageOptions.results.push(`<span>Additional penetration: ${extraPen}</span>`);
+                            }
+                            if(vehicle&&weapon.type==="rangedWeapon"&&weapon.getFlag("fortyk","tankhunter")&&!self){
+                                let bsb;
+                                if(actor.type==="vehicle"){
+                                    bsb=actor.system.crew.bsb;
+                                    bsb??=Math.floor(actor.system.crew.bs/10);
+                                }else{
+                                    bsb=actor.system.characteristics.bs.bonus;
+                                }
+                                pen+=bsb;
+                                damageOptions.push(`<span>Tank hunter additional penetration: ${bsb}</span>`)
                             }
                             //smite the unholy
                             if(actor.getFlag("fortyk","smitetheunholy")&&tarActor.getFlag("fortyk","fear")&&weapon.type==="meleeWeapon"){
@@ -1670,12 +1686,14 @@ returns the roll message*/
 
                             let gaussAmount=-gaussAmt._total;
                             let path="";
+
+                            let gaussActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("corrode")]);
                             if(vehicle){
                                 path=`system.facings.${facing.path}.armor`;
+                                gaussActiveEffect.flags={fortyk:{repair:"armordmg"}};
                             }else{
                                 path=`system.characterHitLocations.${curHit.value}.armorMod`;
                             }
-                            let gaussActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("corrode")]);
                             gaussActiveEffect.changes=[];
                             let changes={key:path,value:gaussAmount,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}
                             gaussActiveEffect.changes.push(changes);
@@ -1938,7 +1956,7 @@ returns the roll message*/
                         } 
                         //thermal weapon
                         let heat=0;
-                        if(vehicle&&fortykWeapon.getFlag("fortyk","thermal")){
+                        if(vehicle&&!tarActor.getFlag("fortyk","platinginsulation")&&fortykWeapon.getFlag("fortyk","thermal")){
                             damageOptions.results.push(`<div class="chat-target flexcol">`)
                             if(tarActor.getFlag("fortyk","superheavy")){
                                 damageOptions.results.push(`Gains 1 heat from thermal weapon.`);
@@ -2329,14 +2347,14 @@ returns the roll message*/
                             await this.applyDead(tar,tarActor,`${actor.name}`);
                             tarActor.flags.core.dead=true;
                         }else if(newWounds[tarNumbr]<0&&damage>0){
-                            let crit=Math.abs(newWounds[tarNumbr])-1;
+                            let crit=Math.abs(newWounds[tarNumbr]);
                             if(tarActor.getFlag("fortyk","superheavy")){
                                 crit=Math.floor(crit/10);
                             }
                             if(vehicle){
-                                await this.vehicleCrits(tar,crit+1,curHit.value,ignoreSON,activeEffects,"",vehicleOptions);
+                                await this.vehicleCrits(tar,crit,curHit.value,ignoreSON,activeEffects,"",vehicleOptions);
                             }else{
-                                await this.critEffects(attacker,tar,crit+1,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects);
+                                await this.critEffects(attacker,tar,crit,curHit.value,weapon.system.damageType.value,ignoreSON,activeEffects);
                             }
 
                         }
@@ -2470,9 +2488,12 @@ returns the roll message*/
         if(!vehicle&&tar!==null&&(tar.actor.system.horde.value||tar.actor.system.formation.value)){crit=false}
         //if righteous fury roll the d5 and spew out the crit result
         if(!vehicle&&tar!==null&&crit&&tar.actor.system.suddenDeath.value){
-            await this.applyDead(tar,tar.actor,'<span class="chat-righteous">Righteous Fury</span>');
-            tar.actor.flags.core.dead=true;
-            return false;
+            if(!tar.actor.getFlag("fortyk","stuffoffnightmares")||ignoreSON&&tar.actor.getFlag("fortyk","stuffoffnightmares")){
+                await this.applyDead(tar,tar.actor,'<span class="chat-righteous">Righteous Fury</span>');
+                tar.actor.flags.core.dead=true;
+                return false;
+            }
+
         }
         if((crit&&damage>0)){
             let diceStr="1d5";
@@ -2518,14 +2539,16 @@ returns the roll message*/
         if(actor.type==="vehicle"){vehicle=true;}
         let rightMes
         //check for vehicle, vehicle have different crit effects
+        console.log(mesRes,rightMes,FORTYKTABLES.crits[mesDmgType][hitLoc])
         if(threshold){
+            
             rightMes=FORTYKTABLES.thresholdCrits[hitLoc][mesRes-1];
         }else if(vehicle){
             rightMes=FORTYKTABLES.vehicleCrits[hitLoc][mesRes-1];
         }else{
             rightMes=FORTYKTABLES.crits[mesDmgType][hitLoc][mesRes-1];
         }
-
+        console.log(mesRes,rightMes,FORTYKTABLES.crits[mesDmgType][hitLoc])
         //parse for tests inside the crit message
         let testStr=rightMes.match(/(?<=\#)(.*?)(?=\^)/g);
         let tests=[]
@@ -2624,10 +2647,10 @@ returns the roll message*/
                 await this.energyArmCrits(attacker,actor,num,"right",ignoreSON,activeEffects,source);
                 break;
             case "lLeg":
-                await this.energyLegCrits(actor,num,"left",ignoreSON,activeEffects,source);
+                await this.energyLegCrits(attacker,actor,num,"left",ignoreSON,activeEffects,source);
                 break;
             case "rLeg":
-                await this.energyLegCrits(actor,num,"right",ignoreSON,activeEffects,source);
+                await this.energyLegCrits(attacker,actor,num,"right",ignoreSON,activeEffects,source);
                 break;
         }
     }
@@ -2999,6 +3022,7 @@ returns the roll message*/
             activeEffects=[];
         }
         let ae
+        console.log(leg, num)
         let rolls=await this._critMsg("lLeg",leg+" Leg", num, "Energy",actor,source);
         switch(num){
             case 1:

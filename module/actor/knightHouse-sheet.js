@@ -119,12 +119,8 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
                                 await house.update({"system.repairBays.current":current,"system.repairBays.queue":queueArray});
                             }
                             console.log(item)
-                            let note=fromUuidSync(item.system.calendar.noteId);
-                            try {
-                                note.delete();
-                            } catch (e) {
-                                //Catch Statement
-                            }
+                            SimpleCalendar.api.removeNote(item.system.calendar.noteId);
+                            
                             let money=item.system.cost.value;
                             await this.actor.update({"system.wealth.value":this.actor.system.wealth.value+money});
                             
@@ -137,7 +133,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
                             await ChatMessage.create(chatMsg,{});
                             await this.actor.deleteEmbeddedDocuments("Item",[itemId]);
 
-                            this.render(true);
+                            this.render(true,{focus:false});
                         }
                     },
                     cancel:{
@@ -151,7 +147,9 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
     }
     _repairEntryCreate(evet){
         event.preventDefault();
-        let dialog=new CreateRepairEntryDialog({actor:this.actor});
+        let dialog=new CreateRepairEntryDialog({actor:this.actor,
+                                               timeMod:this.actor.system.repairBays.time,
+                                               costMod:this.actor.system.repairBays.cost});
         dialog.render(true,{title:"Create Repair Entry"});
     }
     _onComponentCategoryChange(event){

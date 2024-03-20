@@ -23,13 +23,13 @@
         </div>
         <div class="flexcol">
             <label>Time Modifier(%):</label>
-            <input type="number" class="time-modifier" value="{{timeMod}}" />
+            <input type="number" class="time-modifier" id="time-input" value="{{timeMod}}" disabled />
 
 
         </div>
         <div class="flexcol">
             <label>Cost Modifier(%):</label>
-            <input type="number" class="cost-modifier" value="{{costMod}}" />
+            <input type="number" class="cost-modifier" id="cost-input" value="{{costMod}}" disabled />
 
 
         </div>
@@ -75,7 +75,7 @@
 
         <div class="tab refit" data-group="primary" data-tab="refit"{{#unless knight}}hidden{{/unless}}>
             <div class="flexcol">
-                <label>Components to Add/Remove:</label>
+                <label>Space of Components to Add/Remove:</label>
                 <input type="number" class="refit-input" data-type="components" name="tentacles" min="0" max="999" value="0" />
             </div>
             <div class="flexcol">

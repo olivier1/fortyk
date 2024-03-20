@@ -1107,7 +1107,9 @@ export class FortyKActor extends Actor {
                     pilot.prepareData(); 
                 }
                 data.crew.ws=parseInt(pilot.system.characteristics.ws.total);
+                data.crew.wsb=pilot.system.characteristics.ws.bonus;
                 data.crew.bs=parseInt(pilot.system.characteristics.bs.total);
+                data.crew.bsb=pilot.system.characteristics.bs.bonus;
                 data.secChar.initiative=pilot.system.secChar.initiative;
                 let operate=parseInt(pilot.system.skills[data.knight.operate]);
                 if(isNaN(operate)){
