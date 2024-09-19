@@ -4,76 +4,44 @@
     <div class="grid grid-4col">
         
         <select class="apt1-select" name="system.aptitudes.0" data-dtype="String">
-            {{#select system.aptitudes.[0]}}
             <option value="">None</option>
-            {{#each aptitudes as |apt|}}
-
-            <option value="{{apt.key}}">{{apt.label}}</option>
-            {{/each}}
-            {{/select}}
+            {{selectOptions aptitudes selected=system.aptitudes.[0] valueAttr="key" labelAttr="label"}}
+        
         </select>
         <select class="apt1-select" name="system.aptitudes.1" data-dtype="String">
-            {{#select system.aptitudes.[1]}}
+            
             <option value="">None</option>
-            {{#each aptitudes as |apt|}}
-
-            <option value="{{apt.key}}">{{apt.label}}</option>
-            {{/each}}
-            {{/select}}
+           {{selectOptions aptitudes selected=system.aptitudes.[1] valueAttr="key" labelAttr="label"}}
         </select>
         <select class="apt1-select" name="system.aptitudes.2" data-dtype="String">
-            {{#select system.aptitudes.[2]}}
+           
             <option value="">None</option>
-            {{#each aptitudes as |apt|}}
-
-            <option value="{{apt.key}}">{{apt.label}}</option>
-            {{/each}}
-            {{/select}}
+            {{selectOptions aptitudes selected=system.aptitudes.[2] valueAttr="key" labelAttr="label"}}
         </select>
         <select class="apt1-select" name="system.aptitudes.3" data-dtype="String">
-            {{#select system.aptitudes.[3]}}
+            
             <option value="">None</option>
-            {{#each aptitudes as |apt|}}
-
-            <option value="{{apt.key}}">{{apt.label}}</option>
-            {{/each}}
-            {{/select}}
+            {{selectOptions aptitudes selected=system.aptitudes.[3] valueAttr="key" labelAttr="label"}}
         </select>
         <select class="apt1-select" name="system.aptitudes.4" data-dtype="String">
-            {{#select system.aptitudes.[4]}}
+          
             <option value="">None</option>
-            {{#each aptitudes as |apt|}}
-
-            <option value="{{apt.key}}">{{apt.label}}</option>
-            {{/each}}
-            {{/select}}
+            {{selectOptions aptitudes selected=system.aptitudes.[4] valueAttr="key" labelAttr="label"}}
         </select>
         <select class="apt1-select" name="system.aptitudes.5" data-dtype="String">
-            {{#select system.aptitudes.[5]}}
+        
             <option value="">None</option>
-            {{#each aptitudes as |apt|}}
-
-            <option value="{{apt.key}}">{{apt.label}}</option>
-            {{/each}}
-            {{/select}}
+           {{selectOptions aptitudes selected=system.aptitudes.[5] valueAttr="key" labelAttr="label"}}
         </select>
         <select class="apt1-select" name="system.aptitudes.6" data-dtype="String">
-            {{#select system.aptitudes.[6]}}
+            
             <option value="">None</option>
-            {{#each aptitudes as |apt|}}
-
-            <option value="{{apt.key}}">{{apt.label}}</option>
-            {{/each}}
-            {{/select}}
+            {{selectOptions aptitudes selected=system.aptitudes.[6] valueAttr="key" labelAttr="label"}}
         </select>
         <select class="apt1-select" name="system.aptitudes.7" data-dtype="String">
-            {{#select system.aptitudes.[7]}}
+          
             <option value="">None</option>
-            {{#each aptitudes as |apt|}}
-
-            <option value="{{apt.key}}">{{apt.label}}</option>
-            {{/each}}
-            {{/select}}
+           {{selectOptions aptitudes selected=system.aptitudes.[7] valueAttr="key" labelAttr="label"}}
         </select>
         
     </div>

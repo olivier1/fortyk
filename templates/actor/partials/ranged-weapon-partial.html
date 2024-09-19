@@ -1,0 +1,135 @@
+<div class="weapons grid grid-2col">
+                <div class="weapon-name">
+                    {{#if flags.fortyk.alternateprofiles}}
+
+                    <select class="profile-select" data-id="{{this.id}}">
+                        {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
+                    </select>
+                    {{else}}
+
+                    <span>{{this.name}}</span>
+
+                    {{/if}}
+                </div>
+
+                <div class="list-item">
+                    <span>Attack: </span> 
+                    {{#if (greaterThan this.system.clip.value 0)}}
+                    {{#if this.flags.fortyk.spray}}
+                    <span class="spray-attack rollable button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span>
+                    {{else}}
+
+                    <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../system.characteristics.bs.total}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="bs">Roll</span>
+
+                    {{/if}}
+                    {{else}}
+                    <span class="weapon-reload button" data-weapon="{{this.id}}" >Reload</span>
+                    {{/if}}
+                </div>
+                <div class="list-item">
+                    <span>Damage: </span> 
+                    <a class="damage-roll button" data-label="{{this.name}}" data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.system.damageFormula.value}}</a>
+
+                </div>
+                {{#if this.flags.fortyk.force}}
+                <div class="list-item">
+
+                    <a class="force-roll button" data-label="Force"> Force</a>
+
+
+                </div>
+                {{/if}}
+                {{#if this.flags.fortyk.maximal}}
+                <div class="list-item">
+                    <span>Maximal: <input type="checkbox" class="maximal" data-item-id="{{this.id}}"  {{checked this.flags.fortyk.maximalMode}}></span>
+
+
+                </div>
+                {{/if}}
+                {{#if this.flags.fortyk.lasModal}}
+                <div class="list-item">
+                    <span>Las Fire Mode: 
+                        <select class="lasMode"  data-item-id="{{this.id}}" data-dtype="Number">
+                            {{selectOptions this.FORTYK.lasModes selected=this.flags.fortyk.lasMode valueAttr="key" labelAttr="label"}}
+                        </select>
+                    </span>
+
+
+                </div>
+                {{/if}}
+
+                {{#unless (contains this.system.class.value "thrown")}}
+                <div class="list-item ammo-list">
+
+                    <label>Current Ammo:</label>
+                    <select class="weapon-ammo" data-weapon="{{this.id}}" data-previous="{{this.system.ammo._id}}">
+
+                       
+                        <option value="">None</option>
+                        {{selectOptions this.validAmmos selected=this.system.ammo._id valueAttr="_id" labelAttr="label"}}
+                        
+
+                    </select>
+                </div>
+                {{else}}
+                <div class="list-item">
+                    <span>Amount: {{this.system.amount.value}}</span> 
+
+
+                </div>
+                {{/unless}}
+                <div class="list-item flexrow">
+                    <span>Current Clip: </span>
+
+                    <input class="item-text-input" type="text" data-target="system.clip.value"  value="{{this.system.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
+                    <span> / </span>
+                    <span>{{this.system.clip.max}}</span>
+
+
+                </div>
+                <div class="list-item">
+                    <span>Range: {{this.system.range.value}}m</span>
+                </div>
+                <div class="list-item">
+                    <span>Penetration: {{this.system.pen.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <label>Rate of Fire: {{this.system.rof.[0].value}}/{{this.system.rof.[1].value}}/{{this.system.rof.[2].value}}</label>
+                </div>
+                <div class="list-item">
+                    <span>Reload: {{this.system.reload.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <span>Special: 
+
+                        {{#each this.flags.fortyk as |flag key|}}
+
+
+                        {{#if (checkSpecial this)}}
+
+                        {{#with (lookup ../FORTYK.weaponFlags [key])~}}
+                        <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                            {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
+                        {{/if}}{{/each}}
+                    </span>
+
+                </div>
+                <div class="list-item">
+                    <span>Damage Type: {{this.system.damageType.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <span>Weapon Class: {{this.system.class.value}}</span>
+
+
+                </div>
+                <div class="list-item">
+                    <span>Weapon Type: {{this.system.type.value}}</span>
+
+
+                </div>
+
+            </div>

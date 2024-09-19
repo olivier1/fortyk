@@ -19,14 +19,8 @@
             <div class="descrRow flexcol">
                 <span class="descrSpan">Race:</span>
                 <select class="raceSelect" name="system.race.value" data-dtype="String">
-                    {{#select system.race.value}}
-
-                    {{#each races}}
-
-                    <option value="{{this}}">{{this}}</option>
-
-                    {{/each}}
-                    {{/select}}
+                    {{selectOptions races selected=system.race.value valueAttr="value" labelAttr="value"}}
+                    
                 </select>
 
             </div>
@@ -109,7 +103,7 @@
                 <label for="system.fatigue.value" class="resource-label">Influence</label>
                 <div class="resource-content flexrow flex-center flex-between">
                     <input type="text" name="system.characteristics.inf.value" value="{{system.characteristics.inf.value}}" data-dtype="Number"/>
-                    <span> -> </span>
+                    <span> -&gt; </span>
                     <span class="char-total rollable button" data-roll-type="char" data-target="{{system.characteristics.inf.total}}" data-label="{{system.characteristics.inf.label}}" data-char="inf">{{system.characteristics.inf.total}}</span>
                 </div>
             </div>
@@ -176,18 +170,13 @@
             <div class="charCross flexcol flex-group-center">  
                 <span class="characteristicsSpan">Adv</span>
             </div>
+            {{debug}}
             {{#each system.characteristics as |char key|}}
             {{#unless (compareString key "inf")}}
 
             <select class="charSelect" name="system.characteristics.{{key}}.advance" data-dtype="Number">
-                {{#select char.advance}}
-                <option value="0">0%</option>
-                <option value="5">5%</option>
-                <option value="10">10%</option>
-                <option value="15">15%</option>
-                <option value="20">20%</option>
-                <option value="25">25%</option>
-                {{/select}}
+                {{selectOptions ../advances selected=char.advance valueAttr="value" labelAttr="label"}}
+                
             </select>
             {{/unless}}
             {{/each}}

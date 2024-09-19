@@ -35,4 +35,13 @@ export const registerSystemSettings = function() {
     type: Boolean,
     default: true
     })
+    //Setting to enable split corruption for black crusade
+    game.settings.register("fortyk","bcCorruption",{
+        name: "Black Crusade Corruption",
+        hint: "Enable split corruption tracking for Black Crusade",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false
+    })
 }

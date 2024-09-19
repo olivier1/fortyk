@@ -176,22 +176,13 @@
                 <a class="list-item sort-button" data-sort-type="sp" data-path="system.sp.value" data-item-type="components">SP</a>
                 <span class="list-button"></span>
                 <span class="list-button"></span>
-{{debug this}}
+                {{debug this}}
                 {{#each actor.components as |t key|}}
 
                 <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.system.description.value}}">{{t.name}}</a>
                 <select class="component-status" data-id="{{this._id}}">
-
-                    {{#select this.system.status.value}}
-
+                    {{selectOptions ../spaceshipComponentStatuses selected=system.status.value valueAttr="value" labelAttr="value"}}
                     
-                    {{#each ../spaceshipComponentStatuses}}
-
-                    <option value="{{this}}" >{{this}}</option>
-
-                    {{/each}}
-
-                    {{/select}}
                 </select>
                 <span class="item-descr list-item">{{t.system.power.value}}</span>
                 <span class="item-descr list-item">{{t.system.space.value}}</span>
@@ -255,10 +246,10 @@
                 {{#if (contains this.system.type.value "Torpedo")}}
                 <div class="list-item">
                     <select class="torpedo-ammo" data-weapon="{{this._id}}">
-
+                        
                         {{#select this.system.torpedo.id}}
-                        <option value="" data-damage=" "data-rating="0">None</option>
-
+                        <option value="" data-damage=" " data-rating="0">None</option>
+                        
                         {{#each ../actor.torpedoes}}
 
                         <option value="{{this._id}}" data-damage="{{this.system.damage.value}}" data-rating="{{this.system.rating.value}}">{{this.name}}</option>
@@ -276,7 +267,7 @@
                     <select class="torpedo-ammo" data-weapon="{{this._id}}">
 
                         {{#select this.system.torpedo.id}}
-                        <option value="" data-damage=" "data-rating="0">None</option>
+                        <option value="" data-damage=" " data-rating="0">None</option>
 
                         {{#each ../actor.bombers}}
 
@@ -294,16 +285,16 @@
                 <div class="list-item">
                     <span>Attack:</span>
                     {{#if (contains this.system.type.value "Hangar")}}
-                    <a class=" rollable button" data-label="Spaceship Attack"data-roll-type="char"data-target="{{../hangarAttack}}"data-char=""data-rating="{{this.system.torpedo.rating}}"> {{../hangarAttack}}+{{this.system.torpedo.rating}}</a>
+                    <a class=" rollable button" data-label="Spaceship Attack" data-roll-type="char" data-target="{{../hangarAttack}}" data-char="" data-rating="{{this.system.torpedo.rating}}"> {{../hangarAttack}}+{{this.system.torpedo.rating}}</a>
                     {{else}}
-                    <a class=" rollable button" data-label="Spaceship Attack"data-roll-type="char"data-target="{{../bs}}"data-char="" data-rating="{{this.system.torpedo.rating}}"> {{../bs}}{{#if (contains this.system.type.value "Torpedo")}}+{{this.system.torpedo.rating}} {{/if}}</a>
+                    <a class=" rollable button" data-label="Spaceship Attack" data-roll-type="char" data-target="{{../bs}}" data-char="" data-rating="{{this.system.torpedo.rating}}"> {{../bs}}{{#if (contains this.system.type.value "Torpedo")}}+{{this.system.torpedo.rating}} {{/if}}</a>
                     {{/if}}
 
 
                 </div>
                 <div class="list-item">
                     <span>Damage: </span> 
-                    <a class="space-damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damage.value}}" data-weapon="{{this._id}}"> {{this.system.damage.value}}</a>
+                    <a class="space-damage-roll button" data-label="{{this.name}}" data-formula="{{this.system.damage.value}}" data-weapon="{{this._id}}"> {{this.system.damage.value}}</a>
 
                 </div>
 

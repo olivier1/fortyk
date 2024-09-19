@@ -2,7 +2,7 @@ export class ActiveEffectDialog extends Dialog {
 
     static get defaultOptions() {
 
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fortyk"],
             template: "systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html",
             default:null
@@ -20,6 +20,7 @@ export class ActiveEffectDialog extends Dialog {
 
     } 
     getData(){
+       
         return this.data;
     }
     async _onAeClick(event){

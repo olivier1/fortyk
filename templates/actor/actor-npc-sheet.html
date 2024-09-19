@@ -13,14 +13,7 @@
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Race:</span>
                     <select class="raceSelect" name="system.race.value" data-dtype="String">
-                        {{#select system.race.value}}
-
-                        {{#each races}}
-
-                        <option value="{{this}}">{{this}}</option>
-
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions races selected=system.race.value valueAttr="value" labelAttr="value"}}
                     </select>
 
                 </div>
@@ -178,13 +171,9 @@
                             {{#if flags.fortyk.alternateprofiles}}
 
                             <select class="profile-select" data-id="{{this.id}}">
-                                {{#select flags.fortyk.currentprofile}}
                                 <option value="">{{this._source.name}}</option>
-
-                                {{#each flags.fortyk.instancedProfiles}}
-                                <option value="{{this.uuid}}">{{this.name}}</option>
-                                {{/each}}
-                                {{/select}}
+                                {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
+                               
                             </select>
                             {{else}}
 
@@ -200,7 +189,7 @@
                         </div>
                         <div class="list-item">
                             <span>Damage: </span>
-                            <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.system.damageFormula.value}}</a>
+                            <a class="damage-roll button" data-label="{{this.name}}" data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.system.damageFormula.value}}</a>
                         </div>
                         {{#if this.flags.fortyk.force}}
                         <div class="list-item">
@@ -261,13 +250,9 @@
                             {{#if flags.fortyk.alternateprofiles}}
 
                             <select class="profile-select" data-id="{{this.id}}">
-                                {{#select flags.fortyk.currentprofile}}
                                 <option value="">{{this._source.name}}</option>
-
-                                {{#each flags.fortyk.instancedProfiles}}
-                                <option value="{{this.uuid}}">{{this.name}}</option>
-                                {{/each}}
-                                {{/select}}
+                                {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
+                               
                             </select>
                             {{else}}
 
@@ -281,6 +266,8 @@
                             <span>Attack: </span>
                             {{#if this.flags.fortyk.spray}}
                             <span class="spray-attack rollable button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span>
+                            {{else if this.flags.fortyk.torrent}}
+                            <span class="torrent-attack rollable button" data-roll-type="torrentAttack" data-item-id="{{this.id}}" data-label="Torrent Attack" >Torrent</span>
                             {{else}}
 
                             <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../system.characteristics.bs.total}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="bs">Roll</span>
@@ -313,13 +300,8 @@
                         <div class="list-item">
                             <span>Las Fire Mode: 
                                 <select class="lasMode"  data-item-id="{{this._id}}" data-dtype="Number">
-                                    {{#select this.flags.fortyk.lasMode}}
-
-                                    {{#each this.FORTYK.lasModes}}
-
-                                    <option value="{{@index}}">{{this}}</option>
-                                    {{/each}}
-                                    {{/select}}
+                                    {{selectOptions this.FORTYK.lasModes selected=this.flags.fortyk.lasMode valueAttr="key" labelAttr="label"}}
+                                    
                                 </select>
                             </span>
 
@@ -415,11 +397,8 @@
                     </div>
                     <span class="section-title">COVER</span>
                     <select class="cover"  name="system.secChar.cover.value">
-                        {{#select system.secChar.cover.value}}
-                        {{#each coverTypes}}
-                        <option value="{{value}}">{{label}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions coverTypes selected=system.secChar.cover.value valueAttr="value" labelAttr="label"}}
+                        
                     </select>
 
                     <div class="flexcol flex-group-center">
@@ -506,14 +485,8 @@
                         </div>
                         <span class="section-title">SIZE</span>
                         <select class="sizeSelect" name="system.secChar.size.value" data-dtype="Number">
-                            {{#select system.secChar.size.value}}
-
-                            {{#each size}}
-
-                            <option value="{{@index}}">{{this.name}}</option>
-
-                            {{/each}}
-                            {{/select}}
+                             {{selectOptions size selected=system.secChar.size.value valueAttr="index" labelAttr="name"}}
+                            
                         </select>
 
                         <div class="flexcol">
@@ -629,12 +602,8 @@
                 <div class="flexrow list-item">
                     <label>Class:</label>
                     <select class="psyType-select" name="system.psykana.psykerType.value" data-dtype="String">
-                        {{#select system.psykana.psykerType.value}}
-                        <option value="bound">Bound</option>
-                        <option value="unbound">Unbound</option>
-                        <option value="daemon">Daemon</option>
-                        <option value="navigator">Navigator</option>
-                        {{/select}}
+                        {{selectOptions psykerTypes selected=system.psykana.psykerType.value valueAttr="value" labelAttr="label"}}
+                       
                     </select>
                 </div>
                 <div class="flexrow list-item">
@@ -644,13 +613,9 @@
                 <div class="flexrow list-item2">
                     <label>Show:</label>
                     <select class="psyType-select" name="system.psykana.filter" data-dtype="String">
-
-                        {{#select system.psykana.filter}}
                         <option value="">All</option>
-                        {{#each psyDisciplines}}
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions psyDisciplines selected=system.psykana.filter valueAttr="value" labelAttr="value"}}
+                       
                     </select>
                 </div>
 
@@ -690,14 +655,10 @@
                         <div class="list-item2">
                             Training:
                             <select class="power-training" data-item-id="{{power._id}}"  name="system.training.value">
-                                {{#select power.system.training.value}}
-                                {{#each FORTYK.navigatorPowerTraining}}
-                                <option value="{{this}}">{{this}}</option>
-                                {{/each}}
+                                {{selectOptions FORTYK.navigatorPowerTraining selected=power.system.training.value valueAttr="value" labelAttr="value"}}
+                               
                             </select>
                         </div>
-
-                        {{/select}}
                         {{/unless}}
                         <label class="list-item">Test Type: {{power.system.testChar.value}}</label>
 

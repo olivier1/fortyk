@@ -36,74 +36,50 @@
         <div class="flexcol">
             <label>Damage Type:</label>
             <select class="damage-type" name="system.damageType.value">
-                {{#select system.damageType.value}}
-                {{#each FORTYK.damageTypes}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-                {{/select}}
+                 {{selectOptions FORTYK.damageTypes selected=system.damageType.value valueAttr="value" labelAttr="value"}}
+                
             </select>
         </div>
         <div class="flexcol">
             <label>Weapon Class:</label>
 
             <select class="weapon-type"  name="system.class.value">
-                {{#select system.class.value}}
-                {{#each FORTYK.meleeWeaponClasses}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions FORTYK.meleeWeaponClasses selected=system.class.value valueAttr="value" labelAttr="value"}}
             </select>
         </div>
         {{#if (contains system.class.value "Shield")}}
         <div class="flexcol">
             <label>Shield Value:</label>
-            <input type="text" class="weapon-mod" value="{{system.shield.value}}" data-target="system.shield.value">
+            <input type="text" class="weapon-mod" value="{{system.shield.value}}" data-target="system.shield.value" data-dtype="Number">
         </div>
         {{/if}}
         <div class="flexcol">
             <label>Weapon Type:</label>
 
             <select class="weapon-type"  name="system.type.value">
-                {{#select system.type.value}}
-                {{#each FORTYK.meleeWeaponTypes}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions FORTYK.meleeWeaponTypes selected=system.type.value valueAttr="value" labelAttr="value"}}
             </select>
         </div>
         {{#if vehicle}}
         <div class="flexcol">
             <label>Mounting:</label>
             <select class="mounting" name="system.mounting.value">
+                {{selectOptions FORTYK.weaponMounts selected=system.mounting.value valueAttr="value" labelAttr="label"}}
 
-                {{#select system.mounting.value}}
-                {{#each FORTYK.weaponMounts}}
-                <option value="{{value}}">{{label}}</option>
-                {{/each}}
-                {{/select}}
             </select>
         </div>
         <div class="flexcol">
             <label>Facing:</label>
             <select class="facing" name="system.facing.value">
-
-                {{#select system.facing.value}}
-                {{#each FORTYK.weaponFacings}}
-                <option value="{{value}}">{{label}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions FORTYK.weaponFacings selected=system.facing.value valueAttr="value" labelAttr="label"}}
+              
             </select>
         </div>
         <div class="flexcol">
             <label>State:</label>
             <select class="state" name="system.state.value">
-
-                {{#select system.state.value}}
+                {{selectOptions FORTYK.itemStates selected=system.state.value}}
                 
-                <option value="O">O</option>
-                <option value="D">D</option>
-                <option value="X">X</option>
-                {{/select}}
             </select>
         </div>
         {{/if}}
@@ -111,31 +87,15 @@
             <label>Item Quality:</label>
 
             <select class="quality"  name="system.quality.value">
-                {{#select system.quality.value}}
-                {{#each FORTYK.itemQualities}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions FORTYK.itemQualities selected=system.quality.value valueAttr="value" labelAttr="value"}}
+                
             </select>
         </div>
         <div class="flexcol">
             <label>Rarity:</label>
             <select class="power-type" name="system.rarity.value">
-                {{#select system.rarity.value}}
-                <option value="100">Ubiquitous</option>
-                <option value="30">Abundant</option>  
-                <option value="20">Plentiful</option>
-                <option value="10">Common</option> 
-                <option value="0">Average</option>
-                <option value="-10">Scarce</option> 
-                <option value="-20">Rare</option>
-                <option value="-30">Very rare</option> 
-                <option value="-40">Extremely rare</option>
-                <option value="-50">Near Unique</option>
-                <option value="-60">Unique</option>
-
-
-                {{/select}}
+                {{selectOptions FORTYK.itemRarity selected=system.rarity.value valueAttr="value" labelAttr="label"}}
+                
             </select>
         </div>
         <div class="flexcol">
@@ -158,15 +118,10 @@
             
                 {{#each flags.fortyk.profiles}}
                 <select class="profile-select" data-index="{{@index}}">
-                  
-                    {{#select this}}
-                    <option value="">Select a profile</option>
-
-                    {{#each ../meleeWeapons}}
                     
-                    <option value="{{this.uuid}}">{{this.name}}</option>
-                    {{/each}}
-                    {{/select}}
+                    <option value="">Select a profile</option>
+                   {{selectOptions ../meleeWeapons selected=this valueAttr="uuid" labelAttr="name"}}
+                  
                 </select>
                 {{/each}}
             </div>

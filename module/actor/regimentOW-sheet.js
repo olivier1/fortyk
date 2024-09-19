@@ -1,10 +1,11 @@
 import {FortykRollDialogs} from "../FortykRollDialogs.js";
 import {FortykRolls} from "../FortykRolls.js";
-export class FortyKOWRegimentSheet extends ActorSheet {
+import FortyKBaseActorSheet from "./base-sheet.js";
+export class FortyKOWRegimentSheet extends FortyKBaseActorSheet {
     
     /** @override */
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/regimentOW-sheet.html",
             width: 666,

@@ -3,8 +3,35 @@
     {{#unless actor.flags.fortyk.incorruptibledevotion}}
     <div class="corruption flexcol">
         <div class="corr-item flexrow">
+            {{#if bcCorruption}}
+            <div class="flexcol">
+                <div class="flexrow">
+                    <div class="flexcol">
+                        <label>Khorne:</label>
+                        <input type="text" name="system.secChar.corruption.khorne" value="{{system.secChar.corruption.khorne}}">
+                    </div>
+                    <div class="flexcol">
+                        <label>Nurgle:</label>
+                        <input type="text" name="system.secChar.corruption.nurgle" value="{{system.secChar.corruption.nurgle}}">
+                    </div>
+                    <div class="flexcol">
+                        <label>Slaanesh:</label>
+                        <input type="text" name="system.secChar.corruption.slaanesh" value="{{system.secChar.corruption.slaanesh}}">
+                    </div>
+                    <div class="flexcol">
+                        <label>Tzeentch:</label>
+                        <input type="text" name="system.secChar.corruption.tzeentch" value="{{system.secChar.corruption.tzeentch}}">
+                    </div>
+
+                </div>
+                <label>Total Corruption:</label>
+                <input type="text" name="system.secChar.corruption.value" value="{{system.secChar.corruption.value}}" disabled>
+            </div>
+            {{else}}
             <label>Corruption:</label>
             <input type="text" name="system.secChar.corruption.value" value="{{system.secChar.corruption.value}}">
+            {{/if}}
+
         </div>
         <div class="corr-item flexrow">
             <label>Malignancy Test Modifier:</label>
@@ -40,8 +67,8 @@
             <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.system.description.value}}">{{m.name}}</a>
             <span class="list-button"><a class="list-button item-edit" title="Edit Mutation" data-item-id="{{m._id}}"></a></span>
             <span class="list-button"><a class="list-button item-delete" title="Delete Mutation" data-item-id="{{m._id}}"></a></span>
-            
-            
+
+
 
 
 
@@ -74,8 +101,8 @@
                 <a class="item-descr list-item" data-name="{{d.name}}" data-item-descr="{{d.system.description.value}}">{{d.name}}</a>
                 <span class="list-button"><a class="list-button item-edit" title="Edit Disorder" data-item-id="{{d._id}}"></a></span>
                 <span class="list-button"> <a class="list-button item-delete" title="Delete Disorder" data-item-id="{{d._id}}"></a></span>
-                
-               
+
+
 
 
 
@@ -95,8 +122,8 @@
                 <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.system.description.value}}">{{m.name}}</a>
                 <span class="list-button"><a class="list-button item-edit" title="Edit Malignancy" data-item-id="{{m._id}}"></a></span>
                 <span class="list-button"><a class="list-button item-delete" title="Delete Malignancy" data-item-id="{{m._id}}"></a></span>
-                
-                
+
+
 
 
 

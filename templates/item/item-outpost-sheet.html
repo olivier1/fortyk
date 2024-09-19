@@ -13,11 +13,8 @@
     <div class="flexcol">
         <label>Type:</label>
         <select class="damage-type" name="system.type.value">
-                {{#select system.type.value}}
-                {{#each FORTYK.outpostTypes}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions FORTYK.outpostTypes selected=system.type.value valueAttr="value" labelAttr="value"}}
+                
             </select>
     </div>
     <div class="flexcol">

@@ -40,7 +40,7 @@ new Dialog({
                                   content:"",
                                   classes:["fortyk"],
                                   flavor:`First Aid result on ${targetActor.name}`,
-                                  author:game.users.current
+                                  author:game.users.current.id
                                  }
 
 

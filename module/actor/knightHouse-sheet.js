@@ -8,7 +8,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
 
     /** @override */
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/knightHouse-sheet.html",
             width: 666,
@@ -122,14 +122,14 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
                             SimpleCalendar.api.removeNote(item.system.calendar.noteId);
                             
                             let money=item.system.cost.value;
-                            await this.actor.update({"system.wealth.value":this.actor.system.wealth.value+money});
+                            //await this.actor.update({"system.wealth.value":this.actor.system.wealth.value+money});
                             
                             let chatMsg={user: game.user._id,
                                          speaker:{house,alias:house.name},
                                          content:item.system.description.value,
                                          classes:["fortyk"],
                                          flavor:`Deleted repair entry for ${knight.name}, ${money} Imperial bonds are refunded`,
-                                         author:house.name};
+                                         author:house.id};
                             await ChatMessage.create(chatMsg,{});
                             await this.actor.deleteEmbeddedDocuments("Item",[itemId]);
 
@@ -189,7 +189,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
                             };
 
                             let item=await FortyKItem.create(itemData,{temporary:true});
-                            await this.actor.createEmbeddedDocuments("Item",[duplicate(item)],{"renderSheet":true});
+                            await this.actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)],{"renderSheet":true});
 
 
 

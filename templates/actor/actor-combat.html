@@ -163,18 +163,18 @@
                         <label>Attack: </label>
                         <span class="spray-attack rollable powerItem button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span></label>
                     {{/if}}
-                    <label class="list-item">Damage: <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this._id}}">{{this.system.damageFormula.value}}</a></label>
+                    <label class="list-item">Damage: <a class="damage-roll button" data-label="{{this.name}}" data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this._id}}">{{this.system.damageFormula.value}}</a></label>
                     {{else if (contains this.system.class.value "Buff/Debuff")}}
                     {{#if power.flags.fortyk.sustained}}
-                    <label class="list-item"><a class="cancel-buff button" data-label="{{power.name}}"data-power="{{power.uuid}}">Dispel Power</a></label>
+                    <label class="list-item"><a class="cancel-buff button" data-label="{{power.name}}" data-power="{{power.uuid}}">Dispel Power</a></label>
                     {{else}}
-                    <label class="list-item"><a class="buff-debuff button" data-label="{{power.name}}"data-power="{{power._id}}">Apply Buff/Debuff</a></label>
+                    <label class="list-item"><a class="buff-debuff button" data-label="{{power.name}}" data-power="{{power._id}}">Apply Buff/Debuff</a></label>
                     {{/if}}
                     {{else if (contains power.system.class.value "Macro")}}
                     {{#if power.flags.fortyk.sustained}}
-                    <label class="list-item"><a class="cancel-buff button" data-label="{{power.name}}"data-power="{{power.uuid}}">Dispel Power</a></label>
+                    <label class="list-item"><a class="cancel-buff button" data-label="{{power.name}}" data-power="{{power.uuid}}">Dispel Power</a></label>
                     {{else}}
-                    <label class="list-item"><a class="psy-macro button" data-label="{{power.name}}"data-macro="{{power.system.macro.id}}"data-power="{{this._id}}">Macro</a></label>
+                    <label class="list-item"><a class="psy-macro button" data-label="{{power.name}}" data-macro="{{power.system.macro.id}}" data-power="{{this._id}}">Macro</a></label>
                     {{/if}}
                     {{/if}}
 
@@ -256,13 +256,7 @@
                     {{#if flags.fortyk.alternateprofiles}}
 
                     <select class="profile-select" data-id="{{this.id}}">
-                        {{#select flags.fortyk.currentprofile}}
-                        <option value="">{{this._source.name}}</option>
-
-                        {{#each flags.fortyk.instancedProfiles}}
-                        <option value="{{this.uuid}}">{{this.name}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
                     </select>
                     {{else}}
 
@@ -276,6 +270,8 @@
                     {{#if (greaterThan this.system.clip.value 0)}}
                     {{#if this.flags.fortyk.spray}}
                     <span class="spray-attack rollable button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span>
+                    {{else if this.flags.fortyk.torrent}}
+                    <span class="torrent-attack rollable button" data-roll-type="torrentAttack" data-item-id="{{this.id}}" data-label="Torrent Attack" >Torrent</span>
                     {{else}}
 
                     <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../system.characteristics.bs.total}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="bs">Roll</span>
@@ -287,7 +283,7 @@
                 </div>
                 <div class="list-item">
                     <span>Damage: </span> 
-                    <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.system.damageFormula.value}}</a>
+                    <a class="damage-roll button" data-label="{{this.name}}" data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.system.damageFormula.value}}</a>
 
                 </div>
                 {{#if this.flags.fortyk.force}}
@@ -309,13 +305,7 @@
                 <div class="list-item">
                     <span>Las Fire Mode: 
                         <select class="lasMode"  data-item-id="{{this.id}}" data-dtype="Number">
-                            {{#select this.flags.fortyk.lasMode}}
-
-                            {{#each this.FORTYK.lasModes}}
-
-                            <option value="{{@index}}">{{this}}</option>
-                            {{/each}}
-                            {{/select}}
+                            {{selectOptions this.FORTYK.lasModes selected=this.flags.fortyk.lasMode valueAttr="key" labelAttr="label"}}
                         </select>
                     </span>
 
@@ -329,18 +319,11 @@
                     <label>Current Ammo:</label>
                     <select class="weapon-ammo" data-weapon="{{this.id}}" data-previous="{{this.system.ammo._id}}">
 
-                        {{#select this.system.ammo._id}}
+                       
                         <option value="">None</option>
+                        {{selectOptions this.validAmmos selected=this.system.ammo._id valueAttr="_id" labelAttr="label"}}
+                        
 
-                        {{#each ../actor.equippableAmmo}}
-                        {{#if (compareString this.system.class.value ../this.system.class.value)}}
-                        {{#if (compareString this.system.type.value ../this.system.type.value)}}
-                        <option value="{{this._id}}">{{this.name}}:{{this.system.amount.value}}</option>
-                        {{/if}}
-                        {{/if}}
-                        {{/each}}
-
-                        {{/select}}
                     </select>
                 </div>
                 {{else}}
@@ -412,13 +395,7 @@
                     {{#if flags.fortyk.alternateprofiles}}
 
                     <select class="profile-select" data-id="{{this.id}}">
-                        {{#select flags.fortyk.currentprofile}}
-                        <option value="">{{this._source.name}}</option>
-
-                        {{#each flags.fortyk.instancedProfiles}}
-                        <option value="{{this.uuid}}">{{this.name}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
                     </select>
                     {{else}}
 
@@ -488,11 +465,7 @@
         <div class="flexcol flex-group-center">
             <span class="section-title">Cover</span>
             <select class="cover"  name="system.secChar.cover.value">
-                {{#select system.secChar.cover.value}}
-                {{#each coverTypes}}
-                <option value="{{value}}">{{label}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions coverTypes selected=system.secChar.cover.value valueAttr="value" labelAttr="label"}}
             </select>
             <span class="section-title">Movement</span>
             <div class="flexrow">
@@ -617,14 +590,7 @@
                 </div>
                 <span class="section-title">Size</span>
                 <select class="sizeSelect" name="system.secChar.size.value" data-dtype="Number">
-                    {{#select system.secChar.size.value}}
-
-                    {{#each size}}
-
-                    <option value="{{@index}}">{{this.name}}</option>
-
-                    {{/each}}
-                    {{/select}}
+                    {{selectOptions size selected=system.secChar.size.value valueAttr="index" labelAttr="name"}}
                 </select>
             </div>
         </div>

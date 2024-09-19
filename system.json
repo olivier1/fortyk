@@ -1,342 +1,485 @@
 {
-    "id": "fortyk",
-    "title": "fortyk",
-    "description": "The fortyk system for FoundryVTT!",
-    "version": "1.0.0.6",
-    "compatibility": {
-        "minimum": "11.310",
-        "verified": "11.315",
-        "maximum": "11.315"
+  "id": "fortyk",
+  "title": "fortyk",
+  "description": "The fortyk system for FoundryVTT!",
+  "version": "1.0.0.7",
+  "compatibility": {
+    "minimum": "12.331",
+    "verified": "12.331",
+    "maximum": "13.331"
+  },
+  "authors": [
+    {
+      "name": "Olivier Bouchard Vanasse",
+      "url": "https://github.com/olivier1",
+      "flags": {}
+    }
+  ],
+  "esmodules": [
+    "module/fortyk.js"
+  ],
+  "styles": [
+    "css/fortyk.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json",
+      "flags": {}
+    }
+  ],
+  "packs": [
+    {
+      "name": "skills",
+      "label": "Skills",
+      "system": "fortyk",
+      "path": "packs/skills",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
     },
-    "templateVersion": 9,
-    "authors": 
-    [
+    {
+      "name": "talent-core-dh2",
+      "label": "Talents (Core DH2)",
+      "system": "fortyk",
+      "path": "packs/talent-core-dh2",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Traits (Core DH2)",
+      "type": "Item",
+      "name": "traits-core-dh2",
+      "path": "packs/traits-core-dh2",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Role, Homeworld & Background Bonus(Core DH2)",
+      "type": "Item",
+      "name": "role-homeworld-and-background-bonuscore-dh2",
+      "path": "packs/role-homeworld-and-background-bonuscore-dh2",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Talents (Enemies Within)",
+      "type": "Item",
+      "name": "talents-enemies-within",
+      "path": "packs/talents-enemies-within",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Role, Homeworld & Background Bonus(Enemies Within)",
+      "type": "Item",
+      "name": "role-homeworld-and-background-bonusenemies-within",
+      "path": "packs/role-homeworld-and-background-bonusenemies-within",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Role, Homeworld & Background Bonus(Enemies Without)",
+      "type": "Item",
+      "name": "role-homeworld-and-background-bonusenemies-without",
+      "path": "packs/role-homeworld-and-background-bonusenemies-without",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Talents (Enemies Without)",
+      "type": "Item",
+      "name": "talents-enemies-without",
+      "path": "packs/talents-enemies-without",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Talents (Enemies Beyond)",
+      "type": "Item",
+      "name": "talents-enemies-beyond",
+      "path": "packs/talents-enemies-beyond",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Role, Homeworld & Background Bonus(Enemies Beyond)",
+      "type": "Item",
+      "name": "role-homeworld-and-background-bonusenemies-beyond",
+      "path": "packs/role-homeworld-and-background-bonusenemies-beyond",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Deathwatch Bonus and Drawbacks",
+      "type": "Item",
+      "name": "deathwatch-bonus-and-drawbacks",
+      "path": "packs/deathwatch-bonus-and-drawbacks",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Deathwatch Talents",
+      "type": "Item",
+      "name": "deathwatch-talents",
+      "path": "packs/deathwatch-talents",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Homeworld and specialty Abilities (Core OW)",
+      "type": "Item",
+      "name": "homeworld-and-specialty-abilities-core-ow",
+      "path": "packs/homeworld-and-specialty-abilities-core-ow",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Talents (OW Core)",
+      "type": "Item",
+      "name": "talents-ow-core",
+      "path": "packs/talents-ow-core",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Homeworld and Specialty Abilities (Hammer of the Emperor)",
+      "type": "Item",
+      "name": "homeworld-and-specialty-abilities-hammer-of-the-emperor",
+      "path": "packs/homeworld-and-specialty-abilities-hammer-of-the-emperor",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Talents (Hammer of the Emperor)",
+      "type": "Item",
+      "name": "talents-hammer-of-the-emperor",
+      "path": "packs/talents-hammer-of-the-emperor",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Orders (Hammer of the Emperor)",
+      "type": "Item",
+      "name": "orders-hammer-of-the-emperor",
+      "path": "packs/orders-hammer-of-the-emperor",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Homeworld and Specialty Abilities (Shield of Humanity)",
+      "type": "Item",
+      "name": "homeworld-and-specialty-abilities-shield-of-humanity",
+      "path": "packs/homeworld-and-specialty-abilities-shield-of-humanity",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Talents (Shield of Humanity)",
+      "type": "Item",
+      "name": "talents-shield-of-humanity",
+      "path": "packs/talents-shield-of-humanity",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Orders (Shield of Humanity)",
+      "type": "Item",
+      "name": "orders-shield-of-humanity",
+      "path": "packs/orders-shield-of-humanity",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Custom Talents",
+      "type": "Item",
+      "name": "custom-talents",
+      "path": "packs/custom-talents",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Custom Bonus And Drawbacks",
+      "type": "Item",
+      "name": "custom-bonus-and-drawbacks",
+      "path": "packs/custom-bonus-and-drawbacks",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "fortykMacros",
+      "type": "Macro",
+      "name": "fortykmacros",
+      "path": "packs/fortykmacros",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Vehicle Traits",
+      "type": "Item",
+      "name": "vehicle-traits",
+      "path": "packs/vehicle-traits",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Knight Chassis",
+      "type": "Item",
+      "name": "knight-chassis",
+      "path": "packs/knight-chassis",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "LIMITED",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Knight Spirits",
+      "type": "Item",
+      "name": "knight-spirits",
+      "path": "packs/knight-spirits",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "LIMITED",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Knight Components",
+      "type": "Item",
+      "name": "knight-components",
+      "path": "packs/knight-components",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Wargear",
+      "type": "Item",
+      "name": "wargear",
+      "path": "packs/wargear",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Psychic Powers",
+      "type": "Item",
+      "name": "psychic-powers",
+      "path": "packs/psychic-powers",
+      "system": "fortyk",
+      "flags": {},
+      "ownership": {
+        "PLAYER": "LIMITED",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "label": "Fortyk Actors",
+      "type": "Actor",
+      "name": "fortyk-actors",
+      "path": "packs/fortyk-actors",
+      "system": "fortyk",
+      "flags": {},
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Fortyk",
+      "sorting": "m",
+      "color": "#d4af37",
+      "folders": [
         {
-            "name": "Olivier Bouchard Vanasse",
-            "url": "https://github.com/olivier1"
+          "name": "Items",
+          "sorting": "m",
+          "color": "#7a4810",
+          "packs": [
+            "wargear",
+            "psychic-powers",
+            "skills"
+          ],
+          "folders": [
+            {
+              "name": "Knight Items",
+              "sorting": "m",
+              "color": "#af2413",
+              "packs": [
+                "knight-components",
+                "knight-spirits",
+                "knight-chassis"
+              ],
+              "folders": []
+            },
+            {
+              "name": "Talents and Traits",
+              "sorting": "a",
+              "color": "#ae9e7b",
+              "packs": [
+                "vehicle-traits",
+                "custom-bonus-and-drawbacks",
+                "custom-talents",
+                "orders-shield-of-humanity",
+                "talents-shield-of-humanity",
+                "homeworld-and-specialty-abilities-shield-of-humanity",
+                "orders-hammer-of-the-emperor",
+                "talents-hammer-of-the-emperor",
+                "homeworld-and-specialty-abilities-hammer-of-the-emperor",
+                "talents-ow-core",
+                "homeworld-and-specialty-abilities-core-ow",
+                "deathwatch-talents",
+                "deathwatch-bonus-and-drawbacks",
+                "role-homeworld-and-background-bonusenemies-beyond",
+                "talents-enemies-beyond",
+                "talents-enemies-without",
+                "role-homeworld-and-background-bonusenemies-without",
+                "role-homeworld-and-background-bonusenemies-within",
+                "talents-enemies-within",
+                "role-homeworld-and-background-bonuscore-dh2",
+                "traits-core-dh2",
+                "talent-core-dh2"
+              ],
+              "folders": []
+            }
+          ]
+        },
+        {
+          "name": "Macros",
+          "sorting": "m",
+          "color": "#07575b",
+          "packs": [
+            "fortykmacros"
+          ],
+          "folders": []
+        },
+        {
+          "name": "Actors",
+          "sorting": "m",
+          "color": "#228b22",
+          "packs": [
+            "fortyk-actors"
+          ],
+          "folders": []
         }
-    ],
-    "esmodules": ["module/fortyk.js"],
-    "styles": ["css/fortyk.css"],
-    "scripts": [],
-    "languages": [
-        {
-            "lang": "en",
-            "name": "English",
-            "path": "lang/en.json"
-        }
-    ],
-    "packs": [ 
-        {
-            "name": "skills",
-            "label": "Skills",
-            "system": "fortyk",
-            "module": "fortyk",
-            "path": "packs/skills",
-            "type": "Item",
-            "tag" : "skill"
-        },
-        {
-            "name": "talent-core-dh2",
-            "label": "Talents (Core DH2)",
-            "system": "fortyk",
-            "module": "fortyk",
-            "path": "packs/talent-core-dh2",
-            "type": "Item",
-            "tag" : "talentdh2core"
-        },
-        {
-            "label": "Traits (Core DH2)",
-            "type": "Item",
-            "name": "traits-core-dh2",
-            "path": "packs/traits-core-dh2",
-            "system": "fortyk",
-            "module": "fortyk",
-            "tag" : "traitdh2core"  
-        },
-        {
-            "label": "Role, Homeworld & Background Bonus(Core DH2)",
-            "type": "Item",
-            "name": "role-homeworld-and-background-bonuscore-dh2",
-            "path": "packs/role-homeworld-and-background-bonuscore-dh2",
-            "system": "fortyk",
-            "module": "fortyk",
-            "tag" : "bonusdh2core"
-        },
-        {
-            "label": "Talents (Enemies Within)",
-            "type": "Item",
-            "name": "talents-enemies-within",
-            "path": "packs/talents-enemies-within",
-            "system": "fortyk",
-            "module": "fortyk",
-            "tag" : "talentenemywithin"
-        },
-        {
-            "label": "Role, Homeworld & Background Bonus(Enemies Within)",
-            "type": "Item",
-            "name": "role-homeworld-and-background-bonusenemies-within",
-            "path": "packs/role-homeworld-and-background-bonusenemies-within",
-            "system": "fortyk",
-            "module": "fortyk",
-            "tag" : "bonusenemywithin"
-        },
-        {
-            "label": "Role, Homeworld & Background Bonus(Enemies Without)",
-            "type": "Item",
-            "name": "role-homeworld-and-background-bonusenemies-without",
-            "path": "packs/role-homeworld-and-background-bonusenemies-without",
-            "system": "fortyk",
-            "module": "fortyk",
-            "tag" : "bonusenemywithout"
-        },
-        {
-            "label": "Talents (Enemies Without)",
-            "type": "Item",
-            "name": "talents-enemies-without",
-            "path": "packs/talents-enemies-without",
-            "system": "fortyk",
-            "module": "fortyk",
-            "tag" : "talentenemywithout"
-        },
-        {
-            "label": "Talents (Enemies Beyond)",
-            "type": "Item",
-            "name": "talents-enemies-beyond",
-            "path": "packs/talents-enemies-beyond",
-            "system": "fortyk",
-            "module": "fortyk",
-            "tag" : "talentenemybeyond"
-        },
-        {
-            "label": "Role, Homeworld & Background Bonus(Enemies Beyond)",
-            "type": "Item",
-            "name": "role-homeworld-and-background-bonusenemies-beyond",
-            "path": "packs/role-homeworld-and-background-bonusenemies-beyond",
-            "system": "fortyk",
-            "module": "fortyk",
-            "tag" : "bonusenemybeyond"
-        },
-        {
-            "label": "Deathwatch Bonus and Drawbacks",
-            "type": "Item",
-            "name": "deathwatch-bonus-and-drawbacks",
-            "path": "packs/deathwatch-bonus-and-drawbacks",
-            "system": "fortyk",
-            "module": "fortyk",
-            "tag" : "deathwatchbonusdrawbacks"
-        },
-        {
-            "label": "Deathwatch Talents",
-            "type": "Item",
-            "name": "deathwatch-talents",
-            "path": "packs/deathwatch-talents",
-            "system": "fortyk",
-            "module": "fortyk",
-            "tag" : "deathwatchtalents"
-        },
-        {
-            "label": "Homeworld and specialty Abilities (Core OW)",
-            "type": "Item",
-            "name": "homeworld-and-specialty-abilities-core-ow",
-            "path": "packs/homeworld-and-specialty-abilities-core-ow",
-            "system": "fortyk",
-            "module": "fortyk"
-
-        },
-        {
-            "label": "Talents (OW Core)",
-            "type": "Item",
-            "name": "talents-ow-core",
-            "path": "packs/talents-ow-core",
-            "system": "fortyk",
-            "module": "fortyk"
-        },
-        {
-            "label": "Homeworld and Specialty Abilities (Hammer of the Emperor)",
-            "type": "Item",
-            "name": "homeworld-and-specialty-abilities-hammer-of-the-emperor",
-            "path": "packs/homeworld-and-specialty-abilities-hammer-of-the-emperor",
-            "system": "fortyk",
-            "module": "fortyk"
-        },
-        {
-            "label": "Talents (Hammer of the Emperor)",
-            "type": "Item",
-            "name": "talents-hammer-of-the-emperor",
-            "path": "packs/talents-hammer-of-the-emperor",
-            "system": "fortyk",
-            "module": "fortyk"
-        },
-        {
-            "label": "Orders (Hammer of the Emperor)",
-            "type": "Item",
-            "name": "orders-hammer-of-the-emperor",
-            "path": "packs/orders-hammer-of-the-emperor",
-            "system": "fortyk",
-            "module": "fortyk"
-        },
-        {
-            "label": "Homeworld and Specialty Abilities (Shield of Humanity)",
-            "type": "Item",
-            "name": "homeworld-and-specialty-abilities-shield-of-humanity",
-            "path": "packs/homeworld-and-specialty-abilities-shield-of-humanity",
-            "system": "fortyk",
-            "module": "fortyk"
-        },
-        {
-            "label": "Talents (Shield of Humanity)",
-            "type": "Item",
-            "name": "talents-shield-of-humanity",
-            "path": "packs/talents-shield-of-humanity",
-            "system": "fortyk",
-            "module": "fortyk"
-        },
-        {
-            "label": "Orders (Shield of Humanity)",
-            "type": "Item",
-            "name": "orders-shield-of-humanity",
-            "path": "packs/orders-shield-of-humanity",
-            "system": "fortyk",
-            "module": "fortyk"
-        },        
-        {
-            "label": "Custom Talents",
-            "type": "Item",
-            "name": "custom-talents",
-            "path": "packs/custom-talents",
-            "system": "fortyk",
-            "module": "fortyk"
-        },
-        {
-            "label": "Custom Bonus And Drawbacks",
-            "type": "Item",
-            "name": "custom-bonus-and-drawbacks",
-            "path": "packs/custom-bonus-and-drawbacks",
-            "system": "fortyk",
-            "module": "fortyk"
-        },
-        {
-            "label": "fortykMacros",
-            "type": "Macro",
-            "name": "fortykmacros",
-            "path": "packs/fortykmacros",
-            "system": "fortyk",
-            "module": "fortyk"
-        },
-        {
-            "label": "Vehicle Traits",
-            "type": "Item",
-            "name": "vehicle-traits",
-            "path": "packs/vehicle-traits",
-            "system": "fortyk"
-        },
-        {
-            "label": "Knight Chassis",
-            "type": "Item",
-            "name": "knight-chassis",
-            "path": "packs/knight-chassis",
-            "system": "fortyk",
-            "package": "system",
-            "private": true
-        },
-        {
-            "label": "Knight Spirits",
-            "type": "Item",
-            "name": "knight-spirits",
-            "path": "packs/knight-spirits",
-            "system": "fortyk",
-            "package": "system",
-            "private": true
-        },
-        {
-            "label": "Knight Components",
-            "type": "Item",
-            "name": "knight-components",
-            "path": "packs/knight-components",
-            "system": "fortyk",
-            "package": "system",
-            "private": false
-        },
-        {
-            "label": "Wargear",
-            "type": "Item",
-            "name": "wargear",
-            "path": "packs/wargear",
-            "system": "fortyk",
-            "package": "system",
-            "private": false
-        },        
-        {
-            "label": "Psychic Powers",
-            "type": "Item",
-            "name": "psychic-powers",
-            "path": "packs/psychic-powers",
-            "system": "fortyk",
-            "private": true,
-            "flags": {}
-        },
-        {
-            "label": "Fortyk Actors",
-            "type": "Actor",
-            "name": "fortyk-actors",
-            "path": "packs/fortyk-actors",
-            "system": "fortyk",
-            "flags": {}
-        }
-
-    ],
-    "packFolders": [
-        {
-            "name": "Fortyk",
-            "sorting": "m",
-            "color": "#d4af37",
-            
-            "folders":[
-                {
-                    "name":"Items",
-                    "sorting":"m",
-                    "color":"#7a4810",
-                    "packs":["wargear", "psychic-powers", "skills"],
-                    "folders":[
-                        
-                        {
-                            "name":"Knight Items",
-                            "sorting":"m",
-                            "color":"#AF2413",
-                            "packs":["knight-components", "knight-spirits", "knight-chassis"]
-                        },
-                        {
-                            "name":"Talents and Traits",
-                            "sorting":"a",
-                            "color":"#AE9E7B",
-                            "packs":["vehicle-traits", "custom-bonus-and-drawbacks", "custom-talents", "orders-shield-of-humanity", "talents-shield-of-humanity", "homeworld-and-specialty-abilities-shield-of-humanity", "orders-hammer-of-the-emperor", "talents-hammer-of-the-emperor", "homeworld-and-specialty-abilities-hammer-of-the-emperor", "talents-ow-core", "homeworld-and-specialty-abilities-core-ow", "deathwatch-talents", "deathwatch-bonus-and-drawbacks", "role-homeworld-and-background-bonusenemies-beyond", "talents-enemies-beyond", "talents-enemies-without", "role-homeworld-and-background-bonusenemies-without", "role-homeworld-and-background-bonusenemies-within", "talents-enemies-within", "role-homeworld-and-background-bonuscore-dh2", "traits-core-dh2", "talent-core-dh2"]
-                        }
-                    ]
-                },
-                {
-                    "name":"Macros",
-                    "sorting":"m",
-                    "color":"#07575b",
-                    "packs":["fortykmacros"]
-                },
-                {
-                    "name":"Actors",
-                    "sorting":"m",
-                    "color":"#228B22",
-                    "packs":["fortyk-actors"]
-                }
-            ]
-        }
-
-    ],
-    "gridDistance": 1,
-    "gridUnits": "m",
-    "primaryTokenAttribute": "secChar.wounds",
-    "secondaryTokenAttribute": "secChar.fatigue",
-    "socket": true,
-    "url": "https://github.com/olivier1/fortyk",
-    "manifest": "https://raw.githubusercontent.com/olivier1/fortyk/master/system.json",
-    "download": "https://github.com/olivier1/fortyk/archive/1.0.0.6.zip",
-    "license": "LICENSE.txt"
+      ],
+      "packs": []
+    }
+  ],
+  "primaryTokenAttribute": "secChar.wounds",
+  "secondaryTokenAttribute": "secChar.fatigue",
+  "socket": true,
+  "url": "https://github.com/olivier1/fortyk",
+  "manifest": "https://raw.githubusercontent.com/olivier1/fortyk/master/system.json",
+  "download": "https://github.com/olivier1/fortyk/archive/1.0.0.7.zip",
+  "license": "LICENSE.txt",
+  "grid": {
+    "units": "m"
+  }
 }

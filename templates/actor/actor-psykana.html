@@ -34,12 +34,7 @@
         <div class="flexrow list-item">
             <label>Class:</label>
             <select class="psyType-select" name="system.psykana.psykerType.value" data-dtype="String">
-                {{#select system.psykana.psykerType.value}}
-                <option value="bound">Bound</option>
-                <option value="unbound">Unbound</option>
-                <option value="daemon">Daemon</option>
-                <option value="navigator">Navigator</option>
-                {{/select}}
+                {{selectOptions psykerTypes selected=system.psykana.psykerType.value valueAttr="value" labelAttr="label"}}
             </select>
         </div>
         <div class="flexrow list-item">
@@ -50,12 +45,8 @@
             <label>Show:</label>
             <select class="psyType-select" name="system.psykana.filter" data-dtype="String">
 
-                {{#select system.psykana.filter}}
                 <option value="">All</option>
-                {{#each psyDisciplines}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions psyDisciplines selected=system.psykana.filter valueAttr="value" labelAttr="value"}}
             </select>
         </div>
 
@@ -67,76 +58,37 @@
         <div class="grid grid-4col">
 
             <select class="apt1-select" name="system.psykana.disciplines.0" data-dtype="String">
-                {{#select system.psykana.disciplines.[0]}}
                 <option value="">None</option>
-                {{#each psyDisciplines as |apt|}}
-
-                <option value="{{apt}}">{{apt}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[0] valueAttr="value" labelAttr="value"}}
+                
             </select>
             <select class="apt1-select" name="system.psykana.disciplines.1" data-dtype="String">
-                {{#select system.psykana.disciplines.[1]}}
                 <option value="">None</option>
-                {{#each psyDisciplines as |apt|}}
-
-                <option value="{{apt}}">{{apt}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[1] valueAttr="value" labelAttr="value"}}
             </select>
             <select class="apt1-select" name="system.psykana.disciplines.2" data-dtype="String">
-                {{#select system.psykana.disciplines.[2]}}
                 <option value="">None</option>
-                {{#each psyDisciplines as |apt|}}
-
-                <option value="{{apt}}">{{apt}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[2] valueAttr="value" labelAttr="value"}}
             </select>
             <select class="apt1-select" name="system.psykana.disciplines.3" data-dtype="String">
-                {{#select system.psykana.disciplines.[3]}}
                 <option value="">None</option>
-                {{#each psyDisciplines as |apt|}}
-
-                <option value="{{apt}}">{{apt}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[3] valueAttr="value" labelAttr="value"}}
             </select>
             <select class="apt1-select" name="system.psykana.disciplines.4" data-dtype="String">
-                {{#select system.psykana.disciplines.[4]}}
                 <option value="">None</option>
-                {{#each psyDisciplines as |apt|}}
-
-                <option value="{{apt}}">{{apt}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[4] valueAttr="value" labelAttr="value"}}
             </select>
             <select class="apt1-select" name="ssystem.psykana.disciplines.5" data-dtype="String">
-                {{#select system.psykana.disciplines.[5]}}
                 <option value="">None</option>
-                {{#each psyDisciplines as |apt|}}
-
-                <option value="{{apt}}">{{apt}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[5] valueAttr="value" labelAttr="value"}}
             </select>
             <select class="apt1-select" name="ssystem.psykana.disciplines.6" data-dtype="String">
-                {{#select system.psykana.disciplines.[6]}}
                 <option value="">None</option>
-                {{#each psyDisciplines as |apt|}}
-
-                <option value="{{apt}}">{{apt}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[6] valueAttr="value" labelAttr="value"}}
             </select>
             <select class="apt1-select" name="ssystem.psykana.disciplines.7" data-dtype="String">
-                {{#select system.psykana.disciplines.[7]}}
-                <option value="">None</option>
-                {{#each psyDisciplines as |apt|}}
-
-                <option value="{{apt}}">{{apt}}</option>
-                {{/each}}
-                {{/select}}
+               <option value="">None</option>
+                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[7] valueAttr="value" labelAttr="value"}}
             </select>
 
 
@@ -177,14 +129,10 @@
                 <div class="list-item2">
                     Training:
                     <select class="power-training" data-item-id="{{power._id}}"  name="system.training.value">
-                        {{#select power.system.training.value}}
-                        {{#each FORTYK.navigatorPowerTraining}}
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
+                        {{selectOptions FORTYK.navigatorPowerTraining selected=power.system.training.value valueAttr="value" labelAttr="value"}}
                     </select>
                 </div>
 
-                {{/select}}
                 {{/unless}}
                 <label class="list-item">Test Type: {{power.system.testChar.value}}</label>
 

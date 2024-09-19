@@ -1,11 +1,8 @@
 <span>Disciplines:</span>
 <select class="discipline-select">
-    {{#select discipline}}
     <option value="All">All</option>
-    {{#each disciplines}}
-    <option value="{{this}}">{{this}}</option>
-    {{/each}}
-    {{/select}}
+    {{selectOptions disciplines selected=discipline valueAttr="value" labelAttr="value"}}
+   
 </select>
 <div class="tntselect flexcol">
     <div class="tntgrid grid grid-8col">
@@ -21,7 +18,7 @@
 
         <span name="tntEntry" class="tntname tntitem" data-discipline="{{this.system.discipline.value}}" data-search="{{this.name}}{{this.system.tags.value}}">{{this.name}}</span>
         <span name="tntEntry" class="tntprereqs tntitem" data-discipline="{{this.system.discipline.value}}" data-search="{{this.name}}{{this.system.tags.value}}">{{this.system.reqs.value}}</span>
-        <a name="tntEntry" class="tntdescr tntitem tntdescr-button" class="tnt-desscription" data-discipline="{{this.system.discipline.value}}" data-name="{{this.name}}" data-description="{{this.system.description.value}}" data-search="{{this.name}}{{this.system.tags.value}}">Descr</a>
+        <a name="tntEntry" class="tntdescr tntitem tntdescr-button tnt-desscription"  data-discipline="{{this.system.discipline.value}}" data-name="{{this.name}}" data-description="{{this.system.description.value}}" data-search="{{this.name}}{{this.system.tags.value}}">Descr</a>
         {{else}}
         <div {{#unless (compareString ../discipline this.system.discipline.value)}}style="display:none;"{{/unless}} class="tntitem" name="tntEntry" data-discipline="{{this.system.discipline.value}}" data-search="{{this.name}}{{this.system.tags.value}}{{this.system.aptitudes.value}}"><input type="radio" class="powercheckbox" name="power-choice"  data-compendium="fortyk.psychic-powers" value="{{this.id}}"></div>
 

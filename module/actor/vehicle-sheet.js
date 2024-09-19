@@ -6,7 +6,7 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
     /** @override */
     static get defaultOptions() {
 
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/vehicle-sheet.html",
             width: 666,
@@ -90,7 +90,7 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
                           content:overheatResult,
                           classes:["fortyk"],
                           flavor:overheatFlavor,
-                          author:game.users.current
+                          author:game.users.current.id
                          }
 
         await ChatMessage.create(chatOverheat,{});

@@ -30,9 +30,7 @@ export const preloadHandlebarsTemplates = async function() {
         "systems/fortyk/templates/actor/knightParts/mech-bay.html",
         "systems/fortyk/templates/actor/knightParts/combat.html",
         "systems/fortyk/templates/actor/knightParts/traits.html",
-        "systems/fortyk/templates/actor/knightParts/damage-report.html",
-        "systems/fortyk/templates/actor/knightParts/melee-weapon-template.html",
-        "systems/fortyk/templates/actor/knightParts/ranged-weapon-template.html"
+        "systems/fortyk/templates/actor/knightParts/damage-report.html"
 
 
 
@@ -42,10 +40,217 @@ export const preloadHandlebarsTemplates = async function() {
 
     // Load the template parts
     return loadTemplates(templatePaths);
+    
+};
+export const preLoadHandlebarsPartials= async function() {
+    Handlebars.registerPartial('rangedWeapon', `<div class="weapons grid grid-2col">
+                <div class="weapon-name">
+                    {{#if flags.fortyk.alternateprofiles}}
+
+                    <select class="profile-select" data-id="{{this.id}}">
+                        {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
+                    </select>
+                    {{else}}
+
+                    <span>{{this.name}}</span>
+
+                    {{/if}}
+                </div>
+
+                <div class="list-item">
+                    <span>Attack: </span> 
+                    {{#if (greaterThan this.system.clip.value 0)}}
+                    {{#if this.flags.fortyk.spray}}
+                    <span class="spray-attack rollable button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span>
+                    {{else}}
+
+                    <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{bs}}" data-item-id="{{id}}" data-label="Ranged Attack" data-char="bs">Roll</span>
+
+                    {{/if}}
+                    {{else}}
+                    <span class="weapon-reload button" data-weapon="{{this.id}}" >Reload</span>
+                    {{/if}}
+                </div>
+                <div class="list-item">
+                    <span>Damage: </span> 
+                    <a class="damage-roll button" data-label="{{this.name}}" data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.system.damageFormula.value}}</a>
+
+                </div>
+                {{#if this.flags.fortyk.force}}
+                <div class="list-item">
+
+                    <a class="force-roll button" data-label="Force"> Force</a>
+
+
+                </div>
+                {{/if}}
+                {{#if this.flags.fortyk.maximal}}
+                <div class="list-item">
+                    <span>Maximal: <input type="checkbox" class="maximal" data-item-id="{{this.id}}"  {{checked this.flags.fortyk.maximalMode}}></span>
+
+
+                </div>
+                {{/if}}
+                {{#if this.flags.fortyk.lasModal}}
+                <div class="list-item">
+                    <span>Las Fire Mode: 
+                        <select class="lasMode"  data-item-id="{{this.id}}" data-dtype="Number">
+                            {{selectOptions this.FORTYK.lasModes selected=this.flags.fortyk.lasMode valueAttr="key" labelAttr="label"}}
+                        </select>
+                    </span>
+
+
+                </div>
+                {{/if}}
+
+                {{#unless (contains this.system.class.value "thrown")}}
+                <div class="list-item ammo-list">
+
+                    <label>Current Ammo:</label>
+                    <select class="weapon-ammo" data-weapon="{{this.id}}" data-previous="{{this.system.ammo._id}}">
+
+                       
+                        <option value="">None</option>
+                        {{selectOptions this.validAmmos selected=this.system.ammo._id valueAttr="_id" labelAttr="label"}}
+                        
+
+                    </select>
+                </div>
+                {{else}}
+                <div class="list-item">
+                    <span>Amount: {{this.system.amount.value}}</span> 
+
+
+                </div>
+                {{/unless}}
+                <div class="list-item flexrow">
+                    <span>Current Clip: </span>
+
+                    <input class="item-text-input" type="text" data-target="system.clip.value"  value="{{this.system.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
+                    <span> / </span>
+                    <span>{{this.system.clip.max}}</span>
+
+
+                </div>
+                <div class="list-item">
+                    <span>Range: {{this.system.range.value}}m</span>
+                </div>
+                <div class="list-item">
+                    <span>Penetration: {{this.system.pen.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <label>Rate of Fire: {{this.system.rof.[0].value}}/{{this.system.rof.[1].value}}/{{this.system.rof.[2].value}}</label>
+                </div>
+                <div class="list-item">
+                    <span>Reload: {{this.system.reload.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <span>Special: 
+
+                        {{#each this.flags.fortyk as |flag key|}}
+
+
+                        {{#if (checkSpecial this)}}
+
+                        {{#with (lookup ../FORTYK.weaponFlags [key])~}}
+                        <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                            {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
+                        {{/if}}{{/each}}
+                    </span>
+
+                </div>
+                <div class="list-item">
+                    <span>Damage Type: {{this.system.damageType.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <span>Weapon Class: {{this.system.class.value}}</span>
+
+
+                </div>
+                <div class="list-item">
+                    <span>Weapon Type: {{this.system.type.value}}</span>
+
+
+                </div>
+
+            </div>`);
+    Handlebars.registerPartial('meleeWeapon',`<div class="weapons grid grid-2col">
+
+                <div class="weapon-name">
+                    {{#if flags.fortyk.alternateprofiles}}
+
+                    <select class="profile-select" data-id="{{this.id}}">
+                        {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
+                    </select>
+                    {{else}}
+
+                    <span>{{this.name}}</span>
+
+                    {{/if}}
+                </div>
+
+
+                <div class="list-item">
+                    <span>Attack: </span> 
+                    <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{ws}}" data-item-id="{{this.id}}" data-label="Melee Attack" data-char="ws">Roll</span>
+                </div>
+                <div class="list-item">
+                    <span>Damage: </span>
+                    <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this.id}}"> {{this.system.damageFormula.value}}</a>
+                </div>
+                {{#if this.flags.fortyk.force}}
+                <div class="list-item">
+
+                    <a class="force-roll button" data-label="Force"> Force</a>
+
+
+                </div>
+                {{/if}}
+                <div class="list-item">
+                    <span>Reach: {{this.system.range.value}}m</span>
+                </div>
+                <div class="list-item">
+                    <span>Penetration: {{this.system.pen.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <span>Special: 
+
+                        {{#each this.flags.fortyk as |flag key|}}
+
+                        {{#if (checkSpecial this)}}
+
+                        {{#with (lookup ../FORTYK.weaponFlags [key])~}}
+                        <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                            {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
+                        {{/if}}{{/each}}
+                    </span>
+
+                </div>
+                <div class="list-item">
+                    <span>Damage Type: {{this.system.damageType.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <span>Weapon Class: {{this.system.class.value}}</span>
+
+
+                </div>
+                <div class="list-item">
+                    <span>Weapon Type: {{this.system.type.value}}</span>
+                </div>
+
+            </div>`);
+    return;
 };
 export const sleep=function(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
-}
+};
 //returns an actors token object, not the token document. Will search the active canvas for the current token.
 export const getActorToken=function(actor){
 
@@ -64,7 +269,7 @@ export const getActorToken=function(actor){
         }
     }
     return t;
-}
+};
 export const parseHtmlForInline=function(html){
 
 
@@ -81,14 +286,15 @@ export const parseHtmlForInline=function(html){
         intArray.push(parseInt(strArray[i]));
     }
     return intArray;
-}
+};
 export const tokenDistance=function(token1,token2){
+    
     let gridRatio=(canvas.dimensions.distance/canvas.dimensions.size);
     let token1x=token1.x;
     let token1y=token1.y;
     let token2x=token2.x;
     let token2y=token2.y;
-    console.log(token1)
+    console.log(token1);
     if(token1.w*100>=200){
         if(token2x>token1x){
             token1x+=Math.ceil(token1.w/2);
@@ -112,8 +318,8 @@ export const tokenDistance=function(token1,token2){
 
     if(canvas.scene.grid.type===0){
 
-        let distancePx=Math.sqrt(Math.pow(gridRatio*(token1x-token2x),2)+Math.pow(gridRatio*(token1y-token2y),2)+Math.pow((token1.document.elevation-token2.document.elevation),2))
-        console.log(distancePx)
+        let distancePx=Math.sqrt(Math.pow(gridRatio*(token1x-token2x),2)+Math.pow(gridRatio*(token1y-token2y),2)+Math.pow((token1.document.elevation-token2.document.elevation),2));
+        console.log(distancePx);
         return distancePx;
     }
     if(canvas.scene.grid.type>=1){
@@ -126,11 +332,11 @@ export const tokenDistance=function(token1,token2){
         return Math.max(xDistance,yDistance,zDistance); 
     }
 
-}
+};
 export const smallestDistance= function(token, points){
-    let distances=[]
-    console.log(points)
-    let pairs={}
+    let distances=[];
+    console.log(points);
+    let pairs={};
     for(let i=0;i<points.length;i++){
         let point=points[i];
         if(point){
@@ -138,16 +344,18 @@ export const smallestDistance= function(token, points){
             distances.push(distance);
             pairs[distance]=point;
         }
-        console.log(point)
+        console.log(point);
 
     }
-    console.log(distances)
+    console.log(distances);
     if(distances.length>0){
         let min=Math.min(...distances);
-        return pairs[min]
+        return pairs[min];
+        
     }else{return null;}
 
-}
+};
+
 export const getItem= function(actor, name){
     for(let item of actor.items){
         if(item.name===name){
@@ -164,7 +372,7 @@ export const getSkills= async function(){
     await pack.getIndex().then(index => skills = index);
     for (let sk of skills)
     {
-        let skillItem = undefined;
+        let skillItem;
         await pack.getDocument(sk._id).then(skill => skillItem = skill);
         skillCollection.push(skillItem);
     }
@@ -196,15 +404,15 @@ export const objectByString = function(o, s) {
         }
     }
     return o;
-}
+};
 
 export const setNestedKey = (obj, path, value) => {
     if (path.length === 1) {
-        obj[path] = value
-        return
+        obj[path] = value;
+        return;
     }
     return setNestedKey(obj[path[0]], path.slice(1), value)
-}
+};
 export const makeRangeArray=function (upperBounds, values) {
     var rangeArray = new Array(upperBounds[upperBounds.length-1]);
 
@@ -216,14 +424,14 @@ export const makeRangeArray=function (upperBounds, values) {
         rangeArray[i] = values[idx];
     }
     return rangeArray;
-}
+};
 export const isEmpty=function (obj) {
     for(var key in obj) {
         if(obj.hasOwnProperty(key))
             return false;
     }
     return true;
-}
+};
 export const getVehicleFacing=function(vehicleToken,attackerToken){
 
 
@@ -232,7 +440,7 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
 
 
     //adjust for vehicle rotation
-    let vehicleRotation=vehicleToken.data.rotation;
+    let vehicleRotation=vehicleToken.rotation;
     attackAngle-=vehicleRotation;
     if(attackAngle<0){
         attackAngle=360+attackAngle;
@@ -351,8 +559,8 @@ export const collisionPoint= function(token, destination){
     for(let i=0;i<walls.length;i++){
         let wall=walls[i];
         if(wall.document.move){
-            let workingOr=duplicate(origin);
-            let workingDest=duplicate(destination);
+            let workingOr=foundry.utils.duplicate(origin);
+            let workingDest=foundry.utils.duplicate(destination);
             //test all 4 corners of the token for collision, adjust the collision point after for top left corner of token
             //top left corner
             intersections.push(lineSegmentIntersection(origin,destination,wall.A,wall.B));
@@ -365,8 +573,8 @@ export const collisionPoint= function(token, destination){
                 intersections.push(topright)
             }
             //botleft
-            workingOr=duplicate(origin);
-            workingDest=duplicate(destination);
+            workingOr=foundry.utils.duplicate(origin);
+            workingDest=foundry.utils.duplicate(destination);
             workingOr.y+=token.height;
             workingDest.y+=token.height;
             let botleft=lineSegmentIntersection(workingOr,workingDest,wall.A,wall.B);
@@ -375,8 +583,8 @@ export const collisionPoint= function(token, destination){
                 intersections.push(botleft);
             }
             //botright
-            workingOr=duplicate(origin);
-            workingDest=duplicate(destination);
+            workingOr=foundry.utils.duplicate(origin);
+            workingDest=foundry.utils.duplicate(destination);
             workingOr.y+=token.height;
             workingDest.y+=token.height;
             workingOr.x+=token.width;
@@ -397,12 +605,12 @@ export const collisionPoint= function(token, destination){
 console.log("starting item flag update")
     let actors=game.actors;
 
-    let weaponFlags=duplicate(game.fortyk.FORTYK.weaponFlags);
+    let weaponFlags=foundry.utils.duplicate(game.fortyk.FORTYK.weaponFlags);
     for(let actor of actors){
         let items=actor.items;
         for(let item of items){
             if(item.type==="rangedWeapon"||item.type==="meleeWeapon"||item.type==="psychicPower"||item.type==="ammunition"){
-                let mod=duplicate(item);
+                let mod=foundry.utils.duplicate(item);
                 if(mod.flags===undefined){
                     mod=mod;
                 }   

@@ -22,7 +22,7 @@ new Dialog({
                         newColor="#ff0000";
                     }
 
-                    token.document.update({tint: newColor});
+                    token.document.update({"texture.tint": newColor});
                 }
 
             }

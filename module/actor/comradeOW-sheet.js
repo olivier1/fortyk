@@ -1,8 +1,9 @@
-export class FortyKOWComradeSheet extends ActorSheet {
+import FortyKBaseActorSheet from "./base-sheet.js";
+export class FortyKOWComradeSheet extends FortyKBaseActorSheet {
     
     /** @override */
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/comradeOW-sheet.html",
             width: 666,

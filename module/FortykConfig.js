@@ -1,88 +1,101 @@
 
 export const FORTYK={};
-FORTYK.races=["Human",
-              "Ogryn",
-              "Ratling",
-              "Astartes",
-              "Eldar",
-              "Genestealer",
-              "Tyranid",
-              "Necron",
-              "Ork",
-              "Kroot",
-              "Tau",
-              "Daemon",
-              "Laek",
-              "Faceless",
-              "Mortiseran",
-              "Servitor",
-              "Other"]
+FORTYK.races=[{value:"Human"},
+              {value:"Ogryn"},
+              {value:"Ratling"},
+              {value:"Astartes"},
+              {value:"Eldar"},
+              {value:"Genestealer"},
+              {value:"Tyranid"},
+              {value:"Necron"},
+              {value:"Ork"},
+              {value:"Kroot"},
+              {value:"Tau"},
+              {value:"Daemon"},
+              {value:"Laek"},
+              {value:"Faceless"},
+              {value:"Mortiseran"},
+              {value:"Servitor"},
+              {value:"Other"}];
 FORTYK.size=[
     {"name":"Miniscule",
      "mod":-30,
      "stealth":30,
      "movement":-3,
-     "size":0.6},
+     "size":0.6,
+    "index":0},
     {"name":"Puny",
      "mod":-20,
      "stealth":20,
      "movement":-2,
-     "size":0.7},
+     "size":0.7,
+    "index":1},
     {"name":"Scrawny",
      "mod":-10,
      "stealth":10,
      "movement":-1,
-     "size":0.8},
+     "size":0.8,
+    "index":2},
     {"name":"Average",
      "mod":0,
      "stealth":0,
      "movement":0,
-     "size":1},
+     "size":1,
+    "index":3},
     {"name":"Hulking",
      "mod":10,
      "stealth":-10,
      "movement":1,
-     "size":1.2},
+     "size":1.2,
+    "index":4},
     {"name":"Enormous",
      "mod":20,
      "stealth":-20,
      "movement":2,
-     "size":2},
+     "size":2,
+    "index":5},
     {"name":"Massive",
      "mod":30,
      "stealth":-30,
      "movement":3,
-     "size":5},
+     "size":5,
+    "index":6},
     {"name":"Immense",
      "mod":40,
      "stealth":-40,
      "movement":4,
-     "size":8},
+     "size":8,
+    "index":7},
     {"name":"Monumental",
      "mod":50,
      "stealth":-50,
      "movement":5,
-     "size":10},
+     "size":10,
+    "index":8},
     {"name":"Titanic",
      "mod":60,
      "stealth":-60,
      "movement":6,
-     "size":15},
+     "size":15,
+    "index":9},
     {"name":"Gargantuan",
      "mod":70,
      "stealth":-70,
      "movement":7,
-     "size":20},
+     "size":20,
+    "index":10},
     {"name":"Colossal",
      "mod":80,
      "stealth":-80,
      "movement":8,
-     "size":25},
+     "size":25,
+    "index":11},
     {"name":"Immeasurable",
      "mod":90,
      "stealth":-90,
      "movement":9,
-     "size":30}]
+     "size":30,
+    "index":12}];
 FORTYK.carry=[
     {"carry":0.9,
      "lift":2.25,
@@ -146,25 +159,25 @@ FORTYK.carry=[
      "push":7200},
     {"carry":2250,
      "lift":4500,
-     "push":9000}]
-FORTYK.coverTypes=[{"value":0,"label":"None"},{"value":0.1,"label":"Light Cover"},{"value":0.3,"label":"Medium Cover"},{"value":0.5,"label":"Heavy Cover"}]
+     "push":9000}];
+FORTYK.coverTypes=[{"value":0,"label":"None"},{"value":0.1,"label":"Light Cover"},{"value":0.3,"label":"Medium Cover"},{"value":0.5,"label":"Heavy Cover"}];
 FORTYK.extraHits={ 
     "head":[{"value":"head","label":"Head"},{"value":"head","label":"Head"},{"value":"rArm","label":"Right Arm"},{"value":"body","label":"Body"},{"value":"lArm","label":"Left Arm"},{"value":"body","label":"Body"}],
     "rArm":[{"value":"rArm","label":"Right Arm"},{"value":"rArm","label":"Right Arm"},{"value":"body","label":"Body"},{"value":"head","label":"Head"},{"value":"body","label":"Body"},{"value":"lArm","label":"Left Arm"}],
     "lArm":[{"value":"lArm","label":"Left Arm"},{"value":"lArm","label":"Left Arm"},{"value":"body","label":"Body"},{"value":"head","label":"Head"},{"value":"body","label":"Body"},{"value":"rArm","label":"Right Arm"}],
     "body":[{"value":"body","label":"Body"}, {"value":"body","label":"Body"}, {"value":"lArm","label":"Left Arm"}, {"value":"head","label":"Head"}, {"value":"rArm","label":"Right Arm"},{"value":"body","label":"Body"}],
     "lLeg":[{"value":"lLeg","label":"Left Leg"}, {"value":"lLeg","label":"Left Leg"}, {"value":"body","label":"Body"},{"value":"lArm","label":"Left Arm"}, {"value":"head","label":"Head"},{"value":"body","label":"Body"}],
-    "rLeg":[{"value":"rLeg","label":"Right Leg"}, {"value":"rLeg","label":"Right Leg"}, {"value":"body","label":"Body"},{"value":"rArm","label":"Right Arm"}, {"value":"head","label":"Head"}, {"value":"body","label":"Body"}]}
-FORTYK.damageTypes=["Explosive","Rending","Impact","Energy"]
-FORTYK.meleeWeaponTypes=["Chain", "Force", "Power", "Shock", "Low-tech", "Exotic"]
-FORTYK.rangedWeaponTypes=["Bolt","Grenade", "Flame", "Las", "Melta", "Plasma", "Solid projectile", "Launcher", "Low-tech", "Exotic"]
-FORTYK.rangedWeaponClasses=[ "Basic","Pistol", "Heavy", "Thrown", "Titanic Ranged Weapon", "Titanic Artillery Weapon"]
-FORTYK.meleeWeaponClasses=["Melee", "Melee Two-handed", "Shield", "Titanic Melee Weapon"]
-FORTYK.psychicPowerTypes=["Psychic Bolt", "Psychic Barrage", "Psychic Storm", "Psychic Blast", "Buff/Debuff", "Other", "Macro"]
-FORTYK.psychicDisciplines=["Biomancy", "Chronomancy","Divination","Pyromancy","Telekinesis","Telepathy","Sanctic Daemonology","Malefic Daemonology","Tzeench","Slaanesh","Nurgle","Chapter","WAAAGH!","Navigator"]
-FORTYK.spaceshipWeaponLocations=["Dorsal","Prow","Keel","Port","Starboard"]
-FORTYK.outpostTypes=["Outpost","Enclave","Stronghold"];
-FORTYK.knightComponentTypes=[{"value":"rangedWeapon","label":"Ranged Weapons"},{"value":"meleeWeapon","label":"Melee Weapons"},{"value":"auxiliaryWeapon","label":"Auxiliary Weapons"},{"value":"ammunition","label":"Ammunition"},{"value":"knightArmor","label":"Armors"},{"value":"knightCore","label":"Cores"},{"value":"knightStructure","label":"Structure"},{"value":"forceField","label":"Force Fields"},{"value":"gyro","label":"Gyros"},{"value":"sensor","label":"Sensors"},{"value":"throne-mod","label":"Throne Modifications"},{"value":"plating","label":"Platings"},{"value":"core-mod","label":"Core Modifications"},{"value":"arm-actuator","label":"Arm Actuators"},{"value":"leg-actuator","label":"Leg Actuators"},{"value":"other","label":"Other Components"}]
+    "rLeg":[{"value":"rLeg","label":"Right Leg"}, {"value":"rLeg","label":"Right Leg"}, {"value":"body","label":"Body"},{"value":"rArm","label":"Right Arm"}, {"value":"head","label":"Head"}, {"value":"body","label":"Body"}]};
+FORTYK.damageTypes=[{value:"Explosive"},{value:"Rending"},{value:"Impact"},{value:"Energy"}];
+FORTYK.meleeWeaponTypes=[{value:"Chain"}, {value:"Force"}, {value:"Power"}, {value:"Shock"}, {value:"Low-tech"}, {value:"Exotic"}];
+FORTYK.rangedWeaponTypes=[{value:"Bolt"},{value:"Grenade"}, {value:"Flame"}, {value:"Las"}, {value:"Melta"}, {value:"Plasma"}, {value:"Solid projectile"}, {value:"Launcher"}, {value:"Low-tech"}, {value:"Exotic"}];
+FORTYK.rangedWeaponClasses=[{value:"Basic"},{value:"Pistol"}, {value:"Heavy"}, {value:"Thrown"}, {value:"Titanic Ranged Weapon"}, {value:"Titanic Artillery Weapon"}];
+FORTYK.meleeWeaponClasses=[{value:"Melee"}, {value:"Melee Two-handed"}, {value:"Shield"}, {value:"Titanic Melee Weapon"}];
+FORTYK.psychicPowerTypes=[{value:"Psychic Bolt"}, {value:"Psychic Barrage"}, {value:"Psychic Storm"}, {value:"Psychic Blast"}, {value:"Buff/Debuff"}, {value:"Other"}, {value:"Macro"}];
+FORTYK.psychicDisciplines=[{value:"Biomancy"}, {value:"Chronomancy"},{value:"Divination"},{value:"Pyromancy"},{value:"Telekinesis"},{value:"Telepathy"},{value:"Sanctic Daemonology"},{value:"Malefic Daemonology"},{value:"Tzeench"},{value:"Slaanesh"},{value:"Nurgle"},{value:"Chapter"},{value:"WAAAGH!"},{value:"Navigator"}];
+FORTYK.spaceshipWeaponLocations=[{value:"Dorsal"},{value:"Prow"},{value:"Keel"},{value:"Port"},{value:"Starboard"}];
+FORTYK.outpostTypes=[{value:"Outpost"},{value:"Enclave"},{value:"Stronghold"}];
+FORTYK.knightComponentTypes=[{"value":"rangedWeapon","label":"Ranged Weapons"},{"value":"meleeWeapon","label":"Melee Weapons"},{"value":"auxiliaryWeapon","label":"Auxiliary Weapons"},{"value":"ammunition","label":"Ammunition"},{"value":"knightArmor","label":"Armors"},{"value":"knightCore","label":"Cores"},{"value":"knightStructure","label":"Structure"},{"value":"forceField","label":"Force Fields"},{"value":"gyro","label":"Gyros"},{"value":"sensor","label":"Sensors"},{"value":"throne-mod","label":"Throne Modifications"},{"value":"plating","label":"Platings"},{"value":"core-mod","label":"Core Modifications"},{"value":"arm-actuator","label":"Arm Actuators"},{"value":"leg-actuator","label":"Leg Actuators"},{"value":"other","label":"Other Components"}];
 FORTYK.vehicleRepairCostTimeDiff={
     "firstthresholddmg":{
         amount:10,
@@ -228,7 +241,7 @@ FORTYK.vehicleRepairCostTimeDiff={
         hasAdmech:-20,
         hasTechnAdmech:10
     },
-    "firedmg":{
+    "firedamage":{
         amount:6,
         time:10800,
         cost:20,
@@ -369,7 +382,7 @@ FORTYK.vehicleRepairCostTimeDiff={
         hasTechnAdmech:-40 
     }
 
-}
+};
 FORTYK.repairTimeAdjustment=[
     {
 
@@ -416,7 +429,7 @@ FORTYK.repairTimeAdjustment=[
         "upperRange":Infinity,
         "adjustment":2592000
     }
-]
+];
 FORTYK.vehicleRepairTypes={
     "normal":{
         "time":1,
@@ -433,28 +446,28 @@ FORTYK.vehicleRepairTypes={
         "cost":0.5,
         "difficulty":30
     }
-}
-FORTYK.coreIntegrities={"Common":3,"Poor":1,"Good":4,"Best":5}
-FORTYK.spaceshipWeaponTypes=["Macrocannon","Lance","Torpedo","Hangar"]
-FORTYK.spaceshipCargoTypes=["Food Supplies","Unrefined Materials","Refined Materials","Military Technology","Manufacturing Technology","Survival Technology","Ship Parts","Energy Source","Entertainment","Contraband","Livestock","Xeno-Artifacts","Archeotech","Torpedoes"]
-FORTYK.spaceshipComponentStatuses=["Online", "Damaged", "Destroyed"]
-FORTYK.spaceshipSquadronTypes=["Fighter","Bomber","Assault Boat","Civilian"]
-FORTYK.aptitudes=[{"key":"weaponskill","label":"Weapon Skill"}, {"key":"ballisticskill","label":"Ballistic Skill"}, {"key":"strength","label":"Strength"},{"key":"toughness","label":"Toughness"} ,{"key":"agility","label":"Agility"} ,{"key":"intelligence","label": "Intelligence"},{"key":"perception","label":"Perception"} ,{"key":"willpower","label":"Willpower"} ,{"key":"fellowship","label":"Fellowship"} ,{"key":"offence","label":"Offence"} ,{"key":"finesse","label":"Finesse"} ,{"key":"defence","label":"Defence"} ,{"key":"tech","label":"Tech"},{"key":"knowledge","label":"Knowledge"} ,{"key":"leadership","label":"Leadership"} ,{"key":"fieldcraft","label":"Fieldcraft"} ,{"key":"social","label":"Social"} ,{"key":"psyker","label":"Psyker"}]
-FORTYK.advancementTypes=["Custom","Characteristic Upgrade","Skill Upgrade","New Skill", "Talent"]
+};
+FORTYK.coreIntegrities={"Common":3,"Poor":1,"Good":4,"Best":5};
+FORTYK.spaceshipWeaponTypes=[{value:"Macrocannon"},{value:"Lance"},{value:"Torpedo"},{value:"Hangar"}];
+FORTYK.spaceshipCargoTypes=[{value:"Food Supplies"},{value:"Unrefined Materials"},{value:"Refined Materials"},{value:"Military Technology"},{value:"Manufacturing Technology"},{value:"Survival Technology"},{value:"Ship Parts"},{value:"Energy Source"},{value:"Entertainment"},{value:"Contraband"},{value:"Livestock"},{value:"Xeno-Artifacts"},{value:"Archeotech"},{value:"Torpedoes"}];
+FORTYK.spaceshipComponentStatuses=[{value:"Online"}, {value:"Damaged"}, {value:"Destroyed"}];
+FORTYK.spaceshipSquadronTypes=["Fighter","Bomber","Assault Boat","Civilian"];
+FORTYK.aptitudes=[{"key":"weaponskill","label":"Weapon Skill"}, {"key":"ballisticskill","label":"Ballistic Skill"}, {"key":"strength","label":"Strength"},{"key":"toughness","label":"Toughness"} ,{"key":"agility","label":"Agility"} ,{"key":"intelligence","label": "Intelligence"},{"key":"perception","label":"Perception"} ,{"key":"willpower","label":"Willpower"} ,{"key":"fellowship","label":"Fellowship"} ,{"key":"offence","label":"Offence"} ,{"key":"finesse","label":"Finesse"} ,{"key":"defence","label":"Defence"} ,{"key":"tech","label":"Tech"},{"key":"knowledge","label":"Knowledge"} ,{"key":"leadership","label":"Leadership"} ,{"key":"fieldcraft","label":"Fieldcraft"} ,{"key":"social","label":"Social"} ,{"key":"psyker","label":"Psyker"}];
+FORTYK.advancementTypes=[{value:"Custom"},{value:"Characteristic Upgrade"},{value:"Skill Upgrade"},{value:"New Skill"}, {value:"Talent"}];
 //For costs put the number of matching aptitudes into the array, then whatever other parameter
 FORTYK.characteristicUpgradeCosts=[{"5":500,"10":750,"15":1000,"20":1500,"25":2500},
                                    {"5":250,"10":500,"15":750,"20":1000,"25":1500},
-                                   {"5":100,"10":250,"15":500,"20":750,"25":1250}]
+                                   {"5":100,"10":250,"15":500,"20":750,"25":1250}];
 FORTYK.skillUpgradeCosts=[{"0":300,"10":600,"20":900,"30":1200},
                           {"0":200,"10":400,"20":600,"30":800},
-                          {"0":100,"10":200,"20":300,"30":400}]
+                          {"0":100,"10":200,"20":300,"30":400}];
 FORTYK.talentCosts=[[600,900,1200],
                     [300,450,600],
-                    [200,300,400]]
-FORTYK.psykerTypes={"bound":{"push":2,"sustain":"+10 to Phenomena rolls, -1 to PR per power after the first","perils":0},"unbound":{"push":4,"sustain":"+10 to all rolls on Table 6–2: Psychic Phenomena (see page 196), decrease psy rating by 1 per power.","perils":5}, "daemon":{"push":3, "sustain":"+10 to all rolls on Table 6–2: Psychic Phenomena (see page 196), decrease psy rating by 1 per power. He is not affected by the result unless the result causes Perils of the Warp, though those around him might be.","perils":10},
-                    "navigator":{"push":-1,"sustain":"N/A","perils":-1}}
-FORTYK.navigatorPowerTraining=["Novice","Adept","Master"]
-FORTYK.itemStates=["O","D","X"]
+                    [200,300,400]];
+FORTYK.psykerTypes={"bound":{value:"bound",label:"Bound","push":2,"sustain":"+10 to Phenomena rolls, -1 to PR per power after the first","perils":0},"unbound":{value:"unbound",label:"Unbound","push":4,"sustain":"+10 to all rolls on Table 6–2: Psychic Phenomena (see page 196), decrease psy rating by 1 per power.","perils":5}, "daemon":{value:"daemon",label:"Daemon","push":3, "sustain":"+10 to all rolls on Table 6–2: Psychic Phenomena (see page 196), decrease psy rating by 1 per power. He is not affected by the result unless the result causes Perils of the Warp, though those around him might be.","perils":10},
+                    "navigator":{value:"navigator",label:"Navigator","push":-1,"sustain":"N/A","perils":-1}};
+FORTYK.navigatorPowerTraining=[{value:"Novice"},{value:"Adept"},{value:"Master"}];
+FORTYK.itemStates=[{value:"O"},{value:"D"},{value:"X"}];
 FORTYK.armorFlags={
     "explosive": {
         "value": false,
@@ -501,7 +514,7 @@ FORTYK.armorFlags={
         "label": "Impenetrable",
         "description": "This armor reduces damage taken by the wearer by half (rounded up) after ALL mitigation."
     }
-}
+};
 FORTYK.weaponFlags={
     "accurate": {
         "value": false,
@@ -856,6 +869,12 @@ FORTYK.weaponFlags={
         "label": "Thermal",
         "description": "These weapons cause vehicles hit by them to build up internal heat. Superheavy vehicles gain 1 heat, normal vehicles are set ablaze."
     },
+    "torrent": {
+        "value": false,
+        "num": 0,
+        "label": "Torrent",
+        "description": "This represents weapons with a high volume of fire which fill the air with projectiles. When firing such a weapon on full automatic, use a cone template with an angle equal to X and a size equal to the weapon range. All characters inside the template must pass an agility test minus -5*RoF of the weapon. Hits are then distributed by priority of targets which failed worse, until either all hits are allocated or a target has received hits equal to its degrees of failure. Once the hits are allocated targets may try to evade, if they can move out of the template with a half move."
+    },
     "toxic": {
         "value": false,
         "num": 0,
@@ -908,20 +927,20 @@ FORTYK.weaponFlags={
         "label": "Willpower Soak",
         "description": "Certain psychic powers have their damage reduced by the target's willpower bonus instead of toughness. This trait represents that ability."
     }
-}
-FORTYK.weaponFacings=[{value:"",label:"None"},{value:"front",label:"Front"},{value:"rear",label:"Rear"},{value:"lSide",label:"Left Side"},{value:"rSide",label:"Right Side"}]
+};
+FORTYK.weaponFacings=[{value:"",label:"None"},{value:"front",label:"Front"},{value:"rear",label:"Rear"},{value:"lSide",label:"Left Side"},{value:"rSide",label:"Right Side"}];
 FORTYK.weaponMounts=[
     {value:"fixed",label:"Fixed",description:"Fixed weapons are embedded within the hull of a vehicle and do not possess the ability to turn. They might have a limited vertical traversal ability, but otherwise only fire in a direct straight line from the Facing the weapon is mounted. To turn the gun from left to right the vehicle must move. A Basilisk’s earthshaker cannon is an example of a Fixed Weapon Mounting."},
     {value:"hull",label:"Hull",description:"Hull weapons are similar to Fixed weapons in that they have a limited range of movement, but benefit from being able to move from left to right as well as up and down. A Hull weapon has a 45-degree Fire Arc from the Facing the weapon is mounted. A Baneblade’s demolisher cannon is an example of a Hull Weapon Mounting in the Front Facing."},
     {value:"turret",label:"Turret",description:"Turret-mounted weapons are often placed high on a vehicle on top of its hull to give them the greatest line of sight in as many directions as possible. They give the greatest tactical flexibility in their ability to point in almost every direction. A Turret weapon has a 360-degree Fire Arc, and only the vehicle itself can block this arc (e.g. a vehicle with multiple turrets would find that the Fire Arc of one turret blocks the other turret, or the vehicle itself, if the turret is mounted low enough, such as the lascannon turrets on a Baneblade). Turrets cannot turn to face directions instantaneously, and thus it takes a Half Action for every full 180-degrees that a turret needs to turn. The GM and the players should always be aware of which direction their turrets are facing, as this can be important for Critical Damage. Additionally, due to their heavier armour, turrets treat all hits as hits to the Front Facing, regardless of the direction the attack came from in relation to the turret’s current facing (see Table 8–24 Vehicle Hit Locations on page 275). A Leman Russ’ battle cannon is an example of a Turret Weapon Mounting."},
     {value:"sponson",label:"Sponson",description:"Sponson-mounted weapons are often used defensively on the flanks and sometimes even the rear of a vehicle, whilst the vehicle’s main weapon continues its assault upon the enemy. A Sponson weapon has a 180-degree Fire Arc from the Facing the weapon is mounted (e.g. a Sponson-mounted Weapon on a vehicle’s Left Side Facing has a 180 degree Fire Arc to the left of the vehicle). Walkers, unless specified otherwise, treat all their weapons as Sponson-mounted, specifically a Sponson mounting that gives them a 180 degree Fire Arc to the Walker’s Front Facing. This is to represent the fact that most Walkers have the ability to twist their torsos or even move their arms independently of the Walker’s main body in much the same way as a regular infantryman. A Leman Russ’ left and right heavy bolters and a Sentinel’s multi-laser are examples of Sponson Weapon Mountings."},
     {value:"coaxial",label:"Co-Axial",description:"Co-Axial weapons are specially designed to be linked with other (usually larger) weapons. This is done for a variety of reasons, but most commonly to act as a guide (via tracer rounds) for the other gun. A Co-Axial weapon has the same Fire Arc as the weapon it is attached to and, as an exception to the standard rules for making attacks, a Co-Axial weapon may be fired at the same time as the gun it is linked to as a Full Action. The player first works out the shot from the Co-Axial weapon, as well as any Damage. If the Co- Axial weapon missed, then the other weapon just fires as normal. If the Co-Axial weapon hit with any shots, then the other weapon it is linked to gains a further +20 to the Ballistic Skill Test (but only for that shot, not subsequent shots unless the Co-Axial weapon is used again). A Baneblade’s autocannon is an example of a Co- Axial Weapon mounting."},
-    {value:"pintle",label:"Pintle",description:"Pintle weapons are usually optional or additional weapons bolted onto turret rings or placed in areas where spare crew or even passengers can use them. They are usually comparatively light weapons, such as heavy stubbers, and are used to defend the vehicle in much the same way as sponson weaponry. Unlike the other weaponry mounted on a vehicle, Pintle weapons do not automatically have a crew member assigned to them. Instead, they may be fired by anyone who can realistically reach one during his Turn, or who reached one in a previous Turn. Even passengers may fire a Pintle weapon if they are able. Pintle weapons usually have a 360 degree Fire Arc, as they are often mounted on the highest point of a vehicle, but there are exceptions to this and the GM should be aware of what might block a Pintle weapon’s Fire Arc."}]
-FORTYK.lasModes=["normal","overcharge","overload"]
-FORTYK.itemQualities=["Poor","Common","Good","Best"]
-FORTYK.skillChars={"ws":{"name":"ws","caps":"WS"},"bs":{"name":"bs","caps":"BS"},"s":{"name":"s","caps":"S"},"t":{"name":"t","caps":"T"},"agi":{"name":"agi","caps":"AGI"},"int":{"name":"int","caps":"INT"},"per":{"name":"per","caps":"PER"},"wp":{"name":"wp","caps":"WP"},"fel":{"name":"fel","caps":"FEL"}}
-FORTYK.characteristics={"ws":{"key":"ws","label":"Weapon Skill","aptitudes":"weapon skill, offence"},"bs":{"key":"bs","label":"Ballistic Skill","aptitudes":"ballistic skill, finesse"},"s":{"key":"s","label":"Strength","aptitudes":"strength, offence"},"t":{"key":"t","label":"Toughness","aptitudes":"toughness, defence"},"agi":{"key":"agi","label":"Agility","aptitudes":"agility, finesse"},"int":{"key":"int","label":"Intelligence","aptitudes":"intelligence, knowledge"},"per":{"key":"per","label":"Perception","aptitudes":"perception, fieldcraft"},"wp":{"key":"wp","label":"Willpower","aptitudes":"willpower, psyker, leadership"},"fel":{"key":"fel","label":"Fellowship","aptitudes":"fellowship, social"}}
-FORTYK.skillTraining={"0":{"name":"Untrained","value":-20},"1":{"name":"Known","value":0},"2":{"name":"Trained","value":10},"3":{"name":"Experienced","value":20},"4":{"name":"Veteran","value":30}}
+    {value:"pintle",label:"Pintle",description:"Pintle weapons are usually optional or additional weapons bolted onto turret rings or placed in areas where spare crew or even passengers can use them. They are usually comparatively light weapons, such as heavy stubbers, and are used to defend the vehicle in much the same way as sponson weaponry. Unlike the other weaponry mounted on a vehicle, Pintle weapons do not automatically have a crew member assigned to them. Instead, they may be fired by anyone who can realistically reach one during his Turn, or who reached one in a previous Turn. Even passengers may fire a Pintle weapon if they are able. Pintle weapons usually have a 360 degree Fire Arc, as they are often mounted on the highest point of a vehicle, but there are exceptions to this and the GM should be aware of what might block a Pintle weapon’s Fire Arc."}];
+FORTYK.lasModes=[{key:0,label:"normal"},{key:1,label:"overcharge"},{key:2,label:"overload"}];
+FORTYK.itemQualities=[{value:"Poor"},{value:"Common"},{value:"Good"},{value:"Best"}];
+FORTYK.skillChars={"ws":{"name":"ws","caps":"WS"},"bs":{"name":"bs","caps":"BS"},"s":{"name":"s","caps":"S"},"t":{"name":"t","caps":"T"},"agi":{"name":"agi","caps":"AGI"},"int":{"name":"int","caps":"INT"},"per":{"name":"per","caps":"PER"},"wp":{"name":"wp","caps":"WP"},"fel":{"name":"fel","caps":"FEL"}};
+FORTYK.characteristics={"ws":{"key":"ws","label":"Weapon Skill","aptitudes":"weapon skill, offence"},"bs":{"key":"bs","label":"Ballistic Skill","aptitudes":"ballistic skill, finesse"},"s":{"key":"s","label":"Strength","aptitudes":"strength, offence"},"t":{"key":"t","label":"Toughness","aptitudes":"toughness, defence"},"agi":{"key":"agi","label":"Agility","aptitudes":"agility, finesse"},"int":{"key":"int","label":"Intelligence","aptitudes":"intelligence, knowledge"},"per":{"key":"per","label":"Perception","aptitudes":"perception, fieldcraft"},"wp":{"key":"wp","label":"Willpower","aptitudes":"willpower, psyker, leadership"},"fel":{"key":"fel","label":"Fellowship","aptitudes":"fellowship, social"}};
+FORTYK.skillTraining={"0":{"name":"Untrained","value":-20},"1":{"name":"Known","value":0},"2":{"name":"Trained","value":10},"3":{"name":"Experienced","value":20},"4":{"name":"Veteran","value":30}};
 FORTYK.ACTIVE_EFFECT_MODES = {
     CUSTOM: 0,
     MULTIPLY: 1,
@@ -1217,9 +1236,13 @@ FORTYK.StatusEffects = [
         statuses:["severe"]
     }
 ];
-FORTYK.itemRarityLabels = {"100":"Ubiquitous","30":"Abundant","20":"Plentiful","10":"Common","0":"Average","-10":"Scarce","-20":"Rare","-30":"Very Rare","-40":"Extremely Rare","-50":"Near Unique","-60":"Unique"}
-FORTYK.cargoRarityValue = {"100":2,"30":5,"20":10,"10":20,"0":50,"-10":100,"-20":200,"-30":400,"-40":1000,"-50":3000,"-60":6000}
+FORTYK.itemRarityLabels = {"100":"Ubiquitous","30":"Abundant","20":"Plentiful","10":"Common","0":"Average","-10":"Scarce","-20":"Rare","-30":"Very Rare","-40":"Extremely Rare","-50":"Near Unique","-60":"Unique"};
+FORTYK.itemRarity= [{value:100,"label":"Ubiquitous"},{value:30,label:"Abundant"},{value:20,label:"Plentiful"},{value:10,label:"Common"},{value:0,label:"Average"},{value:-10,label:"Scarce"},{value:-20,label:"Rare"},{value:-30,label:"Very Rare"},{value:-40,label:"Extremely Rare"},{value:-50,label:"Near Unique"},{value:-60,label:"Unique"}];
+FORTYK.cargoRarityValue = {"100":2,"30":5,"20":10,"10":20,"0":50,"-10":100,"-20":200,"-30":400,"-40":1000,"-50":3000,"-60":6000};
 FORTYK.cargoQualityMultiplier = {"Poor":0.5,"Common":1,"Good":2,"Best":4};
-FORTYK.comradeRanks=["Green","Guardsman","Veteran"]
-FORTYK.vehicleTypes=["Tracked","Wheeled","Skimmer","Walker","Aircraft","Spacecraft"]
-FORTYK.meldTypes={"default":20,"experimental":20,"safe":10}
+FORTYK.comradeRanks=[{value:"Green"},{value:"Guardsman"},{value:"Veteran"}];
+FORTYK.vehicleTypes=[{value:"Tracked"},{value:"Wheeled"},{value:"Skimmer"},{value:"Walker"},{value:"Aircraft"},{value:"Spacecraft"}];
+FORTYK.meldTypes={"default":20,"experimental":20,"safe":10};
+FORTYK.itemStates=[{value:"X"},{value:"O"},{value:"D"}];
+FORTYK.advances=[{value:5,label:"5%"},{value:10,label:"10%"},{value:15,label:"15%"},{value:20,label:"20%"},{value:25,label:"25%"}];
+FORTYK.psyChars=[{value:"wp",label:"Willpower"},{value:"per",label:"Perception"},{value:"psy",label:"Psyniscience"}];

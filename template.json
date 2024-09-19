@@ -143,7 +143,11 @@
                         "value": 0,
                         "type": "Number",
                         "chars": "",
-                        "mod": 0
+                        "mod": 0,
+                        "khorne":0,
+                        "nurgle":0,
+                        "slaanesh":0,
+                        "tzeentch":0
                     },
                     "insanity": {
                         "type": "Number",
@@ -346,7 +350,8 @@
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
-                        "label": "Head"
+                        "label": "Head",
+                        "key": "head"
                     },
                     "body": {
                         "value": 0,
@@ -355,7 +360,8 @@
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
-                        "label": "Body"
+                        "label": "Body",
+                        "key": "body"
                     },
                     "rArm": {
                         "value": 0,
@@ -364,7 +370,8 @@
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
-                        "label": "Right Arm"
+                        "label": "Right Arm",
+                        "key": "rArm"
                     },
                     "lArm": {
                         "value": 0,
@@ -373,7 +380,8 @@
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
-                        "label": "Left Arm"
+                        "label": "Left Arm",
+                        "key": "lArm"
                     },
                     "rLeg": {
                         "value": 0,
@@ -382,7 +390,8 @@
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
-                        "label": "Right Leg"
+                        "label": "Right Leg",
+                        "key": "rLeg"
                     },
                     "lLeg": {
                         "value": 0,
@@ -391,7 +400,8 @@
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
-                        "label": "Left Leg"
+                        "label": "Left Leg",
+                        "key": "lLeft"
                     }
                 },
                 "psykana": {

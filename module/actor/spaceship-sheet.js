@@ -6,7 +6,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
     /** @override */
     static get defaultOptions() {
 
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/spaceship-sheet.html",
             width: 666,
@@ -127,7 +127,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
     async _damageRoll(formula,label,hits){
         for(let i=0;i<hits;i++){
             let roll = new Roll(formula, this.actor.system);
-            await roll.evaluate({async: true}).then(value=>{roll.toMessage({
+            await roll.evaluate().then(value=>{roll.toMessage({
                 speaker: ChatMessage.getSpeaker({ actor: this.actor }),
                 flavor: label
             });});

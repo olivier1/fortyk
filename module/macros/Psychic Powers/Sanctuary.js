@@ -31,7 +31,7 @@ let daemonShieldData={name:"Sanctuary Shield(Daemon)",
                       }};
 let ae=power.effects.entries().next().value[1];
 console.log(ae)
-let aeData=deepClone(ae).data;
+let aeData=foundry.utils.duplicate(ae);
 
 aeData.name=ae.name+" Buff"
 

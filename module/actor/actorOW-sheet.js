@@ -13,7 +13,7 @@ export class FortyKOWActorSheet extends FortyKDWActorSheet {
 
     static get defaultOptions() {
        
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/actorOW-sheet.html",
             width: 666,

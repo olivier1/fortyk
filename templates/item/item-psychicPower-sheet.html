@@ -14,11 +14,8 @@
         <div class="flexcol">
             <label>Discipline:</label>
             <select class="discipline" name="system.discipline.value">
-                {{#select system.discipline.value}}
-                {{#each FORTYK.psychicDisciplines}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions FORTYK.psychicDisciplines selected=system.discipline.value valueAttr="value" labelAttr="value"}}
+                
             </select>
         </div>
         <div class="flexcol">
@@ -33,11 +30,8 @@
             <label>Power Type:</label>
 
             <select class="power-type" name="system.class.value">
-                {{#select system.class.value}}
-                {{#each FORTYK.psychicPowerTypes}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions FORTYK.psychicPowerTypes selected=system.class.value valueAttr="value" labelAttr="value"}}
+               
             </select>
         </div>
         <div class="flexcol">
@@ -50,11 +44,8 @@
             <label>Test Type:</label>
 
             <select class="power-char" name="system.testChar.value">
-                {{#select system.testChar.value}}
-                <option value="wp">Willpower</option>
-                <option value="per">Perception</option>
-                <option value="psy">Psyniscience</option>  
-                {{/select}}
+                {{selectOptions FORTYK.psyChars selected=system.testChar.value valueAttr="value" labelAttr="label"}}
+                
             </select>
         </div>
         <div class="flexcol">
@@ -94,11 +85,8 @@
         <div class="flexcol">
             <label>Damage Type:</label>
             <select class="damage-type" name="system.damageType.value">
-                {{#select system.damageType.value}}
-                {{#each FORTYK.damageTypes}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions FORTYK.damageTypes selected=system.damageType.value valueAttr="value" labelAttr="value"}}
+               
             </select>
         </div>
         {{else if (contains system.class.value "Buff/Debuff")}}
@@ -112,11 +100,8 @@
             <label>Macro:</label>
 
             <select class="power-char" name="system.macro.id">
-                {{#select system.macro.id}}
-                {{#each psyMacros}}
-                <option value="{{this._id}}">{{this.name}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions psyMacros selected=system.macro.id valueAttr="_id" labelAttr="name"}}
+               
             </select>
         </div>
         {{/if}}

@@ -5,7 +5,7 @@ export class CreateRepairEntryDialog extends Application {
 
     static get defaultOptions() {
 
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fortyk"],
             template: "systems/fortyk/templates/actor/dialogs/createRepairEntry-dialog.html",
             width: 666,
@@ -196,8 +196,9 @@ export class CreateRepairEntryDialog extends Application {
         if(amount===false){
             amount=parseInt(repairEntry.amount);
         }
-
+        console.log(repairEntry);
         const configAmount=repairTypeConfig.amount;
+        
         let ratio=amount/configAmount;
         const configTime=repairTypeConfig.time;
         const configCost=repairTypeConfig.cost;
@@ -515,7 +516,7 @@ export class CreateRepairEntryDialog extends Application {
         let house=this.options.actor;
         let calendar=SimpleCalendar.api.getCurrentCalendar();
         let entries=house.itemTypes.repairEntry;
-        let entry=entries.filter(entry=>entry.system.knight.value===knight.id)
+        let entry=entries.filter(entry=>entry.system.knight.value===knight._id)
         if(entry.length>0){
             let update={};
             let updateEntry=entry[0];
@@ -540,7 +541,7 @@ export class CreateRepairEntryDialog extends Application {
                          content:description,
                          classes:["fortyk"],
                          flavor:`Added repairs for ${knight.name}, Total Cost:${cost}`,
-                         author:game.user.character.name};
+                         author:game.user.character.id};
             await ChatMessage.create(chatMsg,{});
 
         }else{
@@ -561,7 +562,7 @@ export class CreateRepairEntryDialog extends Application {
                         "noteId":""
                     },
                     "knight":{
-                        "value":knight.id,
+                        "value":knight._id,
                         "type":"String"
                     },
                     "repairs":{
@@ -603,7 +604,7 @@ export class CreateRepairEntryDialog extends Application {
                          content:description,
                          classes:["fortyk"],
                          flavor:`Created repair entry for ${knight.name}, Total Cost:${cost}`,
-                         author:game.user.character.name};
+                         author:game.user.character.id};
             await ChatMessage.create(chatMsg,{});
         }
 

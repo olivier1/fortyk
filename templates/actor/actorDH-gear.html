@@ -17,13 +17,7 @@
 
             <a class="item-descr list-item" data-name="{{c.name}}" data-item-descr="{{c.system.description.value}}">{{c.name}}</a>
             <select data-item-id="{{c._id}}" class="cyber-location-select list-item" data-dtype="String">
-                {{#select c.system.location.value}}
-
-                {{#each ../system.characterHitLocations as |l key|}}
-
-                <option value="{{key}}">{{l.label}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions ../system.characterHitLocations selected=c.system.location.value valueAttr="key" labelAttr="label"}}
             </select>
             <span class="list-button"><a class="cyberItem item-edit" title="Edit" data-item-id="{{c._id}}"></a></span>
             <span class="list-button"><a class="cyberItem item-delete" title="Delete" data-item-id="{{c._id}}"></a></span>

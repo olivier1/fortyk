@@ -12,7 +12,7 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
     /** @override */
 
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/actor-npc-sheet.html",
             width: 600,
@@ -30,7 +30,7 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
 
 
         const data = super.getData();
-        mergeObject(data.actor,this.actor.prepare());
+        foundry.utils.mergeObject(data.actor,this.actor.prepare());
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
         data.aptitudes=FORTYK.aptitudes;

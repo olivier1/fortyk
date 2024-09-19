@@ -14,7 +14,7 @@ new Dialog({
             callback: async(html) => {
                 let coverSelect = $(html).find('#cover option:selected');
                 let label=coverSelect.text();
-                console.log(coverSelect)
+                console.log(coverSelect);
                 let cover=parseFloat(coverSelect.val());
                 console.log(label, cover);
                 for(let token of canvas.tokens.controlled){
@@ -25,7 +25,7 @@ new Dialog({
                                  speaker:{actor,alias:game.user.name},
                                  content:`Set ${label} on selected`,
                                  flavor:"Cover Set",
-                                 author:game.user.name};
+                                 author:game.user.id};
                 await ChatMessage.create(chatCover,{});
 
             }

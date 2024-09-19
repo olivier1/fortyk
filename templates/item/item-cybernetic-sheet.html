@@ -18,31 +18,13 @@
             <label>Item Quality:</label>
 
             <select class="quality"  name="system.quality.value">
-                {{#select system.quality.value}}
-                {{#each FORTYK.itemQualities}}
-                <option value="{{this}}">{{this}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions FORTYK.itemQualities selected=system.quality.value valueAttr="value" labelAttr="value"}}
             </select>
         </div>
     <div class="flexcol">
         <label>Rarity:</label>
         <select class="power-type" name="system.rarity.value">
-            {{#select system.rarity.value}}
-            <option value="100">Ubiquitous</option>
-            <option value="30">Abundant</option>  
-            <option value="20">Plentiful</option>
-            <option value="10">Common</option> 
-            <option value="0">Average</option>
-            <option value="-10">Scarce</option> 
-            <option value="-20">Rare</option>
-            <option value="-30">Very rare</option> 
-            <option value="-40">Extremely rare</option>
-            <option value="-50">Near Unique</option>
-            <option value="-60">Unique</option>
-
-
-            {{/select}}
+            {{selectOptions FORTYK.itemRarity selected=system.rarity.value valueAttr="value" labelAttr="label"}}
         </select>
     </div>
     {{#if isGM}}

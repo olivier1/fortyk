@@ -9,7 +9,7 @@ export class FortyKItemSheet extends ItemSheet {
 
     /** @override */
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "item"],
             width: 520,
             height: 480
@@ -43,9 +43,9 @@ export class FortyKItemSheet extends ItemSheet {
         if(this.item.type==="skill"){
             //GET THE SKILLS WITH CHILDREN
             if(this.actor){
-                data['skillgroups']=this.actor.items.filter(function(item){
+                data.skillgroups=this.actor.items.filter(function(item){
 
-                    if(item.type==="skill"){return item.system.hasChildren.value}else{return false;}})
+                    if(item.type==="skill"){return item.system.hasChildren.value;}else{return false;}});
             }
 
 
@@ -112,7 +112,7 @@ export class FortyKItemSheet extends ItemSheet {
             return quirks;
         },{});
 
-
+        quirks=Object.values(quirks);
 
         return quirks;
     }
@@ -142,7 +142,7 @@ export class FortyKItemSheet extends ItemSheet {
             return rangedWeapons;
         },{});
 
-
+        rangedWeapons=Object.values(rangedWeapons);
 
         return rangedWeapons;
     }
@@ -172,8 +172,7 @@ export class FortyKItemSheet extends ItemSheet {
             return meleeWeapons;
         },{});
 
-
-
+        meleeWeapons=Object.values(meleeWeapons);
         return meleeWeapons;
     }
 
@@ -220,7 +219,7 @@ export class FortyKItemSheet extends ItemSheet {
     }
     _onCloneClick(event){
         let item=this.item.clone();
-        Item.create(duplicate(item));
+        Item.create(foundry.utils.duplicate(item));
     }
     async _onAddProfileClick(event){
         let item=this.item;
@@ -246,7 +245,7 @@ export class FortyKItemSheet extends ItemSheet {
         event.preventDefault();
         const dataset=event.currentTarget.dataset;
         const uuid=event.currentTarget.value;
-        console.log(uuid)
+        console.log(uuid);
         let index=dataset.index;
         let item=this.item;
         let profiles=item.getFlag("fortyk","profiles");
@@ -327,7 +326,7 @@ export class FortyKItemSheet extends ItemSheet {
             close:function(){
                 sheet.item.dialog=undefined;
             }
-        },options).render(true)
+        },options).render(true);
         sheet.item.dialog=d;
 
 
@@ -338,9 +337,9 @@ export class FortyKItemSheet extends ItemSheet {
         let item=this.item;
         let specials={};
         if(this.item.type==="armor"){
-            specials=duplicate(game.fortyk.FORTYK.armorFlags);
+            specials=foundry.utils.duplicate(game.fortyk.FORTYK.armorFlags);
         }else{
-            specials=duplicate(game.fortyk.FORTYK.weaponFlags);
+            specials=foundry.utils.duplicate(game.fortyk.FORTYK.weaponFlags);
         }
 
 
@@ -379,7 +378,7 @@ export class FortyKItemSheet extends ItemSheet {
 
                                 let bool=false;
                                 let value=html.find(`input[id=${key}]`).is(":checked");
-                                if(value!==spec.value){bool=true}
+                                if(value!==spec.value){bool=true;}
 
                                 if(bool&&spec.num===undefined){
 
@@ -387,21 +386,21 @@ export class FortyKItemSheet extends ItemSheet {
                                 }
 
                                 let num=false;
-                                let number
+                                let number;
                                 if(spec.num!==undefined&&value){
                                     number=html.find(`input[id=${key}num]`).val();
                                     if(isNaN(parseFloat(number))&&number.toLowerCase().indexOf("pr")!==-1){
                                         if(number!==spec.num){
 
-                                            num=true
-                                        };
+                                            num=true;
+                                        }
                                     }else{
                                         number=parseFloat(number);
                                     }
                                     if(value||number!==parseInt(spec.num)){
 
-                                        num=true
-                                    };
+                                        num=true;
+                                    }
 
 
                                 }
@@ -422,7 +421,7 @@ export class FortyKItemSheet extends ItemSheet {
                     }
                 },
                 default: "submit"
-            }).render(true)
+            }).render(true);
 
         });
 

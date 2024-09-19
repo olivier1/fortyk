@@ -60,11 +60,8 @@
                 <span>Cover:</span>
 
                 <select class="cover"  name="system.secChar.cover.value">
-                    {{#select system.secChar.cover.value}}
-                    {{#each coverTypes}}
-                    <option value="{{value}}">{{label}}</option>
-                    {{/each}}
-                    {{/select}}
+                    {{selectOptions coverTypes selected=system.secChar.cover.value valueAttr="value" labelAttr="label"}}
+                    
                 </select>
 
             </div>
@@ -171,13 +168,7 @@
                             {{#if flags.fortyk.alternateprofiles}}
 
                             <select class="profile-select" data-id="{{this.id}}">
-                                {{#select flags.fortyk.currentprofile}}
-                                <option value="">{{this._source.name}}</option>
-
-                                {{#each flags.fortyk.instancedProfiles}}
-                                <option value="{{this.uuid}}">{{this.name}}</option>
-                                {{/each}}
-                                {{/select}}
+                                {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
                             </select>
                             {{else}}
 
@@ -243,13 +234,7 @@
                             {{#if flags.fortyk.alternateprofiles}}
 
                             <select class="profile-select" data-id="{{this.id}}">
-                                {{#select flags.fortyk.currentprofile}}
-                                <option value="">{{this._source.name}}</option>
-
-                                {{#each flags.fortyk.instancedProfiles}}
-                                <option value="{{this.uuid}}">{{this.name}}</option>
-                                {{/each}}
-                                {{/select}}
+                                {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
                             </select>
                             {{else}}
 
@@ -263,6 +248,8 @@
                             {{#if (greaterThan this.system.clip.value 0)}}
                             {{#if this.flags.fortyk.spray}}
                             <span class="spray-attack rollable button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span>
+                            {{else if this.flags.fortyk.torrent}}
+                            <span class="torrent-attack rollable button" data-roll-type="torrentAttack" data-item-id="{{this.id}}" data-label="Torrent Attack" >Torrent</span>
                             {{else}}
                             <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../../system.crew.bs}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="">Roll</span>
                             {{/if}}
@@ -298,13 +285,7 @@
                         <div class="list-item">
                             <span>Las Fire Mode: 
                                 <select class="lasMode"  data-item-id="{{this.id}}" data-dtype="Number">
-                                    {{#select this.flags.fortyk.lasMode}}
-
-                                    {{#each this.FORTYK.lasModes}}
-
-                                    <option value="{{@index}}">{{this}}</option>
-                                    {{/each}}
-                                    {{/select}}
+                                    {{selectOptions this.FORTYK.lasModes selected=this.flags.fortyk.lasMode valueAttr="key" labelAttr="label"}}
                                 </select>
                             </span>
 
@@ -317,17 +298,9 @@
 
                             <label>Current Ammo:</label>
                             <select class="weapon-ammo" data-weapon="{{this.id}}" data-previous="{{this.system.ammo._id}}">
-
-                                {{#select this.system.ammo._id}}
                                 <option value="">None</option>
-
-                                {{#each this.validAmmo}}
-
-                                <option value="{{this.id}}">{{this.name}}</option>
-
-                                {{/each}}
-
-                                {{/select}}
+                                {{selectOptions this.validAmmo selected=this.system.ammo._id valueAttr="id" labelAttr="name"}}
+                                
                             </select>
                         </div>
                         {{else}}
@@ -415,13 +388,7 @@
                                 {{#if flags.fortyk.alternateprofiles}}
 
                                 <select class="profile-select" data-id="{{this.id}}">
-                                    {{#select flags.fortyk.currentprofile}}
-                                    <option value="">{{this._source.name}}</option>
-
-                                    {{#each flags.fortyk.instancedProfiles}}
-                                    <option value="{{this.uuid}}">{{this.name}}</option>
-                                    {{/each}}
-                                    {{/select}}
+                                    {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
                                 </select>
                                 {{else}}
 
@@ -487,13 +454,7 @@
                             {{#if flags.fortyk.alternateprofiles}}
 
                             <select class="profile-select" data-id="{{this.id}}">
-                                {{#select flags.fortyk.currentprofile}}
-                                <option value="">{{this._source.name}}</option>
-
-                                {{#each flags.fortyk.instancedProfiles}}
-                                <option value="{{this.uuid}}">{{this.name}}</option>
-                                {{/each}}
-                                {{/select}}
+                                {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
                             </select>
                             {{else}}
 
@@ -540,13 +501,7 @@
                         <div class="list-item">
                             <span>Las Fire Mode: 
                                 <select class="lasMode"  data-item-id="{{this.id}}" data-dtype="Number">
-                                    {{#select this.flags.fortyk.lasMode}}
-
-                                    {{#each this.FORTYK.lasModes}}
-
-                                    <option value="{{@index}}">{{this}}</option>
-                                    {{/each}}
-                                    {{/select}}
+                                    {{selectOptions this.FORTYK.lasModes selected=this.flags.fortyk.lasMode valueAttr="key" labelAttr="label"}}
                                 </select>
                             </span>
 
@@ -560,16 +515,8 @@
                             <label>Current Ammo:</label>
                             <select class="weapon-ammo" data-weapon="{{this.id}}" data-previous="{{this.system.ammo._id}}">
 
-                                {{#select this.system.ammo._id}}
-                                <option value="">None</option>
-
-                                {{#each this.validAmmo}}
-
-                                <option value="{{this.id}}">{{this.name}}</option>
-
-                                {{/each}}
-
-                                {{/select}}
+                                <option value="">None</option>                                 
+                                {{selectOptions this.validAmmo selected=this.system.ammo._id valueAttr="id" labelAttr="name"}}
                             </select>
                         </div>
                         {{else}}
@@ -649,13 +596,7 @@
                                 {{#if flags.fortyk.alternateprofiles}}
 
                                 <select class="profile-select" data-id="{{this.id}}">
-                                    {{#select flags.fortyk.currentprofile}}
-                                    <option value="">{{this._source.name}}</option>
-
-                                    {{#each flags.fortyk.instancedProfiles}}
-                                    <option value="{{this.uuid}}">{{this.name}}</option>
-                                    {{/each}}
-                                    {{/select}}
+                                    {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
                                 </select>
                                 {{else}}
 
@@ -721,13 +662,7 @@
                             {{#if flags.fortyk.alternateprofiles}}
 
                             <select class="profile-select" data-id="{{this.id}}">
-                                {{#select flags.fortyk.currentprofile}}
-                                <option value="">{{this._source.name}}</option>
-
-                                {{#each flags.fortyk.instancedProfiles}}
-                                <option value="{{this.uuid}}">{{this.name}}</option>
-                                {{/each}}
-                                {{/select}}
+                                {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
                             </select>
                             {{else}}
 
@@ -742,6 +677,8 @@
                             {{#if (greaterThan this.system.clip.value 0)}}
                             {{#if this.flags.fortyk.spray}}
                             <span class="spray-attack rollable button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span>
+                            {{else if this.flags.fortyk.torrent}}
+                            <span class="torrent-attack rollable button" data-roll-type="torrentAttack" data-item-id="{{this.id}}" data-label="Torrent Attack" >Torrent</span>
                             {{else}}
                             <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../../system.crew.bs}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="">Roll</span>
                             {{/if}}
@@ -777,13 +714,7 @@
                         <div class="list-item">
                             <span>Las Fire Mode: 
                                 <select class="lasMode"  data-item-id="{{this.id}}" data-dtype="Number">
-                                    {{#select this.flags.fortyk.lasMode}}
-
-                                    {{#each this.FORTYK.lasModes}}
-
-                                    <option value="{{@index}}">{{this}}</option>
-                                    {{/each}}
-                                    {{/select}}
+                                    {{selectOptions this.FORTYK.lasModes selected=this.flags.fortyk.lasMode valueAttr="key" labelAttr="label"}}
                                 </select>
                             </span>
 
@@ -797,16 +728,8 @@
                             <label>Current Ammo:</label>
                             <select class="weapon-ammo" data-weapon="{{this.id}}" data-previous="{{this.system.ammo._id}}">
 
-                                {{#select this.system.ammo._id}}
-                                <option value="">None</option>
-
-                                {{#each this.validAmmo}}
-
-                                <option value="{{this.id}}">{{this.name}}</option>
-
-                                {{/each}}
-
-                                {{/select}}
+                                <option value="">None</option>                                 
+                                {{selectOptions this.validAmmo selected=this.system.ammo._id valueAttr="id" labelAttr="name"}}
                             </select>
                         </div>
                         {{else}}
@@ -892,13 +815,7 @@
                             {{#if flags.fortyk.alternateprofiles}}
 
                             <select class="profile-select" data-id="{{this.id}}">
-                                {{#select flags.fortyk.currentprofile}}
-                                <option value="">{{this._source.name}}</option>
-
-                                {{#each flags.fortyk.instancedProfiles}}
-                                <option value="{{this.uuid}}">{{this.name}}</option>
-                                {{/each}}
-                                {{/select}}
+                                {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
                             </select>
                             {{else}}
 
@@ -965,13 +882,7 @@
                             {{#if flags.fortyk.alternateprofiles}}
 
                             <select class="profile-select" data-id="{{this.id}}">
-                                {{#select flags.fortyk.currentprofile}}
-                                <option value="">{{this._source.name}}</option>
-
-                                {{#each flags.fortyk.instancedProfiles}}
-                                <option value="{{this.uuid}}">{{this.name}}</option>
-                                {{/each}}
-                                {{/select}}
+                                {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
                             </select>
                             {{else}}
 
@@ -987,6 +898,8 @@
 
                             {{#if this.flags.fortyk.spray}}
                             <span class="spray-attack rollable button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span>
+                            {{else if this.flags.fortyk.torrent}}
+                            <span class="torrent-attack rollable button" data-roll-type="torrentAttack" data-item-id="{{this.id}}" data-label="Torrent Attack" >Torrent</span>
                             {{else}}
                             <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../../system.crew.bs}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="">Roll</span>
                             {{/if}}
@@ -1022,13 +935,7 @@
                         <div class="list-item">
                             <span>Las Fire Mode: 
                                 <select class="lasMode"  data-item-id="{{this.id}}" data-dtype="Number">
-                                    {{#select this.flags.fortyk.lasMode}}
-
-                                    {{#each this.FORTYK.lasModes}}
-
-                                    <option value="{{@index}}">{{this}}</option>
-                                    {{/each}}
-                                    {{/select}}
+                                    {{selectOptions this.FORTYK.lasModes selected=this.flags.fortyk.lasMode valueAttr="key" labelAttr="label"}}
                                 </select>
                             </span>
 
@@ -1042,16 +949,8 @@
                             <label>Current Ammo:</label>
                             <select class="weapon-ammo" data-weapon="{{this.id}}" data-previous="{{this.system.ammo._id}}">
 
-                                {{#select this.system.ammo._id}}
-                                <option value="">None</option>
-
-                                {{#each this.validAmmo}}
-
-                                <option value="{{this.id}}">{{this.name}}</option>
-
-                                {{/each}}
-
-                                {{/select}}
+                                <option value="">None</option>                                 
+                                {{selectOptions this.validAmmo selected=this.system.ammo._id valueAttr="id" labelAttr="name"}}
                             </select>
                         </div>
                         {{else}}

@@ -1,11 +1,8 @@
 <form class="spendExp-dialog">
 
     <select class="mode">
-        {{#select mode}}
-        {{#each advancementTypes}}
-        <option value="{{this}}">{{this}}</option>
-        {{/each}}
-        {{/select}}
+        {{selectOptions advancementTypes selected=mode valueAttr="value" labelAttr="value"}}
+        
     </select>
     {{#if (compareString mode "Custom")}}
     {{> "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/custom.html"}}

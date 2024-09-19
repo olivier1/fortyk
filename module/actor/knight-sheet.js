@@ -6,7 +6,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
     /** @override */
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/knight-sheet.html",
             width: 980,
@@ -25,7 +25,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
     /** @override */
     async getData() {
         const data = await super.getData();
-        const actor=this.actor;
+        const actor=data.actor;
         const system=actor.system;
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
@@ -167,7 +167,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             }else{
                 data.threshold="Crit";
             }
-            data.carapaceHardPoints=duplicate(system.chassis.system.hardPoints.carapace);
+            data.carapaceHardPoints=foundry.utils.duplicate(system.chassis.system.hardPoints.carapace);
 
             for (let [key, wpnType] of Object.entries(data.carapaceHardPoints)){
                 for(let i=0;i<wpnType.length;i++){
@@ -181,7 +181,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                     }
                 }
             }
-            data.leftArmHardPoints=duplicate(system.chassis.system.hardPoints.leftArm);
+            data.leftArmHardPoints=foundry.utils.duplicate(system.chassis.system.hardPoints.leftArm);
       
             for (let [key, wpnType] of Object.entries(data.leftArmHardPoints)){
                 for(let i=0;i<wpnType.length;i++){
@@ -195,7 +195,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                     }
                 }
             }
-            data.torsoHardPoints=duplicate(system.chassis.system.hardPoints.torso);
+            data.torsoHardPoints=foundry.utils.duplicate(system.chassis.system.hardPoints.torso);
             for (let [key, wpnType] of Object.entries(data.torsoHardPoints)){
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
@@ -207,7 +207,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                     }
                 }
             }
-            data.rightArmHardPoints=duplicate(system.chassis.system.hardPoints.rightArm);
+            data.rightArmHardPoints=foundry.utils.duplicate(system.chassis.system.hardPoints.rightArm);
             for (let [key, wpnType] of Object.entries(data.rightArmHardPoints)){
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
@@ -338,7 +338,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             }
 
 
-            let componentBase=duplicate(component);
+            let componentBase=foundry.utils.duplicate(component);
             componentBase.system.path=path;
             if(house){
                 componentBase.system.originalId=component.id;
@@ -681,15 +681,15 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
                             let itemDatas=[];
 
-                            itemDatas.push(duplicate(chassisDoc));
-                            itemDatas.push(duplicate(enclosedDoc));
-                            itemDatas.push(duplicate(superHeavyDoc));
-                            itemDatas.push(duplicate(walkerDoc));
-                            itemDatas.push(duplicate(quirkDoc));
+                            itemDatas.push(foundry.utils.duplicate(chassisDoc));
+                            itemDatas.push(foundry.utils.duplicate(enclosedDoc));
+                            itemDatas.push(foundry.utils.duplicate(superHeavyDoc));
+                            itemDatas.push(foundry.utils.duplicate(walkerDoc));
+                            itemDatas.push(foundry.utils.duplicate(quirkDoc));
                             if(quirkFlag==="preysensors"){
                                 let preysenseDoc=await vehicletraitsPack.getDocument("kIoenKWL7sdMndi2");
 
-                                let preysenseCopy=duplicate(preysenseDoc);
+                                let preysenseCopy=foundry.utils.duplicate(preysenseDoc);
                                 preysenseCopy.system.specialisation.value=1;
                                 itemDatas.push(preysenseCopy);
                             }
@@ -761,7 +761,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
 
-                            let createdSpirit=await actor.createEmbeddedDocuments("Item",[duplicate(spiritDoc)]);
+                            let createdSpirit=await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(spiritDoc)]);
 
                             let id=createdSpirit[0].id;
                             let update={};
@@ -772,7 +772,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                     }
                 },
                 default: "submit"
-            },options).render(true)
+            },options).render(true);
         });
     }
     async _onMeldClick(event){
@@ -788,7 +788,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         let manoeuvrability=FORTYK.meldTypes[meldType];
 
 
-        let meldContent
+        let meldContent;
         let knightAeData={name:"Meld Bonuses",
                           changes:[]};
         knightAeData.changes.push({key: "system.secChar.manoeuvrability.value", value: manoeuvrability, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD});
@@ -821,26 +821,26 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                       content:meldContent,
                       classes:["fortyk"],
                       flavor:meldFlavor,
-                      author:game.users.current
-                     }
+                      author:game.users.current.id
+                     };
 
         await ChatMessage.create(chatMeld,{});
         let knightItemIds=[];
-        let knightAeId
-        let pilotAeId
+        let knightAeId;
+        let pilotAeId;
         let pilotItemIds=[];
         if(meldType==="safe"){
             let knightAe=await knight.createEmbeddedDocuments("ActiveEffect",[knightAeData]);
             await knight.setFlag("fortyk","knightMeldedIds",knightItemIds);
             await knight.setFlag("fortyk","melded",true);
-            return}
+            return;}
         let spiritId=spirit.system.id;
         let pilotAeData={"name":"Meld Bonus",
                          "changes":[]};
 
         switch(spiritId){
             case "ancientwisdom":
-                pilotAeData.changes.push({key: "system.characteristics.int.mod", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD})
+                pilotAeData.changes.push({key: "system.characteristics.int.mod", value: 10, mode:FORTYK.ACTIVE_EFFECT_MODES.ADD});
                 break;
             case "blasphemoustendencies":
                 let items=pilot.items;
@@ -874,7 +874,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                     let vehicletraitsPack=await game.packs.get("fortyk.vehicle-traits");
                     let preysenseDoc=await vehicletraitsPack.getDocument("kIoenKWL7sdMndi2");
 
-                    let preysenseCopy=duplicate(preysenseDoc);
+                    let preysenseCopy=foundry.utils.duplicate(preysenseDoc);
                     preysenseCopy.system.specialisation.value=2;
 
                     let preysenseItem= await knight.createEmbeddedDocuments("Item",[preysenseCopy]);
@@ -914,7 +914,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                     let dh2pack=await game.packs.get("fortyk.talent-core-dh2");
                     let sprintDoc=await dh2pack.getDocument("4xt7RDt82Gy3X9UH");
 
-                    let sprintCopy=duplicate(sprintDoc);
+                    let sprintCopy=foundry.utils.duplicate(sprintDoc);
 
                     let sprintItem= await pilot.createEmbeddedDocuments("Item",[sprintCopy]);
                     await pilot.setFlag("fortyk","sprint",true);
@@ -928,7 +928,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                     let dwPack=await game.packs.get("fortyk.deathwatch-bonus-and-drawbacks");
                     let unrelentDoc=await dwPack.getDocument('WTnYNv2XaRSyxSKR');
 
-                    let unrelentCopy=duplicate(unrelentDoc);
+                    let unrelentCopy=foundry.utils.duplicate(unrelentDoc);
 
                     let unrelentItem= await pilot.createEmbeddedDocuments("Item",[unrelentCopy]);
                     await pilot.setFlag("fortyk","unrelenting",true);
@@ -1471,7 +1471,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                           content:overheatResult,
                           classes:["fortyk"],
                           flavor:overheatFlavor,
-                          author:game.users.current
+                          author:game.users.current.id
                          }
 
         await ChatMessage.create(chatOverheat,{});

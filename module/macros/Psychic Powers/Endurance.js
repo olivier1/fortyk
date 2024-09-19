@@ -9,7 +9,7 @@ for(const target of targets){
                       content:"",
                       classes:["fortyk"],
                       flavor:`Endurance healing on ${target.name}`,
-                      author:game.users.current
+                      author:game.users.current.id
                      }
     chatFirstAid.content=`${actor.name} successfully healed ${target.name} for ${healing} wounds!`;
     let targetActor=target.actor;

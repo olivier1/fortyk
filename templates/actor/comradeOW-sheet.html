@@ -20,14 +20,7 @@
             <div class="descrRow flexcol">
                 <span class="descrSpan">Race:</span>
                 <select class="raceSelect" name="system.race.value" data-dtype="String">
-                    {{#select system.race.value}}
-
-                    {{#each races}}
-
-                    <option value="{{this}}">{{this}}</option>
-
-                    {{/each}}
-                    {{/select}}
+                   {{selectOptions races selected=system.race.value valueAttr="value" labelAttr="value"}}
                 </select>
                
             </div>
@@ -52,14 +45,8 @@
             <div class="descrRow flexcol">
                 <span class="descrSpan">Veterancy:</span>
                 <select class="raceSelect" name="system.veterancy.value" data-dtype="String">
-                    {{#select system.veterancy.value}}
-
-                    {{#each ranks}}
-
-                    <option value="{{this}}">{{this}}</option>
-
-                    {{/each}}
-                    {{/select}}
+                     {{selectOptions ranks selected=system.veterancy.value valueAttr="value" labelAttr="value"}}
+                    
                 </select>
                
             </div>

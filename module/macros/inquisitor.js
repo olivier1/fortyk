@@ -7,7 +7,7 @@ const tableOrdo = game.tables.find(t => t.name === "Inquisitor-Ordo");
 let ordo=await tableOrdo.draw();
 
 let titleRoll=new Roll("1d3");
-await titleRoll.evaluate({async: true});
+await titleRoll.evaluate();
 await titleRoll.toMessage({
     speaker: ChatMessage.getSpeaker({ actor: actor }),
     flavor: "Rolling for number of titles."
@@ -20,7 +20,7 @@ const tablePhilo = game.tables.find(t => t.name === "Inquisitor-Philosophy");
 await tablePhilo.draw();
 
 let methoRoll=new Roll("1d3");
-await methoRoll.evaluate({async: true});
+await methoRoll.evaluate();
 await methoRoll.toMessage({
     speaker: ChatMessage.getSpeaker({ actor: actor }),
     flavor: "Rolling for number of Methodologies."
@@ -39,7 +39,7 @@ const tablePsy = game.tables.find(t => t.name === "Inquisitor-Psychic-Ability");
 await tablePsy.draw({roll:new Roll(`1d100+${psyMod}`)});
 
 let quirkRoll=new Roll("1d3");
-await quirkRoll.evaluate({async: true});
+await quirkRoll.evaluate();
 await quirkRoll.toMessage({
     speaker: ChatMessage.getSpeaker({ actor: actor }),
     flavor: "Rolling for number of quirks."
@@ -49,7 +49,7 @@ const tableQuirk = game.tables.find(t => t.name === "Inquisitor-Quirks");
 await tableQuirk.drawMany(quirks);
 
 let resourceRoll=new Roll("1d6");
-await resourceRoll.evaluate({async: true});
+await resourceRoll.evaluate();
 await resourceRoll.toMessage({
     speaker: ChatMessage.getSpeaker({ actor: actor }),
     flavor: "Rolling for number of resources."

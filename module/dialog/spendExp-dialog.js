@@ -5,7 +5,7 @@ export class SpendExpDialog extends Application {
 
     static get defaultOptions() {
 
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fortyk"],
             template: "systems/fortyk/templates/actor/dialogs/spendExp-dialog.html",
             width: 666,
@@ -26,7 +26,7 @@ export class SpendExpDialog extends Application {
         data.cost=this.options.cost;
         data.remainingExp=data.actorExp-data.cost;
         data.FORTYK=game.fortyk.FORTYK;
-        data.advancementTypes=duplicate(data.FORTYK.advancementTypes);
+        data.advancementTypes=foundry.utils.duplicate(data.FORTYK.advancementTypes);
         if(actor.type==="dwPC"){
             data.advancementTypes.push("Signature Wargear");
         }
@@ -51,7 +51,7 @@ export class SpendExpDialog extends Application {
 
 
             if(!skill.system.hasChildren.value&&(skill.system.value<30)){
-                let dupSkill=duplicate(skill);
+                let dupSkill=foundry.utils.duplicate(skill);
                 let label=dupSkill.name;
                 if(parseInt(dupSkill.system.value)===-20){
                     label+=" +0";  
@@ -119,7 +119,7 @@ export class SpendExpDialog extends Application {
         for(const char in chars){
             if(actorChars[char].advance<25){
 
-                upgChars[char]=duplicate(chars[char]);
+                upgChars[char]=foundry.utils.duplicate(chars[char]);
                 upgChars[char].label+=" +"+(actorChars[char].advance+5);
             }
         }
@@ -182,7 +182,7 @@ export class SpendExpDialog extends Application {
             };
 
             let item=await FortyKItem.create(itemData,{temporary:true});
-            await actor.createEmbeddedDocuments("Item",[duplicate(item)]);
+            await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
             this.options.cost=0;
         }else if(this.options.mode==="Skill Upgrade"){
             let skill=this.options.chosenSkill;
@@ -206,7 +206,7 @@ export class SpendExpDialog extends Application {
             };
 
             let item=await FortyKItem.create(itemData,{temporary:true});
-            await actor.createEmbeddedDocuments("Item",[duplicate(item)]);
+            await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
             await actor.updateEmbeddedDocuments("Item",[{"_id":skill.id,"system.value":skillUpgrade}]);
             this.options.cost=0;
         }else if(this.options.mode==="New Skill"){
@@ -266,7 +266,7 @@ export class SpendExpDialog extends Application {
             };
 
             let item=await FortyKItem.create(itemData,{temporary:true});
-            await actor.createEmbeddedDocuments("Item",[duplicate(item)]);
+            await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
             let update={};
             let path=`system.characteristics.${char}.advance`;
             update[path]=training;
@@ -276,7 +276,7 @@ export class SpendExpDialog extends Application {
 
             let talent=this.options.chosenTalent;
             let advanceName="Talent: "+talent.name;
-            let itemData=duplicate(talent);
+            let itemData=foundry.utils.duplicate(talent);
             let tntData=talent.system;
             let spec=tntData.specialisation.value;
             let flag=tntData.flagId.value;
@@ -325,7 +325,7 @@ export class SpendExpDialog extends Application {
                 }
 
             }else{
-                let actorTalent=await actor.createEmbeddedDocuments("Item",[duplicate(talent)]);
+                let actorTalent=await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(talent)]);
                 talentId=actorTalent[0].id;
 
             }
@@ -358,7 +358,7 @@ export class SpendExpDialog extends Application {
             };
 
             let item=await FortyKItem.create(itemData,{temporary:true});
-            await actor.createEmbeddedDocuments("Item",[duplicate(item)]);
+            await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
             this.options.cost=0;
         }else if(this.options.mode==="Psy Rating"){
             let pr=actor.system.psykana.pr.value;
@@ -373,7 +373,7 @@ export class SpendExpDialog extends Application {
             };
 
             let item=await FortyKItem.create(itemData,{temporary:true});
-            await actor.createEmbeddedDocuments("Item",[duplicate(item)]);
+            await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
             await actor.update({"system.psykana.pr.value":newPr});
             this._prCost();
         }else if(this.options.mode==="Psychic Power"){
@@ -381,7 +381,7 @@ export class SpendExpDialog extends Application {
             let power=this.options.chosenPower;
             let flagId=power.id;
             let advanceName="Psychic Power: "+power.name;
-            let itemData=duplicate(power);
+            let itemData=foundry.utils.duplicate(power);
             let powerData=power.system;
 
 
@@ -389,7 +389,7 @@ export class SpendExpDialog extends Application {
 
 
             await actor.setFlag("fortyk",flagId,true);
-            let actorPower=await actor.createEmbeddedDocuments("Item",[duplicate(power)]);
+            let actorPower=await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(power)]);
             let powerId=actorPower[0].id;
 
 

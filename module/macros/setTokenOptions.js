@@ -53,7 +53,7 @@ new Dialog({
 </div>
 <div class="form-group">
 <label>Light Color</label>
-<input type="color" value="${token.data.lightColor || '#000000'}" data-edit="light-color" name="light-color">
+<input type="color" value="${token.document.light.color || '#000000'}" data-edit="light-color" name="light-color">
 </div>
 </form>
 `,
@@ -83,7 +83,7 @@ new Dialog({
                 let brightLight = 0;
                 let visionMode = 'basic';
                 let lightAngle = 360;
-                let lockRotation = token.data.lockRotation;
+                let lockRotation = token.document.lockRotation;
                 let nameType = parseInt(html.find('[name="name-type"]')[0].value || "none");
                 let barType = parseInt(html.find('[name="bar-type"]')[0].value || "none");
                 let vision = true;
@@ -137,8 +137,8 @@ new Dialog({
                         break;
                     case "nochange":
                     default:
-                        dimSight = token.data.dimSight;
-                        brightSight = token.data.brightSight;
+                        dimSight = token.document.sight.range;
+                        brightSight = token.document.sight.range;
                 }
                 // Get Light Source Values
                 switch (lightSource) {
@@ -189,17 +189,17 @@ new Dialog({
                         break;
                     case "nochange":
                     default:
-                        dimLight = token.data.dimLight;
-                        brightLight = token.data.brightLight;
-                        lightAngle = token.data.lightAngle;
-                        lockRotation = token.data.lockRotation;
-                        lightColor = token.data.lightColor;
+                        dimLight = token.document.light.dim;
+                        brightLight = token.document.light.bright;
+                        lightAngle = token.document.light.angle;
+                        lockRotation = token.document.lockRotation;
+                        lightColor = token.document.light.color;
                 }
                  if(isNaN(nameType)){
-                    nameType=token.data.displayName;
+                    nameType=token.document.displayName;
                 }
                 if(isNaN(barType)){
-                    barType=token.data.displayBars;
+                    barType=token.document.displayBars;
                 }
 
 
@@ -207,22 +207,19 @@ new Dialog({
                
                 // Update Token
                 token.document.update({
-                    vision: vision,
-                    dimSight: dimSight,
-                    brightSight: brightSight,
-                    dimLight: dimLight,
-                    brightLight:  brightLight,
+                    "sight.enabled": vision,
+                    "sight.range": dimSight,
+                    "light.dim": dimLight,
+                    "light.bright":  brightLight,
                     "sight.visionMode": visionMode,
-                    lightAngle: lightAngle,
+                    "light.angle": lightAngle,
                     lockRotation: lockRotation,
-                    lightColor: lightColor,
+                    "light.color": lightColor,
                     displayBars:barType,
                     displayName:nameType
                 });
 
-                if (!radiant && token.data.effects.includes(radiantEffect)) {
-                    token.toggleEffect(radiantEffect);
-                }
+                
             }
         }
     }

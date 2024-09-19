@@ -15,7 +15,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
     static get defaultOptions() {
 
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/actor-sheet.html",
             width: 666,
@@ -108,7 +108,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                             };
 
                             let item=await FortyKItem.create(itemData,{temporary:true});
-                            await this.actor.createEmbeddedDocuments("Item",[duplicate(item)],{"renderSheet":true});
+                            await this.actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)],{"renderSheet":true});
 
 
 
@@ -195,7 +195,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     //handles adding extra worn weapon slots
     async _onAddExtraWeapon(event){
         let actor=this.actor;
-        let data=duplicate(actor);
+        let data=foundry.utils.duplicate(actor);
 
         let weapons=Object.values(data.system.secChar.wornGear.extraWeapons);
         weapons.push({});
@@ -206,7 +206,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     //handles removing extra weapon slots
     async _onRemoveExtraWeapon(event){
         let actor=this.actor;
-        let data=duplicate(actor.system);
+        let data=foundry.utils.duplicate(actor.system);
         let weapons=Object.values(data.secChar.wornGear.extraWeapons);
 
         if(weapons.length>0){

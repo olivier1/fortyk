@@ -48,14 +48,8 @@
 
                 <select class="houseSelect" name="system.knight.house" data-dtype="String">
                     <option value="">Select a House</option>
-                    {{#select system.knight.house}}
+                    {{selectOptions houses selected=system.knight.house valueAttr="id" labelAttr="name"}}
 
-                    {{#each houses}}
-
-                    <option value="{{this.id}}">{{this.name}}</option>
-
-                    {{/each}}
-                    {{/select}}
                 </select>
 
             </div>
@@ -64,14 +58,9 @@
 
                 <select class="pilotSelect" name="system.crew.pilotID" data-dtype="String">
                     <option value="">Select a Pilot</option>
-                    {{#select system.crew.pilotID}}
 
-                    {{#each pilots}}
+                    {{selectOptions pilots selected=system.crew.pilotID valueAttr="id" labelAttr="name"}}
 
-                    <option value="{{this.id}}">{{this.name}}</option>
-
-                    {{/each}}
-                    {{/select}}
                 </select>
 
             </div>
@@ -93,7 +82,7 @@
 
             </nav>
             <div id="mechInventory">
-                <div class="mechTab all" name="mechInventoryTab"{{#unless (compareString mechtab 'all')}}style="display: none"{{/unless}} data-group="secondary" data-tab="all">
+                <div class="mechTab all" name="mechInventoryTab" {{#unless (compareString mechtab 'all')}}style="display: none"{{/unless}} data-group="secondary" data-tab="all">
                     <div class="componentgrid">
                         <span class="list-item-header">Name</span>
                         <span class="list-item-header">Avail</span>
@@ -362,13 +351,8 @@
 
                 <div class="artillery-weapon artillery filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.system.state.value}}
-
-                        {{#each FORTYK.itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions FORTYK.itemStates selected=this.system.state.value valueAttr="value" labelAttr="value"}}
+                        
                     </select>
                     <span>{{this.name}}</span>
                     <div class="flexrow-nowrap">
@@ -384,18 +368,35 @@
                 </div>
                 {{/if}}
                 {{/each}}
+                {{#each carapaceHardPoints.titanicRanged}}
+                {{#if this}}
+
+                <div class="ranged-weapon ranged filled-slot">
+                    <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
+                        {{selectOptions FORTYK.itemStates selected=this.system.state.value valueAttr="value" labelAttr="value"}}
+                     
+                    </select>
+                    <span>{{this.name}}</span>
+                    <div class="flexrow-nowrap">
+                        {{#if ../isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{this.id}}"></a>
+                        {{/if}}
+                        <a class="list-button delete-weapon" title="Delete" data-item-id="{{this.id}}" data-path="system.hardPoints.carapace.titanicRanged" data-index="{{@index}}"></a>
+                    </div>
+                </div>
+                {{else}}
+                <div class="ranged-slot ranged component-slot"  data-facing="lSide" data-index="{{@index}}" data-path="system.hardPoints.carapace.titanicRanged">
+                    Titanic Ranged Slot
+                </div>
+                {{/if}}
+                {{/each}}
                 {{#each carapaceHardPoints.auxiliary}}
                 {{#if this}}
 
                 <div class="auxiliary-weapon auxiliary filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.system.state.value}}
-
-                        {{#each FORTYK.itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions FORTYK.itemStates selected=this.system.state.value valueAttr="value" labelAttr="value"}}
+                   
                     </select>
                     <span>{{this.name}}</span>
                     <div class="flexrow-nowrap">
@@ -423,13 +424,8 @@
 
                 <div class="ranged-weapon ranged filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.system.state.value}}
-
-                        {{#each FORTYK.itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions FORTYK.itemStates selected=this.system.state.value valueAttr="value" labelAttr="value"}}
+                     
                     </select>
                     <span>{{this.name}}</span>
                     <div class="flexrow-nowrap">
@@ -450,13 +446,8 @@
 
                 <div class="melee-weapon melee filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.system.state.value}}
-
-                        {{#each FORTYK.itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions FORTYK.itemStates selected=this.system.state.value valueAttr="value" labelAttr="value"}}
+                        
                     </select>
                     <span>{{this.name}}</span>
                     <div class="flexrow-nowrap">
@@ -472,18 +463,15 @@
                 </div>
                 {{/if}}
                 {{/each}}
+                
                 {{#each leftArmHardPoints.auxiliary}}
                 {{#if this}}
 
                 <div class="auxiliary-weapon auxiliary filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.system.state.value}}
-
-                        {{#each FORTYK.itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                       
+                        {{selectOptions FORTYK.itemStates selected=this.system.state.value valueAttr="value" labelAttr="value"}}
+                        
                     </select>
                     <span>{{this.name}}</span>
                     <div class="flexrow-nowrap">
@@ -500,6 +488,7 @@
                 {{/if}}
                 {{/each}}
             </div>
+            
             <div class="torso mechgrid-child flexcol">
                 {{#if system.knight.core}}
 
@@ -556,16 +545,12 @@
                 </div>
                 {{/if}}
                 {{#if system.knight.forceField}}
-
+                
                 <div class="forceField forceField-color filled-slot">
                     <select class="state"  data-item-id="{{system.knight.forceField.id}}" data-dtype="Number">
-                        {{#select system.knight.forceField.system.state.value}}
-
-                        {{#each itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                     
+                        {{selectOptions itemStates selected=system.knight.forceField.system.state.value valueAttr="value" labelAttr="value"}}
+                        
                     </select>
                     <span>{{system.knight.forceField.name}}</span>
                     <div class="flexrow-nowrap">
@@ -585,13 +570,8 @@
 
                 <div class="ranged-weapon ranged filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.system.state.value}}
-
-                        {{#each FORTYK.itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions FORTYK.itemStates selected=this.system.state.value valueAttr="value" labelAttr="value"}}
+                      
                     </select>
                     <span>{{this.name}}</span>
                     <div class="flexrow-nowrap">
@@ -612,13 +592,8 @@
 
                 <div class="auxiliary-weapon auxiliary filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.system.state.value}}
-
-                        {{#each FORTYK.itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions FORTYK.itemStates selected=this.system.state.value valueAttr="value" labelAttr="value"}}
+                      
                     </select>
                     <span>{{this.name}}</span>
                     <div class="flexrow-nowrap">
@@ -637,17 +612,14 @@
                 {{#if system.knight.throneMod}}
 
                 <div class="throne-mod throne-mod-color filled-slot">
-                    <select class="state"  data-item-id="{{system.throneMod.armor.id}}" data-dtype="Number">
-                        {{#select system.knight.throneMod.system.state.value}}
+                    <select class="state"  data-item-id="{{system.knight.throneMod.id}}" data-dtype="Number">
 
-                        {{#each itemStates}}
 
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions itemStates selected=system.knight.throneMod.system.state.value valueAttr="value" labelAttr="value"}}
+                      
                     </select>
                     <span>{{system.knight.throneMod.name}}</span>
-                    
+
                     <div class="flexrow-nowrap">
                         {{#if isGM}}
                         <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.throneMod.id}}"></a>
@@ -664,16 +636,13 @@
 
                 <div class="sensor sensor-color filled-slot">
                     <select class="state"  data-item-id="{{system.knight.sensor.id}}" data-dtype="Number">
-                        {{#select system.knight.sensor.system.state.value}}
 
-                        {{#each itemStates}}
 
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions itemStates selected=system.knight.sensor.system.state.value valueAttr="value" labelAttr="value"}}
+                       
                     </select>
                     <span>{{system.knight.sensor.name}}</span>
-                    
+
                     <div class="flexrow-nowrap">
                         {{#if isGM}}
                         <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.sensor.id}}"></a>
@@ -690,13 +659,8 @@
 
                 <div class="gyro gyro-color filled-slot">
                     <select class="state"  data-item-id="{{system.knight.gyro.id}}" data-dtype="Number">
-                        {{#select system.knight.gyro.system.state.value}}
 
-                        {{#each itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions itemStates selected=system.knight.gyro.system.state.value valueAttr="value" labelAttr="value"}}
                     </select>
                     <span>{{system.knight.gyro.name}}</span>
                     {{#if isGM}}
@@ -713,16 +677,11 @@
 
                 <div class="plating plating-color filled-slot">
                     <select class="state"  data-item-id="{{system.knight.plating.id}}" data-dtype="Number">
-                        {{#select system.knight.plating.system.state.value}}
 
-                        {{#each itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions itemStates selected=system.knight.plating.system.state.value valueAttr="value" labelAttr="value"}}
                     </select>
                     <span>{{system.knight.plating.name}}</span>
-                    
+
                     <div class="flexrow-nowrap">
                         {{#if isGM}}
                         <a class="list-button item-edit" title="Edit" data-item-id="{{system.knight.plating.id}}"></a>
@@ -739,13 +698,8 @@
 
                 <div class="core-mod core-mod-color filled-slot">
                     <select class="state"  data-item-id="{{system.knight.coreMod.id}}" data-dtype="Number">
-                        {{#select system.knight.coreMod.system.state.value}}
 
-                        {{#each itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions itemStates selected=system.knight.coreMod.system.state.value valueAttr="value" labelAttr="value"}}
                     </select>
                     <span>{{system.knight.coreMod.name}}</span>
                     <div class="flexrow-nowrap">
@@ -764,13 +718,8 @@
 
                 <div class="arm-actuator arm-actuator-color filled-slot">
                     <select class="state"  data-item-id="{{system.knight.armActuator.id}}" data-dtype="Number">
-                        {{#select system.knight.armActuator.system.state.value}}
 
-                        {{#each itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions itemStates selected=system.knight.armActuator.system.state.value valueAttr="value" labelAttr="value"}}
                     </select>
                     <span>{{system.knight.armActuator.name}}</span>
                     <div class="flexrow-nowrap">
@@ -789,13 +738,8 @@
 
                 <div class="leg-actuator leg-actuator-color filled-slot">
                     <select class="state"  data-item-id="{{system.knight.legActuator.id}}" data-dtype="Number">
-                        {{#select system.knight.legActuator.system.state.value}}
 
-                        {{#each itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions itemStates selected=system.knight.legActuator.system.state.value valueAttr="value" labelAttr="value"}}
                     </select>
                     <span>{{system.knight.legActuator.name}}</span>
                     <div class="flexrow-nowrap">
@@ -818,13 +762,8 @@
 
                 <div class="ranged-weapon ranged filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.system.state.value}}
-
-                        {{#each FORTYK.itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions FORTYK.itemStates selected=this.system.state.value valueAttr="value" labelAttr="value"}}
+                        
                     </select>
                     <span>{{this.name}}</span>
                     <div class="flexrow-nowrap">
@@ -845,13 +784,7 @@
 
                 <div class="melee-weapon melee filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.system.state.value}}
-
-                        {{#each FORTYK.itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions FORTYK.itemStates selected=this.system.state.value valueAttr="value" labelAttr="value"}}
                     </select>
                     <span>{{this.name}}</span>
                     <div class="flexrow-nowrap">
@@ -872,13 +805,7 @@
 
                 <div class="auxiliary-weapon auxiliary filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.system.state.value}}
-
-                        {{#each FORTYK.itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions FORTYK.itemStates selected=this.system.state.value valueAttr="value" labelAttr="value"}}
                     </select>
                     <span>{{this.name}}</span>
                     <div class="flexrow-nowrap">
@@ -923,13 +850,7 @@
 
                 <div class="other-component other-component-color filled-slot">
                     <select class="state"  data-item-id="{{this.id}}" data-dtype="Number">
-                        {{#select this.system.state.value}}
-
-                        {{#each FORTYK.itemStates}}
-
-                        <option value="{{this}}">{{this}}</option>
-                        {{/each}}
-                        {{/select}}
+                        {{selectOptions FORTYK.itemStates selected=this.system.state.value valueAttr="value" labelAttr="value"}}
                     </select>
                     <span>{{this.name}}</span>
                     <div class="flexrow-nowrap">

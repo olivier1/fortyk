@@ -10,7 +10,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
     /** @override */
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             scrollY: [
                 ".main",
                 ".skills",
@@ -32,13 +32,16 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
         data.races=game.fortyk.FORTYK.races;
+        data.advances=game.fortyk.FORTYK.advances;
         data.aptitudes=game.fortyk.FORTYK.aptitudes;
         data.size=game.fortyk.FORTYK.size;
         data.skillChars=game.fortyk.FORTYK.skillChars;
         data.skillTraining=game.fortyk.FORTYK.skillTraining;
         data.psyDisciplines=game.fortyk.FORTYK.psychicDisciplines;
+        data.psykerTypes=game.fortyk.FORTYK.psykerTypes;
         data.editable = this.options.editable;
         data.money=game.settings.get("fortyk","dhMoney");
+        data.bcCorruption=game.settings.get("fortyk","bcCorruption");
         data.coverTypes=game.fortyk.FORTYK.coverTypes;
 
         return data;
@@ -316,7 +319,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             sort: sort
         };
         let item=await FortyKItem.create(itemData,{temporary:true});
-        await this.actor.createEmbeddedDocuments("Item",[duplicate(item)],{"renderSheet":true});
+        await this.actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)],{"renderSheet":true});
 
     }
     //provides an interface to add new talents and apply the corresponding flags
@@ -486,7 +489,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                         tnt=await vehicleTraits.getDocument(selectedIds[i]);
                                         break;
                                 }
-                                let itemData= duplicate(tnt);
+                                let itemData= foundry.utils.duplicate(tnt);
 
                                 let spec=itemData.system.specialisation.value;
                                 let flag=itemData.system.flagId.value;
@@ -651,6 +654,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const dataset = element.dataset;
         let testType=dataset["rollType"];
         var testTarget=parseInt(dataset["target"]);
+        console.log(dataset, testTarget);
         let tempMod=this.actor.system.secChar.tempMod.value;
         if(tempMod){
             testTarget+=this.actor.system.secChar.tempMod.value;
@@ -683,7 +687,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             await FortykRollDialogs.callForcefieldDialog(forcefield,this.actor);
             return;
         }
-        if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"&&testType!=="sprayAttack"){
+        if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"&&testType!=="sprayAttack"&&testType!=="torrentAttack"){
 
             await FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
             return;
@@ -745,8 +749,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
 
         if(testType==="sprayAttack"){
-            console.log(this)
             FortykRollDialogs.callSprayAttackDialog(this.actor, testLabel, item, attackOptions,this);
+        }
+        if(testType==="torrentAttack"){
+            FortykRollDialogs.callTorrentAttackDialog(this.actor, testLabel, item, attackOptions, this);
         }
 
 
@@ -820,7 +826,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
             options.reroll=reroll;
             let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
-            let formula=duplicate(weapon.system.damageFormula);
+            let formula=foundry.utils.duplicate(weapon.system.damageFormula);
             renderedTemplate.then(content => {new Dialog({
                 title: `Number of Hits & Bonus Damage`,
                 content: content,
@@ -890,7 +896,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         options.reroll=reroll;
 
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/damage-dialog.html', options);
-        let formula=duplicate(weapon.system.damageFormula);
+        let formula=foundry.utils.duplicate(weapon.system.damageFormula);
         renderedTemplate.then(content => {new Dialog({
             title: `Number of Hits & Bonus Damage`,
             content: content,
@@ -912,7 +918,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                        content:`Starting Blast weapon damage rolls`,
                                        classes:["fortyk"],
                                        flavor:`Blast Weapon Damage`,
-                                       author:actor.name};
+                                       author:actor.id};
                         await ChatMessage.create(chatBlast,{});
                         if(game.user.isGM){
                             for(let i=0; i<targets.length;i++){
@@ -940,7 +946,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                                     content:`Template #${i+1} hits `+targetNames,
                                                     classes:["fortyk"],
                                                     flavor:`Blast Weapon Damage`,
-                                                    author:actor.name};
+                                                    author:actor.id};
                                     await ChatMessage.create(chatBlast2,{});
                                     await FortykRolls.damageRoll(formula,actor,weapon,hits,false,false,magdmg,pen,rerollNum); 
                                     game.user.updateTokenTargets();

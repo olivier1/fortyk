@@ -27,7 +27,8 @@ export class FortykRollDialogs{
         const actor=game.actors.get(dataset["actor"]);
 
         const weapon=actor.getEmbeddedDocument("Item",dataset["weapon"]);
-        let newWeapon=weapon.clone({},[]);
+        console.log(dataset,actor,weapon);
+        let newWeapon=weapon.clone();
         const formula=weapon.system.damageFormula;
         newWeapon.system.pen.value=0;
 
@@ -167,13 +168,13 @@ export class FortykRollDialogs{
     }
     //handles the melee attack dialog WHEW
     static async callMeleeAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
-
+        console.log(testTarget)
         let itemData=item;
-        let template="systems/fortyk/templates/actor/dialogs/melee-attack-dialog.html"
+        let template="systems/fortyk/templates/actor/dialogs/melee-attack-dialog.html";
         let templateOptions={};
         let modifierTracker=[];
         let miscMods=0;
-        templateOptions["modifiers"]=duplicate(actor.system.secChar.attacks);
+        templateOptions["modifiers"]=foundry.utils.duplicate(actor.system.secChar.attacks);
         templateOptions["modifiers"].testMod=0;
         modifierTracker.push({"value":`${testTarget}`,"label":`Base Target Value`});
         miscMods+=item.system.testMod.value;
@@ -400,7 +401,7 @@ export class FortykRollDialogs{
                         }
 
                         if(guarded){
-                            let guardActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("holyShield")]);
+                            let guardActiveEffect=foundry.utils.duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("holyShield")]);
                             guardActiveEffect.duration={
                                 rounds:0
                             }
@@ -465,7 +466,7 @@ export class FortykRollDialogs{
         let itemData=item;
         let modifierTracker=[];
         let miscMods=0;
-        templateOptions["modifiers"]=duplicate(actor.system.secChar.attacks);
+        templateOptions["modifiers"]=foundry.utils.duplicate(actor.system.secChar.attacks);
         templateOptions["size"]=game.fortyk.FORTYK.size;
 
         if(item.system.rof[1].value||item.system.rof[2].value){
@@ -843,7 +844,7 @@ export class FortykRollDialogs{
                             actor.setFlag("fortyk","versatile",versatile);
                         }
                         if(guarded){
-                            let guardActiveEffect=duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("holyShield")]);
+                            let guardActiveEffect=foundry.utils.duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("holyShield")]);
                             guardActiveEffect.duration={
                                 rounds:0
                             }
@@ -1075,7 +1076,132 @@ export class FortykRollDialogs{
                                          classes:["fortyk"],
                                          sound:"sounds/dice.wav",
                                          flavor:`Spray Attack result`,
-                                         author:actor.name}
+                                         author:actor.id}
+                        await ChatMessage.create(chatOptions,{});
+                        if(!psy){
+                            await weapon.update({"system.clip.value":ammo-1});
+                        }
+
+
+
+
+
+                    }
+
+                }
+            },
+            default: "submit",
+
+
+            width:100}
+                  ).render(true);
+    }
+    static async callTorrentAttackDialog(actor, testLabel, weapon, options,sheet, title="Enter test modifier"){
+        let torrent=weapon.getFlag("fortyk","torrent");
+        let rof=weapon.system.rof[2].value;
+        let tesmod=rof*-5;
+        new Dialog({
+            title: title,
+            content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="${tesmod}" autofocus/></p>`,
+            buttons: {
+                submit: {
+                    label: 'OK',
+                    callback: async(html) => {
+                        const templateData = {
+
+                            t: "cone",
+
+                            user: game.userId,
+
+                            distance: weapon.system.range.value,
+
+                            direction: 45,
+                            angle:torrent,
+
+                            x: 1000,
+
+                            y: 1000,
+
+                            fillColor: game.user.color
+
+                        };
+
+                        const templateDoc = new MeasuredTemplateDocument(templateData, { parent: canvas.scene });
+
+                        const template = new game.fortyk.FortykTemplate(templateDoc)
+                        sheet.minimize();
+                        await template.drawPreview();
+                        sheet.maximize();
+                        console.log(template, templateDoc)
+
+                        let scene=game.canvas.scene;
+                        let targets=this.getSprayTargets(template,scene, actor)[0];
+
+                        let mod = Number($(html).find('input[name="modifier"]').val());
+                        let psy=false;
+                        if(weapon.type==="psychicPower"){
+                            psy=true;
+                        }
+
+                        if(!psy){
+                            var ammo=weapon.system.clip.value;
+                            if(ammo===0){
+                                return;
+                            } 
+                        }
+
+                        if(targets.size===0){
+                            this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "No targets");
+                            return;
+                        }
+
+                        if(isNaN(mod)){
+                            this.callSprayAttackDialog(actor, testLabel, weapon, options,sheet, "Invalid Number");
+                            return;
+                        }
+
+
+                        let messageContent="";
+                        let updatedtargets=[];
+                        let rolls=[];
+                        let i=1;
+                        for(let tokenId of targets){
+
+                            let token=canvas.tokens.get(tokenId);
+                            let tokenActor=token.actor;
+                            let tokenActorData=token.actor;
+                            let data=token.actor.system;
+
+                            let testTarget=0;
+                            if(tokenActor.type==="vehicle"){
+                                testTarget=data.crew.ratingTotal+mod
+                            }else{
+                                testTarget=data.characteristics.agi.total+mod; 
+                            }
+                            let test=await game.fortyk.FortykRolls.fortykTest("agi", "Test", testTarget, tokenActor, "Avoid Spray Attack",weapon,false,"",true);
+                            messageContent+=`<div>${tokenActor.name}'s `+test.template+`</div>`;
+                            if(!test.value){
+                                updatedtargets.push(token.id);
+                            }
+
+                            let r=test.roll;
+                            r.dice[0].options.rollOrder = i;
+                            rolls.push(test.roll);
+                            i++;
+
+                        }
+                        messageContent+=`<div>Selected targets may attempt to evade if they have a reaction remaining and have enough movement from their half-move to exit the attack's area of effect.</div>`
+                        game.user.updateTokenTargets(updatedtargets);
+                        game.user.broadcastActivity({targets:updatedtargets});
+                        let chatOptions={user: game.user._id,
+                                         speaker:{actor,alias:actor.name},
+                                         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+                                         rolls: rolls,
+                                         content:messageContent,
+                                         classes:["fortyk"],
+                                         sound:"sounds/dice.wav",
+                                         flavor:`Spray Attack result`,
+                                         author:actor.id}
                         await ChatMessage.create(chatOptions,{});
                         if(!psy){
                             await weapon.update({"system.clip.value":ammo-1});

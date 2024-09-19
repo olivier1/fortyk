@@ -3,12 +3,9 @@
         <div class="flexcol">
             <label>Knight:</label>
             <select class="knight-select"  name="knight">
-                {{#select this.knight.id}}
                 <option value="">Select Knight</option>
-                {{#each knights}}
-                <option value="{{this.id}}">{{this.name}}</option>
-                {{/each}}
-                {{/select}}
+                {{selectOptions knights selected=this.knight.id valueAttr="id" labelAttr="name"}}
+                
             </select>
         </div>
         <div class="flexcol">
@@ -58,7 +55,7 @@
                     <div class="tntitem" name="tntEntry" ><input type="checkbox" class="repaircheckbox tntitem" name="{{this.type}}" data-index="{{@index}}" {{#if this.disabled}}disabled{{/if}}></div>
 
                     <span name="tntEntry" class="tntname tntitem" >{{this.label}}</span>
-                    <span name="tntEntry" class="tnttier tntitem" >{{#if (greaterThan this.amount 1)}}<input type="number" class="repair-amount" id="{{@index}}input" data-index="{{@index}}" min="1" max="{{this.amount}}" value="{{this.amount}}" />{{else}}1{{/if}}</span>
+                    <span name="tntEntry" class="tnttier tntitem" >{{#if (greaterThan this.amount 0)}}<input type="number" class="repair-amount" id="{{@index}}input" data-index="{{@index}}" min="1" max="{{this.amount}}" value="{{this.amount}}" />{{else}}1{{/if}}</span>
                     <span id="{{@index}}time" name="tntEntry"  class="tntprereqs tntitem" >{{this.timeLabel}}</span>
                     <span id="{{@index}}cost" name="tntEntry" class="tntaptitudes tntitem">{{this.cost}}</span>
                     <span id="{{@index}}diff" name="tntEntry" class="tntdescr tntitem">{{this.difficulty}}</span>

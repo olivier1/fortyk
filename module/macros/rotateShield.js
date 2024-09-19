@@ -27,7 +27,7 @@ new Dialog({
                     let token=canvas.tokens.controlled[0];
                     let lightId=await tokenAttacher.getAllAttachedElementsByTypeOfToken(token, "AmbientLight")[0];
                     let lightObj=game.canvas.lighting.get(lightId);
-                    let lightData=duplicate(lightObj.document);
+                    let lightData=foundry.utils.duplicate(lightObj.document);
 
                     tokenAttacher.detachElementFromToken(lightObj, token, true);
                     lightObj.document.delete();

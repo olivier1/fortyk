@@ -12,17 +12,13 @@
         <input type="text" value="{{name}}" name="name">
     </div>
     <div class="flexcol">
-            <label>Quirk:</label>
+        <label>Quirk:</label>
 
-            <select class="quirk"  name="system.quirk.uuid">
-                {{#select system.quirk.uuid}}
-                <option value="">None</option>
-                {{#each quirks}}
-                <option value="{{this.uuid}}">{{this.name}}</option>
-                {{/each}}
-                {{/select}}
-            </select>
-        </div>
+        <select class="quirk"  name="system.quirk.uuid">
+            <option value="">None</option>
+            {{selectOptions quirks selected=system.quirk.uuid valueAttr="uuid" labelAttr="name"}}
+        </select>
+    </div>
     <div class="flexcol">
         <label>Tonnage:</label>
         <input type="text" value="{{system.tonnage.value}}" name="system.tonnage.value">
@@ -31,19 +27,19 @@
         <label>Space:</label>
         <input type="text" value="{{system.space.value}}" name="system.space.value">
     </div>
-     <div class="flexcol">
+    <div class="flexcol">
         <label>Structural Integrity:</label>
         <input type="text" value="{{system.structuralIntegrity.value}}" name="system.structuralIntegrity.value">
     </div>
-     <div class="flexcol">
+    <div class="flexcol">
         <label>Max Armor:</label>
         <input type="text" value="{{system.armor.value}}" name="system.armor.value">
     </div>
-     <div class="flexcol">
+    <div class="flexcol">
         <label>Base Speed:</label>
         <input type="text" value="{{system.speed.value}}" name="system.speed.value">
     </div>
-     <div class="flexcol">
+    <div class="flexcol">
         <label>Manoeuvrability:</label>
         <input type="text" value="{{system.manoeuvrability.value}}" name="system.manoeuvrability.value">
     </div>
@@ -81,7 +77,7 @@
         <label>Auxiliary</label>
         <input type="text" class="knight-Hardpoint" value="{{system.hardPoints.torso.auxiliary.length}}" data-location="torso" data-type="auxiliary">
     </div>
-    
+
     {{#if isGM}}
     <div class="flexcol">
         <a class="modifier button">Active Effect</a>
@@ -92,45 +88,3 @@
         {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
     </div>
 </form>
-"structuralIntegrity":{
-                "value":0,
-                "type":"Number"
-            },
-            "tonnage":{
-                "value":0,
-                "type":"Number"
-            },
-            "armor":{
-                "value":0,
-                "type":"Number"
-            },
-            "speed":{
-                "value":0,
-                "type":"Number"
-            },
-            "manoeuvrability":{
-                "value":0,
-                "type":"Number"
-            },
-            "hardPoints":{
-                "carapace":{
-                    "titanicArtillery":[],
-                    "titanicRanged":[],
-                    "auxiliary":[]
-                },
-                "leftArm":{
-                    "titanicRanged":[],
-                    "titanicMelee":[],
-                    "auxiliary":[]
-                },
-                "torso":{
-                    "titanicRanged":[],
-                    "titanicMelee":[],
-                    "auxiliary":[]
-                },
-                "rightArm":{
-                    "titanicRanged":[],
-                    "titanicMelee":[],
-                    "auxiliary":[]
-                }
-            }
