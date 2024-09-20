@@ -20,7 +20,7 @@ export class SpendExpDialog extends Application {
 
         let data=this;
         let actor=this.options.actor;
-        if(!this.options.cost){this.options.cost=0}
+        if(!this.options.cost){this.options.cost=0;}
 
         data.actorExp=actor.system.experience.value;
         data.cost=this.options.cost;
@@ -28,25 +28,25 @@ export class SpendExpDialog extends Application {
         data.FORTYK=game.fortyk.FORTYK;
         data.advancementTypes=foundry.utils.duplicate(data.FORTYK.advancementTypes);
         if(actor.type==="dwPC"){
-            data.advancementTypes.push("Signature Wargear");
+            data.advancementTypes.push({value:"Signature Wargear"});
         }
         if(actor.system.psykana.pr.value>0){
             data.pr=actor.system.psykana.pr.value;
             data.pr1=actor.system.psykana.pr.value+1;
-            data.advancementTypes.push("Psy Rating");
-            data.advancementTypes.push("Psychic Power");
+            data.advancementTypes.push({value:"Psy Rating"});
+            data.advancementTypes.push({value:"Psychic Power"});
             data.disciplines=data.FORTYK.psychicDisciplines;
             data.psyPowers=await this._loadPsyPowers();
             this.psyPowers=data.psyPowers;
             if(!data.discipline||this.options.discipline===undefined){
-                data.discipline="All"
+                data.discipline="All";
             }else{
                 data.discipline=this.options.discipline;
             }
         }
         data.mode=this.options.mode;
         data.skills=actor.skills;
-        data.parentSkills=data.skills.filter(skill => skill.system.hasChildren.value)
+        data.parentSkills=data.skills.filter(skill => skill.system.hasChildren.value);
         data.upgradeableSkills=data.skills.reduce(function(map,skill){
 
 
