@@ -175,7 +175,7 @@ export class SpendExpDialog extends Application {
             const itemData = {
                 name: `${name}`,
                 type: type,
-                data:{
+                system:{
                     type:{value:"Custom"},
                     cost:{value:this.options.cost}
                 }
@@ -197,7 +197,7 @@ export class SpendExpDialog extends Application {
             const itemData = {
                 name: `${name}`,
                 type: type,
-                data:{
+                system:{
                     type:{value:"Skill Upgrade"},
                     cost:{value:this.options.cost},
                     itemId:{value:skill.id}
@@ -225,7 +225,7 @@ export class SpendExpDialog extends Application {
             const skillData = {
                 name: `${skillName}`,
                 type: "skill",
-                data:{
+                system:{
                     parent:{value:parent},
                     hasChildren:{value:children},
                     aptitudes:{value:aptitudes},
@@ -257,7 +257,7 @@ export class SpendExpDialog extends Application {
             const itemData = {
                 name: `${name}`,
                 type: type,
-                data:{
+                system:{
                     type:{value:"Characteristic Upgrade"},
                     cost:{value:this.options.cost},
                     characteristic:{value:char}
@@ -333,7 +333,7 @@ export class SpendExpDialog extends Application {
             const advData = {
                 name: `${advanceName}`,
                 type: type,
-                data:{
+                system:{
                     type:{value:"Talent"},
                     cost:{value:this.options.cost},
                     itemId:{value:talentId}
@@ -351,7 +351,7 @@ export class SpendExpDialog extends Application {
             const itemData = {
                 name: `Signature Wargear: ${wargearName}`,
                 type: type,
-                data:{
+                system:{
                     type:{value:"Signature Wargear"},
                     cost:{value:this.options.cost}
                 }
@@ -366,7 +366,7 @@ export class SpendExpDialog extends Application {
             const itemData = {
                 name: `Psy Rating Upgrade: ${newPr}`,
                 type: type,
-                data:{
+                system:{
                     type:{value:"Psy Rating"},
                     cost:{value:this.options.cost}
                 }
@@ -397,7 +397,7 @@ export class SpendExpDialog extends Application {
             const advData = {
                 name: `${advanceName}`,
                 type: type,
-                data:{
+                system:{
                     type:{value:"Psychic Power"},
                     cost:{value:this.options.cost},
                     itemId:{value:powerId},
