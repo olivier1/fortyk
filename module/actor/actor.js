@@ -28,28 +28,29 @@ export class FortyKActor extends Actor {
         if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship" && data.type!=="vehicle" && data.type!=="knightHouse"){
             // Set wounds, fatigue, and display name visibility
             foundry.utils.mergeObject(data,
-                        {"token.bar1" :{"attribute" : "secChar.wounds"},                
-                         "token.bar2" :{"attribute" : "secChar.fatigue"},               
-                         "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,   
-                         "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,   
-                         "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         
-                         "token.name" : data.name                                       
+                        {"prototypeToken.bar1" :{"attribute" : "secChar.wounds"},                
+                         "prototypeToken.bar2" :{"attribute" : "secChar.fatigue"},               
+                         "prototypeToken.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,   
+                         "prototypeToken.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,   
+                         "prototypeToken.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         
+                         "prototypeToken.name" : data.name                                       
                         });
             // Default non npcs to HasVision = true and Link Data = true
             if (data.type !== "npc")
             {
-                data.token.vision = true;
-                data.token.actorLink = true;
+                console.log(data)
+                data.prototypeToken.vision = true;
+                data.prototypeToken.actorLink = true;
             }
         }else if(data.type==="spaceship"){
             //spaceships have different attributes but same stuff
             foundry.utils.mergeObject(data,
-                        {"token.bar1" :{"attribute" : "hullIntegrity"},                 
-                         "token.bar2" :{"attribute" : "crew"},               
-                         "token.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    
-                         "token.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    
-                         "token.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         
-                         "token.name" : data.name                                       
+                        {"prototypeToken.bar1" :{"attribute" : "hullIntegrity"},                 
+                         "prototypeToken.bar2" :{"attribute" : "crew"},               
+                         "prototypeToken.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    
+                         "prototypeToken.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    
+                         "prototypeToken.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         
+                         "prototypeToken.name" : data.name                                       
                         });
         }
         //resume actor creation
@@ -114,10 +115,10 @@ export class FortyKActor extends Actor {
                 if(newSize && (newSize !== this.system.secChar.size.value)){
                     let size= 0;
                     size= game.fortyk.FORTYK.size[newSize].size;
-                    if ( this.isToken ) this.token.update({height: size, width: size});
-                    else if ( !data["token.width"] && !foundry.utils.hasProperty(data, "token.width") ) {
-                        data["token.height"] = size;
-                        data["token.width"] = size;
+                    if ( this.isToken ) this.prototypeToken.update({height: size, width: size});
+                    else if ( !data["prototypeToken.width"] && !foundry.utils.hasProperty(data, "prototypeToken.width") ) {
+                        data["prototypeToken.height"] = size;
+                        data["prototypeToken.width"] = size;
                     }
                 }
             }else{
@@ -142,9 +143,9 @@ export class FortyKActor extends Actor {
                             size= game.fortyk.FORTYK.size[newSize].size;
                         }
                         if ( this.isToken ) this.token.update({height: size, width: size});
-                        else if ( !data["token.width"] && !foundry.utils.hasProperty(data, "token.width") ) {
-                            data["token.height"] = size;
-                            data["token.width"] = size;
+                        else if ( !data["prototypeToken.width"] && !foundry.utils.hasProperty(data, "prototypeToken.width") ) {
+                            data["prototypeToken.height"] = size;
+                            data["prototypeToken.width"] = size;
                         }
                     }
                 }
@@ -234,8 +235,8 @@ export class FortyKActor extends Actor {
         let height;
         let width;
         if(this.isToken){
-            height=this.token.height;
-            width=this.token.width;
+            height=this.prototypeToken.height;
+            width=this.prototypeToken.width;
         }else{
             height=this.prototypeToken.height;
             width=this.prototypeToken.width;
@@ -302,7 +303,7 @@ export class FortyKActor extends Actor {
 
         let actorData=this;
         if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC'){
-            this.applyActiveEffects();
+           this.applyActiveEffects();
             let items=this.items;
             const data=this.system;
             data.experience.earned=0;
@@ -389,8 +390,10 @@ export class FortyKActor extends Actor {
                     //set max agi from equipped armor
 
                     data.characteristics.agi.max=item.system.maxAgi.value;
-                    if(this.setFlag("fortyk", "irongrip")!==item.getFlag("fortyk","irongrip")){
-                        this.setFlag("fortyk", "irongrip",item.getFlag("fortyk","irongrip"));
+                    if(item.getFlag("fortyk","irongrip")){
+                        this.flags.fortyk.irongrip=true;
+                    }else{
+                        this.flags.fortyk.irongrip=false;
                     }
 
                 }
@@ -721,7 +724,7 @@ export class FortyKActor extends Actor {
                 }
             }  
         }
-        if(this.getFlag("fortyk","soundconstitution")&&!isNaN(parseInt(this.getFlag("fortyk","soundconstitution")))){
+        if(this.getFlag("fortyk","soundconstitution")){
             data.secChar.wounds.max=parseInt(data.secChar.wounds.max)+2*data.characteristics.t.bonus;
         }
         data.secChar.wounds.heavy=false;
@@ -1415,6 +1418,7 @@ export class FortyKActor extends Actor {
         return actorData;
     }
     prepareAlternateProfiles(item) {
+        console.log(item)
         if(item.getFlag("fortyk","alternateprofiles")){
 
             try {
@@ -1423,14 +1427,18 @@ export class FortyKActor extends Actor {
                 for(let i=0; i<profiles.length; i++){
                     if(typeof profiles[i] === 'string' || profiles[i] instanceof String){
                         let uuid=profiles[i];
-                        instancedProfiles.push(fromUuidSync(profiles[i]));
+                        let instance=fromUuidSync(profiles[i]);
+                        if(instance){
+                            instancedProfiles.push(instance);
+                        }
+                        
 
                     }
 
                 }
                 item.flags.fortyk.instancedProfiles=instancedProfiles;
             } catch (e) {
-                //Catch Statement
+                item.flags.fortyk.instancedProfiles=[];
             }
         }
     }

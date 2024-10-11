@@ -232,7 +232,7 @@ export class FortyKItem extends Item {
                     item.system.ammo.name = ammo.name;
                 }
                 let ammos=actor.itemTypes.ammunition;
-                console.log("hey")
+                console.log(item.name,actor.name,"hey")
                 let validAmmos=ammos.filter((ammo) => ammo.system.class.value===item.system.class.value&&ammo.system.type.value===item.system.type.value);
                 item.validAmmos=validAmmos;
                 if (ammo && !ammo.system.default.value) {
