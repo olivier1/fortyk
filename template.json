@@ -147,7 +147,8 @@
                         "khorne":0,
                         "nurgle":0,
                         "slaanesh":0,
-                        "tzeentch":0
+                        "tzeentch":0,
+                        "malice":0
                     },
                     "insanity": {
                         "type": "Number",
@@ -183,7 +184,7 @@
                         },
                         "swift": 0,
                         "lightning": -10,
-                        "called": -20,
+                        "cad": -20,
                         "gangup": {
                             "0": 0,
                             "1": 10,
@@ -401,7 +402,7 @@
                         "shield": 0,
                         "type": "Number",
                         "label": "Left Leg",
-                        "key": "lLeft"
+                        "key": "lLeg"
                     }
                 },
                 "psykana": {
@@ -1049,7 +1050,8 @@
             "cadetHouse",
             "repairEntry",
             "outpost",
-            "knightSpirit"
+            "knightSpirit",
+            "eliteAdvance"
         ],
         "templates": {
             "weapon": {
@@ -1822,6 +1824,20 @@
                 "type":"String"
             },
             "id":""
+        },
+        "eliteAdvance":{
+            "templates":["description"],
+            "items":[],
+            "requirements":"",
+            "flag":{
+                "value":"",
+                "type":"String"
+            },
+            "cost":{
+                "value":0,
+                "type":"Number"
+            },
+            "flagId":""
         }
     }
 }

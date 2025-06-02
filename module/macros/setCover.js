@@ -21,11 +21,10 @@ new Dialog({
                     let actor=token.actor;
                     actor.update({"system.secChar.cover.value":cover});
                 }
-                let chatCover={user: game.user._id,
+                let chatCover={author: game.user._id,
                                  speaker:{actor,alias:game.user.name},
                                  content:`Set ${label} on selected`,
-                                 flavor:"Cover Set",
-                                 author:game.user.id};
+                                 flavor:"Cover Set"};
                 await ChatMessage.create(chatCover,{});
 
             }

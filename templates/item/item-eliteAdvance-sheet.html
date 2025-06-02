@@ -1,0 +1,76 @@
+<form class="{{cssClass}} item-sheet flexcol">
+    <header class="sheet-header">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
+
+    </header>
+    {{#if isGM}}
+    <label class="button clone">Copy Item</label>
+    {{/if}}
+    <div class="grid grid-3col">
+        <div class="flexcol">
+            <label>Name:</label>
+            <input type="text" value="{{name}}" name="name">
+        </div>
+
+
+        {{#if isGM}}
+        <div class="flexcol">
+            <a class="modifier button">Active Effect</a>
+        </div>
+        {{/if}}
+        <div class="flexcol">
+            <label>Prerequisites:</label>
+            <input type="text" value="{{system.requirements}}" name="system.prereqs.value">
+        </div>
+        <div class="flexcol">
+            <label>Cost:</label>
+            <input type="text" value="{{system.cost.value}}" name="system.cost.value">
+        </div>
+        <div class="flexcol">
+            <label>Flag:</label>
+            <input type="text" value="{{system.flag.value}}" name="system.flag.value">
+        </div>
+
+
+
+    </div>
+    <div class="flexcol">
+        <label>Compendium:</label>
+
+        <select class="compendium-select" data-index="{{@index}}">
+            <option value="">None</option>
+            {{selectOptions compendiums selected=chosenPack valueAttr="id" labelAttr="label"}}
+
+
+        </select>
+    </div>
+    <div class="flexcol">
+        <label>Item:</label>
+        <select class="item-select" data-index="{{@index}}">
+            <option value="">None</option>
+            {{#each compendiumItems}}
+            <option value="{{uuid}}">{{name}}</option>
+            {{/each}}
+
+        </select>
+    </div>
+    <div class="flexrow">
+        <div class="flexcol">
+            <a id="add" class="add button" disabled>Add Item</a>
+        </div>
+        <div class="flexcol">
+            <a id="remove" class="remove button">Remove Last Added Item</a>
+        </div>
+    </div>
+
+    <div class="flexcol">
+        <label>Bonuses:</label>
+        {{#each system.items}}
+        <label>{{this.name}}</label>
+        {{/each}}
+    </div>
+    <div class="item-description">
+        <label>Description:</label>
+        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
+    </div>
+</form>

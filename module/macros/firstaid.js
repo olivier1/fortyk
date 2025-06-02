@@ -35,12 +35,11 @@ new Dialog({
                     } 
                 }
                 let test=await game.fortyk.FortykRolls.fortykTest(`int`,"int" , medicae, characterActor, `First Aid on ${targetActor.name}`);
-                let chatFirstAid={user: game.users.current,
+                let chatFirstAid={author: game.users.current,
                                   speaker:{user: game.users.current},
                                   content:"",
                                   classes:["fortyk"],
-                                  flavor:`First Aid result on ${targetActor.name}`,
-                                  author:game.users.current.id
+                                  flavor:`First Aid result on ${targetActor.name}`
                                  }
 
 

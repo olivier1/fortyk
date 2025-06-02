@@ -246,6 +246,9 @@
     font-variant-caps: petite-caps;
     padding-left: 10px;
 }
+.fortyk .advanceElite{
+    flex: none;
+}
 .vehicle-categories{
     align-self:flex-start;
     height: auto;

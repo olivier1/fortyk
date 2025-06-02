@@ -69,6 +69,30 @@ export class FortyKItemSheet extends ItemSheet {
         if(this.actor&&this.actor.type==="vehicle"){
             data.vehicle=true;
         }
+        if(this.item.type==="eliteAdvance"){
+            data.compendiums=game.packs.values().toArray().map((x)=>x=x.metadata);
+            data.chosenPack=this.chosenPack;
+            if(this.chosenPack){
+                let items=await game.packs.get(this.chosenPack);
+
+                data.compendiumItems=await items.getDocuments();
+                console.log(data.compendiumItems);
+                data.compendiumItems.sort(function compare(a, b) {
+                    let valueA=a.name;
+                    let valueB=b.name;
+                    if (valueA<valueB) {
+                        return -1;
+                    }
+                    if (valueA>valueB) {
+                        return 1;
+                    }
+                    // a must be equal to b
+                    return 0;
+                });
+            }else{
+                data.compendiumItems=[];
+            }
+        }
         if(this.item.type==="psychicPower"){
             let macroCompendium=game.packs.get("fortyk.fortykmacros");
             let psyFolder=macroCompendium.folders.get("MQBztfL3KvhTnCw9");
@@ -206,6 +230,10 @@ export class FortyKItemSheet extends ItemSheet {
         html.find('.knight-Hardpoint').keydown(this._onHardpointEnter.bind(this));
         html.find('.knight-Hardpoint').focusout(this._onHardpointEdit.bind(this));
         html.find('.profile-select').change(this._onProfileChange.bind(this));
+        html.find('.compendium-select').change(this._onCompendiumChange.bind(this));
+        html.find('.item-select').change(this._onItemChange.bind(this));
+        html.find('.add').click(this._onAddItemClick.bind(this));
+        html.find('.remove').click(this._onRemoveItemClick.bind(this));
         //handles melee weapon mod
 
         html.find('.weapon-mod').focusout(this._weaponModEdit.bind(this));
@@ -215,6 +243,36 @@ export class FortyKItemSheet extends ItemSheet {
             $(this).select();
         });
 
+
+    }
+    _onCompendiumChange(event){
+        let compendium=event.target.value;
+        this.chosenPack=compendium;
+        this._render();
+    }
+    _onItemChange(event){
+        let item=event.target.value;
+        let name=event.target.selectedOptions[0].innerText;
+        this.chosenItem=item;
+        this.chosenItemName=name;
+        document.getElementById("add").removeAttribute('disabled');
+    }
+    _onAddItemClick(event){
+        let bonuses=this.item.system.items;
+        let bonus={"uuid":this.chosenItem,"name":this.chosenItemName};
+        console.log(bonus);
+        bonuses.push(bonus);
+        this.item.update({"system.items":bonuses});
+        this.chosenItem=null;
+        this.choseItemName=null;
+        document.getElementById("add").setAttribute('disabled',"");
+    }
+    _onRemoveItemClick(event){
+        let bonuses=this.item.system.items;
+        if(bonuses.length){
+            bonuses.pop();
+            this.item.update({"system.items":bonuses});
+        }
 
     }
     _onCloneClick(event){

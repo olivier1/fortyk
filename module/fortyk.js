@@ -280,7 +280,7 @@ Hooks.once('ready', async function() {
                     formula=await data.package.formula;
                     actor=await game.actors.get(data.package.actor);
                     fortykWeapon=actor.getEmbeddedDocument("Item",data.package.fortykWeapon);
-                    if(!fortykWeapon.system.isPrepared){
+                    if(!fortykWeapon.isPrepared){
                         fortykWeapon.prepareData();
                     }
                     targetIds=data.package.targets;
@@ -329,12 +329,11 @@ Hooks.once('ready', async function() {
 
                             game.user.updateTokenTargets(curTargets);
 
-                            let chatBlast2={user: game.user._id,
+                            let chatBlast2={author: game.user._id,
                                             speaker:{actor,alias:actor.name},
                                             content:`Template #${i+1} hits `+targetNames,
                                             classes:["fortyk"],
-                                            flavor:`Blast Weapon Damage`,
-                                            author:actor.id};
+                                            flavor:`Blast Weapon Damage`};
                             await ChatMessage.create(chatBlast2,{});
                             await FortykRolls.damageRoll(formula,actor,fortykWeapon,hits, false, false,magdamage,extraPen,rerollNum, user, lastHit, targetSet); 
                             //clean templates after
@@ -537,12 +536,11 @@ Hooks.on("updateCombat", async (combat) => {
                 content+=`<p>${power.name} as a ${power.system.sustain.value} </p>`;
 
             }
-            let sustainedPowersOptions={user: game.user._id,
+            let sustainedPowersOptions={author: game.user._id,
                                         speaker:{actor,alias:actor.name},
                                         content:content,
                                         classes:["fortyk"],
-                                        flavor:`Sustained Psychic Powers`,
-                                        author:actor.id};
+                                        flavor:`Sustained Psychic Powers`};
             await ChatMessage.create(sustainedPowersOptions,{});
         }
         var dead={};
@@ -562,12 +560,11 @@ Hooks.on("updateCombat", async (combat) => {
                     }else{
                         content=`${activeEffect.name}, affecting ${activeEffect.parent.name} has ${remaining} rounds remaining.`;
                     }
-                    let activeEffectOptions={user: game.user._id,
+                    let activeEffectOptions={author: game.user._id,
                                              speaker:{actor,alias:actor.name},
                                              content:content,
                                              classes:["fortyk"],
-                                             flavor:`${activeEffect.name} duration.`,
-                                             author:actor.id};
+                                             flavor:`${activeEffect.name} duration.`};
                     await ChatMessage.create(activeEffectOptions,{});
                 }
                 try{
@@ -597,12 +594,11 @@ Hooks.on("updateCombat", async (combat) => {
                 if(activeEffect.statuses.has("fire")){
 
                     if(actor.type!=="vehicle"){
-                        let onFireOptions={user: game.user._id,
+                        let onFireOptions={author: game.user._id,
                                            speaker:{actor,alias:actor.name},
                                            content:"On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
                                            classes:["fortyk"],
-                                           flavor:`On Fire!`,
-                                           author:actor.id};
+                                           flavor:`On Fire!`};
                         await ChatMessage.create(onFireOptions,{});
                         if(!(actor.getFlag("core","frenzy")||actor.getFlag("fortyk","fearless")||actor.getFlag("fortyk","frombeyond"))){
                             let wp=actor.system.characteristics.wp.total;
@@ -629,12 +625,11 @@ Hooks.on("updateCombat", async (combat) => {
                             if(actor.getFlag("fortyk","superheavy")&&!actor.getFlag("fortyk","platinginsulation")){
                                 let heat=parseInt(actor.system.knight.heat.value)+1;
                                 await actor.update({"system.knight.heat.value":heat});
-                                let onFireOptions={user: game.user._id,
+                                let onFireOptions={author: game.user._id,
                                                    speaker:{actor,alias:actor.name},
                                                    content:"On round start, gain 1 heat.",
                                                    classes:["fortyk"],
-                                                   flavor:`On Fire!`,
-                                                   author:actor.id};
+                                                   flavor:`On Fire!`};
                                 await ChatMessage.create(onFireOptions,{});
                             }else{
 
@@ -649,12 +644,11 @@ Hooks.on("updateCombat", async (combat) => {
                                 fireRoll.toMessage({flavor:"Testing for explosion"});
                                 let result=fireRoll._total; 
                                 if(result>=10){
-                                    let onFireOptions={user: game.user._id,
+                                    let onFireOptions={author: game.user._id,
                                                        speaker:{actor,alias:actor.name},
                                                        content:"The vehicle explodes!",
                                                        classes:["fortyk"],
-                                                       flavor:`On Fire!`,
-                                                       author:actor.id};
+                                                       flavor:`On Fire!`};
                                     await ChatMessage.create(onFireOptions,{}); 
                                     let activeEffect=[foundry.utils.duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
                                     await FortykRolls.applyActiveEffect(actor,activeEffect);
@@ -669,12 +663,11 @@ Hooks.on("updateCombat", async (combat) => {
                     if(activeEffect.statuses.has("purifyingflame")){
 
                         if(actor.type!=="vehicle"){
-                            let onFireOptions={user: game.user._id,
+                            let onFireOptions={author: game.user._id,
                                                speaker:{actor,alias:actor.name},
                                                content:"On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
                                                classes:["fortyk"],
-                                               flavor:`On Fire!`,
-                                               author:actor.id};
+                                               flavor:`On Fire!`};
                             await ChatMessage.create(onFireOptions,{});
                             await FortykRolls.fortykTest("wp", "char", actor.system.characteristics.wp.total,actor, "On Fire! Panic");
                             //let fatigue=parseInt(actor.system.secChar.fatigue.value)+1;
@@ -695,12 +688,11 @@ Hooks.on("updateCombat", async (combat) => {
                             if(actor.getFlag("fortyk","superheavy")&&!actor.getFlag("fortyk","platinginsulation")){
                                 let heat=parseInt(actor.system.knight.heat.value)+1;
                                 await actor.update({"system.knight.heat.value":heat});
-                                let onFireOptions={user: game.user._id,
+                                let onFireOptions={author: game.user._id,
                                                    speaker:{actor,alias:actor.name},
                                                    content:"On round start, gain 1 heat.",
                                                    classes:["fortyk"],
-                                                   flavor:`On Fire!`,
-                                                   author:actor.id};
+                                                   flavor:`On Fire!`};
                                 await ChatMessage.create(onFireOptions,{});
                             }else{
 
@@ -715,12 +707,11 @@ Hooks.on("updateCombat", async (combat) => {
                                 fireRoll.toMessage({flavor:"Testing for explosion"});
                                 let result=fireRoll._total; 
                                 if(result>=10){
-                                    let onFireOptions={user: game.user._id,
+                                    let onFireOptions={author: game.user._id,
                                                        speaker:{actor,alias:actor.name},
                                                        content:"The vehicle explodes!",
                                                        classes:["fortyk"],
-                                                       flavor:`On Fire!`,
-                                                       author:actor.id};
+                                                       flavor:`On Fire!`};
                                     await ChatMessage.create(onFireOptions,{}); 
                                     let activeEffect=[foundry.utils.duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
                                     await FortykRolls.applyActiveEffect(actor,activeEffect);
@@ -738,12 +729,11 @@ Hooks.on("updateCombat", async (combat) => {
                             let diehrd= await FortykRolls.fortykTest("wp", "char", actor.system.characteristics.wp.total,actor, "Die Hard");
                             if(diehrd.value){
                                 bleed=false;
-                                let dieHardOptions={user: game.user._id,
+                                let dieHardOptions={author: game.user._id,
                                                     speaker:{actor,alias:actor.name},
                                                     content:"Resisted bleeding fatigue.",
                                                     classes:["fortyk"],
-                                                    flavor:`Bleeding`,
-                                                    author:actor.id};
+                                                    flavor:`Bleeding`};
                                 await ChatMessage.create(dieHardOptions,{});
 
                             }
@@ -756,12 +746,11 @@ Hooks.on("updateCombat", async (combat) => {
                             }else{
                                 flavor=`Blood loss`
                             }
-                            let bleedingOptions={user: game.user._id,
+                            let bleedingOptions={author: game.user._id,
                                                  speaker:{actor,alias:actor.name},
                                                  content:`On round start gain ${bleedStack} fatigue.`,
                                                  classes:["fortyk"],
-                                                 flavor:flavor,
-                                                 author:actor.id};
+                                                 flavor:flavor};
                             await ChatMessage.create(bleedingOptions,{});
                             let fatigue=parseInt(actor.system.secChar.fatigue.value)+bleedStack;
                             await actor.update({"system.secChar.fatigue.value":fatigue});
@@ -770,12 +759,11 @@ Hooks.on("updateCombat", async (combat) => {
                     //check for cryo
                     if(activeEffect.statuses.has("cryogenic")){
                         let cryoContent=`<span>On round start, take [[2d10]]  toughness damage!</span>`;
-                        let cryoOptions={user: game.user._id,
+                        let cryoOptions={author: game.user._id,
                                          speaker:{actor,alias:actor.name},
                                          content:cryoContent,
                                          classes:["fortyk"],
-                                         flavor:`Freezing`,
-                                         author:actor.id};
+                                         flavor:`Freezing`};
                         let cryoMsg=await ChatMessage.create(cryoOptions,{});
                         let inlineResults=parseHtmlForInline(cryoMsg.content);
                         let tDmg=inlineResults[0];
@@ -799,23 +787,21 @@ Hooks.on("updateCombat", async (combat) => {
 
                     if(reanimation.value){
 
-                        let reanimationOptions={user: game.user._id,
+                        let reanimationOptions={author: game.user._id,
                                                 speaker:{actor,alias:actor.name},
                                                 content:`${actor.name} rises from the dead!`,
                                                 classes:["fortyk"],
-                                                flavor:`Reanimation protocol`,
-                                                author:actor.id};
+                                                flavor:`Reanimation protocol`};
                         await ChatMessage.create(reanimationOptions,{});
                         await dead.delete();
                         await actor.update({"system.secChar.wounds.value":regenAmt});
 
                     }else if((!reanimation.value)&&reanimation.dos>=3){
-                        let reanimationOptions={user: game.user._id,
+                        let reanimationOptions={author: game.user._id,
                                                 speaker:{actor,alias:actor.name},
                                                 content:`${actor.name} is recalled away!`,
                                                 classes:["fortyk"],
-                                                flavor:`Reanimation protocol`,
-                                                author:actor.id};
+                                                flavor:`Reanimation protocol`};
                         await ChatMessage.create(reanimationOptions,{});
                         await dead.delete();
                         let activeEffect=[foundry.utils.duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")])];
@@ -837,12 +823,11 @@ Hooks.on("updateCombat", async (combat) => {
                 let heat=parseInt(actor.system.knight.heat.value);
                 if(heat>0){
                     await actor.update({"system.knight.heat.value":heat-1});
-                    let frigusOptions={user: game.user._id,
+                    let frigusOptions={author: game.user._id,
                                        speaker:{actor,alias:actor.name},
                                        content:"On round start, lose 1 heat.",
                                        classes:["fortyk"],
-                                       flavor:`Frigus Core`,
-                                       author:actor.id};
+                                       flavor:`Frigus Core`};
                     await ChatMessage.create(frigusOptions,{});
                 }
 
@@ -1105,12 +1090,11 @@ Hooks.on("updateCombat", async (combat) => {
         }else if(!tokenActor.getFlag("core","frenzy")&&!tokenActor.getFlag("core","unconscious")&&newFatigue>=tokenActor.system.secChar.fatigue.max){
             let effect=[];
             effect.push(foundry.utils.duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("unconscious")]));
-            let chatUnconscious={user: game.user._id,
+            let chatUnconscious={author: game.user._id,
                                  speaker:{tokenActor,alias:tokenActor.name},
                                  content:`${tokenActor.name} falls unconscious from fatigue!`,
                                  classes:["fortyk"],
-                                 flavor:`Fatigue pass out`,
-                                 author:tokenActor.id};
+                                 flavor:`Fatigue pass out`};
             await ChatMessage.create(chatUnconscious,{});
             await game.fortyk.FortykRolls.applyActiveEffect(fullToken,effect);
         }
@@ -1350,12 +1334,11 @@ Hooks.on("updateCombat", async (combat) => {
                         let note=await SimpleCalendar.api.addNote(newCurrentRepair.name, repair.system.description.value, formattedTime, formattedTime, true, false, ["Repairs"], calendar.id, '', ["default"], [game.user.id]);
                         await newCurrentRepair.update({"system.calendar.noteId":note.id});
                     }
-                    let chatMsg={user: game.user._id,
+                    let chatMsg={author: game.user._id,
                                  speaker:{house,alias:game.user.character.name},
                                  content:repair.system.description.value,
                                  classes:["fortyk"],
-                                 flavor:`Repair entry for ${knight.name} has completed successfully`,
-                                 author:game.user.character.id};
+                                 flavor:`Repair entry for ${knight.name} has completed successfully`};
                     await ChatMessage.create(chatMsg,{});
                     await house.update({"system.repairBays.current":newCurrent,"system.repairBays.queue":queue});
                     await repair.delete();

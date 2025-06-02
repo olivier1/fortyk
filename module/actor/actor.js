@@ -28,13 +28,13 @@ export class FortyKActor extends Actor {
         if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship" && data.type!=="vehicle" && data.type!=="knightHouse"){
             // Set wounds, fatigue, and display name visibility
             foundry.utils.mergeObject(data,
-                        {"prototypeToken.bar1" :{"attribute" : "secChar.wounds"},                
-                         "prototypeToken.bar2" :{"attribute" : "secChar.fatigue"},               
-                         "prototypeToken.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,   
-                         "prototypeToken.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,   
-                         "prototypeToken.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         
-                         "prototypeToken.name" : data.name                                       
-                        });
+                                      {"prototypeToken.bar1" :{"attribute" : "secChar.wounds"},                
+                                       "prototypeToken.bar2" :{"attribute" : "secChar.fatigue"},               
+                                       "prototypeToken.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,   
+                                       "prototypeToken.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,   
+                                       "prototypeToken.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         
+                                       "prototypeToken.name" : data.name                                       
+                                      });
             // Default non npcs to HasVision = true and Link Data = true
             if (data.type !== "npc")
             {
@@ -45,13 +45,13 @@ export class FortyKActor extends Actor {
         }else if(data.type==="spaceship"){
             //spaceships have different attributes but same stuff
             foundry.utils.mergeObject(data,
-                        {"prototypeToken.bar1" :{"attribute" : "hullIntegrity"},                 
-                         "prototypeToken.bar2" :{"attribute" : "crew"},               
-                         "prototypeToken.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    
-                         "prototypeToken.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    
-                         "prototypeToken.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         
-                         "prototypeToken.name" : data.name                                       
-                        });
+                                      {"prototypeToken.bar1" :{"attribute" : "hullIntegrity"},                 
+                                       "prototypeToken.bar2" :{"attribute" : "crew"},               
+                                       "prototypeToken.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    
+                                       "prototypeToken.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    
+                                       "prototypeToken.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         
+                                       "prototypeToken.name" : data.name                                       
+                                      });
         }
         //resume actor creation
         super.create(data, options);
@@ -82,12 +82,11 @@ export class FortyKActor extends Actor {
                 }else if(!this.getFlag("core","frenzy")&&!this.getFlag("core","unconscious")&&newFatigue>=this.system.secChar.fatigue.max){
                     let effect=[];
                     effect.push(foundry.utils.duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("unconscious")]));
-                    let chatUnconscious={user: game.user._id,
+                    let chatUnconscious={author: game.user._id,
                                          speaker:{actor,alias:actor.name},
                                          content:`${actor.name} falls unconscious from fatigue!`,
                                          classes:["fortyk"],
-                                         flavor:`Fatigue pass out`,
-                                         author:actor.id};
+                                         flavor:`Fatigue pass out`};
                     await ChatMessage.create(chatUnconscious,{});
                     await actor.createEmbeddedDocuments("ActiveEffect",effect);
                 }
@@ -187,7 +186,7 @@ export class FortyKActor extends Actor {
         //prepare corruption for BC
         let corruption=data.secChar.corruption;
         if(game.settings.get("fortyk","bcCorruption")){
-            corruption.value=parseInt(corruption.value)+parseInt(corruption.khorne)+parseInt(corruption.tzeentch)+parseInt(corruption.slaanesh)+parseInt(corruption.nurgle); 
+            corruption.value=parseInt(corruption.value)+parseInt(corruption.khorne)+parseInt(corruption.tzeentch)+parseInt(corruption.slaanesh)+parseInt(corruption.nurgle)+parseInt(corruption.malice); 
         }
         corruption.mod=FORTYKTABLES.malignancyModifiers[parseInt(data.secChar.corruption.value)];
         data.secChar.insanity.mod=FORTYKTABLES.traumaModifiers[parseInt(data.secChar.insanity.value)];
@@ -303,7 +302,7 @@ export class FortyKActor extends Actor {
 
         let actorData=this;
         if(actorData.type === 'dwPC'||actorData.type === 'dhPC'||actorData.type === 'owPC'){
-           this.applyActiveEffects();
+            this.applyActiveEffects();
             let items=this.items;
             const data=this.system;
             data.experience.earned=0;
@@ -1163,7 +1162,7 @@ export class FortyKActor extends Actor {
         for(let i=0;i<meleeWeapons.length;i++){
             meleeWeapons[i].prepareData();
         }
-        
+
         //prepare skills
         let skills=this.itemTypes.skill;
         data.skills={};
@@ -1431,7 +1430,7 @@ export class FortyKActor extends Actor {
                         if(instance){
                             instancedProfiles.push(instance);
                         }
-                        
+
 
                     }
 
@@ -1690,6 +1689,52 @@ export class FortyKActor extends Actor {
         return parry; 
     }
     //when creating active effects check if they are transferred from an item, if so give the active effect flag to the item for referrence.
+    async _createEliteAdvanceBonuses(itemData) {
+        let bonuses=itemData.system.items;
+        let bonusesInstances=[];
+        this.setFlag("fortyk",itemData.system.flag.value,true);
+        bonuses.forEach(async (bonus)=>{
+            let currentInstance=await fromUuid(bonus.uuid);
+            let cloneCurrentInstance=foundry.utils.duplicate(currentInstance);
+            if(currentInstance.type==="talentntrait"){
+                console.log(cloneCurrentInstance,currentInstance);
+                let spec=currentInstance.system.specialisation.value;
+                let flag=cloneCurrentInstance.system.flagId.value;
+                if(this.getFlag("fortyk",flag)){
+                    return;
+                }
+                if(spec==="N/A"){
+
+                    this.setFlag("fortyk",flag,true);
+                }else{
+                    let actor=this;
+                    let chosenSpec=await Dialog.prompt({
+                        title: `Choose specialisation for ${cloneCurrentInstance.name}`,
+                        content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${cloneCurrentInstance.system.specialisation.value}" autofocus/></p>`,
+
+
+
+                        callback: async (html) => {
+                            const choosenSpec = $(html).find('input[name="spec"]').val();
+                            actor.setFlag("fortyk",flag,choosenSpec);
+                            return choosenSpec;
+                        },
+
+
+
+
+
+
+                        width:100});
+                    cloneCurrentInstance.system.specialisation.value= chosenSpec;
+
+                }
+            }
+            bonusesInstances.push(cloneCurrentInstance);
+        });
+        this.createEmbeddedDocuments("Item",bonusesInstances);
+    }
+
     _onCreateDescendantDocuments(parent, collection, documents, data, options, userId){
 
 
@@ -1697,7 +1742,16 @@ export class FortyKActor extends Actor {
         if(this.type==="knightHouse"){
             this.updateKnights();
         }
-
+        if(userId===game.user.id){
+            console.log(parent,collection,documents,data,options,userId); 
+            let itemData=data[0];
+            if(itemData.type==="eliteAdvance"){
+                if(this.getFlag("fortyk",itemData.system.flag.value)){
+                   return;
+                   }
+                this._createEliteAdvanceBonuses(itemData);
+            }
+        }
         /*
         if(userId===game.user.id){
             if(embeddedName==="Item"){
@@ -1777,7 +1831,10 @@ export class FortyKActor extends Actor {
 
                     if(item.type==="talentntrait"){
                         let flag=item.system.flagId.value;
-                        await actor.setFlag("fortyk",flag,false); 
+                        await actor.setFlag("fortyk",flag,false);
+                    }else if(item.type==="eliteAdvance"){
+                        let flag=item.system.flag.value;    
+                        await actor.setFlag("fortyk",flag,false);
                     }else if(item.type==="advancement"){
                         let advType=item.system.type.value;
                         let data=item.system;

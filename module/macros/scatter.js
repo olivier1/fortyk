@@ -1,8 +1,7 @@
-let chatScatter={user: game.user._id,
+let chatScatter={author: game.user._id,
                  speaker:{actor,alias:game.user.name},
                  content:`Scatter! <img class="fortyk" src="../systems/fortyk/icons/scatter.png">`,
-                 flavor:"Rolling Scatters!",
-                 author:game.user.id};
+                 flavor:"Rolling Scatters!"};
 await ChatMessage.create(chatScatter,{});
 let distanceRoll=new Roll("1d5");
 await distanceRoll.evaluate();

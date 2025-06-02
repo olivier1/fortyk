@@ -85,12 +85,11 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
             overheatResult="Roll a +0 tech-use test, on a success your knight is stunned for 1d5 rounds, on a failure the knight suffers a core meltdown in 1d5 rounds(rolled by the GM). You may retry the tech-use test each round.";
             overheatFlavor="Core Meltdown";
         }
-        let chatOverheat={user: game.users.current,
+        let chatOverheat={author: game.users.current,
                           speaker:{user: game.users.current},
                           content:overheatResult,
                           classes:["fortyk"],
-                          flavor:overheatFlavor,
-                          author:game.users.current.id
+                          flavor:overheatFlavor
                          }
 
         await ChatMessage.create(chatOverheat,{});

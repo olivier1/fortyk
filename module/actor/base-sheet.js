@@ -39,6 +39,12 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.skillTraining=game.fortyk.FORTYK.skillTraining;
         data.psyDisciplines=game.fortyk.FORTYK.psychicDisciplines;
         data.psykerTypes=game.fortyk.FORTYK.psykerTypes;
+        if(this.actor.itemTypes.eliteAdvance.length){
+          data.eliteAdvances=this.actor.itemTypes.eliteAdvance;  
+        }else{
+           data.eliteAdvances=undefined; 
+        }
+        
         data.editable = this.options.editable;
         data.money=game.settings.get("fortyk","dhMoney");
         data.bcCorruption=game.settings.get("fortyk","bcCorruption");
@@ -76,7 +82,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         html.find('.maximal').click(this._onMaximalClick.bind(this));
         //handles lasmode select
         html.find('.lasMode').change(this._onLasModeChange.bind(this));
-
+        //toggles display of malice corruption input
+        html.find('.malice-secret').click(this._onMaliceClick.bind(this));
         //handles chaning armor
         html.find('.armor-select').change(this._onArmorChange.bind(this));
         //handles changing forcefield
@@ -284,6 +291,14 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
         await this.actor.update(update);
 
+    }
+    _onMaliceClick(event){
+        let malice=this.actor.getFlag("fortyk","malice");
+        if(malice){
+            this.actor.setFlag("fortyk","malice",false);
+        }else{
+           this.actor.setFlag("fortyk","malice",true); 
+        }
     }
     //Handle the popup when user clicks item name to show item description
     async _onItemDescrGet(event){
@@ -630,7 +645,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     }
     //handles firing mode change for las weapons
     async _onLasModeChange(event){
-        event.preventDefault;
+        event.preventDefault();
         const data=this.actor.system;
         let dataset=event.currentTarget.dataset;
 
@@ -677,7 +692,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         if(dataset["itemId"]){
             item=await this.actor.items.get(dataset["itemId"]);
             //ensure item is prepared
-            if(!item.system.isPrepared){
+            if(!item.isPrepared){
                 await item.prepareData();
             }
         }
@@ -692,8 +707,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             await FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
             return;
         }
-        let attackOptions={
-        }
+        let attackOptions={};
         let targets=game.user.targets;
         if(targets.size>0&&this.actor.type!=="spaceship"){
             let targetIt=targets.values();
@@ -796,7 +810,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 dmg+=actor.system.characteristics.s.bonus;
             }
             if(actor.getFlag("fortyk","versatile")&&actor.getFlag("fortyk","lethality")){
-                let damBonus
+                let damBonus;
                 if(actor.system.secChar.lastHit.type==="rangedAttack"){
                     if(actor.type==="vehicle"){
                         damBonus=Math.ceil(actor.system.crew.ws/20);
@@ -818,7 +832,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let options={dfa:dfa};
             options.dmg=dmg;
             let hits=actor.system.secChar.lastHit.hits;
-            if(!hits){hits=1};
+            if(!hits){hits=1;}
             options.hits=hits;
             let reroll=0;
             if(this.actor.getFlag("fortyk","wrothful")){
@@ -847,7 +861,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                             }else{
                                 //if user isnt GM use socket to have gm process the damage roll
                                 let targets=game.user.targets.ids;
-                                let lastHit=this.actor.system.secChar.lastHit
+                                let lastHit=this.actor.system.secChar.lastHit;
                                 let socketOp={type:"damageRoll",package:{formula:formula,actor:actor.id,fortykWeapon:fortykWeapon.id,hits:hits,magdmg:magdmg,pen:pen,user:game.user.id,lastHit:lastHit,targets:targets,rerollNum:rerollNum}};
                                 game.socket.emit("system.fortyk",socketOp);
                             }
@@ -856,7 +870,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     }
                 },
                 default: "submit",
-                width:100}).render(true)
+                width:100}).render(true);
                                              });
         }else if(dataset.formula){
             let roll = new Roll(dataset.formula, this.actor.system);
@@ -881,11 +895,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let actor=this.actor;
         let oldTargets=game.user.targets;
         let options={dfa:false};
-        let hits 
-        let dmg 
-        let pen 
-        let magdmg
-        let rerollNum 
+        let hits;
+        let dmg;
+        let pen;
+        let magdmg;
+        let rerollNum; 
         options.dmg=0;
         options.blast=true;
         options.hits=1;
@@ -911,14 +925,13 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         magdmg = parseInt(Number($(el).find('input[name="magdmg"]').val()));
                         rerollNum = parseInt(Number($(el).find('input[name="reroll"]').val()));
                         if(dmg>0){
-                            formula.value+=`+${dmg}`
+                            formula.value+=`+${dmg}`;
                         }
-                        let chatBlast={user: game.user._id,
+                        let chatBlast={author: game.user._id,
                                        speaker:{actor,alias:actor.name},
                                        content:`Starting Blast weapon damage rolls`,
                                        classes:["fortyk"],
-                                       flavor:`Blast Weapon Damage`,
-                                       author:actor.id};
+                                       flavor:`Blast Weapon Damage`};
                         await ChatMessage.create(chatBlast,{});
                         if(game.user.isGM){
                             for(let i=0; i<targets.length;i++){
@@ -932,21 +945,20 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
                                         targetNames+=token.name;
                                     }else if(j===targetTokens.length-2){
-                                        targetNames+=token.name+" and "
+                                        targetNames+=token.name+" and ";
                                     }else{
-                                        targetNames+=token.name+", " 
+                                        targetNames+=token.name+", "; 
                                     }
                                 }
                                 if(curTargets.length!==0){
 
                                     game.user.updateTokenTargets(curTargets);
 
-                                    let chatBlast2={user: game.user._id,
+                                    let chatBlast2={author: game.user._id,
                                                     speaker:{actor,alias:actor.name},
                                                     content:`Template #${i+1} hits `+targetNames,
                                                     classes:["fortyk"],
-                                                    flavor:`Blast Weapon Damage`,
-                                                    author:actor.id};
+                                                    flavor:`Blast Weapon Damage`};
                                     await ChatMessage.create(chatBlast2,{});
                                     await FortykRolls.damageRoll(formula,actor,weapon,hits,false,false,magdmg,pen,rerollNum); 
                                     game.user.updateTokenTargets();

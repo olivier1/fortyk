@@ -536,12 +536,11 @@ export class CreateRepairEntryDialog extends Application {
             let note=await SimpleCalendar.api.addNote(`${knight.name} repairs`, description, formattedTime, formattedTime, true, false, ["Repairs"], calendar.id, '', ["default"], [game.user.id]);
             update["system.calendar.noteId"]=note.id;
             updateEntry.update(update);
-            let chatMsg={user: game.user._id,
+            let chatMsg={author: game.user._id,
                          speaker:{house,alias:game.user.character.name},
                          content:description,
                          classes:["fortyk"],
-                         flavor:`Added repairs for ${knight.name}, Total Cost:${cost}`,
-                         author:game.user.character.id};
+                         flavor:`Added repairs for ${knight.name}, Total Cost:${cost}`};
             await ChatMessage.create(chatMsg,{});
 
         }else{
@@ -599,12 +598,11 @@ export class CreateRepairEntryDialog extends Application {
                 await entryItem.update({"system.calendar.noteId":note.id});
             }
             await house.update(houseUpdates);
-            let chatMsg={user: game.user._id,
+            let chatMsg={author: game.user._id,
                          speaker:{house,alias:game.user.character.name},
                          content:description,
                          classes:["fortyk"],
-                         flavor:`Created repair entry for ${knight.name}, Total Cost:${cost}`,
-                         author:game.user.character.id};
+                         flavor:`Created repair entry for ${knight.name}, Total Cost:${cost}`};
             await ChatMessage.create(chatMsg,{});
         }
 

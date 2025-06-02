@@ -14,7 +14,7 @@
             <div class="descrRow flexcol">
                 <span class="descrSpan">Race:</span>
                 <select class="raceSelect" name="system.race.value" data-dtype="String">
-                   {{selectOptions races selected=system.race.value valueAttr="value" labelAttr="value"}}
+                    {{selectOptions races selected=system.race.value valueAttr="value" labelAttr="value"}}
                 </select>
 
             </div>
@@ -64,8 +64,18 @@
         </div>
         <div class="eliteAdvances flexcol">
             <div>
+                {{#if eliteAdvances}}
                 <span class="descrSpan">Elite Advances:</span>
-                <input type="text" class="combat-resources" data-target="system.eliteAdvances.value" value="{{system.eliteAdvances.value}}" data-dtype="String"/>
+                <div class="flexrow">
+
+                    {{#each eliteAdvances}}
+                    <div class="flexrow advanceElite">
+                        <u>{{name}}</u>
+                        <a class="list-button item-delete" title="Delete" data-item-id="{{id}}"></a>
+                    </div>
+                    {{/each}}
+                </div>
+                {{/if}}
                 <div>
                     <span class="descrSpan">Divination:</span>
                     <input type="text" class="combat-resources" data-target="system.divination.value" value="{{system.divination.value}}" data-dtype="String"/>
@@ -170,7 +180,7 @@
                 {{#unless (compareString key "inf")}}
 
                 <select class="charSelect" name="system.characteristics.{{key}}.advance" data-dtype="Number">
-                     {{selectOptions ../advances selected=char.advance valueAttr="value" labelAttr="label"}}
+                    {{selectOptions ../advances selected=char.advance valueAttr="value" labelAttr="label"}}
                 </select>
                 {{/unless}}
                 {{/each}}

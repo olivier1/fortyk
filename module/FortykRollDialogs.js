@@ -859,7 +859,7 @@ export class FortykRollDialogs{
                             addLabel=html.find('input[name="guarded"]')[0].attributes["label"].value+" "+addLabel;
                         }
                         if(html.find('input[name="overwatch"]').is(':checked')){
-                            addLabel=  html.find('input[name="overwatch"]')[0].attributes["label"].value+" "+addLabel
+                            addLabel=  html.find('input[name="overwatch"]')[0].attributes["label"].value+" "+addLabel;
                         }
                         testLabel=addLabel+" "+ testLabel;
 
@@ -900,16 +900,16 @@ export class FortykRollDialogs{
                         await item.update({"system.clip.value":curAmmo-rof});
 
                         //convert unchosen checkboxes into 0s
-                        if(isNaN(running)){running=0}else{ modifierTracker.push({"value":`${running}`,"label":`Running Target Modifier`});}
-                        if(isNaN(guarded)){guarded=0}else{ modifierTracker.push({"value":`${guarded}`,"label":`Guarded Action Modifier`});}
-                        if(isNaN(overwatch)){overwatch=0}else{ modifierTracker.push({"value":`${overwatch}`,"label":`Overwatch Action Modifier`});}
-                        if(isNaN(prone)){prone=0}else{ modifierTracker.push({"value":`${prone}`,"label":`Prone Target Modifier`});}
-                        if(isNaN(high)){high=0}else{ modifierTracker.push({"value":`${high}`,"label":`Higher Ground Modifier`});}
-                        if(isNaN(surprised)){surprised=0}else{ modifierTracker.push({"value":`${surprised}`,"label":`Surprised Target Modifier`});}
-                        if(isNaN(stunned)){stunned=0}else{ modifierTracker.push({"value":`${stunned}`,"label":`Stunned Target Modifier`});}
-                        if(isNaN(concealed)){concealed=0}else{ modifierTracker.push({"value":`${concealed}`,"label":`Concealed Target Modifier`});}
-                        if(isNaN(other)){other=0}else{modifierTracker.push({"value":`${other}`,"label":`Other Modifiers`});}
-                        if(isNaN(melee)){melee=0}else{ modifierTracker.push({"value":`${melee}`,"label":`Melee Modifier`});} 
+                        if(isNaN(running)){running=0;}else{ modifierTracker.push({"value":`${running}`,"label":`Running Target Modifier`});}
+                        if(isNaN(guarded)){guarded=0;}else{ modifierTracker.push({"value":`${guarded}`,"label":`Guarded Action Modifier`});}
+                        if(isNaN(overwatch)){overwatch=0;}else{ modifierTracker.push({"value":`${overwatch}`,"label":`Overwatch Action Modifier`});}
+                        if(isNaN(prone)){prone=0;}else{ modifierTracker.push({"value":`${prone}`,"label":`Prone Target Modifier`});}
+                        if(isNaN(high)){high=0;}else{ modifierTracker.push({"value":`${high}`,"label":`Higher Ground Modifier`});}
+                        if(isNaN(surprised)){surprised=0;}else{ modifierTracker.push({"value":`${surprised}`,"label":`Surprised Target Modifier`});}
+                        if(isNaN(stunned)){stunned=0;}else{ modifierTracker.push({"value":`${stunned}`,"label":`Stunned Target Modifier`});}
+                        if(isNaN(concealed)){concealed=0;}else{ modifierTracker.push({"value":`${concealed}`,"label":`Concealed Target Modifier`});}
+                        if(isNaN(other)){other=0;}else{modifierTracker.push({"value":`${other}`,"label":`Other Modifiers`});}
+                        if(isNaN(melee)){melee=0;}else{ modifierTracker.push({"value":`${melee}`,"label":`Melee Modifier`});} 
                         modifierTracker.push({"value":`${attackTypeBonus}`,"label":`${attacklabel} Attack Modifier`});
                         modifierTracker.push({"value":`${aimBonus}`,"label":`${aimType} Aim Modifier`});
                         modifierTracker.push({"value":`${visibilityBonus}`,"label":`${visibilityType} Visibility Modifier`});
@@ -986,7 +986,7 @@ export class FortykRollDialogs{
 
                             t: "cone",
 
-                            user: game.userId,
+                            author: game.userId,
 
                             distance: weapon.system.range.value,
 
@@ -1068,15 +1068,15 @@ export class FortykRollDialogs{
                         messageContent+=`<div>Selected targets may attempt to evade if they have a reaction remaining and have enough movement from their half-move to exit the attack's area of effect.</div>`
                         game.user.updateTokenTargets(updatedtargets);
                         game.user.broadcastActivity({targets:updatedtargets});
-                        let chatOptions={user: game.user._id,
+                        let chatOptions={author: game.user._id,
                                          speaker:{actor,alias:actor.name},
                                          type: CONST.CHAT_MESSAGE_TYPES.ROLL,
                                          rolls: rolls,
                                          content:messageContent,
                                          classes:["fortyk"],
                                          sound:"sounds/dice.wav",
-                                         flavor:`Spray Attack result`,
-                                         author:actor.id}
+                                         flavor:`Spray Attack result`
+                                         }
                         await ChatMessage.create(chatOptions,{});
                         if(!psy){
                             await weapon.update({"system.clip.value":ammo-1});
@@ -1111,7 +1111,7 @@ export class FortykRollDialogs{
 
                             t: "cone",
 
-                            user: game.userId,
+                            author: game.userId,
 
                             distance: weapon.system.range.value,
 
@@ -1193,15 +1193,14 @@ export class FortykRollDialogs{
                         messageContent+=`<div>Selected targets may attempt to evade if they have a reaction remaining and have enough movement from their half-move to exit the attack's area of effect.</div>`
                         game.user.updateTokenTargets(updatedtargets);
                         game.user.broadcastActivity({targets:updatedtargets});
-                        let chatOptions={user: game.user._id,
+                        let chatOptions={author: game.user._id,
                                          speaker:{actor,alias:actor.name},
                                          type: CONST.CHAT_MESSAGE_TYPES.ROLL,
                                          rolls: rolls,
                                          content:messageContent,
                                          classes:["fortyk"],
                                          sound:"sounds/dice.wav",
-                                         flavor:`Spray Attack result`,
-                                         author:actor.id}
+                                         flavor:`Spray Attack result`}
                         await ChatMessage.create(chatOptions,{});
                         if(!psy){
                             await weapon.update({"system.clip.value":ammo-1});

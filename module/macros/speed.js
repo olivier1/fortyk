@@ -1,47 +1,40 @@
+let screenTop = window.innerHeight - 400;
+let screenLeft = (window.innerWidth * .05);
+
+async function rollFormula(formula) {
+ let roll = await new Roll(formula).evaluate();
+ roll.toMessage();
+}
+
+let options = `
+<div style="display:inline; float:left;width: 30%;margin-right:15px;text-align:center;" >
+    <label for="output-diceQuantity">Number of dice:</label>
+    <input id="output-diceQuantity" type="number" value="1" />
+</div>
+
+
+`;
+ 
 new Dialog({
-    title: "Speed Modifier",
-    content: `<div><label>Modifier:</label> <input id="speed" type="text" name="speed" value="0" autofocus/></div>`,
-    buttons: {
-        submit: {
-            label: 'OK',
-            callback: async(html) => {
-                let speed = $(html).find('input[name="speed"]').val();
-                console.log(speed)
-
-                let aeData={};
-                aeData.id="speed";
-                aeData.label= "Speed";
-                aeData.icon= "systems/fortyk/icons/speed.png";
-
-
-
-                aeData.flags= { core: { statusId: "speed" } }
-                aeData.duration={
-
-                    rounds:0
-                };
-                aeData.changes=[
-                    {key: "system.evasion", value: speed, mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD}            
-                ]
-                for(let target of canvas.tokens.controlled){
-
-                    let actor
-                    if(token instanceof Token){
-                        actor=token.actor;
-                    }else{
-                        actor=token;
-                    }
-                    await actor.createEmbeddedDocuments("ActiveEffect",[aeData]);
-                }
-            }
-        }
-    },
-    default: "submit",
-
-
-    width:100,
-    render: (html)=>{
-        console.log("hi")
-        html.find('input[name="speed"]').focus()
-    }}
-          ).render(true);
+ title: `Die Roller`,
+ content: `<form>${options}</form>`,
+ buttons: {
+  
+  d6: {
+    label: `<div class="dnd5e chat-card"><header class="card-header flexrow"><h3 style="text-align:center;"><b><img src="icons/svg/d6-grey.svg" width="72;" /> D6</b></h3></header></div>`,
+    callback: (html) => {
+      let numDie = html.find("input[id='output-diceQuantity']").val();
+      let modifier = html.find("input[id='output-modifier']").val();
+      let dieSize = "d6";
+      rollFormula(`${numDie}${dieSize}cs>=4`);
+    }
+  },
+  
+ },
+ default: '',
+ render: (html)=>{
+        console.log(html)
+        html.find("input[id='output-diceQuantity']").select();}
+},
+           {height:220,width:550,left:screenLeft,top:screenTop
+    }).render(true);

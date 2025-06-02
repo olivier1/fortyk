@@ -907,6 +907,12 @@ FORTYK.weaponFlags={
         "label": "Vengeful",
         "description": "These weapons seemingly embody the Emperor’s wrath, and eagerly strike down any who would stand against His servants. When attacking with this weapon, the attacker triggers Righteous Fury (see page 227) on any damage die result with a value of X or higher (before any modifiers are applied)."
     },
+    "vicious": {
+        "value": false,
+        "num": 0,
+        "label": "Vicious",
+        "description": "Weapons such as this have a propensity to exploit weaknesses and score devastating blows. When scoring a Righteous Fury with a weapon with this quality, the attack deals additional damage equal to Xd10 where X equals the rating of this quality."
+    },
     "volkite": {
         "value": false,
         "label": "Volkite",

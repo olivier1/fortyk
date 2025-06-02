@@ -124,12 +124,11 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
                             let money=item.system.cost.value;
                             //await this.actor.update({"system.wealth.value":this.actor.system.wealth.value+money});
                             
-                            let chatMsg={user: game.user._id,
+                            let chatMsg={author: game.user._id,
                                          speaker:{house,alias:house.name},
                                          content:item.system.description.value,
                                          classes:["fortyk"],
-                                         flavor:`Deleted repair entry for ${knight.name}, ${money} Imperial bonds are refunded`,
-                                         author:house.id};
+                                         flavor:`Deleted repair entry for ${knight.name}, ${money} Imperial bonds are refunded`};
                             await ChatMessage.create(chatMsg,{});
                             await this.actor.deleteEmbeddedDocuments("Item",[itemId]);
 

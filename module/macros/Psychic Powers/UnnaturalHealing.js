@@ -10,12 +10,11 @@ healing+=narthRoll._total;
 let targetIds=scope.targets;
 let targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
 for(const target of targets){
-    let chatFirstAid={user: game.users.current,
+    let chatFirstAid={author: game.users.current,
                       speaker:{user: game.users.current},
                       content:"",
                       classes:["fortyk"],
-                      flavor:`Endurance healing on ${target.name}`,
-                      author:game.users.current.id
+                      flavor:`Endurance healing on ${target.name}`
                      }
     chatFirstAid.content=`${actor.name} successfully healed ${target.name} for ${healing} wounds!`;
     let targetActor=target.actor;

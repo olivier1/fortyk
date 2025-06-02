@@ -619,7 +619,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             expand=true;
         }
 
-        let type=header.attributes["name"].value 
+        let type=header.attributes["name"].value; 
         this.document[type]=expand;
         let components=document.getElementsByClassName(type);
         for(let i=0;i<components.length;i++){
@@ -816,12 +816,11 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
             }
         }
-        let chatMeld={user: game.users.current,
+        let chatMeld={author: game.users.current,
                       speaker:{user: game.users.current},
                       content:meldContent,
                       classes:["fortyk"],
-                      flavor:meldFlavor,
-                      author:game.users.current.id
+                      flavor:meldFlavor
                      };
 
         await ChatMessage.create(chatMeld,{});
@@ -1466,12 +1465,11 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             overheatResult="Roll a +0 tech-use test as a full action, on a success your knight is stunned for 1d5 rounds, on a failure the knight suffers a core meltdown in 1d5 rounds(rolled by the GM). You may retry the tech-use test each round.";
             overheatFlavor="Core Meltdown";
         }
-        let chatOverheat={user: game.users.current,
+        let chatOverheat={author: game.users.current,
                           speaker:{user: game.users.current},
                           content:overheatResult,
                           classes:["fortyk"],
-                          flavor:overheatFlavor,
-                          author:game.users.current.id
+                          flavor:overheatFlavor
                          }
 
         await ChatMessage.create(chatOverheat,{});
