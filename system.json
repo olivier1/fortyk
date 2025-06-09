@@ -367,6 +367,30 @@
       "flags": {}
     },
     {
+      "label": "Wargear (Beta)",
+      "type": "Item",
+      "name": "wargear-beta",
+      "path": "packs/wargear-beta",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "label": "Elite Advances",
+      "type": "Item",
+      "name": "elite-advances",
+      "path": "packs/elite-advances",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
       "label": "Psychic Powers",
       "type": "Item",
       "name": "psychic-powers",
@@ -404,7 +428,8 @@
           "packs": [
             "wargear",
             "psychic-powers",
-            "skills"
+            "skills",
+            "elite-advances"
           ],
           "folders": [
             {

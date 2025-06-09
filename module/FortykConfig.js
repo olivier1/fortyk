@@ -174,7 +174,7 @@ FORTYK.rangedWeaponTypes=[{value:"Bolt"},{value:"Grenade"}, {value:"Flame"}, {va
 FORTYK.rangedWeaponClasses=[{value:"Basic"},{value:"Pistol"}, {value:"Heavy"}, {value:"Thrown"}, {value:"Titanic Ranged Weapon"}, {value:"Titanic Artillery Weapon"}];
 FORTYK.meleeWeaponClasses=[{value:"Melee"}, {value:"Melee Two-handed"}, {value:"Shield"}, {value:"Titanic Melee Weapon"}];
 FORTYK.psychicPowerTypes=[{value:"Psychic Bolt"}, {value:"Psychic Barrage"}, {value:"Psychic Storm"}, {value:"Psychic Blast"}, {value:"Buff/Debuff"}, {value:"Other"}, {value:"Macro"}];
-FORTYK.psychicDisciplines=[{value:"Biomancy"}, {value:"Chronomancy"},{value:"Divination"},{value:"Pyromancy"},{value:"Telekinesis"},{value:"Telepathy"},{value:"Sanctic Daemonology"},{value:"Malefic Daemonology"},{value:"Tzeench"},{value:"Slaanesh"},{value:"Nurgle"},{value:"Chapter"},{value:"WAAAGH!"},{value:"Navigator"}];
+FORTYK.psychicDisciplines=[{value:"Biomancy"}, {value:"Chronomancy"},{value:"Divination"},{value:"Pyromancy"},{value:"Telekinesis"},{value:"Telepathy"},{value:"Sanctic Daemonology"},{value:"Malefic Daemonology"},{value:"Tzeench"},{value:"Slaanesh"},{value:"Nurgle"},{value:"Chapter"},{value:"Grey Knights"},{value:"WAAAGH!"},{value:"Navigator"}];
 FORTYK.spaceshipWeaponLocations=[{value:"Dorsal"},{value:"Prow"},{value:"Keel"},{value:"Port"},{value:"Starboard"}];
 FORTYK.outpostTypes=[{value:"Outpost"},{value:"Enclave"},{value:"Stronghold"}];
 FORTYK.knightComponentTypes=[{"value":"rangedWeapon","label":"Ranged Weapons"},{"value":"meleeWeapon","label":"Melee Weapons"},{"value":"auxiliaryWeapon","label":"Auxiliary Weapons"},{"value":"ammunition","label":"Ammunition"},{"value":"knightArmor","label":"Armors"},{"value":"knightCore","label":"Cores"},{"value":"knightStructure","label":"Structure"},{"value":"forceField","label":"Force Fields"},{"value":"gyro","label":"Gyros"},{"value":"sensor","label":"Sensors"},{"value":"throne-mod","label":"Throne Modifications"},{"value":"plating","label":"Platings"},{"value":"core-mod","label":"Core Modifications"},{"value":"arm-actuator","label":"Arm Actuators"},{"value":"leg-actuator","label":"Leg Actuators"},{"value":"other","label":"Other Components"}];
@@ -453,7 +453,7 @@ FORTYK.spaceshipCargoTypes=[{value:"Food Supplies"},{value:"Unrefined Materials"
 FORTYK.spaceshipComponentStatuses=[{value:"Online"}, {value:"Damaged"}, {value:"Destroyed"}];
 FORTYK.spaceshipSquadronTypes=["Fighter","Bomber","Assault Boat","Civilian"];
 FORTYK.aptitudes=[{"key":"weaponskill","label":"Weapon Skill"}, {"key":"ballisticskill","label":"Ballistic Skill"}, {"key":"strength","label":"Strength"},{"key":"toughness","label":"Toughness"} ,{"key":"agility","label":"Agility"} ,{"key":"intelligence","label": "Intelligence"},{"key":"perception","label":"Perception"} ,{"key":"willpower","label":"Willpower"} ,{"key":"fellowship","label":"Fellowship"} ,{"key":"offence","label":"Offence"} ,{"key":"finesse","label":"Finesse"} ,{"key":"defence","label":"Defence"} ,{"key":"tech","label":"Tech"},{"key":"knowledge","label":"Knowledge"} ,{"key":"leadership","label":"Leadership"} ,{"key":"fieldcraft","label":"Fieldcraft"} ,{"key":"social","label":"Social"} ,{"key":"psyker","label":"Psyker"}];
-FORTYK.advancementTypes=[{value:"Custom"},{value:"Characteristic Upgrade"},{value:"Skill Upgrade"},{value:"New Skill"}, {value:"Talent"}];
+FORTYK.advancementTypes=[{value:"Custom"},{value:"Characteristic Upgrade"},{value:"Skill Upgrade"},{value:"New Skill"}, {value:"Talent"}, {value:"Elite Advance"}];
 //For costs put the number of matching aptitudes into the array, then whatever other parameter
 FORTYK.characteristicUpgradeCosts=[{"5":500,"10":750,"15":1000,"20":1500,"25":2500},
                                    {"5":250,"10":500,"15":750,"20":1000,"25":1500},
@@ -627,7 +627,7 @@ FORTYK.weaponFlags={
     "graviton": {
         "value": false,
         "label": "Graviton",
-        "description": "Graviton weapons alter the target’s local gravity field, transforming protective armour into crushing force. When a weapon with the Graviton quality hits a target, it gives 2x of the target's AP in bonus damage. When damaging vehicles the weapon deals 1d10 damage ignoring armor and gains vengeful(9)."
+        "description": "Graviton weapons alter the target’s local gravity field, transforming protective armour into crushing force. When a weapon with the Graviton quality hits a target, it gives all of the target's AP in bonus damage. When damaging vehicles the weapon deals 1d10 damage ignoring armor and gains vengeful(9)."
     },
     "hallucinogenic": {
         "value": false,
@@ -655,6 +655,11 @@ FORTYK.weaponFlags={
         "value": false,
         "label": "Ignore Natural Armor",
         "description": "Some weapons ignore the natural armor of their targets. This weapon ignores the armor granted by the natural armor trait."
+    },
+    "ignorePsychichArmor": {
+        "value": false,
+        "label": "Ignore Psychic Armor",
+        "description": "Some weapons ignores psychic defenses. This weapon ignores any AP granted by a psychic power or effect."
     },
     "ignoreSoak": {
         "value": false,

@@ -1,0 +1,24 @@
+<div class="tntselect flexcol">
+    <div class="tntgrid grid grid-9col">
+        <span class="tntcheckbox tntheaderitem">Add</span>
+        <span class="tntname tntheaderitem">Name</span>
+        <span class="tntprereqs tntheaderitem">Prerequisites</span>
+        <span class="tntdescr tntheaderitem">Cost</span>
+        <span class="tntdescr tntheaderitem">Descr</span>
+
+        {{#each eliteAdvances}}
+      
+   
+        <div class="tntitem" name="tntEntry"><input type="radio" class="elitecheckbox" name="elite-choice"  data-compendium="fortyk.elite-advances" value="{{this.id}}"></div>
+
+        <span name="tntEntry" class="tntname tntitem">{{this.name}}</span>
+        <span name="tntEntry" class="tntprereqs tntitem">{{this.system.requirements}}</span>
+        <span name="tntEntry" class="tntdescr tntitem">{{this.system.cost.value}}xp</span>
+        <a name="tntEntry" class="tntdescr tntitem tntdescr-button tnt-desscription" data-name="{{this.name}}" data-description="{{this.system.description.value}}">Descr</a>
+        {{/each}}
+    </div>
+</div>
+    <div class="flexcol">
+    <span>Discount:</span>
+    <input id="discount" class="discount" type="text"  value="0">
+</div>

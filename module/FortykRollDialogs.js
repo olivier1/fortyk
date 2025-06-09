@@ -27,7 +27,7 @@ export class FortykRollDialogs{
         const actor=game.actors.get(dataset["actor"]);
 
         const weapon=actor.getEmbeddedDocument("Item",dataset["weapon"]);
-        console.log(dataset,actor,weapon);
+
         let newWeapon=weapon.clone();
         const formula=weapon.system.damageFormula;
         newWeapon.system.pen.value=0;
@@ -127,7 +127,6 @@ export class FortykRollDialogs{
                                     }
                                 }
                             }
-                            console.log(testLabel)
                             FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, reroll);
                         }
 
@@ -168,7 +167,7 @@ export class FortykRollDialogs{
     }
     //handles the melee attack dialog WHEW
     static async callMeleeAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
-        console.log(testTarget)
+
         let itemData=item;
         let template="systems/fortyk/templates/actor/dialogs/melee-attack-dialog.html";
         let templateOptions={};
@@ -278,6 +277,9 @@ export class FortykRollDialogs{
             if(!actor.getFlag("fortyk","blindfight")&&tarActor.getFlag("fortyk","invisible")){
                 miscMods+=parseInt(tarActor.getFlag("fortyk","invisible"));
                 modifierTracker.push({"value":tarActor.getFlag("fortyk","invisible"),"label":"Invisible"});
+            }
+            if(!actor.getFlag("fortyk","blindfight")&&tarActor.getFlag("fortyk","dark")){
+                templateOptions.options.targetDark=true;
             }
             if(tarActor.type==="vehicle"){
                 vehicle=true;
@@ -530,7 +532,6 @@ export class FortykRollDialogs{
 
         let rofFull=parseInt(item.system.rof[2].value);
         let canShoot=false;
-        console.log("hi")
         if(parseInt(rofSingle)===0||rofSingle==="-"){
             templateOptions["single"]=false;
         }else{
@@ -665,6 +666,9 @@ export class FortykRollDialogs{
             let target=targets.values().next().value;
             let tarActor=target.actor;
             let tar=tarActor;
+            if(tarActor.getFlag("fortyk","dark")){
+                templateOptions.options.targetDark=true;
+            }
             if(tarActor.type==="vehicle"){
                 vehicle=true;
                 templateOptions.vehicle=true;
@@ -974,10 +978,14 @@ export class FortykRollDialogs{
                   ).render(true);
     }
     static async callSprayAttackDialog(actor, testLabel, weapon, options,sheet, title="Enter test modifier"){
-
+        let modifier=0;
+        if(actor.getFlag("fortyk","psyboltattunement")&&weapon.getFlag("fortyk","force")){
+            let pr=actor.system.psykana.pr.effective;
+            modifier-=pr*5;
+        }
         new Dialog({
             title: title,
-            content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="0" autofocus/></p>`,
+            content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="${modifier}" autofocus/></p>`,
             buttons: {
                 submit: {
                     label: 'OK',
@@ -1007,7 +1015,6 @@ export class FortykRollDialogs{
                         sheet.minimize();
                         await template.drawPreview();
                         sheet.maximize();
-                        console.log(template, templateDoc)
 
                         let scene=game.canvas.scene;
                         let targets=this.getSprayTargets(template,scene, actor)[0];
@@ -1076,7 +1083,7 @@ export class FortykRollDialogs{
                                          classes:["fortyk"],
                                          sound:"sounds/dice.wav",
                                          flavor:`Spray Attack result`
-                                         }
+                                        }
                         await ChatMessage.create(chatOptions,{});
                         if(!psy){
                             await weapon.update({"system.clip.value":ammo-1});
@@ -1132,7 +1139,6 @@ export class FortykRollDialogs{
                         sheet.minimize();
                         await template.drawPreview();
                         sheet.maximize();
-                        console.log(template, templateDoc)
 
                         let scene=game.canvas.scene;
                         let targets=this.getSprayTargets(template,scene, actor)[0];
@@ -1244,9 +1250,8 @@ export class FortykRollDialogs{
             if(!isTargetted){
                 isTargetted=FortykRollDialogs.rectangleIntersectsPolygon(bounds,tokenBounds);
             }
-            if(isTargetted){targetted.push(token.id)}
+            if(isTargetted){targetted.push(token.id);}
 
-            //console.log(bounds.overlaps(tokenBounds))
             /*if(bounds.overlaps(tokenBounds)){
                     targetted.push(token.id);
                 }*/
@@ -1256,7 +1261,7 @@ export class FortykRollDialogs{
         return targets;
     }
     static rectangleIntersectsPolygon(polygon,rectangle){
-        console.log(polygon,rectangle)
+
         let lineIntersect=function(rectangle, polygon, index){
 
             let points=polygon.points;

@@ -104,7 +104,6 @@ export class FortykTemplate extends MeasuredTemplate {
     const center = event.data.getLocalPosition(this.layer);
     const interval = canvas.grid.type === CONST.GRID_TYPES.GRIDLESS ? 0 : 2;
     const snapped = canvas.grid.getSnappedPoint({x:center.x, y:center.y}, {mode:interval});
-   console.log(snapped)
     this.document.updateSource({x: snapped.x, y: snapped.y});
     this.refresh();
     this.#moveTime = now;

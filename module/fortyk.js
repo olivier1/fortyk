@@ -280,7 +280,7 @@ Hooks.once('ready', async function() {
                     formula=await data.package.formula;
                     actor=await game.actors.get(data.package.actor);
                     fortykWeapon=actor.getEmbeddedDocument("Item",data.package.fortykWeapon);
-                    if(!fortykWeapon.isPrepared){
+                    if(!fortykWeapon.system.isPrepared){
                         fortykWeapon.prepareData();
                     }
                     targetIds=data.package.targets;
@@ -461,12 +461,11 @@ Hooks.once('ready', async function() {
                     
                     id=data.package.tokenId;
                     token=canvas.tokens.get(id);
-                    console.log(token)
                     let rotation=parseInt(data.package.angle);
                     let lightId=await tokenAttacher.getAllAttachedElementsByTypeOfToken(token, "AmbientLight")[0];
-                    console.log(lightId);
+                  
                     let lightObj=game.canvas.lighting.get(lightId);
-                    console.log(lightObj);
+                 
                     let lightData=foundry.utils.duplicate(lightObj.document);
 
                     tokenAttacher.detachElementFromToken(lightObj, token, true);
@@ -474,10 +473,8 @@ Hooks.once('ready', async function() {
 
                     let tokenRotation=token.document.rotation;
                     
-                    console.log(rotation,tokenRotation)
                     rotation+=tokenRotation;
                     lightData.rotation=rotation;
-                    console.log(rotation,lightData.rotation)
                     let newLights=await game.canvas.scene.createEmbeddedDocuments("AmbientLight",[lightData]);
 
                     let newLight=newLights[0];
@@ -1232,7 +1229,7 @@ Hooks.on("updateCombat", async (combat) => {
                                     }
                                     componentUpdate["system.amount.taken"]=newAmt;
                                     let loans=component.system.loaned;
-                                    console.log(loans)
+                                  
                                     let newLoans=loans.filter(loan=>loan.knightId!==knight.id&&item.id!==loan.itemId);
                                     componentUpdate["system.loaned"]=newLoans;
                                     await component.update(componentUpdate);
@@ -1281,7 +1278,7 @@ Hooks.on("updateCombat", async (combat) => {
                             }
 
                             let array=objectByString(chassis,path).map(function(id){if(id===item.id){return ""}});
-                            console.log(array)
+                           
 
                             let chassisUpdate={};
                             chassisUpdate[path]=array;
@@ -1318,7 +1315,7 @@ Hooks.on("updateCombat", async (combat) => {
 
                     let queue=house.system.repairBays.queue;
                     let newCurrent=currentRepairIds.filter(function(id){return id!==repairId});
-                    console.log(newCurrent)
+               
                     if(queue.length>0){
                         newCurrent.push(queue.pop());
                         let newCurrentRepairId=newCurrent[newCurrent.length-1];

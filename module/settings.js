@@ -7,7 +7,7 @@ export const registerSystemSettings = function() {
     config: true,
     type: Boolean,
     default: true
-    })
+    });
     //Setting if the DM wants the game to obfuscate the damage dealt and taken
     game.settings.register("fortyk","privateDamage",{
         name: "Damage Report",
@@ -16,7 +16,7 @@ export const registerSystemSettings = function() {
     config: true,
     type: Boolean,
     default: true
-    })
+    });
     //Setting if the DM wants the game to obfuscate the perils of the warp results
     game.settings.register("fortyk","privatePerils",{
         name: "Perils Report",
@@ -25,7 +25,7 @@ export const registerSystemSettings = function() {
     config: true,
     type: Boolean,
     default: true
-    })
+    });
     //Setting to disable the money on dark heresy sheets
     game.settings.register("fortyk","dhMoney",{
         name: "Dark Heresy Money",
@@ -34,7 +34,7 @@ export const registerSystemSettings = function() {
     config: true,
     type: Boolean,
     default: true
-    })
+    });
     //Setting to enable split corruption for black crusade
     game.settings.register("fortyk","bcCorruption",{
         name: "Black Crusade Corruption",
@@ -43,5 +43,23 @@ export const registerSystemSettings = function() {
     config: true,
     type: Boolean,
     default: false
-    })
-}
+    });
+    //Setting to modify the deathwatch sheet for grey knights play
+    game.settings.register("fortyk","greyKnights",{
+        name: "Grey Knights",
+        hint: "Modify Deathwatch character sheets for Grey Knight use.",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false
+    });
+    //Setting to change the wound rules
+    game.settings.register("fortyk","alternateWounds",{
+        name: "Alternate Wounds Rules",
+        hint: "Changes maximum wounds to be equal to toughness bonus times willpower bonus.",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false
+    });
+};

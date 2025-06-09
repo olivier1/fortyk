@@ -28,7 +28,7 @@
             <div class="resource-content flexrow flex-center flex-between">
                 <input type="text" class="combat-resources" data-target="system.secChar.wounds.value" value="{{system.secChar.wounds.value}}" data-dtype="Number"/>
                 <span> / </span>
-                <input type="text" class="combat-resources" data-target="system.secChar.wounds.max" value="{{system.secChar.wounds.max}}" data-dtype="Number"/>
+                <input type="text" class="combat-resources" data-target="system.secChar.wounds.max" value="{{system.secChar.wounds.max}}" data-dtype="Number" {{#if alternateWounds}}disabled{{/if}}/>
             </div>
 
         </div>
@@ -589,7 +589,7 @@
                     </div>
                 </div>
                 <span class="section-title">Size</span>
-                <select class="sizeSelect" name="system.secChar.size.value" data-dtype="Number">
+                <select class="sizeSelect" name="system.secChar.size.value" data-dtype="Number" disabled>
                     {{selectOptions size selected=system.secChar.size.value valueAttr="index" labelAttr="name"}}
                 </select>
             </div>

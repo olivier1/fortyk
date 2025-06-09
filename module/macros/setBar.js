@@ -58,7 +58,6 @@ new Dialog({
     },
     default: "",
     render: (html)=>{
-        console.log(html)
         html.find("input[id='elevation']").select();},
 
 

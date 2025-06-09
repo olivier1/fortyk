@@ -76,7 +76,7 @@ export class FortyKItemSheet extends ItemSheet {
                 let items=await game.packs.get(this.chosenPack);
 
                 data.compendiumItems=await items.getDocuments();
-                console.log(data.compendiumItems);
+
                 data.compendiumItems.sort(function compare(a, b) {
                     let valueA=a.name;
                     let valueB=b.name;
@@ -145,7 +145,9 @@ export class FortyKItemSheet extends ItemSheet {
         let wargearDocuments=await wargear.getDocuments();
         let knightComponents=await game.packs.get("fortyk.knight-components");
         let knightComponentDocuments=await knightComponents.getDocuments();
-        let documents=wargearDocuments.concat(knightComponentDocuments);
+        let wargearbeta=await game.packs.get("fortyk.wargear-beta");
+        let wargearbetaDocuments=await wargearbeta.getDocuments();
+        let documents=wargearDocuments.concat(knightComponentDocuments,wargearbetaDocuments);
         documents.sort(function compare(a, b) {
             let valueA=a.name;
             let valueB=b.name;
@@ -175,7 +177,9 @@ export class FortyKItemSheet extends ItemSheet {
         let wargearDocuments=await wargear.getDocuments();
         let knightComponents=await game.packs.get("fortyk.knight-components");
         let knightComponentDocuments=await knightComponents.getDocuments();
-        let documents=wargearDocuments.concat(knightComponentDocuments);
+        let wargearbeta=await game.packs.get("fortyk.wargear-beta");
+        let wargearbetaDocuments=await wargearbeta.getDocuments();
+        let documents=wargearDocuments.concat(knightComponentDocuments,wargearbetaDocuments);
         documents.sort(function compare(a, b) {
             let valueA=a.name;
             let valueB=b.name;
@@ -260,7 +264,6 @@ export class FortyKItemSheet extends ItemSheet {
     _onAddItemClick(event){
         let bonuses=this.item.system.items;
         let bonus={"uuid":this.chosenItem,"name":this.chosenItemName};
-        console.log(bonus);
         bonuses.push(bonus);
         this.item.update({"system.items":bonuses});
         this.chosenItem=null;
@@ -303,7 +306,6 @@ export class FortyKItemSheet extends ItemSheet {
         event.preventDefault();
         const dataset=event.currentTarget.dataset;
         const uuid=event.currentTarget.value;
-        console.log(uuid);
         let index=dataset.index;
         let item=this.item;
         let profiles=item.getFlag("fortyk","profiles");
@@ -555,13 +557,9 @@ export class FortyKItemSheet extends ItemSheet {
 
         if(value!==""){
             let item=this.item;
-            console.log(item);
             if(item.system.hasChildren){
                 let children=this.actor.items.filter(item=>function(item){
-                    console.log(this);
-                    console.log(item);
                     return item.system.parent.value===this.item.system.name.value});
-                console.log(children);
                 for(let i of children){
                     await i.update({'system.parent.value':""});
 

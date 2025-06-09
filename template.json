@@ -117,15 +117,16 @@
             "characters": {
                 "skillmods": {},
                 "secChar": {
-                    "tempMod":{
-                        "value":0,
-                        "type":"Number"
+                    "tempMod": {
+                        "value": 0,
+                        "type": "Number"
                     },
                     "wounds": {
                         "type": "Number",
                         "min": -10,
                         "value": 10,
-                        "max": 10
+                        "max": 10,
+                        "bonus":0
                     },
                     "fatigue": {
                         "type": "Number",
@@ -144,11 +145,11 @@
                         "type": "Number",
                         "chars": "",
                         "mod": 0,
-                        "khorne":0,
-                        "nurgle":0,
-                        "slaanesh":0,
-                        "tzeentch":0,
-                        "malice":0
+                        "khorne": 0,
+                        "nurgle": 0,
+                        "slaanesh": 0,
+                        "tzeentch": 0,
+                        "malice": 0
                     },
                     "insanity": {
                         "type": "Number",
@@ -348,6 +349,7 @@
                         "value": 0,
                         "armor": 0,
                         "armorMod": 0,
+                        "psy":0,
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
@@ -358,6 +360,7 @@
                         "value": 0,
                         "armor": 0,
                         "armorMod": 0,
+                        "psy":0,
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
@@ -368,6 +371,7 @@
                         "value": 0,
                         "armor": 0,
                         "armorMod": 0,
+                        "psy":0,
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
@@ -378,6 +382,7 @@
                         "value": 0,
                         "armor": 0,
                         "armorMod": 0,
+                        "psy":0,
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
@@ -388,6 +393,7 @@
                         "value": 0,
                         "armor": 0,
                         "armorMod": 0,
+                        "psy":0,
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
@@ -398,6 +404,7 @@
                         "value": 0,
                         "armor": 0,
                         "armorMod": 0,
+                        "psy":0,
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
@@ -408,10 +415,10 @@
                 "psykana": {
                     "pr": {
                         "value": 0,
-                        "bonus":0,
+                        "bonus": 0,
                         "maxPush": 0,
                         "sustain": 0,
-                        "sustained":[],
+                        "sustained": [],
                         "effective": 0,
                         "type": "Number"
                     },
@@ -427,7 +434,7 @@
                         "value": 0,
                         "type": "Number"
                     },
-                    "disciplines":{}
+                    "disciplines": {}
                 },
                 "suddenDeath": {
                     "value": false,
@@ -441,8 +448,8 @@
                     "value": false,
                     "type": "Boolean"
                 },
-                "riding":{
-                    "id":""
+                "riding": {
+                    "id": ""
                 }
             },
             "player": {
@@ -458,7 +465,7 @@
                     "mod": 0,
                     "max": 0
                 },
-                "aptitudes": []
+                "aptitudes": {"0":"","1":"","2":"","3":"","4":"","5":"","6":"","7":""}
             }
         },
         "dwPC": {
@@ -493,13 +500,13 @@
                 "value": "",
                 "type": "String"
             },
-            "parry":{
-                "mod":0,
-                "total":0
+            "parry": {
+                "mod": 0,
+                "total": 0
             },
-            "dodge":{
-                "mod":0,
-                "total":0
+            "dodge": {
+                "mod": 0,
+                "total": 0
             }
         },
         "dhPC": {
@@ -547,11 +554,10 @@
                 "value": 0,
                 "income": 0
             },
-            "goal":{
-                "value":"",
-                "type":"String"
+            "goal": {
+                "value": "",
+                "type": "String"
             }
-
         },
         "owPC": {
             "templates": [
@@ -598,9 +604,9 @@
                 "sorting"
             ],
             "secChar": {
-                "tempMod":{
-                    "value":0,
-                    "type":"Number"
+                "tempMod": {
+                    "value": 0,
+                    "type": "Number"
                 },
                 "wounds": {
                     "value": 2,
@@ -617,11 +623,9 @@
                 "value": "green",
                 "type": "String"
             }
-
         },
         "owRegiment": {
             "templates": [
-
                 "sorting"
             ],
             "homeworld": {
@@ -639,27 +643,28 @@
                 "value": "",
                 "type": "String"
             },
-            "doctrines": [{
-                "value": "",
-                "type": "String"
-            },
-                          {
-                              "value": "",
-                              "type": "String"
-                          },
-                          {
-                              "value": "",
-                              "type": "String"
-                          },
-                          {
-                              "value": "",
-                              "type": "String"
-                          },
-                          {
-                              "value": "",
-                              "type": "String"
-                          }
-                         ],
+            "doctrines": [
+                {
+                    "value": "",
+                    "type": "String"
+                },
+                {
+                    "value": "",
+                    "type": "String"
+                },
+                {
+                    "value": "",
+                    "type": "String"
+                },
+                {
+                    "value": "",
+                    "type": "String"
+                },
+                {
+                    "value": "",
+                    "type": "String"
+                }
+            ],
             "drawback": {
                 "value": "None",
                 "type": "String"
@@ -687,14 +692,10 @@
                     "uB": 0,
                     "label": "Logistics"
                 }
-
             }
-
-
         },
         "spaceship": {
             "templates": [
-
                 "sorting"
             ],
             "name": {
@@ -797,7 +798,6 @@
         },
         "vehicle": {
             "templates": [
-
                 "sorting"
             ],
             "name": {
@@ -809,16 +809,16 @@
                 "type": "String"
             },
             "secChar": {
-                "tempMod":{
-                    "value":0,
-                    "type":"Number"
+                "tempMod": {
+                    "value": 0,
+                    "type": "Number"
                 },
                 "speed": {
                     "tactical": 0,
                     "cruising": 0,
-                    "motive":"O",
-                    "mod":0,
-                    "multi":1
+                    "motive": "O",
+                    "mod": 0,
+                    "multi": 1
                 },
                 "manoeuvrability": {
                     "value": 0,
@@ -829,11 +829,11 @@
                     "min": -10,
                     "value": 10,
                     "max": 10,
-                    "thresholds":{
-                        "1":0,
-                        "2":0,
-                        "3":0,
-                        "4":0
+                    "thresholds": {
+                        "1": 0,
+                        "2": 0,
+                        "3": 0,
+                        "4": 0
                     }
                 },
                 "attacks": {
@@ -946,76 +946,77 @@
                     "path": "lSide"
                 }
             },
-            "hasTurret":{
-                "value":false,
-                "type":"Boolean"
+            "hasTurret": {
+                "value": false,
+                "type": "Boolean"
             },
             "crew": {
                 "value": "",
                 "capacity": "",
                 "type": "String",
-                "pilotID":"",
+                "pilotID": "",
                 "rating": 30,
                 "ws": 30,
                 "bs": 30
             },
-            "description":{
-                "value":"",
-                "type":"String"
+            "description": {
+                "value": "",
+                "type": "String"
             },
-            "knight":{
-                "house":"",
-                "chassis":"",
-                "plating":"",
-                "sensor":"",
-                "coreMod":"",
-                "core":"",
-                "overload":0,
-                "structure":"",
-                "armor":"",
-                "forceField":"",
-                "armActuator":"",
-                "legActuator":"",
-                "throneMod":"",
-                "gyro":"",
-                "components":[""],
-                "spirit":"",
-                "operate":"operate:titanicwalker",
-                "heat":{
-                    "value":0,
-                    "cap":0,
-                    "mod":0,
-                    "max":0
+            "knight": {
+                "house": "",
+                "chassis": "",
+                "plating": "",
+                "sensor": "",
+                "coreMod": "",
+                "core": "",
+                "overload": 0,
+                "structure": "",
+                "armor": "",
+                "forceField": "",
+                "armActuator": "",
+                "legActuator": "",
+                "throneMod": "",
+                "gyro": "",
+                "components": [
+                    ""
+                ],
+                "spirit": "",
+                "operate": "operate:titanicwalker",
+                "heat": {
+                    "value": 0,
+                    "cap": 0,
+                    "mod": 0,
+                    "max": 0
                 }
             }
-
         },
-        "knightHouse":{
-            "wealth":{
-                "value":0,
-                "rating":0,
-                "income":0,
-                "type":"Number"
+        "knightHouse": {
+            "wealth": {
+                "value": 0,
+                "rating": 0,
+                "income": 0,
+                "type": "Number"
             },
-            "alliances":{
-                "houseType":"",
-                "recentAlliance":"",
-                "navigatorAlliance":"",
-                "highKing":""
+            "alliances": {
+                "houseType": "",
+                "recentAlliance": "",
+                "navigatorAlliance": "",
+                "highKing": ""
             },
-            "colors":{
-                "value":"",
-                "type":"String"
+            "colors": {
+                "value": "",
+                "type": "String"
             },
-            "repairBays":{
-                "value":0,
-                "cost":100,
-                "time":100,
-                "current":[],
-                "queue":[],
-                "type":"Number"
+            "repairBays": {
+                "value": 0,
+                "cost": 100,
+                "time": 100,
+                "current": [],
+                "queue": [],
+                "type": "Number"
             },
-            "knights":[]
+            "knights": []
         }
     },
     "Item": {
@@ -1055,7 +1056,6 @@
         ],
         "templates": {
             "weapon": {
-
                 "damageFormula": {
                     "value": "1d10",
                     "formula": "1d10",
@@ -1126,9 +1126,9 @@
             "equippable": {
                 "isEquipped": false
             },
-            "loanable":{
-                "originalId":"",
-                "loaned":[]
+            "loanable": {
+                "originalId": "",
+                "loaned": []
             },
             "physicalProp": {
                 "weight": {
@@ -1142,21 +1142,21 @@
                 },
                 "amount": {
                     "value": 1,
-                    "taken":0,
-                    "left":0,
+                    "taken": 0,
+                    "left": 0,
                     "type": "Number"
                 },
                 "quality": {
                     "value": "Common",
                     "type": "String"
                 },
-                "space":{
-                    "value":0,
-                    "type":"Number"
+                "space": {
+                    "value": 0,
+                    "type": "Number"
                 },
-                "state":{
-                    "value":"O",
-                    "type":"String"
+                "state": {
+                    "value": "O",
+                    "type": "String"
                 }
             },
             "tableEntry": {
@@ -1192,19 +1192,20 @@
                 "equippable",
                 "loanable"
             ],
-            "rof": [{
-                "value": "s",
-                "type": "String"
-            },
-                    {
-                        "value": 0,
-                        "type": "Number"
-                    },
-                    {
-                        "value": 0,
-                        "type": "Number"
-                    }
-                   ],
+            "rof": [
+                {
+                    "value": "s",
+                    "type": "String"
+                },
+                {
+                    "value": 0,
+                    "type": "Number"
+                },
+                {
+                    "value": 0,
+                    "type": "Number"
+                }
+            ],
             "clip": {
                 "value": 0,
                 "max": 0,
@@ -1237,7 +1238,7 @@
                 "value": true,
                 "type": "Boolean"
             },
-            "isFresh":true
+            "isFresh": true
         },
         "wargear": {
             "templates": [
@@ -1375,11 +1376,11 @@
                 "type": "String"
             },
             "cost": {
-                "value":0,
-                "type":"Number"
+                "value": 0,
+                "type": "Number"
             },
-            "macro":{
-                "id":""
+            "macro": {
+                "id": ""
             }
         },
         "skill": {
@@ -1630,214 +1631,224 @@
                 "type": "Boolean"
             }
         },
-        "knightCore":{
-            "templates":[
+        "knightCore": {
+            "templates": [
                 "description",
                 "physicalProp",
                 "equippable",
                 "loanable"
             ],
-            "name":{
-                "value":"",
-                "type":"String"
+            "name": {
+                "value": "",
+                "type": "String"
             },
-            "speed":{
-                "value":0,
-                "type":"Number"
+            "speed": {
+                "value": 0,
+                "type": "Number"
             },
-            "heatCap":{
-                "value":0,
-                "type":"Number"
+            "heatCap": {
+                "value": 0,
+                "type": "Number"
             }
         },
-        "knightArmor":{
-            "templates":[
+        "knightArmor": {
+            "templates": [
                 "description",
                 "physicalProp",
                 "equippable",
                 "loanable"
             ],
-            "name":{
-                "value":"",
-                "type":"String"
+            "name": {
+                "value": "",
+                "type": "String"
             },
-            "weightRatio":{
-                "value":0,
-                "type":"Number"
+            "weightRatio": {
+                "value": 0,
+                "type": "Number"
             },
-            "armor":{
-                "mod":1
+            "armor": {
+                "mod": 1
             }
         },
-        "knightStructure":{
-            "templates":[
+        "knightStructure": {
+            "templates": [
                 "description",
                 "physicalProp",
                 "equippable",
                 "loanable"
             ],
-            "name":{
-                "value":"",
-                "type":"String"
+            "name": {
+                "value": "",
+                "type": "String"
             },
-            "SI":{
-                "mod":1
+            "SI": {
+                "mod": 1
             },
-            "space":{
-                "mod":1
+            "space": {
+                "mod": 1
             }
         },
-        "knightComponent":{
-            "templates":[
+        "knightComponent": {
+            "templates": [
                 "description",
                 "physicalProp",
                 "equippable",
                 "loanable"
             ],
-            "type":{
-                "value":"",
-                "type":"String"
+            "type": {
+                "value": "",
+                "type": "String"
             }
         },
-        "knightChassis":{
-            "templates":[
+        "knightChassis": {
+            "templates": [
                 "description",
                 "equippable"
             ],
-            "structuralIntegrity":{
-                "value":0,
-                "type":"Number"
+            "structuralIntegrity": {
+                "value": 0,
+                "type": "Number"
             },
-            "tonnage":{
-                "value":0,
-                "type":"Number"
+            "tonnage": {
+                "value": 0,
+                "type": "Number"
             },
-            "space":{
-                "value":0,
-                "type":"Number"
+            "space": {
+                "value": 0,
+                "type": "Number"
             },
-            "armor":{
-                "value":0,
-                "type":"Number"
+            "armor": {
+                "value": 0,
+                "type": "Number"
             },
-            "speed":{
-                "value":0,
-                "type":"Number"
+            "speed": {
+                "value": 0,
+                "type": "Number"
             },
-            "manoeuvrability":{
-                "value":0,
-                "type":"Number"
+            "manoeuvrability": {
+                "value": 0,
+                "type": "Number"
             },
-            "quirk":{
-                "uuid":"",
-                "type":"String"
+            "quirk": {
+                "uuid": "",
+                "type": "String"
             },
-            "size":{
-                "value":9
+            "size": {
+                "value": 9
             },
-            "hardPoints":{
-                "carapace":{
-                    "titanicArtillery":[],
-                    "titanicRanged":[],
-                    "auxiliary":[]
+            "hardPoints": {
+                "carapace": {
+                    "titanicArtillery": [],
+                    "titanicRanged": [],
+                    "auxiliary": []
                 },
-                "leftArm":{
-                    "titanicRanged":[],
-                    "titanicMelee":[],
-                    "auxiliary":[]
+                "leftArm": {
+                    "titanicRanged": [],
+                    "titanicMelee": [],
+                    "auxiliary": []
                 },
-                "torso":{
-                    "titanicRanged":[],
-                    "titanicMelee":[],
-                    "auxiliary":[]
+                "torso": {
+                    "titanicRanged": [],
+                    "titanicMelee": [],
+                    "auxiliary": []
                 },
-                "rightArm":{
-                    "titanicRanged":[],
-                    "titanicMelee":[],
-                    "auxiliary":[]
+                "rightArm": {
+                    "titanicRanged": [],
+                    "titanicMelee": [],
+                    "auxiliary": []
                 }
             }
         },
-        "cadetHouse":{
-            "templates":[
+        "cadetHouse": {
+            "templates": [
                 "description"
             ],
-            "location":{
-                "value":"",
-                "type":"String"
+            "location": {
+                "value": "",
+                "type": "String"
             },
-            "houseHead":{
-                "value":"",
-                "type":"String"
+            "houseHead": {
+                "value": "",
+                "type": "String"
             }
         },
-        "repairEntry":{
-            "templates":[
+        "repairEntry": {
+            "templates": [
                 "description"
             ],
-            "time":{
-                "value":0,
-                "type":"Number"
+            "time": {
+                "value": 0,
+                "type": "Number"
             },
-            "cost":{
-                "value":0,
-                "type":"Number"
+            "cost": {
+                "value": 0,
+                "type": "Number"
             },
-            "calendar":{
-                "calendarId":"",
-                "noteId":""
+            "calendar": {
+                "calendarId": "",
+                "noteId": ""
             },
-            "knight":{
-                "value":"",
-                "type":"String"
+            "knight": {
+                "value": "",
+                "type": "String"
             },
-            "repairs":{
-                "entries":[],
-                "wounds":0
+            "repairs": {
+                "entries": [],
+                "wounds": 0
             }
         },
-        "outpost":{
-            "templates":[
+        "outpost": {
+            "templates": [
                 "description"
             ],
-            "location":{
-                "value":"",
-                "type":"String"
+            "location": {
+                "value": "",
+                "type": "String"
             },
-            "type":{
-                "value":"",
-                "type":"String"
+            "type": {
+                "value": "",
+                "type": "String"
             }
         },
-        "knightSpirit":{
-            "templates":["description"],
-            "failure":{
-                "value":"",
-                "type":"String"
+        "knightSpirit": {
+            "templates": [
+                "description"
+            ],
+            "failure": {
+                "value": "",
+                "type": "String"
             },
-            "meldMod":{
-                "value":0,
-                "type":"Number"
+            "meldMod": {
+                "value": 0,
+                "type": "Number"
             },
-            "meldBonus":{
-                "value":"",
-                "type":"String"
+            "meldBonus": {
+                "value": "",
+                "type": "String"
             },
-            "id":""
+            "id": ""
         },
-        "eliteAdvance":{
-            "templates":["description"],
-            "items":[],
-            "requirements":"",
-            "flag":{
-                "value":"",
-                "type":"String"
+        "eliteAdvance": {
+            "templates": [
+                "description"
+            ],
+            "items": [],
+            "itemIds": [],
+            "requirements": "",
+            "skills":"",
+            "flag": {
+                "value": "",
+                "type": "String"
             },
-            "cost":{
-                "value":0,
-                "type":"Number"
+            "cost": {
+                "value": 0,
+                "type": "Number"
             },
-            "flagId":""
+            "flagId": "",
+            "aptitude": {
+                "value": "",
+                "type": "String"
+            }
         }
     }
 }

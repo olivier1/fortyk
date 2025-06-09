@@ -1,4 +1,4 @@
-console.log(scope)
+
 
 let props=scope.entity.system.props;
 let stat=scope.stat;

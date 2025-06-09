@@ -155,7 +155,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         if(system.knight.chassis){
             let thresholds=system.secChar.wounds.thresholds;
             let wounds=parseInt(system.secChar.wounds.value);
-            console.log(thresholds,data)
             if(wounds>thresholds["1"]){
                 data.threshold="1st";
             }else if(wounds>thresholds["2"]){
@@ -1175,7 +1174,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
                             let update={};
-                            console.log(path)
                             update[path]="";
 
                             await actor.update(update);
@@ -1222,7 +1220,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
 
                                 let componentUpdate={};
-                                console.log(item.system.state.value)
                                 if(item.system.state.value==="X"||item.system.state.value===0){
                                     let amt=parseInt(component.system.amount.value);
                                     componentUpdate["system.amount.value"]=amt-1;
@@ -1237,7 +1234,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             
                             var array=objectByString(this.actor,path);
                             array.splice(index,1);
-                            console.log(item)
 
                             let update={};
                             update[path]=array;
@@ -1519,7 +1515,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
     }
     /* async _render(force, options){
 
-        console.log(this)
         if(this.mechtab){
 
 
@@ -1528,7 +1523,6 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             let category=this.mechtab;
 
             let lists=document.getElementsByName("mechInventoryTab");
-            console.log(lists)
             for(let i=0;i<lists.length;i++){
                 let list=lists[i];
                 let cat=list.dataset["tab"];

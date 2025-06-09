@@ -9,7 +9,7 @@ for(const target of targets){
                       content:"",
                       classes:["fortyk"],
                       flavor:`Endurance healing on ${target.name}`
-                     }
+                     };
     chatFirstAid.content=`${actor.name} successfully healed ${target.name} for ${healing} wounds!`;
     let targetActor=target.actor;
     let tarWounds=targetActor.system.secChar.wounds.value;
@@ -19,7 +19,7 @@ for(const target of targets){
     }else{
         let tokenId=target.id;
 
-        let socketOp={type:"updateValue",package:{token:tokenId,value:tarWounds,path:"system.secChar.wounds.value"}}
+        let socketOp={type:"updateValue",package:{token:tokenId,value:tarWounds,path:"system.secChar.wounds.value"}};
         await game.socket.emit("system.fortyk",socketOp);
     }
     await ChatMessage.create(chatFirstAid,{});

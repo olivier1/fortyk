@@ -1,4 +1,4 @@
-console.log(scope)
+
 new Dialog({
     title: `Change Ion Shield Orientation`,
     content: `

@@ -51,7 +51,6 @@
                     <span class="tntdescr tntheaderitem">Difficulty</span>
 
                     {{#each repairs}}
-                    {{debug this}}
                     <div class="tntitem" name="tntEntry" ><input type="checkbox" class="repaircheckbox tntitem" name="{{this.type}}" data-index="{{@index}}" {{#if this.disabled}}disabled{{/if}}></div>
 
                     <span name="tntEntry" class="tntname tntitem" >{{this.label}}</span>

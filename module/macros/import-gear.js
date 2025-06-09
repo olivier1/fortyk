@@ -3,7 +3,6 @@ const pack = game.packs.find(p => p.collection === `fortyk.drugs-and-consumables
 // Load an external JSON data file which contains data for import
 const response = await fetch("systems/fortyk/imports/drugs.json");
 const content = await response.json();
-console.log(content);
 let datas=[];
 for(let i=0;i<content.length;i++){
     let imp=content[i];
@@ -62,11 +61,8 @@ for(let i=0;i<content.length;i++){
     datas.push(dataModel);
 
 }
-console.log(datas);
-
 // Create temporary Item entities which impose structure on the imported data
 const items = await Item.create(datas, {temporary: true});
-console.log(items);
 
 // Save each temporary Actor into the Compendium pack
 for ( let i of items ) {

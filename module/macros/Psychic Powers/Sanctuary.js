@@ -3,7 +3,6 @@ let power=scope.power;
 let targetIds=scope.targets;
 let targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
 
-console.log(this,actor,scope)
 
 
 let actorPR=actor.system.psykana.pr.effective;
@@ -33,12 +32,13 @@ let ae=power.effects.entries().next().value[1];
 console.log(ae)
 let aeData=foundry.utils.duplicate(ae);
 
-aeData.name=ae.name+" Buff"
+aeData.name=ae.name+" Buff";
 
 
 aeData.flags={fortyk:{psy:true}};
 aeData.disabled=false;
 aeData.origin=actorId;
+aeData.statuses = [aeData.name];
 let itemUuIds=[]
 for(let i=0; i<targets.length;i++){
     let target=targets[i];

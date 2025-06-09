@@ -12,7 +12,7 @@ export class SpendExpDialog extends Application {
             height: 280,
             mode:"Custom",
             default:null,
-            heights:{"Custom":280,"Characteristic Upgrade":275,"Skill Upgrade":275,"New Skill":805,"Talent":795, "Signature Wargear":360,"Psy Rating":300,"Psychic Power":765}
+            heights:{"Custom":280,"Characteristic Upgrade":275,"Skill Upgrade":275,"New Skill":805,"Talent":795, "Signature Wargear":360,"Psy Rating":300,"Psychic Power":765, "Elite Advance":765}
         });
     }
 
@@ -73,6 +73,8 @@ export class SpendExpDialog extends Application {
         this.options.talents=await this._loadTalents();
 
         data.talents=this.options.talents;
+        this.options.eliteAdvances=await this._loadEliteAdvances();
+        data.eliteAdvances=this.options.eliteAdvances;
         return data;
     }
     activateListeners(html) {
@@ -103,6 +105,8 @@ export class SpendExpDialog extends Application {
         //select discipline change
         html.find('.discipline-select').change(this._onDisciplineChange.bind(this));
         html.find('.powercheckbox').click(this._onPowerChoice.bind(this));
+        //choose elite advance
+        html.find('.elitecheckbox').click(this._onEliteAdvanceChoice.bind(this));
         //new skill children
         html.find('.children').click(this._onChildrenClick.bind(this));
         //create advance
@@ -115,7 +119,7 @@ export class SpendExpDialog extends Application {
 
     } 
     _upgradeableChars(actorChars,chars){
-        let upgChars={}
+        let upgChars={};
         for(const char in chars){
             if(actorChars[char].advance<25){
 
@@ -166,7 +170,7 @@ export class SpendExpDialog extends Application {
 
                 width:200}
                       ).render(true);
-            return
+            return;
         }
         const type = "advancement";
         if(this.options.mode==="Custom"){
@@ -188,7 +192,7 @@ export class SpendExpDialog extends Application {
             let skill=this.options.chosenSkill;
             let skillUpgrade=parseInt(skill.system.value);
 
-            if(skillUpgrade===-20){skillUpgrade=0}else{skillUpgrade+=10}
+            if(skillUpgrade===-20){skillUpgrade=0;}else{skillUpgrade+=10;}
 
             let name = skill.name+" +"+skillUpgrade;
             if(skill.system.parent.value){
@@ -210,10 +214,10 @@ export class SpendExpDialog extends Application {
             await actor.updateEmbeddedDocuments("Item",[{"_id":skill.id,"system.value":skillUpgrade}]);
             this.options.cost=0;
         }else if(this.options.mode==="New Skill"){
-            let advanceName=""
+            let advanceName="";
             let skillName=document.getElementById("name").value;
             let parent=document.getElementById("skill-type").value;
-            if(parent){advanceName=parent+": "}
+            if(parent){advanceName=parent+": ";}
             advanceName+=skillName+" +0";
             let children=document.getElementById("children").checked;
             let aptitudes="";
@@ -265,7 +269,7 @@ export class SpendExpDialog extends Application {
                 }
             };
 
-            let item=await FortyKItem.create(itemData,{temporary:true});
+            let item=await new FortyKItem(itemData,{temporary:true});
             await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
             let update={};
             let path=`system.characteristics.${char}.advance`;
@@ -283,7 +287,7 @@ export class SpendExpDialog extends Application {
 
 
 
-            var talentId=""
+            var talentId="";
             var chosenSpec=true;
             if(spec!=="N/A"){
                 chosenSpec=await Dialog.prompt({
@@ -357,7 +361,7 @@ export class SpendExpDialog extends Application {
                 }
             };
 
-            let item=await FortyKItem.create(itemData,{temporary:true});
+            let item=await new FortyKItem(itemData,{temporary:true});
             await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
             this.options.cost=0;
         }else if(this.options.mode==="Psy Rating"){
@@ -372,9 +376,12 @@ export class SpendExpDialog extends Application {
                 }
             };
 
-            let item=await FortyKItem.create(itemData,{temporary:true});
+            let item=await new FortyKItem(itemData,{temporary:true});
             await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
-            await actor.update({"system.psykana.pr.value":newPr});
+            let tnts=actor.itemTypes.talentntrait;
+            let prObject=tnts.find((tnt)=> (tnt.name.toLowerCase()==="psy rating"));
+            
+            await prObject.update({"system.specialisation.value":newPr});
             this._prCost();
         }else if(this.options.mode==="Psychic Power"){
 
@@ -389,13 +396,13 @@ export class SpendExpDialog extends Application {
 
 
             await actor.setFlag("fortyk",flagId,true);
-            let actorPower=await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(power)]);
+            let actorPower=await actor.createEmbeddedDocuments("Item",[itemData]);
             let powerId=actorPower[0].id;
 
 
 
             const advData = {
-                name: `${advanceName}`,
+                name: advanceName,
                 type: type,
                 system:{
                     type:{value:"Psychic Power"},
@@ -408,6 +415,24 @@ export class SpendExpDialog extends Application {
             await actor.createEmbeddedDocuments("Item",[advData]);
             this.options.cost=0;
 
+        }else if(this.options.mode==="Elite Advance"){
+            let ea=this.options.chosenEliteAdvance;
+            let itemData=foundry.utils.duplicate(ea);
+            let advanceName="Elite Advance: "+ea.name;
+            let actorEA=await actor.createEmbeddedDocuments("Item",[itemData]);
+            let eaId=actorEA[0].id;
+            const advData = {
+                name: advanceName,
+                type: type,
+                system:{
+                    type:{value:"Psychic Power"},
+                    cost:{value:this.options.cost},
+                    itemId:{value:eaId},
+                    flagId:itemData.system.flag.value
+                }
+            };
+            await actor.createEmbeddedDocuments("Item",[advData]);
+            this.options.cost=0;
         }
         await this._render();
     }
@@ -441,6 +466,7 @@ export class SpendExpDialog extends Application {
         this.options.chosenChar=undefined;
         this.options.chosenTalent=undefined;
         this.options.chosenPower=undefined;
+        this.options.chosenEliteAdvance=undefined;
         this._updateCost();
         await this._render();
 
@@ -496,6 +522,17 @@ export class SpendExpDialog extends Application {
         this._updateCost();
         document.getElementById("submitButton").removeAttribute("disabled");
     }
+    async _onEliteAdvanceChoice(event){
+        let node=event.target;
+        let pack=node.attributes["data-compendium"];
+        let id=node.value;
+        let ea=this.eliteAdvances[id];
+        this.options.chosenEliteAdvance=ea;
+        let cost=ea.system.cost.value;
+        this.options.cost=cost;
+        this._updateCost();
+        document.getElementById("submitButton").removeAttribute("disabled");
+    }
     async _onTalentChoice(event){
         let node=event.target;
         let pack=node.attributes["data-compendium"];
@@ -504,7 +541,7 @@ export class SpendExpDialog extends Application {
         this.options.chosenTalent=talent;
         let aptitudes=talent.system.aptitudes.value;
         let tier=parseInt(talent.system.tier.value);
-        if(isNaN(tier)){tier=3};
+        if(isNaN(tier)){tier=3;}
         this.calculateTalentCost(aptitudes,tier);
         document.getElementById("submitButton").removeAttribute("disabled");
     }
@@ -523,10 +560,10 @@ export class SpendExpDialog extends Application {
                 if(aptStr.includes(apti)){matchingAptitudes+=1;}
             });
         }
-        if(matchingAptitudes>2){matchingAptitudes=2};
+        if(matchingAptitudes>2){matchingAptitudes=2;}
 
         let cost=this.FORTYK.talentCosts[matchingAptitudes][tier-1];
-        let discount=parseInt(document.getElementById("discount").value)
+        let discount=parseInt(document.getElementById("discount").value);
         cost=cost-discount;
         this.options.cost=cost;
         this._updateCost();
@@ -542,10 +579,10 @@ export class SpendExpDialog extends Application {
                 if(aptStr===apti){matchingAptitudes+=1;}
             });
         }
-        if(matchingAptitudes>2){matchingAptitudes=2};
+        if(matchingAptitudes>2){matchingAptitudes=2;}
         training+=5;
         let cost=this.FORTYK.characteristicUpgradeCosts[matchingAptitudes][training];
-        let discount=parseInt(document.getElementById("discount").value)
+        let discount=parseInt(document.getElementById("discount").value);
         cost=cost-discount;
         this.options.cost=cost;
         this.options.charUpg=training;
@@ -574,13 +611,13 @@ export class SpendExpDialog extends Application {
 
         for(const apt in actorAptitudes){
             let apti=actorAptitudes[apt];
-            if(apti===splitAptitudes[0]||apti===splitAptitudes[1]){matchingAptitudes+=1};
+            if(apti===splitAptitudes[0]||apti===splitAptitudes[1]){matchingAptitudes+=1;}
         }
-        if(matchingAptitudes>2){matchingAptitudes=2};
-        if(training===-20){training=0}else{training+=10};
+        if(matchingAptitudes>2){matchingAptitudes=2;}
+        if(training===-20){training=0;}else{training+=10;}
         let cost=this.FORTYK.skillUpgradeCosts[matchingAptitudes][training];
-        let discount=0
-        try{discount=parseInt(document.getElementById("discount").value)}
+        let discount=0;
+        try{discount=parseInt(document.getElementById("discount").value);}
         catch(err){}
         cost=cost-discount;
         this.options.cost=cost;
@@ -636,7 +673,7 @@ export class SpendExpDialog extends Application {
             if(talent){
                 let aptitudes=talent.system.aptitudes.value;
                 let tier=parseInt(talent.system.tier.value);
-                if(isNaN(tier)){tier=3};
+                if(isNaN(tier)){tier=3;}
                 this.calculateTalentCost(aptitudes,tier);
             }
         }else if(mode==="Signature Wargear"){
@@ -704,14 +741,14 @@ export class SpendExpDialog extends Application {
     async _onCustomCost(event){
         let newcost=parseInt(event.target.value);
 
-        if(isNaN(newcost)){newcost=0}
+        if(isNaN(newcost)){newcost=0;}
         this.options.cost=newcost;
         this._updateCost();
     }
     _updateCost(){
         document.getElementById("cost").textContent=this.options.cost;
         this.remainingExp=this.actorExp-this.options.cost;
-        document.getElementById("remainingExp").textContent=this.remainingExp
+        document.getElementById("remainingExp").textContent=this.remainingExp;
 
 
     }
@@ -732,7 +769,7 @@ export class SpendExpDialog extends Application {
         });
         let disciplines=Object.values(actor.system.psykana.disciplines);
 
-       
+
         let map=powers.reduce(function(map,power){
             if(!actor.getFlag("fortyk",power.id)&&(disciplines.includes(power.system.discipline.value))){
                 map[power.id]=power;  
@@ -787,5 +824,32 @@ export class SpendExpDialog extends Application {
         },{});
         return map;
     }
+    async _loadEliteAdvances(){
+        let actor=this.options.actor;
+        const eliteAdvancePack=await game.packs.get("fortyk.elite-advances");
+        let eliteAdvances=await eliteAdvancePack.getDocuments();
+        eliteAdvances=eliteAdvances.sort(function compare(a, b) {
+            if (a.name<b.name) {
+                return -1;
+            }
+            if (a.name>b.name) {
+                return 1;
+            }
+            // a must be equal to b
+            return 0;
+        });
+        let map=eliteAdvances.reduce(function(map,ea){
+            let flagId=ea.system.flag.value;
+
+            if(!actor.getFlag("fortyk",flagId)){
+                map[ea.id]=ea;  
+            }
+
+            return map;
+        },{});
+        return map;
+    }
+
+
 
 }

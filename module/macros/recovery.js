@@ -31,7 +31,6 @@ new Dialog({
             label: `<div class="dnd5e chat-card"><header class="card-header flexrow"><h3 style="text-align:center;"><b><img src="icons/svg/d6-grey.svg" width="72;" /> D6</b></h3></header></div>`,
             callback: (html) => {
                 let selectedStat= html.find("select[id='recovery-select']").val();
-                console.log(html.find("select[name='recovery-select']"));
                 let rating= parseInt(props[selectedStat]);
                 let numDie = rating+parseInt(html.find("input[id='output-diceQuantity']").val());
                 

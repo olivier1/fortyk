@@ -47,7 +47,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         
         data.editable = this.options.editable;
         data.money=game.settings.get("fortyk","dhMoney");
+        data.alternateWounds=game.settings.get("fortyk","alternateWounds");
         data.bcCorruption=game.settings.get("fortyk","bcCorruption");
+        data.greyKnights=game.settings.get("fortyk","greyKnights");
         data.coverTypes=game.fortyk.FORTYK.coverTypes;
 
         return data;
@@ -153,7 +155,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
             let itemType=draggedItem.type;
             let items=this.actor.itemTypes[itemType].sort(function(a,b){
-                return a.sort-b.sort});
+                return a.sort-b.sort;});
 
             /*data.items=*/
             let previous=null;
@@ -168,8 +170,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     sort=sortTarget;
                 }
                 if(sort===previous){
-                    sort++
-                    update.push({"_id":value.id,"sort":sort}) 
+                    sort++;
+                    update.push({"_id":value.id,"sort":sort}) ;
                 }
                 previous=sort;
             });
@@ -189,7 +191,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             width: "auto",
             height: "auto"
         };
-        let img=this.actor.img
+        let img=this.actor.img;
         let dlg = new Dialog({
             title: `Profile Image`,
             content: `<img src="${img}"  width="auto" height="auto">`,
@@ -303,7 +305,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     //Handle the popup when user clicks item name to show item description
     async _onItemDescrGet(event){
         event.preventDefault();
-        let descr = event.target.attributes["data-item-descr"].value;
+        let descr = event.currentTarget.attributes["data-item-descr"].value;
         var options = {
             width: 300,
             height: 400
@@ -333,7 +335,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             type: type,
             sort: sort
         };
-        let item=await FortyKItem.create(itemData,{temporary:true});
+        let item=await new FortyKItem(itemData,{temporary:true});
         await this.actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)],{"renderSheet":true});
 
     }
@@ -341,7 +343,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     async _onTntCreate(event){
         event.preventDefault();
         var actor=this.actor;
-        let tnts
+        let tnts;
         if(actor.type==="vehicle"){
             var vehicleTraits=await game.packs.get("fortyk.vehicle-traits");
             tnts=await vehicleTraits.getDocuments();
@@ -425,7 +427,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                             let selectedIds=[];
                             $(html).find('input:checked').each(function(){
                                 selectedIds.push($(this).val());
-                            })
+                            });
 
                             let $selectedCompendiums= $('input:checked',html).map(function(){
                                 return this.getAttribute('data-compendium');
@@ -546,7 +548,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     }
                 },
                 default: "submit"
-            },options).render(true)
+            },options).render(true);
         });
     }
     //Edits the item that was clicked
@@ -582,7 +584,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     }
                 },
                 default: "submit"
-            }).render(true)
+            }).render(true);
         });
     }
 
@@ -669,7 +671,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const dataset = element.dataset;
         let testType=dataset["rollType"];
         var testTarget=parseInt(dataset["target"]);
-        console.log(dataset, testTarget);
         let tempMod=this.actor.system.secChar.tempMod.value;
         if(tempMod){
             testTarget+=this.actor.system.secChar.tempMod.value;
@@ -686,13 +687,13 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         var item=null;
 
         //ensure actor is prepared
-        if(!this.actor.isPrepared){
+        if(!this.actor.system.isPrepared){
             this.actor.prepareData();
         }
         if(dataset["itemId"]){
             item=await this.actor.items.get(dataset["itemId"]);
             //ensure item is prepared
-            if(!item.isPrepared){
+            if(!item.system.isPrepared){
                 await item.prepareData();
             }
         }
@@ -968,7 +969,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                     for(const template of templates){
                                         if(template.isOwner){
 
-                                            await template.delete()
+                                            await template.delete();
                                         }
                                     }
                                 }
@@ -981,7 +982,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         }else{
                             //if user isnt GM use socket to have gm process the damage roll
 
-                            let lastHit=this.actor.system.secChar.lastHit
+                            let lastHit=this.actor.system.secChar.lastHit;
                             let socketOp={type:"blastDamageRoll",package:{formula:formula,actor:actor.id,fortykWeapon:weapon.id,hits:hits,magdmg:magdmg,pen:pen,user:game.user.id,lastHit:lastHit,targets:targets,rerollNum:rerollNum}};
                             await game.socket.emit("system.fortyk",socketOp);
 
@@ -991,7 +992,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 }
             },
             default: "submit",
-            width:100}).render(true)});
+            width:100}).render(true);});
 
 
 
@@ -1007,7 +1008,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let bounds=template._object._computeShape();
             bounds.x=template.x;
             bounds.y=template.y;
-            console.log(bounds)
+            
 
             tokens.forEach((token,id,tokens)=>{
 
@@ -1033,12 +1034,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 if(tokenInTemp||bottomIn||topIn||leftIn||rightIn||tempInToken){
                     targetted.push(token.id);
                 }
-                //console.log(bounds.overlaps(tokenBounds))
                 /*if(bounds.overlaps(tokenBounds)){
                     targetted.push(token.id);
                 }*/
             });
-            let blastTargets={template:{x:template.x,y:template.y},targets:targetted}
+            let blastTargets={template:{x:template.x,y:template.y},targets:targetted};
             targets.push(blastTargets);
         }
 
@@ -1056,7 +1056,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             const dataset = element.dataset;
             let powerId=dataset["power"];
 
-            FortyKItem.applyPsyBuffs(this.actor.uuid, powerId, targets.ids)
+            FortyKItem.applyPsyBuffs(this.actor.uuid, powerId, targets.ids);
         }else{
             ui.notifications.error("You must have targets to apply buffs or debuffs.");
         }
@@ -1114,7 +1114,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let newArmor=actor.getEmbeddedDocument("Item",newArmorId);
         let oldArmorId=this.actor.system.secChar.wornGear.armor._id;
 
-        let oldArmor=this.actor.system.secChar.wornGear.armor
+        let oldArmor=this.actor.system.secChar.wornGear.armor;
         let updates=[];
 
         if(!jQuery.isEmptyObject(oldArmor)){
@@ -1135,7 +1135,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let newForceFieldId=event.currentTarget.value;
         let newForceField=actor.getEmbeddedDocument("Item",newForceFieldId);
         let oldForceFieldId=this.actor.system.secChar.wornGear.forceField._id;
-        let oldForceField=this.actor.system.secChar.wornGear.forceField
+        let oldForceField=this.actor.system.secChar.wornGear.forceField;
         let updates=[];
         if(!jQuery.isEmptyObject(oldForceField)){
             updates.push({"_id":oldForceFieldId,"system.isEquipped":false});
@@ -1164,7 +1164,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     callback: async (el) =>  {
                         const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
 
-                        let forceData={name:"Force",type:"rangedWeapon"}
+                        let forceData={name:"Force",type:"rangedWeapon"};
                         let force=await Item.create(forceData, {temporary: true});
 
                         force.flags.fortyk={};

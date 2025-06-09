@@ -1,4 +1,4 @@
-console.log(scope)
+
 const get = (from, ...selectors) =>
 [...selectors].map((s) =>
                    s
@@ -9,7 +9,6 @@ const get = (from, ...selectors) =>
                   );
 let props=scope.entity.system.props;
 let skill=get(props,scope.path)[0];
-console.log(skill)
 let skillName=skill.skill;
 let skillRating=parseInt(skill.rating);
 let fresh=props.fresh;
@@ -86,7 +85,6 @@ new Dialog({
       label: `<div class="dnd5e chat-card"><header class="card-header flexrow"><h3 style="text-align:center;"><b><img src="icons/svg/d6-grey.svg" width="72;" /> D6</b></h3></header></div>`,
       callback: (html) => {
         let numDie;
-        console.log(bl);
         if(bl){
           let half=Math.ceil((skillRating+parseInt(html.find("input[id='output-diceQuantity']").val()))/2);
           numDie=half+parseInt(html.find("input[id='taxed-output-diceQuantity']").val());
@@ -103,7 +101,6 @@ new Dialog({
   },
   default: '',
   render: (html)=>{
-    console.log(html)
     html.find("input[id='output-diceQuantity']").select();}
 },
            {height:220,width:550,left:screenLeft,top:screenTop

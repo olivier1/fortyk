@@ -20,21 +20,34 @@
         {{/if}}
         <div class="flexcol">
             <label>Prerequisites:</label>
-            <input type="text" value="{{system.requirements}}" name="system.prereqs.value">
+            <input type="text" value="{{system.requirements}}" name="system.requirements">
         </div>
         <div class="flexcol">
             <label>Cost:</label>
             <input type="text" value="{{system.cost.value}}" name="system.cost.value">
         </div>
+         
         <div class="flexcol">
             <label>Flag:</label>
             <input type="text" value="{{system.flag.value}}" name="system.flag.value">
+        </div>
+        <div class="flexcol">
+            <label>Aptitude:</label>
+            <select class="power-type" name="system.aptitude.value">
+                <option value="">None</option>
+                {{selectOptions FORTYK.aptitudes selected=system.aptitude.value valueAttr="key" labelAttr="label"}}
+            </select>
+           
         </div>
 
 
 
     </div>
     <div class="flexcol">
+        <div class="flexcol">
+            <label>Skills:</label>
+            <input type="text" value="{{system.skills}}" name="system.skills">
+        </div>
         <label>Compendium:</label>
 
         <select class="compendium-select" data-index="{{@index}}">

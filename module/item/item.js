@@ -75,7 +75,6 @@ export class FortyKItem extends Item {
 
         // Get the Item's data
         const item = this;
-
         item.FORTYK = game.fortyk.FORTYK;
 
         //ensure this is an owned item
@@ -133,6 +132,11 @@ export class FortyKItem extends Item {
                 }
                 return;
             }
+            if(item.type === "skill"){
+                if(actor.getFlag("fortyk","toomanysecrets")&&item.system.parent.value==="Forbidden Lore"){
+                    item.system.aptitudes.value="General, Intelligence";
+                }
+            }
             if (item.type === "ammunition"){
                 item.label=item.name+":"+item.system.amount.value;
             }
@@ -151,7 +155,7 @@ export class FortyKItem extends Item {
                     let caster = fromUuidSync(item.getFlag("fortyk", "origin"));
                     let actorPr;
                     if (caster.uuid !== actor.uuid) {
-                        if (!caster.isPrepared) {
+                        if (!caster.system.isPrepared) {
                             caster.prepareData();
                         }
                         actorPr = caster.system.psykana.pr.effective;
@@ -189,6 +193,7 @@ export class FortyKItem extends Item {
                 item.system.pen.formula = currentProfile.system.pen.formula;
                 if (item.type === "rangedWeapon") {
                     item.system.rof = currentProfile.system.rof;
+
                 }
                 item.system.damageFormula.formula = currentProfile.system.damageFormula.formula;
                 let profiles = item.getFlag("fortyk", "profiles");
@@ -197,7 +202,6 @@ export class FortyKItem extends Item {
                 item.flags.fortyk.alternateprofiles = true;
                 item.flags.fortyk.currentprofile = currentProfileUuid;
             }
-            item.applyActiveEffects();
             if (item.type === "meleeWeapon") {
                 item.system.damageFormula.value = item.system.damageFormula.formula;
                 item.system.range.value = item.system.range.formula;
@@ -218,6 +222,26 @@ export class FortyKItem extends Item {
                 }
             }
             if (item.type === "rangedWeapon") {
+                //parse rof
+                if(actor.getFlag("fortyk","psyrating")){
+                    let pr=actor.system.psykana.pr.effective;
+                    try{
+                        item.system.rof[1].value= Math.ceil(Function(`let pr=${pr};return `+item.system.rof[1].value)());
+                        item.system.rof[2].value=Math.ceil(Function(`let pr=${pr};return `+item.system.rof[2].value)());
+                    }catch (err){
+                        item.system.rof[1]=parseInt(item.system.rof[1].value);
+                        item.system.rof[2]=parseInt(item.system.rof[2].value);
+                    }
+                }else{
+                    item.system.rof[1]=parseInt(item.system.rof[1].value);
+                    item.system.rof[2]=parseInt(item.system.rof[2].value);
+                }
+                if(item.system.rof[0].value.toLowerCase()==="s"){
+                    item.system.rof[0].value=1;
+                }else{
+                    item.system.rof[0].value=parseInt(item.system.rof[0].value);
+                }
+
                 if (actor.getFlag("fortyk", "filltheairwithdeath")) {
                     if (item.system.rof[1]?.value > 0) {
                         item.system.rof[1].value = parseInt(item.system.rof[1].value) + 1;
@@ -232,7 +256,6 @@ export class FortyKItem extends Item {
                     item.system.ammo.name = ammo.name;
                 }
                 let ammos=actor.itemTypes.ammunition;
-                console.log(item.name,actor.name,"hey")
                 let validAmmos=ammos.filter((ammo) => ammo.system.class.value===item.system.class.value&&ammo.system.type.value===item.system.type.value);
                 item.validAmmos=validAmmos;
                 if (ammo && !ammo.system.default.value) {
@@ -263,6 +286,10 @@ export class FortyKItem extends Item {
                 item.system.clip.max = item.system.clip.formula;
 
                 if (actor.getFlag("fortyk", "dampeningarms") && item.system.path && item.system.path.includes("Arm")) {
+                    item.system.attackMods.semi = parseInt(item.system.attackMods.semi) + 10;
+                    item.system.attackMods.full = parseInt(item.system.attackMods.full) + 10;
+                }
+                if (actor.getFlag("fortyk", "purgationhelm")) {
                     item.system.attackMods.semi = parseInt(item.system.attackMods.semi) + 10;
                     item.system.attackMods.full = parseInt(item.system.attackMods.full) + 10;
                 }
@@ -315,6 +342,16 @@ export class FortyKItem extends Item {
             }
 
             if (actor.type !== "vehicle" && actor.type !== "knightHouse") {
+
+                if(actor.getFlag("fortyk","iconofburningflame")&&item.system?.damageType?.value==="Energy"){
+                    item.flags.fortyk.flame=true;
+                }
+
+
+                if(actor.getFlag("fortyk","purifyingflames")&&item.getFlag("fortyk","flame")){
+                    item.flags.fortyk.flame=false;
+                    item.flags.fortyk.purifyingflame=true;
+                }
                 if (item.type === "psychicPower") {
                     var psyniscience = 0;
 
@@ -338,9 +375,11 @@ export class FortyKItem extends Item {
                             }
                         }
                     }
+
                     if (this.getFlag("fortyk", "purifyingflame")) {
                         item.flags.fortyk.purifyingflame = `1d10+${pr}`;
                     }
+
                     if (data.psykana.psykerType.value.toLowerCase() === "navigator") {
                         let range = item.system.range.formula.toLowerCase();
                         let wp = data.characteristics.wp.bonus;
@@ -448,7 +487,6 @@ export class FortyKItem extends Item {
                     if (actor.getFlag("fortyk", "crushingblow")) {
                         item.system.damageFormula.value += "+" + Math.ceil(data.characteristics.ws.bonus / 2);
                     }
-                    console.log(actor.getFlag("fortyk", "meleedamagebonus"));
                     if (actor.getFlag("fortyk", "meleedamagebonus")) {
                         item.system.damageFormula.value += "+" + parseInt(actor.getFlag("fortyk", "meleedamagebonus"));
                     }
@@ -504,9 +542,9 @@ export class FortyKItem extends Item {
                     if (actor.getFlag("fortyk", "WeaponMaster")) {
                         if (
                             actor
-                                .getFlag("fortyk", "WeaponMaster")
-                                .toLowerCase()
-                                .includes(item.system.type.value.toLowerCase())
+                            .getFlag("fortyk", "WeaponMaster")
+                            .toLowerCase()
+                            .includes(item.system.type.value.toLowerCase())
                         ) {
                             item.system.damageFormula.value += "+2";
                             item.system.testMod.value += 10;
@@ -521,7 +559,6 @@ export class FortyKItem extends Item {
                         }
                         var taintbonus = Math.max(corruptBonus, daemonic);
                         item.system.damageFormula.value += `+${taintbonus}`;
-                        item.system.pen.value += taintbonus;
                     }
                     //horde logic
                     if (actor.system.horde.value) {
@@ -547,6 +584,9 @@ export class FortyKItem extends Item {
                         if (this.getFlag("fortyk", "force")) {
                             item.system.pen.value = parseInt(item.system.pen.value) + pr;
                             item.system.damageFormula.value += `+${pr}`;
+                            if(actor.getFlag("fortyk","psy-weaponattunement")){
+                                item.flags.fortyk.proven=pr;
+                            }
                         }
                         if (this.getFlag("fortyk", "purifyingflame")) {
                             item.flags.fortyk.purifyingflame = `1d10+${pr}`;
@@ -582,17 +622,44 @@ export class FortyKItem extends Item {
                 }
             }
 
-            item.isPrepared = true;
+            item.system.isPrepared = true;
         }
     }
     applyActiveEffects() {
         let item = this;
         let itemData = this;
         let data = this.system;
+        let actor=this.actor;
         this.effects.forEach(function (ae, id) {
             if (!ae.disabled && !ae.transfer) {
                 //if item is equipped and/or not disabled
+                let proceed=false;
+                let equipped=item.system.isEquipped;
+                if(equipped===undefined){
+                    proceed=true;
+                }else if(equipped){
+                    if(item.system.state){
+                        let state=item.system.state.value;
+                        if(state!=="0"&&state!=="X"&&state!=="D"){
+                            proceed=true; 
+                        }
+                    }else{
+                        proceed=true;
+                    }
+                }else{
+                    proceed=false;
+                }
+                if(!proceed)return;
                 ae.changes.forEach(function (change, i) {
+                    if(actor.getFlag("fortyk","psyrating")){
+                        let pr=actor.system.psykana.pr.effective;
+                        try{
+                            change.value=Math.ceil(Function(`let pr=${pr};return `+change.value)());
+
+                        }catch (err){
+                            change.value=0; 
+                        }
+                    }
                     let basevalue = parseFloat(objectByString(itemData, change.key));
 
                     let newvalue = parseFloat(change.value);
@@ -642,7 +709,7 @@ export class FortyKItem extends Item {
 
             let ae = power.effects.entries().next().value[1];
             let aeData = foundry.utils.duplicate(ae);
-            console.log(aeData)
+
 
             aeData.name = ae.name + " Buff";
             let actorPR = actor.system.psykana.pr.effective;
@@ -696,6 +763,14 @@ export class FortyKItem extends Item {
             let powerIndex = sustained.indexOf(power.id);
             sustained.splice(powerIndex, 1);
             actor.update({ "system.psykana.pr.sustained": sustained });
+            if(power.getFlag("fortyk","initmods")){
+                let combat=game.combats.active;
+                let inits=power.getFlag("fortyk","initmods");
+                for(const init of inits){
+                    await combat.setInitiative(init.id,init.init);
+                }
+                await power.setFlag("fortyk","initmods",false);
+            }
         } else {
             //if user isnt GM use socket to have gm cancel the buffs/debuffs
 

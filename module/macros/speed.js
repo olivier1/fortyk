@@ -33,7 +33,6 @@ new Dialog({
  },
  default: '',
  render: (html)=>{
-        console.log(html)
         html.find("input[id='output-diceQuantity']").select();}
 },
            {height:220,width:550,left:screenLeft,top:screenTop

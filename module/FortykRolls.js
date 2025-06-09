@@ -26,6 +26,8 @@ export class FortykRolls{
 @delayMsg: tells if the message should be delayed, used for popup tests
 @modifiers: object that keeps track of modifiers and their origin for attack rolls
 returns the roll message*/
+
+
     static async fortykTest(char, type, target, actor, label, fortykWeapon=null, reroll=false, fireRate="",delayMsg=false, modifiers=null){
 
         //cap target at 100 or floor at 1
@@ -333,6 +335,12 @@ returns the roll message*/
                 templateOptions["numberHits"]+=".";
             }
             let evadepenalty=0;
+            if(actor.getFlag("fortyk","psyboltattunement")&&fortykWeapon.type==="rangedWeapon"&&fortykWeapon.getFlag("fortyk","force")&&(attackType!=="semi"&&attackType!=="full")){
+                let pr=actor.system.psykana.pr.effective;
+                let inescPenalty=5*pr;
+                evadepenalty+=inescPenalty;
+                templateOptions["psyboltAttunement"]=`Psybolt attunement evasion penalty: ${inescPenalty}`;
+            }
             if(actor.getFlag("fortyk","inescapablebolt")&&fortykWeapon.system.class.value==="Psychic Bolt"){
                 let inescPenalty=Math.max(-60,testDos*(-10));
                 evadepenalty+=inescPenalty;
@@ -654,6 +662,39 @@ returns the roll message*/
         }*/
         //logic for psychic phenomena and perils of the warp
         if(type==="focuspower"){
+            if(!reroll&&weapon.system.action.value.toLowerCase()==="reaction"){
+                let aeData={};
+                aeData.id="evasion";
+                aeData.name= "Evasion";
+                if(!actor.getFlag("core","evasion")){
+                    aeData.icon= "systems/fortyk/icons/evasion.png";
+                    aeData.flags={"fortyk":{"evasion":1}};
+                    aeData.statuses=["evasion"];
+                    aeData.duration={
+
+                        rounds:0
+                    };
+                    await FortykRolls.applyActiveEffect(actor,[aeData]);
+
+
+                }else{
+
+                    for(let ae of actor.effects){
+
+                        if(ae.statuses.has("evasion")){
+                            let count=ae.getFlag("fortyk","evasion");
+                            count++;
+                            if(count>9){
+                                count=9;
+                            }
+                            let update={};
+                            update["icon"]=`systems/fortyk/icons/evasion${count}.png`;
+                            update["flags.fortyk.evasion"]=count;
+                            await ae.update(update);
+                        }
+                    }
+                }
+            }
             let psykerType=actor.system.psykana.psykerType.value;
             let basePR=actor.system.psykana.pr.effective;
             let powerPR=weapon.system.curPR.value;
@@ -662,7 +703,11 @@ returns the roll message*/
             let perils=false;
             if(psykerType!=="navigator"){
                 if(powerPR>basePR){push=true;}
-                if(!push&&(firstDigit===secondDigit||testRoll===100)){
+                if(actor.getFlag("fortyk","ascendeddivination")&&weapon.system.discipline.value.toLowerCase()==="divination"){
+                    if(push&&firstDigit===secondDigit){
+                        phenom=true;
+                    }
+                }else if(!push&&(firstDigit===secondDigit||testRoll===100)){
                     phenom=true;
                 }else if(push&&(psykerType==="bound")&&(firstDigit!==secondDigit)){
                     phenom=true;
@@ -672,6 +717,7 @@ returns the roll message*/
                 if(phenom){
                     let mod=parseInt(actor.system.psykana.phenomena.value);
                     let sustain=parseInt(actor.system.psykana.pr.sustain);
+                 
                     if(sustain>1){
                         mod=(sustain-1)*10;
                     }
@@ -684,37 +730,20 @@ returns the roll message*/
                             mod=mod+pushAmt*10;
                         }
                     }
-                    let psyRoll=new Roll("1d100+@mod",{mod:mod});
-                    let psyFlavor="Psychic Phenomena!";
-                    if(actor.system.race.value==="Ork"){
-                        psyFlavor="Perils of the Waaagh!";
+                    var ret = await this.psychicPhenomena(mod, actor);
+                    perils = ret.perils;
+                    var ork = ret.ork;
+                    if(perils&&actor.getFlag("fortyk","warpmenace")){
+                        let chatMenace={author: game.user,
+                                        speaker:{actor,alias:actor.name},
+                                        content:"Warp menace rerolls perils of the warp result one time.",
+                                        classes:["fortyk"],
+                                        flavor:"Warp menace"};
+                        await ChatMessage.create(chatMenace,{}); 
+                        ret = await this.psychicPhenomena(mod, actor);
+                        perils = ret.perils;
+                        ork = ret.ork;
                     }
-                    await psyRoll.evaluate();
-                    await psyRoll.toMessage({
-                        speaker: ChatMessage.getSpeaker({ actor: actor }),
-                        flavor: psyFlavor
-                    });
-                    let phenomResult=parseInt(psyRoll._total);
-                    if(phenomResult>100){phenomResult=100;}
-                    if(phenomResult<1){phenomResult=1;}
-                    if(phenomResult>75){perils=true;}
-                    let phenomMessage="";
-                    let flavor="";
-                    var ork=false;
-                    if(actor.system.race.value==="Ork"){
-                        phenomMessage=FORTYKTABLES.weirdFings[phenomResult];
-                        flavor="Weird Fing!";
-                        ork=true;
-                    }else{
-                        phenomMessage=FORTYKTABLES.psychicPhenomena[phenomResult]; 
-                        flavor="Psychic Phenomenom!";
-                    }
-                    let chatPhenom={author: game.user,
-                                    speaker:{actor,alias:actor.name},
-                                    content:phenomMessage,
-                                    classes:["fortyk"],
-                                    flavor:flavor};
-                    await ChatMessage.create(chatPhenom,{});
                     if(perils){
                         if(game.user.isGM){
                             this.perilsOfTheWarp(actor,ork);
@@ -780,6 +809,41 @@ returns the roll message*/
             result.hits=hits; 
         }
         return result;
+    }
+    static async psychicPhenomena(mod, actor) {
+        let perils=false;
+        let psyRoll=new Roll("1d100+@mod",{mod:mod});
+        let psyFlavor="Psychic Phenomena!";
+        if(actor.system.race.value==="Ork"){
+            psyFlavor="Perils of the Waaagh!";
+        }
+        await psyRoll.evaluate();
+        await psyRoll.toMessage({
+            speaker: ChatMessage.getSpeaker({ actor: actor }),
+            flavor: psyFlavor
+        });
+        let phenomResult=parseInt(psyRoll._total);
+        if(phenomResult>100){phenomResult=100;}
+        if(phenomResult<1){phenomResult=1;}
+        if(phenomResult>75){perils=true;}
+        let phenomMessage="";
+        let flavor="";
+        var ork=false;
+        if(actor.system.race.value==="Ork"){
+            phenomMessage=FORTYKTABLES.weirdFings[phenomResult];
+            flavor="Weird Fing!";
+            ork=true;
+        }else{
+            phenomMessage=FORTYKTABLES.psychicPhenomena[phenomResult]; 
+            flavor="Psychic Phenomenom!";
+        }
+        let chatPhenom={author: game.user,
+                        speaker:{actor,alias:actor.name},
+                        content:phenomMessage,
+                        classes:["fortyk"],
+                        flavor:flavor};
+        await ChatMessage.create(chatPhenom,{});
+        return {perils:perils, ork:ork};
     }
 
     //rolls a result on the perils of the warp table, checks if the roll should be private or not
@@ -936,7 +1000,7 @@ returns the roll message*/
     //handles damage rolls and applies damage to the target, generates critical effects
     static async damageRoll(formula,actor,fortykWeapon,hits=1, self=false, overheat=false,magdamage=0,extraPen=0,rerollNum=0, user=game.users.current, lastHit=null, targets=null){
         let weapon=foundry.utils.deepClone(fortykWeapon);
-        if(!weapon.isPrepared){
+        if(!weapon.system.isPrepared){
             weapon.prepareData();
         }
         let righteous=10;
@@ -1047,9 +1111,9 @@ returns the roll message*/
             let label = weapon.name ? `Rolling ${weapon.name} damage` : 'damage';
             await roll.evaluate();
             await roll.toMessage({
-                    speaker: ChatMessage.getSpeaker({ actor: actor }),
-                    flavor: label
-                });
+                speaker: ChatMessage.getSpeaker({ actor: actor }),
+                flavor: label
+            });
             return;
         }
         //prepare attacker coords for knockbacks
@@ -1059,7 +1123,7 @@ returns the roll message*/
         if(weapon.getFlag("fortyk","blast")||weapon.getFlag("fortyk","blast")===0){
             attacker=fortykWeapon.template;
         }
-        
+
         var hammer=false;
         if(actor.getFlag("fortyk","hammerblow")&&lastHit.attackType==="allout"){
             if(isNaN(parseInt(fortykWeapon.getFlag("fortyk","concussive")))){
@@ -1089,9 +1153,9 @@ returns the roll message*/
         }else{
             curHit=lastHit;
         }
-       
 
-        
+
+
         //make an array to store the wounds of all targets so that they can all be updated together once done
         var newWounds=[];
         var extraDamage=[];
@@ -1354,6 +1418,9 @@ returns the roll message*/
                                 tarRighteous-=2;
                             }
                         }
+                        if(actor.getFlag("fortyk","hammerofdaemons")&&daemonic){
+                            tarRighteous--;
+                        }
                         //graviton increased crit against vehicles
                         if(vehicle&&fortykWeapon.getFlag("fortyk","graviton")){
                             tarRighteous-=1;
@@ -1366,7 +1433,8 @@ returns the roll message*/
                         let numbers=[];
                         let operators=[];
                         //parsing the roll result
-
+                        let proven=0;
+                        let primitive=0;
                         for ( let t=0; t<terms.length;t++){
 
                             if(terms[t] instanceof foundry.dice.terms.Die){
@@ -1381,6 +1449,14 @@ returns the roll message*/
                                     if(r.active){
                                         if(r.result>=tarRighteous){
                                             tens+=1;
+                                        }
+                                    }
+                                    if(r.rerolled){
+                                        
+                                        if(r.count>r.result){
+                                            proven+=r.count-r.result;
+                                        }else{
+                                            primitive+=r.count-r.result;
                                         }
                                     }
                                 } 
@@ -1446,8 +1522,14 @@ returns the roll message*/
                         if(tens){
                             damageOptions.results.push(`<span class="chat-righteous">Righteous Fury!</span>`);
                         }
+                        if(proven){
+                           damageOptions.results.push(`<div style="flex:none">Proven damage: ${proven}</div>`); 
+                        }
+                        if(primitive){
+                            damageOptions.results.push(`<div style="flex:none">Primitive damage loss: ${primitive}</div>`); 
+                        }
                         damageOptions.results.push(`</div>`);
-
+                        
                         if(jQuery.isEmptyObject(armorSuit)){
                             armorSuit=await new Item({type:"armor",name:"standin"},{temporary:true});
                         }
@@ -1479,7 +1561,10 @@ returns the roll message*/
                         }else{
                             armor=parseInt(data.characterHitLocations[curHit.value].armor); 
                         }
-
+                        //check for obsidian plate and psychic attack
+                        if(tarActor.getFlag("fortyk","obsidianplate")&&fortykWeapon.type==="psychicPower"){
+                            armor*=3;
+                        }
 
                         //check if weapon ignores soak
                         let ignoreSoak=false;
@@ -1547,6 +1632,11 @@ returns the roll message*/
                             //ignore natural armor weapons
                             if(fortykWeapon.getFlag("fortyk","ignoreNaturalArmor")&&tarActor.getFlag("fortyk","naturalarmor")){
                                 pen+=parseInt(tarActor.getFlag("fortyk","naturalarmor"));
+                                damageOptions.results.push(`<span>The weapon ignores ${tarActor.getFlag("fortyk","naturalarmor")} natural armor.</span>`);
+                            }
+                            //ignore psychic armor weapons
+                            if(fortykWeapon.getFlag("fortyk","ignorePsychichArmor")){
+                                pen+=parseInt(data.characterHitLocations[curHit.value].psy);
                                 damageOptions.results.push(`<span>The weapon ignores ${tarActor.getFlag("fortyk","naturalarmor")} natural armor.</span>`);
                             }
                             let maxPen=Math.min(armor,pen);
@@ -1647,7 +1737,7 @@ returns the roll message*/
                                 curHit.value="motive";
                                 damageOptions.results.push(`<span>Graviton ignores vehicle armor and increases vengeful.`);
                             }else{
-                                let gravitonDmg=2*armor;
+                                let gravitonDmg=armor;
                                 damage+=gravitonDmg;
                                 chatDamage+=gravitonDmg;
                                 damageOptions.results.push(`<span>Graviton extra damage: ${gravitonDmg}</span>`); 
@@ -1669,12 +1759,12 @@ returns the roll message*/
                         }
                         if(fortykWeapon.getFlag('fortyk','vicious')&&tens){
                             let viscDice=parseInt(fortykWeapon.getFlag("fortyk","vicious"));
-                                let viscForm=viscDice+"d10";
-                                let viscRoll=new Roll(viscForm,{});
-                                await viscRoll.evaluate();
-                                damageOptions.results.push(`<span>Vicious extra damage: ${viscRoll.dice[0].values.join("+")}</span>`);
-                                damage+=viscRoll._total;
-                                chatDamage+=viscRoll._total;
+                            let viscForm=viscDice+"d10";
+                            let viscRoll=new Roll(viscForm,{});
+                            await viscRoll.evaluate();
+                            damageOptions.results.push(`<span>Vicious extra damage: ${viscRoll.dice[0].values.join("+")}</span>`);
+                            damage+=viscRoll._total;
+                            chatDamage+=viscRoll._total;
                         }
                         //handle cover
                         let cover=parseFloat(data.secChar.cover.value);
@@ -2286,9 +2376,9 @@ returns the roll message*/
                                               content:renderedDamageTemplate,
                                               classes:["fortyk"]});
                         //await ChatMessage.create({content:renderedDamageTemplate},{});
-                        
+
                         await ChatMessage.create(messages);
-                        
+
 
                         //check for righteous fury
                         let crit=await this._righteousFury(actor,label,weapon,curHit,tens,damage,tar,ignoreSON,activeEffects,vehicleOptions);
@@ -2460,7 +2550,7 @@ returns the roll message*/
     static async reportDamage(tarActor, chatDamage){
         if(game.settings.get("fortyk","privateDamage")){
             let user_ids = Object.entries(tarActor.ownership).filter(p=> p[0] !== `default` && p[1] === 3).map(p=>p[0]);
-            
+
             for(let user of user_ids)
             {
                 let userInstance=game.users.get(user);
@@ -3031,7 +3121,6 @@ returns the roll message*/
             activeEffects=[];
         }
         let ae;
-        console.log(leg, num);
         let rolls=await this._critMsg("lLeg",leg+" Leg", num, "Energy",actor,source);
         switch(num){
             case 1:
@@ -4154,7 +4243,7 @@ returns the roll message*/
                     ae=foundry.utils.duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("deaf")]);
                     activeEffects.push(ae);
                 }else{
-                    ae=foundry.utils.duplicate(game.fortyk.FORTYK.StatusEffects["target"]);
+                    ae=foundry.utils.duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("target")]);
                     ae.changes=[{key:`system.characterHitLocations.head.armorMod`,value:-99,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE}];
                     activeEffects.push(ae);
                 }
@@ -5658,11 +5747,9 @@ returns the roll message*/
                 }
                 let effects=await actor.createEmbeddedDocuments("ActiveEffect",aEs);
                 /*if(actor.isToken){
-                    console.log(actor.token)
                     actor.token._object._refreshEffects();
                 }else{
                     let tokens=actor.getActiveTokens();
-                    console.log(tokens)
                     for(let i=0;i<tokens.length;i++){
                         let token=tokens[i];
                         token._refreshEffects();

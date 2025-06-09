@@ -257,10 +257,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
 
 
-            previousAmmo.update({"system.currentClip.value":weapon.system.clip.value});
+            previousAmmo.update({"system.currentClip.value":weapon.system.clip.value,"system.isEquipped":false});
         }
         if(ammo!==undefined){
             weaponUpdate["system.clip.value"]=ammo.system.currentClip.value;
+            ammo.update({"system.isEquipped":true});
         }else{
             weaponUpdate["system.clip.value"]=0;
         }

@@ -14,7 +14,6 @@ new Dialog({
             callback: async(html) => {
                 let coverSelect = $(html).find('#cover option:selected');
                 let label=coverSelect.text();
-                console.log(coverSelect);
                 let cover=parseFloat(coverSelect.val());
                 console.log(label, cover);
                 for(let token of canvas.tokens.controlled){

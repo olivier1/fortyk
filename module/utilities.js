@@ -26,6 +26,7 @@ export const preloadHandlebarsTemplates = async function() {
         "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/signature-wargear.html",
         "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/psy-rating.html",
         "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/psychic-power.html",
+        "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/elite-advance.html",
         //knight sheet parts
         "systems/fortyk/templates/actor/knightParts/mech-bay.html",
         "systems/fortyk/templates/actor/knightParts/combat.html",
@@ -294,7 +295,6 @@ export const tokenDistance=function(token1,token2){
     let token1y=token1.y;
     let token2x=token2.x;
     let token2y=token2.y;
-    console.log(token1);
     if(token1.w*100>=200){
         if(token2x>token1x){
             token1x+=Math.ceil(token1.w/2);
@@ -319,7 +319,7 @@ export const tokenDistance=function(token1,token2){
     if(canvas.scene.grid.type===0){
 
         let distancePx=Math.sqrt(Math.pow(gridRatio*(token1x-token2x),2)+Math.pow(gridRatio*(token1y-token2y),2)+Math.pow((token1.document.elevation-token2.document.elevation),2));
-        console.log(distancePx);
+       
         return distancePx;
     }
     if(canvas.scene.grid.type>=1){
@@ -335,7 +335,6 @@ export const tokenDistance=function(token1,token2){
 };
 export const smallestDistance= function(token, points){
     let distances=[];
-    console.log(points);
     let pairs={};
     for(let i=0;i<points.length;i++){
         let point=points[i];
@@ -344,10 +343,8 @@ export const smallestDistance= function(token, points){
             distances.push(distance);
             pairs[distance]=point;
         }
-        console.log(point);
 
     }
-    console.log(distances);
     if(distances.length>0){
         let min=Math.min(...distances);
         return pairs[min];
@@ -411,7 +408,7 @@ export const setNestedKey = (obj, path, value) => {
         obj[path] = value;
         return;
     }
-    return setNestedKey(obj[path[0]], path.slice(1), value)
+    return setNestedKey(obj[path[0]], path.slice(1), value);
 };
 export const makeRangeArray=function (upperBounds, values) {
     var rangeArray = new Array(upperBounds[upperBounds.length-1]);
@@ -464,7 +461,7 @@ export const getVehicleFacing=function(vehicleToken,attackerToken){
         facing=split;
     }
     return facing;
-}
+};
 export const degToRad=function (degrees) {
     return degrees * (Math.PI / 180);
 };
@@ -502,7 +499,7 @@ export const getAttackAngle=function (targetToken,attackerToken){
         }
     }
     return attackAngle;
-}
+};
 const getKnockbackAngle=function(attackToken, targetToken){
     let attackMid=attackToken;
     let targetMid=targetToken.center;
@@ -510,30 +507,26 @@ const getKnockbackAngle=function(attackToken, targetToken){
     if(targetMid.x<=attackMid.x){
         //target is left
         if(targetMid.y>attackMid.y){
-            console.log("bot left")
             //target is below
             angle=Math.atan((attackMid.x-targetMid.x)/(attackMid.y-targetMid.y));
         }else{
-            console.log("top left")
             angle=Math.PI+Math.atan((attackMid.x-targetMid.x)/(attackMid.y-targetMid.y));
             //target is above
         }
     }else{
         //target is right
         if(targetMid.y>attackMid.y){
-            console.log("bot right")
             //target is below
             angle=Math.atan((attackMid.x-targetMid.x)/(attackMid.y-targetMid.y));
         }else{
-            console.log("top right")
             //targte is above
             angle=Math.PI+Math.atan((attackMid.x-targetMid.x)/(attackMid.y-targetMid.y));
         }
     }
     return angle;
-}
+};
 export const knockbackPoint=function (knockbackPoint, token2, knockbackDistance,random=false){
-    let angle
+    let angle;
     let x=token2.x;
     let y=token2.y;
     if(token2.center.x===knockbackPoint.x&&token2.center.y===knockbackPoint.y){
@@ -546,12 +539,11 @@ export const knockbackPoint=function (knockbackPoint, token2, knockbackDistance,
     }
 
     
-    console.log(x,y,knockbackDistance,angle)
     x+=knockbackDistance*Math.sin(angle);
     y+=knockbackDistance*Math.cos(angle);
-    console.log(x,y)
-    return{x:Math.ceil(x),y:Math.ceil(y)}
-}
+ 
+    return{x:Math.ceil(x),y:Math.ceil(y)};
+};
 export const collisionPoint= function(token, destination){
     let origin={x:token.x,y:token.y};
     let walls=game.canvas.walls.objects.children;
@@ -567,10 +559,10 @@ export const collisionPoint= function(token, destination){
             //top right
             workingOr.x+=token.width;
             workingDest.x+=token.width;
-            let topright=lineSegmentIntersection(workingOr,workingDest,wall.A,wall.B)
+            let topright=lineSegmentIntersection(workingOr,workingDest,wall.A,wall.B);
             if(topright){
                 topright.x-=token.width;
-                intersections.push(topright)
+                intersections.push(topright);
             }
             //botleft
             workingOr=foundry.utils.duplicate(origin);
@@ -598,7 +590,7 @@ export const collisionPoint= function(token, destination){
         }
     }
     return intersections;
-}
+};
 //
 //for looping through items to give them flags
 /*

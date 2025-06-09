@@ -38,7 +38,6 @@ export class FortyKActor extends Actor {
             // Default non npcs to HasVision = true and Link Data = true
             if (data.type !== "npc")
             {
-                console.log(data)
                 data.prototypeToken.vision = true;
                 data.prototypeToken.actorLink = true;
             }
@@ -92,25 +91,26 @@ export class FortyKActor extends Actor {
                 }
             }
             // Apply changes in Actor size to Token width/height
-            let newSize= 0;
+            let newSize= data["system.secChar.size.value"];
+            if(!newSize){
+                newSize=parseInt(data?.flags?.fortyk.size)-1;
+                if(newSize){
+                    data["system.secChar.size.value"]=newSize;
+                }
+            }
             let wounds=false;
-            try{
-                wounds=data["system.secChar.wounds.value"];
-            }catch(err){
-                wounds=false;
-            }
-            let size=false;
-            try{
-                size=data["system.secChar.size.value"]; 
-            }catch(err){
-                size=false;
-            }
+
+            wounds=data["system.secChar.wounds.value"];
+
+           
+            
+
             let vehicle=false;
             if(actorData.type==='vehicle'){
                 vehicle=true;
             }
             if(vehicle){
-                newSize= data["system.secChar.size.value"];
+                
                 if(newSize && (newSize !== this.system.secChar.size.value)){
                     let size= 0;
                     size= game.fortyk.FORTYK.size[newSize].size;
@@ -121,12 +121,12 @@ export class FortyKActor extends Actor {
                     }
                 }
             }else{
-                if(wounds&&(this.system.horde.value||this.system.formation.value)||size){
+                if(wounds&&(this.system.horde.value||this.system.formation.value)||newSize){
                     if(this.system.horde.value||this.system.formation.value){
                         newSize= data["system.secChar.wounds.value"];
                         if(newSize<0){newSize=0;}
                     }else{
-                        newSize= data["system.secChar.size.value"];
+                        
                     }
                     if ( (!this.system.horde.value&&!this.system.formation.value&&newSize && (newSize !== this.system.secChar.size.value))||((this.system.horde.value||this.system.formation.value)&&newSize!==undefined && (newSize !== this.system.secChar.wounds.value)) ) {
                         let size= 0;
@@ -164,10 +164,11 @@ export class FortyKActor extends Actor {
         if (!this.img) this.img = CONST.DEFAULT_TOKEN;
         if ( !this.name ) this.name = "New " + this.entity;
         //this.reset();
+        this.system = foundry.utils.duplicate(this._source.system);
         this.prepareBaseData();
         this.prepareEmbeddedEntities();
         this.prepareDerivedData();
-        this.isPrepared=true;
+        this.system.isPrepared=true;
     }
     prepareBaseData(){
         let actorData=this;
@@ -203,16 +204,25 @@ export class FortyKActor extends Actor {
         for(let [key, hitLoc] of Object.entries(data.characterHitLocations)){
             hitLoc.armor=0;
         }
+        
         if(this.getFlag("fortyk","quadruped")){
             data.secChar.movement.multi=parseInt(data.secChar.movement.multi)*2; 
         }
         if(this.getFlag("fortyk","crawler")){
             data.secChar.movement.multi=parseInt(data.secChar.movement.multi)/2; 
         }
+        if(this.getFlag("fortyk","psyrating")){
+            data.psykana.pr.value=parseInt(this.getFlag("fortyk","psyrating"));
+        }
 
         if(this.getFlag("fortyk","doubleteam")){
             data.secChar.attacks.gangup["1"]=20;
             data.secChar.attacks.gangup["2"]=30;
+        }
+        for (let [key, char] of Object.entries(data.characteristics)){
+            if(this.getFlag("fortyk",key+"UB")){
+                char.uB=parseInt(this.getFlag("fortyk",key+"UB"));
+            }
         }
         data.evasion=0;
         data.evasionMod=0;
@@ -312,6 +322,7 @@ export class FortyKActor extends Actor {
             let forRaces=[];
             this.items.forEach((fortykItem,id,items)=>{
                 let item=fortykItem;
+                item.applyActiveEffects();
                 if(item.type==="skill"){
                     if(item.system.parent.value==="Forbidden Lore"){
                         if(game.fortyk.FORTYK.races.includes(item.name)){
@@ -415,6 +426,7 @@ export class FortyKActor extends Actor {
             let items=this.items;
             const data=this.system;
             this.items.forEach((fortykItem,id,items)=>{
+                fortykItem.applyActiveEffects();
                 let item=fortykItem;
                 if(item.system.isEquipped){
                     if(item.getFlag("fortyk","encumbering")){
@@ -439,6 +451,7 @@ export class FortyKActor extends Actor {
             data.shipPoints.spent=0;
             data.shipPoints.remaining=0;
             this.items.forEach((fortykItem,id,items)=>{
+                fortykItem.applyActiveEffects();
                 fortykItem.prepareData();
                 let item=fortykItem;
                 if(item.type==="spaceshipComponent"||item.type==="spaceshipWeapon"){
@@ -461,6 +474,7 @@ export class FortyKActor extends Actor {
             data.frontWeapons=[];
             data.rearWeapons=[];
             this.items.forEach((fortykItem,id,items)=>{
+                fortykItem.applyActiveEffects();
                 fortykItem.prepareData();
                 let item=fortykItem;
                 if(item.type==="forceField"&&item.system.isEquipped){
@@ -497,7 +511,7 @@ export class FortyKActor extends Actor {
             });
         }else if(actorData.type === "knightHouse"){
             this.items.forEach((fortykItem,id,items)=>{
-                let item=fortykItem;
+                fortykItem.applyActiveEffects();
                 fortykItem.prepareData();
             });
         }
@@ -525,7 +539,7 @@ export class FortyKActor extends Actor {
 
                     let itemId=ae.origin.split('.')[3];
                     let item=actor.getEmbeddedDocument("Item",itemId);
-                    console.log(item);
+
                     if(item){
                         let equipped=item.system.isEquipped;
                         if(equipped===undefined){
@@ -546,19 +560,26 @@ export class FortyKActor extends Actor {
                 }else{
                     proceed=true;
                 }
-                console.log(proceed);
                 //if item is equipped and/or not disabled
                 if(proceed){
                     ae.changes.forEach(function(change,i){
                         if(ae.getFlag("fortyk","psy")){
                             let adjustment=ae.getFlag("fortyk","adjustment");
-                            if(!powerActor.isPrepared){
+                            if(!powerActor.system.isPrepared){
                                 let clone=powerActor.clone();
                                 clone.prepareData();
                                 powerActor=clone;
                             }
                             let actorPr=powerActor.system.psykana.pr.effective;
                             let pr=actorPr-adjustment;
+                            try{
+                                change.value=Math.ceil(Function(`let pr=${pr};return `+change.value)());
+
+                            }catch (err){
+                                change.value=0; 
+                            }
+                        }else if(actor.getFlag("fortyk","psyrating")){      
+                            let pr=actor.system.psykana.pr.value+actor.system.psykana.pr.bonus-Math.max(0,actor.system.psykana.pr.sustain-1);
                             try{
                                 change.value=Math.ceil(Function(`let pr=${pr};return `+change.value)());
 
@@ -575,8 +596,7 @@ export class FortyKActor extends Actor {
                         }else{
                             newvalue=Math.floor(newvalue);
                         }*/
-                        console.log(newvalue,path);
-                        if((!isNaN(basevalue)&&!isNaN(newvalue))){
+                        if(isNaN(basevalue)||((!isNaN(basevalue)&&!isNaN(newvalue)))){
                             let changedValue=0;
                             if(change.mode===1){
                                 changedValue=basevalue*newvalue;
@@ -723,9 +743,13 @@ export class FortyKActor extends Actor {
                 }
             }  
         }
+        if(game.settings.get("fortyk","alternateWounds")){
+            data.secChar.wounds.max=data.characteristics.t.bonus*data.characteristics.wp.bonus;
+        }
         if(this.getFlag("fortyk","soundconstitution")){
             data.secChar.wounds.max=parseInt(data.secChar.wounds.max)+2*data.characteristics.t.bonus;
         }
+        data.secChar.wounds.max+=data.secChar.wounds.bonus;
         data.secChar.wounds.heavy=false;
 
         let damage=data.secChar.wounds.max-data.secChar.wounds.value;
@@ -838,6 +862,7 @@ export class FortyKActor extends Actor {
                 hitLoc.armor=hitLoc.armor+2;
             }
             hitLoc.armor+=hitLoc.armorMod;
+            hitLoc.armor+=hitLoc.psy;
             hitLoc.armor+=Math.max(machine,natural);
             hitLoc.armor=Math.max(0,hitLoc.armor);
             if(this.getFlag("fortyk","glancingblow")&&data.characteristics.agi.max===100){
@@ -928,6 +953,7 @@ export class FortyKActor extends Actor {
                 hitLoc.armor=parseInt(hitLoc.armor)+parseInt(armor.system.ap[key].value);
             }
             hitLoc.armor+=hitLoc.armorMod;
+            hitLoc.armor+=hitLoc.psy;
             hitLoc.armor+=Math.max(machine,natural);
             hitLoc.armor=Math.max(0,hitLoc.armor);
             if(this.getFlag("fortyk","glancingblow")&&data.characteristics.agi.max===100){
@@ -950,7 +976,8 @@ export class FortyKActor extends Actor {
         let knight=data.knight;
         var armorRatio=1;
         this.preparePilot();
-
+        var rightShield=0;
+        var leftShield=0;
         if(knight.chassis){
             if(knight.core){
                 data.knight.core=this.getEmbeddedDocument("Item",knight.core);
@@ -1022,8 +1049,7 @@ export class FortyKActor extends Actor {
             let chassis=this.getEmbeddedDocument("Item",knight.chassis);
 
             let hardPoints=chassis.system.hardPoints;
-            var rightShield=0;
-            var leftShield=0;
+
             for (let [key, wpnType] of Object.entries(hardPoints.rightArm)){
                 for(let i=0;i<wpnType.length;i++){
                     if(wpnType[i]){
@@ -1113,7 +1139,7 @@ export class FortyKActor extends Actor {
             if(game.actors){
                 data.knight.pilot=game.actors.get(data.crew.pilotID);
                 let pilot=data.knight.pilot;
-                if(!pilot.isPrepared){
+                if(!pilot.system.isPrepared){
                     pilot.prepareData(); 
                 }
                 data.crew.ws=parseInt(pilot.system.characteristics.ws.total);
@@ -1131,6 +1157,12 @@ export class FortyKActor extends Actor {
         }
     }
     prepareItems(data){
+        //prepare wargear
+        let wargears=this.itemTypes.wargear;
+        wargears.forEach((wargear)=>wargear.prepareData());
+        //prepare armor
+        let armors=this.itemTypes.armor;
+        armors.forEach((armor)=>armor.prepareData());
         //prepare ammunitions
         let ammunitions=this.itemTypes.ammunition;
         ammunitions.forEach((ammunition )=> ammunition.prepareData());
@@ -1238,7 +1270,7 @@ export class FortyKActor extends Actor {
     }
     async prepare(){
         let preparedData = this;
-        if(!preparedData.isPrepared){
+        if(!preparedData.system.isPrepared){
             preparedData.prepareData();
         }
 
@@ -1417,7 +1449,7 @@ export class FortyKActor extends Actor {
         return actorData;
     }
     prepareAlternateProfiles(item) {
-        console.log(item)
+
         if(item.getFlag("fortyk","alternateprofiles")){
 
             try {
@@ -1574,7 +1606,6 @@ export class FortyKActor extends Actor {
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
         for(const item of this.items){
-            console.log(item);
             await item.prepareData();
 
             if(item.type==="talentntrait"){
@@ -1692,47 +1723,108 @@ export class FortyKActor extends Actor {
     async _createEliteAdvanceBonuses(itemData) {
         let bonuses=itemData.system.items;
         let bonusesInstances=[];
-        this.setFlag("fortyk",itemData.system.flag.value,true);
-        bonuses.forEach(async (bonus)=>{
+        let actor=this;
+        await this.setFlag("fortyk",itemData.system.flag.value,true);
+
+        for(const bonus of bonuses){
             let currentInstance=await fromUuid(bonus.uuid);
             let cloneCurrentInstance=foundry.utils.duplicate(currentInstance);
             if(currentInstance.type==="talentntrait"){
-                console.log(cloneCurrentInstance,currentInstance);
                 let spec=currentInstance.system.specialisation.value;
                 let flag=cloneCurrentInstance.system.flagId.value;
-                if(this.getFlag("fortyk",flag)){
+                if(actor.getFlag("fortyk",flag)){
                     return;
                 }
                 if(spec==="N/A"){
 
-                    this.setFlag("fortyk",flag,true);
+                    await this.setFlag("fortyk",flag,true);
                 }else{
-                    let actor=this;
+
                     let chosenSpec=await Dialog.prompt({
                         title: `Choose specialisation for ${cloneCurrentInstance.name}`,
                         content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${cloneCurrentInstance.system.specialisation.value}" autofocus/></p>`,
-
-
-
                         callback: async (html) => {
                             const choosenSpec = $(html).find('input[name="spec"]').val();
-                            actor.setFlag("fortyk",flag,choosenSpec);
+                            await actor.setFlag("fortyk",flag,choosenSpec);
+                            cloneCurrentInstance.system.specialisation.value= choosenSpec;
                             return choosenSpec;
                         },
-
-
-
-
-
-
                         width:100});
-                    cloneCurrentInstance.system.specialisation.value= chosenSpec;
 
                 }
             }
             bonusesInstances.push(cloneCurrentInstance);
-        });
-        this.createEmbeddedDocuments("Item",bonusesInstances);
+        }
+
+
+        if(this.type==="npc"){
+            let instancedBonuses= await this.createEmbeddedDocuments("Item",bonusesInstances);
+            let bonusIds=instancedBonuses.map((bonus)=> bonus.id);
+            let parent=this.itemTypes.eliteAdvance.filter((item)=>item.system.flag.value===itemData.system.flag.value);
+            await parent[0].update({"system.itemIds":bonusIds});
+            return;}
+        let aptitude=itemData.system.aptitude.value;
+        let aptitudes=foundry.utils.duplicate(this.system.aptitudes);
+        let replaced=false;
+        let i=0;
+        while(i<7&&!replaced){
+            let apt=aptitudes[i];
+            if(apt===""){
+                replaced=true;
+                aptitudes[i]=aptitude;
+            }
+            i++;
+        }
+        if(replaced){await this.update({"system.aptitudes":aptitudes});}
+        let skills=itemData.system.skills;
+        if(skills){
+            let splitSkills=skills.split(",");
+            let actorSkills=actor.itemTypes.skill;
+
+            for(const skill of splitSkills){
+                let skillData={system:{}};
+                let name;
+                let parent="";
+                if(skill.indexOf(":")!==-1){
+                    let parentChild=skill.split(":");
+                    skillData.system.parent={value:parentChild[0]};
+                    name=parentChild[1];
+                    parent=parentChild[0];
+                }else{
+                    name=skill;
+                }
+                let instance=actorSkills.find((skill)=> (skill.name.toLowerCase()===name.toLowerCase()&&parent.toLowerCase()===skill.system.parent.value.toLowerCase()));
+                if(instance){
+                    let training=instance.system.value;
+                    if(training<0){
+                        training=0;
+                    }else{
+                        training+=10;
+                        training=Math.min(training,30);
+                    }
+                    await instance.update({"system.value":training});
+                }else{
+                    skillData.name=name;
+                    skillData.system.value=0;
+                    skillData.type="skill";
+                    let aptitudes="";
+                    if(skillData.system.parent){
+                        let parent=actorSkills.find((skill)=> skill.name.toLowerCase()===skillData.system.parent.value.toLowerCase());
+                        if(parent){
+                            aptitudes=parent.system.aptitudes.value;
+                        }
+                    }
+                    skillData.system.aptitudes={"value":aptitudes};
+                    bonusesInstances.push(skillData);
+                }
+            }
+
+        }
+        let instancedBonuses= await this.createEmbeddedDocuments("Item",bonusesInstances);
+        let bonusIds=instancedBonuses.map((bonus)=> bonus.id);
+        let parent=this.itemTypes.eliteAdvance.filter((item)=>item.system.flag.value===itemData.system.flag.value);
+        await parent[0].update({"system.itemIds":bonusIds});
+
     }
 
     _onCreateDescendantDocuments(parent, collection, documents, data, options, userId){
@@ -1743,12 +1835,11 @@ export class FortyKActor extends Actor {
             this.updateKnights();
         }
         if(userId===game.user.id){
-            console.log(parent,collection,documents,data,options,userId); 
             let itemData=data[0];
             if(itemData.type==="eliteAdvance"){
                 if(this.getFlag("fortyk",itemData.system.flag.value)){
-                   return;
-                   }
+                    return;
+                }
                 this._createEliteAdvanceBonuses(itemData);
             }
         }
@@ -1760,13 +1851,12 @@ export class FortyKActor extends Actor {
                     if(item.type==="talentntrait"){
                         let flag=item.system.flagId.value;
                         let spec=item.system.specialisation.value;
-                        console.log(flag,spec)
+                      
 
                         if(spec==="N/A"){
 
                             await actor.setFlag("fortyk",flag,true);
                         }else{
-                            console.log("lmao")
                             let chosenSpec=await Dialog.prompt({
                                 title: `Choose specialisation for ${item.name}`,
                                 content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${item.system.specialisation.value}" /></p>`,
@@ -1833,7 +1923,38 @@ export class FortyKActor extends Actor {
                         let flag=item.system.flagId.value;
                         await actor.setFlag("fortyk",flag,false);
                     }else if(item.type==="eliteAdvance"){
-                        let flag=item.system.flag.value;    
+                        let flag=item.system.flag.value;
+                        let skills= item.system.skills;
+                        if(skills){
+                            let splitSkills=skills.split(",");
+                            let actorSkills=actor.itemTypes.skill;
+
+                            for(const skill of splitSkills){
+
+                                let name;
+                                let parent="";
+                                if(skill.indexOf(":")!==-1){
+                                    let parentChild=skill.split(":");
+
+                                    name=parentChild[1];
+                                    parent=parentChild[0];
+                                }else{
+                                    name=skill;
+                                }
+                                let instance=actorSkills.find((skill)=> (skill.name.toLowerCase()===name.toLowerCase()&&parent.toLowerCase()===skill.system.parent.value.toLowerCase()));
+                                if(instance){
+                                    let training=instance.system.value;
+                                    if(training===0){
+                                        training=-20;
+                                    }else{
+                                        training-=10;
+                                    }
+                                    await instance.update({"system.value":training});
+                                }
+                            }
+
+                        }
+                        await actor.deleteEmbeddedDocuments("Item",item.system.itemIds);
                         await actor.setFlag("fortyk",flag,false);
                     }else if(item.type==="advancement"){
                         let advType=item.system.type.value;
@@ -1862,10 +1983,16 @@ export class FortyKActor extends Actor {
                         }else if(advType==="Psy Rating"){
                             let pr=actor.system.psykana.pr.value;
                             let newPr=pr-1;
-                            await actor.update({"system.psykana.pr.value":newPr});
+                            let tnts=actor.itemTypes.talentntrait;
+                            let prObject=tnts.find((tnt)=> (tnt.name.toLowerCase()==="psy rating"));
+                            await prObject.update({"system.specialisation.value":newPr});
                         }else if(advType==="Psychic Power"){
                             try{
                                 await actor.setFlag("fortyk",data.flagId,false);
+                                await actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
+                            }catch(err){} 
+                        }else if(advType==="Elite Advance"){
+                            try{
                                 await actor.deleteEmbeddedDocuments("Item",[data.itemId.value]);
                             }catch(err){} 
                         }
@@ -2054,7 +2181,6 @@ export class FortyKActor extends Actor {
         let AEs=this.effects;
         AEs.forEach(function(effect){
             if(effect.getFlag("fortyk","repair")){
-                console.log(effect);
                 if(effect.getFlag("fortyk","repair")==="armordmg"){
                     let change=effect.changes[0];
                     switch(change.key){
@@ -2120,7 +2246,6 @@ export class FortyKActor extends Actor {
                     repairs.push({label:`${item.name} Damaged`,amount:1,type:"damagedcomponent",rarity:item.system.rarity.value,uuid:item.uuid});
                 }
                 if(item.system.state.value==="X"){
-                    console.log(item);
                     repairs.push({label:`${item.name} Destroyed`,amount:Math.max(1,parseInt(item.system.space.value)),type:"install/removecomponent",uuid:item.uuid});
                 }
             }
@@ -2137,7 +2262,6 @@ export class FortyKActor extends Actor {
             let itemEffects=item.effects;
             itemEffects.forEach(function(effect){
                 if(effect.getFlag("fortyk","repair")){
-                    console.log(effect);
                     let amount=effect.changes[0]?.value;
                     if(amount<1){amount=1;}
                     repairs.push({label:`${item.name}: ${effect.name}`,type:effect.getFlag("fortyk","repair"),amount,uuid:effect.uuid});

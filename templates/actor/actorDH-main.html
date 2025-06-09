@@ -70,7 +70,7 @@
 
                     {{#each eliteAdvances}}
                     <div class="flexrow advanceElite">
-                        <u>{{name}}</u>
+                        <a class="item-descr" data-id="{{id}}" data-name="{{name}}" data-item-descr="{{system.description.value}}"><u>{{name}}</u></a>
                         <a class="list-button item-delete" title="Delete" data-item-id="{{id}}"></a>
                     </div>
                     {{/each}}
@@ -95,7 +95,7 @@
                     <div class="resource-content flexrow flex-center flex-between">
                         <input type="text" class="combat-resources" data-target="system.secChar.wounds.value" value="{{system.secChar.wounds.value}}" data-dtype="Number"/>
                         <span> / </span>
-                        <input type="text" class="combat-resources" data-target="system.secChar.wounds.max" value="{{system.secChar.wounds.max}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" data-target="system.secChar.wounds.max" value="{{system.secChar.wounds.max}}" data-dtype="Number" {{#if alternateWounds}}disabled{{/if}}/>
                     </div>
                 </div>
                 <div class="flex-group-center">
@@ -169,7 +169,7 @@
                 {{#unless (compareString key "inf")}}
                 <div>
 
-                    <input type="text" class="combat-resources" data-target="system.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number"/>
+                    <input type="text" class="combat-resources" data-target="system.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number" disabled/>
                 </div>
                 {{/unless}}
                 {{/each}}

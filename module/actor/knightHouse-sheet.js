@@ -118,7 +118,6 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
 
                                 await house.update({"system.repairBays.current":current,"system.repairBays.queue":queueArray});
                             }
-                            console.log(item)
                             SimpleCalendar.api.removeNote(item.system.calendar.noteId);
                             
                             let money=item.system.cost.value;

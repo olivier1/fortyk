@@ -1,7 +1,6 @@
 
 let upd=async ()=>{
     for ( let a of game.actors.entities ) {
-        console.log(a);
         let weps=[]
         for (let i of a.items){
             if(i.type==="rangedWeapon")
@@ -10,7 +9,6 @@ let upd=async ()=>{
 
               let updateData={};
                
-                console.log(i);
 
                 console.log(`Migrating Item entity ${i.name}`);
               await a.updateEmbeddedDocuments("Item",updateData);

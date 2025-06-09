@@ -196,7 +196,7 @@ export class CreateRepairEntryDialog extends Application {
         if(amount===false){
             amount=parseInt(repairEntry.amount);
         }
-        console.log(repairEntry);
+     
         const configAmount=repairTypeConfig.amount;
         
         let ratio=amount/configAmount;
@@ -209,10 +209,9 @@ export class CreateRepairEntryDialog extends Application {
             let rarity=parseInt(repairEntry.rarity);
             if(rarity<-10){
                 let rarityAboveScarce=Math.abs(rarity+10)/10;
-                console.log(rarityAboveScarce,rarity);
                 repairEntry.time+=repairTypeConfig.timePerRarityAboveScarce*rarityAboveScarce;
                 repairEntry.cost+=repairTypeConfig.costPerRarityAboveScarce*rarityAboveScarce;
-                console.log(repairEntry)
+              
             }
         }
 
@@ -475,7 +474,6 @@ export class CreateRepairEntryDialog extends Application {
         let dosTime=null;
         var i=0;
         do{
-            console.log(totalTime)
             let repairAdjust=FORTYK.repairTimeAdjustment[i]
             if(totalTime<repairAdjust.upperRange){
                 dosTime=repairAdjust.adjustment;
@@ -503,7 +501,6 @@ export class CreateRepairEntryDialog extends Application {
         let mode=event.currentTarget.dataset.tab;
         this.options.mode=mode;
         this.updateCosts();
-        console.log(mode)
     }
     async _onCreateEntry(event){
         if(!this.options.ready){return}
