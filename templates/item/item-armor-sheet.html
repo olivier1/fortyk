@@ -1,86 +1,133 @@
-<form class="{{cssClass}} item-sheet flexcol">
+<form class="{{cssClass}} item-sheet">
     <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
-
+        <div class="flexcol">
+            <label>Name:</label>
+            <input type="text" class="weapon-mod" value="{{_source.name}}" data-target="name" data-dtype="String">
+        </div>
     </header>
-    {{#if isGM}}
-    <label class="button clone">Copy Item</label>
-    {{/if}}
-    <div class="flexcol">
-        <label>Name:</label>
-        <input type="text" value="{{name}}" name="name">
-    </div>
-    <div class="flexcol">
-        <label>Weight:</label>
-        <input type="text" value="{{system.weight.value}}" name="system.weight.value">
-    </div>
-    <div class="flexcol">
-        <label>Item Quality:</label>
+    <nav class="sheet-tabs item tabs grid grid-4col" data-group="primary">
 
-        <select class="quality"  name="system.quality.value">
-            {{selectOptions FORTYK.itemQualities selected=system.quality.value valueAttr="value" labelAttr="value"}}
-        </select>
-    </div>
-    <div class="flexcol">
-        <label>Rarity:</label>
-        <select class="power-type" name="system.rarity.value">
-            {{selectOptions FORTYK.itemRarity selected=system.rarity.value valueAttr="value" labelAttr="label"}}
-        </select>
-    </div>
-    <div class="flexcol">
-        <label>Max Agility:</label>
-        <input type="text" value="{{system.maxAgi.value}}" name="system.maxAgi.value">
-    </div>
-    {{#if isGM}}
-    <div class="flexcol">
-        <a class="modifier button">Active Effects</a>
-    </div>
-    {{/if}}
-    <div class="flexcol">
-        <a class="special button">Special Qualities</a>
-    </div>
-    <div class="armor-wrap flexcol">
-        <div class="flexrow flex-group-center">
+        <a class="item" data-tab="main">MAIN</a>
+        <a class="item" data-tab="armor">ARMOR</a>
+        <a class="item" data-tab="mods">MODS</a>
+        <a class="item" data-tab="descr">DESCRIPTION</a>
+
+    </nav>
+    <section class="sheet-body item">
+        <div class="tab main flexcol" data-group="primary" data-tab="main">
+            {{#if isGM}}
+            <label class="button clone">Copy Item</label>
+            {{/if}}
+
             <div class="flexcol">
+                <label>Weight:</label>
+                <input type="text" class="weapon-mod" value="{{system.weight.value}}" data-target="system.weight.value">
+            </div>
+            <div class="flexcol">
+                <label>Item Quality:</label>
 
-                <label>Head</label>
-                <input type="text" value="{{system.ap.head.value}}" name="system.ap.head.value">
+                <select class="quality"  name="system.quality.value">
+                    {{selectOptions FORTYK.itemQualities selected=system.quality.value valueAttr="value" labelAttr="value"}}
+                </select>
+            </div>
+            <div class="flexcol">
+                <label>Rarity:</label>
+                <select class="power-type" name="system.rarity.value">
+                    {{selectOptions FORTYK.itemRarity selected=system.rarity.value valueAttr="value" labelAttr="label"}}
+                </select>
+            </div>
+            <div class="flexcol">
+                <label>Max Agility:</label>
+                <input type="text" class="weapon-mod" value="{{system.maxAgi.value}}" data-target="system.maxAgi.value">
+            </div>
+
+
+        </div>
+        <div class="tab armor flexcol" data-group="primary" data-tab="armor">
+            <div class="armor-wrap flexcol">
+                <div class="flexrow flex-group-center">
+                    <div class="flexcol">
+
+                        <label>Head</label>
+                        <input type="text" class="weapon-mod" value="{{system.ap.head.value}}" data-target="system.ap.head.value" data-dtype="Number">
+                    </div>
+
+                </div>
+                <div class="flexrow flex-group-center">
+                    <div class="flexcol">
+
+                        <label>Left Arm</label>
+                        <input type="text" class="weapon-mod" value="{{system.ap.lArm.value}}" data-target="system.ap.lArm.value" data-dtype="Number">
+                    </div>
+                    <div class="flexcol">
+
+                        <label>Body</label>
+                        <input type="text" class="weapon-mod" value="{{system.ap.body.value}}" data-target="system.ap.body.value" data-dtype="Number">
+                    </div>
+                    <div class="flexcol">
+
+                        <label>Right Arm</label>
+                        <input type="text" class="weapon-mod" value="{{system.ap.rArm.value}}" data-target="system.ap.rArm.value" data-dtype="Number">
+                    </div>
+                </div>
+                <div class="flexrow flex-group-center">
+
+                    <div class="flexcol">
+
+                        <label>Left Leg</label>
+                        <input type="text" class="weapon-mod" value="{{system.ap.lLeg.value}}" data-target="system.ap.lLeg.value" data-dtype="Number">
+                    </div>
+                    <div class="flexcol">
+
+                        <label>Right Leg</label>
+                        <input type="text" class="weapon-mod" value="{{system.ap.rLeg.value}}" data-target="system.ap.rLeg.value" data-dtype="Number">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab mods flexcol" data-group="primary" data-tab="mods">
+            <div class="flexcol">
+                <a class="special button">Special Qualities</a>
+            </div>
+            {{#if isGM}}
+            <div class="flexcol">
+                <a class="modifier button">Active Effects</a>
+            </div>
+            {{/if}}
+            <div class="flexrow">
+
+                <label>Upgrades: {{this.getModCount}}/{{system.mods.max}}</label>
+
+                
+            </div>
+
+            <div class="sheet-tnt flexcol">
+                <div class="list list2col1 grid grid-3col">
+
+                    <a class="list-item-header" data-sort-type="name" data-path="name" data-item-type="talentsntraits">Name</a>
+                    <a class="list-item-header" data-sort-type="name" data-path="name" data-item-type="talentsntraits">Description</a>
+                    <span class="list-item-header-last"></span>
+                    {{#each mods as |t key|}}
+                    <span class="list-item" data-id="{{t.id}}" data-name="{{t.name}}" data-item-descr="{{t.description}}">{{t.name}}</span>
+                    <span class="list-item"> {{unescape t.description}}</span>
+                    <span class="list-button"> <a class="list-button item-delete delete-mod" title="Delete" data-item-id="{{t.id}}"></a></span>
+                    {{/each}}
+
+                </div>
+
             </div>
 
         </div>
-        <div class="flexrow flex-group-center">
-            <div class="flexcol">
-
-                <label>Left Arm</label>
-                <input type="text" value="{{system.ap.lArm.value}}" name="system.ap.lArm.value">
-            </div>
-            <div class="flexcol">
-
-                <label>Body</label>
-                <input type="text" value="{{system.ap.body.value}}" name="system.ap.body.value">
-            </div>
-            <div class="flexcol">
-
-                <label>Right Arm</label>
-                <input type="text" value="{{system.ap.rArm.value}}" name="system.ap.rArm.value">
+        <div class="tab descr" data-group="primary" data-tab="descr">
+            <div class="item-description">
+                {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
             </div>
         </div>
-        <div class="flexrow flex-group-center">
 
-            <div class="flexcol">
+    </section>
 
-                <label>Left Leg</label>
-                <input type="text" value="{{system.ap.lLeg.value}}" name="system.ap.lLeg.value">
-            </div>
-            <div class="flexcol">
 
-                <label>Right Leg</label>
-                <input type="text" value="{{system.ap.rLeg.value}}" name="system.ap.rLeg.value">
-            </div>
-        </div>
-    </div>
-    <div class="item-description">
-        <label>Description:</label>
-        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
-    </div>
+
+
 </form>

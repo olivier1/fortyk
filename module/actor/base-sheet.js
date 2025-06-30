@@ -40,11 +40,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.psyDisciplines=game.fortyk.FORTYK.psychicDisciplines;
         data.psykerTypes=game.fortyk.FORTYK.psykerTypes;
         if(this.actor.itemTypes.eliteAdvance.length){
-          data.eliteAdvances=this.actor.itemTypes.eliteAdvance;  
+            data.eliteAdvances=this.actor.itemTypes.eliteAdvance;  
         }else{
-           data.eliteAdvances=undefined; 
+            data.eliteAdvances=undefined; 
         }
-        
+
         data.editable = this.options.editable;
         data.money=game.settings.get("fortyk","dhMoney");
         data.alternateWounds=game.settings.get("fortyk","alternateWounds");
@@ -122,9 +122,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         });
     }
     _onDragListItem(event){
-
-        event.dataTransfer.setData("text", event.target.dataset["id"]);
-
+        let data={};
+        data.id=event.target.dataset["id"];
+        data.uuid=event.target.dataset["uuid"];
+        data.type=event.target.dataset["type"];
+        event.dataTransfer.setData("text/plain", JSON.stringify(data));
 
     }
     _onDragOverListItem(event){
@@ -134,8 +136,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     }
 
     async _onDropListItem(event){
-
-        let draggedId=event.dataTransfer.getData("text");
+        let data=JSON.parse(event.dataTransfer.getData("text"));
+        let draggedId=data.id;
 
         let targetId=event.target.dataset["id"];
         if(draggedId!==targetId){
@@ -299,7 +301,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         if(malice){
             this.actor.setFlag("fortyk","malice",false);
         }else{
-           this.actor.setFlag("fortyk","malice",true); 
+            this.actor.setFlag("fortyk","malice",true); 
         }
     }
     //Handle the popup when user clicks item name to show item description
@@ -407,6 +409,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             // a must be equal to b
             return 0;
         });
+        tnts=tnts.filter((tnt)=>!actor.getFlag("fortyk",tnt.system.flagId.value));
+
         let templateOptions={"tnts":tnts};
 
         let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/tnt-dialog.html', templateOptions);
@@ -848,7 +852,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 buttons: {
                     submit: {
                         label: 'OK',
-                        callback: (el) => {
+                        callback: async (el) => {
                             const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
                             const dmg = $(el).find('input[name="dmg"]').val();
                             const pen = parseInt(Number($(el).find('input[name="pen"]').val()));
@@ -858,7 +862,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                             formula.value+=`+${dmg}`;
 
                             if(game.user.isGM){
-                                FortykRolls.damageRoll(formula,actor,fortykWeapon,hits,false,false,magdmg,pen,rerollNum); 
+                                await FortykRolls.damageRoll(formula,actor,fortykWeapon,hits,false,false,magdmg,pen,rerollNum); 
+                                actor.deleteAfterAttackEffects();
                             }else{
                                 //if user isnt GM use socket to have gm process the damage roll
                                 let targets=game.user.targets.ids;
@@ -928,8 +933,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         if(dmg>0){
                             formula.value+=`+${dmg}`;
                         }
+                        let name=actor.getName();
                         let chatBlast={author: game.user._id,
-                                       speaker:{actor,alias:actor.name},
+                                       speaker:{actor,alias:name},
                                        content:`Starting Blast weapon damage rolls`,
                                        classes:["fortyk"],
                                        flavor:`Blast Weapon Damage`};
@@ -954,14 +960,15 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                 if(curTargets.length!==0){
 
                                     game.user.updateTokenTargets(curTargets);
-
+                                    let name=actor.getName();
                                     let chatBlast2={author: game.user._id,
-                                                    speaker:{actor,alias:actor.name},
+                                                    speaker:{actor,alias:name},
                                                     content:`Template #${i+1} hits `+targetNames,
                                                     classes:["fortyk"],
                                                     flavor:`Blast Weapon Damage`};
                                     await ChatMessage.create(chatBlast2,{});
                                     await FortykRolls.damageRoll(formula,actor,weapon,hits,false,false,magdmg,pen,rerollNum); 
+                                    
                                     game.user.updateTokenTargets();
                                     //clean templates after
                                     let scene=game.scenes.active;
@@ -978,6 +985,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
 
                             }
+                            actor.deleteAfterAttackEffects();
 
                         }else{
                             //if user isnt GM use socket to have gm process the damage roll
@@ -1008,7 +1016,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let bounds=template._object._computeShape();
             bounds.x=template.x;
             bounds.y=template.y;
-            
+
 
             tokens.forEach((token,id,tokens)=>{
 
@@ -1023,13 +1031,13 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     tempInToken=true;
                 }
 
-                let bottomIntersect=lineCircleIntersection(tokenBounds.bottomEdge.A,tokenBounds.bottomEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
+                let bottomIntersect=foundry.utils.lineCircleIntersection(tokenBounds.bottomEdge.A,tokenBounds.bottomEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
                 bottomIn=!bottomIntersect.outside;
-                let topIntersect=lineCircleIntersection(tokenBounds.topEdge.A,tokenBounds.topEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
+                let topIntersect=foundry.utils.lineCircleIntersection(tokenBounds.topEdge.A,tokenBounds.topEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
                 topIn=!topIntersect.outside;
-                let leftIntersect=lineCircleIntersection(tokenBounds.leftEdge.A,tokenBounds.leftEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
+                let leftIntersect=foundry.utils.lineCircleIntersection(tokenBounds.leftEdge.A,tokenBounds.leftEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
                 leftIn=!leftIntersect.outside;
-                let rightIntersect=lineCircleIntersection(tokenBounds.rightEdge.A,tokenBounds.rightEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
+                let rightIntersect=foundry.utils.lineCircleIntersection(tokenBounds.rightEdge.A,tokenBounds.rightEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
                 rightIn=!rightIntersect.outside;
                 if(tokenInTemp||bottomIn||topIn||leftIn||rightIn||tempInToken){
                     targetted.push(token.id);
@@ -1079,7 +1087,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             ui.notifications.error("You must have targets to run psychic power macros.");
             return;
         }
-        if(game.user.isGM){
+        let power=this.actor.getEmbeddedDocument("Item",powerId);
+        let user=power.system.macro.user;
+        if(user==="user"||game.user.isGM){
 
             FortyKItem.executePsyMacro(powerId, macroId, this.actor.uuid, targetIds);
         }else{
@@ -1165,19 +1175,187 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
 
                         let forceData={name:"Force",type:"rangedWeapon"};
-                        let force=await Item.create(forceData, {temporary: true});
+                        forceData.flags={
+                            fortyk:{
+                                ignoresoak:true
+                            
+                        }};
+                        forceData.system={damageFormula:{value:`${hits}d10`},
+                                         damageType:{value:"Energy"}};
+                        let force=await new Item(forceData, {temporary: true});
+                        console.log(force);
+                        
+                        if(game.user.isGM){
+                            FortykRolls.damageRoll(force.system.damageFormula,actor,force,1); 
+                        }else{
+                            let forceObj=force.toObject();
+                            let targets=game.user.targets.ids;
+                            let lastHit=this.actor.system.secChar.lastHit;
+                            let socketOp={type:"damageWithJSONWeapon",package:{user:game.user.id, lastHit:lastHit, hits:1, targets:targets, formula:forceObj.system.damageFormula.value,actor:actor.id,fortykWeapon:JSON.stringify(forceObj)}};
+                            await game.socket.emit("system.fortyk",socketOp);
+                        }
 
-                        force.flags.fortyk={};
-                        force.flags.fortyk.ignoreSoak=true;
-                        force.system.damageFormula.value=`${hits}d10`;
-                        force.system.damageType.value="Energy";
-                        FortykRolls.damageRoll(force.system.damageFormula,actor,force,1);
                     }
                 }
             },
             default: "submit",
             width:100}
                   ).render(true);
+    }
+    //OVERRIDE
+    async _onDropItem(event, data) {
+        if ( !this.actor.isOwner ) return false;
+        const item = await Item.implementation.fromDropData(data);
+        const itemData = item.toObject();
+        const sameActor=this.actor.uuid === item.parent?.uuid;
+        if(itemData.type==="mod"){
+            if(this.actor.type!=="spaceship"){
+                let applied= await this._applyModToItem(item ,sameActor);
+
+                if(applied){
+                    return false;
+                } 
+                if(itemData.system.amount.value>1){
+                    itemData.system.amount.value=1;
+                }
+
+            }
+
+        }
+        // Handle item sorting within the same Actor
+        if ( sameActor ) return super._onSortItem(event, itemData);
+
+        // Create the owned item
+        return super._onDropItemCreate(itemData, event);
+    }
+    async _applyModToItem(originItem, sameActor){
+        async function deleteOrigin() {
+            let originUuid=originItem.uuid;
+            if(originUuid.indexOf("Item")!==0&&originUuid.indexOf("Compendium")===-1){
+                let origin=await fromUuid(originUuid);
+                var amount = origin.system.amount.value;
+                if(amount>1){
+                    amount--;
+                    origin.update({"system.amount.value":amount});
+                }else{
+                    origin.delete();  
+                }
+
+            }
+        }
+        if(originItem.effects.length===0){
+            if(!sameActor){
+                ui.notifications.warn("The Mod has no active effect, it has not been added!");
+
+
+            }
+            return true;
+        }
+        let modType=originItem.system.type.value;
+        let items;
+        let actor=this.actor;
+        switch(modType){
+            case "":{
+                items=actor.items;
+                break;
+            }
+            case "weapon":{
+                items=actor.itemTypes.rangedWeapon.concat(actor.itemTypes.meleeWeapon);
+                break;
+            }
+            case "rangedWeapon":{
+                items=actor.itemTypes.rangedWeapon;
+                break;
+            }
+            case "meleeWeapon":{
+                items=actor.itemTypes.meleeWeapon;
+                break;
+            }
+            case "armor":{
+                items=actor.itemTypes.armor;
+                break;
+            }   
+        }     
+        items=items.filter((item)=>item.system.mods.max>item.getModCount());
+        if(items.length===0){
+            if(!sameActor){
+                ui.notifications.warn("There are no suitable items to apply the mod to.");
+                deleteOrigin();
+
+            }
+            return false;
+        }
+        let content='';
+        let i=0;
+        for(const item of items){
+            if(i===0){
+                content+=`<div><input class="itemradio" type="radio" value="${item.id}" checked="checked"/> <span>${item.name}</span></div>`;
+            }else{
+                content+=`<div><input class="itemradio" type="radio" value="${item.id}"/> <span>${item.name}</span></div>`;
+            }
+            i++;
+        }
+
+
+
+        async function applyMod(actor, itemId) {
+            let item=actor.getEmbeddedDocument("Item",itemId);
+            let effect=originItem.effects.entries().next().value[1];
+            let effectData=foundry.utils.duplicate(effect);
+            effectData["flags.fortyk.modsystem"]=originItem.system;
+
+            effectData.description=originItem.system.description.value;
+            let ae=await item.createEmbeddedDocuments("ActiveEffect",[effectData]);
+            item.applyActiveEffects();
+            item.prepareData();
+            deleteOrigin();
+        }
+        return await Dialog.wait({
+            title: "Choose item to apply upgrade",
+            content: content,
+            buttons: {
+                submit: {
+                    label: 'Add to item',
+                    callback: (html) => {
+                        let itemId=html.find('.itemradio:checked')[0].value;
+                        if(!itemId){
+                            if(!sameActor){
+                                deleteOrigin();
+                            }
+                            return false;
+
+                        }else{
+                            applyMod(actor, itemId);
+                            this.render(true);
+                            return true; 
+
+
+                        }
+
+
+                    }
+                },
+                cancel:{
+                    label:"Add to inventory",
+                    callback: (html) => {
+                        if(!sameActor){
+                            deleteOrigin();
+                        }
+
+                        return false;
+                    }
+                }
+            },
+            render: (html)=>{
+
+            },
+
+
+            default: "submit",
+
+
+            width:100});
+
     }
 
 

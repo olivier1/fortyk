@@ -32,6 +32,7 @@ export class FortyKItem extends Item {
      ** @override talents and traits should update their flags on the owning actor if the specialisation field is changed
      **/
     async update(data, options = {}) {
+
         if (this.type === "talentntrait") {
             if (this.isEmbedded) {
                 if (this.system.specialisation.value !== data["system.specialisation.value"]) {
@@ -76,11 +77,48 @@ export class FortyKItem extends Item {
         // Get the Item's data
         const item = this;
         item.FORTYK = game.fortyk.FORTYK;
+        /*if(game.user.isGM){
+            if(!item.flags.fortyk)item.flags.fortyk={};
+            item.flags.fortyk.hidden=false;
+        }*/
+        if(this.system.quality?.value){
 
+            this.name=`(${this.FORTYK.itemQualityAbrv[this.system.quality.value]}) ${this._source.name}`;
+
+
+        }
+
+        let qualityMods=function(quality){
+            if(quality==="Good"){
+                return 1;
+            }else if(quality==="Best"){
+                return 2;
+            }else{
+                return 0;
+            }
+        };
+        if(item.type==="armor"){
+            item.system.mods.max=3;
+            item.system.mods.max+=qualityMods(item.system.quality.value);
+        }else if(item.type==="rangedWeapon"){
+            if(item.system.class.value==="Pistol"){
+                item.system.mods.max=1; 
+            }else{
+                item.system.mods.max=2;
+            }
+            item.system.mods.max+=qualityMods(item.system.quality.value);
+        }else if(item.type==="meleeWeapon"){
+            if(item.system.class.value==="Melee Two-handed"){
+                item.system.mods.max=2; 
+            }else{
+                item.system.mods.max=1;
+            }
+            item.system.mods.max+=qualityMods(item.system.quality.value);
+        }
         //ensure this is an owned item
 
         if (this.actor) {
-            item.system = foundry.utils.duplicate(item._source.system);
+
 
             const data = this.actor.system;
             let actor = this.actor;
@@ -96,6 +134,10 @@ export class FortyKItem extends Item {
                     item.flags.fortyk.disabled = true;
                 }
             }
+            if(actor.type==="loot"){
+                return;
+            }
+            
             if (actor.type === "spaceship") {
                 if (item.type === "spaceshipCargo") {
                     try {
@@ -149,6 +191,10 @@ export class FortyKItem extends Item {
                             item.system.rating.value += 10;
                         }
                     }
+                }else{
+                    let wp=actor.system.characteristics.wp.total;
+                    item.system.rating.value=Math.ceil(math.evaluate(item.system.rating.value,{wp:wp}));
+                    item.system.rating.overload=Math.ceil(math.evaluate(item.system.rating.overload,{wp:wp}));
                 }
                 //logic for the sanctuary forcefields
                 if (item.getFlag("fortyk", "adjustment")) {
@@ -161,8 +207,8 @@ export class FortyKItem extends Item {
                         actorPr = caster.system.psykana.pr.effective;
                     } else {
                         actorPr =
-                            actor.system.psykana.pr.value +
-                            actor.system.psykana.pr.bonus -
+                            parseInt(actor.system.psykana.pr.value) +
+                            parseInt(actor.system.psykana.pr.bonus) -
                             Math.max(0, actor.system.psykana.pr.sustain - 1);
                     }
                     let adjustment = item.getFlag("fortyk", "adjustment");
@@ -176,6 +222,7 @@ export class FortyKItem extends Item {
                         item.system.rating.value = Math.min(max, 10 * pr);
                     }
                 }
+
                 return;
             }
             if (item.getFlag("fortyk", "currentprofile")) {
@@ -186,10 +233,12 @@ export class FortyKItem extends Item {
                     currentProfile = await fromUuid(item.getFlag("fortyk", "currentprofile"));
                 }
                 currentProfile = foundry.utils.duplicate(currentProfile);
+                this.applyActiveEffects(currentProfile);
                 item.name = currentProfile.name;
                 item.system.damageType.value = currentProfile.system.damageType.value;
                 item.system.range.value = currentProfile.system.range.formula;
                 item.system.range.formula = currentProfile.system.range.formula;
+                item.system.range.multi = 1;
                 item.system.pen.formula = currentProfile.system.pen.formula;
                 if (item.type === "rangedWeapon") {
                     item.system.rof = currentProfile.system.rof;
@@ -201,6 +250,7 @@ export class FortyKItem extends Item {
                 item.flags.fortyk.profiles = profiles;
                 item.flags.fortyk.alternateprofiles = true;
                 item.flags.fortyk.currentprofile = currentProfileUuid;
+                //item.applyActiveEffects();
             }
             if (item.type === "meleeWeapon") {
                 item.system.damageFormula.value = item.system.damageFormula.formula;
@@ -225,40 +275,71 @@ export class FortyKItem extends Item {
                 //parse rof
                 if(actor.getFlag("fortyk","psyrating")){
                     let pr=actor.system.psykana.pr.effective;
+                    let scope={pr:pr};
                     try{
-                        item.system.rof[1].value= Math.ceil(Function(`let pr=${pr};return `+item.system.rof[1].value)());
-                        item.system.rof[2].value=Math.ceil(Function(`let pr=${pr};return `+item.system.rof[2].value)());
+
+                        item.system.rof[1].value=Math.ceil(math.evaluate(item.system.rof[1].value,scope));
+
+                        item.system.rof[2].value=Math.ceil(math.evaluate(item.system.rof[2].value,scope));
                     }catch (err){
-                        item.system.rof[1]=parseInt(item.system.rof[1].value);
-                        item.system.rof[2]=parseInt(item.system.rof[2].value);
+                        item.system.rof[1].value=parseInt(item.system.rof[1].value);
+                        if(isNaN(item.system.rof[1].value)){
+                            item.system.rof[1].value=0;
+                        }
+                        item.system.rof[2].value=parseInt(item.system.rof[2].value);
+                        if(isNaN(item.system.rof[2].value)){
+                            item.system.rof[2].value=0;
+                        }
                     }
                 }else{
-                    item.system.rof[1]=parseInt(item.system.rof[1].value);
-                    item.system.rof[2]=parseInt(item.system.rof[2].value);
+                    item.system.rof[1].value=parseInt(item.system.rof[1].value);
+                    if(isNaN(item.system.rof[1].value)){
+                        item.system.rof[1].value=0;
+                    }
+                    try {
+                        item.system.rof[2].value=parseInt(item.system.rof[2].value);
+                        if(isNaN(item.system.rof[2].value)){
+                            item.system.rof[2].value=0;
+                        }
+                    } catch (e) {
+                        item.system.rof[2]={value:0};
+                    }
                 }
-                if(item.system.rof[0].value.toLowerCase()==="s"){
+                if(Number.isNaN(item.system.rof[0].value)&&item.system.rof[0].value?.toLowerCase()==="s"){
                     item.system.rof[0].value=1;
                 }else{
                     item.system.rof[0].value=parseInt(item.system.rof[0].value);
+                    if(isNaN(item.system.rof[0].value)){
+                        item.system.rof[0].value="S";
+                    }
                 }
 
                 if (actor.getFlag("fortyk", "filltheairwithdeath")) {
                     if (item.system.rof[1]?.value > 0) {
                         item.system.rof[1].value = parseInt(item.system.rof[1].value) + 1;
+                        if(isNaN(item.system.rof[1].value)){
+                            item.system.rof[1].value=0;
+                        }
                     }
                     if (item.system.rof[2]?.value > 0) {
                         item.system.rof[2].value = parseInt(item.system.rof[2].value) + 1;
+                        if(isNaN(item.system.rof[2].value)){
+                            item.system.rof[2].value=0;
+                        }
                     }
                 }
 
                 let ammo = actor.getEmbeddedDocument("Item", item.system.ammo._id);
                 if (ammo) {
+                    //this.applyActiveEffects(ammo);
                     item.system.ammo.name = ammo.name;
                 }
                 let ammos=actor.itemTypes.ammunition;
                 let validAmmos=ammos.filter((ammo) => ammo.system.class.value===item.system.class.value&&ammo.system.type.value===item.system.type.value);
                 item.validAmmos=validAmmos;
                 if (ammo && !ammo.system.default.value) {
+
+                    this.applyActiveEffects(ammo);
                     item.system.damageType.value = ammo.system.damageType.value;
                     item.system.range.value = ammo.system.range.formula;
                     item.system.range.formula = ammo.system.range.formula;
@@ -276,6 +357,7 @@ export class FortyKItem extends Item {
                     item.system.pen.value = item.system.pen.formula;
                     item.system.damageFormula.value = item.system.damageFormula.formula;
                 }
+
 
                 if (item.system.damTyp === undefined) {
                     item.system.damTyp = item.system.damageType.value;
@@ -368,7 +450,7 @@ export class FortyKItem extends Item {
                         if (typeof fl == "string") {
                             if (fl.toLowerCase().indexOf("pr") !== -1) {
                                 try {
-                                    flags[flag] = Math.ceil(Function(`let pr=${pr};return ` + flags[flag])());
+                                    flags[flag] = Math.ceil(math.evaluate(flags[flag],{pr:pr}));
                                 } catch (err) {
                                     flags[flag] = 0;
                                 }
@@ -384,17 +466,16 @@ export class FortyKItem extends Item {
                         let range = item.system.range.formula.toLowerCase();
                         let wp = data.characteristics.wp.bonus;
                         let per = data.characteristics.per.bonus;
+                        let scope={per:per,wp:wp};
                         try {
-                            item.system.range.value = Math.ceil(
-                                Function(`let wp=${wp};let per=${per};return ` + range)()
-                            );
+                            item.system.range.value = Math.ceil(math.evaluate(range,scope));
                         } catch (err) {
                             item.system.range.value = 0;
                         }
                         try {
-                            item.system.pen.value = Math.ceil(
-                                Function(`let wp=${wp};return ` + item.system.pen.formula.toLowerCase())()
-                            );
+                            let penstr=item.system.pen.formula;
+                            item.system.pen.value = Math.ceil(math.evaluate(penstr,scope));
+
                         } catch (err) {
                             item.system.pen.value = 0;
                         }
@@ -425,21 +506,22 @@ export class FortyKItem extends Item {
                         item.system.target.value = char + training + parseInt(item.system.testMod.value);
                     } else {
                         try {
+
                             let range = item.system.range.formula.toLowerCase();
+
+
                             let wp = data.characteristics.wp.bonus;
+                            let pr = parseInt(item.system.curPR.value); 
                             try {
-                                item.system.range.value = Math.ceil(
-                                    Function(`let pr=${pr};let wp=${wp};return ` + range)()
-                                );
+                                item.system.range.value = Math.ceil(math.evaluate(range,{wp:wp,pr:pr}));
                             } catch (err) {
                                 item.system.range.value = 0;
                             }
                             try {
-                                item.system.pen.value = Math.ceil(
-                                    Function(
-                                        `let pr=${pr};let wp=${wp};return ` + item.system.pen.formula.toLowerCase()
-                                    )()
-                                );
+                                let scope={wp:wp, pr:pr};
+                                let penstr=item.system.pen.formula;
+                                item.system.pen.value = Math.ceil(math.evaluate(penstr,scope));
+
                             } catch (err) {
                                 item.system.pen.value = 0;
                             }
@@ -447,6 +529,15 @@ export class FortyKItem extends Item {
                             let temp;
                             temp = item.system.damageFormula.formula.replace(/pr/gim, pr);
                             item.system.damageFormula.value = temp.replace(/wp/gim, wp);
+                            if (this.getFlag("fortyk", "tainted")) {
+                                let corruptBonus = Math.floor(parseInt(actor.system.secChar.corruption.value) / 10);
+                                let daemonic = parseFloat(actor.getFlag("fortyk", "daemonic"));
+                                if (isNaN(daemonic)) {
+                                    daemonic = 0;
+                                }
+                                var taintbonus = Math.max(corruptBonus, daemonic);
+                                item.system.damageFormula.value += `+${taintbonus}`;
+                            }
                         } catch (err) {
                             item.system.range.value = "";
                             item.system.pen.value = "";
@@ -476,8 +567,8 @@ export class FortyKItem extends Item {
                     if (item.system.class.value !== "Shield" && item.system.shield.value !== 0) {
                         item.system.shield.value = 0;
                     }
-
-                    if (this.getFlag("fortyk", "crushing")) {
+                    if(this.getFlag("fortyk", "nosb")){    
+                    }else if (this.getFlag("fortyk", "crushing")) {
                         item.system.damageFormula.value += "+" + 2 * data.characteristics.s.bonus;
                     } else if (this.getFlag("fortyk", "heavy")) {
                         item.system.damageFormula.value += "+" + 3 * data.characteristics.s.bonus;
@@ -492,7 +583,8 @@ export class FortyKItem extends Item {
                     }
                     let wp = data.characteristics.wp.bonus;
                     item.system.damageFormula.value = item.system.damageFormula.value.replace("wp", wp);
-
+                    let sb = data.characteristics.s.bonus;
+                    item.system.damageFormula.value = item.system.damageFormula.value.replace("sb", sb);
                     if (item.getFlag("fortyk", "heavy")) {
                         item.system.twohanded.value = true;
                     } else if (!actor.getFlag("fortyk", "irongrip")) {
@@ -512,12 +604,12 @@ export class FortyKItem extends Item {
                         let formula = item.system.range.formula.toLowerCase();
 
                         try {
-                            item.system.range.value = Function(`let sb=${sb}; return ` + formula)();
+                            item.system.range.value = math.evaluate(formula,{sb:sb});
                         } catch (err) {
                             item.system.range.value = 0;
                         }
                     }
-
+                    item.system.range.value = Math.ceil(item.system.range.value*item.system.range.multi);
                     if (actor.getFlag("fortyk", "mightyshot")) {
                         item.system.damageFormula.value += "+" + Math.ceil(data.characteristics.bs.bonus / 2);
                     }
@@ -625,11 +717,23 @@ export class FortyKItem extends Item {
             item.system.isPrepared = true;
         }
     }
-    applyActiveEffects() {
-        let item = this;
-        let itemData = this;
+
+    applyActiveEffects(item=this) {
+
+        let itemData = item;
         let data = this.system;
         let actor=this.actor;
+        let pr;
+        if(actor.getFlag("fortyk","psyrating")){
+            pr=actor.system.psykana.pr.value+actor.system.psykana.pr.bonus-Math.max(0,actor.system.psykana.pr.sustain-1);
+        }
+
+        let chars=actor.system.characteristics;
+        let scope={
+            pr:pr,
+            felB:chars?.fel?.bonus
+
+        };
         this.effects.forEach(function (ae, id) {
             if (!ae.disabled && !ae.transfer) {
                 //if item is equipped and/or not disabled
@@ -651,55 +755,92 @@ export class FortyKItem extends Item {
                 }
                 if(!proceed)return;
                 ae.changes.forEach(function (change, i) {
-                    if(actor.getFlag("fortyk","psyrating")){
-                        let pr=actor.system.psykana.pr.effective;
-                        try{
-                            change.value=Math.ceil(Function(`let pr=${pr};return `+change.value)());
-
-                        }catch (err){
-                            change.value=0; 
+                    let path = change.key.split(".");
+                    if(change.mode===CONST.ACTIVE_EFFECT_MODES.CUSTOM){
+                        if(typeof change.value==="string"){
+                            if(change.value.toLowerCase()==="true"){
+                                return setNestedKey(itemData,path,true); 
+                            }else if(change.value.toLowerCase()==="false"){
+                                return setNestedKey(itemData,path,false); 
+                            }
                         }
                     }
-                    let basevalue = parseFloat(objectByString(itemData, change.key));
 
-                    let newvalue = parseFloat(change.value);
-                    let path = change.key.split(".");
+                    if(actor.getFlag("fortyk","psyrating")){
+
+                        try{
+
+                            let value=math.evaluate(change.value,scope);
+
+                            if(!Number.isNaN(value)){
+                                change.value=value;
+                            }
+
+                        }catch (err){
+                            //console.log(err,item);
+
+                        }
+                    }
+                    let basevalue = Number(objectByString(itemData, change.key));
+                    let isNumber=true;
+                    if(Number.isNaN(basevalue)){
+                        basevalue = objectByString(itemData, change.key);
+                        isNumber=false;
+                    }
+                    let newvalue;
+                    if(isNumber){
+                        newvalue = parseFloat(change.value);
+                    }else{
+                        newvalue = change.value;
+                    }
+
+                    
                     /*if(newvalue>=0){
                             newvalue=Math.ceil(newvalue);
                         }else{
                             newvalue=Math.floor(newvalue);
                         }*/
-                    if (!isNaN(basevalue) && !isNaN(newvalue)) {
+                    if (!isNumber||(!Number.isNaN(basevalue) && !Number.isNaN(newvalue))) {
                         let changedValue = 0;
-                        if (change.mode === 1) {
+                        if (change.mode === CONST.ACTIVE_EFFECT_MODES.MULTIPLY) {
                             changedValue = basevalue * newvalue;
                             setNestedKey(itemData, path, changedValue);
-                        } else if (change.mode === 2) {
+                        } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.ADD) {
                             changedValue = basevalue + newvalue;
                             setNestedKey(itemData, path, changedValue);
-                        } else if (change.mode === 3) {
+                        } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.DOWNGRADE) {
                             if (change.value < basevalue) {
                                 changedValue = newvalue;
                                 setNestedKey(itemData, path, changedValue);
                             }
-                        } else if (change.mode === 4) {
+                        } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.UPGRADE) {
                             if (change.value > basevalue) {
                                 changedValue = newvalue;
                                 setNestedKey(itemData, path, changedValue);
                             }
-                        } else if (change.mode === 5) {
+                        } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.OVERRIDE) {
                             setNestedKey(itemData, path, newvalue);
-                        } else if (change.mode === 0) {
+                        } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
                             setNestedKey(itemData, path, change.value);
                         }
                     } else {
-                        if (change.mode === 0) {
+                        if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
                             setNestedKey(itemData, path, change.value);
                         }
                     }
                 });
             }
         });
+    }
+    getModCount(){
+        let effects=this.effects;
+        let count=0;
+        for(const effect of effects){
+            if(effect.getFlag("fortyk","mod")){
+                count++;
+            }
+        }
+        return count;
     }
     static async applyPsyBuffs(actorId, powerId, targetIds) {
         if (game.user.isGM) {
@@ -720,6 +861,10 @@ export class FortyKItem extends Item {
             aeData.disabled = false;
             aeData.origin = actorId;
             aeData.statuses = [ae.name];
+            let felB=actor.system.characteristics.fel.bonus;
+            for(const change of aeData.changes){
+                change.value=change.value.replace("felB",felB);
+            }
             let effectUuIds = [];
             for (let i = 0; i < targets.length; i++) {
                 let target = targets[i];
@@ -733,8 +878,9 @@ export class FortyKItem extends Item {
                 effectUuIds.push(effectuuid);
             }
 
-            await power.setFlag("fortyk", "sustained", effectUuIds);
+
             if (power.system.sustain.value !== "No") {
+                await power.setFlag("fortyk", "sustained", effectUuIds);
                 let sustained = actor.system.psykana.pr.sustained;
                 sustained.push(power.id);
                 actor.update({ "system.psykana.pr.sustained": sustained });

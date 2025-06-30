@@ -28,6 +28,16 @@ new Dialog({
 <option value="50">Always for Everyone</option>
 </select>
 </div>
+<div class="form-group">
+<label>Disposition</label>
+<select id="disposition-type" name="disposition-type">
+<option value="nochange">No Change</option>
+<option value="1">Friendly</option>
+<option value="-1">Hostile</option>
+<option value="0">Neutral</option>
+<option value="-2">Secret</option>
+</select>
+</div>
 <label>Vision Type</label>
 <select id="vision-type" name="vision-type">
 <option value="nochange">No Change</option>
@@ -87,6 +97,7 @@ new Dialog({
                 let nameType = parseInt(html.find('[name="name-type"]')[0].value || "none");
                 let barType = parseInt(html.find('[name="bar-type"]')[0].value || "none");
                 let vision = true;
+                let disposition = parseInt(html.find('[name="disposition-type"]')[0].value || "none");
                
 
                 // Set the color
@@ -201,6 +212,9 @@ new Dialog({
                 if(isNaN(barType)){
                     barType=token.document.displayBars;
                 }
+                if(isNaN(disposition)){
+                    disposition=token.document.disposition;
+                }
 
 
 
@@ -216,7 +230,8 @@ new Dialog({
                     lockRotation: lockRotation,
                     "light.color": lightColor,
                     displayBars:barType,
-                    displayName:nameType
+                    displayName:nameType,
+                    disposition:disposition
                 });
 
                 

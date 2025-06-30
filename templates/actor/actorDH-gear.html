@@ -39,7 +39,7 @@
         <span class="section-title">WARGEAR</span>
         <a class="wargear-create button" title="Add a new Wargear">Add Wargear</a>
 
-        <div class="list list5col grid grid-5col">
+        <div class="list list5col grid grid-5col item-list">
             <a class="list-item-header sort-button" data-sort-type="name" data-path="name" data-item-type="wargear">Name</a>
             <a class="list-item-header sort-button" data-sort-type="amount" data-path="system.amount.value" data-item-type="wargear">Amount</a>
             <a class="list-item-header sort-button" data-sort-type="weight" data-path="system.weight.total" data-item-type="wargear">Weight</a>
@@ -47,14 +47,14 @@
             <span class="list-item-header-last"></span>
             {{#each actor.wargear as |w key|}}
 
-
-            <a class="item-descr list-item drag" data-name="{{w.name}}" data-item-descr="{{w.system.description.value}}">{{w.name}}</a>
+            
+            <a class="item-descr list-item item" data-name="{{w.name}}" data-item-id="{{w.id}}" data-uuid="{{w.uuid}}" data-type="{{w.type}}" data-item-descr="{{w.system.description.value}}">{{w.name}}</a>
             <input type="text" class="item-text-input list-item" data-target="system.amount.value" value="{{w.system.amount.value}}" data-item-id="{{w._id}}" data-dtype="Number">
             <span class="list-item">{{w.system.weight.total}}kg</span>
 
             <span class="list-button"><a class="list-button item-edit" title="Edit" data-item-id="{{w._id}}"></a></span>
             <span class="list-button"> <a class="list-button item-delete" title="Delete" data-item-id="{{w._id}}"></a></span>
-
+          
 
 
             {{/each}}

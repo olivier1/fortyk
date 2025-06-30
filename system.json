@@ -18,6 +18,10 @@
   "esmodules": [
     "module/fortyk.js"
   ],
+  "scripts":[
+    "imports/math.js"
+  ],
+  
   "styles": [
     "css/fortyk.css"
   ],
@@ -403,6 +407,24 @@
       }
     },
     {
+      "label": "Random Tables",
+      "type": "RollTable",
+      "name": "fortyk-tables",
+      "path": "packs/fortyk-tables",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {},
+      "package": "system",
+      "id": "fortyk.fortyk-tables",
+      "packageType": "system",
+      "packageName": "fortyk",
+      "index": [],
+      "folders": []
+    },
+    {
       "label": "Fortyk Actors",
       "type": "Actor",
       "name": "fortyk-actors",
@@ -413,6 +435,18 @@
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
       }
+    },
+    {
+      "label": "Tartarus Sector",
+      "type": "JournalEntry",
+      "name": "tartarus-sector",
+      "path": "packs/tartarus-sector",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "NONE",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
     }
   ],
   "packFolders": [
@@ -427,6 +461,7 @@
           "color": "#7a4810",
           "packs": [
             "wargear",
+            "wargear-beta",
             "psychic-powers",
             "skills",
             "elite-advances"
@@ -490,6 +525,24 @@
           "color": "#228b22",
           "packs": [
             "fortyk-actors"
+          ],
+          "folders": []
+        },
+        {
+          "name": "Random Tables",
+          "sorting": "m",
+          "color": "#896a00",
+          "packs": [
+            "fortyk-tables"
+          ],
+          "folders": []
+        },
+        {
+          "name": "Journals",
+          "sorting": "m",
+          "color": "#305e4e",
+          "packs": [
+            "tartarus-sector"
           ],
           "folders": []
         }

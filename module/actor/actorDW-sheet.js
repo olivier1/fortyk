@@ -205,6 +205,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     }
     //handles removing extra weapon slots
     async _onRemoveExtraWeapon(event){
+        event.preventDefault();
         let actor=this.actor;
         let data=foundry.utils.duplicate(actor.system);
         let weapons=Object.values(data.secChar.wornGear.extraWeapons);

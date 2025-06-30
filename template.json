@@ -126,7 +126,7 @@
                         "min": -10,
                         "value": 10,
                         "max": 10,
-                        "bonus":0
+                        "bonus": 0
                     },
                     "fatigue": {
                         "type": "Number",
@@ -241,6 +241,7 @@
                         "advance": 0,
                         "total": 0,
                         "bonus": 0,
+                        "bonusMulti":1,
                         "uB": 0,
                         "max": 100,
                         "label": "Weapon Skill"
@@ -252,6 +253,7 @@
                         "advance": 0,
                         "total": 0,
                         "bonus": 0,
+                        "bonusMulti":1,
                         "uB": 0,
                         "max": 100,
                         "label": "Ballistic Skill"
@@ -263,6 +265,7 @@
                         "advance": 0,
                         "total": 0,
                         "bonus": 0,
+                        "bonusMulti":1,
                         "uB": 0,
                         "max": 100,
                         "label": "Strength"
@@ -274,6 +277,7 @@
                         "advance": 0,
                         "total": 0,
                         "bonus": 0,
+                        "bonusMulti":1,
                         "uB": 0,
                         "max": 100,
                         "label": "Toughness"
@@ -285,6 +289,7 @@
                         "advance": 0,
                         "total": 0,
                         "bonus": 0,
+                        "bonusMulti":1,
                         "uB": 0,
                         "max": 100,
                         "label": "Agility"
@@ -296,6 +301,7 @@
                         "advance": 0,
                         "total": 0,
                         "bonus": 0,
+                        "bonusMulti":1,
                         "uB": 0,
                         "max": 100,
                         "label": "Intelligence"
@@ -307,6 +313,7 @@
                         "advance": 0,
                         "total": 0,
                         "bonus": 0,
+                        "bonusMulti":1,
                         "uB": 0,
                         "max": 100,
                         "label": "Perception"
@@ -318,6 +325,7 @@
                         "advance": 0,
                         "total": 0,
                         "bonus": 0,
+                        "bonusMulti":1,
                         "uB": 0,
                         "max": 100,
                         "label": "Willpower"
@@ -329,6 +337,7 @@
                         "advance": 0,
                         "total": 0,
                         "bonus": 0,
+                        "bonusMulti":1,
                         "uB": 0,
                         "max": 100,
                         "label": "Fellowship"
@@ -339,6 +348,7 @@
                         "advance": 0,
                         "total": 0,
                         "bonus": 0,
+                        "bonusMulti":1,
                         "uB": 0,
                         "max": 100,
                         "label": "Influence"
@@ -349,7 +359,7 @@
                         "value": 0,
                         "armor": 0,
                         "armorMod": 0,
-                        "psy":0,
+                        "psy": 0,
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
@@ -360,7 +370,7 @@
                         "value": 0,
                         "armor": 0,
                         "armorMod": 0,
-                        "psy":0,
+                        "psy": 0,
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
@@ -371,7 +381,7 @@
                         "value": 0,
                         "armor": 0,
                         "armorMod": 0,
-                        "psy":0,
+                        "psy": 0,
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
@@ -382,7 +392,7 @@
                         "value": 0,
                         "armor": 0,
                         "armorMod": 0,
-                        "psy":0,
+                        "psy": 0,
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
@@ -393,7 +403,7 @@
                         "value": 0,
                         "armor": 0,
                         "armorMod": 0,
-                        "psy":0,
+                        "psy": 0,
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
@@ -404,7 +414,7 @@
                         "value": 0,
                         "armor": 0,
                         "armorMod": 0,
-                        "psy":0,
+                        "psy": 0,
                         "cyber": false,
                         "shield": 0,
                         "type": "Number",
@@ -465,7 +475,16 @@
                     "mod": 0,
                     "max": 0
                 },
-                "aptitudes": {"0":"","1":"","2":"","3":"","4":"","5":"","6":"","7":""}
+                "aptitudes": {
+                    "0": "",
+                    "1": "",
+                    "2": "",
+                    "3": "",
+                    "4": "",
+                    "5": "",
+                    "6": "",
+                    "7": ""
+                }
             }
         },
         "dwPC": {
@@ -1055,6 +1074,11 @@
             "eliteAdvance"
         ],
         "templates": {
+            "modifications": {
+                "mods": {
+                    "max": 0
+                }
+            },
             "weapon": {
                 "damageFormula": {
                     "value": "1d10",
@@ -1090,6 +1114,7 @@
                 "range": {
                     "value": 1,
                     "formula": "1",
+                    "multi":1,
                     "type": "String"
                 },
                 "damageType": {
@@ -1157,6 +1182,11 @@
                 "state": {
                     "value": "O",
                     "type": "String"
+                },
+                "price":{
+                    "value":0,
+                    "bonds":0,
+                    "type":"Number"
                 }
             },
             "tableEntry": {
@@ -1176,9 +1206,9 @@
                 "description",
                 "physicalProp",
                 "equippable",
-                "loanable"
+                "loanable",
+                "modifications"
             ],
-            "mods": [],
             "shield": {
                 "value": 0,
                 "type": "Number"
@@ -1190,7 +1220,8 @@
                 "description",
                 "physicalProp",
                 "equippable",
-                "loanable"
+                "loanable",
+                "modifications"
             ],
             "rof": [
                 {
@@ -1213,7 +1244,6 @@
                 "formula": "",
                 "type": "Number"
             },
-            "mods": [],
             "ammo": {
                 "_id": ""
             },
@@ -1260,7 +1290,8 @@
             "templates": [
                 "description",
                 "physicalProp",
-                "equippable"
+                "equippable",
+                "modifications"
             ],
             "maxAgi": {
                 "value": 100,
@@ -1322,7 +1353,8 @@
             "type": {
                 "value": "",
                 "type": "String"
-            }
+            },
+            "isOneUse":false
         },
         "consummable": {
             "templates": [
@@ -1380,7 +1412,8 @@
                 "type": "Number"
             },
             "macro": {
-                "id": ""
+                "id": "",
+                "user":"gm"
             }
         },
         "skill": {
@@ -1835,7 +1868,7 @@
             "items": [],
             "itemIds": [],
             "requirements": "",
-            "skills":"",
+            "skills": "",
             "flag": {
                 "value": "",
                 "type": "String"

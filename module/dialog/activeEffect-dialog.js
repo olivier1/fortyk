@@ -36,11 +36,16 @@ export class ActiveEffectDialog extends Dialog {
         let itemId = event.currentTarget.attributes["data-item-id"].value;
         let tokenId = event.currentTarget.attributes["data-token-id"].value;
         let actor = game.actors.get(actorId);
-        let document
+        let document;
+        let effectData={name:"newActiveEffect","label":"newActiveEffect"};
         if(actorId){
             document=game.actors.get(actorId);
         }else if(itemId){
+            effectData.transfer=false;
             document=await fromUuid(itemId);
+            if(document.type==='mod'){
+                effectData['flags.fortyk.mod']=true;
+            }
         }else if(tokenId){
             let token =canvas.tokens.get(tokenId);
             document= token.actor;
@@ -49,7 +54,7 @@ export class ActiveEffectDialog extends Dialog {
         
 
 
-        await document.createEmbeddedDocuments("ActiveEffect",[{name:"newActiveEffect","label":"newActiveEffect"}]);
+        await document.createEmbeddedDocuments("ActiveEffect",[effectData]);
         this.updateDialog(document);
 
 

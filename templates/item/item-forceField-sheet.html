@@ -1,26 +1,26 @@
 <form class="{{cssClass}} item-sheet flexcol">
-     <header class="sheet-header">
+    <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
-        
+
     </header>
     {{#if isGM}}
     <label class="button clone">Copy Item</label>
     {{/if}}
     <div class="flexcol">
         <label>Name:</label>
-        <input type="text" value="{{name}}" name="name">
+        <input type="text" class="weapon-mod" value="{{_source.name}}" data-target="name" data-dtype="String">
     </div>
     <div class="flexcol">
         <label>Weight:</label>
         <input type="text" value="{{system.weight.value}}" name="system.weight.value">
     </div>
     <div class="flexcol">
-            <label>Item Quality:</label>
+        <label>Item Quality:</label>
 
-            <select class="quality"  name="system.quality.value">
-                {{selectOptions FORTYK.itemQualities selected=system.quality.value valueAttr="value" labelAttr="value"}}
-            </select>
-        </div>
+        <select class="quality"  name="system.quality.value">
+            {{selectOptions FORTYK.itemQualities selected=system.quality.value valueAttr="value" labelAttr="value"}}
+        </select>
+    </div>
     <div class="flexcol">
         <label>Rarity:</label>
         <select class="power-type" name="system.rarity.value">
@@ -36,14 +36,18 @@
         <input type="text" value="{{system.rating.overload}}" name="system.rating.overload">
     </div>
     <div class="flexrow">
-            <label>Breaks on Overload:</label>
-            <input type="checkbox" name="system.overloadBreak.value" {{checked system.overloadBreak.value}}>
-        </div>
+        <label>Breaks on Overload:</label>
+        <input type="checkbox" name="system.overloadBreak.value" {{checked system.overloadBreak.value}}>
+    </div>
     <div class="flexrow">
-            <label>Broken:</label>
-            <input type="checkbox" name="system.broken.value" {{checked system.broken.value}}>
-        </div>
+        <label>Broken:</label>
+        <input type="checkbox" name="system.broken.value" {{checked system.broken.value}}>
+    </div>
     <div class="item-description">
+        <div class="flexrow">
+            <label>is Hidden:</label>
+            <input type="checkbox" class="weapon-mod" name="flags.fortyk.hidden" {{checked flags.fortyk.hidden}}>
+        </div>
         <label>Description:</label>
         {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
     </div>

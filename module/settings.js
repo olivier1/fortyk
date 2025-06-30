@@ -62,4 +62,13 @@ export const registerSystemSettings = function() {
     type: Boolean,
     default: false
     });
+    //Setting to use bonds over regular eagles
+    game.settings.register("fortyk","bonds",{
+        name: "Use Imperial Bonds",
+        hint: "Changes monetary system to Imperial bonds instead of Eagles.",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false
+    });
 };

@@ -62,7 +62,7 @@
         <select class="item-select" data-index="{{@index}}">
             <option value="">None</option>
             {{#each compendiumItems}}
-            <option value="{{uuid}}">{{name}}</option>
+            <option value="{{uuid}}">{{_source.name}}</option>
             {{/each}}
 
         </select>

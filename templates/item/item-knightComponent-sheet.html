@@ -7,10 +7,10 @@
     {{#if isGM}}
     <label class="button clone">Copy Item</label>
     {{/if}}
-    <div class="flexcol">
-        <label>Name:</label>
-        <input type="text" value="{{name}}" name="name">
-    </div>
+   <div class="flexcol">
+            <label>Name:</label>
+            <input type="text" class="weapon-mod" value="{{name}}" data-target="name" data-dtype="String">
+        </div>
     <div class="flexcol">
         <label>Type:</label>
         <select class="power-type" name="system.type.value">

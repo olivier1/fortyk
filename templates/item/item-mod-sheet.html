@@ -1,26 +1,23 @@
 <form class="{{cssClass}} item-sheet flexcol">
- <header class="sheet-header">
+    <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
-        
+
     </header>
     {{#if isGM}}
     <label class="button clone">Copy Item</label>
     {{/if}}
     <div class="flexcol">
-        <label>Name:</label>
-        <input type="text" value="{{name}}" name="name">
-    </div>
+            <label>Name:</label>
+            <input type="text" class="weapon-mod" value="{{name}}" data-target="name" data-dtype="String">
+        </div>
     <div class="flexcol">
         <label>Weight:</label>
         <input type="text" value="{{system.weight.value}}" name="system.weight.value">
     </div>
     <div class="flexcol">
-            <label>Item Quality:</label>
-
-            <select class="quality"  name="system.quality.value">
-                {{selectOptions FORTYK.rangedWeaponClasses selected=system.type.value valueAttr="value" labelAttr="value"}}
-            </select>
-        </div>
+    <label>Is one use:</label>
+            <input type="checkbox" name="system.isOneUse" {{checked system.isOneUse}}>
+    </div>
     <div class="flexcol">
         <label>Rarity:</label>
         <select class="power-type" name="system.rarity.value">
@@ -29,8 +26,16 @@
     </div>
     <div class="flexcol">
         <label>Type:</label>
-        <input type="text" value="{{system.type.value}}" name="system.type.value">
+        <select class="power-type" name="system.type.value">
+            <option value=''>Choose Type</option>
+            {{selectOptions FORTYK.modTypes selected=system.type.value valueAttr="value" labelAttr="label"}}
+        </select>
     </div>
+    {{#if isGM}}
+    <div class="flexcol">
+        <a class="modifier button">Active Effects</a>
+    </div>
+    {{/if}}
     <div class="item-description">
         <label>Description:</label>
         {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}

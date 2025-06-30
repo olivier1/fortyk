@@ -96,6 +96,15 @@
         </div>
         {{/if}}
         {{else if (contains system.class.value "Macro")}}
+        <div class="flexcol">
+            <label>User:</label>
+
+            <select class="power-char" name="system.macro.user">
+                {{selectOptions macroUser selected=system.macro.user valueAttr="value" labelAttr="label"}}
+                
+               
+            </select>
+        </div>
          <div class="flexcol">
             <label>Macro:</label>
 

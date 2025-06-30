@@ -163,11 +163,11 @@
                 <a class="item-create button" data-type="rangedWeapon" title="Add a Ranged Weapon">Add ranged weapon</a>
                 <a class="item-create button" data-type="meleeWeapon" title="Add a Melee Weapon">Add melee weapon</a>
             </div>
-            <div class="grid grid-2col">
+            <div class="grid grid-2col item-list no-place">
                 {{#each actor.meleeWeapons}}
                 <div>
                     <div class="weapons grid grid-2col">
-                        <div class="weapon-name">
+                        <div class="weapon-name item" data-item-id="{{this.id}}" data-uuid="{{this.uuid}}" data-type="{{this.type}}">
                             {{#if flags.fortyk.alternateprofiles}}
 
                             <select class="profile-select" data-id="{{this.id}}">
@@ -246,7 +246,7 @@
                 <div>
 
                     <div class="weapons grid grid-2col">
-                        <div class="weapon-name">
+                        <div class="weapon-name item" data-item-id="{{this.id}}" data-uuid="{{this.uuid}}" data-type="{{this.type}}">
                             {{#if flags.fortyk.alternateprofiles}}
 
                             <select class="profile-select" data-id="{{this.id}}">

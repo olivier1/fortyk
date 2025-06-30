@@ -1,7 +1,7 @@
-2025/06/09-09:29:17.921 34cc Log #2366: 0 ops saved to Table #2370 OK
-2025/06/09-09:29:17.922 34cc Archiving C:\Users\Olivier\AppData\Local\FoundryVTT\Data\systems\fortyk\packs\knight-components/002366.log: OK
-2025/06/09-09:29:17.922 34cc Log #2369: 0 ops saved to Table #2371 OK
-2025/06/09-09:29:17.922 34cc Archiving C:\Users\Olivier\AppData\Local\FoundryVTT\Data\systems\fortyk\packs\knight-components/002369.log: OK
-2025/06/09-09:29:17.923 34cc Table #1973: 270 entries OK
-2025/06/09-09:29:17.929 34cc Archiving C:\Users\Olivier\AppData\Local\FoundryVTT\Data\systems\fortyk\packs\knight-components/MANIFEST-002364: OK
-2025/06/09-09:29:17.937 34cc **** Repaired leveldb C:\Users\Olivier\AppData\Local\FoundryVTT\Data\systems\fortyk\packs\knight-components; recovered 1 files; 122795 bytes. Some data may have been lost. ****
+2025/06/30-10:07:40.873 56f0 Recovering log #2848
+2025/06/30-10:07:40.882 56f0 Delete type=0 #2848
+2025/06/30-10:07:40.882 56f0 Delete type=3 #2847
+2025/06/30-10:38:58.429 4a40 Level-0 table #2852: started
+2025/06/30-10:38:58.429 4a40 Level-0 table #2852: 0 bytes OK
+2025/06/30-10:38:58.432 4a40 Delete type=0 #2850
+2025/06/30-10:38:58.451 4a40 Manual compaction at level-0 from '!folders!1qJpON4Zwpls5dlR' @ 72057594037927935 : 1 .. '!items.effects!zooeO8bQNwCSKdSN.ygt4lP9mdQInNVoQ' @ 0 : 0; will stop at (end)

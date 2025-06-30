@@ -92,14 +92,14 @@
             <label class="section-title">Outnumbering</label>
             <div class="list-item flexrow">
 
-                <input type="radio" name="outnumber" outnumbertype="1 to 1" value="{{modifiers.gangup.[0]}}" checked><label>1 to 1: +{{modifiers.gangup.[0]}}</label>
+                <input type="radio" name="outnumber" outnumbertype="1 to 1" value="{{modifiers.gangup.[0]}}" {{#if (equals options.outnumber 0)}}checked{{/if}}><label>1 to 1: +{{modifiers.gangup.[0]}}</label>
 
             </div>
             <div class="list-item flexrow">
-                <input type="radio" name="outnumber" outnumbertype="2 to 1" value="{{modifiers.gangup.[1]}}" ><label>2 to 1: +{{modifiers.gangup.[1]}}</label>
+                <input type="radio" name="outnumber" outnumbertype="2 to 1" value="{{modifiers.gangup.[1]}}" {{#if (equals options.outnumber 1)}}checked{{/if}}><label>2 to 1: +{{modifiers.gangup.[1]}}</label>
             </div>
             <div class="list-item flexrow">
-                <input type="radio" name="outnumber" outnumbertype="3 to 1" value="{{modifiers.gangup.[2]}}" ><label>3 to 1: +{{modifiers.gangup.[2]}}</label>
+                <input type="radio" name="outnumber" outnumbertype="3 to 1" value="{{modifiers.gangup.[2]}}" {{#if (equals options.outnumber 2)}}checked{{/if}}><label>3 to 1: +{{modifiers.gangup.[2]}}</label>
             </div>
         </div>
         <div class="flexcol attack-section"{{#if options.blindfight}} hidden{{/if}}>

@@ -7,7 +7,7 @@
         <span class="list-item-header-last"></span>
         {{#each actor.talentsntraits as |t key|}}
         
-            <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.system.description.value}}">{{t.name}}{{#unless (compareString "N/A" t.system.specialisation.value)}} ({{t.system.specialisation.value}}){{/unless}} </a>
+        <a class="item-descr list-item" data-item-id="{{t.id}}" data-uuid="{{t.uuid}}" data-type="{{t.type}}" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.system.description.value}}">{{t.name}}{{#unless (compareString "N/A" t.system.specialisation.value)}} ({{t.system.specialisation.value}}){{/unless}} </a>
         <span class="list-button"><a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a></span>
         <span class="list-button"> <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a></span>
             

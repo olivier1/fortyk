@@ -1,84 +1,117 @@
-<form class="{{cssClass}} item-sheet flexcol">
-     <header class="sheet-header">
+<form class="{{cssClass}} item-sheet">
+    <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
-        
-    </header>
-    {{#if isGM}}
-    <label class="button clone">Copy Item</label>
-    {{/if}}
-    <span>Make sure that the weapon class and type match the weapon that you are making the ammunition for or it will not show in the combat tab.</span>
-    <div class="grid grid-2col">
         <div class="flexcol">
             <label>Name:</label>
-            <input type="text" value="{{name}}" name="name">
+            <input type="text" class="weapon-mod" value="{{_source.name}}" data-target="name" data-dtype="String">
         </div>
-        <div class="flexcol">
-            <label>Weight:</label>
-            <input type="text" value="{{system.weight.value}}" name="system.weight.value">
-        </div>
-        <div class="flexcol">
-        <label>Space:</label>
-        <input type="text" value="{{system.space.value}}" name="system.space.value">
-    </div>
-        <div class="flexcol">
-            <label>Rarity:</label>
-            <select class="power-type" name="system.rarity.value">
-                {{selectOptions FORTYK.itemRarity selected=system.rarity.value valueAttr="value" labelAttr="label"}}
-            </select>
-        </div>
-       
-        <div class="flexrow">
-            <label>Default Ammunition?:</label>
-            <input type="checkbox" name="system.default.value" {{checked system.default.value}}>
+
+    </header>
+    <nav class="sheet-tabs npc tabs grid {{#unless system.default.value}}grid-3col{{else}}grid-2col{{/unless}}" data-group="primary">
+
+        <a class="item " data-tab="main">MAIN</a>
+        {{#unless system.default.value}}
+        <a class="item" data-tab="mods">MODS</a>
+        {{/unless}}
+        <a class="item" data-tab="descr">DESCRIPTION</a>
+
+    </nav>
+    <section class="sheet-body item">
+        <div class="tab main" data-group="primary" data-tab="main">
+            {{#if isGM}}
+            <label class="button clone">Copy Item</label>
+            {{/if}}
+            <span>Make sure that the weapon class and type match the weapon that you are making the ammunition for or it will not show in the combat tab.</span>
+            <div class="grid grid-2col">
+
+                <div class="flexcol">
+                    <label>Weight:</label>
+                    <input type="text" value="{{system.weight.value}}" name="system.weight.value">
+                </div>
+                <div class="flexcol">
+                    <label>Space:</label>
+                    <input type="text" value="{{system.space.value}}" name="system.space.value">
+                </div>
+                <div class="flexcol">
+                    <label>Rarity:</label>
+                    <select class="power-type" name="system.rarity.value">
+                        {{selectOptions FORTYK.itemRarity selected=system.rarity.value valueAttr="value" labelAttr="label"}}
+                    </select>
+                </div>
+
+                <div class="flexrow">
+                    <label>Default Ammunition?:</label>
+                    <input type="checkbox" name="system.default.value" {{checked system.default.value}}>
+                </div>
+                {{#unless system.default.value}}
+                <div class="flexcol">
+                    <label>Damage:</label>
+                    <input type="text" value="{{system.damageFormula.formula}}" name="system.damageFormula.formula">
+                </div>
+                <div class="flexcol">
+                    <label>Penetration:</label>
+                    <input type="text" value="{{system.pen.formula}}" name="system.pen.formula">
+                </div>
+                <div class="flexcol">
+                    <label>Range:</label>
+                    <input type="text" value="{{system.range.formula}}" name="system.range.formula">
+                </div>
+
+                <div class="flexcol">
+                    <label>Damage Type:</label>
+                    <select class="damage-type" name="system.damageType.value">
+                        {{selectOptions FORTYK.damageTypes selected=system.damageType.value valueAttr="value" labelAttr="value"}}
+                    </select>
+                </div>
+                {{/unless}}
+                <div class="flexcol">
+                    <label>Weapon Class:</label>
+
+                    <select class="weapon-type"  name="system.class.value">
+                        {{selectOptions FORTYK.rangedWeaponClasses selected=system.class.value valueAttr="value" labelAttr="value"}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>Weapon Type:</label>
+
+                    <select class="weapon-type"  name="system.type.value">
+                        {{selectOptions FORTYK.rangedWeaponTypes selected=system.type.value valueAttr="value" labelAttr="value"}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>Item Quality:</label>
+
+                    <select class="quality"  name="system.quality.value">
+                        {{selectOptions FORTYK.itemQualities selected=system.quality.value valueAttr="value" labelAttr="value"}}
+                    </select>
+                </div>
+            </div>
+
         </div>
         {{#unless system.default.value}}
-        <div class="flexcol">
-            <label>Damage:</label>
-            <input type="text" value="{{system.damageFormula.formula}}" name="system.damageFormula.formula">
-        </div>
-        <div class="flexcol">
-            <label>Penetration:</label>
-            <input type="text" value="{{system.pen.formula}}" name="system.pen.formula">
-        </div>
-         <div class="flexcol">
-            <label>Range:</label>
-            <input type="text" value="{{system.range.formula}}" name="system.range.formula">
-        </div>
-        <div class="flexcol">
-            <a class="special button">Special</a>
-        </div>
-         <div class="flexcol">
-            <label>Damage Type:</label>
-            <select class="damage-type" name="system.damageType.value">
-                {{selectOptions FORTYK.damageTypes selected=system.damageType.value valueAttr="value" labelAttr="value"}}
-            </select>
+        <div class="tab mods" data-group="primary" data-tab="mods">
+            
+            <div class="flexcol">
+                <a class="special button">Special Qualities</a>
+
+            </div>
+            {{#if isGM}}
+            <div class="flexcol">
+                <a class="modifier button">Active Effect</a>
+            </div>
+            {{/if}}
+            
+            
         </div>
         {{/unless}}
-        <div class="flexcol">
-            <label>Weapon Class:</label>
-
-            <select class="weapon-type"  name="system.class.value">
-                {{selectOptions FORTYK.rangedWeaponClasses selected=system.type.value valueAttr="value" labelAttr="value"}}
-            </select>
+        <div class="tab descr" data-group="primary" data-tab="descr">
+            <div class="item-description">
+                <label>Description:</label>
+                {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
+            </div>
         </div>
-        <div class="flexcol">
-            <label>Weapon Type:</label>
 
-            <select class="weapon-type"  name="system.type.value">
-                {{selectOptions FORTYK.rangedWeaponTypes selected=system.type.value}}
-               
-            </select>
-        </div>
-         <div class="flexcol">
-            <label>Item Quality:</label>
+    </section>
 
-            <select class="quality"  name="system.quality.value">
-                {{selectOptions FORTYK.itemQualities selected=system.quality.value valueAttr="value" labelAttr="value"}}
-            </select>
-        </div>
-    </div>
-    <div class="item-description">
-        <label>Description:</label>
-        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
-    </div>
+
 </form>

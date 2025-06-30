@@ -5,7 +5,8 @@ let targetIds=scope.targets;
 let targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
 let vetFunction=function(event){
     let input=event.currentTarget;
-    let checks=$('input[type=checkbox]:checked').length;
+    let checks=$('input[type=checkbox]:checked.weaponchkbox').length;
+    console.log(pr,checks);
     if (checks > pr) {
         input.checked = false;
     }    
@@ -16,7 +17,7 @@ for(const target of targets){
     let tarActor=target.actor;
     content+=`<div class="flexcol" style="border-style:grooved"<label>${tarActor.name}</label>`;
     let weapons=[];
-    weapons=weapons.concat(tarActor.itemTypes.meleeWeapon,tarActor.itemTypes.rangedWeapon,tarActor.itemTypes.ammunition);
+    weapons=weapons.concat(tarActor.itemTypes.meleeWeapon,tarActor.itemTypes.rangedWeapon);
     for(const weapon of weapons){
         content+=`<div><input class="weaponchkbox" type="checkbox" data-owner="${tarActor.uuid}" value="${weapon.uuid}"/> <span>${weapon.name}</span></div>`;
     }
@@ -24,7 +25,7 @@ for(const target of targets){
 }
 
 new Dialog({
-    title: "Choose weapons",
+    title: `Choose up to ${pr} weapons`,
     content: content,
     buttons: {
         submit: {
@@ -33,46 +34,58 @@ new Dialog({
                 let selectedCheckboxes=html.find('.weaponchkbox:checked');
                 let actorIds=new Set([]);
                 let effectIds=[];
-                for(let i=0;i<selectedCheckboxes.length;i++){
-                    let checkbox=selectedCheckboxes[i];
-                    let weaponId=checkbox.value;
-                    let actorId=checkbox.dataset.owner;
-                    actorIds.add(actorId);
-                    let weapon=await fromUuid(weaponId);
-                    let aeData={};
-                    aeData.name=power.name+" Buff";
+                let ids=[];
+                for(const box of selectedCheckboxes){
+                    let weaponId=box.value;
+                    let actorId=box.dataset.owner;
+                    ids.push({actor:actorId,weapon:weaponId});
+                }
+                if(game.user.isGM){
+                    for(const idPair of ids){
+
+                        let weaponId=idPair.weapon;
+                        let actorId=idPair.actor;
+                        actorIds.add(actorId);
+                        let weapon=await fromUuid(weaponId);
+                        let aeData={};
+                        aeData.name=power.name+" Buff";
 
 
-                    aeData.flags={fortyk:{psy:true}};
-                    aeData.disabled=false;
-                    aeData.transfer=false;
-                    aeData.origin=actorId;
-                    aeData.changes=[];
-                    if(weapon.getFlag("fortyk","razorsharp")){
-                        aeData.changes.push({key:"flags.fortyk.shredding",value:true,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM});
-                    }else{
-                        aeData.changes.push({key:"flags.fortyk.razorsharp",value:true,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM});
+                        aeData.flags={fortyk:{psy:true}};
+                        aeData.disabled=false;
+                        aeData.transfer=false;
+                        aeData.origin=actorId;
+                        aeData.changes=[];
+                        if(weapon.getFlag("fortyk","razorsharp")){
+                            aeData.changes.push({key:"flags.fortyk.shredding",value:true,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM});
+                        }else{
+                            aeData.changes.push({key:"flags.fortyk.razorsharp",value:true,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM});
+                        }
+                        let ae=await weapon.createEmbeddedDocuments("ActiveEffect",[aeData]);
+                        effectIds.push(ae[0].uuid);
                     }
-                    let ae=await weapon.createEmbeddedDocuments("ActiveEffect",[aeData]);
-                    effectIds.push(ae[0].uuid);
+                    let mindAeData=foundry.utils.duplicate(power.effects.entries().next().value[1]);
+                    mindAeData.name=mindAeData.name+" Buff";
+                    mindAeData.flags={fortyk:{psy:true}};
+                    mindAeData.disabled=false;
+                    mindAeData.origin=actor.uuid;
+                    mindAeData.statuses = [mindAeData.name];
+                    for(const actorId of actorIds){
+                        let chosenActor=await fromUuid(actorId);
+                        let aeInstance=await chosenActor.createEmbeddedDocuments("ActiveEffect",[mindAeData]);
+                        effectIds.push(aeInstance[0].uuid);
+                    }
+                    await power.setFlag("fortyk","sustained",effectIds);
+                    if(power.system.sustain.value!=="No"){
+                        let sustained=actor.system.psykana.pr.sustained;
+                        sustained.push(power.id);
+                        actor.update({"system.psykana.pr.sustained":sustained});
+                    }
+                }else{
+                    let socketOp={type:"psyMacro",package:{powerId:power.id, macroId:"PyZOh263Cn3o1b5Z", actorId:actor.uuid, targetIds:ids}};
+                    await game.socket.emit("system.fortyk",socketOp);
                 }
-                let mindAeData=foundry.utils.duplicate(power.effects.entries().next().value[1]);
-                mindAeData.name=mindAeData.name+" Buff";
-                mindAeData.flags={fortyk:{psy:true}};
-                mindAeData.disabled=false;
-                mindAeData.origin=actor.uuid;
-                mindAeData.statuses = [mindAeData.name];
-                for(const actorId of actorIds){
-                    let chosenActor=await fromUuid(actorId);
-                    let aeInstance=await chosenActor.createEmbeddedDocuments("ActiveEffect",[mindAeData]);
-                    effectIds.push(aeInstance[0].uuid);
-                }
-                await power.setFlag("fortyk","sustained",effectIds);
-                if(power.system.sustain.value!=="No"){
-                    let sustained=actor.system.psykana.pr.sustained;
-                    sustained.push(power.id);
-                    actor.update({"system.psykana.pr.sustained":sustained});
-                }
+
 
 
 
@@ -88,14 +101,3 @@ new Dialog({
 
     width:100}
           ).render(true);
-
-
-
-
-
-
-
-
-
-
-

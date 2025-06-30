@@ -1,15 +1,15 @@
-2025/06/09-08:31:25.094 424c Recovering log #2318
-2025/06/09-08:31:25.106 424c Delete type=0 #2318
-2025/06/09-08:31:25.106 424c Delete type=3 #2316
-2025/06/09-09:29:14.304 54fc Level-0 table #2324: started
-2025/06/09-09:29:14.310 54fc Level-0 table #2324: 3984 bytes OK
-2025/06/09-09:29:14.314 54fc Delete type=0 #2322
-2025/06/09-09:29:14.315 54fc Manual compaction at level-0 from '!folders!MQBztfL3KvhTnCw9' @ 72057594037927935 : 1 .. '!macros!z9W3RtlQqSNECA1b' @ 0 : 0; will stop at (end)
-2025/06/09-09:29:14.315 54fc Manual compaction at level-1 from '!folders!MQBztfL3KvhTnCw9' @ 72057594037927935 : 1 .. '!macros!z9W3RtlQqSNECA1b' @ 0 : 0; will stop at '!macros!RVKJGBk5Z5uMqxsV' @ 169 : 1
-2025/06/09-09:29:14.315 54fc Compacting 1@1 + 1@2 files
-2025/06/09-09:29:14.325 54fc Generated table #2325@1: 29 keys, 25881 bytes
-2025/06/09-09:29:14.325 54fc Compacted 1@1 + 1@2 files => 25881 bytes
-2025/06/09-09:29:14.329 54fc compacted to: files[ 0 0 1 0 0 0 0 ]
-2025/06/09-09:29:14.329 54fc Delete type=2 #2320
-2025/06/09-09:29:14.329 54fc Delete type=2 #2324
-2025/06/09-09:29:14.342 54fc Manual compaction at level-1 from '!macros!RVKJGBk5Z5uMqxsV' @ 169 : 1 .. '!macros!z9W3RtlQqSNECA1b' @ 0 : 0; will stop at (end)
+2025/06/30-10:07:40.808 56f0 Recovering log #2803
+2025/06/30-10:07:40.818 56f0 Delete type=0 #2803
+2025/06/30-10:07:40.818 56f0 Delete type=3 #2801
+2025/06/30-10:38:58.420 4a40 Level-0 table #2807: started
+2025/06/30-10:38:58.420 4a40 Level-0 table #2807: 0 bytes OK
+2025/06/30-10:38:58.424 4a40 Delete type=0 #2805
+2025/06/30-10:38:58.437 4a40 Manual compaction at level-0 from '!folders!MQBztfL3KvhTnCw9' @ 72057594037927935 : 1 .. '!macros!z9W3RtlQqSNECA1b' @ 0 : 0; will stop at '!macros!gyNGqa9wdatBlZ0s' @ 192 : 1
+2025/06/30-10:38:58.437 4a40 Compacting 2@0 + 1@1 files
+2025/06/30-10:38:58.446 4a40 Generated table #2808@0: 31 keys, 27197 bytes
+2025/06/30-10:38:58.446 4a40 Compacted 2@0 + 1@1 files => 27197 bytes
+2025/06/30-10:38:58.450 4a40 compacted to: files[ 0 1 0 0 0 0 0 ]
+2025/06/30-10:38:58.450 4a40 Delete type=2 #2795
+2025/06/30-10:38:58.450 4a40 Delete type=2 #2799
+2025/06/30-10:38:58.450 4a40 Delete type=2 #2802
+2025/06/30-10:38:58.451 4a40 Manual compaction at level-0 from '!macros!gyNGqa9wdatBlZ0s' @ 192 : 1 .. '!macros!z9W3RtlQqSNECA1b' @ 0 : 0; will stop at (end)

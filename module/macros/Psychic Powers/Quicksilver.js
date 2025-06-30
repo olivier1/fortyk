@@ -15,6 +15,7 @@ let effectIds=[];
 let originalInitiatives=[];
 for(const target of targets){
     const combatant=target.combatant;
+    if(!combatant)continue;
     const targetActor=target.actor;
     let aeInstance=await targetActor.createEmbeddedDocuments("ActiveEffect",[aeData]);
     console.log(aeInstance);

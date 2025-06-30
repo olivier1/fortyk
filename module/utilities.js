@@ -404,10 +404,12 @@ export const objectByString = function(o, s) {
 };
 
 export const setNestedKey = (obj, path, value) => {
+    
     if (path.length === 1) {
         obj[path] = value;
         return;
     }
+    if(obj[path[0]]===undefined){return;}
     return setNestedKey(obj[path[0]], path.slice(1), value);
 };
 export const makeRangeArray=function (upperBounds, values) {
@@ -555,11 +557,11 @@ export const collisionPoint= function(token, destination){
             let workingDest=foundry.utils.duplicate(destination);
             //test all 4 corners of the token for collision, adjust the collision point after for top left corner of token
             //top left corner
-            intersections.push(lineSegmentIntersection(origin,destination,wall.A,wall.B));
+            intersections.push(foundry.utils.lineSegmentIntersection(origin,destination,wall.A,wall.B));
             //top right
             workingOr.x+=token.width;
             workingDest.x+=token.width;
-            let topright=lineSegmentIntersection(workingOr,workingDest,wall.A,wall.B);
+            let topright=foundry.utils.lineSegmentIntersection(workingOr,workingDest,wall.A,wall.B);
             if(topright){
                 topright.x-=token.width;
                 intersections.push(topright);
@@ -569,7 +571,7 @@ export const collisionPoint= function(token, destination){
             workingDest=foundry.utils.duplicate(destination);
             workingOr.y+=token.height;
             workingDest.y+=token.height;
-            let botleft=lineSegmentIntersection(workingOr,workingDest,wall.A,wall.B);
+            let botleft=foundry.utils.lineSegmentIntersection(workingOr,workingDest,wall.A,wall.B);
             if(botleft){
                 botleft.y-=token.height;
                 intersections.push(botleft);
@@ -581,7 +583,7 @@ export const collisionPoint= function(token, destination){
             workingDest.y+=token.height;
             workingOr.x+=token.width;
             workingDest.x+=token.width;
-            let botright=lineSegmentIntersection(workingOr,workingDest,wall.A,wall.B);
+            let botright=foundry.utils.lineSegmentIntersection(workingOr,workingDest,wall.A,wall.B);
             if(botright){
                 botright.y-=token.height;
                 botright.x-=token.width;

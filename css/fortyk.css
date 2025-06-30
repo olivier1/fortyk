@@ -28,7 +28,9 @@
     opacity: 0.4;
 
 }
-
+.no-place{
+    place-items:unset !important;
+}
 .grid,
 .grid-2col {
     display: grid;
@@ -383,6 +385,10 @@
 .fortyk .list3col{
     grid-gap: 0px;
     grid-template-columns: auto 30px 30px;
+}
+.fortyk .list2col1{
+    grid-gap: 0px;
+    grid-template-columns: auto auto 30px;
 }
 .fortyk .list4col2{
     grid-gap: 0px;

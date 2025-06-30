@@ -12,7 +12,9 @@ export class FortyKItemSheet extends ItemSheet {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fortyk", "sheet", "item"],
             width: 520,
-            height: 480
+            height: 600,
+            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "main" }],
+            default:null
         });
     }
 
@@ -40,6 +42,7 @@ export class FortyKItemSheet extends ItemSheet {
 
         const item=this.item;
         const data = this.item;
+        data.mods=data.effects.filter((item)=> item.flags?.fortyk?.mod);
         if(this.item.type==="skill"){
             //GET THE SKILLS WITH CHILDREN
             if(this.actor){
@@ -98,6 +101,7 @@ export class FortyKItemSheet extends ItemSheet {
             let psyFolder=macroCompendium.folders.get("MQBztfL3KvhTnCw9");
             let content=psyFolder.contents;
             data.psyMacros=content;
+            data.macroUser=[{value:"gm","label":"GM"},{value:"user","label":"User"}];
         }
         if(item.getFlag("fortyk","alternateprofiles")){
             data.rangedWeapons=await this.getRangedWeapons();
@@ -238,6 +242,7 @@ export class FortyKItemSheet extends ItemSheet {
         html.find('.item-select').change(this._onItemChange.bind(this));
         html.find('.add').click(this._onAddItemClick.bind(this));
         html.find('.remove').click(this._onRemoveItemClick.bind(this));
+        html.find('.delete-mod').click(this._onDeleteModClick.bind(this));
         //handles melee weapon mod
 
         html.find('.weapon-mod').focusout(this._weaponModEdit.bind(this));
@@ -248,6 +253,48 @@ export class FortyKItemSheet extends ItemSheet {
         });
 
 
+    }
+    async _onDeleteModClick(event){
+        event.preventDefault();
+        let itemId = event.currentTarget.attributes["data-item-id"].value;
+        let item=this.item;
+        let activeEffect=await this.item.getEmbeddedDocument("ActiveEffect",itemId);
+
+        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
+        renderedTemplate.then(content => {
+            new Dialog({
+                title: "Deletion Confirmation",
+                content: content,
+                buttons:{
+                    submit:{
+                        label:"Yes",
+                        callback: async dlg => { 
+                            if(activeEffect.getFlag("fortyk","mod")){
+                                if(!activeEffect.getFlag("fortyk","modsystem").isOneUse){
+                                    let modData={system:activeEffect.getFlag("fortyk","modsystem")};
+                                    modData.name=activeEffect.name;
+                                    modData.type="mod";
+                                    modData.effects=[foundry.utils.duplicate(activeEffect)];
+                                    if(item.parent){
+
+                                        await item.parent.createEmbeddedDocuments("Item",[modData]);
+                                    }
+                                } 
+                            }
+
+
+                            await this.item.deleteEmbeddedDocuments("ActiveEffect",[itemId]);
+                            this.render(true);
+                        }
+                    },
+                    cancel:{
+                        label: "No",
+                        callback: null
+                    }
+                },
+                default: "submit"
+            }).render(true);
+        });
     }
     _onCompendiumChange(event){
         let compendium=event.target.value;
@@ -261,9 +308,41 @@ export class FortyKItemSheet extends ItemSheet {
         this.chosenItemName=name;
         document.getElementById("add").removeAttribute('disabled');
     }
-    _onAddItemClick(event){
+    async _onAddItemClick(event){
         let bonuses=this.item.system.items;
+        let item= await fromUuid(this.chosenItem);
+       
+        let spec=item.system.specialisation?.value;
+
         let bonus={"uuid":this.chosenItem,"name":this.chosenItemName};
+        if(typeof spec==="string" && spec!=="N/A"){
+
+            let chosenSpec=await Dialog.prompt({
+                title: `Choose specialisation for ${item.name}`,
+                content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${item.system.specialisation.value}" autofocus/></p>`,
+
+
+
+                callback: async(html) => {
+                    const choosenSpec = $(html).find('input[name="spec"]').val();
+                    return choosenSpec;
+                },
+
+
+
+
+
+
+                width:100});
+            bonus.spec= chosenSpec;
+            bonus.name+=`: ${chosenSpec}`;
+
+        }
+
+
+
+
+
         bonuses.push(bonus);
         this.item.update({"system.items":bonuses});
         this.chosenItem=null;
@@ -313,7 +392,7 @@ export class FortyKItemSheet extends ItemSheet {
         item.setFlag("fortyk","profiles",profiles);
     }
     async _onMakeAmmoClick(event){
-        let weapon=this.item;
+        let weapon=this.item._source;
         let ammoData={};
         let actor=this.actor;
         ammoData["name"]=`${weapon.name} Ammunition`;
@@ -403,7 +482,7 @@ export class FortyKItemSheet extends ItemSheet {
         }
 
 
-        let flags=this.item.flags.fortyk;
+        let flags=this.item._source.flags.fortyk;
 
         for(const flag in flags){
 

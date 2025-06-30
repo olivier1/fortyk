@@ -22,80 +22,92 @@ FORTYK.size=[
      "mod":-30,
      "stealth":30,
      "movement":-3,
-     "size":0.6,
-    "index":0},
+     "size":1,
+     "scale":0.6,
+     "index":0},
     {"name":"Puny",
      "mod":-20,
      "stealth":20,
      "movement":-2,
-     "size":0.7,
-    "index":1},
+     "size":1,
+     "scale":0.7,
+     "index":1},
     {"name":"Scrawny",
      "mod":-10,
      "stealth":10,
      "movement":-1,
-     "size":0.8,
-    "index":2},
+     "size":1,
+     "scale":0.8,
+     "index":2},
     {"name":"Average",
      "mod":0,
      "stealth":0,
      "movement":0,
      "size":1,
-    "index":3},
+     "scale":1,
+     "index":3},
     {"name":"Hulking",
      "mod":10,
      "stealth":-10,
      "movement":1,
-     "size":1.2,
-    "index":4},
+     "size":1,
+     "scale":1.2,
+     "index":4},
     {"name":"Enormous",
      "mod":20,
      "stealth":-20,
      "movement":2,
      "size":2,
-    "index":5},
+     "scale":1,
+     "index":5},
     {"name":"Massive",
      "mod":30,
      "stealth":-30,
      "movement":3,
      "size":5,
-    "index":6},
+     "index":6},
     {"name":"Immense",
      "mod":40,
      "stealth":-40,
      "movement":4,
      "size":8,
-    "index":7},
+     "scale":1,
+     "index":7},
     {"name":"Monumental",
      "mod":50,
      "stealth":-50,
      "movement":5,
      "size":10,
-    "index":8},
+     "scale":1,
+     "index":8},
     {"name":"Titanic",
      "mod":60,
      "stealth":-60,
      "movement":6,
      "size":15,
-    "index":9},
+     "scale":1,
+     "index":9},
     {"name":"Gargantuan",
      "mod":70,
      "stealth":-70,
      "movement":7,
      "size":20,
-    "index":10},
+     "scale":1,
+     "index":10},
     {"name":"Colossal",
      "mod":80,
      "stealth":-80,
      "movement":8,
      "size":25,
-    "index":11},
+     "scale":1,
+     "index":11},
     {"name":"Immeasurable",
      "mod":90,
      "stealth":-90,
      "movement":9,
      "size":30,
-    "index":12}];
+     "scale":1,
+     "index":12}];
 FORTYK.carry=[
     {"carry":0.9,
      "lift":2.25,
@@ -559,7 +571,7 @@ FORTYK.weaponFlags={
         "value": false,
         "num": -1,
         "label": "Concussive",
-        "description": "Concussive weapons strike with a powerful impact strong enough to temporarily knock a foe senseless. When a target is struck by a Concussive weapon, he must take a Toughness test with a penalty equal to 10 times the number in parentheses (X). For example, a weapon with Concussive (2) would impose a –20 on this Toughness test and Concussive (0) would cause a test with no penalty. If he fails, the target is Stunned for 1 round per degree of failure. If the attack also inflicted an amount of damage greater than the target’s Strength bonus, the target is knocked Prone. When dealing damage to a vehicle with the walker trait, concussive weapons make the pilot of the vehicle have to pass a +60 operate test modified by the manoeuvrability of the walker, minus 10 times X, minus the damage taken. If the test is failed the walker is knocked down."
+        "description": "Concussive weapons strike with a powerful impact strong enough to temporarily knock a foe senseless. When a target is struck by a Concussive weapon, he must take a Toughness test with a penalty equal to 10 times the number in parentheses (X). For example, a weapon with Concussive (2) would impose a –20 on this Toughness test and Concussive (0) would cause a test with no penalty. If he fails, the target is Stunned for 1 round per degree of failure. If the attack also inflicts an amount of damage greater than the target’s Strength bonus, the target is knocked Prone and knocked back a number of meters equal to the rating plus 1d5 meters. When dealing damage to a vehicle with the walker trait, concussive weapons make the pilot of the vehicle have to pass a +60 operate test modified by the manoeuvrability of the walker, minus 10 times X, minus the damage taken. If the test is failed the walker is knocked down."
     },
     "corrosive": {
         "value": false,
@@ -592,11 +604,21 @@ FORTYK.weaponFlags={
         "label": "Defensive",
         "description": "A Defensive weapon, such as a shield, is intended to be used to block attacks and is awkward when used to attack. A weapon with this quality grants a +15 bonus to tests made when used to Parry, but imposes a –10 penalty on tests to make attacks with it."
     },
+    "degeneration": {
+        "value": false,
+        "label": "Degeneration",
+        "description": "A weapon with this attribute deals 1d10 Agility Damage with every wounding hit. This is a disease effect."
+    },
     "encumbering": {
         "value": false,
         "num": 0,
         "label": "Encumbering",
         "description": "Encumbering(X) reduces your movement by X"
+    },
+    "enfeebling": {
+        "value": false,
+        "label": "Enfeebling",
+        "description": "A weapon with this attribute deals 1d10 Strength Damage with every wounding hit. This is a disease effect."
     },
     "felling": {
         "value": false,
@@ -618,6 +640,11 @@ FORTYK.weaponFlags={
         "value": false,
         "label": "Force",
         "description": "A force weapon relies on the user’s mind to unlock its true potential, suddenly turning a sword or staff into a device burning with eldritch energies able to reave tanks. Force weapons count as Best craftsmanship Mono variants of the equivalent Low-Tech weapon. In the hands of a psyker, the weapon also deals bonus damage and gains bonus penetration equal to the psyker’s base psy rating (so a psy rating 3 would grant +3 damage and +3 penetration), and the damage type changes to Energy. In addition, whenever a psyker damages an opponent, he may take a Focus Power action (Opposed with Willpower) as a Half Action. If he wins the test, then for every degree of success, the Force weapon’s wielder deals an additional 1d10 Energy damage, ignoring Armour and Toughness bonus. Psykers always use their base psy rating when determining psychic strength for this test, and cannot generate Psychic Phenomena on this test. Force weapons cannot be destroyed by weapons with the Power Field quality."
+    },
+    "fueledbyslaughter": {
+        "value": false,
+        "label": "Fueled by Slaughter",
+        "description": "Whenever a weapon with this attribute is used to slay a living creature (creatures with the Daemonic or Machine Trait are not considered to be living creatures for this purpose), the wielder immediately regains 1d10 wounds, up to his normal maximum."
     },
     "gauss": {
         "value": false,
@@ -704,6 +731,11 @@ FORTYK.weaponFlags={
         "label": "Maximal",
         "description": "Many energy weapons have multiple settings, allowing the user greater tactical flexibility in combat. As a Free Action, this weapon can be switched between two modes: Standard (which uses the normal weapon profile) and Maximal. When the weapon is fired on Maximal, it adds 10 metres to its range, 1d10 to its damage, and +2 to its penetration. If it has the Blast quality, then the value of this quality is increased by 2 (i.e., Blast [3] becomes Blast [5]). The weapon also uses three times the normal amount of ammunition per shot and gains the Recharge quality."
     },
+    "mindeater": {
+        "value": false,
+        "label": "Mindeater",
+        "description": "A weapon with this attribute rolls for Damage as normal, ignoring Toughness Bonus and Armour. However, no wounds are caused by the attack; instead, the weapon deals Fellowship, Intelligence, Perception and Willpower Damage, with the total Damage rolled divided evenly between the four characteristics."
+    },
     "mindscrambler": {
         "value": false,
         "label": "Mindscrambler",
@@ -734,10 +766,26 @@ FORTYK.weaponFlags={
         "label": "Non Explosive Ammunition",
         "description": "This weapon's ammunition does not explode when destroyed, the weapon itself may still explode and damage the vehicle when destroyed."
     },
+    "nosb": {
+        "value": false,
+        "label": "No Strength Bonus",
+        "description": "Melee weapons with this quality do not add the user's strength bonus to their damage."
+    },
     "overheats": {
         "value": false,
         "label": "Overheats",
         "description": "Through inefficient shielding, defective venting, or simply inherent design, the weapon often becomes overcome with the heat of its ammunition or firing methods. On an attack roll of 91 or higher, this weapon overheats. The wielder suffers Energy damage equal to the weapon’s damage with a penetration of 0 to an arm location (the arm holding the weapon if the weapon was fired one-handed, or a random arm if the weapon was fired with two hands). The wielder may choose to avoid taking the damage by dropping the weapon as a Free Action. A weapon that overheats must spend the round afterwards cooling down, and cannot be fired again until the second round after overheating. A weapon with this quality does not jam, and any effect that would cause the weapon to jam instead causes the weapon to overheat."
+    },
+    "plaguecarrier": {
+        "value": false,
+        "label": "Plague Carrier",
+        "description": "A weapon with this attribute contains a virulent disease that spreads to anything it wounds. The weapon gains the Toxic (3) Quality, which deals 2d10 Toughness Damage upon a failed Toughness Test and makes the target contagious for the next seven rounds. Any who touch his flesh or bodily fluids within that time must pass a Challenging (+0) Toughness Test or also suffer 2d10 Toughness Damage and become contagious for the next seven rounds, as described above."
+    },
+    "piercing": {
+        "value": false,
+        "num": 0,
+        "label": "Piercing",
+        "description": "Whenever a weapon with this attribute inflicts Critical Damage, the weapon deals additional Damage equal to the daemon’s Willpower Bonus."
     },
     "purifyingflame": {
         "value": false,
@@ -760,6 +808,11 @@ FORTYK.weaponFlags={
         "num": 0,
         "label": "Proven",
         "description": "These weapons always inflict massive trauma. When rolling for damage with these weapons, any die result lower than the number in parentheses (X) counts as that number instead. Thus, a Proven (3) weapon would treat any die result of 1 or 2 as a 3 for the purposes of calculating damage."
+    },
+    "psyflame": {
+        "value": false,
+        "label": "Psy Flame",
+        "description": "Certain weapons possess psychic sensitive flames which react to their user's will, should they be psychic. If the wearer of this weapon has a Psy Rating and this weapon is a spray weapon, it will impose a penalty on the agility test to avoid getting hit equal to 5 times the Psy Rating of the user."
     },
     "radpoisoning": {
         "value": false,
@@ -874,6 +927,11 @@ FORTYK.weaponFlags={
         "label": "Thermal",
         "description": "These weapons cause vehicles hit by them to build up internal heat. Superheavy vehicles gain 1 heat, normal vehicles are set ablaze."
     },
+    "thirsting": {
+        "value": false,
+        "label": "Thirsting",
+        "description": "A weapon with this attribute infl icts a level of Fatigue with every wounding hit."
+    },
     "torrent": {
         "value": false,
         "num": 0,
@@ -923,6 +981,11 @@ FORTYK.weaponFlags={
         "label": "Volkite",
         "description": "Damage rolls of 10 add another d10 to the damage, extra d10s do not generate further d10s."
     },
+    "voidchill": {
+        "value": false,
+        "label": "Voidchill",
+        "description": "Whenever a weapon with this attribute inflicts a wounding hit, it also causes 1d10 Toughness Damage."
+    },
     "voidstrike": {
         "value": false,
         "label": "Voidstrike",
@@ -949,6 +1012,7 @@ FORTYK.weaponMounts=[
     {value:"pintle",label:"Pintle",description:"Pintle weapons are usually optional or additional weapons bolted onto turret rings or placed in areas where spare crew or even passengers can use them. They are usually comparatively light weapons, such as heavy stubbers, and are used to defend the vehicle in much the same way as sponson weaponry. Unlike the other weaponry mounted on a vehicle, Pintle weapons do not automatically have a crew member assigned to them. Instead, they may be fired by anyone who can realistically reach one during his Turn, or who reached one in a previous Turn. Even passengers may fire a Pintle weapon if they are able. Pintle weapons usually have a 360 degree Fire Arc, as they are often mounted on the highest point of a vehicle, but there are exceptions to this and the GM should be aware of what might block a Pintle weapon’s Fire Arc."}];
 FORTYK.lasModes=[{key:0,label:"normal"},{key:1,label:"overcharge"},{key:2,label:"overload"}];
 FORTYK.itemQualities=[{value:"Poor"},{value:"Common"},{value:"Good"},{value:"Best"}];
+FORTYK.itemQualityAbrv={"Poor":"P", "Common":"C", "Good":"G", "Best":"B"};
 FORTYK.skillChars={"ws":{"name":"ws","caps":"WS"},"bs":{"name":"bs","caps":"BS"},"s":{"name":"s","caps":"S"},"t":{"name":"t","caps":"T"},"agi":{"name":"agi","caps":"AGI"},"int":{"name":"int","caps":"INT"},"per":{"name":"per","caps":"PER"},"wp":{"name":"wp","caps":"WP"},"fel":{"name":"fel","caps":"FEL"}};
 FORTYK.characteristics={"ws":{"key":"ws","label":"Weapon Skill","aptitudes":"weapon skill, offence"},"bs":{"key":"bs","label":"Ballistic Skill","aptitudes":"ballistic skill, finesse"},"s":{"key":"s","label":"Strength","aptitudes":"strength, offence"},"t":{"key":"t","label":"Toughness","aptitudes":"toughness, defence"},"agi":{"key":"agi","label":"Agility","aptitudes":"agility, finesse"},"int":{"key":"int","label":"Intelligence","aptitudes":"intelligence, knowledge"},"per":{"key":"per","label":"Perception","aptitudes":"perception, fieldcraft"},"wp":{"key":"wp","label":"Willpower","aptitudes":"willpower, psyker, leadership"},"fel":{"key":"fel","label":"Fellowship","aptitudes":"fellowship, social"}};
 FORTYK.skillTraining={"0":{"name":"Untrained","value":-20},"1":{"name":"Known","value":0},"2":{"name":"Trained","value":10},"3":{"name":"Experienced","value":20},"4":{"name":"Veteran","value":30}};
@@ -1249,6 +1313,7 @@ FORTYK.StatusEffects = [
 ];
 FORTYK.itemRarityLabels = {"100":"Ubiquitous","30":"Abundant","20":"Plentiful","10":"Common","0":"Average","-10":"Scarce","-20":"Rare","-30":"Very Rare","-40":"Extremely Rare","-50":"Near Unique","-60":"Unique"};
 FORTYK.itemRarity= [{value:100,"label":"Ubiquitous"},{value:30,label:"Abundant"},{value:20,label:"Plentiful"},{value:10,label:"Common"},{value:0,label:"Average"},{value:-10,label:"Scarce"},{value:-20,label:"Rare"},{value:-30,label:"Very Rare"},{value:-40,label:"Extremely Rare"},{value:-50,label:"Near Unique"},{value:-60,label:"Unique"}];
+
 FORTYK.cargoRarityValue = {"100":2,"30":5,"20":10,"10":20,"0":50,"-10":100,"-20":200,"-30":400,"-40":1000,"-50":3000,"-60":6000};
 FORTYK.cargoQualityMultiplier = {"Poor":0.5,"Common":1,"Good":2,"Best":4};
 FORTYK.comradeRanks=[{value:"Green"},{value:"Guardsman"},{value:"Veteran"}];
@@ -1257,3 +1322,4 @@ FORTYK.meldTypes={"default":20,"experimental":20,"safe":10};
 FORTYK.itemStates=[{value:"O"},{value:"D"},{value:"X"}];
 FORTYK.advances=[{value:0,label:"0%"},{value:5,label:"5%"},{value:10,label:"10%"},{value:15,label:"15%"},{value:20,label:"20%"},{value:25,label:"25%"}];
 FORTYK.psyChars=[{value:"wp",label:"Willpower"},{value:"per",label:"Perception"},{value:"psy",label:"Psyniscience"}];
+FORTYK.modTypes=[{value:'weapon',label:'Weapon'},{value:'armor',label:'Armor'},{value:'rangedWeapon',label:'Ranged Weapon'}, {value:'meleeWeapon',label:'Melee Weapon'}];
