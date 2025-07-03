@@ -1,0 +1,32 @@
+
+<label class="popup {{#unless remainingHits}}test-success{{else}}test-failure{{/unless}}" data-id="{{id}}"> Forcefield hits remaining: {{remainingHits}}
+    <div class="fortyk popuptext chat-background flexcol" id="{{id}}">
+        <div class="chat-target">
+            <span class="chat-line">{{title}}</span>
+            <div class="flexrow">
+                <span class="chat-target">Hits<br> {{hits}}</span>
+                <span class="chat-target">Rating<br> {{rating}}</span>
+                <span class="chat-target">Overload<br> {{overload}}</span>   
+            </div>
+        </div>
+        <div class="chat-target flexcol">
+            {{#each results}}
+            {{#if this.overload}}
+            <span class="chat-line test-overload">{{this.string}}</span>
+            {{else if this.pass}}
+            <span class="chat-line test-success">{{this.string}}</span>
+            {{else}}
+            <span class="chat-line test-failure">{{this.string}}</span>
+            {{/if}}
+            {{/each}}
+        </div>
+
+
+        <div class="chat-target flexcol">
+            <span class="roll-result">Remaining Hits: {{remainingHits}}</span>
+            {{#if breaks}}
+            <span class="chat-line ">{{breaks}}</span>
+            {{/if}}
+        </div>
+    </div>
+</label>

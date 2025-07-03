@@ -1,4 +1,4 @@
-import {makeRangeArray} from "./utilities.js"
+import {makeRangeArray} from "./utilities.js";
 export const FORTYKTABLES={};
 
 FORTYKTABLES.income=makeRangeArray([9,19,29,39,49,59,69,79,89,120],[10,60,200,400,1000,5000,10000,20000,100000,1000000])

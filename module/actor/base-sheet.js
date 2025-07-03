@@ -371,7 +371,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             var customBonus=await game.packs.get("fortyk.custom-bonus-and-drawbacks");
             tnts=tnts.concat(await customBonus.getDocuments());
         }
-
         //load different packs depending on actor type
         if(actor.type==="dhPC"||actor.type==="npc"){
             var dh2CoreBonus=await game.packs.get("fortyk.role-homeworld-and-background-bonuscore-dh2");
@@ -1174,7 +1173,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                     callback: async (el) =>  {
                         const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
 
-                        let forceData={name:"Force",type:"rangedWeapon"};
+                        let forceData={name:"Force",type:"psychicPower"};
                         forceData.flags={
                             fortyk:{
                                 ignoresoak:true
@@ -1211,16 +1210,13 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         if(itemData.type==="mod"){
             if(this.actor.type!=="spaceship"){
                 let applied= await this._applyModToItem(item ,sameActor);
-
                 if(applied){
                     return false;
                 } 
                 if(itemData.system.amount.value>1){
                     itemData.system.amount.value=1;
                 }
-
             }
-
         }
         // Handle item sorting within the same Actor
         if ( sameActor ) return super._onSortItem(event, itemData);
@@ -1246,8 +1242,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         if(originItem.effects.length===0){
             if(!sameActor){
                 ui.notifications.warn("The Mod has no active effect, it has not been added!");
-
-
             }
             return true;
         }
@@ -1295,9 +1289,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
             i++;
         }
-
-
-
         async function applyMod(actor, itemId) {
             let item=actor.getEmbeddedDocument("Item",itemId);
             let effect=originItem.effects.entries().next().value[1];
@@ -1323,16 +1314,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                 deleteOrigin();
                             }
                             return false;
-
                         }else{
                             applyMod(actor, itemId);
                             this.render(true);
                             return true; 
-
-
                         }
-
-
                     }
                 },
                 cancel:{
@@ -1341,22 +1327,13 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         if(!sameActor){
                             deleteOrigin();
                         }
-
                         return false;
                     }
                 }
             },
             render: (html)=>{
-
             },
-
-
             default: "submit",
-
-
             width:100});
-
     }
-
-
 }

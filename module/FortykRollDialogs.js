@@ -2,14 +2,89 @@ import {FortykRolls} from "./FortykRolls.js";
 import {getActorToken} from "./utilities.js";
 import {tokenDistance} from "./utilities.js";
 export class FortykRollDialogs{
-    //handles token pings
-    static async _onTokenPing(event){
+    //handles spray and torrent attack results
+    static async _onSprayTorrentClick(event){
 
         const dataset=event.currentTarget.dataset;
         const tokenId=dataset.token;
+        let hits=dataset.hits;
+        hits=parseInt(hits);
         const token=canvas.tokens.get(tokenId);
         await canvas.animatePan({x:token.center.x,y:token.center.y});
         game.canvas.ping({x:token.center.x,y:token.center.y},{duration:2000});
+        if(game.user.isGM){
+            var targetElement = event.currentTarget;
+            const messageId=$(targetElement).closest('.chat-message')[0].dataset.messageId;
+            let messageContent=$(targetElement).closest('.message-content')[0];
+            const message=game.messages.get(messageId);
+            let htmlLine=targetElement.parentElement;
+            const userId=dataset.user;
+            const user=game.users.get(userId);
+            let targets=user.targets;
+            if(hits===0)return;
+            let actor=token.actor;
+            let line=`<a class="ping-token" data-user="${userId}" data-hits="${0}" data-token="${tokenId}">`+actor.getName()+"</a> ";
+
+            let forcefielded=false;
+            let forcefield=actor.system.secChar.wornGear.forceField;
+            if(!jQuery.isEmptyObject(forcefield)&&!forcefield.system.broken.value){
+                let fieldResult=await FortykRolls.fortykForcefieldTest(forcefield, actor, hits, true);
+                foundry.audio.AudioHelper.play({src: "sounds/dice.wav", volume: 1, autoplay: true, loop: false}, true);
+                hits= fieldResult.hits;
+                line+= fieldResult.template;
+                forcefielded=true;
+
+            }
+
+            if(hits===0){
+                htmlLine.innerHTML=line;
+                message.update({content:messageContent.innerHTML});
+                if(user.id!==game.user.id){
+                    let socketOp={type:"removeTarget",package:{user:userId, token:token.id}};
+                    game.socket.emit("system.fortyk",socketOp);
+                }else{
+                    token.setTarget(false, { releaseOthers:false});
+                }
+
+                return; 
+            }
+            if(forcefielded)line+=`</br>${actor.getName()}`;
+            let dodge=0;
+            let label="Dodge";
+            if(actor.type==="npc"){
+                dodge=actor.system.dodge.total;
+            }else if(actor.type==="vehicle"){
+                dodge=actor.system.crew.jink;
+                label="Jink";
+            }else{
+                dodge=actor.system.skills.dodge;
+            }
+            
+            let result=await this.callRollDialog("agi", "evasion", dodge, actor, label, null, false, "", true);
+            foundry.audio.AudioHelper.play({src: "sounds/dice.wav", volume: 1, autoplay: true, loop: false}, true);
+         
+            let hitlabel="hit";
+            if(hits>1)hitlabel+="s";
+            if(result.value&&result.dos>=hits){
+                line+= `passed ${result.template} and must move out of the area to not take damage`;
+                if(user.id!==game.user.id){
+                    let socketOp={type:"removeTarget",package:{user:userId, token:token.id}};
+                    game.socket.emit("system.fortyk",socketOp);
+                }else{
+                    token.setTarget(false, { releaseOthers:false});
+                }
+
+            }else if(result.value&&result.dos<hits){
+                hits-=result.dos;
+                line+= `passed ${result.template} but ${hits} ${hitlabel} remain`;
+            }else{
+                line+=`failed ${result.template} and suffers ${hits} ${hitlabel}`;
+            }
+            htmlLine.innerHTML=line;
+            message.update({content:messageContent.innerHTML});
+            return; 
+
+        }
     }
     //handles test rerolls
     static async _onReroll(event){
@@ -26,7 +101,16 @@ export class FortykRollDialogs{
 
         const weapon=actor.items.get(dataset["weapon"]);
         const fireRate=dataset["fire"];
-        this.callRollDialog(char, type, target, actor, label, weapon , true, fireRate);
+        await this.callRollDialog(char, type, target, actor, label, weapon , true, fireRate);
+        const chatContent=event.currentTarget.parentElement;
+        const chatMessage=chatContent.parentElement;
+        const messageId=chatMessage.dataset.messageId;
+        const message=game.messages.get(messageId);
+
+        if(message){
+            message.update({content:chatContent.innerHTML});
+        }
+
 
     }
 
@@ -54,7 +138,7 @@ export class FortykRollDialogs{
         let poppup=document.getElementById(poppupId);
         poppup.classList.toggle("show");
     }
-    static async callRollDialog(testChar, testType, testTarget, actor, testLabel, item, reroll, title=""){
+    static async callRollDialog(testChar, testType, testTarget, actor, testLabel, item, reroll, title="", template=false){
 
         if(reroll){
             title+=`${testLabel} `+"Reroll";
@@ -65,6 +149,12 @@ export class FortykRollDialogs{
         let modifier=0;
 
         if(testType==="evasion"){
+            let evadeCount=parseInt(actor.getFlag("core","evasion"));
+            let maxEvade=actor.system.reactions;
+            if(evadeCount>=maxEvade){
+                ui.notifications.warn("Out of reactions!");
+                return {value:false, dos:0, template:"Out of reactions!"};
+            }
             if(actor.getFlag("fortyk","evadeMod")){
 
                 modifier=actor.getFlag("fortyk","evadeMod");
@@ -80,7 +170,7 @@ export class FortykRollDialogs{
             }
         }
 
-        new Dialog({
+        return await Dialog.wait({
             title: title,
             content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="${modifier}" autofocus/></p>`,
             buttons: {
@@ -123,7 +213,7 @@ export class FortykRollDialogs{
                                         for(let ae of actor.effects){
 
                                             if(ae.statuses.has("evasion")){
-                                                let count=ae.getFlag("fortyk","evasion");
+                                                let count=actor.getFlag("core","evasion");
                                                 count++;
                                                 if(count>9){
                                                     count=9;
@@ -132,12 +222,13 @@ export class FortykRollDialogs{
                                                 update["icon"]=`systems/fortyk/icons/evasion${count}.png`;
                                                 update["flags.fortyk.evasion"]=count;
                                                 await ae.update(update);
+                                                await actor.setFlag("core","evasion",count);
                                             }
                                         }
                                     }
                                 }
                             }
-                            FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, reroll);
+                            return await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, reroll,"", template);
                         }
 
                     }
@@ -148,7 +239,7 @@ export class FortykRollDialogs{
 
 
             width:100}
-                  ).render(true);
+                                );
 
     }
     static async callMeldDialog(actor, testTarget){
@@ -175,6 +266,22 @@ export class FortykRollDialogs{
             width:100});
 
     }
+    static checkMelee(target){
+        let tokens=canvas.tokens.children[0].children;
+        let targetDispositon=target.document.disposition;
+        for(const token of tokens){
+            if(token.id===target.id)continue;
+            if(this.cantAssistFlags(token.actor))continue;
+            if(token.document.disposition!==targetDispositon){
+                let distance=tokenDistance(target, token);
+                let reach=token.actor.system.reach;
+                if(distance<=reach){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     static checkCanAssist(assistant, target){
         if(assistant.actor.getFlag("fortyk","guard"))return true;
         let tokens=canvas.tokens.children[0].children;
@@ -191,6 +298,15 @@ export class FortykRollDialogs{
         }
         return true;
     }
+    static cantAssistFlags(actor){
+        if(actor.getFlag("core","dead"))return true;
+        if(actor.getFlag("core","running"))return true;
+        if(actor.getFlag("core","stunned"))return true;
+        if(actor.getFlag("core","snare"))return true;
+        if(actor.getFlag("core","unconscious"))return true;
+        if(actor.getFlag("core","blind")&&!token.actor.getFlag("fortyk","blindfight"))return true;
+        return false;
+    }
     static findAssists(target, attacker){
         let targetDisposition=target.document.disposition;
         let attackerDisposition=attacker.document.disposition;
@@ -200,11 +316,7 @@ export class FortykRollDialogs{
         for(const token of tokens){
             if(token.id===target.id)continue;
             if(token.id===attacker.id)continue;
-            if(token.actor.getFlag("core","dead"))continue;
-            if(token.actor.getFlag("core","stunned"))continue;
-            if(token.actor.getFlag("core","snare"))continue;
-            if(token.actor.getFlag("core","unconscious"))continue;
-            if(token.actor.getFlag("core","blind")&&!token.actor.getFlag("fortyk","blindfight"))continue;
+            if(this.cantAssistFlags(token.actor))continue;
             let tokenDisposition=token.document.disposition;
             if(tokenDisposition===attackerDisposition&&tokenDisposition!==targetDisposition){
                 let tokenReach=token.actor.system.reach;
@@ -218,7 +330,8 @@ export class FortykRollDialogs{
                 }
             }
         }
-        return {assistCount:Math.min(2,assistCount),doubleTeam:doubleTeam};
+        assistCount=Math.min(2,assistCount);
+        return {assistCount:assistCount,doubleTeam:doubleTeam};
     }
     //handles the melee attack dialog WHEW
     static async callMeleeAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
@@ -272,9 +385,9 @@ export class FortykRollDialogs{
         templateOptions["options"].counter=actor.getFlag("fortyk","counterattack");
         templateOptions["options"].running=modifiers.running;
         templateOptions["options"].totalDef=modifiers.totalDef;
-        templateOptions["options"].rough=actor.getFlag("core","rough");
-        templateOptions["options"].tough=actor.getFlag("core","tough");
-        templateOptions["options"].severe=actor.getFlag("core","severe");
+        //templateOptions["options"].rough=actor.getFlag("core","rough");
+        //templateOptions["options"].tough=actor.getFlag("core","tough");
+        //templateOptions["options"].severe=actor.getFlag("core","severe");
         if(!(templateOptions["options"].rough&&templateOptions["options"].tough&&templateOptions["options"].severe)){
             templateOptions["options"].normal=true;
         }else{
@@ -306,9 +419,9 @@ export class FortykRollDialogs{
 
                 miscMods+=Math.min(30,hordeSize);
                 modifierTracker.push({"value":`+${Math.min(30,hordeSize)}`,"label":"Horde Trait Bonus"});
-
             }
         }
+        templateOptions["options"].outnumber=0;
         let targets=game.user.targets;
         let target=targets.values().next().value;
         let vehicle=false;
@@ -316,12 +429,10 @@ export class FortykRollDialogs{
             if(modifiers.distance>item.system.range.value){
                 return ui.notifications.warn("Target out of reach!");
             }
-
             let speed=modifiers.tarEvasion;
             if(actor.getFlag("fortyk","ignorespeed")){
                 let ignoreSpeed=parseInt(actor.getFlag("fortyk","ignorespeed"));
                 speed=Math.max(0,speed-ignoreSpeed);
-
             }
             miscMods+=-speed;
             if(modifiers.tarEvasion){
@@ -329,7 +440,6 @@ export class FortykRollDialogs{
             }
             let tarActor=target.actor;
             let tar=tarActor;
-            templateOptions["options"].outnumber=0;
             if(tar.getFlag("fortyk","combatmaster")){
                 templateOptions["options"].combatmaster=true;
             }else{
@@ -408,8 +518,8 @@ export class FortykRollDialogs{
                         let aimType = html.find('input[name=aim-type]:checked')[0].attributes["aimtype"].value;
                         const outnumberBonus = Number($(html).find('input[name="outnumber"]:checked').val());
                         let outnumberType = html.find('input[name=outnumber]:checked')[0].attributes["outnumbertype"].value;
-                        const terrainBonus = Number($(html).find('input[name="terrain"]:checked').val());
-                        let terrainType = html.find('input[name=terrain]:checked')[0].attributes["terraintype"].value;
+                        //const terrainBonus = Number($(html).find('input[name="terrain"]:checked').val());
+                        //let terrainType = html.find('input[name=terrain]:checked')[0].attributes["terraintype"].value;
                         const visibilityBonus = Number($(html).find('input[name="visibility"]:checked').val());
                         let visibilityType = html.find('input[name=visibility]:checked')[0].attributes["visibilitytype"].value;
                         let defensive = Number($(html).find('input[name="defensive"]:checked').val());
@@ -425,7 +535,7 @@ export class FortykRollDialogs{
 
                             if(size<0){
                                 let preysense=parseInt(actor.getFlag("fortyk","preysense"))*10
-                                size=Math.min(0,size+preysense)
+                                size=Math.min(0,size+preysense);
                             }
                         }
                         if(actor.getFlag("fortyk","versatility")){
@@ -444,7 +554,7 @@ export class FortykRollDialogs{
                             aeData.name= "Evasion";
                             if(!actor.getFlag("core","evasion")){
                                 aeData.icon= "systems/fortyk/icons/evasion.png";
-                                aeData.flags={"fortyk":{"evasion":1}};
+                                aeData.flags={"fortyk":{"evasion":99}};
                                 aeData.statuses=["evasion"];
                                 aeData.duration={
                                     rounds:0
@@ -454,7 +564,7 @@ export class FortykRollDialogs{
                                 for(let ae of actor.effects){
 
                                     if(ae.statuses.has("evasion")){
-                                        let count=ae.getFlag("fortyk","evasion");
+                                        let count=9;
                                         count++;
                                         if(count>9){
                                             count=9;
@@ -463,6 +573,7 @@ export class FortykRollDialogs{
                                         update["icon"]=`systems/fortyk/icons/evasion${count}.png`;
                                         update["flags.fortyk.evasion"]=count;
                                         await ae.update(update);
+                                        await actor.setFlag("core","evasion",count);
                                     }
                                 }
                             }
@@ -493,7 +604,7 @@ export class FortykRollDialogs{
                             addLabel=html.find('input[name="guarded"]')[0].attributes["label"].value+" "+addLabel;
                         } 
                         if(html.find('input[name="counter"]').is(':checked')){
-                            addLabel=  html.find('input[name="counter"]')[0].attributes["label"].value+" "+addLabel
+                            addLabel=  html.find('input[name="counter"]')[0].attributes["label"].value+" "+addLabel;
                         }
                         testLabel=addLabel+" "+ testLabel;
                         if(isNaN(running)){running=0}else{ modifierTracker.push({"value":`${running}`,"label":`Running Target Modifier`});}
@@ -509,10 +620,10 @@ export class FortykRollDialogs{
                         modifierTracker.push({"value":`${attackTypeBonus}`,"label":`${attacklabel} Attack Modifier`});
                         modifierTracker.push({"value":`${aimBonus}`,"label":`${aimType} Aim Modifier`});
                         modifierTracker.push({"value":`${visibilityBonus}`,"label":`${visibilityType} Visibility Modifier`});
-                        modifierTracker.push({"value":`${terrainBonus}`,"label":`${terrainType} Terrain Modifier`});
+                        //modifierTracker.push({"value":`${terrainBonus}`,"label":`${terrainType} Terrain Modifier`});
                         modifierTracker.push({"value":`${outnumberBonus}`,"label":`${outnumberType} Modifier`});
                         modifierTracker.push({"value":`${size}`,"label":`Size Modifier`});
-                        testTarget=miscMods+parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(counter)+parseInt(aimBonus)+parseInt(outnumberBonus)+parseInt(terrainBonus)+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
+                        testTarget=miscMods+parseInt(testTarget)+parseInt(running)+parseInt(attackTypeBonus)+parseInt(guarded)+parseInt(counter)+parseInt(aimBonus)+parseInt(outnumberBonus)/*+parseInt(terrainBonus)*/+parseInt(visibilityBonus)+parseInt(defensive)+parseInt(prone)+parseInt(high)+parseInt(surprised)+parseInt(stunned)+parseInt(size)+parseInt(other);
                         actor.system.secChar.lastHit.attackRange="melee";
                         actor.system.secChar.lastHit.vehicle=vehicle;
                         actor.system.secChar.lastHit.facing=modifiers.facing;
@@ -528,7 +639,14 @@ export class FortykRollDialogs{
                   ).render(true);
     }
     static async callRangedAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
+        //check if in melee
+        if(item.system.class.value!=="Pistol"&&this.checkMelee(getActorToken(actor))){
+            return ui.notifications.warn("You are enegaged in melee!");
+        }
+        if(actor.getFlag("core","blind")){
 
+            return ui.notification.warn("You are blind and can't shoot!");
+        }
         let template="systems/fortyk/templates/actor/dialogs/ranged-attack-dialog.html";
         let templateOptions={};
         let itemData=item;
@@ -634,41 +752,8 @@ export class FortykRollDialogs{
         }
         //if cant shoot return
         if(!canShoot){
-            new Dialog({
-                title: `Not enough Ammo.`,
-                classes:"fortky",
-                content: "You are out of ammunition, reload!",
-                buttons: {
-                    submit: {
-                        label: 'OK',
-                        callback: null
 
-                    }
-                },
-                default: "submit",
-
-
-                width:400}
-                      ).render(true);
-            return;
-        }else if(actor.getFlag("core","blind")){
-            new Dialog({
-                title: `Blind`,
-                classes:"fortky",
-                content: "You are blind and can't shoot!",
-                buttons: {
-                    submit: {
-                        label: 'OK',
-                        callback: null
-
-                    }
-                },
-                default: "submit",
-
-
-                width:400}
-                      ).render(true);
-            return;
+            return ui.notification.warn("You are out of ammunition, reload!");
         }
         templateOptions["options"]={}
         templateOptions["options"].prone=modifiers.prone;
@@ -679,7 +764,7 @@ export class FortykRollDialogs{
         }else{
             templateOptions["options"].size=actor.system.secChar.size.value;
         }
-
+        templateOptions["options"].targetselection=actor.getFlag("fortyk","targetselection");
         templateOptions["options"].running=modifiers.running;
         templateOptions["options"].normal=true;
         //elevation stuff
@@ -692,6 +777,7 @@ export class FortykRollDialogs{
         let targets=game.user.targets;
         let vehicle=false;
         if(targets.size>0){
+
             if(actor.getFlag("fortyk","gyro")){
                 let gyro=parseInt(actor.getFlag("fortyk","gyro"))*10;
                 let speed=modifiers.tarEvasion;
@@ -732,6 +818,7 @@ export class FortykRollDialogs{
             let target=targets.values().next().value;
             let tarActor=target.actor;
             let tar=tarActor;
+            templateOptions["options"].inmelee=this.checkMelee(target);
             if(tarActor.getFlag("fortyk","dark")){
                 templateOptions.options.targetDark=true;
             }
@@ -744,6 +831,7 @@ export class FortykRollDialogs{
                 modifierTracker.push({"value":`-20`,"label":"Hard target modifier"});
             }
             templateOptions["hardTarget"]=tarActor.getFlag("fortyk","hardtarget");
+
 
             if(tarActor.getFlag("fortyk","invisible")){
                 miscMods+=parseInt(tarActor.getFlag("fortyk","invisible"));
@@ -816,7 +904,9 @@ export class FortykRollDialogs{
             let long=false;
             let extreme=false;
             let range=item.system.range.value;
-            if(distance<=2||distance<=2*canvas.dimensions.distance){
+            if(item.system.class.value==="Pistol"&&distance<=1){
+                normal=true;
+            }else if(distance<=2||distance<=2*canvas.dimensions.distance){
                 pointblank=true;
                 attackRange="pointBlank";
             }else if(distance<=parseInt(range)/2){
@@ -1010,9 +1100,14 @@ export class FortykRollDialogs{
 
     }
     static async callFocusPowerDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
-        let template="systems/fortyk/templates/actor/dialogs/psychic-power-attack-dialog.html"
+        let template="systems/fortyk/templates/actor/dialogs/psychic-power-attack-dialog.html";
         let templateOptions={};
-
+        let actionType=item.system.action.value;
+        if(actionType.toLowerCase()==="reaction"){
+            let reactions=actor.system.reactions;
+            let spentReactions=actor.getFlag("core","evasion");
+            if(spentReactions>=reactions) return ui.notifications.warn("Out of reactions!");
+        }
         let renderedTemplate= await renderTemplate(template,templateOptions);
 
         new Dialog({
@@ -1133,18 +1228,20 @@ export class FortykRollDialogs{
                                 testTarget=data.characteristics.agi.total+mod; 
                             }
                             let test=await game.fortyk.FortykRolls.fortykTest("agi", "Test", testTarget, tokenActor, "Avoid Spray Attack",weapon,false,"",true);
-                            messageContent+=`<div><a class="ping-token" data-token="${token.tokenId}">${token.name}'s</a> `+test.template+`</div>`;
+                            let hit=0;
                             if(!test.value){
                                 updatedtargets.push(token.id);
+                                hit++;
                             }
 
+                            messageContent+=`<div class="chat-target"><a class="ping-token" data-user="${game.user.id}" data-hits="${hit}" data-token="${tokenId}">${token.name}'s</a> `+test.template+`</div>`;
                             let r=test.roll;
                             r.dice[0].options.rollOrder = i;
                             rolls.push(test.roll);
                             i++;
 
                         }
-                        messageContent+=`<div>Selected targets may attempt to evade if they have a reaction remaining and have enough movement from their half-move to exit the attack's area of effect.</div>`;
+                        messageContent+=`<div class="chat-target">Selected targets may attempt to evade if they have a reaction remaining and have enough movement from their half-move to exit the attack's area of effect.</div>`;
                         game.user.updateTokenTargets(updatedtargets);
                         game.user.broadcastActivity({targets:updatedtargets});
                         let name;
@@ -1155,13 +1252,12 @@ export class FortykRollDialogs{
                         }
                         let chatOptions={author: game.user._id,
                                          speaker:{actor,alias:name},
-                                         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
                                          rolls: rolls,
                                          content:messageContent,
                                          classes:["fortyk"],
                                          sound:"sounds/dice.wav",
-                                         flavor:`Spray Attack result`
-                                        }
+                                         flavor:`Spray Attack result`}
+
                         await ChatMessage.create(chatOptions,{});
                         if(!psy){
                             await weapon.update({"system.clip.value":ammo-1});
@@ -1278,7 +1374,7 @@ export class FortykRollDialogs{
                                 //updatedtargets.push(token.id);
                                 targetList.push({name:token.name, test:test, hits:0, tokenId:tokenId});
                             }else{
-                                messageContent+=`<div><a class="ping-token" data-token="${tokenId}">${token.name}'s</a> `+test.template+`</div>`;
+                                messageContent+=`<div class="chat-target"><a class="ping-token" data-user="${game.user.id}" data-hits="0" data-token="${tokenId}">${token.name}'s</a> `+test.template+`</div>`;
                             }
 
                             let r=test.roll;
@@ -1321,11 +1417,11 @@ export class FortykRollDialogs{
                             counter++;
                         }
                         for(const target of targetList){
-                            messageContent+=`<div><a class="ping-token" data-token="${target.tokenId}">${target.name}'s</a> ${target.test.template} takes ${target.hits} hits!`;
+                            messageContent+=`<div class="chat-target"><a class="ping-token" data-user="${game.user.id}" data-hits="${target.hits}" data-token="${target.tokenId}">${target.name}'s</a> ${target.test.template} takes ${target.hits} hits!</div>`;
                         }
-                        messageContent+=`<div>Targets who suffer hits must pass an evasion test with degrees of success equal to the number of hits or take the remaining hits.</div>`;
-                        //game.user.updateTokenTargets(updatedtargets);
-                        //game.user.broadcastActivity({targets:updatedtargets});
+                        messageContent+=`<div class="chat-target">Targets who suffer hits must pass an evasion test with degrees of success equal to the number of hits or take the remaining hits.</div>`;
+                        game.user.updateTokenTargets(updatedtargets);
+                        game.user.broadcastActivity({targets:updatedtargets});
                         let name;
                         if(actor.isToken){
                             name=actor.token.name;
@@ -1334,12 +1430,12 @@ export class FortykRollDialogs{
                         }
                         let chatOptions={author: game.user._id,
                                          speaker:{actor,alias:name},
-                                         style: 0,
                                          rolls: rolls,
                                          content:messageContent,
                                          classes:["fortyk"],
                                          sound:"sounds/dice.wav",
-                                         flavor:`Torrent Attack result`};
+                                         flavor:`Torrent Attack result`,
+                                         flags:{fortyk:{targets:targetList}}};
                         await ChatMessage.create(chatOptions,{});
                         if(!psy){
                             let ammoConsumed=rof*consumption;
@@ -1459,7 +1555,7 @@ export class FortykRollDialogs{
         html.on("mouseup",".reroll", this._onReroll.bind(this));
         html.on("click",".overheat", this._onOverheat.bind(this));
         html.on("click",".popup", this._onTestPoppup.bind(this));
-        html.on("click",".ping-token", this._onTokenPing.bind(this));
+        html.on("click",".ping-token", this._onSprayTorrentClick.bind(this));
     }
 
 }

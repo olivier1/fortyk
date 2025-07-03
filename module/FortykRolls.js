@@ -401,7 +401,7 @@ returns the roll message*/
         //give the chat object options and stuff
         let result={};
         result.roll=roll;
-        let renderedTemplate= await renderTemplate(template,templateOptions);
+
         if(delayMsg){
             let id=foundry.utils.randomID(5);
             let popupTemplate='systems/fortyk/templates/chat/chat-test-popup.html';
@@ -409,10 +409,12 @@ returns the roll message*/
             let renderedPopupTemplate=await renderTemplate(popupTemplate,templateOptions);
             result.template=renderedPopupTemplate;        
         }else{
+            let renderedTemplate= await renderTemplate(template,templateOptions);
             await roll.toMessage({author: game.user,
                                   speaker:{actor,alias:name},
                                   content:renderedTemplate,
-                                  classes:["fortyk"]});
+                                  classes:["fortyk"],
+                                  flags:{fortyk:{templateOptions:templateOptions}}});
         }
         //get first and second digits for hit locations and perils
         let firstDigit=Math.floor(testRoll/10);
@@ -689,7 +691,7 @@ returns the roll message*/
                     for(let ae of actor.effects){
 
                         if(ae.statuses.has("evasion")){
-                            let count=ae.getFlag("fortyk","evasion");
+                            let count=actor.getFlag("core","evasion");
                             count++;
                             if(count>9){
                                 count=9;
@@ -698,6 +700,7 @@ returns the roll message*/
                             update["icon"]=`systems/fortyk/icons/evasion${count}.png`;
                             update["flags.fortyk.evasion"]=count;
                             await ae.update(update);
+                            await actor.setFlag("core","evasion",count);
                         }
                     }
                 }
@@ -931,10 +934,10 @@ returns the roll message*/
         await ChatMessage.create(chatPhenom,{});
     }
     //handles forcefield tests
-    static async fortykForcefieldTest(forcefield,actor,hits){
+    static async fortykForcefieldTest(forcefield,actor,hits, delay=false){
         let name=actor.getName();
         if(forcefield.system.broken.value){
-            return;
+            return {hits:hits,template:""};
         }
         let data=forcefield.system;
         let rating=data.rating.value;
@@ -945,7 +948,7 @@ returns the roll message*/
         let overloaded=false;
         let remainingHits=hits;
 
-        let template='systems/fortyk/templates/chat/chat-forcefield-test.html';
+
         var templateOptions={
             title:`${forcefield.name} Test`,
             hits:hits,
@@ -994,7 +997,17 @@ returns the roll message*/
         }
         templateOptions.results=hitResults;
         templateOptions.remainingHits=remainingHits;
-        let renderedTemplate= await renderTemplate(template,templateOptions);
+        let template='systems/fortyk/templates/chat/chat-forcefield-test.html';
+        let renderedTemplate;
+        if(delay){
+            let id=foundry.utils.randomID(5);
+            templateOptions.id=id;
+            template='systems/fortyk/templates/chat/chat-forcefield-test-popup.html'; 
+            renderedTemplate= await renderTemplate(template,templateOptions);
+            return {hits:remainingHits,template:renderedTemplate};
+        }
+        renderedTemplate= await renderTemplate(template,templateOptions);
+
         let chatOptions={author: game.user,
                          speaker:{actor,alias:name},
                          content:renderedTemplate,
@@ -1004,6 +1017,7 @@ returns the roll message*/
                          sound:"sounds/dice.wav",
                          classes:["fortyk"]};
         await ChatMessage.create(chatOptions);
+        return {hits:remainingHits,template:renderedTemplate};
 
     }
     //handles damage rolls and applies damage to the target, generates critical effects
@@ -2714,7 +2728,7 @@ returns the roll message*/
                 await this.damageRoll(toxicWpn.system.damageFormula,actor,toxicWpn,1, true);
             }
         }
-        
+
         return damageDone;
     }
     //reports damage to a target's owners
@@ -3055,6 +3069,7 @@ returns the roll message*/
                 ae.duration={
                     rounds:1
                 };
+                ae["flags.fortyk.startofround"]=`${actor.getName()} may on take a Half Action this turn!`;
                 activeEffects.push(ae);
                 break;
             case 2:
@@ -3076,6 +3091,7 @@ returns the roll message*/
                 ae.duration={
                     rounds:1
                 };
+                ae["flags.fortyk.startofround"]=`${actor.getName()} may on take a Half Action this turn!`;
                 activeEffects.push(ae);
                 break;
             case 5:
@@ -3192,6 +3208,7 @@ returns the roll message*/
                 ae.duration={
                     rounds:1
                 };
+                ae["flags.fortyk.startofround"]=`${actor.getName()} may on take a Half Action this turn!`;
                 activeEffects.push(ae);
                 break;
             case 4:
@@ -3446,6 +3463,7 @@ returns the roll message*/
                 ae.duration={
                     rounds:1
                 };
+                ae["flags.fortyk.startofround"]=`${actor.getName()} may on take a Half Action this turn!`;
                 activeEffects.push(ae);
                 break;
             case 2:
@@ -4019,6 +4037,7 @@ returns the roll message*/
                 ae.duration={
                     rounds:1
                 };
+                ae["flags.fortyk.startofround"]=`${actor.getName()} may on take a Half Action this turn!`;
                 activeEffects.push(ae);
                 break;
             case 2:
@@ -5865,13 +5884,13 @@ returns the roll message*/
                             filteredEffect.changes=effect.changes;
                         }
                     }
-                    
+
                 }
             }
             if(!dupplicate){
                 filteredEffects.push(effect);
             }
-            
+
         }
         return filteredEffects;
     }
@@ -5889,19 +5908,22 @@ returns the roll message*/
                 }
                 let aEs=[];
                 for(const newAe of effect){
-                    let dupp=false;
+                    let skip=false;
                     for(let ae of actor.effects){
                         if(!ae.statuses.has("weakened")&&!ae.statuses.has("buff")&&newAe.statuses&&ae.statuses.has(newAe.statuses[0])){
-                            dupp=true;
-                            let change=false;
+                            skip=true;
+
                             let upg=false;
                             let changes=ae.changes;
                             if(ae.img!==newAe.img){
-                                change=true;
+                                upg=true;
                             }
-                            if(newAe.changes){
+                            if(ae.getFlag("fortyk","stackable")&&newAe.changes){
                                 for(const change of ae.changes){
-                                    for(const newChange of newAe.changes){
+
+                                    newAe.changes.push(change);
+                                    upg=true;
+                                    /*for(const newChange of newAe.changes){
                                         if((change.key===newChange.key)&&change.mode===newChange.mode){
 
                                             if(change.mode===CONST.ACTIVE_EFFECT_MODES.OVERRIDE||change.mode===CONST.ACTIVE_EFFECT_MODES.CUSTOM){
@@ -5918,25 +5940,28 @@ returns the roll message*/
 
 
 
-                                            upg=true;
+
                                         } 
-                                    }
+                                    }*/
                                 }
                             }
 
-                            if(newAe.duration&&(newAe.duration.rounds>ae.duration.remaining)){
-                                change=true;
+                            if(newAe.duration?.rounds>ae.duration.rounds){
+                                upg=true;
                             }
 
-                            if(change||upg){
+                            if(upg){
 
-                                aEs.push(newAe);
-                                await ae.delete();
+                                //aEs.push(newAe);
+                                //await ae.delete();
+                                await ae.update(newAe);
+                                continue;
+
                             }
                         }
 
                     }
-                    let skip=false;
+
                     if(newAe.id==="stunned"&&actor.getFlag("fortyk","ironjaw")){
                         skip=(await this.fortykTest("t", "char", (actor.system.characteristics.t.total),actor, "Iron Jaw")).value;
                     }
@@ -5947,7 +5972,7 @@ returns the roll message*/
                         skip=true;
                         this._sON(actor);
                     }
-                    if(!dupp&&!skip){
+                    if(!skip){
                         aEs.push(newAe);
                     }
                 }
@@ -5961,7 +5986,7 @@ returns the roll message*/
                         token._refreshEffects();
                     }
                 }*/
-                if (window.EffectCounter) {
+                /*if (window.EffectCounter) {
                     for(let i=0;i<effects.length;i++){
 
                         let effectInstance=effects[i];
@@ -5971,7 +5996,7 @@ returns the roll message*/
 
 
                     }
-                }
+                }*/
 
 
 
@@ -6115,7 +6140,7 @@ returns the roll message*/
     }
     static async applyDead(target,actor,cause=""){
         let name=actor.getName();
-        
+
         if(actor.flags.fortyk.slaughterTarget){
             await this.slaughterHealing(actor.flags.fortyk.slaughterTarget);
         }

@@ -102,6 +102,9 @@
                 <input type="radio" name="outnumber" outnumbertype="3 to 1" value="{{modifiers.gangup.[2]}}" {{#if (equals options.outnumber 2)}}checked{{/if}}><label>3 to 1: +{{modifiers.gangup.[2]}}</label>
             </div>
         </div>
+        
+    </div>
+    <div class="flexcol dialog-column">
         <div class="flexcol attack-section"{{#if options.blindfight}} hidden{{/if}}>
             <label class="section-title">Visibility</label>
             <div class="list-item flexrow">
@@ -111,7 +114,7 @@
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="visibility" visibilitytype="Fog/mist/shadow/smoke" value="-10" ><label>Fog/mist/shadow/smoke: -10</label>
+                <input type="radio" name="visibility" visibilitytype="Fog/mist/shadow/smoke" value="-10" ><label>Fog/shadow/smoke: -10</label>
 
             </div>
             <div class="list-item flexrow">
@@ -121,9 +124,7 @@
             </div>
 
         </div>
-    </div>
-    <div class="flexcol dialog-column">
-
+        <!--
         <div class="flexcol attack-section">
             <label class="section-title">Terrain Type</label>
             <div class="list-item flexrow">
@@ -146,7 +147,7 @@
                 <input type="radio" name="terrain" terraintype="Severe" value="-30" {{#if options.severe}} checked{{/if}}><label>Severe: -30</label>
 
             </div>
-        </div>
+        </div>-->
         
         <div class="flexcol attack-section">
             <label class="section-title">Target is</label>
@@ -177,6 +178,7 @@
                 <input type="checkbox" name="stunned" value="20" {{#if options.stunned}} checked{{/if}}><label>Stunned: +20</label>
 
             </div>
+            <label class="section-title">Target's Size</label>
             <select class="size" name="size">
 
                 {{#if options.size}}
@@ -198,6 +200,7 @@
 
 </div>
 <div class="flexcol">
+    
      <label class="section-title">Misc Modifiers: {{#if (greaterThan modifiers.miscMods -1)}}+{{/if}}{{modifiers.miscMods}}</label>
 <label class="section-title">Other Modifiers</label>
 <input type="text" id="modifier" name="other" value="{{modifiers.testMod}}">

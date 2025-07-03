@@ -88,32 +88,24 @@ export class FortyKItem extends Item {
 
         }
 
-        let qualityMods=function(quality){
-            if(quality==="Good"){
-                return 1;
-            }else if(quality==="Best"){
-                return 2;
-            }else{
-                return 0;
-            }
-        };
+        let qualityMods=this.FORTYK.qualityMods;
         if(item.type==="armor"){
             item.system.mods.max=3;
-            item.system.mods.max+=qualityMods(item.system.quality.value);
+            item.system.mods.max+=qualityMods[item.system.quality.value];
         }else if(item.type==="rangedWeapon"){
             if(item.system.class.value==="Pistol"){
                 item.system.mods.max=1; 
             }else{
                 item.system.mods.max=2;
             }
-            item.system.mods.max+=qualityMods(item.system.quality.value);
+            item.system.mods.max+=qualityMods[item.system.quality.value];
         }else if(item.type==="meleeWeapon"){
             if(item.system.class.value==="Melee Two-handed"){
                 item.system.mods.max=2; 
             }else{
                 item.system.mods.max=1;
             }
-            item.system.mods.max+=qualityMods(item.system.quality.value);
+            item.system.mods.max+=qualityMods[item.system.quality.value];
         }
         //ensure this is an owned item
 

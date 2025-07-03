@@ -19,36 +19,33 @@ export class FortyKActor extends Actor {
             return super.create(data, options);
         }
         data.items = [];
-        //initialise starting skills
+        
 
-        if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship" && data.type!=="vehicle" && data.type!=="knightHouse"){
-            let startingSkills= await getSkills();
-            for(let s of startingSkills){
-                data.items.push(foundry.utils.duplicate(s));
-            }
-        }
+       
         if( data.type === "npc"){
             foundry.utils.mergeObject(data,
                                       {"prototypeToken.appendNumber":true                                      
                                       });
 
-        }
-        if (data.type !=="npc" && data.type!=="owComrade" && data.type!=="owRegiment" && data.type!=="spaceship" && data.type!=="vehicle" && data.type!=="knightHouse"){
+        }else if (data.type ==="dwPC" || data.type==="dhPC" || data.type==="owPC"){
+            //initialise starting skills
+            let startingSkills= await getSkills();
+            for(let s of startingSkills){
+                data.items.push(foundry.utils.duplicate(s));
+            }
             // Set wounds, fatigue, and display name visibility
             foundry.utils.mergeObject(data,
                                       {"prototypeToken.bar1" :{"attribute" : "secChar.wounds"},                
                                        "prototypeToken.bar2" :{"attribute" : "secChar.fatigue"},               
-                                       "prototypeToken.displayName" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,   
-                                       "prototypeToken.displayBars" : CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,   
-                                       "prototypeToken.disposition" : CONST.TOKEN_DISPOSITIONS.NEUTRAL,         
-                                       "prototypeToken.name" : data.name                                       
+                                       "prototypeToken.displayName" : CONST.TOKEN_DISPLAY_MODES.HOVER,   
+                                       "prototypeToken.displayBars" : CONST.TOKEN_DISPLAY_MODES.HOVER,   
+                                       "prototypeToken.disposition" : CONST.TOKEN_DISPOSITIONS.FRIENDLY,         
+                                       "prototypeToken.name" : data.name,
+                                       "prototypeToken.sight.enabled": true,
+                                       "prototypeToken.actorLink": true
                                       });
-            // Default non npcs to HasVision = true and Link Data = true
-            if (data.type !== "npc")
-            {
-                data.prototypeToken.vision = true;
-                data.prototypeToken.actorLink = true;
-            }
+        
+            
         }else if(data.type==="spaceship"){
             //spaceships have different attributes but same stuff
             foundry.utils.mergeObject(data,
@@ -210,6 +207,7 @@ export class FortyKActor extends Actor {
         data.secChar.wornGear.weapons=[{},{}];
         data.secChar.wornGear.forceField={};
         data.reach=0;
+        data.reactions=1;
         //prepare corruption for BC
         let corruption=data.secChar.corruption;
         if(game.settings.get("fortyk","bcCorruption")){
@@ -247,6 +245,7 @@ export class FortyKActor extends Actor {
             data.secChar.attacks.gangup["1"]=20;
             data.secChar.attacks.gangup["2"]=30;
         }
+        if(this.getFlag("fortyk","stepaside"))data.evasion++;
         for (let [key, char] of Object.entries(data.characteristics)){
             if(this.getFlag("fortyk",key+"UB")){
                 char.uB=parseInt(this.getFlag("fortyk",key+"UB"));
@@ -305,7 +304,7 @@ export class FortyKActor extends Actor {
         }*/
         data.evasion=0;
         data.evasionMod=0;
-
+        data.reactions=1;
         //prepare base stats for imperial knights if they have a chassis selected
         if(data.knight.chassis){
             data.chassis=this.getEmbeddedDocument("Item",data.knight.chassis);

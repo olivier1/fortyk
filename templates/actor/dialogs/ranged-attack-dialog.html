@@ -115,7 +115,7 @@
             </div>
             <div class="list-item flexrow">
 
-                <input type="radio" name="visibility" visibilitytype="Fog/mist/shadow/smoke" value="-10" ><label>Fog/mist/shadow/smoke: -10</label>
+                <input type="radio" name="visibility" visibilitytype="Fog/mist/shadow/smoke" value="-10" ><label>Fog/shadow/smoke: -10</label>
 
             </div>
             <div class="list-item flexrow">
@@ -164,11 +164,14 @@
                 <input type="checkbox" name="concealed" value="-30" ><label>Fully Concealed: -30</label>
 
             </div>
+            {{#unless options.targetselection}}
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="melee" value="-20" ><label>In melee: -20</label>
+                <input type="checkbox" name="melee" value="-20"  {{#if options.inmelee}} checked{{/if}}><label>In melee: -20</label>
 
             </div>
+            {{/unless}}
+            <label class="section-title">Target's Size</label>
             <select class="size" name="size">
 
                 {{#if options.size}}
