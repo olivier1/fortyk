@@ -1,4 +1,4 @@
-<label class="popup  {{#if success}}test-success{{else}}test-failure{{/if}}" data-id="{{id}}">{{label}} test
+<label class="popup  {{#if success}}test-success{{else}}test-failure{{/if}}" data-id="{{id}}">{{label}} {{#unless reroll}}test{{else}}reroll{{/unless}}
     <span class="fortyk popuptext chat-background flexcol" id="{{id}}">
 
 
@@ -16,7 +16,9 @@
         </div>
 
         {{#unless reroll}}
-        <span class="button reroll" data-actor="{{actor}}" data-char="{{char}}" data-roll-type="{{type}}" data-target="{{targetNumber}}" data-label="{{label}}" data-weapon="{{weapon}}" data-fire="{{fireRate}}">Reroll</span>
+        <span class="button reroll-popup" data-actor="{{actor}}" data-char="{{char}}" data-roll-type="{{type}}" data-target="{{targetNumber}}" data-label="{{label}}" data-weapon="{{weapon}}" data-fire="{{fireRate}}">Reroll</span>
+        {{else}}
+        <span class="rerolled-button">Rerolled</span>
         {{/unless}}
     </span>
 

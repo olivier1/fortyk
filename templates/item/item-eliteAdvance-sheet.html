@@ -12,8 +12,19 @@
             <input type="text" value="{{name}}" name="name">
         </div>
 
+        <div class="flexcol">
+            <label>Type:</label>
+            <select class="power-type" name="system.type.value">
 
+                {{selectOptions FORTYK.eliteAdvanceTypes selected=system.type.value valueAttr="value" labelAttr="label"}}
+            </select>
+
+        </div>
         {{#if isGM}}
+        <div class="flexcol">
+            <a class="manage-reqs button">Manage Requirements</a>
+        </div>
+
         <div class="flexcol">
             <a class="modifier button">Active Effect</a>
         </div>
@@ -26,10 +37,10 @@
             <label>Cost:</label>
             <input type="text" value="{{system.cost.value}}" name="system.cost.value">
         </div>
-         
+
         <div class="flexcol">
             <label>Flag:</label>
-            <input type="text" value="{{system.flag.value}}" name="system.flag.value">
+            <input type="text" value="{{system.flagId.value}}" name="system.flagId.value">
         </div>
         <div class="flexcol">
             <label>Aptitude:</label>
@@ -37,7 +48,7 @@
                 <option value="">None</option>
                 {{selectOptions FORTYK.aptitudes selected=system.aptitude.value valueAttr="key" labelAttr="label"}}
             </select>
-           
+
         </div>
 
 

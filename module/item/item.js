@@ -129,7 +129,7 @@ export class FortyKItem extends Item {
             if(actor.type==="loot"){
                 return;
             }
-            
+
             if (actor.type === "spaceship") {
                 if (item.type === "spaceshipCargo") {
                     try {
@@ -575,6 +575,10 @@ export class FortyKItem extends Item {
                     }
                     let wp = data.characteristics.wp.bonus;
                     item.system.damageFormula.value = item.system.damageFormula.value.replace("wp", wp);
+                    if(typeof item.system.pen.value ==="string"){
+                        item.system.pen.value = item.system.pen.value.replace("wp", wp);
+                    }
+
                     let sb = data.characteristics.s.bonus;
                     item.system.damageFormula.value = item.system.damageFormula.value.replace("sb", sb);
                     if (item.getFlag("fortyk", "heavy")) {
@@ -786,7 +790,7 @@ export class FortyKItem extends Item {
                         newvalue = change.value;
                     }
 
-                    
+
                     /*if(newvalue>=0){
                             newvalue=Math.ceil(newvalue);
                         }else{
@@ -833,6 +837,211 @@ export class FortyKItem extends Item {
             }
         }
         return count;
+    }
+    validateActor(actor){
+        let validated=false;
+        let failReasons=[];
+        const FORTYK=this.FORTYK;
+        if(!actor){
+            failReasons.push("No valid actor!");
+            return {valid:validated, reasons:failReasons};
+        }
+        var requirements = this.getFlag("fortyk","requirements");
+        if(!requirements){
+
+            return {valid:true, reasons:failReasons}; 
+        }
+        let actorChars=actor.system.characteristics;
+        let charReqs=requirements.characteristics;
+        let charBase=0;
+        let charReq=0;
+        for (let [key, char] of Object.entries(actorChars)){
+            charBase=parseInt(char.value)+parseInt(char.advance);
+            charReq=charReqs[key].value;
+            if(charBase<charReq)failReasons.push(`You do not meet the ${charReq} ${charReqs[key].label} requirement.`);
+        }
+        let prReq=charReqs.pr.value;
+        let actorPr=actor.system.psykana.pr.value;
+        if(actorChars<prReq)failReasons.push(`You do not meet the ${prReq} Psy Rating requirement.`);
+        let expReq=charReqs.exp.value;
+        let actorXp=actor.system.experience.spent;
+        if(actorXp<expReq)failReasons.push(`You do not meet the ${expReq} Experience Spent requirement.`);
+        let insReq=charReqs.ins.value;
+        let actorInsan=actor.system.secChar.insanity.value;
+        if(actorInsan<insReq)failReasons.push(`You do not meet the ${insReq} Inasnity requirement.`);
+        let corReq=charReqs.cor.value;
+        let actorCor=actor.system.secChar.corruption.value;
+        if(actorCor<corReq)failReasons.push(`You do not meet the ${corReq} Corruption requirement.`);
+        let flagRequirements=requirements.flags;
+        
+        for(const flag in flagRequirements){
+            if(!flag)continue;
+            let specs=flagRequirements[flag].spec;
+            var actorFlag = actor.getFlag("fortyk",flag);
+            if(specs==="anyranged"){
+                if(actor.getFlag("fortyk","astartesweapontraining"))continue;
+                let actorFlagSplit=actorFlag.split(",");
+                let hasTraining=false;
+                
+                for(let training of actorFlagSplit){
+                    if(FORTYK.rangedWeaponTypes.find((weaponType)=>weaponType.value.toLowerCase()===training.toLowerCase().trim())){
+                        hasTraining=true;
+                    }
+                }
+                if(!hasTraining){
+                    failReasons.push(`You do not have ranged weapon training.`);
+                }
+                continue;
+            }
+            if(specs==="any2"){
+                let actorFlagSplit=actorFlag.split(",");
+                if(actorFlagSplit.length<2){
+                    failReasons.push(`You do not have the required 2 weapon Trainings.`);
+                }
+                continue;
+            }
+            if(specs==="anymelee"){
+                if(actor.getFlag("fortyk","astartesweapontraining"))continue;
+                let actorFlagSplit=actorFlag.split(",");
+                let hasTraining=false;
+                
+                for(let training of actorFlagSplit){
+                    if(FORTYK.meleeWeaponTypes.find((weaponType)=>weaponType.value.toLowerCase()===training.toLowerCase().trim())){
+                        hasTraining=true;
+                    }
+                }
+                if(!hasTraining){
+                    failReasons.push(`You do not have melee weapon training.`);
+                }
+                continue;
+            }
+            if(specs==="any2"){
+                let actorFlagSplit=actorFlag.split(",");
+                if(actorFlagSplit.length<2){
+                    failReasons.push(`You do not have the required 2 weapon Trainings.`);
+                }
+                continue;
+            }
+            let splitSpec=specs.split(",");
+            for(let spec of splitSpec){
+                
+                if(flagRequirements[flag].negative){
+                    if(spec){
+                        spec=spec.toLowerCase();  
+                        if(spec.includes("any")){
+                            
+                            if(actorFlag){
+                                failReasons.push(`You have the ${flagRequirements[flag].label} feature.`); 
+                            }
+                            
+                        }else if(actorFlag||actorFlag&&actorFlag.toLowerCase().includes(spec))failReasons.push(`You have the ${flagRequirements[flag].label}(${spec}) feature.`);
+                    }else if(actor.getFlag("fortyk",flag))failReasons.push(`You have the ${flagRequirements[flag].label} feature.`);
+                    continue;
+                }
+                
+                if(spec){
+                    spec=spec.toLowerCase();
+                    if(spec.includes("any")){
+                        if(!actor.getFlag("fortyk",flag)){
+                            failReasons.push(`You do not have the ${flagRequirements[flag].label} feature.`);
+                        }
+                        
+                    }else if(!actor.getFlag("fortyk",flag)||actor.getFlag("fortyk",flag)&&!actor.getFlag("fortyk",flag).toLowerCase().includes(spec))failReasons.push(`You do not have the ${flagRequirements[flag].label}(${spec}) feature.`);
+                }else if(!actor.getFlag("fortyk",flag))failReasons.push(`You do not have the ${flagRequirements[flag].label} feature.`);
+            }
+
+        }
+        let psyRequirements=requirements.psychicPowers;
+
+        for(const psy in psyRequirements){
+            if(!psy)continue;
+            if(!actor.getFlag("fortyk",psy))failReasons.push(`You do not have ${psyRequirements[psy]}.`);
+        }
+        let skillReqs=requirements.skills;
+        let actorSkills=actor.itemTypes.skill;
+        for(let [key, skill] of Object.entries(skillReqs)){
+            if(!skill)continue;
+            let skillName=skill.skillName;
+            let parentName=skill.parentSkillName;
+            let rank=skill.rank;
+            let rankValueReq=this.FORTYK.skillTraining[rank].value;
+            let wildCardSkill=false;
+            let wildCardParent=false;
+            let match=false;
+            let anyLore=false;
+            let anyXenos=false;
+            if(skillName==="xenos-any")anyXenos=true;
+            if(parentName==="anylore")anyLore=true;
+            if(skillName==="*")wildCardSkill=true;
+            if(parentName==="*")wildCardParent=true;
+            for(const actorSkill of actorSkills){
+                let actorSkillName=actorSkill.name;
+                let actorSkillParent=actorSkill.system.parent.value;
+                let actorSkillRank=actorSkill.system.value;
+                let rankMatch=false;
+                let nameMatch=false;
+                let parentMatch=false;
+                if(anyXenos){
+                    let xenos=FORTYK.races;
+                    for(const race of xenos){
+                        if(race.value.toLowerCase()===actorSkillName.toLowerCase()){
+                            nameMatch=true;
+                        }
+                    }
+                }else if(wildCardSkill){
+                    nameMatch=true;
+                }else if(actorSkillName.toLowerCase()===skillName.toLowerCase()){
+                    nameMatch=true;
+                }
+                if(anyLore){
+                    if(actorSkillParent.toLocaleLowerCase().includes("lore")){
+                        parentMatch=true;
+                    }
+                }else if(wildCardParent){
+                    parentMatch=true;
+                }else if(parentName.toLowerCase()===actorSkillParent.toLowerCase()){
+                    parentMatch=true;
+                }
+                if(actorSkillRank>=rankValueReq){
+                    rankMatch=true;
+                }
+                match=nameMatch&&parentMatch&&rankMatch;
+            }
+            let name=skill.name.replaceAll("*","any");
+            if(!match)failReasons.push(`You do not have the ${name} skill of rank ${rank}.`);
+        }
+        
+        let cyberReqs=requirements.cybernetics;
+        var cyberNum = cyberReqs.number;
+        var cyberLimbs = cyberReqs.limbs;
+        var cyberName = cyberReqs.name;
+        if(cyberNum||cyberLimbs||cyberName){
+            let actorCybers=actor.itemTypes.cybernetic;
+            let actorLimbCount=0;
+            let actorCyberCount=0;
+            let hasCyber=false;
+            if(!cyberName)hasCyber=true;
+            for(const actorCyber of actorCybers){
+                actorCyberCount++;
+                if(actorCyber.system.location.value.toLowerCase().includes("arm")||actorCyber.system.location.value.toLowerCase().includes("leg")){
+                    actorLimbCount++;
+                }
+                if(actorCyber._source.name.toLowerCase()===cyberName){
+                    hasCyber=true;
+                }
+            }
+            if(actorLimbCount<cyberLimbs){
+                failReasons.push(`You do not have ${cyberLimbs} cybernetic limbs.`);
+            }
+            if(actorCyberCount<cyberNum){
+                failReasons.push(`You do not have ${cyberNum} cybernetics.`);
+            }
+            if(!hasCyber){
+                failReasons.push(`You do not have the ${cyberName} cybernetic.`);
+            }
+        }
+        if(failReasons.length===0)validated=true;
+        return {valid:validated, reasons:failReasons};
     }
     static async applyPsyBuffs(actorId, powerId, targetIds) {
         if (game.user.isGM) {

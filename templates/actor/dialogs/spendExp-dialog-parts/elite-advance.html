@@ -1,3 +1,5 @@
+<span>Show ineligibles:</span>
+<input type="checkbox" class="show-ineligible-checkbox" {{#if ineligibles}}checked{{/if}}>
 <div class="tntselect flexcol">
     <div class="tntgrid grid grid-9col">
         <span class="tntcheckbox tntheaderitem">Add</span>
@@ -9,7 +11,7 @@
         {{#each eliteAdvances}}
       
    
-        <div class="tntitem" name="tntEntry"><input type="radio" class="elitecheckbox" name="elite-choice"  data-compendium="fortyk.elite-advances" value="{{this.id}}"></div>
+        <div class="tntitem{{#unless this.valid.valid}} invalid-checkbox{{/unless}}" name="tntEntry"><input type="radio" class="elitecheckbox {{#unless this.valid.valid}} invalid-checkbox{{/unless}}" name="elite-choice"  data-compendium="fortyk.elite-advances" value="{{this.id}}"></div>
 
         <span name="tntEntry" class="tntname tntitem">{{this.name}}</span>
         <span name="tntEntry" class="tntprereqs tntitem">{{this.system.requirements}}</span>

@@ -1362,6 +1362,7 @@ FORTYK.vehicleTypes=[{value:"Tracked"},{value:"Wheeled"},{value:"Skimmer"},{valu
 FORTYK.meldTypes={"default":20,"experimental":20,"safe":10};
 FORTYK.itemStates=[{value:"O"},{value:"D"},{value:"X"}];
 FORTYK.advances=[{value:0,label:"0%"},{value:5,label:"5%"},{value:10,label:"10%"},{value:15,label:"15%"},{value:20,label:"20%"},{value:25,label:"25%"}];
+FORTYK.eliteAdvanceTypes=[{value:"ea",label:"Elite Advance"},{value:"planet",label:"Planet"},{value:"background",label:"Background"},{value:"role",label:"Role"},{value:"charactertype",label:"Character Type"}];
 FORTYK.psyChars=[{value:"wp",label:"Willpower"},{value:"per",label:"Perception"},{value:"psy",label:"Psyniscience"}];
 FORTYK.modTypes=[{value:'weapon',label:'Weapon'},{value:'armor',label:'Armor'},{value:'rangedWeapon',label:'Ranged Weapon'}, {value:'meleeWeapon',label:'Melee Weapon'}];
 FORTYK.qualityMods={"Best":2, "Good":1, "Common":0, "Poor":-1};

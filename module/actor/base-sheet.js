@@ -6,6 +6,7 @@ import {setNestedKey} from "../utilities.js";
 import {tokenDistance} from "../utilities.js";
 import {getVehicleFacing} from "../utilities.js";
 import {FortyKItem} from "../item/item.js";
+import {getBlastTargets} from "../utilities.js";
 export default class FortyKBaseActorSheet extends ActorSheet {
 
     /** @override */
@@ -896,7 +897,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             return templates;
         },[]);
 
-        let targets=this.getBlastTargets(templates, scene);
+        let targets=getBlastTargets(templates);
         let actor=this.actor;
         let oldTargets=game.user.targets;
         let options={dfa:false};
@@ -1004,53 +1005,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
 
     }
-    getBlastTargets(templates, scene){
-        let tokens=scene.tokens;
-        let targets=[];
-        let gridRatio=scene.dimensions.size/scene.dimensions.distance;
-
-        for(let i=0;i<templates.length;i++){
-            let targetted=[];
-            let template=templates[i];
-            let bounds=template._object._computeShape();
-            bounds.x=template.x;
-            bounds.y=template.y;
-
-
-            tokens.forEach((token,id,tokens)=>{
-
-                let tokenBounds=token._object.bounds;
-                let bottomIn=false;
-                let topIn=false;
-                let rightIn=false;
-                let leftIn=false;
-                let tempInToken=false;
-                let tokenInTemp=bounds.contains(token._object.center.x-template.x,token._object.center.y-template.y);
-                if(bounds.x>tokenBounds.left&&bounds.x<tokenBounds.right&&bounds.y>tokenBounds.top&&bounds.y<tokenBounds.bottom){
-                    tempInToken=true;
-                }
-
-                let bottomIntersect=foundry.utils.lineCircleIntersection(tokenBounds.bottomEdge.A,tokenBounds.bottomEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
-                bottomIn=!bottomIntersect.outside;
-                let topIntersect=foundry.utils.lineCircleIntersection(tokenBounds.topEdge.A,tokenBounds.topEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
-                topIn=!topIntersect.outside;
-                let leftIntersect=foundry.utils.lineCircleIntersection(tokenBounds.leftEdge.A,tokenBounds.leftEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
-                leftIn=!leftIntersect.outside;
-                let rightIntersect=foundry.utils.lineCircleIntersection(tokenBounds.rightEdge.A,tokenBounds.rightEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
-                rightIn=!rightIntersect.outside;
-                if(tokenInTemp||bottomIn||topIn||leftIn||rightIn||tempInToken){
-                    targetted.push(token.id);
-                }
-                /*if(bounds.overlaps(tokenBounds)){
-                    targetted.push(token.id);
-                }*/
-            });
-            let blastTargets={template:{x:template.x,y:template.y},targets:targetted};
-            targets.push(blastTargets);
-        }
-
-        return targets;
-    }
+    
     //handles applying active effects from psychic powers
     async _onBuffDebuff(event){
         event.preventDefault();

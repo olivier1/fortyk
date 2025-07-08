@@ -15,7 +15,7 @@
             <label>Discipline:</label>
             <select class="discipline" name="system.discipline.value">
                 {{selectOptions FORTYK.psychicDisciplines selected=system.discipline.value valueAttr="value" labelAttr="value"}}
-                
+
             </select>
         </div>
         <div class="flexcol">
@@ -31,30 +31,30 @@
 
             <select class="power-type" name="system.class.value">
                 {{selectOptions FORTYK.psychicPowerTypes selected=system.class.value valueAttr="value" labelAttr="value"}}
-               
+
             </select>
         </div>
         <div class="flexcol">
             <label>Action:</label>
             <input type="text" value="{{system.action.value}}" name="system.action.value">
         </div>
-        
+
 
         <div class="flexcol">
             <label>Test Type:</label>
 
             <select class="power-char" name="system.testChar.value">
                 {{selectOptions FORTYK.psyChars selected=system.testChar.value valueAttr="value" labelAttr="label"}}
-                
+
             </select>
         </div>
         <div class="flexcol">
             <label>Modifier:</label>
             <input type="text" value="{{system.testMod.value}}" name="system.testMod.value" data-dtype="Number">
         </div>
-        
-        
-        
+
+
+
         <div class="flexcol">
             <label>Range:</label>
             <input type="text" value="{{system.range.formula}}" name="system.range.formula">
@@ -86,7 +86,7 @@
             <label>Damage Type:</label>
             <select class="damage-type" name="system.damageType.value">
                 {{selectOptions FORTYK.damageTypes selected=system.damageType.value valueAttr="value" labelAttr="value"}}
-               
+
             </select>
         </div>
         {{else if (contains system.class.value "Buff/Debuff")}}
@@ -101,16 +101,16 @@
 
             <select class="power-char" name="system.macro.user">
                 {{selectOptions macroUser selected=system.macro.user valueAttr="value" labelAttr="label"}}
-                
-               
+
+
             </select>
         </div>
-         <div class="flexcol">
+        <div class="flexcol">
             <label>Macro:</label>
 
             <select class="power-char" name="system.macro.id">
                 {{selectOptions psyMacros selected=system.macro.id valueAttr="_id" labelAttr="name"}}
-               
+
             </select>
         </div>
         {{#if isGM}}
@@ -119,7 +119,13 @@
         </div>
         {{/if}}
         {{/if}}
+        {{#if isGM}}
+        <div class="flexcol">
+            <a class="manage-reqs button">Manage Requirements</a>
+        </div>
+        {{/if}}
     </div>
+
     <div class="item-description">
         <label>Description:</label>
         {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}

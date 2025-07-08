@@ -17,7 +17,7 @@
     "TYPES.Item.consummable" : "Consummable",
     "TYPES.Item.cybernetic" : "Cybernetic",
     "TYPES.Item.disorder" : "Disorder",
-    "TYPES.Item.eliteAdvance" : "Elite Advance",
+    "TYPES.Item.eliteAdvance" : "Template",
     "TYPES.Item.forceField" : "Forcefield",
     "TYPES.Item.injury" : "Injury",
     "TYPES.Item.knightArmor" : "Knight Armor",

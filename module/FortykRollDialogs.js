@@ -2,11 +2,38 @@ import {FortykRolls} from "./FortykRolls.js";
 import {getActorToken} from "./utilities.js";
 import {tokenDistance} from "./utilities.js";
 export class FortykRollDialogs{
+    //activate chatlisteners
+    static chatListeners(html){
+        html.on("mouseup",".reroll", this._onReroll.bind(this));
+        html.on("click",".overheat", this._onOverheat.bind(this));
+        html.on("click",".popup", this._onTestPoppup.bind(this));
+        html.on("click",".spray-torrent-ping", this._onSprayTorrentClick.bind(this));
+        html.on("mouseup",".reroll-popup", this._onPopupReroll.bind(this));
+        html.on("click",".blast-ping", this._onBlastClick.bind(this));
+        html.on("click",".ping-template", this._onTemplateClick.bind(this));
+
+    }
+    static async _onTemplateClick(event){
+        const dataset=event.currentTarget.dataset;
+        const x=parseInt(dataset.x);
+        const y=parseInt(dataset.y);
+        var pingPoint = {x:x,y:y};
+        await canvas.animatePan(pingPoint);
+        game.canvas.ping(pingPoint,{duration:2000});
+    }
+    static async _onBlastClick(event){
+        const dataset=event.currentTarget.dataset;
+        const tokenId=dataset.token;
+        const token=canvas.tokens.get(tokenId);
+        await canvas.animatePan({x:token.center.x,y:token.center.y});
+        game.canvas.ping({x:token.center.x,y:token.center.y},{duration:2000});
+    }
     //handles spray and torrent attack results
     static async _onSprayTorrentClick(event){
 
         const dataset=event.currentTarget.dataset;
         const tokenId=dataset.token;
+        const weaponId=dataset.weapon;
         let hits=dataset.hits;
         hits=parseInt(hits);
         const token=canvas.tokens.get(tokenId);
@@ -23,7 +50,8 @@ export class FortykRollDialogs{
             let targets=user.targets;
             if(hits===0)return;
             let actor=token.actor;
-            let line=`<a class="ping-token" data-user="${userId}" data-hits="${0}" data-token="${tokenId}">`+actor.getName()+"</a> ";
+            let weapon=actor.items.get(weaponId);
+            let line=`<a class="spray-torrent-ping" data-user="${userId}" data-hits="${0}" data-remaining-hits={{hits}} data-token="${tokenId}">`+actor.getName()+"</a> ";
 
             let forcefielded=false;
             let forcefield=actor.system.secChar.wornGear.forceField;
@@ -59,10 +87,10 @@ export class FortykRollDialogs{
             }else{
                 dodge=actor.system.skills.dodge;
             }
-            
-            let result=await this.callRollDialog("agi", "evasion", dodge, actor, label, null, false, "", true);
+
+            let result=await this.callRollDialog("agi", "evasion", dodge, actor, label, weapon, false, "", true);
             foundry.audio.AudioHelper.play({src: "sounds/dice.wav", volume: 1, autoplay: true, loop: false}, true);
-         
+
             let hitlabel="hit";
             if(hits>1)hitlabel+="s";
             if(result.value&&result.dos>=hits){
@@ -80,10 +108,78 @@ export class FortykRollDialogs{
             }else{
                 line+=`failed ${result.template} and suffers ${hits} ${hitlabel}`;
             }
-            htmlLine.innerHTML=line;
+
+            htmlLine.innerHTML=line.replace("{{hits}}",hits);
             message.update({content:messageContent.innerHTML});
             return; 
 
+        }
+    }
+    //handles test rerolls
+    static async _onPopupReroll(event){
+        event.preventDefault();
+        var button = event.currentTarget;
+        button.style.display = "none";
+        const dataset=button.dataset;
+        const chatContentNode=$(button).closest('.message-content')[0];
+        const chatMessageNode=$(button).closest('.chat-message')[0];
+        const actor=game.actors.get(dataset["actor"]);
+        const char=dataset["char"];
+        const type=dataset["rollType"];
+
+        const target=parseInt(dataset["target"]);
+        const label=dataset["label"];
+
+        const weapon=actor.items.get(dataset["weapon"]);
+        const fireRate=dataset["fire"];
+        let result=await this.callRollDialog(char, type, target, actor, label, weapon , true, fireRate, true);
+        foundry.audio.AudioHelper.play({src: "sounds/dice.wav", volume: 1, autoplay: true, loop: false}, true);
+        const popupNode=$(button).closest('.popup')[0];
+        
+        const pingSibling= $(popupNode).siblings('.spray-torrent-ping')[0];
+        const lineNode=$(popupNode).closest('.chat-target')[0];
+        if(pingSibling){
+            let pingDataset=pingSibling.dataset;
+            let remainingHits=pingDataset.remainingHits;
+            if(remainingHits){
+                const tokenId=pingDataset.token;
+                const token=canvas.tokens.get(tokenId);
+                const weaponId=pingDataset.weapon;
+                const userId=pingDataset.user;
+                const user=game.users.get(userId);
+                let line=`<a class="spray-torrent-ping" data-user="${userId}" data-hits="${0}" data-token="${tokenId}">`+actor.getName()+"</a> ";
+
+                let hitlabel="hit";
+                let hits=parseInt(remainingHits);
+                if(hits>1)hitlabel+="s";
+                if(result.value&&result.dos>=hits){
+                    line+= `passed ${result.template} and must move out of the area to not take damage`;
+                    if(user.id!==game.user.id){
+                        let socketOp={type:"removeTarget",package:{user:userId, token:token.id}};
+                        game.socket.emit("system.fortyk",socketOp);
+                    }else{
+                        token.setTarget(false, { releaseOthers:false});
+                    }
+
+                }else if(result.value&&result.dos<hits){
+                    hits-=result.dos;
+                    line+= `passed ${result.template} but ${hits} ${hitlabel} remain`;
+                }else{
+                    line+=`failed ${result.template} and suffers ${hits} ${hitlabel}`;
+                }
+                lineNode.innerHTML=line;
+            }else{
+                popupNode.outerHTML=result.template;
+            }
+        }else{
+            popupNode.outerHTML=result.template;
+        }
+        
+        $(chatContentNode).find('.popuptext').removeClass('show');
+        const messageId=chatMessageNode.dataset.messageId;
+        const message=game.messages.get(messageId);
+        if(message){
+            message.update({content:chatContentNode.innerHTML});
         }
     }
     //handles test rerolls
@@ -102,6 +198,7 @@ export class FortykRollDialogs{
         const weapon=actor.items.get(dataset["weapon"]);
         const fireRate=dataset["fire"];
         await this.callRollDialog(char, type, target, actor, label, weapon , true, fireRate);
+
         const chatContent=event.currentTarget.parentElement;
         const chatMessage=chatContent.parentElement;
         const messageId=chatMessage.dataset.messageId;
@@ -110,8 +207,6 @@ export class FortykRollDialogs{
         if(message){
             message.update({content:chatContent.innerHTML});
         }
-
-
     }
 
     //handles dealing damage if the actor doesnt drop the weapon on overheat
@@ -1234,7 +1329,7 @@ export class FortykRollDialogs{
                                 hit++;
                             }
 
-                            messageContent+=`<div class="chat-target"><a class="ping-token" data-user="${game.user.id}" data-hits="${hit}" data-token="${tokenId}">${token.name}'s</a> `+test.template+`</div>`;
+                            messageContent+=`<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="${hit}" data-token="${tokenId}">${token.name}'s</a> `+test.template+`</div>`;
                             let r=test.roll;
                             r.dice[0].options.rollOrder = i;
                             rolls.push(test.roll);
@@ -1374,7 +1469,7 @@ export class FortykRollDialogs{
                                 //updatedtargets.push(token.id);
                                 targetList.push({name:token.name, test:test, hits:0, tokenId:tokenId});
                             }else{
-                                messageContent+=`<div class="chat-target"><a class="ping-token" data-user="${game.user.id}" data-hits="0" data-token="${tokenId}">${token.name}'s</a> `+test.template+`</div>`;
+                                messageContent+=`<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="0" data-token="${tokenId}">${token.name}'s</a> `+test.template+`</div>`;
                             }
 
                             let r=test.roll;
@@ -1417,7 +1512,7 @@ export class FortykRollDialogs{
                             counter++;
                         }
                         for(const target of targetList){
-                            messageContent+=`<div class="chat-target"><a class="ping-token" data-user="${game.user.id}" data-hits="${target.hits}" data-token="${target.tokenId}">${target.name}'s</a> ${target.test.template} takes ${target.hits} hits!</div>`;
+                            messageContent+=`<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="${target.hits}" data-token="${target.tokenId}">${target.name}'s</a> ${target.test.template} takes ${target.hits} hits!</div>`;
                         }
                         messageContent+=`<div class="chat-target">Targets who suffer hits must pass an evasion test with degrees of success equal to the number of hits or take the remaining hits.</div>`;
                         game.user.updateTokenTargets(updatedtargets);
@@ -1550,12 +1645,6 @@ export class FortykRollDialogs{
             width:100}
                   ).render(true);
     }
-    //activate chatlisteners
-    static chatListeners(html){
-        html.on("mouseup",".reroll", this._onReroll.bind(this));
-        html.on("click",".overheat", this._onOverheat.bind(this));
-        html.on("click",".popup", this._onTestPoppup.bind(this));
-        html.on("click",".ping-token", this._onSprayTorrentClick.bind(this));
-    }
+
 
 }

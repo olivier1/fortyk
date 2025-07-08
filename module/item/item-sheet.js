@@ -5,6 +5,7 @@
 
 import {objectByString} from "../utilities.js";
 import {ActiveEffectDialog} from "../dialog/activeEffect-dialog.js";
+import {ManageRequirementsDialog} from "../dialog/manageRequirements-dialog.js";
 export class FortyKItemSheet extends ItemSheet {
 
     /** @override */
@@ -243,6 +244,7 @@ export class FortyKItemSheet extends ItemSheet {
         html.find('.add').click(this._onAddItemClick.bind(this));
         html.find('.remove').click(this._onRemoveItemClick.bind(this));
         html.find('.delete-mod').click(this._onDeleteModClick.bind(this));
+        html.find('.manage-reqs').click(this._onManageReqsClick.bind(this));
         //handles melee weapon mod
 
         html.find('.weapon-mod').focusout(this._weaponModEdit.bind(this));
@@ -253,6 +255,11 @@ export class FortyKItemSheet extends ItemSheet {
         });
 
 
+    }
+    async _onManageReqsClick(event){
+         event.preventDefault();
+        let dialog=new ManageRequirementsDialog({item:this.item});
+        dialog.render(true,{title:"Manage Requirements"});
     }
     async _onDeleteModClick(event){
         event.preventDefault();

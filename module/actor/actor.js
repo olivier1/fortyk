@@ -909,7 +909,7 @@ export class FortyKActor extends Actor {
             }
             hitLoc.armor=hitLoc.armor+hitLoc.shield;
             if(hitLoc.cyber){
-                hitLoc.armor=hitLoc.armor+2;
+                hitLoc.armor=hitLoc.armor+5;
             }
             hitLoc.armor+=hitLoc.armorMod;
             hitLoc.armor+=hitLoc.psy;
@@ -1807,7 +1807,7 @@ export class FortyKActor extends Actor {
         let bonuses=itemData.system.items;
         let bonusesInstances=[];
         let actor=this;
-        await this.setFlag("fortyk",itemData.system.flag.value,true);
+        await this.setFlag("fortyk",itemData.system.flagId.value,true);
 
         for(const bonus of bonuses){
             let currentInstance=await fromUuid(bonus.uuid);
@@ -1827,6 +1827,8 @@ export class FortyKActor extends Actor {
 
 
                 }
+            }else if(currentInstance.type==="psychicPower"){
+                actor.setFlag("fortyk", currentInstance.id, true);
             }
             bonusesInstances.push(cloneCurrentInstance);
         }
@@ -1835,7 +1837,7 @@ export class FortyKActor extends Actor {
         if(this.type==="npc"){
             let instancedBonuses= await this.createEmbeddedDocuments("Item",bonusesInstances);
             let bonusIds=instancedBonuses.map((bonus)=> bonus.id);
-            let parent=this.itemTypes.eliteAdvance.filter((item)=>item.system.flag.value===itemData.system.flag.value);
+            let parent=this.itemTypes.eliteAdvance.filter((item)=>item.system.flagId.value===itemData.system.flagId.value);
             await parent[0].update({"system.itemIds":bonusIds});
             return;}
         let aptitude=itemData.system.aptitude.value;
@@ -1897,7 +1899,7 @@ export class FortyKActor extends Actor {
         }
         let instancedBonuses= await this.createEmbeddedDocuments("Item",bonusesInstances);
         let bonusIds=instancedBonuses.map((bonus)=> bonus.id);
-        let parent=this.itemTypes.eliteAdvance.filter((item)=>item.system.flag.value===itemData.system.flag.value);
+        let parent=this.itemTypes.eliteAdvance.filter((item)=>item.system.flagId.value===itemData.system.flagId.value);
         await parent[0].update({"system.itemIds":bonusIds});
 
     }
@@ -1907,7 +1909,7 @@ export class FortyKActor extends Actor {
 
 
         if(itemData?.type==="eliteAdvance"){
-            if(this.getFlag("fortyk",itemData.system.flag.value)){
+            if(this.getFlag("fortyk",itemData.system.flagId.value)){
                 return [];
             }
             this._createEliteAdvanceBonuses(itemData);
@@ -2013,7 +2015,7 @@ export class FortyKActor extends Actor {
                         let flag=item.system.flagId.value;
                         await actor.setFlag("fortyk",flag,false);
                     }else if(item.type==="eliteAdvance"){
-                        let flag=item.system.flag.value;
+                        let flag=item.system.flagId.value;
                         let skills= item.system.skills;
                         if(skills){
                             let splitSkills=skills.split(",");

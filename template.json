@@ -1865,6 +1865,10 @@
             "templates": [
                 "description"
             ],
+            "type":{
+                "value":"ea",
+                "type":"String"
+            },
             "items": [],
             "itemIds": [],
             "requirements": "",
@@ -1877,7 +1881,8 @@
                 "value": 0,
                 "type": "Number"
             },
-            "flagId": "",
+            "flagId":{"value":"",
+                     "type":"String"},
             "aptitude": {
                 "value": "",
                 "type": "String"

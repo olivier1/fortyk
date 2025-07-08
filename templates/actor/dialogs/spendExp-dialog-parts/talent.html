@@ -1,4 +1,6 @@
 <input type="text"  id="talentfilter" class="talentfilter" placeholder="Search...">
+<span>Show ineligibles:</span>
+<input type="checkbox" class="show-ineligible-checkbox" {{#if ineligibles}}checked{{/if}}>
 <div class="tntselect flexcol">
     <div class="tntgrid grid grid-11col">
         <span class="tntcheckbox tntheaderitem">Add</span>
@@ -9,7 +11,8 @@
         <span class="tntdescr tntheaderitem">Descr</span>
 
         {{#each talents}}
-        <div class="tntitem" name="tntEntry" data-search="{{this.name}}{{this.system.tags.value}}{{this.system.aptitudes.value}}"><input type="radio" class="tntcheckbox" name="talent-choice"  data-compendium="{{pack}}" value="{{this.id}}"></div>
+      
+        <div class="tntitem{{#unless this.valid.valid}} invalid-checkbox{{/unless}}" name="tntEntry" data-search="{{this.name}}{{this.system.tags.value}}{{this.system.aptitudes.value}}"><input type="radio" class="tntcheckbox {{#unless this.valid.valid}} invalid-checkbox{{/unless}}" name="talent-choice"  data-compendium="{{pack}}" value="{{this.id}}"></div>
 
         <span name="tntEntry" class="tntname tntitem" data-search="{{this.name}}{{this.system.tags.value}}{{this.system.aptitudes.value}}">{{this.name}}</span>
         <span name="tntEntry" class="tntprereqs tntitem" data-search="{{this.name}}{{this.system.tags.value}}{{this.system.aptitudes.value}}">{{this.system.prereqs.value}}</span>

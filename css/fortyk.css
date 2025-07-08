@@ -23,6 +23,7 @@
     text-shadow: 0 0 10px red;
     cursor: pointer;
 }
+
 .disableddiv {
     pointer-events: none;
     opacity: 0.4;
@@ -143,10 +144,27 @@
 .margin-left{
     margin-left: 5px;
 }
+.manage-req-button{
+    position: absolute;
+    bottom: 8px;
+    width: -webkit-fill-available;
+    margin-right: 8px;
+
+}
 .button{
     text-align:center;
     align-items: center;
     border-style:inset;
+    border-color:dimgray;
+    border-width: medium;
+    padding:5px;
+    display:grid;
+    background-image: url(../../../ui/parchment.jpg);
+}
+.rerolled-button{
+    text-align:center;
+    align-items: center;
+    border-style:double;
     border-color:dimgray;
     border-width: medium;
     padding:5px;
@@ -366,10 +384,10 @@
     text-shadow: none;
     border: 3px solid #999;
 }
- .repair {
-    
+.repair {
+
     height:268px !important;
-   
+
 }
 .fortyk .list{
     border-top: 1px solid #999;
@@ -896,6 +914,14 @@
 .tntdialog .window-content{
     overflow:inherit;
 }
+.talentfilter{
+    width:10em !important; 
+}
+.invalid-checkbox{
+    border-color: red;
+    border-style: double;
+    accent-color: red;
+}
 .cost-span{
     font-weight: bold;
     border: inset;
@@ -975,8 +1001,10 @@
     padding: 8px 3px;
     position: absolute;
     z-index: 1;
-    bottom: 125%;
-    left: 0%;
+    bottom: -200%;
+
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
     font-variant-caps:normal;
 }
 /* The actual popup */

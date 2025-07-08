@@ -12,6 +12,7 @@ import {knockbackPoint}  from "./utilities.js";
 import {collisionPoint} from "./utilities.js";
 import {smallestDistance} from "./utilities.js";
 import {FortykRollDialogs} from "./FortykRollDialogs.js";
+import {getBlastTargets} from "./utilities.js";
 
 export class FortykRolls{
     /*The base test function, will roll against the target and return the success and degree of failure/success, the whole roll message is handled by the calling function.
@@ -27,6 +28,8 @@ export class FortykRolls{
 @modifiers: object that keeps track of modifiers and their origin for attack rolls
 returns the roll message*/
 
+
+    
 
     static async fortykTest(char, type, target, actor, label, fortykWeapon=null, reroll=false, fireRate="",delayMsg=false, modifiers=null){
 
@@ -97,7 +100,7 @@ returns the roll message*/
 
         }
         let targets=game.user.targets;
-        if(targets.size>0){
+        if(targets.size>0&&attack){
             title+=` against ${targets.first().name}`;
         }
         var isVehicle=false;
@@ -134,10 +137,10 @@ returns the roll message*/
             templateOptions["char"]=char;
             templateOptions["type"]=type;
             templateOptions["targetNumber"]=target;
-            templateOptions["label"]=label;
+
         }
 
-
+        templateOptions["label"]=label;
         templateOptions["title"]=title+".";
         const testRoll=target-roll._total;
         //check for jams
@@ -543,9 +546,9 @@ returns the roll message*/
                     let targety=attackTarget.y+(attackTarget.h/2);//adjust to get middle of token
 
                     let gridRatio=canvas.dimensions.size/canvas.dimensions.distance;
-                    let templates=[];
-                    let contentStr="<div class='flexcol'><img class='fortyk' src='../systems/fortyk/icons/scatter.png'>";
 
+                    let contentStr="<div class='flexcol'><img class='fortyk' src='../systems/fortyk/icons/scatter.png'>";
+                    let templates=[];
                     for(let i=0;i<rof;i++){
                         let template={};
                         template.angle=0;
@@ -556,7 +559,7 @@ returns the roll message*/
                         template.fillColor=game.user.color;
                         template.hidden=false;
                         template.t="circle";
-                        if(i<missedHits){
+                        if(i>=rof-missedHits){
                             //if the hit is a miss roll random scatter direction
                             let directionRoll=new Roll("1d10");
                             await directionRoll.evaluate();
@@ -577,15 +580,17 @@ returns the roll message*/
                             let radianAngle=modifiedAngle*(Math.PI/180);
                             let xDistance=-(pixelDistance*Math.sin(radianAngle));
                             let yDistance=(pixelDistance*Math.cos(radianAngle));
-                            contentStr+=`<div>Shot #${i+1} scatters (${distanceRoll._total}x${mult})m to the ${directionRoll._total}</div>`;
                             template.x=Math.min(xDistance+targetx,canvas.dimensions.width);
                             if(template.x<0){template.x=0;}
                             template.y=Math.min(yDistance+targety,canvas.dimensions.height);
                             if(template.y<0){template.y=0;}
+                            contentStr+=`<div><a class="ping-template" data-x="${template.x}" data-y="${template.y}">Shot #${i+1}</a> scatters (${distanceRoll._total}x${mult})m to the ${directionRoll._total}</div>`;
+                            
                         }else{
-                            contentStr+=`<div>Shot #${i+1} is a direct hit!</div>`;
+                            
                             template.x=targetx;
                             template.y=targety;
+                            contentStr+=`<div><a class="ping-template" data-x="${template.x}" data-y="${template.y}">Shot #${i+1}</a> is a direct hit!</div>`;
                         }
 
 
@@ -605,6 +610,8 @@ returns the roll message*/
                                       content:contentStr,
                                       flavor:"Shot Scatters!"};
                     await ChatMessage.create(chatScatter,{});
+                    this.handleBlastTargetMessage(instancedTemplates, actor);
+                
                 }
 
 
@@ -819,6 +826,41 @@ returns the roll message*/
             result.hits=hits; 
         }
         return result;
+    }
+    static async handleBlastTargetMessage(instancedTemplates, actor) {
+        let blastTargets=getBlastTargets(instancedTemplates);
+        let targetIds={};
+        for(const blastTarget of blastTargets){
+            for(const target of blastTarget.targets){
+                if(targetIds[target]!==undefined){
+                    targetIds[target]++;
+                }else{
+                    targetIds[target]=1;
+                }
+            }
+        }
+        let lineArray=[];
+        for(const tokenId in targetIds){
+            let token=canvas.tokens.get(tokenId);
+            let hits=targetIds[tokenId];
+            let name=token.name;
+            let hitLabel="hit";
+            if(hits>1)hitLabel+="s";
+            lineArray.push(`<div class="chat-target"><a class="blast-ping" data-hits="${hits}" data-remaining-hits={{hits}} data-token="${tokenId}">`+token.name+`</a>: ${hits} ${hitLabel}</div>`);
+        }
+        if(lineArray.length>0){
+            let blastTargetMsgContent="<div class='flexcol'>";
+            for(const msgLine of lineArray){
+                blastTargetMsgContent+=msgLine;
+            }
+            blastTargetMsgContent+="</div>";
+            let chatHits= {author: game.user,
+                           speaker:{actor,alias:name},
+                           content:blastTargetMsgContent,
+                           flavor:"Target hits"};
+            await ChatMessage.create(chatHits,{});
+        }
+        
     }
     static async psychicPhenomena(mod, actor) {
         let name=actor.getName();

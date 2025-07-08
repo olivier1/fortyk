@@ -1,3 +1,7 @@
+let item=fromUuidSync("Item.9ot7uOUWA5gr2YvL");
+let actor=fromUuidSync("Actor.GwIHbvZVOe2FMDjf");
+console.log(item.validateActor(actor));
+
 
 const get = (from, ...selectors) =>
 [...selectors].map((s) =>
