@@ -187,6 +187,7 @@ FORTYK.rangedWeaponClasses=[{value:"Basic"},{value:"Pistol"}, {value:"Heavy"}, {
 FORTYK.meleeWeaponClasses=[{value:"Melee"}, {value:"Melee Two-handed"}, {value:"Shield"}, {value:"Titanic Melee Weapon"}];
 FORTYK.psychicPowerTypes=[{value:"Psychic Bolt"}, {value:"Psychic Barrage"}, {value:"Psychic Storm"}, {value:"Psychic Blast"}, {value:"Buff/Debuff"}, {value:"Other"}, {value:"Macro"}];
 FORTYK.psychicDisciplines=[{value:"Biomancy"}, {value:"Chronomancy"},{value:"Divination"},{value:"Pyromancy"},{value:"Telekinesis"},{value:"Telepathy"},{value:"Sanctic Daemonology"},{value:"Malefic Daemonology"},{value:"Tzeench"},{value:"Slaanesh"},{value:"Nurgle"},{value:"Chapter"},{value:"Grey Knights"},{value:"WAAAGH!"},{value:"Navigator"}];
+FORTYK.psychicPowerTargets=[{value:"multiple",label:"Multiple"},{value:"self",label:"Self"},{value:"one",label:"One"},{value:"aura",label:"Aura"}];
 FORTYK.spaceshipWeaponLocations=[{value:"Dorsal"},{value:"Prow"},{value:"Keel"},{value:"Port"},{value:"Starboard"}];
 FORTYK.outpostTypes=[{value:"Outpost"},{value:"Enclave"},{value:"Stronghold"}];
 FORTYK.knightComponentTypes=[{"value":"rangedWeapon","label":"Ranged Weapons"},{"value":"meleeWeapon","label":"Melee Weapons"},{"value":"auxiliaryWeapon","label":"Auxiliary Weapons"},{"value":"ammunition","label":"Ammunition"},{"value":"knightArmor","label":"Armors"},{"value":"knightCore","label":"Cores"},{"value":"knightStructure","label":"Structure"},{"value":"forceField","label":"Force Fields"},{"value":"gyro","label":"Gyros"},{"value":"sensor","label":"Sensors"},{"value":"throne-mod","label":"Throne Modifications"},{"value":"plating","label":"Platings"},{"value":"core-mod","label":"Core Modifications"},{"value":"arm-actuator","label":"Arm Actuators"},{"value":"leg-actuator","label":"Leg Actuators"},{"value":"other","label":"Other Components"}];
@@ -525,6 +526,12 @@ FORTYK.armorFlags={
         "value": false,
         "label": "Impenetrable",
         "description": "This armor reduces damage taken by the wearer by half (rounded up) after ALL mitigation."
+    },
+    "modslots":{
+        "value": false,
+        "num": 0,
+        "label": "Mod Slots",
+        "description": "Some armors have more or less mod slots."
     }
 };
 FORTYK.weaponFlags={

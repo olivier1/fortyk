@@ -1334,6 +1334,7 @@
             "rating": {
                 "value": 0,
                 "overload": 0,
+                "overloadOnDigit":-1,
                 "type": "Number"
             },
             "overloadBreak": {
@@ -1398,6 +1399,10 @@
             "reqs": {
                 "value": "",
                 "type": "String"
+            },
+            "affects":{
+                "value":"multiple",
+                "type":"String"
             },
             "target": {
                 "value": 0,

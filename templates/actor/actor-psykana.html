@@ -141,8 +141,7 @@
                 <label class="list-item">Modifier: {{power.system.testMod.value}}</label>
 
 
-
-                <label class="list-item">Range: {{power.system.range.value}}m</label>
+                <label class="list-item">Range: {{#unless (equals power.system.affects.value "self")}}{{power.system.range.value}}m{{else}}Self{{/unless}}</label>
 
                 {{#if (contains power.system.class.value "psychic")}}
 

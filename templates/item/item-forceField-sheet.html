@@ -35,6 +35,10 @@
         <label>Overload:</label>
         <input type="text" value="{{system.rating.overload}}" name="system.rating.overload">
     </div>
+    <div class="flexcol">
+        <label>Overload on digit(0-9, is active if greater than -1):</label>
+        <input type="number" value="{{system.rating.overloadOnDigit}}" name="system.rating.overloadOnDigit">
+    </div>
     <div class="flexrow">
         <label>Breaks on Overload:</label>
         <input type="checkbox" name="system.overloadBreak.value" {{checked system.overloadBreak.value}}>

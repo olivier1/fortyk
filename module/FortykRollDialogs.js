@@ -135,7 +135,7 @@ export class FortykRollDialogs{
         let result=await this.callRollDialog(char, type, target, actor, label, weapon , true, fireRate, true);
         foundry.audio.AudioHelper.play({src: "sounds/dice.wav", volume: 1, autoplay: true, loop: false}, true);
         const popupNode=$(button).closest('.popup')[0];
-        
+
         const pingSibling= $(popupNode).siblings('.spray-torrent-ping')[0];
         const lineNode=$(popupNode).closest('.chat-target')[0];
         if(pingSibling){
@@ -174,7 +174,7 @@ export class FortykRollDialogs{
         }else{
             popupNode.outerHTML=result.template;
         }
-        
+
         $(chatContentNode).find('.popuptext').removeClass('show');
         const messageId=chatMessageNode.dataset.messageId;
         const message=game.messages.get(messageId);
@@ -399,7 +399,7 @@ export class FortykRollDialogs{
         if(actor.getFlag("core","stunned"))return true;
         if(actor.getFlag("core","snare"))return true;
         if(actor.getFlag("core","unconscious"))return true;
-        if(actor.getFlag("core","blind")&&!token.actor.getFlag("fortyk","blindfight"))return true;
+        if(actor.getFlag("core","blind")&&!actor.getFlag("fortyk","blindfight"))return true;
         return false;
     }
     static findAssists(target, attacker){
@@ -1236,6 +1236,17 @@ export class FortykRollDialogs{
     static async callSprayAttackDialog(actor, testLabel, weapon, options,sheet, title="Enter test modifier"){
         let modifier=0;
         let pr=actor.system.psykana.pr.effective;
+        let psy=false;
+        if(weapon.type==="psychicPower"){
+            psy=true;
+        }
+        let consumption=weapon.system.clip.consumption;
+        if(!psy){
+            var ammo=weapon.system.clip.value;
+            if(ammo<consumption){
+                return ui.notifications.warn("Out of ammunition!");
+            } 
+        }
         if(weapon.getFlag("fortyk","psyflame")){
             modifier-=pr*5;
         }
@@ -1280,17 +1291,9 @@ export class FortykRollDialogs{
                         let targets=this.getSprayTargets(template,scene, actor)[0];
 
                         let mod = Number($(html).find('input[name="modifier"]').val());
-                        let psy=false;
-                        if(weapon.type==="psychicPower"){
-                            psy=true;
-                        }
 
-                        if(!psy){
-                            var ammo=weapon.system.clip.value;
-                            if(ammo===0){
-                                return;
-                            } 
-                        }
+
+
 
                         if(targets.size===0){
                             this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "No targets");
@@ -1355,7 +1358,7 @@ export class FortykRollDialogs{
 
                         await ChatMessage.create(chatOptions,{});
                         if(!psy){
-                            await weapon.update({"system.clip.value":ammo-1});
+                            await weapon.update({"system.clip.value":ammo-consumption});
                         }
 
 
@@ -1386,7 +1389,7 @@ export class FortykRollDialogs{
         let ammo;
         if(!psy){
             ammo=weapon.system.clip.value;
-            if(ammo===0){
+            if(ammo<(rof*consumption)){
                 return;
             } 
         }

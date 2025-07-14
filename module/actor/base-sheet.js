@@ -40,10 +40,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.skillTraining=game.fortyk.FORTYK.skillTraining;
         data.psyDisciplines=game.fortyk.FORTYK.psychicDisciplines;
         data.psykerTypes=game.fortyk.FORTYK.psykerTypes;
-        if(this.actor.itemTypes.eliteAdvance.length){
-            data.eliteAdvances=this.actor.itemTypes.eliteAdvance;  
-        }else{
-            data.eliteAdvances=undefined; 
+        if(!data?.eliteAdvances?.length){
+            data.eliteAdvances=undefined;  
         }
 
         data.editable = this.options.editable;
@@ -968,7 +966,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                                     flavor:`Blast Weapon Damage`};
                                     await ChatMessage.create(chatBlast2,{});
                                     await FortykRolls.damageRoll(formula,actor,weapon,hits,false,false,magdmg,pen,rerollNum); 
-                                    
+
                                     game.user.updateTokenTargets();
                                     //clean templates after
                                     let scene=game.scenes.active;
@@ -1005,18 +1003,24 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
 
     }
-    
+
     //handles applying active effects from psychic powers
     async _onBuffDebuff(event){
         event.preventDefault();
+        const element = event.currentTarget;
+        const dataset = element.dataset;
         let targets=game.user.targets;
-        if(targets.size>0){
+        let powerId=dataset["power"];
+        let power=this.actor.getEmbeddedDocument("Item", powerId);
+        let affects=power.system.affects.value;
+        if(affects==="self"){
+            FortyKItem.applyPsyBuffs(this.actor.uuid, powerId, targets.ids);
+        }else if(targets.size>0){
 
 
 
-            const element = event.currentTarget;
-            const dataset = element.dataset;
-            let powerId=dataset["power"];
+
+
 
             FortyKItem.applyPsyBuffs(this.actor.uuid, powerId, targets.ids);
         }else{
@@ -1131,14 +1135,14 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         let forceData={name:"Force",type:"psychicPower"};
                         forceData.flags={
                             fortyk:{
-                                ignoresoak:true
-                            
-                        }};
+                                ignoreSoak:true
+
+                            }};
                         forceData.system={damageFormula:{value:`${hits}d10`},
-                                         damageType:{value:"Energy"}};
+                                          damageType:{value:"Energy"}};
                         let force=await new Item(forceData, {temporary: true});
                         console.log(force);
-                        
+
                         if(game.user.isGM){
                             FortykRolls.damageRoll(force.system.damageFormula,actor,force,1); 
                         }else{

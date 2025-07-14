@@ -10,7 +10,12 @@
                 <span class="descrSpan">Age:</span>
                 <input type="text" class="combat-resources" data-target="system.age.value" value="{{system.age.value}}" data-dtype="Number"/>
             </div>
-
+            {{#if characterType}}
+            <div class="flexrow advanceElite">
+                        <a class="item-descr" data-id="{{characterType.id}}" data-name="{{characterType.name}}" data-item-descr="{{characterType.system.description.value}}"><u>{{characterType.name}}</u></a>
+                        <a class="list-button item-delete" title="Delete" data-item-id="{{characterType.id}}"></a>
+                    </div>
+            {{else}}
             <div class="descrRow flexcol">
                 <span class="descrSpan">Race:</span>
                 <select class="raceSelect" name="system.race.value" data-dtype="String">
@@ -18,6 +23,7 @@
                 </select>
 
             </div>
+            {{/if}}
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Build:</span>

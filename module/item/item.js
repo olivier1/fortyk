@@ -6,6 +6,7 @@ import { getItem } from "../utilities.js";
 import { isEmpty } from "../utilities.js";
 import { objectByString } from "../utilities.js";
 import { setNestedKey } from "../utilities.js";
+import {getActorToken} from "../utilities.js";
 export class FortyKItem extends Item {
     //@Override the create function to add an activeeffect for modifiers to an item
     static async create(data, options) {
@@ -72,6 +73,12 @@ export class FortyKItem extends Item {
      * Augment the basic Item data model with additional dynamic data.
      */
     async prepareData() {
+        function replaceScope(scope, string) {
+            for(const key in scope){
+                string=string.replaceAll(key,scope[key]);
+            }
+            return string;
+        }
         //super.prepareData();
 
         // Get the Item's data
@@ -92,6 +99,10 @@ export class FortyKItem extends Item {
         if(item.type==="armor"){
             item.system.mods.max=3;
             item.system.mods.max+=qualityMods[item.system.quality.value];
+            let modSlots=item.getFlag("fortyk","modslots");
+            if(modSlots){
+                item.system.mods.max+=parseFloat(modSlots);
+            }
         }else if(item.type==="rangedWeapon"){
             if(item.system.class.value==="Pistol"){
                 item.system.mods.max=1; 
@@ -112,8 +123,10 @@ export class FortyKItem extends Item {
         if (this.actor) {
 
 
+
             const data = this.actor.system;
             let actor = this.actor;
+            const scope = actor.getScope();
             if (item.system.state) {
                 if (
                     item.system.state.value === "X" ||
@@ -184,9 +197,9 @@ export class FortyKItem extends Item {
                         }
                     }
                 }else{
-                    let wp=actor.system.characteristics.wp.total;
-                    item.system.rating.value=Math.ceil(math.evaluate(item.system.rating.value,{wp:wp}));
-                    item.system.rating.overload=Math.ceil(math.evaluate(item.system.rating.overload,{wp:wp}));
+
+                    item.system.rating.value=Math.ceil(math.evaluate(item.system.rating.value,scope));
+                    item.system.rating.overload=Math.ceil(math.evaluate(item.system.rating.overload,scope));
                 }
                 //logic for the sanctuary forcefields
                 if (item.getFlag("fortyk", "adjustment")) {
@@ -266,8 +279,7 @@ export class FortyKItem extends Item {
             if (item.type === "rangedWeapon") {
                 //parse rof
                 if(actor.getFlag("fortyk","psyrating")){
-                    let pr=actor.system.psykana.pr.effective;
-                    let scope={pr:pr};
+
                     try{
 
                         item.system.rof[1].value=Math.ceil(math.evaluate(item.system.rof[1].value,scope));
@@ -382,7 +394,7 @@ export class FortyKItem extends Item {
 
                 }
                 */
-                item.system.clip.consumption = item.system.clip.consumption;
+                //item.system.clip.consumption = item.system.clip.consumption;
                 if (this.getFlag("fortyk", "twinlinked")) {
                     item.system.clip.consumption = item.system.clip.consumption * 2;
                 }
@@ -433,7 +445,7 @@ export class FortyKItem extends Item {
                         psyniscience = actor.system.skills.psyniscience;
                     } catch (err) {}
 
-                    let pr = parseInt(item.system.curPR.value);
+                    scope.pr = parseInt(item.system.curPR.value);
                     //iterate through item flags to evaluate PR strings
                     let flags = item.flags.fortyk;
                     for (const flag in flags) {
@@ -442,7 +454,7 @@ export class FortyKItem extends Item {
                         if (typeof fl == "string") {
                             if (fl.toLowerCase().indexOf("pr") !== -1) {
                                 try {
-                                    flags[flag] = Math.ceil(math.evaluate(flags[flag],{pr:pr}));
+                                    flags[flag] = Math.ceil(math.evaluate(flags[flag],{pr:scope.pr}));
                                 } catch (err) {
                                     flags[flag] = 0;
                                 }
@@ -451,14 +463,12 @@ export class FortyKItem extends Item {
                     }
 
                     if (this.getFlag("fortyk", "purifyingflame")) {
-                        item.flags.fortyk.purifyingflame = `1d10+${pr}`;
+                        item.flags.fortyk.purifyingflame = `1d10+${scope.pr}`;
                     }
 
                     if (data.psykana.psykerType.value.toLowerCase() === "navigator") {
                         let range = item.system.range.formula.toLowerCase();
-                        let wp = data.characteristics.wp.bonus;
-                        let per = data.characteristics.per.bonus;
-                        let scope={per:per,wp:wp};
+                       
                         try {
                             item.system.range.value = Math.ceil(math.evaluate(range,scope));
                         } catch (err) {
@@ -492,9 +502,8 @@ export class FortyKItem extends Item {
                             char = parseInt(data.characteristics[item.system.testChar.value].total);
                             item.system.testChar.type = item.system.testChar.value;
                         }
-                        let temp;
-                        temp = item.system.damageFormula.formula.replace(/pr/gim, pr);
-                        item.system.damageFormula.value = temp.replace(/wp/gim, wp);
+                        
+                        item.system.damageFormula.value = replaceScope(scope,item.system.damageFormula.formula);
                         item.system.target.value = char + training + parseInt(item.system.testMod.value);
                     } else {
                         try {
@@ -502,15 +511,13 @@ export class FortyKItem extends Item {
                             let range = item.system.range.formula.toLowerCase();
 
 
-                            let wp = data.characteristics.wp.bonus;
-                            let pr = parseInt(item.system.curPR.value); 
                             try {
-                                item.system.range.value = Math.ceil(math.evaluate(range,{wp:wp,pr:pr}));
+                                item.system.range.value = Math.ceil(math.evaluate(range,scope));
                             } catch (err) {
                                 item.system.range.value = 0;
                             }
+
                             try {
-                                let scope={wp:wp, pr:pr};
                                 let penstr=item.system.pen.formula;
                                 item.system.pen.value = Math.ceil(math.evaluate(penstr,scope));
 
@@ -518,16 +525,17 @@ export class FortyKItem extends Item {
                                 item.system.pen.value = 0;
                             }
 
-                            let temp;
-                            temp = item.system.damageFormula.formula.replace(/pr/gim, pr);
-                            item.system.damageFormula.value = temp.replace(/wp/gim, wp);
+                           
+
+                            
+                            item.system.damageFormula.value = replaceScope(scope,item.system.damageFormula.formula);
                             if (this.getFlag("fortyk", "tainted")) {
                                 let corruptBonus = Math.floor(parseInt(actor.system.secChar.corruption.value) / 10);
                                 let daemonic = parseFloat(actor.getFlag("fortyk", "daemonic"));
                                 if (isNaN(daemonic)) {
                                     daemonic = 0;
                                 }
-                                var taintbonus = Math.max(corruptBonus, daemonic);
+                                let taintbonus = Math.max(corruptBonus, daemonic);
                                 item.system.damageFormula.value += `+${taintbonus}`;
                             }
                         } catch (err) {
@@ -573,14 +581,13 @@ export class FortyKItem extends Item {
                     if (actor.getFlag("fortyk", "meleedamagebonus")) {
                         item.system.damageFormula.value += "+" + parseInt(actor.getFlag("fortyk", "meleedamagebonus"));
                     }
-                    let wp = data.characteristics.wp.bonus;
-                    item.system.damageFormula.value = item.system.damageFormula.value.replace("wp", wp);
+                    
+                    item.system.damageFormula.value = replaceScope(scope, item.system.damageFormula.value);
                     if(typeof item.system.pen.value ==="string"){
-                        item.system.pen.value = item.system.pen.value.replace("wp", wp);
+                        item.system.pen.value = replaceScope(scope, item.system.pen.value);
                     }
 
-                    let sb = data.characteristics.s.bonus;
-                    item.system.damageFormula.value = item.system.damageFormula.value.replace("sb", sb);
+                    
                     if (item.getFlag("fortyk", "heavy")) {
                         item.system.twohanded.value = true;
                     } else if (!actor.getFlag("fortyk", "irongrip")) {
@@ -596,11 +603,11 @@ export class FortyKItem extends Item {
 
                 if (item.type === "rangedWeapon") {
                     if (typeof item.system.range.formula === "string" || item.system.range.formula instanceof String) {
-                        let sb = data.characteristics.s.bonus;
+                      
                         let formula = item.system.range.formula.toLowerCase();
 
                         try {
-                            item.system.range.value = math.evaluate(formula,{sb:sb});
+                            item.system.range.value = math.evaluate(formula,scope);
                         } catch (err) {
                             item.system.range.value = 0;
                         }
@@ -609,8 +616,7 @@ export class FortyKItem extends Item {
                     if (actor.getFlag("fortyk", "mightyshot")) {
                         item.system.damageFormula.value += "+" + Math.ceil(data.characteristics.bs.bonus / 2);
                     }
-                    let wp = data.characteristics.wp.bonus;
-                    item.system.damageFormula.value = item.system.damageFormula.value.replace("wp", wp);
+                    item.system.damageFormula.value = replaceScope(scope, item.system.damageFormula.value);
 
                     if (!actor.getFlag("fortyk", "irongrip")) {
                         if (
@@ -645,7 +651,7 @@ export class FortyKItem extends Item {
                         if (isNaN(daemonic)) {
                             daemonic = 0;
                         }
-                        var taintbonus = Math.max(corruptBonus, daemonic);
+                       let taintbonus = Math.max(corruptBonus, daemonic);
                         item.system.damageFormula.value += `+${taintbonus}`;
                     }
                     //horde logic
@@ -668,16 +674,16 @@ export class FortyKItem extends Item {
                     }
 
                     try {
-                        let pr = parseInt(data.psykana.pr.value);
+                        
                         if (this.getFlag("fortyk", "force")) {
-                            item.system.pen.value = parseInt(item.system.pen.value) + pr;
-                            item.system.damageFormula.value += `+${pr}`;
+                            item.system.pen.value = parseInt(item.system.pen.value) + scope.pr;
+                            item.system.damageFormula.value += `+${scope.pr}`;
                             if(actor.getFlag("fortyk","psy-weaponattunement")){
-                                item.flags.fortyk.proven=pr;
+                                item.flags.fortyk.proven=scope.pr;
                             }
                         }
                         if (this.getFlag("fortyk", "purifyingflame")) {
-                            item.flags.fortyk.purifyingflame = `1d10+${pr}`;
+                            item.flags.fortyk.purifyingflame = `1d10+${scope.pr}`;
                         }
                     } catch (err) {
                         item.system.pen.value = "";
@@ -719,17 +725,11 @@ export class FortyKItem extends Item {
         let itemData = item;
         let data = this.system;
         let actor=this.actor;
+        let scope=actor.getScope();
         let pr;
         if(actor.getFlag("fortyk","psyrating")){
             pr=actor.system.psykana.pr.value+actor.system.psykana.pr.bonus-Math.max(0,actor.system.psykana.pr.sustain-1);
-        }
-
-        let chars=actor.system.characteristics;
-        let scope={
-            pr:pr,
-            felB:chars?.fel?.bonus
-
-        };
+        }    
         this.effects.forEach(function (ae, id) {
             if (!ae.disabled && !ae.transfer) {
                 //if item is equipped and/or not disabled
@@ -752,11 +752,13 @@ export class FortyKItem extends Item {
                 if(!proceed)return;
                 ae.changes.forEach(function (change, i) {
                     let path = change.key.split(".");
+                    var changeValue = change.value;
                     if(change.mode===CONST.ACTIVE_EFFECT_MODES.CUSTOM){
-                        if(typeof change.value==="string"){
-                            if(change.value.toLowerCase()==="true"){
+                        
+                        if(typeof changeValue==="string"){
+                            if(changeValue.toLowerCase()==="true"){
                                 return setNestedKey(itemData,path,true); 
-                            }else if(change.value.toLowerCase()==="false"){
+                            }else if(changeValue.toLowerCase()==="false"){
                                 return setNestedKey(itemData,path,false); 
                             }
                         }
@@ -766,14 +768,15 @@ export class FortyKItem extends Item {
 
                         try{
 
-                            let value=math.evaluate(change.value,scope);
+
+                            let value=math.evaluate(changeValue,scope);
 
                             if(!Number.isNaN(value)){
-                                change.value=value;
+                                changeValue=value;
                             }
 
                         }catch (err){
-                            //console.log(err,item);
+                            console.log(err,item);
 
                         }
                     }
@@ -785,9 +788,9 @@ export class FortyKItem extends Item {
                     }
                     let newvalue;
                     if(isNumber){
-                        newvalue = parseFloat(change.value);
+                        newvalue = parseFloat(changeValue);
                     }else{
-                        newvalue = change.value;
+                        newvalue = changeValue;
                     }
 
 
@@ -805,23 +808,23 @@ export class FortyKItem extends Item {
                             changedValue = basevalue + newvalue;
                             setNestedKey(itemData, path, changedValue);
                         } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.DOWNGRADE) {
-                            if (change.value < basevalue) {
+                            if (changeValue < basevalue) {
                                 changedValue = newvalue;
                                 setNestedKey(itemData, path, changedValue);
                             }
                         } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.UPGRADE) {
-                            if (change.value > basevalue) {
+                            if (changeValue > basevalue) {
                                 changedValue = newvalue;
                                 setNestedKey(itemData, path, changedValue);
                             }
                         } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.OVERRIDE) {
                             setNestedKey(itemData, path, newvalue);
                         } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
-                            setNestedKey(itemData, path, change.value);
+                            setNestedKey(itemData, path, changeValue);
                         }
                     } else {
                         if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
-                            setNestedKey(itemData, path, change.value);
+                            setNestedKey(itemData, path, changeValue);
                         }
                     }
                 });
@@ -832,24 +835,66 @@ export class FortyKItem extends Item {
         let effects=this.effects;
         let count=0;
         for(const effect of effects){
-            if(effect.getFlag("fortyk","mod")){
+            if(effect.getFlag("fortyk","modsystem")){
                 count++;
             }
         }
         return count;
     }
     validateActor(actor){
-        let validated=false;
-        let failReasons=[];
+
+        var validated=true;
+        var failReasons=[];
         const FORTYK=this.FORTYK;
         if(!actor){
             failReasons.push("No valid actor!");
+            validated=false;
             return {valid:validated, reasons:failReasons};
         }
         var requirements = this.getFlag("fortyk","requirements");
+        let itemType=this.type;
+        switch(itemType){
+            case "talentntrait":
+                let spec=this.system.specialisation.value;
+                var actorSpec = actor.getFlag("fortyk",this.system.flagId.value);
+                if(spec==="N/A"){
+                    if(actorSpec){
+                        failReasons.push("You already have this talent.");
+                        validated=false;
+                    }
+                }else{
+
+                    if(actorSpec){
+                        if(actorSpec.includes(spec)){
+                            failReasons.push(`You already have the ${spec} specialisation.`);
+                            validated=false;
+                        }
+                    }
+                }
+                break;
+            case "eliteAdvance":
+                let flagId=this.system.flagId.value;
+                if(actor.getFlag("fortyk",flagId)){
+                    failReasons.push(`You already have this elite advance.`);
+                    validated=false;
+                }
+                break;
+            case "psychicPower":
+                let disciplines=Object.values(actor.system.psykana.disciplines);
+                let discipline = this.system.discipline.value;
+                if(!disciplines.includes(discipline)){
+                    failReasons.push(`You do not have the ${discipline} discipline.`);
+                    validated=false;
+                }
+                if(actor.getFlag("fortyk",this.id)){
+                    failReasons.push(`You already have this power.`);
+                    validated=false; 
+                }
+                break;
+        }
         if(!requirements){
 
-            return {valid:true, reasons:failReasons}; 
+            return {valid:validated, reasons:failReasons}; 
         }
         let actorChars=actor.system.characteristics;
         let charReqs=requirements.characteristics;
@@ -858,31 +903,55 @@ export class FortyKItem extends Item {
         for (let [key, char] of Object.entries(actorChars)){
             charBase=parseInt(char.value)+parseInt(char.advance);
             charReq=charReqs[key].value;
-            if(charBase<charReq)failReasons.push(`You do not meet the ${charReq} ${charReqs[key].label} requirement.`);
+            if(charBase<charReq){
+                failReasons.push(`You do not meet the ${charReq} ${charReqs[key].label} requirement.`);
+                validated=false;
+            }
         }
         let prReq=charReqs.pr.value;
         let actorPr=actor.system.psykana.pr.value;
-        if(actorChars<prReq)failReasons.push(`You do not meet the ${prReq} Psy Rating requirement.`);
+        if(actorPr<prReq){
+            failReasons.push(`You do not meet the ${prReq} Psy Rating requirement.`);
+            validated=false;
+        } 
         let expReq=charReqs.exp.value;
         let actorXp=actor.system.experience.spent;
-        if(actorXp<expReq)failReasons.push(`You do not meet the ${expReq} Experience Spent requirement.`);
+        if(actorXp<expReq){
+            failReasons.push(`You do not meet the ${expReq} Experience Spent requirement.`);
+            validated=false; 
+        }
         let insReq=charReqs.ins.value;
         let actorInsan=actor.system.secChar.insanity.value;
-        if(actorInsan<insReq)failReasons.push(`You do not meet the ${insReq} Inasnity requirement.`);
+        if(actorInsan<insReq){
+            failReasons.push(`You do not meet the ${insReq} Inasnity requirement.`);
+            validated=false; 
+        }
         let corReq=charReqs.cor.value;
         let actorCor=actor.system.secChar.corruption.value;
-        if(actorCor<corReq)failReasons.push(`You do not meet the ${corReq} Corruption requirement.`);
+        if(actorCor<corReq){
+            failReasons.push(`You do not meet the ${corReq} Corruption requirement.`);
+            validated=false; 
+        }
         let flagRequirements=requirements.flags;
-        
+
         for(const flag in flagRequirements){
-            if(!flag)continue;
-            let specs=flagRequirements[flag].spec;
+            //if(!flag)continue;
+
+            var flagInstance = flagRequirements[flag];
+            if(!flagInstance)continue;
+            let specs=flagInstance.spec;
             var actorFlag = actor.getFlag("fortyk",flag);
+
             if(specs==="anyranged"){
                 if(actor.getFlag("fortyk","astartesweapontraining"))continue;
-                let actorFlagSplit=actorFlag.split(",");
+
                 let hasTraining=false;
-                
+                if(!actorFlag){
+                    failReasons.push(`You do not have ranged weapon training.`);
+                    validated=false; 
+                    continue;
+                }
+                let actorFlagSplit=actorFlag.split(",");
                 for(let training of actorFlagSplit){
                     if(FORTYK.rangedWeaponTypes.find((weaponType)=>weaponType.value.toLowerCase()===training.toLowerCase().trim())){
                         hasTraining=true;
@@ -890,21 +959,33 @@ export class FortyKItem extends Item {
                 }
                 if(!hasTraining){
                     failReasons.push(`You do not have ranged weapon training.`);
+                    validated=false; 
                 }
                 continue;
             }
             if(specs==="any2"){
+                if(!actorFlag){
+                    failReasons.push(`You do not have the required 2 weapon Trainings.`);
+                    validated=false; 
+                    continue;
+                }
                 let actorFlagSplit=actorFlag.split(",");
                 if(actorFlagSplit.length<2){
                     failReasons.push(`You do not have the required 2 weapon Trainings.`);
+                    validated=false; 
                 }
                 continue;
             }
             if(specs==="anymelee"){
                 if(actor.getFlag("fortyk","astartesweapontraining"))continue;
+                if(!actorFlag){
+                    failReasons.push(`You do not have melee weapon training.`);
+                    validated=false; 
+                    continue;
+                }
                 let actorFlagSplit=actorFlag.split(",");
                 let hasTraining=false;
-                
+
                 for(let training of actorFlagSplit){
                     if(FORTYK.meleeWeaponTypes.find((weaponType)=>weaponType.value.toLowerCase()===training.toLowerCase().trim())){
                         hasTraining=true;
@@ -912,42 +993,64 @@ export class FortyKItem extends Item {
                 }
                 if(!hasTraining){
                     failReasons.push(`You do not have melee weapon training.`);
+                    validated=false; 
                 }
                 continue;
             }
             if(specs==="any2"){
+                if(!actorFlag){
+                    failReasons.push(`You do not have the required 2 weapon Trainings.`);
+                    validated=false; 
+                    continue;
+                }
                 let actorFlagSplit=actorFlag.split(",");
                 if(actorFlagSplit.length<2){
                     failReasons.push(`You do not have the required 2 weapon Trainings.`);
+                    validated=false; 
                 }
                 continue;
             }
             let splitSpec=specs.split(",");
             for(let spec of splitSpec){
-                
-                if(flagRequirements[flag].negative){
+
+                if(flagInstance.negative){
                     if(spec){
                         spec=spec.toLowerCase();  
                         if(spec.includes("any")){
-                            
+
                             if(actorFlag){
-                                failReasons.push(`You have the ${flagRequirements[flag].label} feature.`); 
+                                failReasons.push(`You have the ${flagInstance.label} feature.`);
+                                validated=false; 
+                                continue;
                             }
-                            
-                        }else if(actorFlag||actorFlag&&actorFlag.toLowerCase().includes(spec))failReasons.push(`You have the ${flagRequirements[flag].label}(${spec}) feature.`);
-                    }else if(actor.getFlag("fortyk",flag))failReasons.push(`You have the ${flagRequirements[flag].label} feature.`);
+
+                        }else if(actorFlag||actorFlag&&actorFlag.toLowerCase().includes(spec)){
+                            failReasons.push(`You have the ${flagInstance.label}(${spec}) feature.`);
+                            validated=false; 
+                        }
+                    }else if(actor.getFlag("fortyk",flag)){
+                        failReasons.push(`You have the ${flagInstance.label} feature.`);
+                        validated=false; 
+                    }
                     continue;
                 }
-                
+
                 if(spec){
                     spec=spec.toLowerCase();
                     if(spec.includes("any")){
                         if(!actor.getFlag("fortyk",flag)){
-                            failReasons.push(`You do not have the ${flagRequirements[flag].label} feature.`);
+                            failReasons.push(`You do not have the ${flagInstance.label} feature.`);
+                            validated=false; 
                         }
-                        
-                    }else if(!actor.getFlag("fortyk",flag)||actor.getFlag("fortyk",flag)&&!actor.getFlag("fortyk",flag).toLowerCase().includes(spec))failReasons.push(`You do not have the ${flagRequirements[flag].label}(${spec}) feature.`);
-                }else if(!actor.getFlag("fortyk",flag))failReasons.push(`You do not have the ${flagRequirements[flag].label} feature.`);
+
+                    }else if(!actor.getFlag("fortyk",flag)||actor.getFlag("fortyk",flag)&&!actor.getFlag("fortyk",flag).toLowerCase().includes(spec)){
+                        failReasons.push(`You do not have the ${flagInstance.label}(${spec}) feature.`);
+                        validated=false; 
+                    }
+                }else if(!actor.getFlag("fortyk",flag)){
+                    failReasons.push(`You do not have the ${flagInstance.label} feature.`);
+                    validated=false; 
+                }
             }
 
         }
@@ -955,7 +1058,10 @@ export class FortyKItem extends Item {
 
         for(const psy in psyRequirements){
             if(!psy)continue;
-            if(!actor.getFlag("fortyk",psy))failReasons.push(`You do not have ${psyRequirements[psy]}.`);
+            if(!actor.getFlag("fortyk",psy)){
+                failReasons.push(`You do not have ${psyRequirements[psy]}.`);
+                validated=false; 
+            }
         }
         let skillReqs=requirements.skills;
         let actorSkills=actor.itemTypes.skill;
@@ -977,7 +1083,7 @@ export class FortyKItem extends Item {
             for(const actorSkill of actorSkills){
                 let actorSkillName=actorSkill.name;
                 let actorSkillParent=actorSkill.system.parent.value;
-                let actorSkillRank=actorSkill.system.value;
+                let actorSkillRank=parseInt(actorSkill.system.value);
                 let rankMatch=false;
                 let nameMatch=false;
                 let parentMatch=false;
@@ -1005,12 +1111,17 @@ export class FortyKItem extends Item {
                 if(actorSkillRank>=rankValueReq){
                     rankMatch=true;
                 }
+
                 match=nameMatch&&parentMatch&&rankMatch;
+                if(match)break;
             }
             let name=skill.name.replaceAll("*","any");
-            if(!match)failReasons.push(`You do not have the ${name} skill of rank ${rank}.`);
+            if(!match){
+                failReasons.push(`You do not have the ${name} skill of rank ${rank}.`);
+                validated=false; 
+            }
         }
-        
+
         let cyberReqs=requirements.cybernetics;
         var cyberNum = cyberReqs.number;
         var cyberLimbs = cyberReqs.limbs;
@@ -1026,28 +1137,38 @@ export class FortyKItem extends Item {
                 if(actorCyber.system.location.value.toLowerCase().includes("arm")||actorCyber.system.location.value.toLowerCase().includes("leg")){
                     actorLimbCount++;
                 }
-                if(actorCyber._source.name.toLowerCase()===cyberName){
+                if(actorCyber._source.name.toLowerCase()===cyberName.toLowerCase()){
                     hasCyber=true;
                 }
             }
             if(actorLimbCount<cyberLimbs){
                 failReasons.push(`You do not have ${cyberLimbs} cybernetic limbs.`);
+                validated=false; 
             }
             if(actorCyberCount<cyberNum){
                 failReasons.push(`You do not have ${cyberNum} cybernetics.`);
+                validated=false; 
             }
             if(!hasCyber){
                 failReasons.push(`You do not have the ${cyberName} cybernetic.`);
+                validated=false; 
             }
         }
-        if(failReasons.length===0)validated=true;
+
         return {valid:validated, reasons:failReasons};
     }
     static async applyPsyBuffs(actorId, powerId, targetIds) {
         if (game.user.isGM) {
             let actor = await fromUuid(actorId);
             let power = actor.getEmbeddedDocument("Item", powerId);
-            let targets = game.canvas.tokens.children[0].children.filter((token) => targetIds.includes(token.id));
+            let affects = power.system.affects.value;
+            let targets;
+            if(affects==="self"){
+                targets = [getActorToken(actor)];
+            }else{
+                targets = game.canvas.tokens.children[0].children.filter((token) => targetIds.includes(token.id)); 
+            }
+
 
             let ae = power.effects.entries().next().value[1];
             let aeData = foundry.utils.duplicate(ae);
@@ -1062,10 +1183,10 @@ export class FortyKItem extends Item {
             aeData.disabled = false;
             aeData.origin = actorId;
             aeData.statuses = [ae.name];
-            let felB=actor.system.characteristics.fel.bonus;
+            /*let felB=actor.system.characteristics.fel.bonus;
             for(const change of aeData.changes){
                 change.value=change.value.replace("felB",felB);
-            }
+            }*/
             let effectUuIds = [];
             for (let i = 0; i < targets.length; i++) {
                 let target = targets[i];

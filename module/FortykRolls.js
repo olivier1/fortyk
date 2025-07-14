@@ -29,7 +29,7 @@ export class FortykRolls{
 returns the roll message*/
 
 
-    
+
 
     static async fortykTest(char, type, target, actor, label, fortykWeapon=null, reroll=false, fireRate="",delayMsg=false, modifiers=null){
 
@@ -585,9 +585,9 @@ returns the roll message*/
                             template.y=Math.min(yDistance+targety,canvas.dimensions.height);
                             if(template.y<0){template.y=0;}
                             contentStr+=`<div><a class="ping-template" data-x="${template.x}" data-y="${template.y}">Shot #${i+1}</a> scatters (${distanceRoll._total}x${mult})m to the ${directionRoll._total}</div>`;
-                            
+
                         }else{
-                            
+
                             template.x=targetx;
                             template.y=targety;
                             contentStr+=`<div><a class="ping-template" data-x="${template.x}" data-y="${template.y}">Shot #${i+1}</a> is a direct hit!</div>`;
@@ -611,7 +611,7 @@ returns the roll message*/
                                       flavor:"Shot Scatters!"};
                     await ChatMessage.create(chatScatter,{});
                     this.handleBlastTargetMessage(instancedTemplates, actor);
-                
+
                 }
 
 
@@ -860,7 +860,7 @@ returns the roll message*/
                            flavor:"Target hits"};
             await ChatMessage.create(chatHits,{});
         }
-        
+
     }
     static async psychicPhenomena(mod, actor) {
         let name=actor.getName();
@@ -1001,6 +1001,7 @@ returns the roll message*/
         let hitResults=[];
         let i=0;
         let rolls=[];
+        let overloadOnDigit=parseInt(forcefield.system.rating.overloadOnDigit);
         while(!(breakOnOverload&&overloaded)&&i<hits){
             let roll=new Roll(formula, {});
 
@@ -1012,13 +1013,20 @@ returns the roll message*/
             let pass=roll.dice[0].results[0].success;
             overloaded=false;
             let result={overload:false,roll:roll1,pass:pass,string:""};
-            if(roll1<=overload){
+            if(overloadOnDigit>-1&&overloadOnDigit<10){
+                let firstDigit=Math.floor(roll1/10);
+                let secondDigit=roll1%10;
+                if(firstDigit===overloadOnDigit||secondDigit===overloadOnDigit){
+                    overloaded=true;
+                }
+            }else if(roll1<=overload){
                 overloaded=true;
-                result.overload=overloaded;
+                
             }
             let string="";
             if(overloaded){
                 string=`Hit ${i+1} overloads with a roll of ${roll1}!`;
+                result.overload=overloaded;
                 remainingHits--;
             }else if(pass){
                 string=`Hit ${i+1} is deflected with a roll of ${roll1}!`;

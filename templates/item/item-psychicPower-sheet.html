@@ -38,6 +38,14 @@
             <label>Action:</label>
             <input type="text" value="{{system.action.value}}" name="system.action.value">
         </div>
+        <div class="flexcol">
+            <label>Targets:</label>
+
+            <select class="power-type" name="system.affects.value">
+                {{selectOptions FORTYK.psychicPowerTargets selected=system.affects.value valueAttr="value" labelAttr="label"}}
+
+            </select>
+        </div>
 
 
         <div class="flexcol">

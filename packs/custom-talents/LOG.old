@@ -1,22 +1,8 @@
-2025/07/08-08:58:06.418 47bc Recovering log #2942
-2025/07/08-08:58:06.427 47bc Delete type=0 #2942
-2025/07/08-08:58:06.428 47bc Delete type=3 #2940
-2025/07/08-09:30:34.450 3258 Moved #2941 to level-1 151755 bytes OK: files[ 0 1 1 0 0 0 0 ]
-2025/07/08-09:30:35.050 3258 Compacting 1@1 + 1@2 files
-2025/07/08-09:30:35.070 3258 Generated table #2945@1: 148 keys, 144216 bytes
-2025/07/08-09:30:35.070 3258 Compacted 1@1 + 1@2 files => 144216 bytes
-2025/07/08-09:30:35.074 3258 compacted to: files[ 0 0 1 0 0 0 0 ]
-2025/07/08-10:44:12.615 3258 Level-0 table #2947: started
-2025/07/08-10:44:12.625 3258 Level-0 table #2947: 142004 bytes OK
-2025/07/08-10:44:12.627 3258 Delete type=2 #2687
-2025/07/08-10:44:12.627 3258 Delete type=2 #2941
-2025/07/08-10:44:12.628 3258 Delete type=0 #2944
-2025/07/08-10:44:12.633 3258 Manual compaction at level-0 from '!items!0CVZ1zt5Chn8dOys' @ 72057594037927935 : 1 .. '!items!ztPSa9GaGrpQalAP' @ 0 : 0; will stop at (end)
-2025/07/08-10:44:12.642 3258 Manual compaction at level-1 from '!items!0CVZ1zt5Chn8dOys' @ 72057594037927935 : 1 .. '!items!ztPSa9GaGrpQalAP' @ 0 : 0; will stop at '!items!ztPSa9GaGrpQalAP' @ 888 : 1
-2025/07/08-10:44:12.642 3258 Compacting 1@1 + 1@2 files
-2025/07/08-10:44:12.654 3258 Generated table #2948@1: 148 keys, 146823 bytes
-2025/07/08-10:44:12.654 3258 Compacted 1@1 + 1@2 files => 146823 bytes
-2025/07/08-10:44:12.656 3258 compacted to: files[ 0 0 1 0 0 0 0 ]
-2025/07/08-10:44:12.657 3258 Delete type=2 #2945
-2025/07/08-10:44:12.657 3258 Delete type=2 #2947
-2025/07/08-10:44:12.662 3258 Manual compaction at level-1 from '!items!ztPSa9GaGrpQalAP' @ 888 : 1 .. '!items!ztPSa9GaGrpQalAP' @ 0 : 0; will stop at (end)
+2025/07/13-09:23:01.888 5c70 Recovering log #3017
+2025/07/13-09:23:01.899 5c70 Delete type=0 #3017
+2025/07/13-09:23:01.899 5c70 Delete type=3 #3016
+2025/07/13-09:52:12.622 4224 Level-0 table #3021: started
+2025/07/13-09:52:12.623 4224 Level-0 table #3021: 0 bytes OK
+2025/07/13-09:52:12.626 4224 Delete type=0 #3019
+2025/07/13-09:52:12.627 4224 Manual compaction at level-0 from '!items!0CVZ1zt5Chn8dOys' @ 72057594037927935 : 1 .. '!items!ztPSa9GaGrpQalAP' @ 0 : 0; will stop at (end)
+2025/07/13-09:52:12.627 4224 Manual compaction at level-1 from '!items!0CVZ1zt5Chn8dOys' @ 72057594037927935 : 1 .. '!items!ztPSa9GaGrpQalAP' @ 0 : 0; will stop at (end)

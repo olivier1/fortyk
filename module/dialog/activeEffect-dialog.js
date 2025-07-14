@@ -20,7 +20,7 @@ export class ActiveEffectDialog extends Dialog {
 
     } 
     getData(){
-       
+
         return this.data;
     }
     async _onAeClick(event){
@@ -51,7 +51,7 @@ export class ActiveEffectDialog extends Dialog {
             document= token.actor;
             actorId=actor.id;  
         }
-        
+
 
 
         await document.createEmbeddedDocuments("ActiveEffect",[effectData]);
@@ -62,8 +62,10 @@ export class ActiveEffectDialog extends Dialog {
     async _onAeDelete(event){
         let actor=this.actor;
         let item=this.item;
+        let effectId = event.currentTarget.attributes["data-ae-id"].value;
+        let effect = await fromUuid(effectId);
         new Dialog({
-            title: "Deletion Confirmation",
+            title: `Delete ${effect.name}?`,
             content: "Are you sure you want to delete this Active Effect?",
             buttons:{
                 submit:{
@@ -71,8 +73,7 @@ export class ActiveEffectDialog extends Dialog {
                     callback: async dlg => { 
 
 
-                        let effectId = event.currentTarget.attributes["data-ae-id"].value;
-                        let effect = await fromUuid(effectId);
+
 
                         await effect.delete();
 

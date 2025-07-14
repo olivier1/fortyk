@@ -33,6 +33,12 @@
         <a class="modifier button">Active Effect</a>
     </div>
     {{/if}}
+     {{#if isGM}}
+    <div class="item-description">
+        <label>GM Description:</label>
+        {{editor system.description.gm target="system.description.gm" button=true owner=owner editable=editable}}
+    </div>
+    {{/if}}
     <div class="item-description">
         <label>Description:</label>
         {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}

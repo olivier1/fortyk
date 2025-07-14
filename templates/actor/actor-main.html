@@ -16,14 +16,25 @@
                 <input type="text" class="combat-resources" data-target="system.age.value" value="{{system.age.value}}" data-dtype="Number"/>
             </div>
 
+            {{#if characterType}}
+            <div class="descrRow flexcol">
+                <span class="descrSpan">Character Type:</span>
+                <div class="flexrow advanceElite">
+                    <a class="item-descr fit-content" data-id="{{characterType.id}}" data-name="{{characterType.name}}" data-item-descr="{{characterType.system.description.value}}"><u>{{characterType.name}}</u></a>
+                    {{#if isGM}}
+                    <a class="list-button item-delete" title="Delete" data-item-id="{{characterType.id}}"></a>
+                    {{/if}}
+                </div>
+            </div>
+            {{else}}
             <div class="descrRow flexcol">
                 <span class="descrSpan">Race:</span>
                 <select class="raceSelect" name="system.race.value" data-dtype="String">
                     {{selectOptions races selected=system.race.value valueAttr="value" labelAttr="value"}}
-
                 </select>
 
             </div>
+            {{/if}}
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Build:</span>
@@ -56,33 +67,66 @@
         <div class="descr grid grid-3col">
             <div class="descrRow flexcol">
                 <span class="descrSpan">{{#if greyKnights}}Destiny:{{else}}Chapter:{{/if}}</span>
+                {{#if planet}}
+                <div class="flexrow advanceElite">
+                    <a class="item-descr fit-content" data-id="{{planet.id}}" data-name="{{planet.name}}" data-item-descr="{{planet.system.description.value}}"><u>{{planet.name}}</u></a>
+                    {{#if isGM}}
+                    <a class="list-button item-delete" title="Delete" data-item-id="{{planet.id}}"></a>
+                    {{/if}}
+                </div>
+                {{else}}
                 <input type="text" class="combat-resources" data-target="system.chapter.value" value="{{system.chapter.value}}" data-dtype="String"/>
+                {{/if}}
             </div>
             <div class="descrRow flexcol">
                 <span class="descrSpan">{{#if greyKnights}}Heraldry:{{else}}Background:{{/if}}</span>
+                {{#if background}}
+                <div class="flexrow advanceElite">
+                    <a class="item-descr fit-content" data-id="{{background.id}}" data-name="{{background.name}}" data-item-descr="{{background.system.description.value}}"><u>{{background.name}}</u></a>
+                    {{#if isGM}}
+                    <a class="list-button item-delete" title="Delete" data-item-id="{{background.id}}"></a>
+                    {{/if}}
+                </div>
+                {{else}}
                 <input type="text" class="combat-resources" data-target="system.background.value" value="{{system.background.value}}" data-dtype="String"/>
+                {{/if}}
             </div>
+
             <div class="descrRow flexcol">
                 <span class="descrSpan">Role:</span>
-
+                {{#if role}}
+                <div class="flexrow advanceElite">
+                    <a class="item-descr fit-content" data-id="{{role.id}}" data-name="{{role.name}}" data-item-descr="{{role.system.description.value}}"><u>{{role.name}}</u></a>
+                    {{#if isGM}}
+                    <a class="list-button item-delete" title="Delete" data-item-id="{{role.id}}"></a>
+                    {{/if}}
+                </div>
+                {{else}}
                 <input type="text" class="combat-resources" data-target="system.role.value" value="{{system.role.value}}" data-dtype="String"/>
+                {{/if}}
             </div>
 
+
+
+
+
         </div>
+        {{#if eliteAdvances}}
         <div class="eliteAdvances flexcol">
-            {{#if eliteAdvances}}
+
             <span class="descrSpan">Elite Advances:</span>
             <div class="flexrow">
 
                 {{#each eliteAdvances}}
                 <div class="flexrow advanceElite">
-                    <a class="item-descr" data-id="{{id}}" data-name="{{name}}" data-item-descr="{{system.description.value}}"><u>{{name}}</u></a>
+                    <a class="item-descr fit-content" data-id="{{id}}" data-name="{{name}}" data-item-descr="{{system.description.value}}"><u>{{name}}</u></a>
                     <a class="list-button item-delete" title="Delete" data-item-id="{{id}}"></a>
                 </div>
                 {{/each}}
             </div>
-            {{/if}}
+
         </div>
+        {{/if}}
         {{#unless greyKnights}}
         <div class="eliteAdvances flexcol">
 

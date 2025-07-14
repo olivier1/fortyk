@@ -32,6 +32,10 @@
 .no-place{
     place-items:unset !important;
 }
+.fit-content{
+    max-width: fit-content;
+    max-height: fit-content;
+}
 .grid,
 .grid-2col {
     display: grid;
@@ -766,6 +770,7 @@
     height: 300px;
     min-height: 300px;
 }
+
 .fortyk .actor-background{
     flex-grow:10;
     height: 100%;
@@ -917,6 +922,7 @@
 .talentfilter{
     width:10em !important; 
 }
+
 .invalid-checkbox{
     border-color: red;
     border-style: double;

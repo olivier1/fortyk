@@ -43,7 +43,7 @@ export class FortyKItemSheet extends ItemSheet {
 
         const item=this.item;
         const data = this.item;
-        data.mods=data.effects.filter((item)=> item.flags?.fortyk?.mod);
+        data.mods=data.effects.filter((item)=> item.flags?.fortyk?.modsystem);
         if(this.item.type==="skill"){
             //GET THE SKILLS WITH CHILDREN
             if(this.actor){
@@ -276,7 +276,7 @@ export class FortyKItemSheet extends ItemSheet {
                     submit:{
                         label:"Yes",
                         callback: async dlg => { 
-                            if(activeEffect.getFlag("fortyk","mod")){
+                            if(activeEffect.getFlag("fortyk","modsystem")){
                                 if(!activeEffect.getFlag("fortyk","modsystem").isOneUse){
                                     let modData={system:activeEffect.getFlag("fortyk","modsystem")};
                                     modData.name=activeEffect.name;

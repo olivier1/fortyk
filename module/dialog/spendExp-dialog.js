@@ -17,11 +17,15 @@ export class SpendExpDialog extends Application {
     }
 
     async loadDocuments(actor, force=false) {
+
+
         const startTime=performance.now();
-        if(actor.system.psykana.pr.value>0&&(force||!this.psyPowers)){
-            this.psyPowers= await this._loadPsyPowers();
-        }else{
-            this.psyPowers= this.filterPsyPowers(this.rawPowers, actor); 
+        if(actor.system.psykana.pr.value>0){
+            if((force||!this.psyPowers)){
+                this.psyPowers= await this._loadPsyPowers();
+            }else{
+                this.psyPowers= this.filterPsyPowers(this.rawPowers, actor); 
+            }
         }
         if(force||!this.options.talents){
             this.options.talents=await this._loadTalents();
@@ -35,6 +39,7 @@ export class SpendExpDialog extends Application {
         }
         const endTime=performance.now();
         console.log(`Loading documents took ${endTime-startTime} ms`);
+
     }
 
     async getData(){
@@ -58,7 +63,7 @@ export class SpendExpDialog extends Application {
             data.advancementTypes.push({value:"Psy Rating"});
             data.advancementTypes.push({value:"Psychic Power"});
             data.disciplines=data.FORTYK.psychicDisciplines;
-            
+
             data.psyPowers=this.psyPowers;
             if(!data.discipline||this.options.discipline===undefined){
                 data.discipline="All";
@@ -91,12 +96,12 @@ export class SpendExpDialog extends Application {
         data.upgradeableChars=this._upgradeableChars(actorChars,data.FORTYK.characteristics);
         data.aptitudes=data.FORTYK.aptitudes;
 
-        
+
 
 
         data.talents=this.options.talents;
-        
-        
+
+
         data.eliteAdvances=this.options.eliteAdvances;
         return data;
     }
@@ -844,12 +849,12 @@ export class SpendExpDialog extends Application {
             // a must be equal to b
             return 0;
         });
-        let disciplines=Object.values(actor.system.psykana.disciplines);
+       
         let sheet=this;
 
         let map=powers.reduce(function(map,power){
             power.valid=power.validateActor(actor);
-            if((power.valid.valid||sheet.ineligibles)&&!actor.getFlag("fortyk",power.id)&&(disciplines.includes(power.system.discipline.value))){
+            if((power.valid.valid||sheet.ineligibles)){
 
                 map[power.id]=power;  
             }
@@ -884,7 +889,7 @@ export class SpendExpDialog extends Application {
             let flagId=talent.system.flagId.value;
             talent.valid=talent.validateActor(actor);
 
-            if((talent.valid.valid||sheet.ineligibles)&&(talent.system.specialisation.value!=="N/A"||!actor.getFlag("fortyk",flagId))){
+            if((talent.valid.valid||sheet.ineligibles)){
 
                 map[talent.id]=talent;  
             }
@@ -938,7 +943,7 @@ export class SpendExpDialog extends Application {
             if(ea.system.type.value!=="ea")return map;
             let flagId=ea.system.flagId.value;
             ea.valid=ea.validateActor(actor);
-            if((ea.valid.valid||sheet.ineligibles)&&!actor.getFlag("fortyk",flagId)){
+            if((ea.valid.valid||sheet.ineligibles)){
 
                 map[ea.id]=ea;  
             }

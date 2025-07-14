@@ -19,9 +19,9 @@ export class FortyKActor extends Actor {
             return super.create(data, options);
         }
         data.items = [];
-        
 
-       
+
+
         if( data.type === "npc"){
             foundry.utils.mergeObject(data,
                                       {"prototypeToken.appendNumber":true                                      
@@ -44,8 +44,8 @@ export class FortyKActor extends Actor {
                                        "prototypeToken.sight.enabled": true,
                                        "prototypeToken.actorLink": true
                                       });
-        
-            
+
+
         }else if(data.type==="spaceship"){
             //spaceships have different attributes but same stuff
             foundry.utils.mergeObject(data,
@@ -179,7 +179,7 @@ export class FortyKActor extends Actor {
         if ( !this.name ) this.name = "New " + this.entity;
 
         //this.reset();
-        
+
         try {
             this.system = foundry.utils.duplicate(this._source.system);
             this.prepareBaseData();
@@ -245,7 +245,7 @@ export class FortyKActor extends Actor {
             data.secChar.attacks.gangup["1"]=20;
             data.secChar.attacks.gangup["2"]=30;
         }
-        if(this.getFlag("fortyk","stepaside"))data.evasion++;
+        if(this.getFlag("fortyk","stepaside"))data.reactions++;
         for (let [key, char] of Object.entries(data.characteristics)){
             if(this.getFlag("fortyk",key+"UB")){
                 char.uB=parseInt(this.getFlag("fortyk",key+"UB"));
@@ -396,7 +396,7 @@ export class FortyKActor extends Actor {
                             twohand=true;
                         }
                     }
-                    
+
                 }
                 //check if equipped
                 if(item.system.isEquipped){
@@ -457,7 +457,7 @@ export class FortyKActor extends Actor {
             this.items.forEach((fortykItem,id,items)=>{
                 let item=fortykItem;
                 item.system = foundry.utils.duplicate(item._source.system);
-                
+
 
                 if(item.system.isEquipped){
                     if(item.getFlag("fortyk","encumbering")){
@@ -605,11 +605,13 @@ export class FortyKActor extends Actor {
                 if(proceed){
                     ae.changes.forEach(function(change,i){
                         let path=change.key.split(".");
+                        let changeValue = change.value;
                         if(change.mode===CONST.ACTIVE_EFFECT_MODES.CUSTOM){
-                            if(typeof change.value==="string"){
-                                if(change.value.toLowerCase()==="true"){
+
+                            if(typeof changeValue==="string"){
+                                if(changeValue.toLowerCase()==="true"){
                                     return setNestedKey(actorData,path,true); 
-                                }else if(change.value.toLowerCase()==="false"){
+                                }else if(changeValue.toLowerCase()==="false"){
                                     return setNestedKey(actorData,path,false); 
                                 }
                             }
@@ -622,25 +624,26 @@ export class FortyKActor extends Actor {
                                 powerActor=clone;
                             }
                             let actorPr=powerActor.system.psykana.pr.effective;
-                            let pr=actorPr-adjustment;
+                            let scope=powerActor.getScope();
+                            scope.pr=actorPr-adjustment;
                             try{
-                                let changestr=change.value;
-                                change.value=Math.ceil(math.evaluate(changestr,{pr:pr}));
+                                let changestr=changeValue;
+                                changeValue=Math.ceil(math.evaluate(changestr,scope));
 
                             }catch (err){
                             }
                         }else if(actor.getFlag("fortyk","psyrating")){      
                             let pr=actor.system.psykana.pr.value+actor.system.psykana.pr.bonus-Math.max(0,actor.system.psykana.pr.sustain-1);
                             try{
-                                let changestr=change.value;
-                                change.value=Math.ceil(math.evaluate(changestr,{pr:pr}));
+                                let changestr=changeValue;
+                                changeValue=Math.ceil(math.evaluate(changestr,{pr:pr}));
 
                             }catch (err){
                             }
                         }
                         let basevalue=parseFloat(objectByString(actorData,change.key));
 
-                        let newvalue=parseFloat(change.value);
+                        let newvalue=parseFloat(changeValue);
                         /*if(newvalue>=0){
                             newvalue=Math.ceil(newvalue);
                         }else{
@@ -655,24 +658,24 @@ export class FortyKActor extends Actor {
                                 changedValue=basevalue+newvalue;
                                 setNestedKey(actorData,path,changedValue);
                             }else if(change.mode===CONST.ACTIVE_EFFECT_MODES.DOWNGRADE){
-                                if(change.value<basevalue){
+                                if(changeValue<basevalue){
                                     changedValue=newvalue;
                                     setNestedKey(actorData,path,changedValue);
                                 }
                             }else if(change.mode===CONST.ACTIVE_EFFECT_MODES.UPGRADE){
-                                if(change.value>basevalue){
+                                if(changeValue>basevalue){
                                     changedValue=newvalue;
                                     setNestedKey(actorData,path,changedValue);
                                 }
                             }else if(change.mode===CONST.ACTIVE_EFFECT_MODES.OVERRIDE){
                                 setNestedKey(actorData,path,newvalue);
                             }else if(change.mode===CONST.ACTIVE_EFFECT_MODES.CUSTOM){
-                                setNestedKey(actorData,path,change.value);
+                                setNestedKey(actorData,path,changeValue);
                             }
                         }else{
                             //custom mode
                             if(change.mode===CONST.ACTIVE_EFFECT_MODES.CUSTOM){
-                                setNestedKey(actorData,path,change.value);
+                                setNestedKey(actorData,path,changeValue);
                             }
                         }
                     });
@@ -680,25 +683,34 @@ export class FortyKActor extends Actor {
             }
         });
         if(selfPsy.length>0){
-            let pr=this.system.psykana.pr.value+this.system.psykana.pr.bonus-Math.max(0,this.system.psykana.pr.sustain-1);
+
             for(let i=0;i<selfPsy.length;i++){
+                let pr=this.system.psykana.pr.value+this.system.psykana.pr.bonus-Math.max(0,this.system.psykana.pr.sustain-1);
                 let ae=selfPsy[i];
+                let adjustment=ae.getFlag("fortyk","adjustment");
+
+                pr=pr-adjustment;
+                let selfScope=this.getScope();
+                selfScope.pr=pr;
                 ae.changes.forEach(function(change,i){
+                    var changeValue = change.value;
                     if(ae.getFlag("fortyk","psy")){
-                        let adjustment=ae.getFlag("fortyk","adjustment");
 
 
 
-                        pr=pr-adjustment;
+
+
                         try{
-                            let changestr=change.value;
-                            change.value=Math.ceil(math.evaluate(changestr,{pr:pr}));
+
+                            let changestr=changeValue;
+                            changeValue=Math.ceil(math.evaluate(changestr,selfScope));
                         }catch (err){
+                            console.log(err);
                         }
                     }
                     let basevalue=parseFloat(objectByString(actorData,change.key));
 
-                    let newvalue=parseFloat(change.value);
+                    let newvalue=parseFloat(changeValue);
                     let path=change.key.split(".");
                     /*if(newvalue>=0){
                             newvalue=Math.ceil(newvalue);
@@ -714,23 +726,23 @@ export class FortyKActor extends Actor {
                             changedValue=basevalue+newvalue;
                             setNestedKey(actorData,path,changedValue);
                         }else if(change.mode===3){
-                            if(change.value<basevalue){
+                            if(changeValue<basevalue){
                                 changedValue=newvalue;
                                 setNestedKey(actorData,path,changedValue);
                             }
                         }else if(change.mode===4){
-                            if(change.value>basevalue){
+                            if(changeValue>basevalue){
                                 changedValue=newvalue;
                                 setNestedKey(actorData,path,changedValue);
                             }
                         }else if(change.mode===5){
                             setNestedKey(actorData,path,newvalue);
                         }else if(change.mode===0){
-                            setNestedKey(actorData,path,change.value);
+                            setNestedKey(actorData,path,changeValue);
                         }
                     }else{
                         if(change.mode===0){
-                            setNestedKey(actorData,path,change.value);
+                            setNestedKey(actorData,path,changeValue);
                         }
                     }
                 });
@@ -760,7 +772,7 @@ export class FortyKActor extends Actor {
         //prepare characteristics data
         for (let [key, char] of Object.entries(data.characteristics)){
             if(key==="inf"){
-                //char.total=Math.min(char.total,char.max);
+                char.total=Math.min(char.total,char.max);
                 char.preGlobal=char.total;
             }else{
                 char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod);
@@ -1212,6 +1224,8 @@ export class FortyKActor extends Actor {
         //prepare wargear
         let wargears=this.itemTypes.wargear;
         wargears.forEach((wargear)=>wargear.prepareData());
+        let cybernetics=this.itemTypes.cybernetic;
+        cybernetics.forEach((cybernetic)=>cybernetic.prepareData());
         //prepare forcefields
         let forceFields=this.itemTypes.forceField;
         forceFields.forEach((forcefield)=>forcefield.prepareData());
@@ -1253,11 +1267,16 @@ export class FortyKActor extends Actor {
                 this.system.reach=Math.max(this.system.reach, meleeWeapons[i].system.range.value);
             }
         }
+        let psychicPowers=this.itemTypes.psychicPower;
+        for(let i=0;i<psychicPowers.length;i++){
+            psychicPowers[i].prepareData();
+        }
+        if(this.type==="npc")return;
         //figure out parry bonus from equipped weapons
         let leftParry=this.weaponParry(leftHandWeapon);
         let rightParry=this.weaponParry(rightHandWeapon);
         let parry=Math.max(leftParry,rightParry);
-        
+
         //prepare skills
         let skills=this.itemTypes.skill;
         data.skills={};
@@ -1304,10 +1323,7 @@ export class FortyKActor extends Actor {
 
             data.skills[name]=item.system.total.value;
         }
-        let psychicPowers=this.itemTypes.psychicPower;
-        for(let i=0;i<psychicPowers.length;i++){
-            psychicPowers[i].prepareData();
-        }
+
     }
     prepareMovement(data) {
         let size=data.secChar.size.value;
@@ -1372,6 +1388,12 @@ export class FortyKActor extends Actor {
         const ammunitions=[];
         const equippableAmmo=[];
         const favoritePowers=[];
+        const eliteAdvances=[];
+        let characterType;
+        let role;
+        let background;
+        let planet;
+
         const wornGear={weapons:[],"armor":"","forceField":""};
         let unrelenting=false;
 
@@ -1457,6 +1479,26 @@ export class FortyKActor extends Actor {
             if(item.type==="advancement"){
                 advancements.push(item);
             }
+            if(item.type==="eliteAdvance"){
+                let eaType=item.system.type.value;
+                switch(eaType){
+                    case "ea":
+                        eliteAdvances.push(item);
+                        break;
+                    case "charactertype":
+                        characterType=item;
+                        break;
+                    case "background":
+                        background=item;
+                        break;
+                    case "planet":
+                        planet=item;
+                        break;
+                    case "role":
+                        role=item;
+                        break;
+                }
+            }
             if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="wargear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
                 //total weight calcs
                 item.system.weight.total=(parseInt(item.system.amount.value)*parseFloat(item.system.weight.value)).toFixed(2);
@@ -1523,6 +1565,11 @@ export class FortyKActor extends Actor {
         actorData.equippableAmmo=equippableAmmo;
         actorData.wornGear=wornGear;
         actorData.favoritePowers=favoritePowers;
+        actorData.eliteAdvances=eliteAdvances;
+        actorData.characterType=characterType;
+        actorData.role=role;
+        actorData.background=background;
+        actorData.planet=planet;
         try{
             this._sortItems(actorData);
         }catch(err){}
@@ -1573,7 +1620,7 @@ export class FortyKActor extends Actor {
         for(const item of this.items){
 
 
-            
+
 
             if(item.type==="talentntrait"){
                 talentsntraits.push(item);
@@ -2373,6 +2420,62 @@ export class FortyKActor extends Actor {
             name=this.name;
         }
         return name;
+    }
+    getScope(){
+        let system=this.system;
+        let characteristics=system.characteristics;
+        if(this.type==="vehicle"||this.type==="spaceship")return {};
+        let pr=system.psykana.pr.effective;
+        if(!this.system.isPrepared){
+            for (let [key, char] of Object.entries(characteristics)){
+                if(key==="inf"){
+                    char.total=Math.min(char.total,char.max);
+                    char.preGlobal=char.total;
+                }else{
+                    char.total=parseInt(char.value)+parseInt(char.advance)+parseInt(char.mod);
+                    if(key==="agi"&&char.max!==100){
+                        char.total=Math.min(char.total,char.max);
+                    }
+
+                    char.bonus=Math.floor(char.total/10)+parseInt(char.uB);
+                    char.bonus*=char.bonusMulti;
+                    char.preGlobal=char.total;
+                    char.total+=parseInt(system.globalMOD.value);
+
+                }
+            }
+            pr=parseInt(system.psykana.pr.value)+parseInt(system.psykana.pr.bonus)-(Math.max(0,(parseInt(system.psykana.pr.sustain)-1)));
+        }
+
+        return {
+            wsb:characteristics.ws.bonus,
+            ws:characteristics.ws.total,
+            bsb:characteristics.bs.bonus,
+            bs:characteristics.bs.total,
+            sb:characteristics.s.bonus,
+            s:characteristics.s.total,
+            tb:characteristics.t.bonus,
+            t:characteristics.t.total,
+            perb:characteristics.per.bonus,
+            per:characteristics.per.total,
+            intb:characteristics.int.bonus,
+            int:characteristics.int.total,
+            agib:characteristics.agi.bonus,
+            agi:characteristics.agi.total,
+            wpb:characteristics.wp.bonus,
+            wp:characteristics.wp.total,
+            felb:characteristics.fel.bonus,
+            fel:characteristics.fel.total,
+            infb:characteristics.inf.bonus,
+            inf:characteristics.inf.total,
+            insb:Math.floor(system.secChar.insanity.value/10),
+            ins:system.secChar.insanity.value,
+            corrb:Math.floor(system.secChar.corruption.value/10),
+            corr:system.secChar.corruption.value,
+            pr:pr
+        };
+
+
     }
     deleteAfterAttackEffects(){
         for(const effect of this.effects){
