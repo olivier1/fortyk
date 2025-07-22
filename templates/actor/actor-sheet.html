@@ -1,25 +1,25 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/14.2.1/math.js" integrity="sha512-ZOpEWF/zdnWKFpyY0TMzmZGkhjM9Z4RkW/GMF9X9NtZ6bhDqzAlWfk7NwqHPD+WriepCt3Th6+4jl4w4wkQolA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<form class="{{cssClass}} charSheet flexcol" autocomplete="off">
 
+<form class="{{cssClass}} charSheet flexcol" autocomplete="off">
+    {{#unless characterCreation}}
     {{!-- Sheet Header --}}
     <header class="sheet-header flexrow">
-        
+
         <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
         {{!-- Sheet Tab Navigation --}}
         <nav class="sheet-tabs tabs grid grid-3col" data-group="primary">
-            
+
             <a class="item bat" data-tab="main">Main</a>
             <a class="item bat" data-tab="skills">Skills</a>
             <a class="item bat" data-tab="tnt">Talents & Traits</a>
             <a class="item bat" data-tab="gear">Gear & Cybernetics</a>
             <a class="item bat" data-tab="exp">Exp & Missions</a>
-            
-            
+
+
             <a class="item bat" data-tab="psykana">Psykana</a>
             <a class="item bat" data-tab="combat">Combat</a>
             <a class="item bat" data-tab="corruption">Corruption, Insanity & Injury</a>
-             <a class="item bat" data-tab="background">Background & Notes</a>
-            
+            <a class="item bat" data-tab="background">Background & Notes</a>
+
         </nav>
 
     </header>
@@ -31,7 +31,7 @@
 
         {{!-- Main Tab --}}
         <div class="tab main" data-group="primary" data-tab="main">
-            
+
             {{> "systems/fortyk/templates/actor/actor-main.html"}}
         </div>
 
@@ -56,10 +56,12 @@
         <div class="tab corruption" data-group="primary" data-tab="corruption">
             {{> "systems/fortyk/templates/actor/actor-corruption.html"}}
         </div>
-         <div class="tab background" data-group="primary" data-tab="background">
+        <div class="tab background" data-group="primary" data-tab="background">
             {{> "systems/fortyk/templates/actor/actor-background.html"}}
         </div>
-      
+        {{else}}
+        {{> "systems/fortyk/templates/actor/character-creation.html"}}
+        {{/unless}}
     </section>
 </form>
 

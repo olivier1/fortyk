@@ -1,0 +1,81 @@
+<h1>Stage 5: Spend Experience</h1>
+<span class="section-title">Aptitudes</span>
+<div class="grid grid-4col">
+    {{#each actorAptitudes}}
+    {{#if this.isCharDuplicate}}
+    <div class="fit-content">
+        <select class="apt-duplicate-select margin-left-23" id="system.aptitudes.{{@index}}" data-dtype="String">    
+            {{selectOptions ../charAptitudes selected=this.aptitude valueAttr="key" labelAttr="label"}}
+
+        </select>
+        <a class="duplicate-aptitude-icon" data-id="system.aptitudes.{{@index}}"></a>
+    </div>
+    {{else if this.isWildcardDuplicate}}
+    <div class="fit-content">
+        <select class="apt-duplicate-select margin-left-23" id="system.aptitudes.{{@index}}" data-dtype="String">    
+            {{selectOptions ../aptitudes selected=this.aptitude valueAttr="key" labelAttr="label"}}
+        </select>
+        <a class="duplicate-aptitude-icon" data-id="system.aptitudes.{{@index}}"></a>
+    </div>
+    {{else}}
+    <select class="apt1-select" name="system.aptitudes.{{@index}}" data-dtype="String" disabled>    
+        {{selectOptions ../aptitudes selected=this.aptitude valueAttr="key" labelAttr="label"}}
+    </select>
+    {{/if}}
+    {{/each}}
+</div>
+{{#if (greaterThan system.psykana.pr.value 0)}}
+<span class="section-title">Choose Psychic Disciplines</span>
+
+{{#each system.psykana.disciplines}}
+{{#with ../system as | system |}}
+
+{{#if (greaterThan system.psykana.disciplineSlots @index)}}
+<select class="apt1-select" name="system.psykana.disciplines.{{@key}}" data-dtype="String">
+    <option value="">None</option>
+
+    {{selectOptions ../../this.psyDisciplines selected=../this valueAttr="value" labelAttr="value"}}
+
+</select>
+{{/if}}
+{{/with}}
+{{/each}}
+{{/if}}
+<label class="section-title">Experience</label>
+<div class="flexrow">
+    <div class="flexcol">
+        <label>Starting Exp:</label>
+        <span class="exp-item">{{system.experience.starting}}</span>
+    </div>
+
+    <div class="flexcol">
+        <label>Exp Spent:</label>
+        <span class="exp-item">{{system.experience.spent}}</span>
+    </div>
+    <div class="flexcol">
+        <label>Remaining Exp:</label>
+        <span class="exp-item">{{system.experience.value}}</span>
+    </div>
+</div>
+<label class="section-title">Advancements</label>
+<a class="spend-exp button" data-type="advancement" title="Add a new Advancement">Add Advancement</a>
+<div class="list list4col grid grid-4col">
+    <a class="list-item-header sort-button" data-sort-type="name" data-path="name" data-item-type="advancements">Name</a>
+    <a class="list-item-header sort-button" data-sort-type="cost" data-path="system.cost.value" data-item-type="advancements">Cost</a>
+    <span class="list-item-header"></span>
+    <span class="list-item-header-last"></span>
+    {{#each actor.advancements as |a key|}}
+
+    <a class="item-descr list-item" data-name="{{a.name}}" data-item-descr="{{a.system.description.value}}">{{a.name}}</a>
+    <label class="list-item">{{a.system.cost.value}}</label>
+    <span class="list-button"><a class="list-button item-edit" title="Edit" data-item-id="{{a._id}}"></a></span>
+    <span class="list-button"><a class="list-button item-delete" title="Delete" data-item-id="{{a._id}}"></a></span>
+
+
+
+
+
+    {{/each}}
+
+</div>
+<div class="button finish-character-creation">Finish Character Creation</div>

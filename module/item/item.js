@@ -126,7 +126,9 @@ export class FortyKItem extends Item {
 
             const data = this.actor.system;
             let actor = this.actor;
+
             const scope = actor.getScope();
+
             if (item.system.state) {
                 if (
                     item.system.state.value === "X" ||
@@ -468,7 +470,7 @@ export class FortyKItem extends Item {
 
                     if (data.psykana.psykerType.value.toLowerCase() === "navigator") {
                         let range = item.system.range.formula.toLowerCase();
-                       
+
                         try {
                             item.system.range.value = Math.ceil(math.evaluate(range,scope));
                         } catch (err) {
@@ -502,7 +504,7 @@ export class FortyKItem extends Item {
                             char = parseInt(data.characteristics[item.system.testChar.value].total);
                             item.system.testChar.type = item.system.testChar.value;
                         }
-                        
+
                         item.system.damageFormula.value = replaceScope(scope,item.system.damageFormula.formula);
                         item.system.target.value = char + training + parseInt(item.system.testMod.value);
                     } else {
@@ -525,9 +527,9 @@ export class FortyKItem extends Item {
                                 item.system.pen.value = 0;
                             }
 
-                           
 
-                            
+
+
                             item.system.damageFormula.value = replaceScope(scope,item.system.damageFormula.formula);
                             if (this.getFlag("fortyk", "tainted")) {
                                 let corruptBonus = Math.floor(parseInt(actor.system.secChar.corruption.value) / 10);
@@ -581,13 +583,13 @@ export class FortyKItem extends Item {
                     if (actor.getFlag("fortyk", "meleedamagebonus")) {
                         item.system.damageFormula.value += "+" + parseInt(actor.getFlag("fortyk", "meleedamagebonus"));
                     }
-                    
+
                     item.system.damageFormula.value = replaceScope(scope, item.system.damageFormula.value);
                     if(typeof item.system.pen.value ==="string"){
                         item.system.pen.value = replaceScope(scope, item.system.pen.value);
                     }
 
-                    
+
                     if (item.getFlag("fortyk", "heavy")) {
                         item.system.twohanded.value = true;
                     } else if (!actor.getFlag("fortyk", "irongrip")) {
@@ -603,7 +605,7 @@ export class FortyKItem extends Item {
 
                 if (item.type === "rangedWeapon") {
                     if (typeof item.system.range.formula === "string" || item.system.range.formula instanceof String) {
-                      
+
                         let formula = item.system.range.formula.toLowerCase();
 
                         try {
@@ -651,7 +653,7 @@ export class FortyKItem extends Item {
                         if (isNaN(daemonic)) {
                             daemonic = 0;
                         }
-                       let taintbonus = Math.max(corruptBonus, daemonic);
+                        let taintbonus = Math.max(corruptBonus, daemonic);
                         item.system.damageFormula.value += `+${taintbonus}`;
                     }
                     //horde logic
@@ -674,7 +676,7 @@ export class FortyKItem extends Item {
                     }
 
                     try {
-                        
+
                         if (this.getFlag("fortyk", "force")) {
                             item.system.pen.value = parseInt(item.system.pen.value) + scope.pr;
                             item.system.damageFormula.value += `+${scope.pr}`;
@@ -754,7 +756,7 @@ export class FortyKItem extends Item {
                     let path = change.key.split(".");
                     var changeValue = change.value;
                     if(change.mode===CONST.ACTIVE_EFFECT_MODES.CUSTOM){
-                        
+
                         if(typeof changeValue==="string"){
                             if(changeValue.toLowerCase()==="true"){
                                 return setNestedKey(itemData,path,true); 
@@ -896,6 +898,12 @@ export class FortyKItem extends Item {
 
             return {valid:validated, reasons:failReasons}; 
         }
+        if(requirements.characterCreation){
+            if(!actor.getFlag("fortyk","charactercreation")){
+                failReasons.push("You must purchase this advancement at character creation.");
+                validated=false;
+            }
+        }
         let actorChars=actor.system.characteristics;
         let charReqs=requirements.characteristics;
         let charBase=0;
@@ -937,10 +945,10 @@ export class FortyKItem extends Item {
         for(const flag in flagRequirements){
             //if(!flag)continue;
 
-            var flagInstance = flagRequirements[flag];
+            let flagInstance = flagRequirements[flag];
             if(!flagInstance)continue;
             let specs=flagInstance.spec;
-            var actorFlag = actor.getFlag("fortyk",flag);
+            let actorFlag = actor.getFlag("fortyk",flag);
 
             if(specs==="anyranged"){
                 if(actor.getFlag("fortyk","astartesweapontraining"))continue;
@@ -1010,6 +1018,7 @@ export class FortyKItem extends Item {
                 }
                 continue;
             }
+
             let splitSpec=specs.split(",");
             for(let spec of splitSpec){
 
@@ -1053,6 +1062,33 @@ export class FortyKItem extends Item {
                 }
             }
 
+        }
+        let ORflagRequirements=requirements.ORflags;
+        let ORcheck=!ORflagRequirements;
+        let ORfailLabels=[];
+        for(const flag in ORflagRequirements){
+            let flagInstance = ORflagRequirements[flag];
+            if(!flagInstance)continue;
+            let specs=flagInstance.spec;
+            let actorFlag = actor.getFlag("fortyk",flag);
+            if(actorFlag){
+                if(specs){
+                    if(actorFlag.includes(specs)){
+                        ORcheck=true;
+                    }else{
+                        ORfailLabels.push(flagInstance.label);
+                    }
+                }else{
+                    ORcheck=true;
+                }
+            }else{
+                ORfailLabels.push(flagInstance.label);
+            }
+        }
+        if(!ORcheck){
+            let failedORstring=ORfailLabels.join(" or ");
+            failReasons.push(`You do not have ${failedORstring}.`);
+                validated=false; 
         }
         let psyRequirements=requirements.psychicPowers;
 

@@ -1,7 +1,7 @@
 {
-    "TYPES.Actor.dhPC" : "Dark Heresy Character",
-    "TYPES.Actor.dwPC" : "Deathwatch Character",
-    "TYPES.Actor.owPC" : "Only War Character",
+    "TYPES.Actor.dhPC" : "Deprecated",
+    "TYPES.Actor.dwPC" : "Player Character",
+    "TYPES.Actor.owPC" : "Deprecated",
     "TYPES.Actor.npc" : "Non-Player Character",
     "TYPES.Actor.owComrade" : "Only War Comrade",
     "TYPES.Actor.spaceship" : "Spaceship",

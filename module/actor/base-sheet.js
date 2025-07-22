@@ -119,6 +119,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         $("input[type=text]").focusin(function() {
             $(this).select();
         });
+        $("input[type=number]").focusin(function() {
+            $(this).select();
+        });
     }
     _onDragListItem(event){
         let data={};
@@ -309,12 +312,12 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let descr = event.currentTarget.attributes["data-item-descr"].value;
         var options = {
             width: 300,
-            height: 400
+            height: "auto"
         };
         var name=event.currentTarget.dataset["name"];
         let dlg = new Dialog({
             title: `${name} Description`,
-            content: "<p>"+descr+"</p>",
+            content: "<div class='description-popup'>"+descr+"</div>",
             buttons: {
                 submit: {
                     label: "OK",
@@ -516,33 +519,21 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
                                     if(spec==="N/A"){
 
-                                        await actor.setFlag("fortyk",flag,true);
+                                        //await actor.setFlag("fortyk",flag,true);
                                     }else{
                                         let chosenSpec=await Dialog.prompt({
                                             title: `Choose specialisation for ${tnt.name}`,
                                             content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${itemData.system.specialisation.value}" autofocus/></p>`,
-
-
-
                                             callback: async(html) => {
                                                 const choosenSpec = $(html).find('input[name="spec"]').val();
-                                                await actor.setFlag("fortyk",flag,choosenSpec);
+                                                //await actor.setFlag("fortyk",flag,choosenSpec);
                                                 return choosenSpec;
                                             },
-
-
-
-
-
-
                                             width:100});
                                         itemData.system.specialisation.value= chosenSpec;
-
                                     }
                                     talentsNTraits.push(itemData);
                                 }
-
-
                             }
                             await actor.createEmbeddedDocuments("Item",talentsNTraits);
                             this.render(true);

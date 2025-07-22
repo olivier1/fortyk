@@ -61,16 +61,20 @@ export class ManageRequirementsDialog extends Application {
         html.find('.req-select').change(this._onRequirementChange.bind(this));
         html.find('.psy-select').change(this._onPsyChange.bind(this));
         html.find('.add-flag').click(this._onAddFlagClick.bind(this));
+        html.find('.add-OR-flag').click(this._onAddORFlagClick.bind(this));
         html.find('.add-psy').click(this._onAddPsyClick.bind(this));
         html.find('.add-skill').click(this._onAddSkillClick.bind(this));
         html.find('.delete-flag').click(this._onDeleteFlagClick.bind(this));
+        html.find('.delete-OR-flag').click(this._onDeleteORFlagClick.bind(this));
         html.find('.delete-psy').click(this._onDeletePsyClick.bind(this));
         html.find('.delete-skill').click(this._onDeleteSkillClick.bind(this));
         html.find('.save-reqs').click(this._onSaveReqsClick.bind(this));
+        html.find('.char-creation-checkbox').click(this._onCharCreationClick.bind(this));
         html.find('.char-input').keyup(this._onCharInput.bind(this));
         html.find('.char-input').keydown(this._onEnterInput.bind(this));
         html.find('.cyber-input').keyup(this._onCyberInput.bind(this));
         html.find('.cyber-input').keydown(this._onEnterInput.bind(this));
+
         // Autoselect entire text 
         html.find('input[type=text]').focusin(function() {
 
@@ -81,13 +85,16 @@ export class ManageRequirementsDialog extends Application {
             $(this).select();
         });
     }
+    _onCharCreationClick(event){
+        let value=event.currentTarget.checked;
+        this.flag.characterCreation=value;
+    }
     _onCharInput(event){
         var element = event.target;
         let newAmt=element.value;
         let key= element.id;
         let flag=this.flag;
         flag.characteristics[key].value=parseInt(newAmt);
-        console.log(this.flag);
     }
     _onCyberInput(event){
         let cyberNumNode=document.getElementById("cybernumber");
@@ -99,7 +106,7 @@ export class ManageRequirementsDialog extends Application {
         this.flag.cybernetics.number=cyberNum;
         this.flag.cybernetics.limbs=limbNum;
         this.flag.cybernetics.name=specificCyber;
-        
+
     }
     async _onRequirementChange(event){
         let el=event.currentTarget;
@@ -118,7 +125,6 @@ export class ManageRequirementsDialog extends Application {
     }
     async _onAddFlagClick(event){
         let flag=this.chosenFlag;
-        console.log(flag)
         if(!flag)return;
         let type=flag.type;
         let spec="";
@@ -155,6 +161,54 @@ export class ManageRequirementsDialog extends Application {
         this.chosenFlag=undefined;
         this.compendiumContents=this.compendiumContents.filter((item)=>{
             for(const flag in this.flag.flags){
+
+                if(item.system.flagId.value===flag){
+                    return false;
+                }
+            }
+            return true;
+        });
+        this.render();
+    }
+    async _onAddORFlagClick(event){
+        let flag=this.chosenFlag;
+        if(!flag)return;
+        let type=flag.type;
+        let spec="";
+        if(type==="talentntrait"){
+
+            if(flag.spec!=="N/A"){
+                let chosenSpec=await Dialog.prompt({
+                    title: `Choose specialisation for ${flag.label}`,
+                    content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${flag.spec}" autofocus/></p>`,
+
+
+
+                    callback: async(html) => {
+                        const choosenSpec = $(html).find('input[name="spec"]').val();
+
+                        return choosenSpec;
+                    },
+
+
+
+
+
+
+                    width:100});
+                spec=chosenSpec.toLowerCase();
+
+            }
+        }
+        let flagObject={label:flag.label, spec:spec};
+        let negativeCheckbox=document.getElementById("notflagcheckbox");
+        let negative=negativeCheckbox.checked;
+        if(negative)flagObject.negative=true;
+        if(!this.flag.ORflags)this.flag.ORflags={};
+        this.flag.ORflags[flag.flagId]=flagObject;
+        this.chosenFlag=undefined;
+        this.compendiumContents=this.compendiumContents.filter((item)=>{
+            for(const flag in this.flag.ORflags){
 
                 if(item.system.flagId.value===flag){
                     return false;
@@ -202,6 +256,11 @@ export class ManageRequirementsDialog extends Application {
         this.flag.flags[flag]=null;
         this.render();
     }
+    _onDeleteORFlagClick(event){
+        let flag=event.currentTarget.dataset.id;
+        this.flag.ORflags[flag]=null;
+        this.render();  
+    }
     _onDeletePsyClick(event){
         let flag=event.currentTarget.dataset.id;
         this.flag.psychicPowers[flag]=null;
@@ -220,7 +279,8 @@ export class ManageRequirementsDialog extends Application {
         this.compendiumContents=await compendiumInstance.getDocuments();
         this.compendiumContents=this.compendiumContents.filter((item)=>{
             for(const flag in this.flag.flags){
-                let spec=this.flag.flags[flag].spec;
+                let spec=this.flag.flags[flag]?.spec;
+                if(spec===undefined)continue;
                 if(!spec&&item.system.flagId.value===flag){
                     return false;
                 }
@@ -312,6 +372,7 @@ export class ManageRequirementsDialog extends Application {
                 }
             },
             flags:{},
+            ORflags:{},
             psychicPowers:{},
             skills:{},
             cybernetics:{

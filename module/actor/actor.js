@@ -20,7 +20,9 @@ export class FortyKActor extends Actor {
         }
         data.items = [];
 
-
+        if (data.type === "dwPC"){
+            data["flags.fortyk.charactercreation"]=true;
+        }
 
         if( data.type === "npc"){
             foundry.utils.mergeObject(data,
@@ -33,6 +35,7 @@ export class FortyKActor extends Actor {
             for(let s of startingSkills){
                 data.items.push(foundry.utils.duplicate(s));
             }
+
             // Set wounds, fatigue, and display name visibility
             foundry.utils.mergeObject(data,
                                       {"prototypeToken.bar1" :{"attribute" : "secChar.wounds"},                
@@ -239,6 +242,18 @@ export class FortyKActor extends Actor {
         }
         if(this.getFlag("fortyk","psyrating")){
             data.psykana.pr.value=parseInt(this.getFlag("fortyk","psyrating"));
+            data.psykana.disciplineSlots=game.fortyk.FORTYKTABLES.psyDisciplineSlots[data.psykana.pr.value];
+            if(this.getFlag("fortyk","librariantraining")){
+                data.psykana.disciplineSlots++;
+            }
+            let disciplines=data.psykana.disciplines;
+            for(let i=0; i<data.psykana.disciplineSlots;i++){
+                let discipline=disciplines[i];
+                if(!discipline){
+                    disciplines[i]="";
+                }
+            }
+
         }
 
         if(this.getFlag("fortyk","doubleteam")){
@@ -424,7 +439,7 @@ export class FortyKActor extends Actor {
                         data.secChar.wornGear.weapons.push(item);
                     }*/
                 }
-                if(item.type==="armor"&&item.system.isEquipped){
+                if(!this.getFlag("fortyk","homeinarmor")&&item.type==="armor"&&item.system.isEquipped){
                     data.secChar.wornGear.armor=item;
                     //set max agi from equipped armor
 
@@ -806,7 +821,25 @@ export class FortyKActor extends Actor {
             }  
         }
         if(game.settings.get("fortyk","alternateWounds")){
-            data.secChar.wounds.max=data.characteristics.t.bonus*data.characteristics.wp.bonus;
+            var tb = data.characteristics.t.bonus;
+            var wpb = data.characteristics.wp.bonus;
+            var woundMod = this.getFlag("fortyk","alternatewoundmodifier");
+            if(woundMod){
+                if(woundMod.indexOf("wp")!==-1){
+                    if(woundMod.indexOf("-")!==-1){
+                        wpb--;
+                    }else{
+                        wpb++;
+                    }
+                }else{
+                    if(woundMod.indexOf("-")!==-1){
+                        tb--;
+                    }else{
+                        tb++;
+                    }
+                }
+            }
+            data.secChar.wounds.max=tb*wpb;
         }
         if(this.getFlag("fortyk","soundconstitution")){
             data.secChar.wounds.max=parseInt(data.secChar.wounds.max)+2*data.characteristics.t.bonus;
@@ -1267,61 +1300,63 @@ export class FortyKActor extends Actor {
                 this.system.reach=Math.max(this.system.reach, meleeWeapons[i].system.range.value);
             }
         }
+
+        if(this.type!=="npc"){
+            //figure out parry bonus from equipped weapons
+            let leftParry=this.weaponParry(leftHandWeapon);
+            let rightParry=this.weaponParry(rightHandWeapon);
+            let parry=Math.max(leftParry,rightParry);
+
+            //prepare skills
+            let skills=this.itemTypes.skill;
+            data.skills={};
+            data.skillsTraining={};
+            for(let i=0;i<skills.length;i++){
+                skills[i].prepareData();
+                let item=skills[i];
+                item.system.total.value=0;
+                item.system.mod.value=parseInt(item._source.system.mod.value);
+                let name="";
+                if(item.system.parent.value){name+=item.system.parent.value.toLowerCase()+":";}
+                name+=item.name.toLowerCase();
+
+                name=name.replace(/\s/g,"");
+
+
+                if(data.skillmods[name]){
+                    item.system.mod.value+=parseInt(data.skillmods[name]);
+                }
+                if(item.name==="Stealth"){
+                    item.system.mod.value+=data.secChar.size.stealth;  
+                }
+
+                if(item.name==="Parry"){
+                    item.system.mod.value+=data.evasionMod;
+                    if(parry){
+                        item.system.mod.value+=parry;
+                    } 
+                }
+                if(item.name==="Dodge"){
+                    item.system.mod.value+=data.evasionMod;
+
+                }
+
+                if(this.getFlag("fortyk","fieldvivisection")&&item.name==="Medicae"){
+                    data.fieldVivisection=parseInt(item.system.value)+parseInt(item.system.mod.value);
+                }
+                item.system.total.value+=parseInt(item.system.value)+parseInt(item.system.mod.value)+parseInt(data.characteristics[item.system.characteristic.value].total);
+                if(parseInt(item.system.value)>=0){
+                    data.skillsTraining[name]=true; 
+                }else{
+                    data.skillsTraining[name]=false; 
+                }
+
+                data.skills[name]=item.system.total.value;
+            }
+        }
         let psychicPowers=this.itemTypes.psychicPower;
         for(let i=0;i<psychicPowers.length;i++){
             psychicPowers[i].prepareData();
-        }
-        if(this.type==="npc")return;
-        //figure out parry bonus from equipped weapons
-        let leftParry=this.weaponParry(leftHandWeapon);
-        let rightParry=this.weaponParry(rightHandWeapon);
-        let parry=Math.max(leftParry,rightParry);
-
-        //prepare skills
-        let skills=this.itemTypes.skill;
-        data.skills={};
-        data.skillsTraining={};
-        for(let i=0;i<skills.length;i++){
-            skills[i].prepareData();
-            let item=skills[i];
-            item.system.total.value=0;
-            item.system.mod.value=parseInt(item._source.system.mod.value);
-            let name="";
-            if(item.system.parent.value){name+=item.system.parent.value.toLowerCase()+":";}
-            name+=item.name.toLowerCase();
-
-            name=name.replace(/\s/g,"");
-
-
-            if(data.skillmods[name]){
-                item.system.mod.value+=parseInt(data.skillmods[name]);
-            }
-            if(item.name==="Stealth"){
-                item.system.mod.value+=data.secChar.size.stealth;  
-            }
-
-            if(item.name==="Parry"){
-                item.system.mod.value+=data.evasionMod;
-                if(parry){
-                    item.system.mod.value+=parry;
-                } 
-            }
-            if(item.name==="Dodge"){
-                item.system.mod.value+=data.evasionMod;
-
-            }
-
-            if(this.getFlag("fortyk","fieldvivisection")&&item.name==="Medicae"){
-                data.fieldVivisection=parseInt(item.system.value)+parseInt(item.system.mod.value);
-            }
-            item.system.total.value+=parseInt(item.system.value)+parseInt(item.system.mod.value)+parseInt(data.characteristics[item.system.characteristic.value].total);
-            if(parseInt(item.system.value)>=0){
-                data.skillsTraining[name]=true; 
-            }else{
-                data.skillsTraining[name]=false; 
-            }
-
-            data.skills[name]=item.system.total.value;
         }
 
     }
@@ -1390,6 +1425,7 @@ export class FortyKActor extends Actor {
         const favoritePowers=[];
         const eliteAdvances=[];
         let characterType;
+        let characterSubtype;
         let role;
         let background;
         let planet;
@@ -1488,6 +1524,9 @@ export class FortyKActor extends Actor {
                     case "charactertype":
                         characterType=item;
                         break;
+                    case "charactersubtype":
+                        characterSubtype=item;
+                        break;
                     case "background":
                         background=item;
                         break;
@@ -1567,6 +1606,7 @@ export class FortyKActor extends Actor {
         actorData.favoritePowers=favoritePowers;
         actorData.eliteAdvances=eliteAdvances;
         actorData.characterType=characterType;
+        actorData.characterSubtype=characterSubtype;
         actorData.role=role;
         actorData.background=background;
         actorData.planet=planet;
@@ -1614,6 +1654,7 @@ export class FortyKActor extends Actor {
         const talentsntraits=[];
         const armors=[];
         const forceFields=[];
+        const eliteAdvances=[];
         //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
@@ -1630,6 +1671,9 @@ export class FortyKActor extends Actor {
             }
             if(item.type==="forceField"){
                 forceFields.push(item);
+            }
+            if(item.type==="eliteAdvance"){
+                eliteAdvances.push(item);
             }
             if(item.type==="psychicPower"){
                 psychicPowers.push(item);
@@ -1651,6 +1695,7 @@ export class FortyKActor extends Actor {
         actorData.meleeWeapons=meleeweapons;
         actorData.rangedWeapons=rangedWeapons;
         actorData.talentsntraits=talentsntraits;
+        actorData.eliteAdvances=eliteAdvances;
         actorData.armors=armors;
         actorData.forceFields=forceFields;
 
@@ -1863,19 +1908,19 @@ export class FortyKActor extends Actor {
                 let spec=currentInstance.system.specialisation.value;
                 let flag=cloneCurrentInstance.system.flagId.value;
                 if(actor.getFlag("fortyk",flag)){
-                    return;
+                    continue;
                 }
                 if(spec==="N/A"){
 
-                    await this.setFlag("fortyk",flag,true);
+                    //await this.setFlag("fortyk",flag,true);
                 }else{
                     cloneCurrentInstance.system.specialisation.value=bonus.spec;
-                    await actor.setFlag("fortyk",flag,bonus.spec);
+                    //await actor.setFlag("fortyk",flag,bonus.spec);
 
 
                 }
             }else if(currentInstance.type==="psychicPower"){
-                actor.setFlag("fortyk", currentInstance.id, true);
+                //actor.setFlag("fortyk", currentInstance.id, true);
             }
             bonusesInstances.push(cloneCurrentInstance);
         }
@@ -1886,20 +1931,59 @@ export class FortyKActor extends Actor {
             let bonusIds=instancedBonuses.map((bonus)=> bonus.id);
             let parent=this.itemTypes.eliteAdvance.filter((item)=>item.system.flagId.value===itemData.system.flagId.value);
             await parent[0].update({"system.itemIds":bonusIds});
-            return;}
-        let aptitude=itemData.system.aptitude.value;
-        let aptitudes=foundry.utils.duplicate(this.system.aptitudes);
-        let replaced=false;
-        let i=0;
-        while(i<7&&!replaced){
-            let apt=aptitudes[i];
-            if(apt===""){
-                replaced=true;
-                aptitudes[i]=aptitude;
-            }
-            i++;
+            return;
         }
-        if(replaced){await this.update({"system.aptitudes":aptitudes});}
+        if(itemData.system.type.value==="characterType"){
+            await actor.setFlag("fortyk","hasinfluence",itemData.system.characteristics.hasInfluence);
+        }
+        if(itemData.system.type.value==="ea"){
+            let corruption = itemData.system.characteristics.cor;
+            if(corruption){
+                let corRoll=new Roll(corruption);
+                await corRoll.evaluate();
+                corRoll.toMessage({
+                    flavor:`Rolling corruption for ${itemData.name}`,
+                    author: game.user.id
+                });
+                let corValue=corRoll.total;
+                let actorCorruption=parseInt(this.system.secChar.corruption.value);
+                actorCorruption+=corValue;
+                await actor.update({"system.secChar.corruption.value":actorCorruption});
+            }
+            let insanity = itemData.system.characteristics.ins;
+            if(insanity){
+                let insRoll=new Roll(insanity);
+                await insRoll.evaluate();
+                insRoll.toMessage({
+                    flavor:`Rolling insanity for ${itemData.name}`,
+                    author: game.user.id
+                });
+                let insValue=insRoll.total;
+                let actorInsanity=parseInt(this.system.secChar.insanity.value);
+                actorInsanity+=insValue;
+                await actor.update({"system.secChar.insanity.value":actorInsanity});
+            }
+        }
+
+        let aptitude=itemData.system.aptitude.value;
+        let splitAptitudes=aptitude.split(",");
+        let aptitudes=foundry.utils.duplicate(this.system.aptitudes);
+        let replacedOnce=false;
+        for(let apti of splitAptitudes){
+            let i=0;
+            let replaced=false;
+            while(i<=7&&!replaced){
+                let apt=aptitudes[i];
+                if(apt===""){
+                    replaced=true;
+                    replacedOnce=true;
+                    aptitudes[i]=apti;
+                }
+                i++;
+            }
+        }
+
+        if(replacedOnce){await this.update({"system.aptitudes":aptitudes});}
         let skills=itemData.system.skills;
         if(skills){
             let splitSkills=skills.split(",");
@@ -1932,13 +2016,16 @@ export class FortyKActor extends Actor {
                     skillData.system.value=0;
                     skillData.type="skill";
                     let aptitudes="";
+                    let description="";
                     if(skillData.system.parent){
                         let parent=actorSkills.find((skill)=> skill.name.toLowerCase()===skillData.system.parent.value.toLowerCase());
                         if(parent){
                             aptitudes=parent.system.aptitudes.value;
+                            description=parent.system.description.value;
                         }
                     }
                     skillData.system.aptitudes={"value":aptitudes};
+                    skillData["system.description.value"]=description;
                     bonusesInstances.push(skillData);
                 }
             }
@@ -1951,16 +2038,37 @@ export class FortyKActor extends Actor {
 
     }
     async createEmbeddedDocuments(embeddedName, data=[], operation={}){
+        let eliteAdvances=[];
+        let flags={};
+        for(const [index, itemData] of data.entries()){
+            if(itemData?.type==="eliteAdvance"){
+                if(this.getFlag("fortyk",itemData.system.flagId.value)){
+                    data.splice(index, 1);
+                    continue;
+                }
+                eliteAdvances.push(itemData);
+            }else if(itemData.type==="talentntrait"){
+                let spec=itemData.system.specialisation.value;
+                let flag=itemData.system.flagId.value;
+                let updateString=`flags.fortyk.${flag}`;
+                if(spec!=="N/A"){
 
-        let itemData=data[0];
-
-
-        if(itemData?.type==="eliteAdvance"){
-            if(this.getFlag("fortyk",itemData.system.flagId.value)){
-                return [];
+                    flags[updateString]=spec;
+                }else{
+                    flags[updateString]=true;
+                }
+            }else if(itemData.type==="psychicPower"){
+                flags[`flags.fortyk.${itemData._id}`]=true;
             }
-            this._createEliteAdvanceBonuses(itemData);
         }
+        await this.update(flags);
+        for(const ea of eliteAdvances){
+            this._createEliteAdvanceBonuses(ea);
+        }
+
+
+
+
 
 
 
@@ -1972,65 +2080,6 @@ export class FortyKActor extends Actor {
         if(this.type==="knightHouse"){
             this.updateKnights();
         }
-        /*if(userId===game.user.id){
-            let itemData=data[0];
-            if(itemData.type==="eliteAdvance"){
-                if(this.getFlag("fortyk",itemData.system.flag.value)){
-                    return;
-                }
-                this._createEliteAdvanceBonuses(itemData);
-            }
-            if(itemData.type==="mod"){
-                this._applyModToItem(itemData);
-                return;
-            }
-        }*
-        /*
-        if(userId===game.user.id){
-            if(embeddedName==="Item"){
-                var actor=this;
-                documents.forEach(async function(item,i){
-                    if(item.type==="talentntrait"){
-                        let flag=item.system.flagId.value;
-                        let spec=item.system.specialisation.value;
-
-
-                        if(spec==="N/A"){
-
-                            await actor.setFlag("fortyk",flag,true);
-                        }else{
-                            let chosenSpec=await Dialog.prompt({
-                                title: `Choose specialisation for ${item.name}`,
-                                content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${item.system.specialisation.value}" /></p>`,
-
-
-
-                                callback: async(html) => {
-                                    const choosenSpec = $(html).find('input[name="spec"]').val();
-                                    await actor.setFlag("fortyk",flag,choosenSpec);
-                                    return choosenSpec;
-                                },
-                                render: (html)=>{
-                                    document.getElementById('specInput').select();
-
-                                },
-
-
-
-
-
-
-                                width:100,
-                                bringToTop:true});
-                            await item.update({"system.specialisation.value":chosenSpec});
-                        }
-                    }
-
-                })
-            } 
-        }
-
-    */
 
         super._onCreateDescendantDocuments(parent, collection, documents, data, options, userId);
     }

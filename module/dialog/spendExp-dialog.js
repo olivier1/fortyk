@@ -54,7 +54,7 @@ export class SpendExpDialog extends Application {
         data.remainingExp=data.actorExp-data.cost;
         data.FORTYK=game.fortyk.FORTYK;
         data.advancementTypes=foundry.utils.duplicate(data.FORTYK.advancementTypes);
-        if(actor.type==="dwPC"&&!actor.getFlag("fortyk","greyknight")){
+        if(actor.getFlag("fortyk","deathwatchmarine")){
             data.advancementTypes.push({value:"Signature Wargear"});
         }
         if(actor.system.psykana.pr.value>0){
@@ -365,7 +365,7 @@ export class SpendExpDialog extends Application {
                 talentId=actorTalent[0].id;
 
             }
-            await actor.setFlag("fortyk",flag,chosenSpec);
+            //await actor.setFlag("fortyk",flag,chosenSpec);
             const advData = {
                 name: `${advanceName}`,
                 type: type,
@@ -428,7 +428,7 @@ export class SpendExpDialog extends Application {
 
 
 
-            await actor.setFlag("fortyk",flagId,true);
+            // await actor.setFlag("fortyk",flagId,true);
             let actorPower=await actor.createEmbeddedDocuments("Item",[itemData]);
             let powerId=actorPower[0].id;
 
@@ -849,7 +849,7 @@ export class SpendExpDialog extends Application {
             // a must be equal to b
             return 0;
         });
-       
+
         let sheet=this;
 
         let map=powers.reduce(function(map,power){
@@ -917,8 +917,8 @@ export class SpendExpDialog extends Application {
         tnts=tnts.concat(await owShieldOfHumanityTalents.getDocuments());
         var customTalents=await game.packs.get("fortyk.custom-talents");
         tnts=tnts.concat(await customTalents.getDocuments());
-        //load different packs depending on actor type
-        if(actor.type==="dwPC"){
+        //load different packs depending on character type
+        if(actor.getFlag("fortyk","deathwatchmarine")){
             var dwTalents=await game.packs.get("fortyk.deathwatch-talents");
             tnts=tnts.concat(await dwTalents.getDocuments());
 

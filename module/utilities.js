@@ -15,8 +15,16 @@ export const preloadHandlebarsTemplates = async function() {
         "systems/fortyk/templates/actor/actor-gear.html",
         "systems/fortyk/templates/actor/actor-corruption.html",
         "systems/fortyk/templates/actor/actor-psykana.html",
-        "systems/fortyk/templates/actor/actor-background.html",    
+        "systems/fortyk/templates/actor/actor-background.html",
+        "systems/fortyk/templates/actor/character-creation.html",
         "systems/fortyk/templates/item/item-header.html",
+        //character creation parts
+        "systems/fortyk/templates/actor/characterCreationParts/stage1.html",
+        "systems/fortyk/templates/actor/characterCreationParts/stage2.html",
+        "systems/fortyk/templates/actor/characterCreationParts/stage3.html",
+        "systems/fortyk/templates/actor/characterCreationParts/stage4.html",
+        "systems/fortyk/templates/actor/characterCreationParts/stage5.html",
+        "systems/fortyk/templates/actor/characterCreationParts/stage6.html",
         //spend exp dialog parts
         "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/custom.html",
         "systems/fortyk/templates/actor/dialogs/spendExp-dialog-parts/characteristic.html",
@@ -295,24 +303,49 @@ export const tokenDistance=function(token1,token2){
     let token1y=token1.y;
     let token2x=token2.x;
     let token2y=token2.y;
-    if(token1.w*100>=200){
+    if(token1.w>=200){
         if(token2x>token1x){
-            token1x+=Math.ceil(token1.w/2);
+            let dist=token2x-token1x;
+            let adjust=token1.w-100;
+            if(dist<adjust){
+                token1x+=(adjust-dist);
+            }else{
+               token1x+=adjust; 
+            }
         }
     }
-    if(token1.h*100>=200){
+    if(token1.h>=200){
         if(token2y>token1y){
-            token1y+=Math.ceil(token1.h/2);
+            let dist=token2y-token1y;
+            let adjust=token1.h-100;
+            if(dist<adjust){
+                token1y+=dist;
+            }else{
+               token1y+=adjust; 
+            }
+            
         }
     }
-    if(token2.w*100>=200){
+    if(token2.w>=200){
         if(token1x>token2x){
-            token2x+=Math.ceil(token2.w/2);
+            let dist=token1x-token2x;
+            let adjust=token2.w-100;
+            if(dist<adjust){
+                token2x+=dist;
+            }else{
+               token2x+=adjust; 
+            }
         }
     }
-    if(token2.h*100>=200){
+    if(token2.h>=200){
         if(token1y>token2y){
-            token2y+=Math.ceil(token2.h/2);
+            let dist=token1y-token2y;
+            let adjust=token2.h-100;
+            if(dist<adjust){
+                token2y+=dist;
+            }else{
+               token2y+=adjust; 
+            }
         }
     }
 

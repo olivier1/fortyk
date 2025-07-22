@@ -57,39 +57,19 @@
         <span class="section-title">Known Psychic Disciplines</span>
         <div class="grid grid-4col">
 
-            <select class="apt1-select" name="system.psykana.disciplines.0" data-dtype="String">
+            {{#each system.psykana.disciplines}}
+            {{#with ../system as | system |}}
+
+            {{#if (greaterThan system.psykana.disciplineSlots @index)}}
+            <select class="apt1-select" name="system.psykana.disciplines.{{@key}}" data-dtype="String">
                 <option value="">None</option>
-                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[0] valueAttr="value" labelAttr="value"}}
-                
+
+                {{selectOptions ../../this.psyDisciplines selected=../this valueAttr="value" labelAttr="value"}}
+
             </select>
-            <select class="apt1-select" name="system.psykana.disciplines.1" data-dtype="String">
-                <option value="">None</option>
-                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[1] valueAttr="value" labelAttr="value"}}
-            </select>
-            <select class="apt1-select" name="system.psykana.disciplines.2" data-dtype="String">
-                <option value="">None</option>
-                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[2] valueAttr="value" labelAttr="value"}}
-            </select>
-            <select class="apt1-select" name="system.psykana.disciplines.3" data-dtype="String">
-                <option value="">None</option>
-                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[3] valueAttr="value" labelAttr="value"}}
-            </select>
-            <select class="apt1-select" name="system.psykana.disciplines.4" data-dtype="String">
-                <option value="">None</option>
-                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[4] valueAttr="value" labelAttr="value"}}
-            </select>
-            <select class="apt1-select" name="ssystem.psykana.disciplines.5" data-dtype="String">
-                <option value="">None</option>
-                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[5] valueAttr="value" labelAttr="value"}}
-            </select>
-            <select class="apt1-select" name="ssystem.psykana.disciplines.6" data-dtype="String">
-                <option value="">None</option>
-                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[6] valueAttr="value" labelAttr="value"}}
-            </select>
-            <select class="apt1-select" name="ssystem.psykana.disciplines.7" data-dtype="String">
-               <option value="">None</option>
-                {{selectOptions psyDisciplines selected=system.psykana.disciplines.[7] valueAttr="value" labelAttr="value"}}
-            </select>
+            {{/if}}
+            {{/with}}
+            {{/each}}
 
 
         </div>

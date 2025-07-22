@@ -1,0 +1,34 @@
+<h1>Stage 2: Generate Characteristics</h1>
+<h3>Points Remaining</h3>
+<input class="point-buy-counter" type="number" id="remaining-points-input" value="{{pointBuy.remaining}}" disabled>
+<div class="characteristics grid grid-4col">
+    <div class="charCross flexcol flex-group-center list-item-header">
+        <label class="resource-label">CHAR</label>
+    </div>
+    <div class="charCross flexcol flex-group-center list-item-header">
+        <label class="resource-label">BASE</label>
+    </div>
+    <div class="charCross flexcol flex-group-center list-item-header">
+        <label class="resource-label">SPENT</label>
+    </div>
+    <div class="charCross flexcol flex-group-center list-item-header-last">
+        <label class="resource-label">TOTAL</label>
+    </div>
+    {{#each pointBuy.characteristics as |char key|}}
+
+    <div class="charCross flexcol flex-group-center">
+        <label class="resource-label">{{char.label}}</label>
+    </div>
+    <div class="charCross flexcol flex-group-center">
+        <input type="number" value="{{char.base}}" disabled>
+    </div>
+    <div class="charCross flexcol flex-group-center">
+        <input type="number" value="{{char.spent}}"  class="char-spent" data-key="{{key}}">
+    </div>
+    <div class="charCross flexcol flex-group-center">
+        <input type="number" id="{{key}}total" value="{{char.total}}" disabled>
+    </div>
+    
+    {{/each}}
+</div>
+<div class="button confirm-char-spent">Confirm Characteristics</div>

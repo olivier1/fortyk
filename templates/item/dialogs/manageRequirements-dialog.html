@@ -70,6 +70,10 @@
                     <label>{{flag.characteristics.cor.label}}</label>
                     <input type="number" class="char-input" id="cor" value="{{flag.characteristics.cor.value}}">
                 </div>
+                <div class="flexcol">
+                    <label>Character Creation</label>
+                    <input type="checkbox" class="char-creation-checkbox" {{#if flag.characterCreation}}checked{{/if}}>
+                </div>
 
             </div>
 
@@ -100,6 +104,7 @@
             </div>
         </div>
         <div class="tab flags" data-group="primary" data-tab="flags">
+            
             <div class="flexcol">
                 <select class="compendium-select">
                     <option value="">Choose a Compendium</option>
@@ -119,13 +124,16 @@
 
                 </div>
                 <div class="flexcol">
-                    <a  class="add-flag button">Add Requirement</a>
+                    <a  class="add-flag button">Add AND Requirement</a>
+                </div>
+                <div class="flexcol">
+                    <a  class="add-OR-flag button">Add OR Requirement</a>
                 </div>
 
                 {{/if}}
             </div>
             <div>
-                <label>Requirements:</label>
+                <span class="section-title">AND Flags</span>
                 {{#each flag.flags as |flag key|}}
                 {{#if flag}}
                 {{#if flag.negative}}
@@ -137,6 +145,25 @@
                 <label>{{flag.label}}</label>
                 {{/if}}
                 <a class="delete-flag" data-id="{{key}}">Delete</a>
+                {{/if}}
+                {{/each}}
+
+            </div>
+            
+            
+            <div>
+                <span class="section-title">OR Flags</span>
+                {{#each flag.ORflags as |flag key|}}
+                {{#if flag}}
+                {{#if flag.negative}}
+                Not 
+                {{/if}}
+                {{#if flag.spec}}
+                <label>{{flag.label}}:{{flag.spec}}</label>
+                {{else}}
+                <label>{{flag.label}}</label>
+                {{/if}}
+                <a class="delete-OR-flag" data-id="{{key}}">Delete</a>
                 {{/if}}
                 {{/each}}
 

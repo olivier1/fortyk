@@ -522,7 +522,7 @@ export class FortykRollDialogs{
         let vehicle=false;
         if(targets.size>0){
             if(modifiers.distance>item.system.range.value){
-                return ui.notifications.warn("Target out of reach!");
+                ui.notifications.warn("Target out of reach!");
             }
             let speed=modifiers.tarEvasion;
             if(actor.getFlag("fortyk","ignorespeed")){

@@ -66,7 +66,7 @@
         </div>
         <div class="descr grid grid-3col">
             <div class="descrRow flexcol">
-                <span class="descrSpan">{{#if greyKnights}}Destiny:{{else}}Chapter:{{/if}}</span>
+                <span class="descrSpan">{{featureLabels.planet}}:</span>
                 {{#if planet}}
                 <div class="flexrow advanceElite">
                     <a class="item-descr fit-content" data-id="{{planet.id}}" data-name="{{planet.name}}" data-item-descr="{{planet.system.description.value}}"><u>{{planet.name}}</u></a>
@@ -79,7 +79,7 @@
                 {{/if}}
             </div>
             <div class="descrRow flexcol">
-                <span class="descrSpan">{{#if greyKnights}}Heraldry:{{else}}Background:{{/if}}</span>
+                <span class="descrSpan">{{featureLabels.background}}:</span>
                 {{#if background}}
                 <div class="flexrow advanceElite">
                     <a class="item-descr fit-content" data-id="{{background.id}}" data-name="{{background.name}}" data-item-descr="{{background.system.description.value}}"><u>{{background.name}}</u></a>
@@ -93,7 +93,7 @@
             </div>
 
             <div class="descrRow flexcol">
-                <span class="descrSpan">Role:</span>
+                <span class="descrSpan">{{featureLabels.role}}:</span>
                 {{#if role}}
                 <div class="flexrow advanceElite">
                     <a class="item-descr fit-content" data-id="{{role.id}}" data-name="{{role.name}}" data-item-descr="{{role.system.description.value}}"><u>{{role.name}}</u></a>
@@ -105,10 +105,6 @@
                 <input type="text" class="combat-resources" data-target="system.role.value" value="{{system.role.value}}" data-dtype="String"/>
                 {{/if}}
             </div>
-
-
-
-
 
         </div>
         {{#if eliteAdvances}}
@@ -127,14 +123,14 @@
 
         </div>
         {{/if}}
-        {{#unless greyKnights}}
+        {{#if flags.fortyk.deathwatchmarine}}
         <div class="eliteAdvances flexcol">
 
             <span class="descrSpan">Honours:</span>
             <input type="text" class="combat-resources" data-target="system.honours.value" value="{{system.honours.value}}" data-dtype="String"/>
 
         </div>
-        {{/unless}}
+        {{/if}}
         <div class="resources flexrow">
 
             <div class="flex-group-center">
@@ -153,7 +149,7 @@
                     <span type="text">{{system.secChar.fatigue.max}}</span>
                 </div>
             </div>
-            {{#unless greyKnights}}
+            {{#if flags.fortyk.hasinfluence}}
             <div class=" flex-group-center">
                 <label for="system.fatigue.value" class="resource-label">Influence</label>
                 <div class="resource-content flexrow flex-center flex-between">
@@ -162,7 +158,7 @@
                     <span class="char-total rollable button" data-roll-type="char" data-target="{{system.characteristics.inf.total}}" data-label="{{system.characteristics.inf.label}}" data-char="inf">{{system.characteristics.inf.total}}</span>
                 </div>
             </div>
-            {{/unless}}
+            {{/if}}
             <div class=" flex-group-center">
                 <label for="system.fatigue.value" class="resource-label">Global Modifier</label>
                 <div class="resource-content flexrow flex-center flex-between">

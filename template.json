@@ -1891,6 +1891,43 @@
             "aptitude": {
                 "value": "",
                 "type": "String"
+            },
+            "experience":2000,
+            "hasSubtype":false,
+            "parentType":"",
+            "wounds":{
+                "formula":"",
+                "alternate":""
+            },
+            "fate":{
+                "threshold":0,
+                "roll":""
+            },
+            "characteristics":{
+                "all":25,
+                "hasInfluence":false,
+                "ws":0,
+                "bs":0,
+                "s":0,
+                "t":0,
+                "agi":0,
+                "per":0,
+                "int":0,
+                "wp":0,
+                "fel":0,
+                "inf":0,
+                "cor":"",
+                "ins":"",
+                "plus1":"",
+                "plus2":"",
+                "minus":""
+                
+            },
+            "pointBuy":{
+                "type":"",
+                "amount":60,
+                "charLimit":40,
+                "limitPerChar":20
             }
         }
     }

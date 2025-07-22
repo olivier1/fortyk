@@ -465,7 +465,34 @@ FORTYK.spaceshipWeaponTypes=[{value:"Macrocannon"},{value:"Lance"},{value:"Torpe
 FORTYK.spaceshipCargoTypes=[{value:"Food Supplies"},{value:"Unrefined Materials"},{value:"Refined Materials"},{value:"Military Technology"},{value:"Manufacturing Technology"},{value:"Survival Technology"},{value:"Ship Parts"},{value:"Energy Source"},{value:"Entertainment"},{value:"Contraband"},{value:"Livestock"},{value:"Xeno-Artifacts"},{value:"Archeotech"},{value:"Torpedoes"}];
 FORTYK.spaceshipComponentStatuses=[{value:"Online"}, {value:"Damaged"}, {value:"Destroyed"}];
 FORTYK.spaceshipSquadronTypes=["Fighter","Bomber","Assault Boat","Civilian"];
-FORTYK.aptitudes=[{"key":"weaponskill","label":"Weapon Skill"}, {"key":"ballisticskill","label":"Ballistic Skill"}, {"key":"strength","label":"Strength"},{"key":"toughness","label":"Toughness"} ,{"key":"agility","label":"Agility"} ,{"key":"intelligence","label": "Intelligence"},{"key":"perception","label":"Perception"} ,{"key":"willpower","label":"Willpower"} ,{"key":"fellowship","label":"Fellowship"} ,{"key":"offence","label":"Offence"} ,{"key":"finesse","label":"Finesse"} ,{"key":"defence","label":"Defence"} ,{"key":"tech","label":"Tech"},{"key":"knowledge","label":"Knowledge"} ,{"key":"leadership","label":"Leadership"} ,{"key":"fieldcraft","label":"Fieldcraft"} ,{"key":"social","label":"Social"} ,{"key":"psyker","label":"Psyker"}];
+FORTYK.aptitudes=[
+    {"key":"weaponskill","label":"Weapon Skill","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."}, 
+    {"key":"ballisticskill","label":"Ballistic Skill","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."}, 
+    {"key":"strength","label":"Strength","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."},
+    {"key":"toughness","label":"Toughness","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."} ,
+    {"key":"agility","label":"Agility","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."} ,
+    {"key":"intelligence","label": "Intelligence","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."},
+    {"key":"perception","label":"Perception","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."} ,
+    {"key":"willpower","label":"Willpower","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."} ,
+    {"key":"fellowship","label":"Fellowship","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."} ,
+    {"key":"offence","label":"Offence","description":"Characters with the Offence aptitude are those who prefer an all-out assault of brute force over a more careful, strategic approach. These Acolytes often charge into melee in a blood-crazed frenzy, or favour unloading overwhelming amounts of firepower into their foes."} ,
+    {"key":"finesse","label":"Finesse","description":"While skills and talents with the Offence aptitude focus on sheer, brute force, those with the Finesse aptitude rely instead on precise skill and careful planning. Acolytes with the Finesse aptitude can become expert at effectively firing long-range weapons, or wielding exotic weapons with deadly results in personal combat."} ,
+    {"key":"defence","label":"Defence","description":"Acolytes with this aptitude quickly learn how to keep themselves alive amongst the deadly chaos of combat that often surrounds them. Whether through skilful deterrence or dogged toughness, they weather the battlefields and violent underhives of the 41st Millennium while others fall around them."} ,
+    {"key":"tech","label":"Tech","description":"Very few dare tamper with the mysteries of the Dark Age of Technology, and fewer still excel at it. Those characters with the Tech aptitude might not understand the inner workings of machines, but they can easily learn to commune with the machine spirit, and seem to get results where others gain only frustration."},
+    {"key":"knowledge","label":"Knowledge","description":"Amongst the countless worlds and labyrinthine organisations of the Imperium, there is more information than could be amassed in a million lifetimes. While the majority of citizens in the Imperium remain ignorant of the grand and mysterious workings of the Imperium, Acolytes with the Knowledge aptitude find it simple to acquire this information."} ,
+    {"key":"leadership","label":"Leadership","description":"There are untold billions of humans within the Imperium, but without guidance they are but bleating sheep or unruly children. Commanding them effectively is essential to defending Mankind, and Acolytes with this aptitude can turn cowering citizens into a vengeful force ready to storm a heretical shrine or defend against xenos raiders."},
+    {"key":"fieldcraft","label":"Fieldcraft","description":"Staying alive in the inhospitable environments across the Imperium can be as difficult as surviving an actual battle. Acolytes with the Fieldcraft aptitude easily adjust to, and thrive on, myriad settings, from oppressive jungles to bleak deserts."},
+    {"key":"social","label":"Social","description":"Social situations can be just as deadly as any fire-fight to those unfamiliar or unskilled with verbal combat. Those with this aptitude easily learn how to best use honeyed words or harsh intimidation to get their way with self-important priests, well-connected Rogue Traders, and others requiring more subtle means of persuasion."} ,
+    {"key":"psyker","label":"Psyker","description":"Only those with the rare ability to wield psychic powers gain the Psyker aptitude, representing their affinity with the terrible powers of the Warp. It also indicates abilities to sense the unnatural energies that signal Warp denizens or the use of psychic powers."}];
+FORTYK.charAptitudes=[{"key":"weaponskill","label":"Weapon Skill","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."}, 
+    {"key":"ballisticskill","label":"Ballistic Skill","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."}, 
+    {"key":"strength","label":"Strength","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."},
+    {"key":"toughness","label":"Toughness","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."} ,
+    {"key":"agility","label":"Agility","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."} ,
+    {"key":"intelligence","label": "Intelligence","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."},
+    {"key":"perception","label":"Perception","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."} ,
+    {"key":"willpower","label":"Willpower","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."} ,
+    {"key":"fellowship","label":"Fellowship","description":"There are nine aptitudes that share a name with nine characteristics each character possesses: Weapon Skill, Ballistic Skill, Strength, Toughness, Agility, Intelligence, Perception, Willpower, and Fellowship. These represent the character’s ability to learn and improve the matching characteristic, as well as all the skills and talents related to it. Note that Influence is not a characteristic-based aptitude, as players cannot purchase advances in that characteristic."}];
 FORTYK.advancementTypes=[{value:"Custom"},{value:"Characteristic Upgrade"},{value:"Skill Upgrade"},{value:"New Skill"}, {value:"Talent"}, {value:"Elite Advance"}];
 //For costs put the number of matching aptitudes into the array, then whatever other parameter
 FORTYK.characteristicUpgradeCosts=[{"5":500,"10":750,"15":1000,"20":1500,"25":2500},
@@ -1021,7 +1048,9 @@ FORTYK.lasModes=[{key:0,label:"normal"},{key:1,label:"overcharge"},{key:2,label:
 FORTYK.itemQualities=[{value:"Poor"},{value:"Common"},{value:"Good"},{value:"Best"}];
 FORTYK.itemQualityAbrv={"Poor":"P", "Common":"C", "Good":"G", "Best":"B"};
 FORTYK.skillChars={"ws":{"name":"ws","caps":"WS"},"bs":{"name":"bs","caps":"BS"},"s":{"name":"s","caps":"S"},"t":{"name":"t","caps":"T"},"agi":{"name":"agi","caps":"AGI"},"int":{"name":"int","caps":"INT"},"per":{"name":"per","caps":"PER"},"wp":{"name":"wp","caps":"WP"},"fel":{"name":"fel","caps":"FEL"}};
+FORTYK.skillCharsInf={"ws":{"name":"ws","caps":"WS"},"bs":{"name":"bs","caps":"BS"},"s":{"name":"s","caps":"S"},"t":{"name":"t","caps":"T"},"agi":{"name":"agi","caps":"AGI"},"int":{"name":"int","caps":"INT"},"per":{"name":"per","caps":"PER"},"wp":{"name":"wp","caps":"WP"},"fel":{"name":"fel","caps":"FEL"},"inf":{"name":"inf","caps":"INF"}};
 FORTYK.characteristics={"ws":{"key":"ws","label":"Weapon Skill","aptitudes":"weapon skill, offence"},"bs":{"key":"bs","label":"Ballistic Skill","aptitudes":"ballistic skill, finesse"},"s":{"key":"s","label":"Strength","aptitudes":"strength, offence"},"t":{"key":"t","label":"Toughness","aptitudes":"toughness, defence"},"agi":{"key":"agi","label":"Agility","aptitudes":"agility, finesse"},"int":{"key":"int","label":"Intelligence","aptitudes":"intelligence, knowledge"},"per":{"key":"per","label":"Perception","aptitudes":"perception, fieldcraft"},"wp":{"key":"wp","label":"Willpower","aptitudes":"willpower, psyker, leadership"},"fel":{"key":"fel","label":"Fellowship","aptitudes":"fellowship, social"}};
+FORTYK.charLabels={"ws":{"key":"ws","label":"Weapon Skill"},"bs":{key:"bs",label:"Ballistic Skill"},"s":{key:"s",label:"Strength"},"t":{key:"t",label:"Toughness"},"agi":{key:"agi",label:"Agility"},"per":{key:"per",label:"Perception"},"int":{key:"int",label:"Intelligence"},"wp":{key:"wp",label:"Willpower"},"fel":{key:"fel",label:"Fellowship"},"inf":{key:"inf",label:"Influence"}};
 FORTYK.skillTraining={"0":{"name":"Untrained","value":-20},"1":{"name":"Known","value":0},"2":{"name":"Trained","value":10},"3":{"name":"Experienced","value":20},"4":{"name":"Veteran","value":30}};
 FORTYK.ACTIVE_EFFECT_MODES = {
     CUSTOM: 0,
@@ -1361,7 +1390,6 @@ FORTYK.StatusEffects = [
 ];
 FORTYK.itemRarityLabels = {"100":"Ubiquitous","30":"Abundant","20":"Plentiful","10":"Common","0":"Average","-10":"Scarce","-20":"Rare","-30":"Very Rare","-40":"Extremely Rare","-50":"Near Unique","-60":"Unique"};
 FORTYK.itemRarity= [{value:100,"label":"Ubiquitous"},{value:30,label:"Abundant"},{value:20,label:"Plentiful"},{value:10,label:"Common"},{value:0,label:"Average"},{value:-10,label:"Scarce"},{value:-20,label:"Rare"},{value:-30,label:"Very Rare"},{value:-40,label:"Extremely Rare"},{value:-50,label:"Near Unique"},{value:-60,label:"Unique"}];
-
 FORTYK.cargoRarityValue = {"100":2,"30":5,"20":10,"10":20,"0":50,"-10":100,"-20":200,"-30":400,"-40":1000,"-50":3000,"-60":6000};
 FORTYK.cargoQualityMultiplier = {"Poor":0.5,"Common":1,"Good":2,"Best":4};
 FORTYK.comradeRanks=[{value:"Green"},{value:"Guardsman"},{value:"Veteran"}];
@@ -1373,3 +1401,60 @@ FORTYK.eliteAdvanceTypes=[{value:"ea",label:"Elite Advance"},{value:"planet",lab
 FORTYK.psyChars=[{value:"wp",label:"Willpower"},{value:"per",label:"Perception"},{value:"psy",label:"Psyniscience"}];
 FORTYK.modTypes=[{value:'weapon',label:'Weapon'},{value:'armor',label:'Armor'},{value:'rangedWeapon',label:'Ranged Weapon'}, {value:'meleeWeapon',label:'Melee Weapon'}];
 FORTYK.qualityMods={"Best":2, "Good":1, "Common":0, "Poor":-1};
+FORTYK.alternateWoundMultiplierModifierLabels={"+t":"Plus Toughness","-t":"Minus Toughness","+wp":"Plus Willpower","-wp":"Minus Willpower","":"Neutral"};
+FORTYK.itemEagleCosts={
+    "100":1,
+    "30":2,
+    "20":5,
+    "10":30,
+    "0":100,
+    "-10":200,
+    "-20":500,
+    "-30":2500,
+    "-40":5000,
+    "-50":10000,
+    "-60":50000};
+FORTYK.itemQualityEagleCostModifiers={
+    "Poor":0.5,
+    "Common":1,
+    "Good":1.5,
+    "Best":3};
+FORTYK.characterTypeFeatureLabels={
+    "darkheresy":{
+        "planet":"Homeworld",
+        "background":"Background",
+        "role":"Role"
+        
+    },
+    "deathwatchmarine":{
+        "planet":"Chapter",
+        "background":"Background",
+        "role":"Role"
+    },
+    "greyknight":{
+        "planet":"Heraldry",
+        "background":"Destiny",
+        "role":"Role"
+    },
+    "darkeldar":{
+        "planet":"Vile Pleasure",
+        "background":"Background",
+        "role":"Role"
+    },
+    "ork":{
+        "planet":"Klan",
+        "background":"Orky Background",
+        "role":"Orky Role"
+    },
+    "knightscion":{
+        "planet":"Cadet Branch",
+        "background":"Education",
+        "role":"Role"
+    }
+};
+FORTYK.operateChoices=[{value:"Surface", label:"Operate (Surface)"},
+                      {value:"Aeronautica", label:"Operate (Aeronautica)"},
+                      {value:"Void", label:"Operate (Void)"}];
+FORTYK.navigateChoices=[{value:"Surface", label:"Navigate (Surface)"},
+                        {value:"Stellar", label:"Navigate (Stellar)"},
+                       {value:"Warp", label:"Navigate (Warp)"}];

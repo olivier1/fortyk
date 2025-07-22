@@ -74,6 +74,11 @@ export class FortyKItemSheet extends ItemSheet {
             data.vehicle=true;
         }
         if(this.item.type==="eliteAdvance"){
+            if(this.item.system.type.value==="planet"){
+                data.chars=foundry.utils.duplicate(game.fortyk.FORTYK.skillCharsInf);
+                data.chars.any={name:"any",caps:"ANY"};
+            }
+            
             data.compendiums=game.packs.values().toArray().map((x)=>x=x.metadata);
             data.chosenPack=this.chosenPack;
             if(this.chosenPack){
@@ -96,6 +101,7 @@ export class FortyKItemSheet extends ItemSheet {
             }else{
                 data.compendiumItems=[];
             }
+            
         }
         if(this.item.type==="psychicPower"){
             let macroCompendium=game.packs.get("fortyk.fortykmacros");
@@ -242,7 +248,8 @@ export class FortyKItemSheet extends ItemSheet {
         html.find('.compendium-select').change(this._onCompendiumChange.bind(this));
         html.find('.item-select').change(this._onItemChange.bind(this));
         html.find('.add').click(this._onAddItemClick.bind(this));
-        html.find('.remove').click(this._onRemoveItemClick.bind(this));
+        html.find('.delete-index').click(this._onDeleteIndexClick.bind(this));
+        html.find('.remove-last').click(this._onRemoveItemClick.bind(this));
         html.find('.delete-mod').click(this._onDeleteModClick.bind(this));
         html.find('.manage-reqs').click(this._onManageReqsClick.bind(this));
         //handles melee weapon mod
@@ -317,11 +324,15 @@ export class FortyKItemSheet extends ItemSheet {
     }
     async _onAddItemClick(event){
         let bonuses=this.item.system.items;
+        let isORInput=document.getElementById("OR");
+        let isOR=isORInput.checked;
+        let isANDInput=document.getElementById("AND");
+        let isAND=isANDInput.checked;
         let item= await fromUuid(this.chosenItem);
        
         let spec=item.system.specialisation?.value;
 
-        let bonus={"uuid":this.chosenItem,"name":this.chosenItemName};
+        let bonus={"uuid":this.chosenItem,"name":this.chosenItemName, "isOR":isOR, "isAND":isAND};
         if(typeof spec==="string" && spec!=="N/A"){
 
             let chosenSpec=await Dialog.prompt({
@@ -355,6 +366,7 @@ export class FortyKItemSheet extends ItemSheet {
         this.chosenItem=null;
         this.choseItemName=null;
         document.getElementById("add").setAttribute('disabled',"");
+        this.render();
     }
     _onRemoveItemClick(event){
         let bonuses=this.item.system.items;
@@ -363,6 +375,14 @@ export class FortyKItemSheet extends ItemSheet {
             this.item.update({"system.items":bonuses});
         }
 
+    }
+    _onDeleteIndexClick(event){
+        let bonuses=this.item.system.items;
+        let node=event.currentTarget;
+        let index=parseInt(node.dataset.index);
+        console.log(index, node)
+        bonuses.splice(index, 1);
+        this.item.update({"system.items":bonuses});
     }
     _onCloneClick(event){
         let item=this.item.clone();
