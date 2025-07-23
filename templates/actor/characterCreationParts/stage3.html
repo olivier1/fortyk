@@ -6,10 +6,9 @@
     {{/each}}
 </select>
 {{#if feature}}
-<p>
-    {{unescape feature.system.description.value}}
-
-</p>
+<div>
+    {{editor feature.system.description.value  button=false owner=owner editable=false}}
+</div>
 <div class="flexcol flex-group-center">
     {{#if featureCost}}
     <span class="section-title">{{stageLabel}} Cost</span>
@@ -17,46 +16,68 @@
     {{/if}}
     {{#if featureSkill}}
     <span class="section-title">{{stageLabel}} Skills</span>
-    <div class="flexrow creation-groups">
-        
+    <div class="grid grid-4col">
+
         {{#each featureSkill}}
         {{#if choices}}
-        {{#each choices}}
-        {{#if operate}}
-        <div class="fit-content">
-            <select id="{{@../index}}any{{@index}}">
-                <option value="" hidden>Choose Operate</option>
-                {{#each ../../FORTYK.operateChoices}}
-                <option value="{{this.value}}">{{this.label}}</option>
-                {{/each}}
-            </select>
-            <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
-        </div>
-        {{else if navigate}}
-        <div class="fit-content">
-            <select id="{{@../index}}any{{@index}}">
-                <option value="" hidden>Choose Navigate</option>
-                {{#each ../../FORTYK.navigateChoices}}
-                <option value="{{this.value}}">{{this.label}}</option>
-                {{/each}}
-            </select>
-            <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
-        </div>
-        {{else if any}}
-        <div class="fit-content">
+        <div class="grid-row-span{{choices.length}} fit-content">
+            {{#each choices}}
+            {{#if xenos}}
+            <div class="fit-content">
+                <select id="{{@../index}}any{{@index}}">
+                    <option value="" hidden>Choose Xenos</option>
+                    {{#each ../../FORTYK.xenos}}
+                    <option value="{{this.value}}">{{this.value}}</option>
+                    {{/each}}
+                </select>
+                <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
+            </div>
+            {{else if operate}}
+            <div class="fit-content">
+                <select id="{{@../index}}any{{@index}}">
+                    <option value="" hidden>Choose Operate</option>
+                    {{#each ../../FORTYK.operateChoices}}
+                    <option value="{{this.value}}">{{this.label}}</option>
+                    {{/each}}
+                </select>
+                <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
+            </div>
+            {{else if navigate}}
+            <div class="fit-content">
+                <select id="{{@../index}}any{{@index}}">
+                    <option value="" hidden>Choose Navigate</option>
+                    {{#each ../../FORTYK.navigateChoices}}
+                    <option value="{{this.value}}">{{this.label}}</option>
+                    {{/each}}
+                </select>
+                <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
+            </div>
+            {{else if any}}
+            <div class="fit-content">
 
-            <input id="{{@../index}}any{{@index}}" type="text" class="any-skill-input" data-index="{{@index}}" data-parent-index="{{@../index}}" placeholder="{{this.label}}">
+                <input id="{{@../index}}any{{@index}}" type="text" class="any-skill-input" data-index="{{@index}}" data-parent-index="{{@../index}}" placeholder="{{this.label}}">
+                <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
+            </div>
+            {{else}}
+            <div class="flexrow fit-content">
+                <input type="radio" class="skill-radio"  name="skill-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" value="{{this.key}}"{{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
+                <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}">{{this.label}}</a>
+            </div>
+            {{/if}}
+            {{/each}}
+        </div>
+        {{else}}
+        {{#if xenos}}
+        <div class="fit-content">
+            <select id="{{@../index}}any{{@index}}">
+                <option value="" hidden>Choose Xenos</option>
+                {{#each ../FORTYK.xenos}}
+                <option value="{{this.value}}">{{this.value}}</option>
+                {{/each}}
+            </select>
             <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
         </div>
-        {{else}}
-        <div class="flexrow fit-content">
-            <input type="radio" class="skill-radio"  name="skill-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" value="{{this.key}}"{{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
-            <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}">{{this.label}}</a>
-        </div>
-        {{/if}}
-        {{/each}}
-        {{else}}
-        {{#if operate}}
+        {{else if operate}}
         <div class="fit-content">
             <select id="{{@../index}}any{{@index}}">
                 <option value="" hidden>Choose Operate</option>
@@ -95,25 +116,53 @@
     <div class="flexrow creation-groups">
         {{#each featureTalents}}
         {{#if this.length}}
-        {{#each this}}
-        <div class="fit-content">
-            <input type="radio" class="talent-radio" name="talent-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-name="{{this.name}}" value="{{this.uuid}}" {{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
+        <div class="grid-row-span{{this.length}}  fit-content">
+            {{#each this}}
+            <div class="fit-content">
+                <input type="radio" class="talent-radio" name="talent-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-name="{{this.name}}" value="{{this.uuid}}" {{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
 
 
-            {{#if this.length}}
-            <div class="list-item fit-content">
-                {{#each this}}
+                {{#if this.length}}
+                <div class="list-item fit-content">
+                    {{#each this}}
+                    {{#if any}}
+                    <div class="fit-content">
+
+                        <input id="{{@../index}}spec{{@index}}" type="text" class="any-spec-input" data-index="{{@index}}" data-parent-index="{{@../index}}" placeholder="{{this.name}}">
+                        <a class="any-spec-icon" data-id="{{@../index}}spec{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
+                    </div>
+                    {{else}}
+                    <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
+                    {{/if}}
+                    {{#unless @last}}
+                    <span class="margin-4"> &amp; </span>
+                    {{/unless}}
+                    {{/each}}
+                </div>
+                {{else}}
+                {{#if any}}
+                <div class="fit-content">
+
+                    <input id="{{@../index}}spec{{@index}}" type="text" class="any-spec-input" data-index="{{@index}}" data-parent-index="{{@../index}}" placeholder="{{this.name}}">
+                    <a class="any-spec-icon" data-id="{{@../index}}spec{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
+                </div>
+                {{else}}
                 <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
-                {{/each}}
+                {{/if}}
+                {{/if}}
             </div>
-            {{else}}
-            <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
-            {{/if}}
+            {{/each}}
         </div>
-        {{/each}}
+        {{else}}
+        {{#if any}}
+        <div class="fit-content">
 
+            <input id="{{@../index}}spec{{@index}}" type="text" class="any-spec-input" data-index="{{@index}}" data-parent-index="{{@../index}}" placeholder="{{this.name}}">
+            <a class="any-spec-icon" data-id="{{@../index}}spec{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
+        </div>
         {{else}}
         <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
+        {{/if}}
         {{/if}}
         {{/each}}
     </div>
@@ -123,21 +172,26 @@
     <div class="flexrow creation-groups">
         {{#each featureTraits}}
         {{#if this.length}}
-        {{#each this}}
-        <div class="fit-content">
-            <input type="radio" class="trait-radio" name="trait-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-name="{{this.name}}" value="{{this.uuid}}" {{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
+        <div class="grid-row-span{{this.length}}  fit-content">
+            {{#each this}}
+            <div class="fit-content">
+                <input type="radio" class="trait-radio" name="trait-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-name="{{this.name}}" value="{{this.uuid}}" {{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
 
-            {{#if this.length}}
-            <div class="list-item fit-content">
-                {{#each this}}
+                {{#if this.length}}
+                <div class="list-item fit-content">
+                    {{#each this}}
+                    <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
+                    {{#unless @last}}
+                    <span class="margin-4"> &amp; </span>
+                    {{/unless}}
+                    {{/each}}
+                </div>
+                {{else}}
                 <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
-                {{/each}}
+                {{/if}}
             </div>
-            {{else}}
-            <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
-            {{/if}}
+            {{/each}}
         </div>
-        {{/each}}
         {{else}}
         <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
         {{/if}}
@@ -149,31 +203,36 @@
     <div class="flexrow creation-groups">
         {{#each featureGear}}
         {{#if this.length}}
-        {{#each this}}
-        <div class="fit-content">
-            <input type="radio" class="gear-radio" name="gear-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-name="{{this.name}}" value="{{this.uuid}}" {{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
+        <div class="grid-row-span{{this.length}}  fit-content">
+            {{#each this}}
+            <div class="fit-content">
+                <input type="radio" class="gear-radio" name="gear-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-name="{{this.name}}" value="{{this.uuid}}" {{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
 
-            {{#if this.length}}
+                {{#if this.length}}
 
-            <div class="list-item fit-content">
-                {{#each this}}
-                <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
-                {{/each}}
+                <div class="fit-content">
+                    {{#each this}}
+                    <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{#if this.amount}}{{this.amount}}x{{/if}}{{this.name}}</a>
+                    {{#unless @last}}
+                    <span class="margin-4"> &amp; </span>
+                    {{/unless}}
+                    {{/each}}
+                </div>
+                {{else}}
+                <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{#if this.amount}}{{this.amount}}x{{/if}}{{this.name}}</a>
+                {{/if}}
             </div>
-            {{else}}
-            <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
-            {{/if}}
+            {{/each}}
         </div>
-        {{/each}}
         {{else}}
-        <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
+        <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{#if this.amount}}{{this.amount}}x{{/if}}{{this.name}}</a>
         {{/if}}
         {{/each}}
     </div>
     {{/if}}
     <span class="section-title">{{stageLabel}} Bonus</span>
     {{#each featureBoni}}
-    <span><b>{{this.name}}:</b> {{unescape this.description}}</span>
+    <span><b>{{this.name}}</b> {{editor this.description  button=false owner=owner editable=false}}</span>
     {{/each}}
 
 
@@ -183,13 +242,14 @@
         {{#each featureAptitude}}
         {{#unless (equals this.key "any")}}
         {{#if choices}}
-        {{#each choices}}
-        <div class="flexrow fit-content">
-            <input type="radio" class="aptitude-radio"  name="apt-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" value="{{this.key}}"{{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
-            <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}">{{this.label}}</a>
+        <div class="grid-row-span{{choices.length}}  fit-content">
+            {{#each choices}}
+            <div class="flexrow fit-content">
+                <input type="radio" class="aptitude-radio"  name="apt-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" value="{{this.key}}"{{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
+                <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}">{{this.label}}</a>
+            </div>
+            {{/each}}
         </div>
-
-        {{/each}}
         {{else}}
         <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}">{{this.label}}</a>
         {{/if}}
@@ -209,22 +269,27 @@
     <div class="flexrow creation-groups">
         {{#each featureEAs}}
         {{#if this.length}}
-        {{#each this}}
-        <div class="fit-content">
-            <input type="radio" class="gear-radio" name="gear-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-name="{{this.name}}" value="{{this.uuid}}" {{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
+        <div class="grid-row-span{{this.length}}  fit-content">
+            {{#each this}}
+            <div class="fit-content">
+                <input type="radio" class="gear-radio" name="gear-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-name="{{this.name}}" value="{{this.uuid}}" {{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
 
-            {{#if this.length}}
+                {{#if this.length}}
 
-            <div class="list-item fit-content">
-                {{#each this}}
+                <div class="list-item fit-content">
+                    {{#each this}}
+                    <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
+                    {{#unless @last}}
+                    <span class="margin-4"> &amp; </span>
+                    {{/unless}}
+                    {{/each}}
+                </div>
+                {{else}}
                 <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
-                {{/each}}
+                {{/if}}
             </div>
-            {{else}}
-            <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
-            {{/if}}
+            {{/each}}
         </div>
-        {{/each}}
         {{else}}
         <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
         {{/if}}
@@ -232,19 +297,19 @@
     </div>
     {{/if}}
     {{#if feature.system.characteristics.ins}}
-    <div class="flexcol">
-        <span class="section-title">Insanity</span>
-        {{#unless rolledInsanity}}
 
-        <a class="roll-insanity" data-roll="{{feature.system.characteristics.ins}}">Roll {{feature.system.characteristics.ins}}</a>
-        {{else}}
-        {{rolledInsanity}}
-        {{/unless}}
-    </div>
+    <div class="section-title">Insanity</div>
+    {{#unless rolledInsanity}}
+
+    <a class="roll-insanity" data-roll="{{feature.system.characteristics.ins}}">Roll {{feature.system.characteristics.ins}}</a>
+    {{else}}
+    {{rolledInsanity}}
+    {{/unless}}
+
     {{/if}}
     {{#if feature.system.characteristics.cor}}
 
-    <span class="section-title">Corruption</span>
+    <div class="section-title">Corruption</div>
     {{#unless rolledCorruption}}
 
     <a class="roll-corruption" data-roll="{{feature.system.characteristics.cor}}">Roll {{feature.system.characteristics.cor}}</a>

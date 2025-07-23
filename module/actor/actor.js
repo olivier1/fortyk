@@ -275,7 +275,9 @@ export class FortyKActor extends Actor {
             if(item.type==="skill"){
                 let name="";
                 if(item.system.parent.value){name+=item.system.parent.value.toLowerCase()+":";}
+                
                 name+=item.name.toLowerCase();
+                name=name.replace(/\s/g,"");
                 data.skillmods[name]=0;
             }
         });
@@ -1921,6 +1923,9 @@ export class FortyKActor extends Actor {
                 }
             }else if(currentInstance.type==="psychicPower"){
                 //actor.setFlag("fortyk", currentInstance.id, true);
+            }
+            if(bonus.amount){
+                cloneCurrentInstance.system.amount.value=bonus.amount;
             }
             bonusesInstances.push(cloneCurrentInstance);
         }

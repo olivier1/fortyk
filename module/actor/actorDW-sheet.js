@@ -100,7 +100,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                         data.featurePlus2=FORTYK.charLabels[data.feature.system.characteristics.plus2]?.label;
                         data.featureMinus=FORTYK.charLabels[data.feature.system.characteristics.minus]?.label;
                         data.featureBoni=this.featureBoni;
-
+                        data.featureTalents=this.featureTalents;
                         data.featureAptitude=this.featureAptitude;
                         data.featureSkill=this.featureSkill;
 
@@ -196,6 +196,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             html.find('.aptitude-any').change(this._onAptitudeAnyChange.bind(this));
             html.find('.char-spent').focusout(this._onCharSpentInput.bind(this));
             html.find('.any-skill-icon').click(this._onConfirmAnySkillChoice.bind(this));
+            html.find('.any-spec-icon').click(this._onConfirmAnySpecChoice.bind(this));
             html.find('.duplicate-aptitude-icon').click(this._onConfirmAptitudeChoice.bind(this));
             html.find('.confirm-char-spent').click(this._onConfirmCharSpent.bind(this));
             html.find('.confirm-feature-choice').click(this._onConfirmFeature.bind(this));
@@ -393,7 +394,9 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                     choiceObj.label=choice;
                     choiceObj.description=skillDescriptions[choice];
                 }
-                if(choice==="Operate:any"){
+                if(choice.indexOf("anyxenos")!==-1){
+                    choiceObj.xenos=true; 
+                }else if(choice==="Operate:any"){
                     choiceObj.operate=true;
                 }else if(choice==="Navigate:any"){
                     choiceObj.navigate=true;
@@ -414,7 +417,9 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                     skillObject.label=skill;
                     skillObject.description=skillDescriptions[skill];
                 }
-                if(skill==="Operate:any"){
+                if(skill.indexOf("anyxenos")!==-1){
+                    skillObject.xenos=true; 
+                }else if(skill==="Operate:any"){
                     skillObject.operate=true;
                 }else if(skill==="Navigate:any"){
                     skillObject.navigate=true;
@@ -428,8 +433,16 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     }
     parseChoices(originArray){
         let choiceArray=[];
+        //parse anys
+        for(let item of originArray){
+            if(item.spec&&item.spec.indexOf("any")!==-1){
+                        item.any=true;
+            }
+        }
+        //parse ORs and ANDs
         for(let i=0;i<originArray.length;i++){
             let currentItem=originArray[i];
+            
             if(currentItem.isOR){
 
 
@@ -439,7 +452,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 let nextItem=originArray[j];
                 let loop=true;
                 while(loop&&nextItem){
-
+                    
                     if(nextItem.isAND){
                         let ANDArray=[];
                         ANDArray.push(nextItem);
@@ -449,8 +462,12 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                             let ANDItem=originArray[j];
                             if(!ANDItem.isAND){
                                 ANDContinue=false;
+                                loop=false;
+                                
                             }
+
                             ANDArray.push(ANDItem);
+
                         }
                         ORArray.push(ANDArray);
                     }else if(nextItem.isOR){
@@ -466,12 +483,15 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 i=j;
                 choiceArray.push(ORArray);
             }else{
+                
                 choiceArray.push(currentItem);
             }
 
 
 
         }
+        
+        console.log(choiceArray)
         return choiceArray;
     }
     getSkillRanks(){
@@ -526,6 +546,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         if(Number.isInteger(parentIndex)){
             node=skills[parentIndex].choices[index];
             let parentNode=skills[parentIndex];
+            parentNode.key=parentNode.key.replaceAll("anyxenos",value);
             parentNode.key=parentNode.key.replaceAll("any",value);
         }else{
             node=skills[index];
@@ -533,10 +554,37 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         node.any=false;
         node.operate=false;
         node.navigate=false;
+        node.xenos=false;
+        node.key=node.key.replaceAll("anyxenos",value);
+        node.label=node.label.replaceAll("anyxenos",value);
         node.key=node.key.replaceAll("any",value);
         node.label=node.label.replaceAll("any",value);
         this.render();
 
+    }
+    _onConfirmAnySpecChoice(event){
+        console.log(event)
+        let button=event.currentTarget;
+        let dataset=button.dataset;
+        let input=document.getElementById(dataset.id);
+        let value=input.value;
+        let index=parseInt(dataset.index);
+        let parentIndex=parseInt(dataset.parentIndex);
+        let talents=this.featureTalents;
+        let node;
+        if(Number.isInteger(parentIndex)){
+            node=talents[parentIndex][index];
+            
+        }else{
+            node=talents[index];
+        }
+        node.any=false;
+        node.xenos=false;
+        node.spec=node.spec.replaceAll("anyxenos",value);
+        node.name=node.name.replaceAll("anyxenos",value);
+        node.spec=node.spec.replaceAll("any",value);
+        node.name=node.name.replaceAll("any",value);
+        this.render();
     }
     _onConfirmAptitudeChoice(event){
         let button=event.currentTarget;
@@ -822,11 +870,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             baseItemArray=baseItemArray.concat(this.featureGear);
         }
         if(this.featureTalents){ 
-           
+
             baseItemArray=baseItemArray.concat(this.featureTalents);
         }
         if(this.featureTraits){
-            
+
             baseItemArray=baseItemArray.concat(this.featureTraits);
         }
         for(const item of baseItemArray){
@@ -846,7 +894,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 processedArray.push(item);
             }
         }
-        
+
         return this.mergeDuplicates(processedArray);
     }
     mergeDuplicates(itemArray){
@@ -888,12 +936,17 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 skillCheck=false;
             }
         }
+        let rolledWounds=this.rolledWounds;
+        if(game.settings.get("fortyk","alternateWounds")){
+
+            rolledWounds=true;
+        }
         let plusMinusCheck;
         let plus1Check=planet.system.characteristics.plus1!=="any";
         let plus2Check=planet.system.characteristics.plus2!=="any";
         let minusCheck=planet.system.characteristics.minus!=="any";
         plusMinusCheck=plus1Check&&plus2Check&&minusCheck;
-        if(!(this.rolledWounds&&this.hideEmpBless&&skillCheck&&aptitudesCheck&&plusMinusCheck&&corruptionCheck&&insanityCheck)){
+        if(!(rolledWounds&&this.hideEmpBless&&skillCheck&&aptitudesCheck&&plusMinusCheck&&corruptionCheck&&insanityCheck)){
             return ui.notifications.warn("You have yet to complete all your choices for this stage.");
         }
 
@@ -902,9 +955,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let update={};
         update["system.secChar.fate.max"]=fate.threshold;
         update["system.secChar.fate.value"]=fate.threshold;
+        await actor.setFlag("fortyk","alternatewoundmodifier", planet.system.wounds.alternate);
         if(game.settings.get("fortyk","alternateWounds")){
 
-            await actor.setFlag("fortyk","alternatewoundmodifier", planet.system.wounds.alternate);
+
         }else{
             let wounds=this.rolledWounds;
             update["system.secChar.wounds.max"]=wounds;

@@ -17,6 +17,17 @@ FORTYK.races=[{value:"Human"},
               {value:"Mortiseran"},
               {value:"Servitor"},
               {value:"Other"}];
+FORTYK.xenos=[
+    
+              {value:"Eldar"},
+              {value:"Genestealer"},
+              {value:"Tyranid"},
+              {value:"Necron"},
+              {value:"Ork"},
+              {value:"Kroot"},
+              {value:"Tau"},
+              {value:"Other"}
+];
 FORTYK.size=[
     {"name":"Miniscule",
      "mod":-30,

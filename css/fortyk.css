@@ -49,9 +49,9 @@
     margin: 10px 0;
     padding: 0;
     place-items: center;
+    grid-auto-flow: dense;
 }
 .grid-3col {
-    display: grid;
     grid-column: span 3 / span 3;
     grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -96,6 +96,18 @@
     grid-template-columns: 0.2fr repeat(2, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
+}
+.grid-row-span2{
+    grid-row-end :span 2;
+    flex-direction: column;
+}
+.grid-row-span3{
+    grid-row-end :span 3;
+    flex-direction: column;
+}
+.grid-row-span4{
+    grid-row-end :span 4;
+    flex-direction: column;
 }
 .fortyk .simple-grid3{
     width:100%;
@@ -149,6 +161,10 @@
 }
 .margin-left{
     margin-left: 5px;
+}
+.margin-4{
+    margin-left: 4px;
+    margin-right: 4px;
 }
 .manage-req-button{
     position: absolute;
@@ -647,6 +663,7 @@
 .margin-left-23{
     margin-left:23px;
 }
+.any-spec-icon,
 .duplicate-aptitude-icon,
 .any-skill-icon{
     background-image: url("../icons/ping.webp") !important;

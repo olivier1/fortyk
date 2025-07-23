@@ -7,10 +7,9 @@
     {{/each}}
 </select>
 {{#if feature}}
-<p>
-    {{unescape feature.system.description.value}}
-
-</p>
+<div>
+    {{editor feature.system.description.value  button=false owner=owner editable=false}}
+</div>
 <div class="flexcol flex-group-center">
     <span class="section-title">Characteristic Modifiers</span>
     <div class="flexrow creation-groups">
@@ -53,7 +52,7 @@
     <span>{{feature.system.fate.threshold}}<a class="roll-fate" data-target="{{feature.system.fate.roll}}"{{#if hideEmpBless}}hidden{{/if}}>: Roll Emperor's Blessing {{feature.system.fate.roll}}+</a></span>
     <span class="section-title">Wounds</span>
     {{#if alternateWounds}}
-    {{featureAlternateWoundLabel}}
+    {{featureAlternateWoundLabel}} Multiplier
     {{else}}
     {{#unless rolledWounds}}
     <a class="roll-wounds" data-roll="{{wounds.formula}}">Roll {{wounds.formula}}</a>
@@ -81,79 +80,112 @@
     {{/if}}
     <span class="section-title">{{featureLabels.planet}} Bonus</span>
     {{#each featureBoni}}
-    <span><b>{{this.name}}:</b> {{unescape this.description}}</span>
+    <span><b>{{this.name}}</b> {{editor this.description  button=false owner=owner editable=false}}</span>
     {{/each}}
+    {{#if featureTalents}}
+    <span class="section-title">{{featureLabels.planet}} Talents</span>
+    <div class="flexrow creation-groups">
+        {{#each featureTalents}}
+        {{#if this.length}}
+        <div class="grid-row-span{{this.length}}  fit-content">
+            {{#each this}}
+            <div class="fit-content">
+                <input type="radio" class="talent-radio" name="talent-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-name="{{this.name}}" value="{{this.uuid}}" {{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
 
+
+                {{#if this.length}}
+                <div class="list-item fit-content">
+                    {{#each this}}
+                    <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
+                    {{#unless @last}}
+                    <span class="margin-4"> &amp; </span>
+                    {{/unless}}
+                    {{/each}}
+                </div>
+                {{else}}
+                <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
+                {{/if}}
+            </div>
+            {{/each}}
+        </div>
+        {{else}}
+        <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
+        {{/if}}
+        {{/each}}
+    </div>
+    {{/if}}
     <span class="section-title">{{featureLabels.planet}} Skills</span>
     <div class="flexrow creation-groups">
 
         {{#each featureSkill}}
-            {{#if choices}}
-                {{#each choices}}
-                    {{#if operate}}
-                    <div class="fit-content">
-                        <select id="{{@../index}}any{{@index}}">
-                            <option value="" hidden>Choose Operate</option>
-                            {{#each ../../FORTYK.operateChoices}}
-                            <option value="{{this.value}}">{{this.label}}</option>
-                            {{/each}}
-                        </select>
-                        <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
-                    </div>
-                    {{else if navigate}}
-                    <div class="fit-content">
-                        <select id="{{@../index}}any{{@index}}">
-                            <option value="" hidden>Choose Navigate</option>
-                            {{#each ../../FORTYK.navigateChoices}}
-                            <option value="{{this.value}}">{{this.label}}</option>
-                            {{/each}}
-                        </select>
-                        <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
-                    </div>
-                    {{else if any}}
-                    <div class="fit-content">
+        {{#if choices}}
+        <div class="grid-row-span{{choices.length}}  fit-content">
+            {{#each choices}}
+            {{#if operate}}
+            <div class="fit-content">
+                <select id="{{@../index}}any{{@index}}">
+                    <option value="" hidden>Choose Operate</option>
+                    {{#each ../../FORTYK.operateChoices}}
+                    <option value="{{this.value}}">{{this.label}}</option>
+                    {{/each}}
+                </select>
+                <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
+            </div>
+            {{else if navigate}}
+            <div class="fit-content">
+                <select id="{{@../index}}any{{@index}}">
+                    <option value="" hidden>Choose Navigate</option>
+                    {{#each ../../FORTYK.navigateChoices}}
+                    <option value="{{this.value}}">{{this.label}}</option>
+                    {{/each}}
+                </select>
+                <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
+            </div>
+            {{else if any}}
+            <div class="fit-content">
 
-                        <input id="{{@../index}}any{{@index}}" type="text" class="any-skill-input" data-index="{{@index}}" data-parent-index="{{@../index}}" placeholder="{{this.label}}">
-                        <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
-                    </div>
-                    {{else}}
-                    <div class="flexrow fit-content">
-                        <input type="radio" class="skill-radio"  name="skill-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" value="{{this.key}}"{{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
-                        <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}">{{this.label}}</a>
-                    </div>
-                    {{/if}}
-                {{/each}}
+                <input id="{{@../index}}any{{@index}}" type="text" class="any-skill-input" data-index="{{@index}}" data-parent-index="{{@../index}}" placeholder="{{this.label}}">
+                <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
+            </div>
             {{else}}
-                {{#if operate}}
-                <div class="fit-content">
-                    <select id="{{@../index}}any{{@index}}">
-                        <option value="" hidden>Choose Operate</option>
-                        {{#each ../FORTYK.operateChoices}}
-                        <option value="{{this.value}}">{{this.label}}</option>
-                        {{/each}}
-                    </select>
-                    <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
-                </div>
-                {{else if navigate}}
-                <div class="fit-content">
-                    <select id="{{@../index}}any{{@index}}">
-                        <option value="" hidden>Choose Navigate</option>
-                        {{#each ../FORTYK.navigateChoices}}
-                        <option value="{{this.value}}">{{this.label}}</option>
-                        {{/each}}
-                    </select>
-                    <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
-                </div>
-                {{else if any}}
-                <div class="fit-content">
-                    <input id="{{@../index}}any{{@index}}" type="text" class="any-skill-input" data-index="{{@index}}" data-parent-index="{{@../index}}" placeholder="{{this.label}}" >
-                    <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
-                </div>
-
-                {{else}}
+            <div class="flexrow fit-content">
+                <input type="radio" class="skill-radio"  name="skill-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" value="{{this.key}}"{{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
                 <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}">{{this.label}}</a>
-                {{/if}}
-            {{/if}}
+            </div>
+        </div>
+        {{/if}}
+        {{/each}}
+        {{else}}
+        {{#if operate}}
+        <div class="fit-content">
+            <select id="{{@../index}}any{{@index}}">
+                <option value="" hidden>Choose Operate</option>
+                {{#each ../FORTYK.operateChoices}}
+                <option value="{{this.value}}">{{this.label}}</option>
+                {{/each}}
+            </select>
+            <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
+        </div>
+        {{else if navigate}}
+        <div class="fit-content">
+            <select id="{{@../index}}any{{@index}}">
+                <option value="" hidden>Choose Navigate</option>
+                {{#each ../FORTYK.navigateChoices}}
+                <option value="{{this.value}}">{{this.label}}</option>
+                {{/each}}
+            </select>
+            <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
+        </div>
+        {{else if any}}
+        <div class="fit-content">
+            <input id="{{@../index}}any{{@index}}" type="text" class="any-skill-input" data-index="{{@index}}" data-parent-index="{{@../index}}" placeholder="{{this.label}}" >
+            <a class="any-skill-icon" data-id="{{@../index}}any{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}"></a>
+        </div>
+
+        {{else}}
+        <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}">{{this.label}}</a>
+        {{/if}}
+        {{/if}}
         {{/each}}
 
     </div>
@@ -163,13 +195,15 @@
         {{#each featureAptitude}}
         {{#unless (equals this.key "any")}}
         {{#if choices}}
-        {{#each choices}}
-        <div class="flexrow fit-content">
-            <input type="radio" class="aptitude-radio"  name="apt-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" value="{{this.key}}"{{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
-            <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}">{{this.label}}</a>
-        </div>
+        <div class="grid-row-span{{choices.length}}  fit-content">
+            {{#each choices}}
+            <div class="flexrow fit-content">
+                <input type="radio" class="aptitude-radio"  name="apt-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" value="{{this.key}}"{{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
+                <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}">{{this.label}}</a>
+            </div>
 
-        {{/each}}
+            {{/each}}
+        </div>
         {{else}}
         <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}">{{this.label}}</a>
         {{/if}}

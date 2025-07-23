@@ -168,13 +168,15 @@ Hooks.once('init', async function() {
     });
     Handlebars.registerHelper("unescape",function(text){
         var doc = new DOMParser().parseFromString(text, "text/html");
+        console.log(doc.documentElement.textContent)
         return doc.documentElement.textContent;
+        
     });
     Handlebars.registerHelper("threshold",function(text){
-        if(text==="secondthresholddmg"){return true}
-        if(text==="thirdthresholddmg"){return true}
-        if(text==="fourththresholddmg"){return true}
-        if(text==="criticaldmg"){return true}
+        if(text==="secondthresholddmg"){return true;}
+        if(text==="thirdthresholddmg"){return true;}
+        if(text==="fourththresholddmg"){return true;}
+        if(text==="criticaldmg"){return true;}
         return false;
     });
 });

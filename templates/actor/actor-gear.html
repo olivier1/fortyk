@@ -1,5 +1,10 @@
 <div class="sheet-gear flexrow">
     <div class="cyber flexcol">
+        {{#if money}}
+        <span class="section-title">CURRENCY</span>
+        <span>Credits: <input type="text" name="system.currency.value" value="{{system.currency.value}}" data-dtype="String"></span>
+         <span>Base Income: {{system.currency.income}} Credits</span>
+        {{/if}}
         <span class="section-title">Cybernetics</span>
         <a class="item-create button" data-type="cybernetic" title="Add a new Cybernetic">Add Cybernetic</a>
         <div class="list list4col grid grid-4col">

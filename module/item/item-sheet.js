@@ -333,6 +333,7 @@ export class FortyKItemSheet extends ItemSheet {
         let spec=item.system.specialisation?.value;
 
         let bonus={"uuid":this.chosenItem,"name":this.chosenItemName, "isOR":isOR, "isAND":isAND};
+        
         if(typeof spec==="string" && spec!=="N/A"){
 
             let chosenSpec=await Dialog.prompt({
@@ -355,6 +356,30 @@ export class FortyKItemSheet extends ItemSheet {
             bonus.spec= chosenSpec;
             bonus.name+=`: ${chosenSpec}`;
 
+        }
+        let amount=item.system.amount?.value;
+        if(amount){
+            let newAmount=await Dialog.prompt({
+                title: `Choose amount for ${item.name}`,
+                content: `<p><label>Amount:</label> <input id="amountInput" type="text" name="amount" value="${item.system.amount.value}" autofocus/></p>`,
+
+
+
+                callback: async(html) => {
+                    const chosenAmount = parseInt($(html).find('input[name="amount"]').val());
+                    return chosenAmount;
+                },
+
+
+
+
+
+
+                width:100});
+            if(newAmount>1){
+                bonus.amount=newAmount;
+            }
+            
         }
 
 
