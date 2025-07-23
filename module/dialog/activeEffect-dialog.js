@@ -5,7 +5,8 @@ export class ActiveEffectDialog extends Dialog {
         return foundry.utils.mergeObject(super.defaultOptions, {
             classes: ["fortyk"],
             template: "systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html",
-            default:null
+            default:null,
+            height:"auto"
         });
     }
 

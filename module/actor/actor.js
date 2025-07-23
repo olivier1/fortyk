@@ -275,7 +275,7 @@ export class FortyKActor extends Actor {
             if(item.type==="skill"){
                 let name="";
                 if(item.system.parent.value){name+=item.system.parent.value.toLowerCase()+":";}
-                
+
                 name+=item.name.toLowerCase();
                 name=name.replace(/\s/g,"");
                 data.skillmods[name]=0;
@@ -884,13 +884,13 @@ export class FortyKActor extends Actor {
             data.carry.max=game.fortyk.FORTYK.carry[1].carry+data.carry.mod;
         }
         //get income based on influence for dark heresy PCs
-        if(this.type==="dhPC"){
-            let inf=data.characteristics.inf.total;
-            if(this.getFlag("fortyk","breedingcounts")){
-                inf+=10;
-            }
-            data.currency.income=FORTYKTABLES.income[inf]; 
+
+        let inf=data.characteristics.inf.total;
+        if(this.getFlag("fortyk","breedingcounts")){
+            inf+=10;
         }
+        data.currency.income=FORTYKTABLES.income[inf]; 
+
         //movement
         this.prepareMovement(data);
         //add up all armor and stuff
