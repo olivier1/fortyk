@@ -123,7 +123,7 @@
 
 
                 {{#if this.length}}
-                <div class="list-item fit-content">
+                <div class="fit-content">
                     {{#each this}}
                     {{#if any}}
                     <div class="fit-content">
@@ -178,7 +178,7 @@
                 <input type="radio" class="trait-radio" name="trait-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-name="{{this.name}}" value="{{this.uuid}}" {{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
 
                 {{#if this.length}}
-                <div class="list-item fit-content">
+                <div class="fit-content">
                     {{#each this}}
                     <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
                     {{#unless @last}}

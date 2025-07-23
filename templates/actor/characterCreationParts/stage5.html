@@ -2,9 +2,11 @@
 <span class="section-title">Aptitudes</span>
 <div class="grid grid-4col">
     {{#each actorAptitudes}}
+    {{debug this}}
     {{#if this.isCharDuplicate}}
     <div class="fit-content">
-        <select class="apt-duplicate-select margin-left-23" id="system.aptitudes.{{@index}}" data-dtype="String">    
+        <select class="apt-duplicate-select margin-left-23" id="system.aptitudes.{{@index}}" data-dtype="String">  
+            <option value="{{this.aptitude}}" hidden>Choose</option>
             {{selectOptions ../charAptitudes selected=this.aptitude valueAttr="key" labelAttr="label"}}
 
         </select>
@@ -12,15 +14,14 @@
     </div>
     {{else if this.isWildcardDuplicate}}
     <div class="fit-content">
-        <select class="apt-duplicate-select margin-left-23" id="system.aptitudes.{{@index}}" data-dtype="String">    
+        <select class="apt-duplicate-select margin-left-23" id="system.aptitudes.{{@index}}" data-dtype="String">   
+            <option value="{{this.aptitude}}" hidden>Choose</option>
             {{selectOptions ../aptitudes selected=this.aptitude valueAttr="key" labelAttr="label"}}
         </select>
         <a class="duplicate-aptitude-icon" data-id="system.aptitudes.{{@index}}"></a>
     </div>
     {{else}}
-    <select class="apt1-select" name="system.aptitudes.{{@index}}" data-dtype="String" disabled>    
-        {{selectOptions ../aptitudes selected=this.aptitude valueAttr="key" labelAttr="label"}}
-    </select>
+    <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}"><u>{{this.label}}</u></a>
     {{/if}}
     {{/each}}
 </div>

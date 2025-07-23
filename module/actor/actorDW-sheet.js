@@ -59,6 +59,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         data.FORTYK=FORTYK;
         let characterType=actor.characterType;
         data.featureLabels=FORTYK.characterTypeFeatureLabels[characterType?.system?.flagId?.value];
+        data.actorAptitudes=this.prepareActorAptitudes(actor.system.aptitudes); 
+
         if(characterCreation){
             if(!this.skillDescriptions){
                 this.skillDescriptions=this.getSkillDescriptions();
@@ -78,7 +80,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 data.characterTypes.sort(nameSort);
             }else{
                 data.skillRanks=this.getSkillRanks();
-                data.actorAptitudes=this.prepareActorAptitudes(actor.system.aptitudes); 
+
             }
             switch(data.creationStage){
                 case 1:
@@ -164,8 +166,22 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 case 5:
 
 
+                    let filterAptitudes=function (apti) {
 
-                    data.charAptitudes=data.FORTYK.charAptitudes;
+                        let notDuplicate=true;
+                        let actorAptitudes = actor.system.aptitudes;
+                        for(const index in actorAptitudes){
+                            let aptitude=actorAptitudes[index]
+                            if(apti.key===aptitude){
+                                notDuplicate=false;
+                            }
+                        }
+                        return notDuplicate;
+
+                    };
+
+                    data.aptitudes=FORTYK.aptitudes.filter(filterAptitudes);
+                    data.charAptitudes=data.FORTYK.charAptitudes.filter(filterAptitudes);
 
 
                     break;
@@ -240,6 +256,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
     /*character creation functions*/
     prepareActorAptitudes(aptitudes){
+        let FORTYKaptitudes=game.fortyk.FORTYK.aptitudes;
         let aptitudeArray=[];
         let charAptitudes=["weaponskill","ballisticskill","strength","toughness","agility","intelligence","perception","willpower","fellowship"];
         for(const index in aptitudes){
@@ -255,6 +272,9 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                         aptitudeObj.isWildcardDuplicate=true;
                     }
                 }
+                let FORTYKaptitude=FORTYKaptitudes.find((apt)=>apt.key===aptitude);
+                aptitudeObj.label=FORTYKaptitude.label;
+                aptitudeObj.description=FORTYKaptitude.description;
                 aptitudeArray.push(aptitudeObj);
             }
         }
@@ -436,13 +456,13 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         //parse anys
         for(let item of originArray){
             if(item.spec&&item.spec.indexOf("any")!==-1){
-                        item.any=true;
+                item.any=true;
             }
         }
         //parse ORs and ANDs
         for(let i=0;i<originArray.length;i++){
             let currentItem=originArray[i];
-            
+
             if(currentItem.isOR){
 
 
@@ -452,7 +472,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 let nextItem=originArray[j];
                 let loop=true;
                 while(loop&&nextItem){
-                    
+
                     if(nextItem.isAND){
                         let ANDArray=[];
                         ANDArray.push(nextItem);
@@ -463,7 +483,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                             if(!ANDItem.isAND){
                                 ANDContinue=false;
                                 loop=false;
-                                
+
                             }
 
                             ANDArray.push(ANDItem);
@@ -483,14 +503,14 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 i=j;
                 choiceArray.push(ORArray);
             }else{
-                
+
                 choiceArray.push(currentItem);
             }
 
 
 
         }
-        
+
         console.log(choiceArray)
         return choiceArray;
     }
@@ -574,7 +594,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let node;
         if(Number.isInteger(parentIndex)){
             node=talents[parentIndex][index];
-            
+
         }else{
             node=talents[index];
         }
@@ -1142,6 +1162,18 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
     }
     async _onFinishCharacterCreation(event){
+        let aptitudes=this.actor.actorAptitudes;
+        let duplicate=false;
+        for(let apt in aptitudes){
+            let aptitude=aptitudes[apt];
+            if(aptitude.isCharDuplicate||aptitude.isWildcardDuplicate){
+                duplicate=true;
+            }
+        }
+
+        if(duplicate){
+            return ui.notifications.warn("You still have duplicate aptitudes.");
+        }
         new Dialog({
             title: "Finish Character Creation",
             content: "Are you sure you want to finish Character Creation? You will no longer be able to purchase advances which require it.",
