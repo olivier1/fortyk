@@ -2,7 +2,6 @@
 <span class="section-title">Aptitudes</span>
 <div class="grid grid-4col">
     {{#each actorAptitudes}}
-    {{debug this}}
     {{#if this.isCharDuplicate}}
     <div class="fit-content">
         <select class="apt-duplicate-select margin-left-23" id="system.aptitudes.{{@index}}" data-dtype="String">  
