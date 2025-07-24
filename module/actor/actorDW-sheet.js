@@ -836,7 +836,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             update.system.characteristics[char]={value:chars[char].total};
         }
         update["flags.fortyk.creationstage"]=3;
-        
+
         await this.actor.update(update);
         this.render();
     }
@@ -1241,18 +1241,20 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                             label: 'Go Back',
                             callback: (html) => {
                                 proceed=true;
-                            },
-                            cancel:{
-                                label:"Nevermind",
-                                callback: (html) => {
-                                    proceed=false;
-                                }
                             }
                         },
-                        render: (html)=>{
-                        },
-                        default: "submit",
-                        width:100}
+                        cancel:{
+                            label:"Nevermind",
+                            callback: (html) => {
+                                proceed=false;
+                            }
+                        }
+
+                    },
+                    render: (html)=>{
+                    },
+                    default: "submit",
+                    width:100
                 });
                 if(!proceed)return;
                 feature=actor.role;
