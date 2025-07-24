@@ -823,25 +823,15 @@ export class FortyKActor extends Actor {
             }  
         }
         if(game.settings.get("fortyk","alternateWounds")){
-            var tb = data.characteristics.t.bonus;
-            var wpb = data.characteristics.wp.bonus;
-            var woundMod = this.getFlag("fortyk","alternatewoundmodifier");
-            if(woundMod){
-                if(woundMod.indexOf("wp")!==-1){
-                    if(woundMod.indexOf("-")!==-1){
-                        wpb--;
-                    }else{
-                        wpb++;
-                    }
-                }else{
-                    if(woundMod.indexOf("-")!==-1){
-                        tb--;
-                    }else{
-                        tb++;
-                    }
-                }
-            }
+            let tb = data.characteristics.t.bonus;
+            let wpb = data.characteristics.wp.bonus;
+            
+            
             data.secChar.wounds.max=tb*wpb;
+            let woundMod = parseInt(this.getFlag("fortyk","alternatewoundmodifier"));
+            if(woundMod){
+                data.secChar.wounds.max+=woundMod;
+            }
         }
         if(this.getFlag("fortyk","soundconstitution")){
             data.secChar.wounds.max=parseInt(data.secChar.wounds.max)+2*data.characteristics.t.bonus;

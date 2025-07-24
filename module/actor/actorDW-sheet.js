@@ -93,7 +93,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                     if(data.feature){
                         data.alternateWounds=game.settings.get("fortyk","alternateWounds");
                         if(data.alternateWounds){
-                            data.featureAlternateWoundLabel=FORTYK.alternateWoundMultiplierModifierLabels[data.feature.system.wounds.alternate];
+                            data.featureAlternateWoundLabel="+"+data.feature.system.wounds.alternate;
                         }else{
                             data.wounds=data.feature.system.wounds;
                         }

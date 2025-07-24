@@ -134,9 +134,7 @@
         <div class="grid grid-4col">
             {{#each actorAptitudes}}
 
-            <select class="apt1-select" name="system.aptitudes.{{@index}}" data-dtype="String" disabled>    
-                {{selectOptions ../aptitudes selected=this.aptitude valueAttr="key" labelAttr="label"}}
-            </select>
+            <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}"><u>{{this.label}}</u></a>
             {{/each}}
         </div>
         <span class="section-title">Skills</span>
