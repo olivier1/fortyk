@@ -325,9 +325,9 @@ export class FortyKItemSheet extends ItemSheet {
     async _onAddItemClick(event){
         let bonuses=this.item.system.items;
         let isORInput=document.getElementById("OR");
-        let isOR=isORInput.checked;
+        let isOR=isORInput?.checked;
         let isANDInput=document.getElementById("AND");
-        let isAND=isANDInput.checked;
+        let isAND=isANDInput?.checked;
         let item= await fromUuid(this.chosenItem);
        
         let spec=item.system.specialisation?.value;

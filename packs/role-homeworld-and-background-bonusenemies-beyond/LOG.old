@@ -1,7 +1,13 @@
-2025/07/23-18:56:35.066 6edc Log #3116: 0 ops saved to Table #3119 OK
-2025/07/23-18:56:35.067 6edc Archiving C:\Users\Olivier\AppData\Local\FoundryVTT\Data\systems\fortyk\packs\role-homeworld-and-background-bonusenemies-beyond/003116.log: OK
-2025/07/23-18:56:35.068 6edc Log #3118: 0 ops saved to Table #3120 OK
-2025/07/23-18:56:35.070 6edc Archiving C:\Users\Olivier\AppData\Local\FoundryVTT\Data\systems\fortyk\packs\role-homeworld-and-background-bonusenemies-beyond/003118.log: OK
-2025/07/23-18:56:35.070 6edc Table #3090: 5 entries OK
-2025/07/23-18:56:35.077 6edc Archiving C:\Users\Olivier\AppData\Local\FoundryVTT\Data\systems\fortyk\packs\role-homeworld-and-background-bonusenemies-beyond/MANIFEST-003115: OK
-2025/07/23-18:56:35.084 6edc **** Repaired leveldb C:\Users\Olivier\AppData\Local\FoundryVTT\Data\systems\fortyk\packs\role-homeworld-and-background-bonusenemies-beyond; recovered 1 files; 2733 bytes. Some data may have been lost. ****
+2025/07/23-19:54:35.427 244c Recovering log #3122
+2025/07/23-19:54:35.437 244c Delete type=0 #3122
+2025/07/23-19:54:35.437 244c Delete type=3 #3121
+2025/07/23-22:46:34.354 4cf0 Level-0 table #3126: started
+2025/07/23-22:46:34.355 4cf0 Level-0 table #3126: 0 bytes OK
+2025/07/23-22:46:34.358 4cf0 Delete type=0 #3124
+2025/07/23-22:46:34.367 4cf0 Manual compaction at level-0 from '!items!7sr5848zV2n1ranp' @ 72057594037927935 : 1 .. '!items!yz6QnrTImjmcscA0' @ 0 : 0; will stop at '!items!yz6QnrTImjmcscA0' @ 10 : 1
+2025/07/23-22:46:34.367 4cf0 Compacting 1@0 + 0@1 files
+2025/07/23-22:46:34.379 4cf0 Generated table #3127@0: 5 keys, 2733 bytes
+2025/07/23-22:46:34.379 4cf0 Compacted 1@0 + 0@1 files => 2733 bytes
+2025/07/23-22:46:34.383 4cf0 compacted to: files[ 0 1 0 0 0 0 0 ]
+2025/07/23-22:46:34.383 4cf0 Delete type=2 #3090
+2025/07/23-22:46:34.389 4cf0 Manual compaction at level-0 from '!items!yz6QnrTImjmcscA0' @ 10 : 1 .. '!items!yz6QnrTImjmcscA0' @ 0 : 0; will stop at (end)
