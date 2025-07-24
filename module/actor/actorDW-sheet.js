@@ -217,6 +217,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             html.find('.confirm-char-spent').click(this._onConfirmCharSpent.bind(this));
             html.find('.confirm-feature-choice').click(this._onConfirmFeature.bind(this));
             html.find('.finish-character-creation').click(this._onFinishCharacterCreation.bind(this));
+            html.find('.previous-stage').click(this._onGoToPreviousStage.bind(this));
         }else{
             //change skill characteristic
             html.find('.skill-char').change(this._onSkillCharEdit.bind(this));
@@ -835,6 +836,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             update.system.characteristics[char]={value:chars[char].total};
         }
         update["flags.fortyk.creationstage"]=3;
+        
         await this.actor.update(update);
         this.render();
     }
@@ -1005,6 +1007,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         this.featureCost=undefined;
         this.rolledInsanity=undefined;
         this.rolledCorruption=undefined;
+        this.pointBuy=undefined;
         this.featureBoni=undefined;
         this.featureTalents=undefined;
         this.featureTraits=undefined;
@@ -1209,6 +1212,70 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         }).render(true);
 
 
+    }
+    async _onGoToPreviousStage(event){
+        let actor=this.actor;
+        let stage=actor.getFlag("fortyk","creationstage");
+        let feature;
+        let update={};
+        update['flags.fortyk.creationstage']=stage-1;
+        switch(stage){
+            case 2:
+                feature=actor.planet;
+
+                break;
+            case 3:
+                feature=null;
+
+                break;
+            case 4:
+                feature=actor.background;
+                break;
+            case 5:
+                let proceed;
+                await Dialog.wait({
+                    title: "Are you sure you want to go back?",
+                    content: "Going back will remove any advances you have purchased.",
+                    buttons: {
+                        submit: {
+                            label: 'Go Back',
+                            callback: (html) => {
+                                proceed=true;
+                            },
+                            cancel:{
+                                label:"Nevermind",
+                                callback: (html) => {
+                                    proceed=false;
+                                }
+                            }
+                        },
+                        render: (html)=>{
+                        },
+                        default: "submit",
+                        width:100}
+                });
+                if(!proceed)return;
+                feature=actor.role;
+                let advances=actor.itemTypes.advancement;
+                for(let advance of advances){
+                    await advance.delete();
+                }
+                break;
+        }
+
+        if(feature){
+            let cost=parseInt(feature.system.cost.value);
+            if(cost){
+                let startExp=actor.system.experience.starting;
+                startExp+=cost;
+                update["system.experience.starting"]=startExp;
+            }
+        }
+        await actor.update(update);
+        await feature?.delete();
+        this.resetStage();
+        this.render();
+        console.log(actor,feature,stage, update);
     }
     /* -------------------------------------------- */
 
@@ -1483,7 +1550,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     }
     //handles when weapons are swapped and stuff
     async _onWeaponChange(event){
-        event.preventDefault;
+        event.preventDefault();
         const data=this.actor.system;
 
         let actor=this.actor;

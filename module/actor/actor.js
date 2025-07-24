@@ -2147,6 +2147,27 @@ export class FortyKActor extends Actor {
                             }
 
                         }
+                        let aptitudeString=item.system.aptitude.value;
+                        //remove the last X many aptitudes, X is the number of aptitudes the EA gives
+                        if(aptitudeString){
+                            let aeAptitudes=aptitudeString.split(",");
+                            let actorAptitudes=actor.system.aptitudes;
+                            let aptitudesKeys=Object.keys(actorAptitudes);
+                            aptitudesKeys.reverse();
+                            let count=0;
+                            for(let i=0; i<aptitudesKeys.length;i++){
+                                let index=aptitudesKeys[i];
+                                let actorAptitude=actorAptitudes[index];
+                                if(actorAptitude){
+                                    actorAptitudes[index]="";
+                                    count++;
+                                    if(count===aeAptitudes.length){
+                                        break;
+                                    }
+                                }
+                            }
+                            await actor.update({"system.aptitudes":actorAptitudes});
+                        }
                         await actor.deleteEmbeddedDocuments("Item",item.system.itemIds);
                         await actor.setFlag("fortyk",flag,false);
                     }else if(item.type==="advancement"){
