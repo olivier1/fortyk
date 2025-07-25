@@ -584,12 +584,13 @@ export class FortyKActor extends Actor {
         let selfPsy=[];
         this.effects.forEach(function(ae,id){
             if(!ae.disabled){
-                var powerActor=fromUuidSync(ae.origin);
-                if(powerActor&&(powerActor.id===actor.id)){
-
+                if(actor.uuid===ae.origin){
+                    
                     selfPsy.push(ae);
                     return;
                 }
+                var powerActor=fromUuidSync(ae.origin);
+                
                 let proceed=false;
                 //check if ae is from an item if it origins drom a psychic power skip
 

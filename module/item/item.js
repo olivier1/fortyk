@@ -1219,16 +1219,15 @@ export class FortyKItem extends Item {
             aeData.disabled = false;
             aeData.origin = actorId;
             aeData.statuses = [ae.name];
-            /*let felB=actor.system.characteristics.fel.bonus;
-            for(const change of aeData.changes){
-                change.value=change.value.replace("felB",felB);
-            }*/
+            
             let effectUuIds = [];
             for (let i = 0; i < targets.length; i++) {
                 let target = targets[i];
 
                 let targetActor = target.actor;
-                let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", [aeData]);
+                let render=false;
+               
+                let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", [aeData],{render:render});
 
                 let ae = effect[0];
                 let effectuuid = await ae.uuid;

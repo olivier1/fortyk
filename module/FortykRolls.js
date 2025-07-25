@@ -34,10 +34,7 @@ returns the roll message*/
     static async fortykTest(char, type, target, actor, label, fortykWeapon=null, reroll=false, fireRate="",delayMsg=false, modifiers=null){
 
         let name=actor.getName();
-        //cap target at 100 or floor at 1
-        /*if(target>100){
-            target=100;
-        }else*/ 
+        
         try{
             let base=actor.system.characteristics[char].preGlobal;
             target=Math.max(base-60,target);
@@ -1021,7 +1018,7 @@ returns the roll message*/
                 }
             }else if(roll1<=overload){
                 overloaded=true;
-                
+
             }
             let string="";
             if(overloaded){
@@ -6208,6 +6205,8 @@ returns the roll message*/
                              classes:["fortyk"],
                              flavor:`Death Report`};
             await ChatMessage.create(chatOptions,{});
+            let bubble=new ChatBubbles();
+            bubble.broadcast(target,msg);
             let id=target.id;
 
             if(actor.getFlag("fortyk","regeneration")&&actor.system.race.value==="Necron"){
@@ -6222,7 +6221,7 @@ returns the roll message*/
                     let combatid=combatant.id;
                     let update=[];
                     update.push({"_id":combatid, 'defeated':true});
-                    await game.combat.updateEmbeddedDocuments("Combatant",update);
+                    await game.combat.updateDocuments("Combatant",update);
                 }catch(err){
                 } 
             }

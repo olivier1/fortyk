@@ -170,7 +170,7 @@ Hooks.once('init', async function() {
         var doc = new DOMParser().parseFromString(text, "text/html");
         console.log(doc.documentElement.textContent)
         return doc.documentElement.textContent;
-        
+
     });
     Handlebars.registerHelper("threshold",function(text){
         if(text==="secondthresholddmg"){return true;}
@@ -518,7 +518,7 @@ Hooks.on("combatStart", (combat, updateData) =>{
             let token=combatant.token;
             if(actor.getFlag("fortyk","fear")){
                 if(token.disposition===-1){
-                    enemyFears.push({"name":actor.getName(), "fear":actor.getFlag("fortyk","fear")});
+                    enemyFears.push({"name":actor.getName(), "fear":actor.getFlag("fortyk","fear"), "token":token});
                 }else if(token.disposition===1){
                     pcFears.push({"name":actor.getName(), "fear":actor.getFlag("fortyk","fear")});
                 }
@@ -532,12 +532,15 @@ Hooks.on("combatStart", (combat, updateData) =>{
                     chosenFear=fear;
                 }
             }
+            let content=`${chosenFear.name} causes fear! Test against fear(${chosenFear.fear})!`;
             let fearOptions={author: game.user._id,
                              speaker:{alias:"Fear"},
-                             content:`${chosenFear.name} causes fear! Test against fear(${chosenFear.fear})!`,
+                             content: content,
                              classes:["fortyk"],
                              flavor:`Enemy Fear Rating`};
             ChatMessage.create(fearOptions,{});
+            let bubble=new ChatBubbles();
+            bubble.broadcast(chosenFear.token,content,{pan:true});
         }
         if(pcFears.length>0){
             let chosenFear={"name":"","fear":-1};
@@ -557,10 +560,16 @@ Hooks.on("combatStart", (combat, updateData) =>{
 });
 //round management effects, when a token's turn starts
 Hooks.on("updateCombat", async (combat) => {
-
+    game.user.updateTokenTargets();
+    game.user.broadcastActivity({targets:[]});
+    //current combatant stuff
+    let token=canvas.tokens.get(combat.current.tokenId);
+    if(token===undefined){return;}
+    let actor=token.actor;
+    //PAN CAMERA TO ACTIVE TOKEN
+    await canvas.animatePan({x:token.x,y:token.y});
     if(game.user.isGM){
-        game.user.updateTokenTargets();
-        game.user.broadcastActivity({targets:[]});
+
         //previous combatant stuff
         try{
             let previousToken=canvas.tokens.get(combat.previous.tokenId);
@@ -573,12 +582,7 @@ Hooks.on("updateCombat", async (combat) => {
 
         }
 
-        //current combatant stuff
-        let token=canvas.tokens.get(combat.current.tokenId);
-        if(token===undefined){return;}
-        let actor=token.actor;
-        //PAN CAMERA TO ACTIVE TOKEN
-        await canvas.animatePan({x:token.x,y:token.y});
+
         const currentWindows = Object.values(ui.windows);
 
         for (let window of currentWindows) {
@@ -610,11 +614,13 @@ Hooks.on("updateCombat", async (combat) => {
             }
             if(count){
                 let sustainedPowersOptions={author: game.user._id,
-                                            speaker:{actor,alias:actor.getName()},
+                                            speaker:ChatMessage.getSpeaker({ token: token }),
                                             content:content,
                                             classes:["fortyk"],
                                             flavor:`Sustained Psychic Powers`};
                 await ChatMessage.create(sustainedPowersOptions,{});
+                let bubble=new ChatBubbles();
+                bubble.broadcast(token,content);
             }
 
         }
@@ -1094,7 +1100,7 @@ Hooks.on('createActiveEffect',async (ae,options,id)=>{
         ae.statuses.forEach(async function (value1, value2){
             let flag=value1;
             if(flag==="evasion"){
-                
+
                 await actor.setFlag("core",flag,ae.flags.fortyk.evasion); 
             }else{
                 await actor.setFlag("core",flag,true); 
