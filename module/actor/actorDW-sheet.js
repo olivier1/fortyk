@@ -560,6 +560,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let dataset=button.dataset;
         let input=document.getElementById(dataset.id);
         let value=input.value;
+        if(!value)return;
         let index=parseInt(dataset.index);
         let parentIndex=parseInt(dataset.parentIndex);
         let skills=this.featureSkill;
@@ -589,6 +590,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let dataset=button.dataset;
         let input=document.getElementById(dataset.id);
         let value=input.value;
+        if(!value)return;
         let index=parseInt(dataset.index);
         let parentIndex=parseInt(dataset.parentIndex);
         let talents=this.featureTalents;
@@ -1024,7 +1026,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let aptitudes=this.featureAptitude;
         let aptitudesCheck=true;
         for(let aptitude of aptitudes){
-            if(aptitude.key==="any"){
+            if(aptitude.key==="any"&&aptitude.checked!==false){
                 aptitudesCheck=false;
             }
         }
@@ -1032,13 +1034,22 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let featureSkills = this.featureSkill;
         if(featureSkills){
             for(let skill of featureSkills){
-                if(skill.key.indexOf("any")!==-1){
+                
+                if(skill.key.indexOf("any")!==-1&&skill.checked!==false){
                     skillCheck=false;
                 }
             }
         }
+        let itemCheck=true;
+        let items=this.createItemArray();
+        feature.system.items=items;
+        for(let item of items){
+            if(item.any){
+                itemCheck=false;
+            }
+        }
 
-        if(!(skillCheck&&aptitudesCheck&&corruptionCheck&&insanityCheck)){
+        if(!(itemCheck&&skillCheck&&aptitudesCheck&&corruptionCheck&&insanityCheck)){
             return ui.notifications.warn("You have yet to complete all your choices for this stage.");
         }
         let actor = this.actor;
@@ -1049,8 +1060,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         if(this.rolledCorruption){
             update["system.secChar.corruption.value"]=this.rolledCorruption+actor.system.secChar.corruption.value;
         }
-        let items=this.createItemArray();
-        feature.system.items=items;
+       
 
         if(featureSkills){
             feature.system.skills=this.createSkillString();
@@ -1219,6 +1229,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let feature;
         let update={};
         update['flags.fortyk.creationstage']=stage-1;
+        let ids=[];
         switch(stage){
             case 2:
                 feature=actor.planet;
@@ -1264,9 +1275,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
                 if(!proceed)return;
                 feature=actor.role;
+
                 for(let advance of advances){
-                    await advance.delete();
+                    ids.push(advance.id);
                 }
+
                 break;
         }
 
@@ -1279,7 +1292,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             }
         }
         await actor.update(update);
-        await feature?.delete();
+        if(feature){
+            ids.push(feature?.id);
+            await actor.deleteEmbeddedDocuments("Item",ids);
+        }
+
         this.resetStage();
         this.render();
         console.log(actor,feature,stage, update);
