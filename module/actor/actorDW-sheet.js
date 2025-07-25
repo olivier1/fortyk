@@ -1233,32 +1233,37 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 break;
             case 5:
                 let proceed;
-                await Dialog.wait({
-                    title: "Are you sure you want to go back?",
-                    content: "Going back will remove any advances you have purchased.",
-                    buttons: {
-                        submit: {
-                            label: 'Go Back',
-                            callback: (html) => {
-                                proceed=true;
+                let advances=actor.itemTypes.advancement;
+                if(advances.length===0){
+                    proceed=true;
+                }else{
+                    await Dialog.wait({
+                        title: "Are you sure you want to go back?",
+                        content: "Going back will remove any advances you have purchased.",
+                        buttons: {
+                            submit: {
+                                label: 'Go Back',
+                                callback: (html) => {
+                                    proceed=true;
+                                }
+                            },
+                            cancel:{
+                                label:"Nevermind",
+                                callback: (html) => {
+                                    proceed=false;
+                                }
                             }
-                        },
-                        cancel:{
-                            label:"Nevermind",
-                            callback: (html) => {
-                                proceed=false;
-                            }
-                        }
 
-                    },
-                    render: (html)=>{
-                    },
-                    default: "submit",
-                    width:100
-                });
+                        },
+                        render: (html)=>{
+                        },
+                        default: "submit",
+                        width:100
+                    });
+                }
+
                 if(!proceed)return;
                 feature=actor.role;
-                let advances=actor.itemTypes.advancement;
                 for(let advance of advances){
                     await advance.delete();
                 }
