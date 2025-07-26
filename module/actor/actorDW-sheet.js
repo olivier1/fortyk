@@ -629,12 +629,14 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         newAmt=Math.min(newAmt,limitPerChar);
         let chars=pointBuy.characteristics;
         let char=chars[key];
+        if(newAmt===char.spent)return;
         let newTotal=char.base+newAmt;
         if(newTotal>pointBuy.charLimit){
             let substract=newTotal-pointBuy.charLimit;
             newAmt-=substract;
         }
-        if(newAmt>pointBuy.remaining){
+        let spentDiff=newAmt-char.spent;
+        if(spentDiff>pointBuy.remaining){
             newAmt=pointBuy.remaining;
         }
         char.spent=newAmt;

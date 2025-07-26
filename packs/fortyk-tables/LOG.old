@@ -1,3 +1,8 @@
-2025/07/25-14:05:25.004 a14 Recovering log #789
-2025/07/25-14:05:25.013 a14 Delete type=0 #789
-2025/07/25-14:05:25.014 a14 Delete type=3 #787
+2025/07/26-12:22:18.342 352c Recovering log #809
+2025/07/26-12:22:18.353 352c Delete type=0 #809
+2025/07/26-12:22:18.353 352c Delete type=3 #807
+2025/07/26-12:26:15.920 15cc Level-0 table #814: started
+2025/07/26-12:26:15.920 15cc Level-0 table #814: 0 bytes OK
+2025/07/26-12:26:15.923 15cc Delete type=0 #812
+2025/07/26-12:26:15.924 15cc Manual compaction at level-0 from '!folders!CCWjYGVzsijZAm15' @ 72057594037927935 : 1 .. '!tables.results!z7rcX1ds2D0wJGOP.xyeFtwjr0VROet5P' @ 0 : 0; will stop at (end)
+2025/07/26-12:26:15.924 15cc Manual compaction at level-1 from '!folders!CCWjYGVzsijZAm15' @ 72057594037927935 : 1 .. '!tables.results!z7rcX1ds2D0wJGOP.xyeFtwjr0VROet5P' @ 0 : 0; will stop at (end)
