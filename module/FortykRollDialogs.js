@@ -233,7 +233,7 @@ export class FortykRollDialogs{
         let poppup=document.getElementById(poppupId);
         poppup.classList.toggle("show");
     }
-    static async callRollDialog(testChar, testType, testTarget, actor, testLabel, item, reroll, title="", template=false){
+    static async callRollDialog(testChar, testType, testTarget, actor, testLabel, item, reroll, title="", template=false, modifierTracker=[]){
 
         if(reroll){
             title+=`${testLabel} `+"Reroll";
@@ -242,26 +242,47 @@ export class FortykRollDialogs{
 
         }
         let modifier=0;
+        let char=actor.system.characteristics[testChar];
+        if(char){
+            let base=char.value;
+            let adv=char.advance;
+            let mod=char.mod;
+            modifierTracker.push({value:base,label:"Characteristic Base"});
+            modifierTracker.push({value:adv,label:"Caracteristic Advance"});
+            modifierTracker.push({value:mod,label:"Characteristic Modifier"})
+        }
 
+        let global=actor.system.globalMOD.value;
+        modifierTracker.push({value:global,label:"Global modifier"});
+        if(testType==="skill"||testType==="evasion"){
+            let training=item.system.value;
+            let skillMod=item.system.mod.value;
+            modifierTracker.push({value:training, label:"Skill Training"});
+            modifierTracker.push({value:skillMod, label:"Skill Modifier"});
+        }
         if(testType==="evasion"){
             let evadeCount=parseInt(actor.getFlag("core","evasion"));
             let maxEvade=actor.system.reactions;
-            if(evadeCount>=maxEvade){
+            if(!reroll&&evadeCount>=maxEvade){
                 ui.notifications.warn("Out of reactions!");
                 return {value:false, dos:0, template:"Out of reactions!"};
             }
             if(actor.getFlag("fortyk","evadeMod")){
 
-                modifier=actor.getFlag("fortyk","evadeMod");
+                testTarget+=parseInt(actor.getFlag("fortyk","evadeMod"));
+                modifierTracker.push({value:actor.getFlag("fortyk","evadeMod"),label:"Evasion Modifier"});
             }
             if(actor.getFlag("core","luminagen")){
-                modifier-=10;
+                testTarget-=10;
+                modifierTracker.push({value:-10,label:"Luminagen"});
             }
             if(actor.getFlag("core","holyShield")){
-                modifier+=10;
+                modifierTracker.push({value:10,label:"Guarded Action"});
+                testTarget+=10;
             }
             if(actor.getFlag("fortyk","versatile")&&actor.getFlag("fortyk","expertise")){
-                modifier+=10;
+                testTarget+=10;
+                modifierTracker.push({value:10,label:"Versatility"});
             }
         }
 
@@ -276,11 +297,13 @@ export class FortykRollDialogs{
                         if(isNaN(bonus)){
                             this.callRollDialog(testChar, testType, testTarget, actor, testLabel, item, reroll,"Invalid Number ");
                         }else{
+                            modifierTracker.push({value:bonus,label:"Input Modifier"});
                             testTarget=parseInt(testTarget)+parseInt(bonus);
                             if(testType==="fear"){
                                 testTarget+=parseInt(actor.system.secChar.fearMod);
                                 if(actor.getFlag("fortyk","resistance")&&actor.getFlag("fortyk","resistance").toLowerCase().includes("fear")){
                                     testTarget+=10;
+                                    modifierTracker.push({value:10,label:"Resistance"});
                                 }
                             }
                             if(!reroll){
@@ -323,7 +346,7 @@ export class FortykRollDialogs{
                                     }
                                 }
                             }
-                            return await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, reroll,"", template);
+                            return await FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, reroll,"", template, modifierTracker);
                         }
 
                     }
@@ -429,12 +452,12 @@ export class FortykRollDialogs{
         return {assistCount:assistCount,doubleTeam:doubleTeam};
     }
     //handles the melee attack dialog WHEW
-    static async callMeleeAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
+    static async callMeleeAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers, modifierTracker=[]){
 
         let itemData=item;
         let template="systems/fortyk/templates/actor/dialogs/melee-attack-dialog.html";
         let templateOptions={};
-        let modifierTracker=[];
+
         let miscMods=0;
         templateOptions["modifiers"]=foundry.utils.duplicate(actor.system.secChar.attacks);
         templateOptions["modifiers"].testMod=0;
@@ -733,7 +756,7 @@ export class FortykRollDialogs{
             width:400}
                   ).render(true);
     }
-    static async callRangedAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
+    static async callRangedAttackDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers, modifierTracker=[]){
         //check if in melee
         if(item.system.class.value!=="Pistol"&&this.checkMelee(getActorToken(actor))){
             return ui.notifications.warn("You are enegaged in melee!");
@@ -745,7 +768,6 @@ export class FortykRollDialogs{
         let template="systems/fortyk/templates/actor/dialogs/ranged-attack-dialog.html";
         let templateOptions={};
         let itemData=item;
-        let modifierTracker=[];
         let miscMods=0;
         templateOptions["modifiers"]=foundry.utils.duplicate(actor.system.secChar.attacks);
         templateOptions["size"]=game.fortyk.FORTYK.size;
@@ -1194,7 +1216,7 @@ export class FortykRollDialogs{
                   ).render(true);
 
     }
-    static async callFocusPowerDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers){
+    static async callFocusPowerDialog(testChar, testType, testTarget, actor, testLabel, item, modifiers, modifierTracker=[]){
         let template="systems/fortyk/templates/actor/dialogs/psychic-power-attack-dialog.html";
         let templateOptions={};
         let actionType=item.system.action.value;
@@ -1203,6 +1225,7 @@ export class FortykRollDialogs{
             let spentReactions=actor.getFlag("core","evasion");
             if(spentReactions>=reactions) return ui.notifications.warn("Out of reactions!");
         }
+        modifierTracker=modifierTracker.concat(item.system.modifiers);
         let renderedTemplate= await renderTemplate(template,templateOptions);
 
         new Dialog({
@@ -1218,11 +1241,11 @@ export class FortykRollDialogs{
 
 
                         let other = Number($(html).find('input[name="other"]').val());
-
+                        modifierTracker.push({value:other,label:"Input Modifier"});
 
                         testTarget=parseInt(testTarget)+parseInt(other);
 
-                        FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false);
+                        FortykRolls.fortykTest(testChar, testType, testTarget, actor, testLabel, item, false, "", false, modifierTracker);
                     }
 
                 }

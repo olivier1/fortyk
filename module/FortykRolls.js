@@ -6217,11 +6217,8 @@ returns the roll message*/
 
                 await this.applyActiveEffect(actor,activeEffect);
                 try{
-                    let combatant = await game.combat.getCombatantByToken(id);
-                    let combatid=combatant.id;
-                    let update=[];
-                    update.push({"_id":combatid, 'defeated':true});
-                    await game.combat.updateDocuments("Combatant",update);
+                    game.combat.getCombatantByToken(id).update({defeated:true});
+                    
                 }catch(err){
                 } 
             }

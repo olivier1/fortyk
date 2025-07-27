@@ -52,7 +52,7 @@
         </select>
         <input data-item-id="{{spec._id}}" class="skillItem item-text-input" type="text" data-target="system.mod.value" value="{{spec.system.mod.value}}" data-dtype="Number"/>
 
-        <span data-item-id="{{spec._id}}" class="rollable skillItem button" data-roll-type="skill" data-target="{{spec.system.total.value}}" data-label="{{spec.system.parent.value}}: {{spec.name}}" data-char="{{spec.system.characteristic.value}}">{{spec.system.total.value}}</span>
+        <span data-item-id="{{spec._id}}" class="rollable skillItem button" data-roll-type="skill" data-target="{{spec.system.total.value}}" data-label="{{spec.system.parent.value}}: {{spec.name}}" data-char="{{spec.system.characteristic.value}}" >{{spec.system.total.value}}</span>
         <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{spec._id}}"></a>
         <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{spec._id}}"></a>
 
@@ -78,7 +78,7 @@
         </select>
         <input data-item-id="{{skill._id}}" class="skillItem item-text-input" data-target="system.mod.value" type="text" value="{{skill.system.mod.value}}" data-dtype="Number"/>
 
-        <span class="rollable skillItem button" data-roll-type="skill" data-target="{{skill.system.total.value}}" data-label="{{skill.name}}" data-char="{{skill.system.characteristic.value}}" >{{skill.system.total.value}}</span>
+        <span class="rollable skillItem button" data-item-id="{{skill._id}}" data-roll-type="skill" data-target="{{skill.system.total.value}}" data-label="{{skill.name}}" data-char="{{skill.system.characteristic.value}}" >{{skill.system.total.value}}</span>
         <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{skill._id}}"></a>
         <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{skill._id}}"></a>
 

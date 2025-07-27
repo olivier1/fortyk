@@ -665,8 +665,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let testType=dataset["rollType"];
         var testTarget=parseInt(dataset["target"]);
         let tempMod=this.actor.system.secChar.tempMod.value;
+        let modifierTracker=[];
         if(tempMod){
             testTarget+=this.actor.system.secChar.tempMod.value;
+            modifierTracker.push({value:tempMod,label:"Temporary Modifier"});
             this.actor.update({"system.secChar.tempMod.value":0});
         }
 
@@ -674,8 +676,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         var testLabel=dataset["label"];
         var testChar=dataset["char"];
         let rating=dataset["rating"];
+        
         if(rating!==undefined){
             testTarget+=parseInt(rating);
+            modifierTracker.push({value:rating, label:"Rating"});
         }
         var item=null;
 
@@ -698,7 +702,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
         if(testType!=="focuspower"&&testType!=="rangedAttack"&&testType!=="meleeAttack"&&testType!=="sprayAttack"&&testType!=="torrentAttack"){
 
-            await FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false);
+            await FortykRollDialogs.callRollDialog(testChar, testType, testTarget, this.actor, testLabel, item, false, "", false, modifierTracker);
             return;
         }
         let attackOptions={};
@@ -736,11 +740,11 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
         }
         if(testType==="meleeAttack"){
-            FortykRollDialogs.callMeleeAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
+            FortykRollDialogs.callMeleeAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions, modifierTracker);
             return;
         }
         if(testType==="rangedAttack"){
-            FortykRollDialogs.callRangedAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
+            FortykRollDialogs.callRangedAttackDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions, modifierTracker);
             return;
         }
         if(testType==="focuspower"){
@@ -750,9 +754,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }else{
                 let training=item.system.training.value;
                 testLabel+=` at ${training} training`; 
+                modifierTracker.push({value:training,label:"Power Training"});
             }
 
-            FortykRollDialogs.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions);
+            FortykRollDialogs.callFocusPowerDialog(testChar, testType, testTarget, this.actor, testLabel, item, attackOptions, modifierTracker);
             return;
         }
 

@@ -441,7 +441,9 @@ export class FortyKItem extends Item {
                     item.flags.fortyk.purifyingflame=true;
                 }
                 if (item.type === "psychicPower") {
-                    var psyniscience = 0;
+                    let modifiers=[];
+                    item.system.modifiers=modifiers;
+                    let psyniscience = 0;
 
                     try {
                         psyniscience = actor.system.skills.psyniscience;
@@ -506,6 +508,9 @@ export class FortyKItem extends Item {
                         }
 
                         item.system.damageFormula.value = replaceScope(scope,item.system.damageFormula.formula);
+                        modifiers.push({value:char,label:"Power Base"});
+                        modifiers.push({value:training,label:"Power Training"});
+                        modifiers.push({value:parseInt(item.system.testMod.value),label:"Power Modifier"});
                         item.system.target.value = char + training + parseInt(item.system.testMod.value);
                     } else {
                         try {
@@ -556,6 +561,10 @@ export class FortyKItem extends Item {
                             char = parseInt(data.characteristics[item.system.testChar.value].total);
                             item.system.testChar.type = item.system.testChar.value;
                         }
+                        modifiers.push({value:char, label:"Power Base"});
+                        modifiers.push({value:derivedPR*10, label:"Psy Rating"});
+                        modifiers.push({value:parseInt(item.system.testMod.value),label:"Power Modifier"});
+                        modifiers.push({value:parseInt(data.psykana.mod.value),label:"Psykana Modifier"});
                         item.system.target.value =
                             parseInt(char) +
                             derivedPR * 10 +
