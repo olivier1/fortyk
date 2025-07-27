@@ -41,7 +41,7 @@
     {{#if (compareString skill.name spec.system.parent.value)}}
 
     <div class="skills-header grid grid-7col" name="skill">
-        <a class="skillSubItem item-descr" name="name"data-name="{{spec.name}}" data-item-descr="{{skill.system.description.value}}" title="Skill Use: {{skill.system.skillUse.value}}">{{spec.name}}</a>
+        <a class="skillSubItem item-descr" name="name" data-name="{{spec.name}}" data-item-descr="{{skill.system.description.value}}" title="Skill Use: {{skill.system.skillUse.value}}">{{spec.name}}</a>
         <select data-item-id="{{spec._id}}" class="skillItem skill-char">
             {{selectOptions ../../skillChars selected=spec.system.characteristic.value valueAttr="name" labelAttr="caps"}}
            
@@ -77,8 +77,13 @@
           
         </select>
         <input data-item-id="{{skill._id}}" class="skillItem item-text-input" data-target="system.mod.value" type="text" value="{{skill.system.mod.value}}" data-dtype="Number"/>
-
+        {{#if (contains skill.name "Dodge")}}
+        <span class="rollable skillItem button" data-item-id="{{skill._id}}" data-roll-type="evasion" data-target="{{skill.system.total.value}}" data-label="{{skill.name}}" data-char="{{skill.system.characteristic.value}}" >{{skill.system.total.value}}</span>
+        {{else if (contains skill.name "Parry")}}
+        <span class="rollable skillItem button" data-item-id="{{skill._id}}" data-roll-type="evasion" data-target="{{skill.system.total.value}}" data-label="{{skill.name}}" data-char="{{skill.system.characteristic.value}}" >{{skill.system.total.value}}</span>
+        {{else}}
         <span class="rollable skillItem button" data-item-id="{{skill._id}}" data-roll-type="skill" data-target="{{skill.system.total.value}}" data-label="{{skill.name}}" data-char="{{skill.system.characteristic.value}}" >{{skill.system.total.value}}</span>
+        {{/if}}
         <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{skill._id}}"></a>
         <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{skill._id}}"></a>
 
