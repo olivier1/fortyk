@@ -8,40 +8,40 @@
                 <div class="flexrow">
                     <div class="flexcol">
                         <label>Khorne:</label>
-                        <input type="text" name="system.secChar.corruption.khorne" value="{{system.secChar.corruption.khorne}}">
+                        <input type="number" name="system.secChar.corruption.khorne" value="{{system.secChar.corruption.khorne}}">
                     </div>
                     <div class="flexcol">
                         <label>Nurgle:</label>
-                        <input type="text" name="system.secChar.corruption.nurgle" value="{{system.secChar.corruption.nurgle}}">
+                        <input type="number" name="system.secChar.corruption.nurgle" value="{{system.secChar.corruption.nurgle}}">
                     </div>
                     <div class="flexcol">
                         <label>Slaanesh:</label>
-                        <input type="text" name="system.secChar.corruption.slaanesh" value="{{system.secChar.corruption.slaanesh}}">
+                        <input type="number" name="system.secChar.corruption.slaanesh" value="{{system.secChar.corruption.slaanesh}}">
                     </div>
                     <div class="flexcol">
                         <label>Tzeentch:</label>
-                        <input type="text" name="system.secChar.corruption.tzeentch" value="{{system.secChar.corruption.tzeentch}}">
+                        <input type="number" name="system.secChar.corruption.tzeentch" value="{{system.secChar.corruption.tzeentch}}">
                     </div>
                     {{#if actor.flags.fortyk.malice}}
                     <div class="flexcol">
                         <label>Malice:</label>
-                        <input type="text" name="system.secChar.corruption.malice" value="{{system.secChar.corruption.malice}}">
+                        <input type="number" name="system.secChar.corruption.malice" value="{{system.secChar.corruption.malice}}">
                     </div>
                     {{/if}}
 
                 </div>
                 <label>Total Corruption:</label>
-                <input type="text" name="system.secChar.corruption.value" value="{{system.secChar.corruption.value}}" disabled>
+                <input type="number" name="system.secChar.corruption.value" value="{{system.secChar.corruption.value}}" disabled>
             </div>
             {{else}}
             <label>Corruption:</label>
-            <input type="text" name="system.secChar.corruption.value" value="{{system.secChar.corruption.value}}">
+            <input type="number" name="system.secChar.corruption.value" value="{{system.secChar.corruption.value}}">
             {{/if}}
 
         </div>
         <div class="corr-item flexrow">
             <label>Malignancy Test Modifier:</label>
-            <input type="text" name="system.secChar.corruption.mod" value="{{system.secChar.corruption.mod}}" disabled>
+            <input type="number" name="system.secChar.corruption.mod" value="{{system.secChar.corruption.mod}}" disabled>
         </div>
         <div class="corr-item flexrow">
             <label class="malice-secret">Characteristics Used:</label>
@@ -87,11 +87,11 @@
         <div class="corruption flexcol">
             <div class="corr-item flexrow">
                 <label>Insanity:</label>
-                <input type="text" name="system.secChar.insanity.value" value="{{system.secChar.insanity.value}}">
+                <input type="number" name="system.secChar.insanity.value" value="{{system.secChar.insanity.value}}">
             </div>
             <div class="corr-item flexrow">
                 <label>Trauma Test Modifier:</label>
-                <input type="text" name="system.secChar.insanity.mod" value="{{system.secChar.insanity.mod}}" disabled>
+                <input type="number" name="system.secChar.insanity.mod" value="{{system.secChar.insanity.mod}}" disabled>
             </div>
             <div class="corr-item flexrow">
                 <label>Trauma:</label>

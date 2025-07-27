@@ -1105,6 +1105,9 @@ Hooks.on('createActiveEffect',async (ae,options,id)=>{
             }else{
                 await actor.setFlag("core",flag,true); 
             }
+            let statuses=actor.statuses;
+            statuses.add(flag);
+            actor.update({statuses:statuses});
 
         });
     }
@@ -1118,8 +1121,10 @@ Hooks.on('deleteActiveEffect',async (ae,options,id)=>{
             let flag=value1;
 
             await actor.setFlag("core",flag,false);
-
-        })
+            let statuses=actor.statuses;
+            statuses.delete(flag);
+            actor.update({statuses:statuses});
+        });
     }
 });
 /**

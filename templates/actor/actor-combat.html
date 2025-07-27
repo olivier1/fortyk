@@ -26,9 +26,9 @@
         <div class="flex-group-center">
             <label for="system.secChar.wounds.value" class="resource-label">Wounds</label>
             <div class="resource-content flexrow flex-center flex-between">
-                <input type="text" class="combat-resources" data-target="system.secChar.wounds.value" value="{{system.secChar.wounds.value}}" data-dtype="Number"/>
+                <input type="number" class="combat-resources" data-target="system.secChar.wounds.value" value="{{system.secChar.wounds.value}}" data-dtype="Number"/>
                 <span> / </span>
-                <input type="text" class="combat-resources" data-target="system.secChar.wounds.max" value="{{system.secChar.wounds.max}}" data-dtype="Number" {{#if alternateWounds}}disabled{{/if}}/>
+                <input type="number" class="combat-resources" data-target="system.secChar.wounds.max" value="{{system.secChar.wounds.max}}" data-dtype="Number" {{#if alternateWounds}}disabled{{/if}}/>
             </div>
 
         </div>
@@ -38,7 +38,7 @@
         <div class="flex-group-center">
             <label for="system.secChar.fatigue.value" class="resource-label">Fatigue</label>
             <div class="resource-content flexrow flex-center flex-between">
-                <input type="text" class="combat-resources" data-target="system.secChar.fatigue.value" value="{{system.secChar.fatigue.value}}" data-dtype="Number"/>
+                <input type="number" class="combat-resources" data-target="system.secChar.fatigue.value" value="{{system.secChar.fatigue.value}}" data-dtype="Number"/>
                 <span> / </span>
                 <span type="text">{{system.secChar.fatigue.max}}</span>
             </div>
@@ -47,15 +47,15 @@
         <div class="flex-group-center">
             <label for="system.fatigue.value" class="resource-label">Global Modifier</label>
             <div class="resource-content flexrow flex-center flex-between">
-                <input type="text" class="combat-resources" data-target="system.globalMOD.value" value="{{system.globalMOD.value}}" data-dtype="Number"/>
+                <input type="number" class="combat-resources" data-target="system.globalMOD.value" value="{{system.globalMOD.value}}" data-dtype="Number"/>
             </div>
         </div>
         <div class="flex-group-center">
             <label for="system.fatigue.value" class="resource-label">Fate</label>
             <div class="resource-content flexrow flex-center flex-between">
-                <input type="text" class="combat-resources" data-target="system.secChar.fate.value" value="{{system.secChar.fate.value}}" data-dtype="Number"/>
+                <input type="number" class="combat-resources" data-target="system.secChar.fate.value" value="{{system.secChar.fate.value}}" data-dtype="Number"/>
                 <span> / </span>
-                <input type="text" class="combat-resources" data-target="system.secChar.fate.max" value="{{system.secChar.fate.max}}" data-dtype="Number"/>
+                <input type="number" class="combat-resources" data-target="system.secChar.fate.max" value="{{system.secChar.fate.max}}" data-dtype="Number"/>
             </div>
         </div>
         {{#each actor.skills as |skill key|}}
@@ -107,7 +107,7 @@
 
                     <div class="list-item flexrow">
                         <label>PR: </label>
-                        <input type="text" class="item-text-input" data-target="system.curPR.value" data-item-id="{{this._id}}" value="{{this.system.curPR.value}}" data-dtype="Number">
+                        <input type="number" class="item-text-input" data-target="system.curPR.value" data-item-id="{{this._id}}" value="{{this.system.curPR.value}}" data-dtype="Number">
                     </div>
 
 
@@ -336,7 +336,7 @@
                 <div class="list-item flexrow">
                     <span>Current Clip: </span>
 
-                    <input class="item-text-input" type="text" data-target="system.clip.value"  value="{{this.system.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
+                    <input class="item-text-input" type="number" data-target="system.clip.value"  value="{{this.system.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
                     <span> / </span>
                     <span>{{this.system.clip.max}}</span>
 

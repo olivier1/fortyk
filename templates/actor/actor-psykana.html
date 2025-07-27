@@ -5,12 +5,12 @@
 
         <div class="flexrow list-item">
             <label>Psy Rating:</label>
-            <input type="text" class="combat-resources" data-target="system.psykana.pr.value" value="{{system.psykana.pr.value}}" data-dtype="Number" disabled/>
+            <input type="number" class="combat-resources" data-target="system.psykana.pr.value" value="{{system.psykana.pr.value}}" data-dtype="Number" disabled/>
 
         </div>
         <div class="flexrow list-item">
             <label>Bonus PR:</label>
-            <input type="text" class="combat-resources" data-target="system.psykana.pr.bonus" value="{{system.psykana.pr.bonus}}" data-dtype="Number"/>
+            <input type="number" class="combat-resources" data-target="system.psykana.pr.bonus" value="{{system.psykana.pr.bonus}}" data-dtype="Number"/>
 
         </div>
         <div class="flexrow list-item">
@@ -19,13 +19,13 @@
         </div>
         <div class="flexrow list-item">
             <label>Sustained Powers:</label>
-            <input type="text" class="combat-resources" data-target="system.psykana.pr.sustain" value="{{system.psykana.pr.sustain}}" data-dtype="Number" disabled/>
+            <input type="number" class="combat-resources" data-target="system.psykana.pr.sustain" value="{{system.psykana.pr.sustain}}" data-dtype="Number" disabled/>
 
         </div>
 
         <div class="flexrow list-item">
             <label>Phenomena Modifier:</label>
-            <input type="text" class="combat-resources" data-target="system.psykana.phenomena.value" value="{{system.psykana.phenomena.value}}" data-dtype="Number"/>
+            <input type="number" class="combat-resources" data-target="system.psykana.phenomena.value" value="{{system.psykana.phenomena.value}}" data-dtype="Number"/>
 
         </div>
 
@@ -39,7 +39,7 @@
         </div>
         <div class="flexrow list-item">
             <label>Psy Modifier:</label>
-            <input type="text" class="combat-resources" data-target="system.psykana.mod.value" data-dtype="Number" value="{{system.psykana.mod.value}}">
+            <input type="number" class="combat-resources" data-target="system.psykana.mod.value" data-dtype="Number" value="{{system.psykana.mod.value}}">
         </div>
         <div class="flexrow list-item">
             <label>Show:</label>
@@ -100,7 +100,7 @@
                 <label class="list-item">Subtype: {{power.system.subtype.value}}</label>
                 <div class="list-item flexrow">
                     <label>PR: </label>
-                    <input type="text" class="item-text-input" data-target="system.curPR.value" data-item-id="{{power._id}}" value="{{power.system.curPR.value}}" data-dtype="Number">
+                    <input type="number" class="item-text-input" data-target="system.curPR.value" data-item-id="{{power._id}}" value="{{power.system.curPR.value}}" data-dtype="Number">
                 </div>
 
 

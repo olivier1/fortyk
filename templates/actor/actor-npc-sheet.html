@@ -22,37 +22,37 @@
                 <div class="resource flex-group-center">
                     <label for="system.secChar.wounds.value" class="resource-label">Wounds</label>
                     <div class="resource-content flexrow flex-center flex-between">
-                        <input type="text" class="combat-resources" data-target="system.secChar.wounds.value" value="{{system.secChar.wounds.value}}" data-dtype="Number"/>
+                        <input type="number" class="combat-resources" data-target="system.secChar.wounds.value" value="{{system.secChar.wounds.value}}" data-dtype="Number"/>
 
                         <span> / </span>
-                        <input type="text" class="combat-resources" data-target="system.secChar.wounds.max" value="{{system.secChar.wounds.max}}" data-dtype="Number"/>
+                        <input type="number" class="combat-resources" data-target="system.secChar.wounds.max" value="{{system.secChar.wounds.max}}" data-dtype="Number"/>
 
                     </div>
                 </div>
                 <div class="resource flex-group-center">
                     <label for="system.secChar.fatigue.value" class="resource-label">Fatigue</label>
                     <div class="resource-content flexrow flex-center flex-between">
-                        <input type="text" class="combat-resources" data-target="system.secChar.fatigue.value" value="{{system.secChar.fatigue.value}}" data-dtype="Number"/>
+                        <input type="number" class="combat-resources" data-target="system.secChar.fatigue.value" value="{{system.secChar.fatigue.value}}" data-dtype="Number"/>
 
                         <span> / </span>
-                        <input type="text" class="combat-resources" data-target="system.secChar.fatigue.max" value="{{system.secChar.fatigue.max}}" data-dtype="Number" disabled/>
+                        <input type="number" class="combat-resources" data-target="system.secChar.fatigue.max" value="{{system.secChar.fatigue.max}}" data-dtype="Number" disabled/>
 
                     </div>
                 </div>
                 <div class="resource flex-group-center">
                     <label class="resource-label">Global Modifier</label>
                     <div class="resource-content flexrow flex-center flex-between">
-                        <input type="text" class="combat-resources" data-target="system.globalMOD.value" value="{{system.globalMOD.value}}" data-dtype="Number"/>
+                        <input type="number" class="combat-resources" data-target="system.globalMOD.value" value="{{system.globalMOD.value}}" data-dtype="Number"/>
 
                     </div>
                 </div>
                 <div class="resource flex-group-center">
                     <label class="resource-label">Fate</label>
                     <div class="resource-content flexrow flex-center flex-between">
-                        <input type="text" class="combat-resources" data-target="system.secChar.fate.value" value="{{system.secChar.fate.value}}" data-dtype="Number"/>
+                        <input type="number" class="combat-resources" data-target="system.secChar.fate.value" value="{{system.secChar.fate.value}}" data-dtype="Number"/>
 
                         <span> / </span>
-                        <input type="text" class="combat-resources" data-target="system.secChar.fate.max" value="{{system.secChar.fate.max}}" data-dtype="Number"/>
+                        <input type="number" class="combat-resources" data-target="system.secChar.fate.max" value="{{system.secChar.fate.max}}" data-dtype="Number"/>
                     </div>
                 </div>
 
@@ -121,7 +121,7 @@
                 {{#each system.characteristics as |char key|}}
                 {{#unless (compareString key "inf")}}
                 <div>
-                    <input type="text" class="combat-resources" data-target="system.characteristics.{{key}}.value" value="{{char.value}}" data-dtype="Number"/>
+                    <input type="number" class="combat-resources" data-target="system.characteristics.{{key}}.value" value="{{char.value}}" data-dtype="Number"/>
 
 
                 </div>
@@ -134,7 +134,7 @@
                 {{#each system.characteristics as |char key|}}
                 {{#unless (compareString key "inf")}}
                 <div>
-                    <input type="text" class="combat-resources" data-target="system.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number"/>
+                    <input type="number" class="combat-resources" data-target="system.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number"/>
 
                 </div>
                 {{/unless}}
@@ -311,7 +311,7 @@
                         <div class="list-item flexrow">
                             <span>Clip: </span>
 
-                            <input class="item-text-input" type="text" data-target="system.clip.value" value="{{this.system.clip.value}}" name="this.system.clip.value" data-item-id="{{this._id}}" data-dtype="Number">
+                            <input class="item-text-input" type="number" data-target="system.clip.value" value="{{this.system.clip.value}}" name="this.system.clip.value" data-item-id="{{this._id}}" data-dtype="Number">
                             <span> / </span>
                             <span>{{this.system.clip.max}}</span>
 
@@ -591,12 +591,12 @@
 
                 <div class="flexrow list-item">
                     <label>Psy Rating:</label>
-                    <input type="text" class="combat-resources" data-target="system.psykana.pr.value" value="{{system.psykana.pr.value}}" data-dtype="Number"/>
+                    <input type="number" class="combat-resources" data-target="system.psykana.pr.value" value="{{system.psykana.pr.value}}" data-dtype="Number"/>
 
                 </div>
                 <div class="flexrow list-item">
                     <label>Sustained Powers:</label>
-                    <input type="text" class="combat-resources" data-target="system.psykana.pr.sustain" value="{{system.psykana.pr.sustain}}" data-dtype="Number"/>
+                    <input type="number" class="combat-resources" data-target="system.psykana.pr.sustain" value="{{system.psykana.pr.sustain}}" data-dtype="Number"/>
 
                 </div>
                 <div class="flexrow list-item">
@@ -605,7 +605,7 @@
                 </div>
                 <div class="flexrow list-item">
                     <label>Phenomena Modifier:</label>
-                    <input type="text" class="combat-resources" data-target="system.psykana.phenomena.value" value="{{system.psykana.phenomena.value}}" data-dtype="Number"/>
+                    <input type="number" class="combat-resources" data-target="system.psykana.phenomena.value" value="{{system.psykana.phenomena.value}}" data-dtype="Number"/>
 
                 </div>
 
@@ -620,7 +620,7 @@
                 </div>
                 <div class="flexrow list-item">
                     <label>Psy Modifier:</label>
-                    <input type="text" name="system.psykana.mod.value" value="{{system.psykana.mod.value}}">
+                    <input type="number" name="system.psykana.mod.value" value="{{system.psykana.mod.value}}">
                 </div>
                 <div class="flexrow list-item2">
                     <label>Show:</label>
@@ -658,7 +658,7 @@
                         <label class="list-item">Subtype: {{power.system.subtype.value}}</label>
                         <div class="list-item flexrow">
                             <label>PR: </label>
-                            <input type="text" class="item-text-input" data-target="system.curPR.value" data-item-id="{{power._id}}" value="{{power.system.curPR.value}}" data-dtype="Number">
+                            <input type="number" class="item-text-input" data-target="system.curPR.value" data-item-id="{{power._id}}" value="{{power.system.curPR.value}}" data-dtype="Number">
                         </div>
 
 

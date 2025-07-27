@@ -50,7 +50,7 @@
             {{selectOptions ../../skillTraining selected=spec.system.value valueAttr="value" labelAttr="name"}}
            
         </select>
-        <input data-item-id="{{spec._id}}" class="skillItem item-text-input" type="text" data-target="system.mod.value" value="{{spec.system.mod.value}}" data-dtype="Number"/>
+        <input data-item-id="{{spec._id}}" class="skillItem item-text-input" type="number" data-target="system.mod.value" value="{{spec.system.mod.value}}" data-dtype="Number"/>
 
         <span data-item-id="{{spec._id}}" class="rollable skillItem button" data-roll-type="skill" data-target="{{spec.system.total.value}}" data-label="{{spec.system.parent.value}}: {{spec.name}}" data-char="{{spec.system.characteristic.value}}" >{{spec.system.total.value}}</span>
         <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{spec._id}}"></a>
@@ -76,7 +76,7 @@
             {{selectOptions ../skillTraining selected=skill.system.value valueAttr="value" labelAttr="name"}}
           
         </select>
-        <input data-item-id="{{skill._id}}" class="skillItem item-text-input" data-target="system.mod.value" type="text" value="{{skill.system.mod.value}}" data-dtype="Number"/>
+        <input data-item-id="{{skill._id}}" class="skillItem item-text-input" data-target="system.mod.value" type="number" value="{{skill.system.mod.value}}" data-dtype="Number"/>
         {{#if (contains skill.name "Dodge")}}
         <span class="rollable skillItem button" data-item-id="{{skill._id}}" data-roll-type="evasion" data-target="{{skill.system.total.value}}" data-label="{{skill.name}}" data-char="{{skill.system.characteristic.value}}" >{{skill.system.total.value}}</span>
         {{else if (contains skill.name "Parry")}}
