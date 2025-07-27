@@ -249,14 +249,14 @@ export class FortykRollDialogs{
             let mod=char.mod;
             modifierTracker.push({value:base,label:"Characteristic Base"});
             modifierTracker.push({value:adv,label:"Caracteristic Advance"});
-            modifierTracker.push({value:mod,label:"Characteristic Modifier"})
+            modifierTracker.push({value:mod,label:"Characteristic Modifier"});
         }
 
         let global=actor.system.globalMOD.value;
         modifierTracker.push({value:global,label:"Global modifier"});
         if(testType==="skill"||testType==="evasion"){
-            let training=item.system.value;
-            let skillMod=item.system.mod.value;
+            let training=item?.system?.value;
+            let skillMod=item?.system?.mod?.value;
             modifierTracker.push({value:training, label:"Skill Training"});
             modifierTracker.push({value:skillMod, label:"Skill Modifier"});
         }
