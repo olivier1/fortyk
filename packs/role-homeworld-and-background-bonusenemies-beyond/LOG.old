@@ -1,7 +1,3 @@
-2025/07/27-18:08:22.166 70c0 Recovering log #3178
-2025/07/27-18:08:22.177 70c0 Delete type=0 #3178
-2025/07/27-18:08:22.178 70c0 Delete type=3 #3176
-2025/07/27-19:33:57.340 4474 Level-0 table #3183: started
-2025/07/27-19:33:57.340 4474 Level-0 table #3183: 0 bytes OK
-2025/07/27-19:33:57.344 4474 Delete type=0 #3181
-2025/07/27-19:33:57.345 4474 Manual compaction at level-0 from '!items!7sr5848zV2n1ranp' @ 72057594037927935 : 1 .. '!items!yz6QnrTImjmcscA0' @ 0 : 0; will stop at (end)
+2025/07/27-19:34:04.562 7354 Recovering log #3182
+2025/07/27-19:34:04.573 7354 Delete type=0 #3182
+2025/07/27-19:34:04.573 7354 Delete type=3 #3180

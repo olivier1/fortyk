@@ -185,9 +185,10 @@ returns the roll message*/
                 actor.update({"system.knight.heat.value":newHeat});
             }
         }
+        let rollValue=roll.dice[0].values[0];
         //calculate degrees of failure and success
         if((testResult&&testRoll<96||testRoll===1)&&!jam){
-            testDos=Math.floor(Math.abs(roll._total)/10)+1+Math.ceil(charObj.uB/2);
+            testDos=Math.abs(Math.floor(target/10)-Math.floor(rollValue/10))+1+Math.ceil(charObj.uB/2);
             //close quarter combat dos bonus
             if(attack&&actor.getFlag("fortyk","closequarterdiscipline")){
                 let attackRange=actor.system.secChar.lastHit.attackRange;
@@ -219,7 +220,7 @@ returns the roll message*/
             templateOptions["pass"]="Success!";
             templateOptions["success"]=true;
         }else{
-            testDos=Math.floor(Math.abs(roll._total)/10)+1;
+            testDos=Math.abs(Math.floor(rollValue/10)-Math.floor(target/10))+1;
             templateOptions["dos"]="with "+testDos.toString()+" degree";
             if(testDos===1){}else{templateOptions["dos"]+="s";}
             templateOptions["dos"]+=" of failure!";
