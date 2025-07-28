@@ -550,9 +550,11 @@ export class FortyKItem extends Item {
                             item.system.pen.value = "";
                             item.system.damageFormula.value = "";
                         }
-                        let derivedPR = Math.abs(
-                            parseInt(data.psykana.pr.effective) - parseInt(item.system.curPR.value)
-                        );
+                        let derivedPR = parseInt(data.psykana.pr.effective) - parseInt(item.system.curPR.value);
+    
+                        if(game.settings.get("fortyk","pushingPRHouseRule")){
+                            derivedPR=Math.abs(derivedPR);
+                        }
                         let char = 0;
                         if (item.system.testChar.value === "psy") {
                             char = psyniscience;

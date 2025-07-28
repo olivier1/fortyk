@@ -186,9 +186,15 @@ returns the roll message*/
             }
         }
         let rollValue=roll.dice[0].values[0];
+        let dosHouseRule=game.settings.get("fortyk","dosHouseRule");
         //calculate degrees of failure and success
         if((testResult&&testRoll<96||testRoll===1)&&!jam){
-            testDos=Math.abs(Math.floor(target/10)-Math.floor(rollValue/10))+1+Math.ceil(charObj.uB/2);
+            if(dosHouseRule){
+                testDos=Math.abs(Math.floor(roll._total/10)+1+Math.ceil(charObj.uB/2));
+            }else{
+               testDos=Math.abs(Math.floor(target/10)-Math.floor(rollValue/10))+1+Math.ceil(charObj.uB/2); 
+            }
+            
             //close quarter combat dos bonus
             if(attack&&actor.getFlag("fortyk","closequarterdiscipline")){
                 let attackRange=actor.system.secChar.lastHit.attackRange;
@@ -220,7 +226,12 @@ returns the roll message*/
             templateOptions["pass"]="Success!";
             templateOptions["success"]=true;
         }else{
-            testDos=Math.abs(Math.floor(rollValue/10)-Math.floor(target/10))+1;
+            if(dosHouseRule){
+                testDos=Math.floor(Math.abs(roll._total)/10)+1;
+            }else{
+               testDos=Math.abs(Math.floor(rollValue/10)-Math.floor(target/10))+1; 
+            }
+            
             templateOptions["dos"]="with "+testDos.toString()+" degree";
             if(testDos===1){}else{templateOptions["dos"]+="s";}
             templateOptions["dos"]+=" of failure!";
