@@ -340,7 +340,7 @@
                 </div>
 
                 <div class="flexrow-nowrap">
-                    <span>Stuctural integrity: </span> <input type="text" class="combat-resources" data-target="system.secChar.wounds.value" value="{{system.secChar.wounds.value}}" data-dtype="Number"/>/{{system.secChar.wounds.max}}
+                    <span>Stuctural integrity: </span> <input type="number" class="combat-resources" data-target="system.secChar.wounds.value" value="{{system.secChar.wounds.value}}" data-dtype="Number"/>/{{system.secChar.wounds.max}}
                 </div>
                 <span>Armor: {{system.knight.armorValues.value}}/{{system.knight.armorValues.max}}</span>
 
@@ -493,7 +493,7 @@
                 {{#if system.knight.core}}
 
                 <div class="core core-color filled-slot">
-                    <input class="item-text-input core-input" type="text" data-target="system.state.value"  value="{{system.knight.core.system.state.value}}" data-item-id="{{system.knight.core.id}}" data-dtype="Number">
+                    <input class="item-text-input core-input" type="number" data-target="system.state.value"  value="{{system.knight.core.system.state.value}}" data-item-id="{{system.knight.core.id}}" data-dtype="Number">
 
                     <span>{{system.knight.core.name}}</span>
                     <div class="flexrow-nowrap">
@@ -824,19 +824,19 @@
             </div>
             <div class="info3 mechgrid-child">
                 <div class="flexrow flex-group-center">
-                    <span>Front Armor: </span><input type="text" class="combat-resources" data-target="system.facings.front.armor" value="{{system.facings.front.armor}}" data-dtype="Number"/><span>/{{system.knight.armorValues.sideMax}}</span>
+                    <span>Front Armor: </span><input type="number" class="combat-resources" data-target="system.facings.front.armor" value="{{system.facings.front.armor}}" data-dtype="Number"/><span>/{{system.knight.armorValues.sideMax}}</span>
                 </div>
 
                 <div class="flexrow flex-group-center">
-                    <span>Left Side Armor: </span><input type="text" class="combat-resources" data-target="system.facings.lSide.armor" value="{{system.facings.lSide.armor}}" data-dtype="Number"/><span>{{#if system.facings.lSide.shield}}+{{system.facings.lSide.shield}}{{/if}}/{{system.knight.armorValues.sideMax}}</span>
+                    <span>Left Side Armor: </span><input type="number" class="combat-resources" data-target="system.facings.lSide.armor" value="{{system.facings.lSide.armor}}" data-dtype="Number"/><span>{{#if system.facings.lSide.shield}}+{{system.facings.lSide.shield}}{{/if}}/{{system.knight.armorValues.sideMax}}</span>
                 </div>
 
                 <div class="flexrow flex-group-center">
-                    <span>Right Side Armor: </span> <input type="text" class="combat-resources" data-target="system.facings.rSide.armor" value="{{system.facings.rSide.armor}}" data-dtype="Number"/><span>{{#if system.facings.rSide.shield}}+{{system.facings.rSide.shield}}{{/if}}/{{system.knight.armorValues.sideMax}}</span>
+                    <span>Right Side Armor: </span> <input type="number" class="combat-resources" data-target="system.facings.rSide.armor" value="{{system.facings.rSide.armor}}" data-dtype="Number"/><span>{{#if system.facings.rSide.shield}}+{{system.facings.rSide.shield}}{{/if}}/{{system.knight.armorValues.sideMax}}</span>
                 </div>
 
                 <div class="flexrow flex-group-center">
-                    <span>Rear Armor: </span><input type="text" class="combat-resources" data-target="system.facings.rear.armor" value="{{system.facings.rear.armor}}" data-dtype="Number"/><span>/{{system.knight.armorValues.sideMax}}</span>
+                    <span>Rear Armor: </span><input type="number" class="combat-resources" data-target="system.facings.rear.armor" value="{{system.facings.rear.armor}}" data-dtype="Number"/><span>/{{system.knight.armorValues.sideMax}}</span>
                 </div>
                 <div class="flexrow flex-group-center">
                     <span>Armor Weight: {{system.knight.tonnage.armor}}</span>

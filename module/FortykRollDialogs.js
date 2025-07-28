@@ -288,7 +288,7 @@ export class FortykRollDialogs{
 
         return await Dialog.wait({
             title: title,
-            content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="${modifier}" autofocus/></p>`,
+            content: `<p><label>Modifier:</label> <input id="modifier" type="number" name="modifier" value="${modifier}" autofocus/></p>`,
             buttons: {
                 submit: {
                     label: 'OK',
@@ -367,7 +367,7 @@ export class FortykRollDialogs{
 
         return await Dialog.prompt({
             title: "Melding test",
-            content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="${modifier}" autofocus/></p>`,
+            content: `<p><label>Modifier:</label> <input id="modifier" type="number" name="modifier" value="${modifier}" autofocus/></p>`,
             callback: async(html) => {
                 const bonus = Number($(html).find('input[name="modifier"]').val());
                 if(isNaN(bonus)){
@@ -1648,7 +1648,7 @@ export class FortykRollDialogs{
     static async callForcefieldDialog(forcefield,actor,title="Enter number of hits"){
         new Dialog({
             title: title,
-            content: `<p><label>Number of Hits:</label> <input id="modifier" type="text" name="modifier" value="1" autofocus/></p>`,
+            content: `<p><label>Number of Hits:</label> <input id="modifier" type="number" name="modifier" value="1" autofocus/></p>`,
             buttons: {
                 submit: {
                     label: 'OK',

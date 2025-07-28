@@ -12,19 +12,19 @@
                 <div class="descrRow flexcol">
                     <span class="char-total" data-roll-type="char" data-target="{{system.crew.ratingTotal}}" data-label="Crew Rating" data-char="">Pilot Rating:</span>
                     <span class="descrSpan"></span>
-                    <input type="text" class="combat-resources" data-target="system.crew.rating" value="{{system.crew.rating}}" data-dtype="Number" {{#if system.crew.pilotID}}disabled{{/if}}/>
+                    <input type="number" class="combat-resources" data-target="system.crew.rating" value="{{system.crew.rating}}" data-dtype="Number" {{#if system.crew.pilotID}}disabled{{/if}}/>
                 </div>
 
                 <div class="descrRow flexcol">
                     <span class="char-total" data-roll-type="char" data-target="{{system.crew.ws}}" data-label="Crew WS" data-char="">Pilot WS:</span>
                     <span class="descrSpan"></span>
-                    <input type="text" class="combat-resources" data-target="system.crew.ws" value="{{system.crew.ws}}" data-dtype="Number" {{#if system.crew.pilotID}}disabled{{/if}}/>
+                    <input type="number" class="combat-resources" data-target="system.crew.ws" value="{{system.crew.ws}}" data-dtype="Number" {{#if system.crew.pilotID}}disabled{{/if}}/>
                 </div>
 
                 <div class="descrRow flexcol">
                     <span class="char-total" data-roll-type="char" data-target="{{system.crew.bs}}" data-label="Crew BS" data-char="">Pilot BS:</span>
                     <span class="descrSpan"></span>
-                    <input type="text" class="combat-resources" data-target="system.crew.bs" value="{{system.crew.bs}}" data-dtype="Number" {{#if system.crew.pilotID}}disabled{{/if}}/>
+                    <input type="number" class="combat-resources" data-target="system.crew.bs" value="{{system.crew.bs}}" data-dtype="Number" {{#if system.crew.pilotID}}disabled{{/if}}/>
                 </div>
                 {{#if system.crew.pilotID}}
                 {{#if flags.fortyk.melded}}
@@ -52,7 +52,7 @@
 
             <div class="descrRow flexcol">
                 <span class="descrSpan">Manoeuvrability:</span>
-                <input type="text" class="combat-resources" data-target="system.secChar.manoeuvrability.value" value="{{system.secChar.manoeuvrability.value}}" data-dtype="Number" disabled/>
+                <input type="number" class="combat-resources" data-target="system.secChar.manoeuvrability.value" value="{{system.secChar.manoeuvrability.value}}" data-dtype="Number" disabled/>
             </div>
 
             <div class="descrRow flexcol">
@@ -71,9 +71,9 @@
             <div class="descrRow flexcol">
                 <label for="system.secChar.wounds.value" class="resource-label">Structural Integrity</label>
                 <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" class="combat-resources" data-target="system.secChar.wounds.value" value="{{system.secChar.wounds.value}}" data-dtype="Number"/>
+                    <input type="number" class="combat-resources" data-target="system.secChar.wounds.value" value="{{system.secChar.wounds.value}}" data-dtype="Number"/>
                     <span>/</span>
-                    <input type="text" class="combat-resources" data-target="system.secChar.wounds.max" value="{{system.secChar.wounds.max}}" data-dtype="Number" disabled/>
+                    <input type="number" class="combat-resources" data-target="system.secChar.wounds.max" value="{{system.secChar.wounds.max}}" data-dtype="Number" disabled/>
                 </div>
             </div>
             <div class="descrRow flexcol">
@@ -85,9 +85,9 @@
 
                 {{/if}}
                 <div class="resource-content flexrow flex-center flex-between">
-                    <input type="text" class="combat-resources" data-target="system.knight.heat.value" value="{{system.knight.heat.value}}" data-dtype="Number"/>
+                    <input type="number" class="combat-resources" data-target="system.knight.heat.value" value="{{system.knight.heat.value}}" data-dtype="Number"/>
                     <span>/</span>
-                    <input type="text" class="combat-resources" data-target="system.knight.heat.max" value="{{system.knight.heat.max}}" data-dtype="Number" disabled/>
+                    <input type="number" class="combat-resources" data-target="system.knight.heat.max" value="{{system.knight.heat.max}}" data-dtype="Number" disabled/>
 
                 </div>
 
@@ -313,7 +313,7 @@
                         <div class="list-item flexrow">
                             <span>Current Clip: </span>
 
-                            <input class="item-text-input" type="text" data-target="system.clip.value"  value="{{this.system.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
+                            <input class="item-text-input" type="number" data-target="system.clip.value"  value="{{this.system.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
                             <span> / </span>
                             <span>{{this.system.clip.max}}</span>
 
@@ -529,7 +529,7 @@
                         <div class="list-item flexrow">
                             <span>Current Clip: </span>
 
-                            <input class="item-text-input" type="text" data-target="system.clip.value"  value="{{this.system.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
+                            <input class="item-text-input" type="number" data-target="system.clip.value"  value="{{this.system.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
                             <span> / </span>
                             <span>{{this.system.clip.max}}</span>
 
@@ -742,7 +742,7 @@
                         <div class="list-item flexrow">
                             <span>Current Clip: </span>
 
-                            <input class="item-text-input" type="text" data-target="system.clip.value"  value="{{this.system.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
+                            <input class="item-text-input" type="number" data-target="system.clip.value"  value="{{this.system.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
                             <span> / </span>
                             <span>{{this.system.clip.max}}</span>
 
@@ -963,7 +963,7 @@
                         <div class="list-item flexrow">
                             <span>Current Clip: </span>
 
-                            <input class="item-text-input" type="text" data-target="system.clip.value"  value="{{this.system.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
+                            <input class="item-text-input" type="number" data-target="system.clip.value"  value="{{this.system.clip.value}}" data-item-id="{{this.id}}" data-dtype="Number">
                             <span> / </span>
                             <span>{{this.system.clip.max}}</span>
 
