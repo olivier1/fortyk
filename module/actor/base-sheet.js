@@ -48,7 +48,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         data.money=game.settings.get("fortyk","dhMoney");
         data.alternateWounds=game.settings.get("fortyk","alternateWounds");
         data.bcCorruption=game.settings.get("fortyk","bcCorruption");
-        data.greyKnights=game.settings.get("fortyk","greyKnights");
         data.coverTypes=game.fortyk.FORTYK.coverTypes;
 
         return data;

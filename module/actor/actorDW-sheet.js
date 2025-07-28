@@ -211,6 +211,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             html.find('.feature-plus-minus').change(this._onFeaturePlusMinusChange.bind(this));
             html.find('.aptitude-any').change(this._onAptitudeAnyChange.bind(this));
             html.find('.char-spent').focusout(this._onCharSpentInput.bind(this));
+            html.find('.char-spent').keydown(this._onCharSpentInputConfirm.bind(this));
             html.find('.any-skill-icon').click(this._onConfirmAnySkillChoice.bind(this));
             html.find('.any-spec-icon').click(this._onConfirmAnySpecChoice.bind(this));
             html.find('.duplicate-aptitude-icon').click(this._onConfirmAptitudeChoice.bind(this));
@@ -619,6 +620,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         update[id]=aptitude;
         actor.update(update);
         this.render();
+    }
+    _onCharSpentInputConfirm(event){
+        if(event.key === 'Enter'){
+            this._onCharSpentInput(event);
+        }
     }
     _onCharSpentInput(event){
         var element = event.target;

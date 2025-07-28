@@ -390,7 +390,11 @@ export class FortyKActor extends Actor {
 
                     //total weight calcs
                     item.system.weight.total=(parseInt(item.system.amount.value)*parseFloat(item.system.weight.value)).toFixed(2);
+                    if(item.system.weight.total==="NaN")item.system.weight.total=0;
+                    console.log(item.system.weight.total)
                     data.carry.value=(parseFloat(data.carry.value)+parseFloat(item.system.weight.total)).toFixed(2);
+                    if(!data.carry.value)data.carry.value=0;
+                   
                 }
                 var twohand=false;
                 if(item.type==="rangedWeapon"){
@@ -1531,11 +1535,7 @@ export class FortyKActor extends Actor {
                         break;
                 }
             }
-            if(item.type==="meleeWeapon"||item.type==="rangedWeapon"||item.type==="forceField"||item.type==="wargear"||item.type==="ammunition"||item.type==="consummable"||item.type==="armor"||item.type==="mod"){
-                //total weight calcs
-                item.system.weight.total=(parseInt(item.system.amount.value)*parseFloat(item.system.weight.value)).toFixed(2);
-                // item.system.weight.total=(parseInt(item.system.amount.value)*parseFloat(item.system.weight.value)).toFixed(2);
-            }
+            
             if(item.type==="meleeWeapon"){
 
                 meleeweapons.push(item);
