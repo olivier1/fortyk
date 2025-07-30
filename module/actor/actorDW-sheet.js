@@ -469,6 +469,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
 
                 let ORArray=[];
+                currentItem.checked=true;
                 ORArray.push(currentItem);
                 let j=i+1;
                 let nextItem=originArray[j];

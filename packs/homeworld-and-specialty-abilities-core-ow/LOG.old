@@ -1,8 +1,3 @@
-2025/07/30-12:24:57.476 2aa4 Recovering log #3184
-2025/07/30-12:24:57.485 2aa4 Delete type=0 #3184
-2025/07/30-12:24:57.485 2aa4 Delete type=3 #3183
-2025/07/30-13:58:40.265 404 Level-0 table #3188: started
-2025/07/30-13:58:40.265 404 Level-0 table #3188: 0 bytes OK
-2025/07/30-13:58:40.269 404 Delete type=0 #3186
-2025/07/30-13:58:40.274 404 Manual compaction at level-0 from '!items!1NCxDczhirh2RU1b' @ 72057594037927935 : 1 .. '!items!vHywn8ruqKZEGcva' @ 0 : 0; will stop at (end)
-2025/07/30-13:58:40.274 404 Manual compaction at level-1 from '!items!1NCxDczhirh2RU1b' @ 72057594037927935 : 1 .. '!items!vHywn8ruqKZEGcva' @ 0 : 0; will stop at (end)
+2025/07/30-13:58:43.531 5584 Recovering log #3187
+2025/07/30-13:58:43.540 5584 Delete type=0 #3187
+2025/07/30-13:58:43.540 5584 Delete type=3 #3185

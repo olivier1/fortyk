@@ -1,8 +1,3 @@
-2025/07/30-12:24:57.794 5d9c Recovering log #840
-2025/07/30-12:24:57.805 5d9c Delete type=0 #840
-2025/07/30-12:24:57.805 5d9c Delete type=3 #839
-2025/07/30-13:58:40.352 404 Level-0 table #844: started
-2025/07/30-13:58:40.353 404 Level-0 table #844: 0 bytes OK
-2025/07/30-13:58:40.356 404 Delete type=0 #842
-2025/07/30-13:58:40.369 404 Manual compaction at level-0 from '!folders!CCWjYGVzsijZAm15' @ 72057594037927935 : 1 .. '!tables.results!z7rcX1ds2D0wJGOP.xyeFtwjr0VROet5P' @ 0 : 0; will stop at (end)
-2025/07/30-13:58:40.370 404 Manual compaction at level-1 from '!folders!CCWjYGVzsijZAm15' @ 72057594037927935 : 1 .. '!tables.results!z7rcX1ds2D0wJGOP.xyeFtwjr0VROet5P' @ 0 : 0; will stop at (end)
+2025/07/30-13:58:43.806 5d9c Recovering log #843
+2025/07/30-13:58:43.816 5d9c Delete type=0 #843
+2025/07/30-13:58:43.816 5d9c Delete type=3 #841
