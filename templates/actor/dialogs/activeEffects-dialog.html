@@ -1,21 +1,24 @@
 
 <div id="aeMod" class="aeMod">
+    <div class="grid grid-3col">
+        {{#each actor.effects as |ae key|}}
+        <div class="flexrow list-item">
 
-    {{#each actor.effects as |ae key|}}
-    <div class="flexrow">
+            <a class="ae" data-ae-id="{{this.uuid}}" >{{this.name}}</a>
+            <a class="ae-delete item-delete" title="Delete" data-ae-id="{{this.uuid}}" ></a>
+        </div>
+        {{/each}}
+        {{#each item.effects as |ae key|}}
+        <div class="flexrow list-item">
 
-        <a class="ae" data-ae-id="{{this.uuid}}" >{{this.name}}</a>
-        <a class="ae-delete item-delete" title="Delete" data-ae-id="{{this.uuid}}" ></a>
+            <a class="ae" data-ae-id="{{this.uuid}}" >{{this.name}}</a>
+            <a class="ae-delete item-delete" title="Delete" data-ae-id="{{this.uuid}}" ></a>
+        </div>
+        {{/each}}
     </div>
-    {{/each}}
-    {{#each item.effects as |ae key|}}
-    <div class="flexrow">
 
-        <a class="ae" data-ae-id="{{this.uuid}}" >{{this.name}}</a>
-        <a class="ae-delete item-delete" title="Delete" data-ae-id="{{this.uuid}}" ></a>
-    </div>
-    {{/each}}
-    <a class="ae-create button" title="Add Ae" data-item-id="{{item.uuid}}" data-actor-id="{{actor.id}}" data-token-id="{{../actor.token.id}}">Add Active Effect</a>
+    <a class="ae-create aeMod button" title="Add Ae" data-item-id="{{item.uuid}}" data-actor-id="{{actor.id}}" data-token-id="{{../actor.token.id}}">Add Active Effect</a>
+
+
 
 </div>
-

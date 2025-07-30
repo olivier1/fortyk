@@ -87,7 +87,7 @@ export class ActiveEffectDialog extends Dialog {
                 }
             },
             default: "submit"
-        }).render(true)
+        }).render(true);
 
 
 

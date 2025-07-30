@@ -1,3 +1,7 @@
-2025/07/27-19:34:05.073 5dbc Recovering log #477
-2025/07/27-19:34:05.083 5dbc Delete type=0 #477
-2025/07/27-19:34:05.084 5dbc Delete type=3 #475
+2025/07/30-12:24:57.852 5584 Recovering log #490
+2025/07/30-12:24:57.862 5584 Delete type=0 #490
+2025/07/30-12:24:57.862 5584 Delete type=3 #489
+2025/07/30-13:58:40.365 404 Level-0 table #494: started
+2025/07/30-13:58:40.365 404 Level-0 table #494: 0 bytes OK
+2025/07/30-13:58:40.369 404 Delete type=0 #492
+2025/07/30-13:58:40.370 404 Manual compaction at level-0 from '!folders!2i1FBjUl6xwK7N8E' @ 72057594037927935 : 1 .. '!journal.pages!y4MCUgA6fgVw68My.tmz6j58lZGJG8Kgy' @ 0 : 0; will stop at (end)
