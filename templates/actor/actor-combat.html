@@ -248,13 +248,13 @@
 
             </div>
             {{#each wornGear.weapons}}
-        
+
             {{#if (contains this.type "ranged")}}
 
             <div class="weapons grid grid-2col">
                 <div class="weapon-name">
                     {{#if flags.fortyk.alternateprofiles}}
-                    
+
                     <select class="profile-select" data-id="{{this.id}}">
                         {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
                     </select>
@@ -319,10 +319,10 @@
                     <label>Current Ammo:</label>
                     <select class="weapon-ammo" data-weapon="{{this.id}}" data-previous="{{this.system.ammo._id}}">
 
-                       
+
                         <option value="">None</option>
                         {{selectOptions this.validAmmos selected=this.system.ammo._id valueAttr="_id" labelAttr="label"}}
-                        
+
 
                     </select>
                 </div>
@@ -538,18 +538,22 @@
                 {{#if system.secChar.wornGear.armor}}
                 <div class="flexcol">
                     <Label class="section-title">Armor Special Qualities</Label>
-                    {{#each system.secChar.wornGear.armor.flags.fortyk as |flag key|}}
-                   
+                    <div class="flexrow fit-content">
+                        {{#each system.secChar.wornGear.armor.flags.fortyk as |flag key|}}
+
 
 
                         {{#if (checkSpecial this)}}
 
                         {{#with (lookup ../FORTYK.armorFlags [key])~}}
                         <a class="item-descr fit-content" data-name="{{label}}" data-item-descr="{{description}}" >
-
+                            
                             {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
+                        
                         {{/if}}
-                    {{/each}}
+                        {{/each}}
+                    </div>
+
                 </div>
                 {{/if}}
                 <div class="flexcol">

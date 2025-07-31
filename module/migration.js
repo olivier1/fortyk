@@ -1,29 +1,37 @@
 
-let upd=async ()=>{
-    for ( let a of game.actors.entities ) {
-        let weps=[]
-        for (let i of a.items){
-            if(i.type==="rangedWeapon")
-            try {
-                
-
-              let updateData={};
-               
-
-                console.log(`Migrating Item entity ${i.name}`);
-              await a.updateEmbeddedDocuments("Item",updateData);
-                //weps.push(i);
-
-            } catch(err) {
-                console.error(err);
-            } 
+export async function migrate(sysVer){
+    if(!game.user.isGM)return;
+    if(foundry.utils.isNewerVersion(sysVer,"3.3.1")){
+        
+    }else if(foundry.utils.isNewerVersion(sysVer,"3.3")){
+        
+        if(!game.user.getFlag("fortyk","3-3-xMigration")){
+            console.log("Starting system migration for 3.3.x...");
+            
+            let actors= game.actors;
+            console.log(actors)
+            for(const actor of actors){
+                let updates=[];
+                let items=actor.items;
+                for(const item of items){
+                    if( item.flags){
+                        if(!item.flags.fortyk){
+                            console.log(`Updating ${item.name} of ${actor.name}.`);
+                            updates.push({_id:item.id,"flags.fortyk":{}});
+                           
+                            console.log(`Success!`);
+                        }
+                    }else{
+                        console.log(`Updating ${item.name} of ${actor.name}.`);
+                        updates.push({_id:item.id,"flags.fortyk":{}});
+                        console.log(`Success!`);
+                    }
+                }
+                await Item.updateDocuments(updates, {parent: actor});
+            }
+            console.log(`Update complete.`);
+            game.user.setFlag("fortyk","3-3-xMigration", true);
         }
-        //console.log(await a.updateEmbeddedDocuments("Item",weps));
     }
 }
 
-
-
-upd();
-//const model = game.system.model.Actor[actorData.type];
-// actor.system = filterObject(actor.system, model);

@@ -28,8 +28,9 @@ import {ActiveEffectDialog} from "./dialog/activeEffect-dialog.js";
 import {FortyKCards} from "./card/card.js";
 import {FortykTemplate} from "./measuredTemplate/template.js";
 import {objectByString} from "./utilities.js";
+import {migrate} from "./migration.js";
 Hooks.once('init', async function() {
-
+   
     game.fortyk = {
         FortyKActor,
         FortyKItem,
@@ -180,7 +181,9 @@ Hooks.once('init', async function() {
         return false;
     });
 });
-Hooks.once("setup", function() {
+Hooks.once("setup", async function() {
+     let systemVer=game.system.version;
+    await migrate(systemVer);
 });
 //HOOKS
 Hooks.once('ready', async function() {

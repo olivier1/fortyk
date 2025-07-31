@@ -481,11 +481,13 @@ export class FortyKActor extends Actor {
                         data.secChar.wornGear.weapons.push(item);
                     }*/
                 }
-                if (!this.getFlag("fortyk", "homeinarmor") && item.type === "armor" && item.system.isEquipped) {
+                if (item.type === "armor" && item.system.isEquipped) {
                     data.secChar.wornGear.armor = item;
                     //set max agi from equipped armor
-
-                    data.characteristics.agi.max = item.system.maxAgi.value;
+                    if(!this.getFlag("fortyk", "homeinarmor")){
+                        data.characteristics.agi.max = item.system.maxAgi.value;
+                    }
+                    
                     if (item.getFlag("fortyk", "irongrip")) {
                         this.flags.fortyk.irongrip = true;
                     } else {
@@ -1844,6 +1846,7 @@ export class FortyKActor extends Actor {
         const talentsntraits = [];
         const forceFields = [];
         const upgrades = [];
+        const armors = [];
         //iterate over items and add relevant things to character stuff, IE: adding up exp, weight etc
         //apply logic to items that depends on actor data so that it updates readily when the actor is updated
         //put all items in their respective containers and do some item logic
@@ -1876,6 +1879,7 @@ export class FortyKActor extends Actor {
         actorData.meleeWeapons = meleeWeapons;
         actorData.rangedWeapons = rangedWeapons;
         actorData.talentsntraits = talentsntraits;
+        actorData.armors = armors;
         actorData.forceFields = forceFields;
 
         try {
@@ -2625,8 +2629,12 @@ export class FortyKActor extends Actor {
     getScope() {
         let system = this.system;
         let characteristics = system.characteristics;
-        if (this.type === "vehicle" || this.type === "spaceship") return {};
-        let pr = system.psykana.pr.effective;
+       let pr;
+        try {
+            pr = system.psykana.pr.effective;
+        } catch (e) {
+            return {};
+        }
         if (!this.system.isPrepared) {
             for (let [key, char] of Object.entries(characteristics)) {
                 if (key === "inf") {

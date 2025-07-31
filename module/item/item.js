@@ -8,10 +8,11 @@ import { objectByString } from "../utilities.js";
 import { setNestedKey } from "../utilities.js";
 import { getActorToken } from "../utilities.js";
 export class FortyKItem extends Item {
+    
     //@Override the create function to add an activeeffect for modifiers to an item
     static async create(data, options) {
         // If the created item has effects (only applicable to duplicated actors) bypass the new item creation logic
-
+        data.flags={fortyk:{}};
         if (data.effects) {
             return super.create(data, options);
         }
@@ -83,6 +84,7 @@ export class FortyKItem extends Item {
         // Get the Item's data
         const item = this;
         item.FORTYK = game.fortyk.FORTYK;
+       
         /*if(game.user.isGM){
             if(!item.flags.fortyk)item.flags.fortyk={};
             item.flags.fortyk.hidden=false;
