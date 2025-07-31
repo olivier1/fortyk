@@ -211,7 +211,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             html.find('.feature-plus-minus').change(this._onFeaturePlusMinusChange.bind(this));
             html.find('.aptitude-any').change(this._onAptitudeAnyChange.bind(this));
             html.find('.char-spent').focusout(this._onCharSpentInput.bind(this));
-            html.find('.char-spent').keydown(this._onCharSpentInputConfirm.bind(this));
+            html.find('.char-spent').keyup(this._onCharSpentInputConfirm.bind(this));
             html.find('.any-skill-icon').click(this._onConfirmAnySkillChoice.bind(this));
             html.find('.any-spec-icon').click(this._onConfirmAnySpecChoice.bind(this));
             html.find('.duplicate-aptitude-icon').click(this._onConfirmAptitudeChoice.bind(this));
@@ -289,55 +289,55 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let base=characterType.system.characteristics.all;
         let characteristics={
             ws:{
-                label:"WS",
+                label:"Weapon Skill",
                 base:base,
                 spent:0,
                 total:0
             },
             bs:{
-                label:"BS",
+                label:"Ballistic Skill",
                 base:base,
                 spent:0,
                 total:0
             },
             s:{
-                label:"S",
+                label:"Strength",
                 base:base,
                 spent:0,
                 total:0
             },
             t:{
-                label:"T",
+                label:"Toughness",
                 base:base,
                 spent:0,
                 total:0
             },
             agi:{
-                label:"AGI",
+                label:"Agility",
                 base:base,
                 spent:0,
                 total:0
             },
             int:{
-                label:"INT",
+                label:"Intelligence",
                 base:base,
                 spent:0,
                 total:0
             },
             per:{
-                label:"PER",
+                label:"Perception",
                 base:base,
                 spent:0,
                 total:0
             },
             wp:{
-                label:"WP",
+                label:"Willpower",
                 base:base,
                 spent:0,
                 total:0
             },
             fel:{
-                label:"FEL",
+                label:"Fellowship",
                 base:base,
                 spent:0,
                 total:0
@@ -345,7 +345,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         };
         if(actor.getFlag("fortyk","hasinfluence")){
             characteristics.inf={
-                label:"INF",
+                label:"Influence",
                 base:base,
                 spent:0,
                 total:0
@@ -623,9 +623,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         this.render();
     }
     _onCharSpentInputConfirm(event){
-        if(event.key === 'Enter'){
+        
+        
             this._onCharSpentInput(event);
-        }
+        
     }
     _onCharSpentInput(event){
         var element = event.target;
@@ -1481,7 +1482,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     //handles when swapping ammo type in a ranged weapon
     async _onAmmoChange(event){
 
-        event.preventDefault;
+        event.preventDefault();
         const dataset=event.currentTarget.dataset;
         const weapon=this.actor.getEmbeddedDocument("Item",dataset["weapon"]);
         if(!weapon){return};
@@ -1517,7 +1518,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     }
     //handles reloading a ranged weapon
     async _onWeaponReload(event){
-        event.preventDefault;
+        event.preventDefault();
         const dataset=event.currentTarget.dataset;
 
         let weapon=this.actor.getEmbeddedDocument("Item",dataset.weapon);

@@ -523,12 +523,12 @@ FORTYK.armorFlags={
     "explosive": {
         "value": false,
         "label": "Explosive Resistant",
-        "description": "This armor is built to resist explosions, its armor value counts as double against explosive damage."
+        "description": "This armor is built to resist explosions, its armor value counts as 50% more against explosive damage."
     },
     "rending": {
         "value": false,
         "label": "Rending Resistant",
-        "description": "This armor is built to resist rending attacks, its armor value counts as double against rending damage."
+        "description": "This armor is built to resist rending attacks, its armor value counts as 50% more against rending damage."
     },
     "sealed": {
         "value": false,
@@ -538,7 +538,7 @@ FORTYK.armorFlags={
     "impact": {
         "value": false,
         "label": "Impact Resistant",
-        "description": "This armor is built to resist impacts, its armor value counts as double against impact damage."
+        "description": "This armor is built to resist impacts, its armor value counts as 50% more against impact damage."
     },
     "irongrip": {
         "value": false,
@@ -548,7 +548,36 @@ FORTYK.armorFlags={
     "energy": {
         "value": false,
         "label": "Energy Resistant",
-        "description": "This armor is built to resist energy attacks, its armor value counts as double against energy damage."
+        "description": "This armor is built to resist energy attacks, its armor value counts as 50% more against energy damage."
+    },
+    "lathewrought":{
+       "value": false,
+        "label": "Lathe-wrought",
+        "description": "Lathe armour is strong and light, flexible enough to withstand the most powerful blows, and even resistant to intense heat or the crackling edge of a power weapon. The Pen value of any attack made against a character wearing a suit of Lathe-wrought armour is halved, rounding up." 
+    },
+    "energyRes": {
+        "value": false,
+        num:0,
+        "label": "Energy Resilient",
+        "description": "This armor is built to resist energy attacks,  it gets an additional amount of armor points against energy attacks."
+    },
+    "impactRes": {
+        "value": false,
+        num:0,
+        "label": "Impact Resilient",
+        "description": "This armor is built to resist energy attacks,  it gets an additional amount of armor points against impact attacks."
+    },
+    "rendingRes": {
+        "value": false,
+        num:0,
+        "label": "Rending Resilient",
+        "description": "This armor is built to resist energy attacks,  it gets an additional amount of armor points against rending attacks."
+    },
+    "explosiveRes": {
+        "value": false,
+        num:0,
+        "label": "Explosive Resilient",
+        "description": "This armor is built to resist energy attacks,  it gets an additional amount of armor points against explosive attacks."
     },
     "flamerepellent": {
         "value": false,

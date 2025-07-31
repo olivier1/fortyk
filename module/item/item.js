@@ -6,7 +6,7 @@ import { getItem } from "../utilities.js";
 import { isEmpty } from "../utilities.js";
 import { objectByString } from "../utilities.js";
 import { setNestedKey } from "../utilities.js";
-import {getActorToken} from "../utilities.js";
+import { getActorToken } from "../utilities.js";
 export class FortyKItem extends Item {
     //@Override the create function to add an activeeffect for modifiers to an item
     static async create(data, options) {
@@ -33,7 +33,6 @@ export class FortyKItem extends Item {
      ** @override talents and traits should update their flags on the owning actor if the specialisation field is changed
      **/
     async update(data, options = {}) {
-
         if (this.type === "talentntrait") {
             if (this.isEmbedded) {
                 if (this.system.specialisation.value !== data["system.specialisation.value"]) {
@@ -74,8 +73,8 @@ export class FortyKItem extends Item {
      */
     async prepareData() {
         function replaceScope(scope, string) {
-            for(const key in scope){
-                string=string.replaceAll(key,scope[key]);
+            for (const key in scope) {
+                string = string.replaceAll(key, scope[key]);
             }
             return string;
         }
@@ -88,42 +87,36 @@ export class FortyKItem extends Item {
             if(!item.flags.fortyk)item.flags.fortyk={};
             item.flags.fortyk.hidden=false;
         }*/
-        if(this.system.quality?.value){
-
-            this.name=`(${this.FORTYK.itemQualityAbrv[this.system.quality.value]}) ${this._source.name}`;
-
-
+        if (this.system.quality?.value) {
+            this.name = `(${this.FORTYK.itemQualityAbrv[this.system.quality.value]}) ${this._source.name}`;
         }
 
-        let qualityMods=this.FORTYK.qualityMods;
-        if(item.type==="armor"){
-            item.system.mods.max=3;
-            item.system.mods.max+=qualityMods[item.system.quality.value];
-            let modSlots=item.getFlag("fortyk","modslots");
-            if(modSlots){
-                item.system.mods.max+=parseFloat(modSlots);
+        let qualityMods = this.FORTYK.qualityMods;
+        if (item.type === "armor") {
+            item.system.mods.max = 3;
+            item.system.mods.max += qualityMods[item.system.quality.value];
+            let modSlots = item.getFlag("fortyk", "modslots");
+            if (modSlots) {
+                item.system.mods.max += parseFloat(modSlots);
             }
-        }else if(item.type==="rangedWeapon"){
-            if(item.system.class.value==="Pistol"){
-                item.system.mods.max=1; 
-            }else{
-                item.system.mods.max=2;
+        } else if (item.type === "rangedWeapon") {
+            if (item.system.class.value === "Pistol") {
+                item.system.mods.max = 1;
+            } else {
+                item.system.mods.max = 2;
             }
-            item.system.mods.max+=qualityMods[item.system.quality.value];
-        }else if(item.type==="meleeWeapon"){
-            if(item.system.class.value==="Melee Two-handed"){
-                item.system.mods.max=2; 
-            }else{
-                item.system.mods.max=1;
+            item.system.mods.max += qualityMods[item.system.quality.value];
+        } else if (item.type === "meleeWeapon") {
+            if (item.system.class.value === "Melee Two-handed") {
+                item.system.mods.max = 2;
+            } else {
+                item.system.mods.max = 1;
             }
-            item.system.mods.max+=qualityMods[item.system.quality.value];
+            item.system.mods.max += qualityMods[item.system.quality.value];
         }
         //ensure this is an owned item
 
         if (this.actor) {
-
-
-
             const data = this.actor.system;
             let actor = this.actor;
 
@@ -141,7 +134,7 @@ export class FortyKItem extends Item {
                     item.flags.fortyk.disabled = true;
                 }
             }
-            if(actor.type==="loot"){
+            if (actor.type === "loot") {
                 return;
             }
 
@@ -181,13 +174,13 @@ export class FortyKItem extends Item {
                 }
                 return;
             }
-            if(item.type === "skill"){
-                if(actor.getFlag("fortyk","toomanysecrets")&&item.system.parent.value==="Forbidden Lore"){
-                    item.system.aptitudes.value="General, Intelligence";
+            if (item.type === "skill") {
+                if (actor.getFlag("fortyk", "toomanysecrets") && item.system.parent.value === "Forbidden Lore") {
+                    item.system.aptitudes.value = "General, Intelligence";
                 }
             }
-            if (item.type === "ammunition"){
-                item.label=item.name+":"+item.system.amount.value;
+            if (item.type === "ammunition") {
+                item.label = item.name + ":" + item.system.amount.value;
             }
             if (item.type === "forceField") {
                 if (actor.type === "vehicle") {
@@ -198,10 +191,9 @@ export class FortyKItem extends Item {
                             item.system.rating.value += 10;
                         }
                     }
-                }else{
-
-                    item.system.rating.value=Math.ceil(math.evaluate(item.system.rating.value,scope));
-                    item.system.rating.overload=Math.ceil(math.evaluate(item.system.rating.overload,scope));
+                } else {
+                    item.system.rating.value = Math.ceil(math.evaluate(item.system.rating.value, scope));
+                    item.system.rating.overload = Math.ceil(math.evaluate(item.system.rating.overload, scope));
                 }
                 //logic for the sanctuary forcefields
                 if (item.getFlag("fortyk", "adjustment")) {
@@ -249,7 +241,6 @@ export class FortyKItem extends Item {
                 item.system.pen.formula = currentProfile.system.pen.formula;
                 if (item.type === "rangedWeapon") {
                     item.system.rof = currentProfile.system.rof;
-
                 }
                 item.system.damageFormula.formula = currentProfile.system.damageFormula.formula;
                 let profiles = item.getFlag("fortyk", "profiles");
@@ -280,57 +271,55 @@ export class FortyKItem extends Item {
             }
             if (item.type === "rangedWeapon") {
                 //parse rof
-                if(actor.getFlag("fortyk","psyrating")){
+                if (actor.getFlag("fortyk", "psyrating")) {
+                    try {
+                        item.system.rof[1].value = Math.ceil(math.evaluate(item.system.rof[1].value, scope));
 
-                    try{
-
-                        item.system.rof[1].value=Math.ceil(math.evaluate(item.system.rof[1].value,scope));
-
-                        item.system.rof[2].value=Math.ceil(math.evaluate(item.system.rof[2].value,scope));
-                    }catch (err){
-                        item.system.rof[1].value=parseInt(item.system.rof[1].value);
-                        if(isNaN(item.system.rof[1].value)){
-                            item.system.rof[1].value=0;
+                        item.system.rof[2].value = Math.ceil(math.evaluate(item.system.rof[2].value, scope));
+                    } catch (err) {
+                        item.system.rof[1].value = parseInt(item.system.rof[1].value);
+                        if (isNaN(item.system.rof[1].value)) {
+                            item.system.rof[1].value = 0;
                         }
-                        item.system.rof[2].value=parseInt(item.system.rof[2].value);
-                        if(isNaN(item.system.rof[2].value)){
-                            item.system.rof[2].value=0;
+                        item.system.rof[2].value = parseInt(item.system.rof[2].value);
+                        if (isNaN(item.system.rof[2].value)) {
+                            item.system.rof[2].value = 0;
                         }
                     }
-                }else{
-                    item.system.rof[1].value=parseInt(item.system.rof[1].value);
-                    if(isNaN(item.system.rof[1].value)){
-                        item.system.rof[1].value=0;
+                } else {
+                    item.system.rof[1].value = parseInt(item.system.rof[1].value);
+                    if (isNaN(item.system.rof[1].value)) {
+                        item.system.rof[1].value = 0;
                     }
                     try {
-                        item.system.rof[2].value=parseInt(item.system.rof[2].value);
-                        if(isNaN(item.system.rof[2].value)){
-                            item.system.rof[2].value=0;
+                        item.system.rof[2].value = parseInt(item.system.rof[2].value);
+                        if (isNaN(item.system.rof[2].value)) {
+                            item.system.rof[2].value = 0;
                         }
                     } catch (e) {
-                        item.system.rof[2]={value:0};
+                        item.system.rof[2] = { value: 0 };
                     }
                 }
-                if(Number.isNaN(item.system.rof[0].value)&&item.system.rof[0].value?.toLowerCase()==="s"){
-                    item.system.rof[0].value=1;
-                }else{
-                    item.system.rof[0].value=parseInt(item.system.rof[0].value);
-                    if(isNaN(item.system.rof[0].value)){
-                        item.system.rof[0].value="S";
+                if (Number.isNaN(item.system.rof[0].value) && item.system.rof[0].value?.toLowerCase() === "s") {
+                    item.system.rof[0].value = 1;
+                } else {
+                    item.system.rof[0].value = parseInt(item.system.rof[0].value);
+                    if (isNaN(item.system.rof[0].value)) {
+                        item.system.rof[0].value = "S";
                     }
                 }
 
                 if (actor.getFlag("fortyk", "filltheairwithdeath")) {
                     if (item.system.rof[1]?.value > 0) {
                         item.system.rof[1].value = parseInt(item.system.rof[1].value) + 1;
-                        if(isNaN(item.system.rof[1].value)){
-                            item.system.rof[1].value=0;
+                        if (isNaN(item.system.rof[1].value)) {
+                            item.system.rof[1].value = 0;
                         }
                     }
                     if (item.system.rof[2]?.value > 0) {
                         item.system.rof[2].value = parseInt(item.system.rof[2].value) + 1;
-                        if(isNaN(item.system.rof[2].value)){
-                            item.system.rof[2].value=0;
+                        if (isNaN(item.system.rof[2].value)) {
+                            item.system.rof[2].value = 0;
                         }
                     }
                 }
@@ -340,11 +329,14 @@ export class FortyKItem extends Item {
                     //this.applyActiveEffects(ammo);
                     item.system.ammo.name = ammo.name;
                 }
-                let ammos=actor.itemTypes.ammunition;
-                let validAmmos=ammos.filter((ammo) => ammo.system.class.value===item.system.class.value&&ammo.system.type.value===item.system.type.value);
-                item.validAmmos=validAmmos;
+                let ammos = actor.itemTypes.ammunition;
+                let validAmmos = ammos.filter(
+                    (ammo) =>
+                        ammo.system.class.value === item.system.class.value &&
+                        ammo.system.type.value === item.system.type.value
+                );
+                item.validAmmos = validAmmos;
                 if (ammo && !ammo.system.default.value) {
-
                     this.applyActiveEffects(ammo);
                     item.system.damageType.value = ammo.system.damageType.value;
                     item.system.range.value = ammo.system.range.formula;
@@ -363,7 +355,6 @@ export class FortyKItem extends Item {
                     item.system.pen.value = item.system.pen.formula;
                     item.system.damageFormula.value = item.system.damageFormula.formula;
                 }
-
 
                 if (item.system.damTyp === undefined) {
                     item.system.damTyp = item.system.damageType.value;
@@ -430,19 +421,17 @@ export class FortyKItem extends Item {
             }
 
             if (actor.type !== "vehicle" && actor.type !== "knightHouse") {
-
-                if(actor.getFlag("fortyk","iconofburningflame")&&item.system?.damageType?.value==="Energy"){
-                    item.flags.fortyk.flame=true;
+                if (actor.getFlag("fortyk", "iconofburningflame") && item.system?.damageType?.value === "Energy") {
+                    item.flags.fortyk.flame = true;
                 }
 
-
-                if(actor.getFlag("fortyk","purifyingflames")&&item.getFlag("fortyk","flame")){
-                    item.flags.fortyk.flame=false;
-                    item.flags.fortyk.purifyingflame=true;
+                if (actor.getFlag("fortyk", "purifyingflames") && item.getFlag("fortyk", "flame")) {
+                    item.flags.fortyk.flame = false;
+                    item.flags.fortyk.purifyingflame = true;
                 }
                 if (item.type === "psychicPower") {
-                    let modifiers=[];
-                    item.system.modifiers=modifiers;
+                    let modifiers = [];
+                    item.system.modifiers = modifiers;
                     let psyniscience = 0;
 
                     try {
@@ -458,7 +447,7 @@ export class FortyKItem extends Item {
                         if (typeof fl == "string") {
                             if (fl.toLowerCase().indexOf("pr") !== -1) {
                                 try {
-                                    flags[flag] = Math.ceil(math.evaluate(flags[flag],{pr:scope.pr}));
+                                    flags[flag] = Math.ceil(math.evaluate(flags[flag], { pr: scope.pr }));
                                 } catch (err) {
                                     flags[flag] = 0;
                                 }
@@ -474,14 +463,13 @@ export class FortyKItem extends Item {
                         let range = item.system.range.formula.toLowerCase();
 
                         try {
-                            item.system.range.value = Math.ceil(math.evaluate(range,scope));
+                            item.system.range.value = Math.ceil(math.evaluate(range, scope));
                         } catch (err) {
                             item.system.range.value = 0;
                         }
                         try {
-                            let penstr=item.system.pen.formula;
-                            item.system.pen.value = Math.ceil(math.evaluate(penstr,scope));
-
+                            let penstr = item.system.pen.formula;
+                            item.system.pen.value = Math.ceil(math.evaluate(penstr, scope));
                         } catch (err) {
                             item.system.pen.value = 0;
                         }
@@ -507,35 +495,29 @@ export class FortyKItem extends Item {
                             item.system.testChar.type = item.system.testChar.value;
                         }
 
-                        item.system.damageFormula.value = replaceScope(scope,item.system.damageFormula.formula);
-                        modifiers.push({value:char,label:"Power Base"});
-                        modifiers.push({value:training,label:"Power Training"});
-                        modifiers.push({value:parseInt(item.system.testMod.value),label:"Power Modifier"});
+                        item.system.damageFormula.value = replaceScope(scope, item.system.damageFormula.formula);
+                        modifiers.push({ value: char, label: "Power Base" });
+                        modifiers.push({ value: training, label: "Power Training" });
+                        modifiers.push({ value: parseInt(item.system.testMod.value), label: "Power Modifier" });
                         item.system.target.value = char + training + parseInt(item.system.testMod.value);
                     } else {
                         try {
-
                             let range = item.system.range.formula.toLowerCase();
 
-
                             try {
-                                item.system.range.value = Math.ceil(math.evaluate(range,scope));
+                                item.system.range.value = Math.ceil(math.evaluate(range, scope));
                             } catch (err) {
                                 item.system.range.value = 0;
                             }
 
                             try {
-                                let penstr=item.system.pen.formula;
-                                item.system.pen.value = Math.ceil(math.evaluate(penstr,scope));
-
+                                let penstr = item.system.pen.formula;
+                                item.system.pen.value = Math.ceil(math.evaluate(penstr, scope));
                             } catch (err) {
                                 item.system.pen.value = 0;
                             }
 
-
-
-
-                            item.system.damageFormula.value = replaceScope(scope,item.system.damageFormula.formula);
+                            item.system.damageFormula.value = replaceScope(scope, item.system.damageFormula.formula);
                             if (this.getFlag("fortyk", "tainted")) {
                                 let corruptBonus = Math.floor(parseInt(actor.system.secChar.corruption.value) / 10);
                                 let daemonic = parseFloat(actor.getFlag("fortyk", "daemonic"));
@@ -551,9 +533,9 @@ export class FortyKItem extends Item {
                             item.system.damageFormula.value = "";
                         }
                         let derivedPR = parseInt(data.psykana.pr.effective) - parseInt(item.system.curPR.value);
-    
-                        if(game.settings.get("fortyk","pushingPRHouseRule")){
-                            derivedPR=Math.abs(derivedPR);
+
+                        if (game.settings.get("fortyk", "pushingPRHouseRule")) {
+                            derivedPR = Math.abs(derivedPR);
                         }
                         let char = 0;
                         if (item.system.testChar.value === "psy") {
@@ -563,10 +545,10 @@ export class FortyKItem extends Item {
                             char = parseInt(data.characteristics[item.system.testChar.value].total);
                             item.system.testChar.type = item.system.testChar.value;
                         }
-                        modifiers.push({value:char, label:"Power Base"});
-                        modifiers.push({value:derivedPR*10, label:"Psy Rating"});
-                        modifiers.push({value:parseInt(item.system.testMod.value),label:"Power Modifier"});
-                        modifiers.push({value:parseInt(data.psykana.mod.value),label:"Psykana Modifier"});
+                        modifiers.push({ value: char, label: "Power Base" });
+                        modifiers.push({ value: derivedPR * 10, label: "Psy Rating" });
+                        modifiers.push({ value: parseInt(item.system.testMod.value), label: "Power Modifier" });
+                        modifiers.push({ value: parseInt(data.psykana.mod.value), label: "Psykana Modifier" });
                         item.system.target.value =
                             parseInt(char) +
                             derivedPR * 10 +
@@ -580,8 +562,8 @@ export class FortyKItem extends Item {
                     if (item.system.class.value !== "Shield" && item.system.shield.value !== 0) {
                         item.system.shield.value = 0;
                     }
-                    if(this.getFlag("fortyk", "nosb")){    
-                    }else if (this.getFlag("fortyk", "crushing")) {
+                    if (this.getFlag("fortyk", "nosb")) {
+                    } else if (this.getFlag("fortyk", "crushing")) {
                         item.system.damageFormula.value += "+" + 2 * data.characteristics.s.bonus;
                     } else if (this.getFlag("fortyk", "heavy")) {
                         item.system.damageFormula.value += "+" + 3 * data.characteristics.s.bonus;
@@ -596,10 +578,9 @@ export class FortyKItem extends Item {
                     }
 
                     item.system.damageFormula.value = replaceScope(scope, item.system.damageFormula.value);
-                    if(typeof item.system.pen.value ==="string"){
+                    if (typeof item.system.pen.value === "string") {
                         item.system.pen.value = replaceScope(scope, item.system.pen.value);
                     }
-
 
                     if (item.getFlag("fortyk", "heavy")) {
                         item.system.twohanded.value = true;
@@ -616,16 +597,15 @@ export class FortyKItem extends Item {
 
                 if (item.type === "rangedWeapon") {
                     if (typeof item.system.range.formula === "string" || item.system.range.formula instanceof String) {
-
                         let formula = item.system.range.formula.toLowerCase();
 
                         try {
-                            item.system.range.value = math.evaluate(formula,scope);
+                            item.system.range.value = math.evaluate(formula, scope);
                         } catch (err) {
                             item.system.range.value = 0;
                         }
                     }
-                    item.system.range.value = Math.ceil(item.system.range.value*item.system.range.multi);
+                    item.system.range.value = Math.ceil(item.system.range.value * item.system.range.multi);
                     if (actor.getFlag("fortyk", "mightyshot")) {
                         item.system.damageFormula.value += "+" + Math.ceil(data.characteristics.bs.bonus / 2);
                     }
@@ -649,9 +629,9 @@ export class FortyKItem extends Item {
                     if (actor.getFlag("fortyk", "WeaponMaster")) {
                         if (
                             actor
-                            .getFlag("fortyk", "WeaponMaster")
-                            .toLowerCase()
-                            .includes(item.system.type.value.toLowerCase())
+                                .getFlag("fortyk", "WeaponMaster")
+                                .toLowerCase()
+                                .includes(item.system.type.value.toLowerCase())
                         ) {
                             item.system.damageFormula.value += "+2";
                             item.system.testMod.value += 10;
@@ -687,12 +667,11 @@ export class FortyKItem extends Item {
                     }
 
                     try {
-
                         if (this.getFlag("fortyk", "force")) {
                             item.system.pen.value = parseInt(item.system.pen.value) + scope.pr;
                             item.system.damageFormula.value += `+${scope.pr}`;
-                            if(actor.getFlag("fortyk","psy-weaponattunement")){
-                                item.flags.fortyk.proven=scope.pr;
+                            if (actor.getFlag("fortyk", "psy-weaponattunement")) {
+                                item.flags.fortyk.proven = scope.pr;
                             }
                         }
                         if (this.getFlag("fortyk", "purifyingflame")) {
@@ -733,86 +712,81 @@ export class FortyKItem extends Item {
         }
     }
 
-    applyActiveEffects(item=this) {
-
+    applyActiveEffects(item = this) {
         let itemData = item;
         let data = this.system;
-        let actor=this.actor;
-        let scope=actor.getScope();
+        let actor = this.actor;
+        let scope = actor.getScope();
         let pr;
-        if(actor.getFlag("fortyk","psyrating")){
-            pr=actor.system.psykana.pr.value+actor.system.psykana.pr.bonus-Math.max(0,actor.system.psykana.pr.sustain-1);
-        }    
+        if (actor.getFlag("fortyk", "psyrating")) {
+            pr =
+                actor.system.psykana.pr.value +
+                actor.system.psykana.pr.bonus -
+                Math.max(0, actor.system.psykana.pr.sustain - 1);
+        }
         this.effects.forEach(function (ae, id) {
             if (!ae.disabled && !ae.transfer) {
                 //if item is equipped and/or not disabled
-                let proceed=false;
-                let equipped=item.system.isEquipped;
-                if(equipped===undefined){
-                    proceed=true;
-                }else if(equipped){
-                    if(item.system.state){
-                        let state=item.system.state.value;
-                        if(state!=="0"&&state!=="X"&&state!=="D"){
-                            proceed=true; 
+                let proceed = false;
+                let equipped = item.system.isEquipped;
+                if (equipped === undefined) {
+                    proceed = true;
+                } else if (equipped) {
+                    if (item.system.state) {
+                        let state = item.system.state.value;
+                        if (state !== "0" && state !== "X" && state !== "D") {
+                            proceed = true;
                         }
-                    }else{
-                        proceed=true;
+                    } else {
+                        proceed = true;
                     }
-                }else{
-                    proceed=false;
+                } else {
+                    proceed = false;
                 }
-                if(!proceed)return;
+                if (!proceed) return;
                 ae.changes.forEach(function (change, i) {
                     let path = change.key.split(".");
                     var changeValue = change.value;
-                    if(change.mode===CONST.ACTIVE_EFFECT_MODES.CUSTOM){
-
-                        if(typeof changeValue==="string"){
-                            if(changeValue.toLowerCase()==="true"){
-                                return setNestedKey(itemData,path,true); 
-                            }else if(changeValue.toLowerCase()==="false"){
-                                return setNestedKey(itemData,path,false); 
+                    if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
+                        if (typeof changeValue === "string") {
+                            if (changeValue.toLowerCase() === "true") {
+                                return setNestedKey(itemData, path, true);
+                            } else if (changeValue.toLowerCase() === "false") {
+                                return setNestedKey(itemData, path, false);
                             }
                         }
                     }
 
-                    if(actor.getFlag("fortyk","psyrating")){
+                    if (actor.getFlag("fortyk", "psyrating")) {
+                        try {
+                            let value = math.evaluate(changeValue, scope);
 
-                        try{
-
-
-                            let value=math.evaluate(changeValue,scope);
-
-                            if(!Number.isNaN(value)){
-                                changeValue=value;
+                            if (!Number.isNaN(value)) {
+                                changeValue = value;
                             }
-
-                        }catch (err){
-                            console.log(err,item);
-
+                        } catch (err) {
+                            console.log(err, item);
                         }
                     }
                     let basevalue = Number(objectByString(itemData, change.key));
-                    let isNumber=true;
-                    if(Number.isNaN(basevalue)){
+                    let isNumber = true;
+                    if (Number.isNaN(basevalue)) {
                         basevalue = objectByString(itemData, change.key);
-                        isNumber=false;
+                        isNumber = false;
                     }
                     let newvalue;
-                    if(isNumber){
+                    if (isNumber) {
                         newvalue = parseFloat(changeValue);
-                    }else{
+                    } else {
                         newvalue = changeValue;
                     }
-
 
                     /*if(newvalue>=0){
                             newvalue=Math.ceil(newvalue);
                         }else{
                             newvalue=Math.floor(newvalue);
                         }*/
-                    if (!isNumber||(!Number.isNaN(basevalue) && !Number.isNaN(newvalue))) {
+                    if (!isNumber || (!Number.isNaN(basevalue) && !Number.isNaN(newvalue))) {
                         let changedValue = 0;
                         if (change.mode === CONST.ACTIVE_EFFECT_MODES.MULTIPLY) {
                             changedValue = basevalue * newvalue;
@@ -844,365 +818,382 @@ export class FortyKItem extends Item {
             }
         });
     }
-    getModCount(){
-        let effects=this.effects;
-        let count=0;
-        for(const effect of effects){
-            if(effect.getFlag("fortyk","modsystem")){
+    applyModWeight() {
+        let effects = this.effects;
+        let weight = 0;
+        for (const effect of effects) {
+            let system = effect.getFlag("fortyk", "modsystem");
+            if (system) {
+                weight += parseFloat(system.weight.value);
+            }
+        }
+        this.system.weight.value = parseFloat(this.system.weight.value) + weight;
+    }
+    getModCount() {
+        let effects = this.effects;
+        let count = 0;
+        for (const effect of effects) {
+            if (effect.getFlag("fortyk", "modsystem")) {
                 count++;
             }
         }
         return count;
     }
-    validateActor(actor){
-
-        var validated=true;
-        var failReasons=[];
-        const FORTYK=this.FORTYK;
-        if(!actor){
+    validateActor(actor) {
+        var validated = true;
+        var failReasons = [];
+        const FORTYK = this.FORTYK;
+        if (!actor) {
             failReasons.push("No valid actor!");
-            validated=false;
-            return {valid:validated, reasons:failReasons};
+            validated = false;
+            return { valid: validated, reasons: failReasons };
         }
-        var requirements = this.getFlag("fortyk","requirements");
-        let itemType=this.type;
-        switch(itemType){
+        var requirements = this.getFlag("fortyk", "requirements");
+        let itemType = this.type;
+        switch (itemType) {
             case "talentntrait":
-                let spec=this.system.specialisation.value;
-                var actorSpec = actor.getFlag("fortyk",this.system.flagId.value);
-                if(spec==="N/A"){
-                    if(actorSpec){
+                let spec = this.system.specialisation.value;
+                var actorSpec = actor.getFlag("fortyk", this.system.flagId.value);
+                if (spec === "N/A") {
+                    if (actorSpec) {
                         failReasons.push("You already have this talent.");
-                        validated=false;
+                        validated = false;
                     }
-                }else{
-
-                    if(actorSpec){
-                        if(actorSpec.includes(spec)){
+                } else {
+                    if (actorSpec) {
+                        if (actorSpec.includes(spec)) {
                             failReasons.push(`You already have the ${spec} specialisation.`);
-                            validated=false;
+                            validated = false;
                         }
                     }
                 }
                 break;
             case "eliteAdvance":
-                let flagId=this.system.flagId.value;
-                if(actor.getFlag("fortyk",flagId)){
+                let flagId = this.system.flagId.value;
+                if (actor.getFlag("fortyk", flagId)) {
                     failReasons.push(`You already have this elite advance.`);
-                    validated=false;
+                    validated = false;
                 }
                 break;
             case "psychicPower":
-                let disciplines=Object.values(actor.system.psykana.disciplines);
+                let disciplines = Object.values(actor.system.psykana.disciplines);
                 let discipline = this.system.discipline.value;
-                if(!disciplines.includes(discipline)){
+                if (!disciplines.includes(discipline)) {
                     failReasons.push(`You do not have the ${discipline} discipline.`);
-                    validated=false;
+                    validated = false;
                 }
-                if(actor.getFlag("fortyk",this.id)){
+                if (actor.getFlag("fortyk", this.id)) {
                     failReasons.push(`You already have this power.`);
-                    validated=false; 
+                    validated = false;
                 }
                 break;
         }
-        if(!requirements){
-
-            return {valid:validated, reasons:failReasons}; 
+        if (!requirements) {
+            return { valid: validated, reasons: failReasons };
         }
-        if(requirements.characterCreation){
-            if(!actor.getFlag("fortyk","charactercreation")){
+        if (requirements.characterCreation) {
+            if (!actor.getFlag("fortyk", "charactercreation")) {
                 failReasons.push("You must purchase this advancement at character creation.");
-                validated=false;
+                validated = false;
             }
         }
-        let actorChars=actor.system.characteristics;
-        let charReqs=requirements.characteristics;
-        let charBase=0;
-        let charReq=0;
-        for (let [key, char] of Object.entries(actorChars)){
-            charBase=parseInt(char.value)+parseInt(char.advance);
-            charReq=charReqs[key].value;
-            if(charBase<charReq){
+        let actorChars = actor.system.characteristics;
+        let charReqs = requirements.characteristics;
+        let charBase = 0;
+        let charReq = 0;
+        for (let [key, char] of Object.entries(actorChars)) {
+            charBase = parseInt(char.value) + parseInt(char.advance);
+            charReq = charReqs[key].value;
+            if (charBase < charReq) {
                 failReasons.push(`You do not meet the ${charReq} ${charReqs[key].label} requirement.`);
-                validated=false;
+                validated = false;
             }
         }
-        let prReq=charReqs.pr.value;
-        let actorPr=actor.system.psykana.pr.value;
-        if(actorPr<prReq){
+        let prReq = charReqs.pr.value;
+        let actorPr = actor.system.psykana.pr.value;
+        if (actorPr < prReq) {
             failReasons.push(`You do not meet the ${prReq} Psy Rating requirement.`);
-            validated=false;
-        } 
-        let expReq=charReqs.exp.value;
-        let actorXp=actor.system.experience.spent;
-        if(actorXp<expReq){
+            validated = false;
+        }
+        let expReq = charReqs.exp.value;
+        let actorXp = actor.system.experience.spent;
+        if (actorXp < expReq) {
             failReasons.push(`You do not meet the ${expReq} Experience Spent requirement.`);
-            validated=false; 
+            validated = false;
         }
-        let insReq=charReqs.ins.value;
-        let actorInsan=actor.system.secChar.insanity.value;
-        if(actorInsan<insReq){
+        let insReq = charReqs.ins.value;
+        let actorInsan = actor.system.secChar.insanity.value;
+        if (actorInsan < insReq) {
             failReasons.push(`You do not meet the ${insReq} Inasnity requirement.`);
-            validated=false; 
+            validated = false;
         }
-        let corReq=charReqs.cor.value;
-        let actorCor=actor.system.secChar.corruption.value;
-        if(actorCor<corReq){
+        let corReq = charReqs.cor.value;
+        let actorCor = actor.system.secChar.corruption.value;
+        if (actorCor < corReq) {
             failReasons.push(`You do not meet the ${corReq} Corruption requirement.`);
-            validated=false; 
+            validated = false;
         }
-        let flagRequirements=requirements.flags;
+        let flagRequirements = requirements.flags;
 
-        for(const flag in flagRequirements){
+        for (const flag in flagRequirements) {
             //if(!flag)continue;
 
             let flagInstance = flagRequirements[flag];
-            if(!flagInstance)continue;
-            let specs=flagInstance.spec;
-            let actorFlag = actor.getFlag("fortyk",flag);
+            if (!flagInstance) continue;
+            let specs = flagInstance.spec;
+            let actorFlag = actor.getFlag("fortyk", flag);
 
-            if(specs==="anyranged"){
-                if(actor.getFlag("fortyk","astartesweapontraining"))continue;
+            if (specs === "anyranged") {
+                if (actor.getFlag("fortyk", "astartesweapontraining")) continue;
 
-                let hasTraining=false;
-                if(!actorFlag){
+                let hasTraining = false;
+                if (!actorFlag) {
                     failReasons.push(`You do not have ranged weapon training.`);
-                    validated=false; 
+                    validated = false;
                     continue;
                 }
-                let actorFlagSplit=actorFlag.split(",");
-                for(let training of actorFlagSplit){
-                    if(FORTYK.rangedWeaponTypes.find((weaponType)=>weaponType.value.toLowerCase()===training.toLowerCase().trim())){
-                        hasTraining=true;
+                let actorFlagSplit = actorFlag.split(",");
+                for (let training of actorFlagSplit) {
+                    if (
+                        FORTYK.rangedWeaponTypes.find(
+                            (weaponType) => weaponType.value.toLowerCase() === training.toLowerCase().trim()
+                        )
+                    ) {
+                        hasTraining = true;
                     }
                 }
-                if(!hasTraining){
+                if (!hasTraining) {
                     failReasons.push(`You do not have ranged weapon training.`);
-                    validated=false; 
+                    validated = false;
                 }
                 continue;
             }
-            if(specs==="any2"){
-                if(!actorFlag){
+            if (specs === "any2") {
+                if (!actorFlag) {
                     failReasons.push(`You do not have the required 2 weapon Trainings.`);
-                    validated=false; 
+                    validated = false;
                     continue;
                 }
-                let actorFlagSplit=actorFlag.split(",");
-                if(actorFlagSplit.length<2){
+                let actorFlagSplit = actorFlag.split(",");
+                if (actorFlagSplit.length < 2) {
                     failReasons.push(`You do not have the required 2 weapon Trainings.`);
-                    validated=false; 
+                    validated = false;
                 }
                 continue;
             }
-            if(specs==="anymelee"){
-                if(actor.getFlag("fortyk","astartesweapontraining"))continue;
-                if(!actorFlag){
+            if (specs === "anymelee") {
+                if (actor.getFlag("fortyk", "astartesweapontraining")) continue;
+                if (!actorFlag) {
                     failReasons.push(`You do not have melee weapon training.`);
-                    validated=false; 
+                    validated = false;
                     continue;
                 }
-                let actorFlagSplit=actorFlag.split(",");
-                let hasTraining=false;
+                let actorFlagSplit = actorFlag.split(",");
+                let hasTraining = false;
 
-                for(let training of actorFlagSplit){
-                    if(FORTYK.meleeWeaponTypes.find((weaponType)=>weaponType.value.toLowerCase()===training.toLowerCase().trim())){
-                        hasTraining=true;
+                for (let training of actorFlagSplit) {
+                    if (
+                        FORTYK.meleeWeaponTypes.find(
+                            (weaponType) => weaponType.value.toLowerCase() === training.toLowerCase().trim()
+                        )
+                    ) {
+                        hasTraining = true;
                     }
                 }
-                if(!hasTraining){
+                if (!hasTraining) {
                     failReasons.push(`You do not have melee weapon training.`);
-                    validated=false; 
+                    validated = false;
                 }
                 continue;
             }
-            if(specs==="any2"){
-                if(!actorFlag){
+            if (specs === "any2") {
+                if (!actorFlag) {
                     failReasons.push(`You do not have the required 2 weapon Trainings.`);
-                    validated=false; 
+                    validated = false;
                     continue;
                 }
-                let actorFlagSplit=actorFlag.split(",");
-                if(actorFlagSplit.length<2){
+                let actorFlagSplit = actorFlag.split(",");
+                if (actorFlagSplit.length < 2) {
                     failReasons.push(`You do not have the required 2 weapon Trainings.`);
-                    validated=false; 
+                    validated = false;
                 }
                 continue;
             }
 
-            let splitSpec=specs.split(",");
-            for(let spec of splitSpec){
-
-                if(flagInstance.negative){
-                    if(spec){
-                        spec=spec.toLowerCase();  
-                        if(spec.includes("any")){
-
-                            if(actorFlag){
+            let splitSpec = specs.split(",");
+            for (let spec of splitSpec) {
+                if (flagInstance.negative) {
+                    if (spec) {
+                        spec = spec.toLowerCase();
+                        if (spec.includes("any")) {
+                            if (actorFlag) {
                                 failReasons.push(`You have the ${flagInstance.label} feature.`);
-                                validated=false; 
+                                validated = false;
                                 continue;
                             }
-
-                        }else if(actorFlag||actorFlag&&actorFlag.toLowerCase().includes(spec)){
+                        } else if (actorFlag || (actorFlag && actorFlag.toLowerCase().includes(spec))) {
                             failReasons.push(`You have the ${flagInstance.label}(${spec}) feature.`);
-                            validated=false; 
+                            validated = false;
                         }
-                    }else if(actor.getFlag("fortyk",flag)){
+                    } else if (actor.getFlag("fortyk", flag)) {
                         failReasons.push(`You have the ${flagInstance.label} feature.`);
-                        validated=false; 
+                        validated = false;
                     }
                     continue;
                 }
 
-                if(spec){
-                    spec=spec.toLowerCase();
-                    if(spec.includes("any")){
-                        if(!actor.getFlag("fortyk",flag)){
+                if (spec) {
+                    spec = spec.toLowerCase();
+                    if (spec.includes("any")) {
+                        if (!actor.getFlag("fortyk", flag)) {
                             failReasons.push(`You do not have the ${flagInstance.label} feature.`);
-                            validated=false; 
+                            validated = false;
                         }
-
-                    }else if(!actor.getFlag("fortyk",flag)||actor.getFlag("fortyk",flag)&&!actor.getFlag("fortyk",flag).toLowerCase().includes(spec)){
+                    } else if (
+                        !actor.getFlag("fortyk", flag) ||
+                        (actor.getFlag("fortyk", flag) && !actor.getFlag("fortyk", flag).toLowerCase().includes(spec))
+                    ) {
                         failReasons.push(`You do not have the ${flagInstance.label}(${spec}) feature.`);
-                        validated=false; 
+                        validated = false;
                     }
-                }else if(!actor.getFlag("fortyk",flag)){
+                } else if (!actor.getFlag("fortyk", flag)) {
                     failReasons.push(`You do not have the ${flagInstance.label} feature.`);
-                    validated=false; 
+                    validated = false;
                 }
             }
-
         }
-        let ORflagRequirements=requirements.ORflags;
-        let ORcheck=!ORflagRequirements;
-        let ORfailLabels=[];
-        for(const flag in ORflagRequirements){
+        let ORflagRequirements = requirements.ORflags;
+        let ORcheck = !ORflagRequirements;
+        let ORfailLabels = [];
+        for (const flag in ORflagRequirements) {
             let flagInstance = ORflagRequirements[flag];
-            if(!flagInstance)continue;
-            let specs=flagInstance.spec;
-            let actorFlag = actor.getFlag("fortyk",flag);
-            if(actorFlag){
-                if(specs){
-                    if(actorFlag.includes(specs)){
-                        ORcheck=true;
-                    }else{
+            if (!flagInstance) continue;
+            let specs = flagInstance.spec;
+            let actorFlag = actor.getFlag("fortyk", flag);
+            if (actorFlag) {
+                if (specs) {
+                    if (actorFlag.includes(specs)) {
+                        ORcheck = true;
+                    } else {
                         ORfailLabels.push(flagInstance.label);
                     }
-                }else{
-                    ORcheck=true;
+                } else {
+                    ORcheck = true;
                 }
-            }else{
+            } else {
                 ORfailLabels.push(flagInstance.label);
             }
         }
-        if(!ORcheck){
-            let failedORstring=ORfailLabels.join(" or ");
+        if (!ORcheck) {
+            let failedORstring = ORfailLabels.join(" or ");
             failReasons.push(`You do not have ${failedORstring}.`);
-                validated=false; 
+            validated = false;
         }
-        let psyRequirements=requirements.psychicPowers;
+        let psyRequirements = requirements.psychicPowers;
 
-        for(const psy in psyRequirements){
-            if(!psy)continue;
-            if(!actor.getFlag("fortyk",psy)){
+        for (const psy in psyRequirements) {
+            if (!psy) continue;
+            if (!actor.getFlag("fortyk", psy)) {
                 failReasons.push(`You do not have ${psyRequirements[psy]}.`);
-                validated=false; 
+                validated = false;
             }
         }
-        let skillReqs=requirements.skills;
-        let actorSkills=actor.itemTypes.skill;
-        for(let [key, skill] of Object.entries(skillReqs)){
-            if(!skill)continue;
-            let skillName=skill.skillName;
-            let parentName=skill.parentSkillName;
-            let rank=skill.rank;
-            let rankValueReq=this.FORTYK.skillTraining[rank].value;
-            let wildCardSkill=false;
-            let wildCardParent=false;
-            let match=false;
-            let anyLore=false;
-            let anyXenos=false;
-            if(skillName==="xenos-any")anyXenos=true;
-            if(parentName==="anylore")anyLore=true;
-            if(skillName==="*")wildCardSkill=true;
-            if(parentName==="*")wildCardParent=true;
-            for(const actorSkill of actorSkills){
-                let actorSkillName=actorSkill.name;
-                let actorSkillParent=actorSkill.system.parent.value;
-                let actorSkillRank=parseInt(actorSkill.system.value);
-                let rankMatch=false;
-                let nameMatch=false;
-                let parentMatch=false;
-                if(anyXenos){
-                    let xenos=FORTYK.races;
-                    for(const race of xenos){
-                        if(race.value.toLowerCase()===actorSkillName.toLowerCase()){
-                            nameMatch=true;
+        let skillReqs = requirements.skills;
+        let actorSkills = actor.itemTypes.skill;
+        for (let [key, skill] of Object.entries(skillReqs)) {
+            if (!skill) continue;
+            let skillName = skill.skillName;
+            let parentName = skill.parentSkillName;
+            let rank = skill.rank;
+            let rankValueReq = this.FORTYK.skillTraining[rank].value;
+            let wildCardSkill = false;
+            let wildCardParent = false;
+            let match = false;
+            let anyLore = false;
+            let anyXenos = false;
+            if (skillName === "xenos-any") anyXenos = true;
+            if (parentName === "anylore") anyLore = true;
+            if (skillName === "*") wildCardSkill = true;
+            if (parentName === "*") wildCardParent = true;
+            for (const actorSkill of actorSkills) {
+                let actorSkillName = actorSkill.name;
+                let actorSkillParent = actorSkill.system.parent.value;
+                let actorSkillRank = parseInt(actorSkill.system.value);
+                let rankMatch = false;
+                let nameMatch = false;
+                let parentMatch = false;
+                if (anyXenos) {
+                    let xenos = FORTYK.races;
+                    for (const race of xenos) {
+                        if (race.value.toLowerCase() === actorSkillName.toLowerCase()) {
+                            nameMatch = true;
                         }
                     }
-                }else if(wildCardSkill){
-                    nameMatch=true;
-                }else if(actorSkillName.toLowerCase()===skillName.toLowerCase()){
-                    nameMatch=true;
+                } else if (wildCardSkill) {
+                    nameMatch = true;
+                } else if (actorSkillName.toLowerCase() === skillName.toLowerCase()) {
+                    nameMatch = true;
                 }
-                if(anyLore){
-                    if(actorSkillParent.toLocaleLowerCase().includes("lore")){
-                        parentMatch=true;
+                if (anyLore) {
+                    if (actorSkillParent.toLocaleLowerCase().includes("lore")) {
+                        parentMatch = true;
                     }
-                }else if(wildCardParent){
-                    parentMatch=true;
-                }else if(parentName.toLowerCase()===actorSkillParent.toLowerCase()){
-                    parentMatch=true;
+                } else if (wildCardParent) {
+                    parentMatch = true;
+                } else if (parentName.toLowerCase() === actorSkillParent.toLowerCase()) {
+                    parentMatch = true;
                 }
-                if(actorSkillRank>=rankValueReq){
-                    rankMatch=true;
+                if (actorSkillRank >= rankValueReq) {
+                    rankMatch = true;
                 }
 
-                match=nameMatch&&parentMatch&&rankMatch;
-                if(match)break;
+                match = nameMatch && parentMatch && rankMatch;
+                if (match) break;
             }
-            let name=skill.name.replaceAll("*","any");
-            if(!match){
+            let name = skill.name.replaceAll("*", "any");
+            if (!match) {
                 failReasons.push(`You do not have the ${name} skill of rank ${rank}.`);
-                validated=false; 
+                validated = false;
             }
         }
 
-        let cyberReqs=requirements.cybernetics;
+        let cyberReqs = requirements.cybernetics;
         var cyberNum = cyberReqs.number;
         var cyberLimbs = cyberReqs.limbs;
         var cyberName = cyberReqs.name;
-        if(cyberNum||cyberLimbs||cyberName){
-            let actorCybers=actor.itemTypes.cybernetic;
-            let actorLimbCount=0;
-            let actorCyberCount=0;
-            let hasCyber=false;
-            if(!cyberName)hasCyber=true;
-            for(const actorCyber of actorCybers){
+        if (cyberNum || cyberLimbs || cyberName) {
+            let actorCybers = actor.itemTypes.cybernetic;
+            let actorLimbCount = 0;
+            let actorCyberCount = 0;
+            let hasCyber = false;
+            if (!cyberName) hasCyber = true;
+            for (const actorCyber of actorCybers) {
                 actorCyberCount++;
-                if(actorCyber.system.location.value.toLowerCase().includes("arm")||actorCyber.system.location.value.toLowerCase().includes("leg")){
+                if (
+                    actorCyber.system.location.value.toLowerCase().includes("arm") ||
+                    actorCyber.system.location.value.toLowerCase().includes("leg")
+                ) {
                     actorLimbCount++;
                 }
-                if(actorCyber._source.name.toLowerCase()===cyberName.toLowerCase()){
-                    hasCyber=true;
+                if (actorCyber._source.name.toLowerCase() === cyberName.toLowerCase()) {
+                    hasCyber = true;
                 }
             }
-            if(actorLimbCount<cyberLimbs){
+            if (actorLimbCount < cyberLimbs) {
                 failReasons.push(`You do not have ${cyberLimbs} cybernetic limbs.`);
-                validated=false; 
+                validated = false;
             }
-            if(actorCyberCount<cyberNum){
+            if (actorCyberCount < cyberNum) {
                 failReasons.push(`You do not have ${cyberNum} cybernetics.`);
-                validated=false; 
+                validated = false;
             }
-            if(!hasCyber){
+            if (!hasCyber) {
                 failReasons.push(`You do not have the ${cyberName} cybernetic.`);
-                validated=false; 
+                validated = false;
             }
         }
 
-        return {valid:validated, reasons:failReasons};
+        return { valid: validated, reasons: failReasons };
     }
     static async applyPsyBuffs(actorId, powerId, targetIds) {
         if (game.user.isGM) {
@@ -1210,16 +1201,14 @@ export class FortyKItem extends Item {
             let power = actor.getEmbeddedDocument("Item", powerId);
             let affects = power.system.affects.value;
             let targets;
-            if(affects==="self"){
+            if (affects === "self") {
                 targets = [getActorToken(actor)];
-            }else{
-                targets = game.canvas.tokens.children[0].children.filter((token) => targetIds.includes(token.id)); 
+            } else {
+                targets = game.canvas.tokens.children[0].children.filter((token) => targetIds.includes(token.id));
             }
-
 
             let ae = power.effects.entries().next().value[1];
             let aeData = foundry.utils.duplicate(ae);
-
 
             aeData.name = ae.name + " Buff";
             let actorPR = actor.system.psykana.pr.effective;
@@ -1230,22 +1219,21 @@ export class FortyKItem extends Item {
             aeData.disabled = false;
             aeData.origin = actorId;
             aeData.statuses = [ae.name];
-            
+
             let effectUuIds = [];
             for (let i = 0; i < targets.length; i++) {
                 let target = targets[i];
 
                 let targetActor = target.actor;
-                let render=false;
-               
-                let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", [aeData],{render:render});
+                let render = false;
+
+                let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
 
                 let ae = effect[0];
                 let effectuuid = await ae.uuid;
 
                 effectUuIds.push(effectuuid);
             }
-
 
             if (power.system.sustain.value !== "No") {
                 await power.setFlag("fortyk", "sustained", effectUuIds);
@@ -1277,13 +1265,13 @@ export class FortyKItem extends Item {
             let powerIndex = sustained.indexOf(power.id);
             sustained.splice(powerIndex, 1);
             actor.update({ "system.psykana.pr.sustained": sustained });
-            if(power.getFlag("fortyk","initmods")){
-                let combat=game.combats.active;
-                let inits=power.getFlag("fortyk","initmods");
-                for(const init of inits){
-                    await combat.setInitiative(init.id,init.init);
+            if (power.getFlag("fortyk", "initmods")) {
+                let combat = game.combats.active;
+                let inits = power.getFlag("fortyk", "initmods");
+                for (const init of inits) {
+                    await combat.setInitiative(init.id, init.init);
                 }
-                await power.setFlag("fortyk","initmods",false);
+                await power.setFlag("fortyk", "initmods", false);
             }
         } else {
             //if user isnt GM use socket to have gm cancel the buffs/debuffs

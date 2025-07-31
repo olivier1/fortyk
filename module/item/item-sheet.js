@@ -78,7 +78,7 @@ export class FortyKItemSheet extends ItemSheet {
                 data.chars=foundry.utils.duplicate(game.fortyk.FORTYK.skillCharsInf);
                 data.chars.any={name:"any",caps:"ANY"};
             }
-            
+
             data.compendiums=game.packs.values().toArray().map((x)=>x=x.metadata);
             data.chosenPack=this.chosenPack;
             if(this.chosenPack){
@@ -101,7 +101,7 @@ export class FortyKItemSheet extends ItemSheet {
             }else{
                 data.compendiumItems=[];
             }
-            
+
         }
         if(this.item.type==="psychicPower"){
             let macroCompendium=game.packs.get("fortyk.fortykmacros");
@@ -264,7 +264,7 @@ export class FortyKItemSheet extends ItemSheet {
 
     }
     async _onManageReqsClick(event){
-         event.preventDefault();
+        event.preventDefault();
         let dialog=new ManageRequirementsDialog({item:this.item});
         dialog.render(true,{title:"Manage Requirements"});
     }
@@ -290,15 +290,29 @@ export class FortyKItemSheet extends ItemSheet {
                                     modData.type="mod";
                                     modData.effects=[foundry.utils.duplicate(activeEffect)];
                                     if(item.parent){
-
+                                        await this.item.deleteEmbeddedDocuments("ActiveEffect",[itemId]);
                                         await item.parent.createEmbeddedDocuments("Item",[modData]);
+                                        this.render(true);
+                                        let apps = item.parent.apps;
+                                        for(const appKey in apps){
+                                            apps[appKey].render(true);
+                                        }
                                     }
                                 } 
+                            }else{
+                                await this.item.deleteEmbeddedDocuments("ActiveEffect",[itemId]);
+                                this.render(true);
+                                var apps = item.parent.apps;
+                                for(const appKey in apps){
+                                    apps[appKey].render(true);
+                                }
                             }
 
 
-                            await this.item.deleteEmbeddedDocuments("ActiveEffect",[itemId]);
+
                             this.render(true);
+                            console.log(item.parent)
+
                         }
                     },
                     cancel:{
@@ -329,11 +343,11 @@ export class FortyKItemSheet extends ItemSheet {
         let isANDInput=document.getElementById("AND");
         let isAND=isANDInput?.checked;
         let item= await fromUuid(this.chosenItem);
-       
+
         let spec=item.system.specialisation?.value;
 
         let bonus={"uuid":this.chosenItem,"name":this.chosenItemName, "isOR":isOR, "isAND":isAND};
-        
+
         if(typeof spec==="string" && spec!=="N/A"){
 
             let chosenSpec=await Dialog.prompt({
@@ -379,7 +393,7 @@ export class FortyKItemSheet extends ItemSheet {
             if(newAmount>1){
                 bonus.amount=newAmount;
             }
-            
+
         }
 
 

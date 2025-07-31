@@ -535,6 +535,23 @@
                     <option value="{{this._id}}" {{#if this.system.isEquipped}}selected{{/if}}>{{this.name}}</option>
                     {{/each}}
                 </select>
+                {{#if system.secChar.wornGear.armor}}
+                <div class="flexcol">
+                    <Label class="section-title">Armor Special Qualities</Label>
+                    {{#each system.secChar.wornGear.armor.flags.fortyk as |flag key|}}
+                   
+
+
+                        {{#if (checkSpecial this)}}
+
+                        {{#with (lookup ../FORTYK.armorFlags [key])~}}
+                        <a class="item-descr fit-content" data-name="{{label}}" data-item-descr="{{description}}" >
+
+                            {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
+                        {{/if}}
+                    {{/each}}
+                </div>
+                {{/if}}
                 <div class="flexcol">
 
                     <div class="flexrow flex-group-center">
