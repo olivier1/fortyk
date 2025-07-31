@@ -115,6 +115,9 @@
     padding:3px;
     grid-column-end :span 3;
 }
+.gap{
+    gap: 1em;
+}
 .flex-group-center,
 .flex-group-left,
 .flex-group-right {

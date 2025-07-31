@@ -565,19 +565,19 @@ FORTYK.armorFlags={
         "value": false,
         num:0,
         "label": "Impact Resilient",
-        "description": "This armor is built to resist energy attacks,  it gets an additional amount of armor points against impact attacks."
+        "description": "This armor is built to resist impact attacks,  it gets an additional amount of armor points against impact attacks."
     },
     "rendingRes": {
         "value": false,
         num:0,
         "label": "Rending Resilient",
-        "description": "This armor is built to resist energy attacks,  it gets an additional amount of armor points against rending attacks."
+        "description": "This armor is built to resist rending attacks,  it gets an additional amount of armor points against rending attacks."
     },
     "explosiveRes": {
         "value": false,
         num:0,
         "label": "Explosive Resilient",
-        "description": "This armor is built to resist energy attacks,  it gets an additional amount of armor points against explosive attacks."
+        "description": "This armor is built to resist explosive attacks,  it gets an additional amount of armor points against explosive attacks."
     },
     "flamerepellent": {
         "value": false,

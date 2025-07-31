@@ -123,7 +123,7 @@ export class FortyKItem extends Item {
             let actor = this.actor;
 
             const scope = actor.getScope();
-
+            item.system.specialFlags=this.getFlags();
             if (item.system.state) {
                 if (
                     item.system.state.value === "X" ||
@@ -840,6 +840,33 @@ export class FortyKItem extends Item {
             }
         }
         return count;
+    }
+    getFlags(){
+        let flags=[];
+        var fortykFlags = this.flags.fortyk;
+        let FORTYK=this.FORTYK;
+        let FORTYKFlags;
+        if(this.type === "armor"){
+            FORTYKFlags=FORTYK.armorFlags;
+        }else{
+            FORTYKFlags=FORTYK.weaponFlags;
+        }
+        for(const key in fortykFlags){
+            let FORTYKFlag=FORTYKFlags[key];
+            if(!FORTYKFlag)continue;
+            let value=fortykFlags[key];
+            if(!value)continue;
+            let flagObj={};
+            flagObj.description=FORTYKFlag.description;
+            if(typeof value === "number"){
+                flagObj.label=`${FORTYKFlag.label} (${value})`;
+            }else{
+                flagObj.label=FORTYKFlag.label;
+            }
+            flags.push(flagObj);
+            
+        }
+        return flags;
     }
     validateActor(actor) {
         var validated = true;

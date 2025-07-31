@@ -536,25 +536,28 @@
                     {{/each}}
                 </select>
                 {{#if system.secChar.wornGear.armor}}
+                {{#if system.secChar.wornGear.armor.system.specialFlags.length}}
                 <div class="flexcol">
                     <Label class="section-title">Armor Special Qualities</Label>
-                    <div class="flexrow fit-content">
-                        {{#each system.secChar.wornGear.armor.flags.fortyk as |flag key|}}
+                    
+                    <div class="flexrow fit-content gap">
+                        {{#each system.secChar.wornGear.armor.system.specialFlags}}
 
 
 
-                        {{#if (checkSpecial this)}}
+                        
 
-                        {{#with (lookup ../FORTYK.armorFlags [key])~}}
+                      
                         <a class="item-descr fit-content" data-name="{{label}}" data-item-descr="{{description}}" >
                             
-                            {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
+                            {{label}}</a>
                         
-                        {{/if}}
+                      
                         {{/each}}
                     </div>
 
                 </div>
+                {{/if}}
                 {{/if}}
                 <div class="flexcol">
 

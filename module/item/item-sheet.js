@@ -577,7 +577,7 @@ export class FortyKItemSheet extends ItemSheet {
                 content: content,
                 buttons:{
                     submit:{
-                        label:"Yes",
+                        label:"Confirm",
                         callback: async html => {
                             for (let [key, spec] of Object.entries(specials)){
 
