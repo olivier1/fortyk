@@ -8,11 +8,10 @@ import { objectByString } from "../utilities.js";
 import { setNestedKey } from "../utilities.js";
 import { getActorToken } from "../utilities.js";
 export class FortyKItem extends Item {
-    
     //@Override the create function to add an activeeffect for modifiers to an item
     static async create(data, options) {
         // If the created item has effects (only applicable to duplicated actors) bypass the new item creation logic
-        data.flags={fortyk:{}};
+        data.flags = { fortyk: {} };
         if (data.effects) {
             return super.create(data, options);
         }
@@ -84,7 +83,7 @@ export class FortyKItem extends Item {
         // Get the Item's data
         const item = this;
         item.FORTYK = game.fortyk.FORTYK;
-       
+
         /*if(game.user.isGM){
             if(!item.flags.fortyk)item.flags.fortyk={};
             item.flags.fortyk.hidden=false;
@@ -123,7 +122,7 @@ export class FortyKItem extends Item {
             let actor = this.actor;
 
             const scope = actor.getScope();
-            item.system.specialFlags=this.getFlags();
+            item.system.specialFlags = this.getFlags();
             if (item.system.state) {
                 if (
                     item.system.state.value === "X" ||
@@ -841,30 +840,29 @@ export class FortyKItem extends Item {
         }
         return count;
     }
-    getFlags(){
-        let flags=[];
-        var fortykFlags = this.flags.fortyk;
-        let FORTYK=this.FORTYK;
+    getFlags() {
+        let flags = [];
+        let fortykFlags = this.flags.fortyk;
+        let FORTYK = this.FORTYK;
         let FORTYKFlags;
-        if(this.type === "armor"){
-            FORTYKFlags=FORTYK.armorFlags;
-        }else{
-            FORTYKFlags=FORTYK.weaponFlags;
+        if (this.type === "armor") {
+            FORTYKFlags = FORTYK.armorFlags;
+        } else {
+            FORTYKFlags = FORTYK.weaponFlags;
         }
-        for(const key in fortykFlags){
-            let FORTYKFlag=FORTYKFlags[key];
-            if(!FORTYKFlag)continue;
-            let value=fortykFlags[key];
-            if(!value)continue;
-            let flagObj={};
-            flagObj.description=FORTYKFlag.description;
-            if(typeof value === "number"){
-                flagObj.label=`${FORTYKFlag.label} (${value})`;
-            }else{
-                flagObj.label=FORTYKFlag.label;
+        for (const key in fortykFlags) {
+            let FORTYKFlag = FORTYKFlags[key];
+            if (!FORTYKFlag) continue;
+            let value = fortykFlags[key];
+            if (!value) continue;
+            let flagObj = {};
+            flagObj.description = FORTYKFlag.description;
+            if (typeof value === "number") {
+                flagObj.label = `${FORTYKFlag.label} (${value})`;
+            } else {
+                flagObj.label = FORTYKFlag.label;
             }
             flags.push(flagObj);
-            
         }
         return flags;
     }

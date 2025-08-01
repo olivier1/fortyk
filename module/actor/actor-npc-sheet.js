@@ -1,14 +1,13 @@
-import {FortykRolls} from "../FortykRolls.js";
-import {objectByString} from "../utilities.js";
-import {setNestedKey} from "../utilities.js";
+import { FortykRolls } from "../FortykRolls.js";
+import { objectByString } from "../utilities.js";
+import { setNestedKey } from "../utilities.js";
 import FortyKBaseActorSheet from "./base-sheet.js";
 export class FortyKNPCSheet extends FortyKBaseActorSheet {
-    
     static async create(data, options) {
-        data.skillFilter="";
-        super.create(data,options);
+        data.skillFilter = "";
+        super.create(data, options);
     }
-    
+
     /** @override */
 
     static get defaultOptions() {
@@ -18,14 +17,14 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
             width: 600,
             height: 660,
             tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "weapons" }],
-            default:null
+            default: null
         });
     }
 
     /* -------------------------------------------- */
 
     /** @override */
-   /* getData() {
+    /* getData() {
 
 
 
@@ -40,85 +39,72 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
     activateListeners(html) {
         super.activateListeners(html);
         //right click profile img
-        html.find('.npc-img').contextmenu(this._onImgRightClick.bind(this));
+        html.find(".npc-img").contextmenu(this._onImgRightClick.bind(this));
 
         if (!this.options.editable) return;
-        
-        html.find('.parse-tnt').click(this._onTntParse.bind(this));
-       
 
-    } 
-    
-    _onImgRightClick(event){
+        html.find(".parse-tnt").click(this._onTntParse.bind(this));
+    }
 
+    _onImgRightClick(event) {
         event = event || window.event;
 
-        
         var options = {
             width: "auto",
             height: "auto"
         };
-        let img=this.actor.img
-        let dlg = new Dialog({
-            title: `Profile Image`,
-            content: `<img src="${img}"  width="auto" height="auto">`,
-            buttons: {
-                submit: {
-                    label: "OK",
-                    callback: null
-                }
+        let img = this.actor.img;
+        let dlg = new Dialog(
+            {
+                title: `Profile Image`,
+                content: `<img src="${img}"  width="auto" height="auto">`,
+                buttons: {
+                    submit: {
+                        label: "OK",
+                        callback: null
+                    }
+                },
+                default: "submit"
             },
-            default: "submit",
-        }, options);
+            options
+        );
         dlg.render(true);
-
-
     }
-   
-    async _onTntParse(event){
 
-        let actor=this.actor;
-        let data=actor.system;
-        let tnt=data.talentsntraits.value.toLowerCase();
-        let message="Trait changes on "+actor.name+":";
-        if(tnt.includes("true grit")){
-            await actor.setFlag("fortyk","truegrit",true);
-
-
-        }else{
-            await actor.setFlag("fortyk","truegrit",false);
-
+    async _onTntParse(event) {
+        let actor = this.actor;
+        let data = actor.system;
+        let tnt = data.talentsntraits.value.toLowerCase();
+        let message = "Trait changes on " + actor.name + ":";
+        if (tnt.includes("true grit")) {
+            await actor.setFlag("fortyk", "truegrit", true);
+        } else {
+            await actor.setFlag("fortyk", "truegrit", false);
         }
-        if(tnt.includes("overwhelming")){
-            await actor.setFlag("fortyk","overwhelming",true);
-
-        }else{
-            await actor.setFlag("fortyk","overwhelming",false);
-
+        if (tnt.includes("overwhelming")) {
+            await actor.setFlag("fortyk", "overwhelming", true);
+        } else {
+            await actor.setFlag("fortyk", "overwhelming", false);
         }
-        if(tnt.includes("regeneration")){
-            let regex=/.*?regeneration\((\d+)\).*$/;
+        if (tnt.includes("regeneration")) {
+            let regex = /.*?regeneration\((\d+)\).*$/;
 
-            let found=tnt.match(regex);
-            let amt=found[1];
+            let found = tnt.match(regex);
+            let amt = found[1];
 
-            await actor.setFlag("fortyk","regeneration",found[1]);
-
-
-        }else{
-            await actor.setFlag("fortyk","regeneration",false);
-
+            await actor.setFlag("fortyk", "regeneration", found[1]);
+        } else {
+            await actor.setFlag("fortyk", "regeneration", false);
         }
-        if(tnt.includes("swarm")){
-            await actor.setFlag("fortyk","swarm",true);
-
-        }else{
-            await actor.setFlag("fortyk","swarm",false);
+        if (tnt.includes("swarm")) {
+            await actor.setFlag("fortyk", "swarm", true);
+        } else {
+            await actor.setFlag("fortyk", "swarm", false);
         }
-        message+=`</br>True Grit:${actor.getFlag("fortyk","truegrit")}`;
-        message+=`</br>Overwhelming:${actor.getFlag("fortyk","overwhelming")}`;
-        message+=`</br>Regeneration:${actor.getFlag("fortyk","regeneration")}`;
-        message+=`</br>Swarm:${actor.getFlag("fortyk","swarm")}`;
+        message += `</br>True Grit:${actor.getFlag("fortyk", "truegrit")}`;
+        message += `</br>Overwhelming:${actor.getFlag("fortyk", "overwhelming")}`;
+        message += `</br>Regeneration:${actor.getFlag("fortyk", "regeneration")}`;
+        message += `</br>Swarm:${actor.getFlag("fortyk", "swarm")}`;
 
         let chatData = {
             user: game.user._id,
@@ -128,7 +114,4 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
         };
         ChatMessage.create(chatData);
     }
-
-
-
 }

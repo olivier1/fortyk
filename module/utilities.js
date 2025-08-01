@@ -407,12 +407,12 @@ export const getSkills= async function(){
         skillCollection.push(skillItem);
     }
     let sorted=skillCollection.sort(function compare(a, b) {
-        let valueA=a.name;
-        let valueB=b.name;
-        if (valueA>valueB) {
+        let valueA = a.name;
+        let valueB = b.name;
+        if (valueA > valueB) {
             return 1;
         }
-        if (valueA<valueB) {
+        if (valueA < valueB) {
             return -1;
         }
         // a must be equal to b

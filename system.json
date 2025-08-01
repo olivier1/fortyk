@@ -2,7 +2,7 @@
   "id": "fortyk",
   "title": "fortyk",
   "description": "The fortyk system for FoundryVTT!",
-  "version": "3.3.1",
+  "version": "3.3.2",
   "compatibility": {
     "minimum": "12.331",
     "verified": "12.343",
@@ -18,10 +18,9 @@
   "esmodules": [
     "module/fortyk.js"
   ],
-  "scripts":[
+  "scripts": [
     "imports/math.js"
   ],
-  
   "styles": [
     "css/fortyk.css"
   ],
@@ -555,7 +554,7 @@
   "socket": true,
   "url": "https://github.com/olivier1/fortyk",
   "manifest": "https://raw.githubusercontent.com/olivier1/fortyk/master/system.json",
-  "download": "https://github.com/olivier1/fortyk/archive/3.3.1.zip",
+  "download": "https://github.com/olivier1/fortyk/archive/3.3.2.zip",
   "license": "LICENSE.txt",
   "grid": {
     "units": "m"
