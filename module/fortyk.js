@@ -196,7 +196,7 @@ Hooks.once("init", async function () {
     Handlebars.registerHelper("equals", function (num1, num2) {
         return num1 == num2;
     });
-    Handlebars.registerHelper("checkSpecial;", function (spec) {
+    Handlebars.registerHelper("checkSpecial", function (spec) {
         let bool = false;
         if (typeof spec === "number") {
             bool = true;

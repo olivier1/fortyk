@@ -1,8 +1,6 @@
-export const preloadHandlebarsTemplates = async function() {
-
+export const preloadHandlebarsTemplates = async function () {
     // Define template paths to load
     const templatePaths = [
-
         // Actor Sheet Partials
         "systems/fortyk/templates/actor/actor-main.html",
         "systems/fortyk/templates/actor/actorDH-main.html",
@@ -41,18 +39,16 @@ export const preloadHandlebarsTemplates = async function() {
         "systems/fortyk/templates/actor/knightParts/traits.html",
         "systems/fortyk/templates/actor/knightParts/damage-report.html"
 
-
-
         // Item Sheet Partials
-
     ];
 
     // Load the template parts
     return loadTemplates(templatePaths);
-    
 };
-export const preLoadHandlebarsPartials= async function() {
-    Handlebars.registerPartial('rangedWeapon', `<div class="weapons grid grid-2col">
+export const preLoadHandlebarsPartials = async function () {
+    Handlebars.registerPartial(
+        "rangedWeapon",
+        `<div class="weapons grid grid-2col">
                 <div class="weapon-name">
                     {{#if flags.fortyk.alternateprofiles}}
 
@@ -118,10 +114,10 @@ export const preLoadHandlebarsPartials= async function() {
                     <label>Current Ammo:</label>
                     <select class="weapon-ammo" data-weapon="{{this.id}}" data-previous="{{this.system.ammo._id}}">
 
-                       
+
                         <option value="">None</option>
                         {{selectOptions this.validAmmos selected=this.system.ammo._id valueAttr="_id" labelAttr="label"}}
-                        
+
 
                     </select>
                 </div>
@@ -186,8 +182,11 @@ export const preLoadHandlebarsPartials= async function() {
 
                 </div>
 
-            </div>`);
-    Handlebars.registerPartial('meleeWeapon',`<div class="weapons grid grid-2col">
+            </div>`
+    );
+    Handlebars.registerPartial(
+        "meleeWeapon",
+        `<div class="weapons grid grid-2col">
 
                 <div class="weapon-name">
                     {{#if flags.fortyk.alternateprofiles}}
@@ -254,159 +253,226 @@ export const preLoadHandlebarsPartials= async function() {
                     <span>Weapon Type: {{this.system.type.value}}</span>
                 </div>
 
-            </div>`);
+            </div>`
+    );
     return;
 };
-export const sleep=function(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+export const sleep = function (ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
 };
 //returns an actors token object, not the token document. Will search the active canvas for the current token.
-export const getActorToken=function(actor){
-
-    if(actor.token){
-        return actor.token._object; 
+export const getActorToken = function (actor) {
+    if (actor.token) {
+        return actor.token._object;
     }
-    let tokens=[];
-    if(canvas.tokens.children.length>0){
-        tokens=canvas.tokens.children[0].children;
+    let tokens = [];
+    if (canvas.tokens.children.length > 0) {
+        tokens = canvas.tokens.children[0].children;
     }
 
-    let t=null;
-    for(let token of tokens){
-        if(token.actor&&token.actor.id===actor.id){
-            t=token;
+    let t = null;
+    for (let token of tokens) {
+        if (token.actor && token.actor.id === actor.id) {
+            t = token;
         }
     }
     return t;
 };
-export const parseHtmlForInline=function(html){
+export const parseHtmlForInline = function (html) {
+    let inlineStr = $(html).find(`a.inline-roll.inline-result`);
 
-
-    let inlineStr=$(html).find(`a.inline-roll.inline-result`);
-
-    let strArray=[];
-    for(let i=0;i<inlineStr.length;i++){
+    let strArray = [];
+    for (let i = 0; i < inlineStr.length; i++) {
         strArray.push(inlineStr[i].text);
     }
 
-
-    let intArray=[];
-    for(let i=0;i<strArray.length;i++){
+    let intArray = [];
+    for (let i = 0; i < strArray.length; i++) {
         intArray.push(parseInt(strArray[i]));
     }
     return intArray;
 };
-export const tokenDistance=function(token1,token2){
-    
-    let gridRatio=(canvas.dimensions.distance/canvas.dimensions.size);
-    let token1x=token1.x;
-    let token1y=token1.y;
-    let token2x=token2.x;
-    let token2y=token2.y;
-    if(token1.w>=200){
-        if(token2x>token1x){
-            let dist=token2x-token1x;
-            let adjust=token1.w-100;
-            if(dist<adjust){
-                token1x+=(adjust-dist);
-            }else{
-               token1x+=adjust; 
+export const tokenDistance = function (token1, token2) {
+    if (canvas.scene.grid.type === CONST.GRID_TYPES.GRIDLESS) {
+        //let distancePx=Math.sqrt(Math.pow(gridRatio*(token1x-token2x),2)+Math.pow(gridRatio*(token1y-token2y),2)+Math.pow((token1.document.elevation-token2.document.elevation),2));
+
+        return tokenDistanceGridless(token1, token2);
+    }
+    let gridRatio = canvas.dimensions.distance / canvas.dimensions.size;
+    let token1x = token1.x;
+    let token1y = token1.y;
+    let token2x = token2.x;
+    let token2y = token2.y;
+    if (token1.w >= 200) {
+        if (token2x > token1x) {
+            let dist = token2x - token1x;
+            let adjust = token1.w - 100;
+            if (dist < adjust) {
+                token1x += adjust - dist;
+            } else {
+                token1x += adjust;
             }
         }
     }
-    if(token1.h>=200){
-        if(token2y>token1y){
-            let dist=token2y-token1y;
-            let adjust=token1.h-100;
-            if(dist<adjust){
-                token1y+=dist;
-            }else{
-               token1y+=adjust; 
-            }
-            
-        }
-    }
-    if(token2.w>=200){
-        if(token1x>token2x){
-            let dist=token1x-token2x;
-            let adjust=token2.w-100;
-            if(dist<adjust){
-                token2x+=dist;
-            }else{
-               token2x+=adjust; 
+    if (token1.h >= 200) {
+        if (token2y > token1y) {
+            let dist = token2y - token1y;
+            let adjust = token1.h - 100;
+            if (dist < adjust) {
+                token1y += dist;
+            } else {
+                token1y += adjust;
             }
         }
     }
-    if(token2.h>=200){
-        if(token1y>token2y){
-            let dist=token1y-token2y;
-            let adjust=token2.h-100;
-            if(dist<adjust){
-                token2y+=dist;
-            }else{
-               token2y+=adjust; 
+    if (token2.w >= 200) {
+        if (token1x > token2x) {
+            let dist = token1x - token2x;
+            let adjust = token2.w - 100;
+            if (dist < adjust) {
+                token2x += dist;
+            } else {
+                token2x += adjust;
+            }
+        }
+    }
+    if (token2.h >= 200) {
+        if (token1y > token2y) {
+            let dist = token1y - token2y;
+            let adjust = token2.h - 100;
+            if (dist < adjust) {
+                token2y += dist;
+            } else {
+                token2y += adjust;
             }
         }
     }
 
-    if(canvas.scene.grid.type===0){
 
-        let distancePx=Math.sqrt(Math.pow(gridRatio*(token1x-token2x),2)+Math.pow(gridRatio*(token1y-token2y),2)+Math.pow((token1.document.elevation-token2.document.elevation),2));
-       
-        return distancePx;
-    }
-    if(canvas.scene.grid.type>=1){
-        //convert from pixels to map units
-        let xDistance=Math.abs(gridRatio*(token1x-token2x));
-        let yDistance=Math.abs(gridRatio*(token1y-token2y));
-        //Z DISTANCE IS NOT IN PIXELS
-        let zDistance=Math.abs((token1.document.elevation-token2.document.elevation));
+    //convert from pixels to map units
+    let xDistance = Math.abs(gridRatio * (token1x - token2x));
+    let yDistance = Math.abs(gridRatio * (token1y - token2y));
+    //Z DISTANCE IS NOT IN PIXELS
+    let zDistance = Math.abs(token1.document.elevation - token2.document.elevation);
 
-        return Math.max(xDistance,yDistance,zDistance); 
-    }
+    return Math.max(xDistance, yDistance, zDistance);
 
 };
-export const smallestDistance= function(token, points){
-    let distances=[];
-    let pairs={};
-    for(let i=0;i<points.length;i++){
-        let point=points[i];
-        if(point){
-            let distance=Math.sqrt(Math.pow((point.x-token.x),2)+Math.pow((point.y-token.y),2));
+const tokenDistanceGridless = function (token1, token2) {
+    let token1Center = token1.center;
+    let token2Center = token2.center;
+    //find points of intersection for both
+    let token1Bounds = token1.bounds;
+    let gridRatio = canvas.dimensions.distance / canvas.dimensions.size;
+    let token1Intersects=[]
+
+    let token1LeftEdgeIntersect = foundry.utils.lineSegmentIntersection(
+        token1Center,
+        token2Center,
+        token1Bounds.leftEdge.A,
+        token1Bounds.leftEdge.B
+    );
+    token1Intersects.push(token1LeftEdgeIntersect);
+    let token1RightEdgeIntersect = foundry.utils.lineSegmentIntersection(
+        token1Center,
+        token2Center,
+        token1Bounds.rightEdge.A,
+        token1Bounds.rightEdge.B
+    );
+    token1Intersects.push(token1RightEdgeIntersect);
+    let token1TopEdgeIntersect = foundry.utils.lineSegmentIntersection(
+        token1Center,
+        token2Center,
+        token1Bounds.topEdge.A,
+        token1Bounds.topEdge.B
+    );
+    token1Intersects.push(token1TopEdgeIntersect);
+    let token1BottomEdgeIntersect = foundry.utils.lineSegmentIntersection(
+        token1Center,
+        token2Center,
+        token1Bounds.bottomEdge.A,
+        token1Bounds.bottomEdge.B
+    );
+    token1Intersects.push(token1BottomEdgeIntersect);
+    let token1IntersectPoint=token1Intersects.find((intersect)=>intersect!==null);
+    if(!token1IntersectPoint)return 0;
+    //token2 intersect
+    let token2Intersects=[];
+    let token2Bounds = token2.bounds;
+    let token2LeftEdgeIntersect = foundry.utils.lineSegmentIntersection(
+        token1Center,
+        token2Center,
+        token2Bounds.leftEdge.A,
+        token2Bounds.leftEdge.B
+    );
+    token2Intersects.push(token2LeftEdgeIntersect);
+    let token2RightEdgeIntersect = foundry.utils.lineSegmentIntersection(
+        token1Center,
+        token2Center,
+        token2Bounds.rightEdge.A,
+        token2Bounds.rightEdge.B
+    );
+    token2Intersects.push(token2RightEdgeIntersect);
+    let token2TopEdgeIntersect = foundry.utils.lineSegmentIntersection(
+        token1Center,
+        token2Center,
+        token2Bounds.topEdge.A,
+        token2Bounds.topEdge.B
+    );
+    token2Intersects.push(token2TopEdgeIntersect);
+    let token2BottomEdgeIntersect = foundry.utils.lineSegmentIntersection(
+        token1Center,
+        token2Center,
+        token2Bounds.bottomEdge.A,
+        token2Bounds.bottomEdge.B
+    );
+    token2Intersects.push(token2BottomEdgeIntersect);
+    let token2IntersectPoint=token2Intersects.find((intersect)=>intersect!==null);
+    if(!token2IntersectPoint)return 0;
+    let distancePx=Math.sqrt(Math.pow(gridRatio*(token1IntersectPoint.x-token2IntersectPoint.x),2)+Math.pow(gridRatio*(token1IntersectPoint.y-token2IntersectPoint.y),2)+Math.pow((token1.document.elevation-token2.document.elevation),2));
+
+    return distancePx;
+
+};
+export const smallestDistance = function (token, points) {
+    let distances = [];
+    let pairs = {};
+    for (let i = 0; i < points.length; i++) {
+        let point = points[i];
+        if (point) {
+            let distance = Math.sqrt(Math.pow(point.x - token.x, 2) + Math.pow(point.y - token.y, 2));
             distances.push(distance);
-            pairs[distance]=point;
+            pairs[distance] = point;
         }
-
     }
-    if(distances.length>0){
-        let min=Math.min(...distances);
+    if (distances.length > 0) {
+        let min = Math.min(...distances);
         return pairs[min];
-        
-    }else{return null;}
-
+    } else {
+        return null;
+    }
 };
 
-export const getItem= function(actor, name){
-    for(let item of actor.items){
-        if(item.name===name){
+export const getItem = function (actor, name) {
+    for (let item of actor.items) {
+        if (item.name === name) {
             return item;
         }
     }
     return null;
 };
 
-export const getSkills= async function(){
-    let skillCollection=[];
-    const pack = game.packs.find(p => p.collection == "fortyk.skills");
+export const getSkills = async function () {
+    let skillCollection = [];
+    const pack = game.packs.find((p) => p.collection == "fortyk.skills");
     let skills = [];
-    await pack.getIndex().then(index => skills = index);
-    for (let sk of skills)
-    {
+    await pack.getIndex().then((index) => (skills = index));
+    for (let sk of skills) {
         let skillItem;
-        await pack.getDocument(sk._id).then(skill => skillItem = skill);
+        await pack.getDocument(sk._id).then((skill) => (skillItem = skill));
         skillCollection.push(skillItem);
     }
-    let sorted=skillCollection.sort(function compare(a, b) {
+    let sorted = skillCollection.sort(function compare(a, b) {
         let valueA = a.name;
         let valueB = b.name;
         if (valueA > valueB) {
@@ -420,11 +486,10 @@ export const getSkills= async function(){
     });
     return sorted;
 };
-export const objectByString = function(o, s) {
-
-    s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
-    s = s.replace(/^\./, '');           // strip a leading dot
-    var a = s.split('.');
+export const objectByString = function (o, s) {
+    s = s.replace(/\[(\w+)\]/g, ".$1"); // convert indexes to properties
+    s = s.replace(/^\./, ""); // strip a leading dot
+    var a = s.split(".");
     for (var i = 0, n = a.length; i < n; ++i) {
         var k = a[i];
         if (k in o) {
@@ -437,19 +502,20 @@ export const objectByString = function(o, s) {
 };
 
 export const setNestedKey = (obj, path, value) => {
-    
     if (path.length === 1) {
         obj[path] = value;
         return;
     }
-    if(obj[path[0]]===undefined){return;}
+    if (obj[path[0]] === undefined) {
+        return;
+    }
     return setNestedKey(obj[path[0]], path.slice(1), value);
 };
-export const makeRangeArray=function (upperBounds, values) {
-    var rangeArray = new Array(upperBounds[upperBounds.length-1]);
+export const makeRangeArray = function (upperBounds, values) {
+    var rangeArray = new Array(upperBounds[upperBounds.length - 1]);
 
     var idx = 0;
-    for (var i=0; i < rangeArray.length; i++) {
+    for (var i = 0; i < rangeArray.length; i++) {
         if (i > upperBounds[idx]) {
             idx++;
         }
@@ -457,217 +523,233 @@ export const makeRangeArray=function (upperBounds, values) {
     }
     return rangeArray;
 };
-export const isEmpty=function (obj) {
-    for(var key in obj) {
-        if(obj.hasOwnProperty(key))
-            return false;
+export const isEmpty = function (obj) {
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key)) return false;
     }
     return true;
 };
-export const getVehicleFacing=function(vehicleToken,attackerToken){
-
-
-
-    let attackAngle=getAttackAngle(vehicleToken,attackerToken);
-
+export const getVehicleFacing = function (vehicleToken, attackerToken) {
+    let attackAngle = getAttackAngle(vehicleToken, attackerToken);
 
     //adjust for vehicle rotation
-    let vehicleRotation=vehicleToken.rotation;
-    attackAngle-=vehicleRotation;
-    if(attackAngle<0){
-        attackAngle=360+attackAngle;
+    let vehicleRotation = vehicleToken.rotation;
+    attackAngle -= vehicleRotation;
+    if (attackAngle < 0) {
+        attackAngle = 360 + attackAngle;
     }
-    let facings=vehicleToken.actor.system.facings;
-    let facing=null;
-    let split={};
-    for(const face in facings){
-        let f=facings[face];
+    let facings = vehicleToken.actor.system.facings;
+    let facing = null;
+    let split = {};
+    for (const face in facings) {
+        let f = facings[face];
         //check for split facing  eg starts at 316 and ends at 45
-        if(f.end<f.start){
-            split=f;
+        if (f.end < f.start) {
+            split = f;
         }
-        if(attackAngle>=f.start&&attackAngle<=f.end){
-
-            facing=f;
+        if (attackAngle >= f.start && attackAngle <= f.end) {
+            facing = f;
         }
     }
     //if facing is none of the facings it must be in the split facing
-    if(facing===null){
-        facing=split;
+    if (facing === null) {
+        facing = split;
     }
     return facing;
 };
-export const degToRad=function (degrees) {
+export const degToRad = function (degrees) {
     return degrees * (Math.PI / 180);
 };
 
-export const radToDeg=function (rad) {
+export const radToDeg = function (rad) {
     return rad / (Math.PI / 180);
 };
-export const getBlastTargets=function(templates){
-        let scene=game.scenes.active;
-        let tokens=scene.tokens;
-        let targets=[];
-        let gridRatio=scene.dimensions.size/scene.dimensions.distance;
+export const getBlastTargets = function (templates) {
+    let scene = game.scenes.active;
+    let tokens = scene.tokens;
+    let targets = [];
+    let gridRatio = scene.dimensions.size / scene.dimensions.distance;
 
-        for(let i=0;i<templates.length;i++){
-            let targetted=[];
-            let template=templates[i];
-            let bounds=template._object._computeShape();
-            bounds.x=template.x;
-            bounds.y=template.y;
+    for (let i = 0; i < templates.length; i++) {
+        let targetted = [];
+        let template = templates[i];
+        let bounds = template._object._computeShape();
+        bounds.x = template.x;
+        bounds.y = template.y;
 
+        tokens.forEach((token, id, tokens) => {
+            let tokenBounds = token._object.bounds;
+            let bottomIn = false;
+            let topIn = false;
+            let rightIn = false;
+            let leftIn = false;
+            let tempInToken = false;
+            let tokenInTemp = bounds.contains(token._object.center.x - template.x, token._object.center.y - template.y);
+            if (
+                bounds.x > tokenBounds.left &&
+                bounds.x < tokenBounds.right &&
+                bounds.y > tokenBounds.top &&
+                bounds.y < tokenBounds.bottom
+            ) {
+                tempInToken = true;
+            }
 
-            tokens.forEach((token,id,tokens)=>{
-
-                let tokenBounds=token._object.bounds;
-                let bottomIn=false;
-                let topIn=false;
-                let rightIn=false;
-                let leftIn=false;
-                let tempInToken=false;
-                let tokenInTemp=bounds.contains(token._object.center.x-template.x,token._object.center.y-template.y);
-                if(bounds.x>tokenBounds.left&&bounds.x<tokenBounds.right&&bounds.y>tokenBounds.top&&bounds.y<tokenBounds.bottom){
-                    tempInToken=true;
-                }
-
-                let bottomIntersect=foundry.utils.lineCircleIntersection(tokenBounds.bottomEdge.A,tokenBounds.bottomEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
-                bottomIn=!bottomIntersect.outside;
-                let topIntersect=foundry.utils.lineCircleIntersection(tokenBounds.topEdge.A,tokenBounds.topEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
-                topIn=!topIntersect.outside;
-                let leftIntersect=foundry.utils.lineCircleIntersection(tokenBounds.leftEdge.A,tokenBounds.leftEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
-                leftIn=!leftIntersect.outside;
-                let rightIntersect=foundry.utils.lineCircleIntersection(tokenBounds.rightEdge.A,tokenBounds.rightEdge.B,{x:bounds.x,y:bounds.y},bounds.radius);
-                rightIn=!rightIntersect.outside;
-                if(tokenInTemp||bottomIn||topIn||leftIn||rightIn||tempInToken){
-                    targetted.push(token.id);
-                }
-                /*if(bounds.overlaps(tokenBounds)){
+            let bottomIntersect = foundry.utils.lineCircleIntersection(
+                tokenBounds.bottomEdge.A,
+                tokenBounds.bottomEdge.B,
+                { x: bounds.x, y: bounds.y },
+                bounds.radius
+            );
+            bottomIn = !bottomIntersect.outside;
+            let topIntersect = foundry.utils.lineCircleIntersection(
+                tokenBounds.topEdge.A,
+                tokenBounds.topEdge.B,
+                { x: bounds.x, y: bounds.y },
+                bounds.radius
+            );
+            topIn = !topIntersect.outside;
+            let leftIntersect = foundry.utils.lineCircleIntersection(
+                tokenBounds.leftEdge.A,
+                tokenBounds.leftEdge.B,
+                { x: bounds.x, y: bounds.y },
+                bounds.radius
+            );
+            leftIn = !leftIntersect.outside;
+            let rightIntersect = foundry.utils.lineCircleIntersection(
+                tokenBounds.rightEdge.A,
+                tokenBounds.rightEdge.B,
+                { x: bounds.x, y: bounds.y },
+                bounds.radius
+            );
+            rightIn = !rightIntersect.outside;
+            if (tokenInTemp || bottomIn || topIn || leftIn || rightIn || tempInToken) {
+                targetted.push(token.id);
+            }
+            /*if(bounds.overlaps(tokenBounds)){
                     targetted.push(token.id);
                 }*/
-            });
-            let blastTargets={template:{x:template.x,y:template.y},targets:targetted};
-            targets.push(blastTargets);
-        }
-
-        return targets;
+        });
+        let blastTargets = { template: { x: template.x, y: template.y }, targets: targetted };
+        targets.push(blastTargets);
     }
+
+    return targets;
+};
 /*returns the angle of the line between two tokens with 0 being direct south
 @targetToken: the targetted token
 @attackerToken: the token initiating the attack
 */
-export const getAttackAngle=function (targetToken,attackerToken){
-    let attackerx=attackerToken.x+(attackerToken.w/2);//adjust to get middle of token
-    let attackery=attackerToken.y+(attackerToken.h/2);//adjust to get middle of token
-    let targetx=targetToken.x+(targetToken.w/2);//adjust to get middle of token
-    let targety=targetToken.y+(targetToken.h/2);//adjust to get middle of token
-    let attackAngle=0;
-    if(targetx>=attackerx){
+export const getAttackAngle = function (targetToken, attackerToken) {
+    let attackerx = attackerToken.x + attackerToken.w / 2; //adjust to get middle of token
+    let attackery = attackerToken.y + attackerToken.h / 2; //adjust to get middle of token
+    let targetx = targetToken.x + targetToken.w / 2; //adjust to get middle of token
+    let targety = targetToken.y + targetToken.h / 2; //adjust to get middle of token
+    let attackAngle = 0;
+    if (targetx >= attackerx) {
         //is on left of target
-        if(targety<attackery){
+        if (targety < attackery) {
             //is under target
-            attackAngle=Math.round(radToDeg(Math.atan((targetx-attackerx)/(attackery-targety))));
-        }else{
-            attackAngle=90+Math.round(radToDeg(Math.atan((targety-attackery)/(targetx-attackerx))));
+            attackAngle = Math.round(radToDeg(Math.atan((targetx - attackerx) / (attackery - targety))));
+        } else {
+            attackAngle = 90 + Math.round(radToDeg(Math.atan((targety - attackery) / (targetx - attackerx))));
             //is above target
         }
-    }else{
+    } else {
         //is on right of target
-        if(targety>attackery){
+        if (targety > attackery) {
             //is above target
-            attackAngle=180+Math.round(radToDeg(Math.atan((attackerx-targetx)/(targety-attackery))));
-        }else{
+            attackAngle = 180 + Math.round(radToDeg(Math.atan((attackerx - targetx) / (targety - attackery))));
+        } else {
             //is under target
-            attackAngle=270+Math.round(radToDeg(Math.atan((attackery-targety)/(attackerx-targetx))));
+            attackAngle = 270 + Math.round(radToDeg(Math.atan((attackery - targety) / (attackerx - targetx))));
         }
     }
     return attackAngle;
 };
-const getKnockbackAngle=function(attackToken, targetToken){
-    let attackMid=attackToken;
-    let targetMid=targetToken.center;
-    let angle=0;
-    if(targetMid.x<=attackMid.x){
+const getKnockbackAngle = function (attackToken, targetToken) {
+    let attackMid = attackToken;
+    let targetMid = targetToken.center;
+    let angle = 0;
+    if (targetMid.x <= attackMid.x) {
         //target is left
-        if(targetMid.y>attackMid.y){
+        if (targetMid.y > attackMid.y) {
             //target is below
-            angle=Math.atan((attackMid.x-targetMid.x)/(attackMid.y-targetMid.y));
-        }else{
-            angle=Math.PI+Math.atan((attackMid.x-targetMid.x)/(attackMid.y-targetMid.y));
+            angle = Math.atan((attackMid.x - targetMid.x) / (attackMid.y - targetMid.y));
+        } else {
+            angle = Math.PI + Math.atan((attackMid.x - targetMid.x) / (attackMid.y - targetMid.y));
             //target is above
         }
-    }else{
+    } else {
         //target is right
-        if(targetMid.y>attackMid.y){
+        if (targetMid.y > attackMid.y) {
             //target is below
-            angle=Math.atan((attackMid.x-targetMid.x)/(attackMid.y-targetMid.y));
-        }else{
+            angle = Math.atan((attackMid.x - targetMid.x) / (attackMid.y - targetMid.y));
+        } else {
             //targte is above
-            angle=Math.PI+Math.atan((attackMid.x-targetMid.x)/(attackMid.y-targetMid.y));
+            angle = Math.PI + Math.atan((attackMid.x - targetMid.x) / (attackMid.y - targetMid.y));
         }
     }
     return angle;
 };
-export const knockbackPoint=function (knockbackPoint, token2, knockbackDistance,random=false){
+export const knockbackPoint = function (knockbackPoint, token2, knockbackDistance, random = false) {
     let angle;
-    let x=token2.x;
-    let y=token2.y;
-    if(token2.center.x===knockbackPoint.x&&token2.center.y===knockbackPoint.y){
-        random=true;
+    let x = token2.x;
+    let y = token2.y;
+    if (token2.center.x === knockbackPoint.x && token2.center.y === knockbackPoint.y) {
+        random = true;
     }
-    if(random){
-        angle=degToRad(Math.random()*(360));
-    }else{
-        angle=getKnockbackAngle(knockbackPoint,token2);
+    if (random) {
+        angle = degToRad(Math.random() * 360);
+    } else {
+        angle = getKnockbackAngle(knockbackPoint, token2);
     }
 
-    
-    x+=knockbackDistance*Math.sin(angle);
-    y+=knockbackDistance*Math.cos(angle);
- 
-    return{x:Math.ceil(x),y:Math.ceil(y)};
+    x += knockbackDistance * Math.sin(angle);
+    y += knockbackDistance * Math.cos(angle);
+
+    return { x: Math.ceil(x), y: Math.ceil(y) };
 };
-export const collisionPoint= function(token, destination){
-    let origin={x:token.x,y:token.y};
-    let walls=game.canvas.walls.objects.children;
-    let intersections=[];
-    for(let i=0;i<walls.length;i++){
-        let wall=walls[i];
-        if(wall.document.move){
-            let workingOr=foundry.utils.duplicate(origin);
-            let workingDest=foundry.utils.duplicate(destination);
+export const collisionPoint = function (token, destination) {
+    let origin = { x: token.x, y: token.y };
+    let walls = game.canvas.walls.objects.children;
+    let intersections = [];
+    for (let i = 0; i < walls.length; i++) {
+        let wall = walls[i];
+        if (wall.document.move) {
+            let workingOr = foundry.utils.duplicate(origin);
+            let workingDest = foundry.utils.duplicate(destination);
             //test all 4 corners of the token for collision, adjust the collision point after for top left corner of token
             //top left corner
-            intersections.push(foundry.utils.lineSegmentIntersection(origin,destination,wall.A,wall.B));
+            intersections.push(foundry.utils.lineSegmentIntersection(origin, destination, wall.A, wall.B));
             //top right
-            workingOr.x+=token.width;
-            workingDest.x+=token.width;
-            let topright=foundry.utils.lineSegmentIntersection(workingOr,workingDest,wall.A,wall.B);
-            if(topright){
-                topright.x-=token.width;
+            workingOr.x += token.width;
+            workingDest.x += token.width;
+            let topright = foundry.utils.lineSegmentIntersection(workingOr, workingDest, wall.A, wall.B);
+            if (topright) {
+                topright.x -= token.width;
                 intersections.push(topright);
             }
             //botleft
-            workingOr=foundry.utils.duplicate(origin);
-            workingDest=foundry.utils.duplicate(destination);
-            workingOr.y+=token.height;
-            workingDest.y+=token.height;
-            let botleft=foundry.utils.lineSegmentIntersection(workingOr,workingDest,wall.A,wall.B);
-            if(botleft){
-                botleft.y-=token.height;
+            workingOr = foundry.utils.duplicate(origin);
+            workingDest = foundry.utils.duplicate(destination);
+            workingOr.y += token.height;
+            workingDest.y += token.height;
+            let botleft = foundry.utils.lineSegmentIntersection(workingOr, workingDest, wall.A, wall.B);
+            if (botleft) {
+                botleft.y -= token.height;
                 intersections.push(botleft);
             }
             //botright
-            workingOr=foundry.utils.duplicate(origin);
-            workingDest=foundry.utils.duplicate(destination);
-            workingOr.y+=token.height;
-            workingDest.y+=token.height;
-            workingOr.x+=token.width;
-            workingDest.x+=token.width;
-            let botright=foundry.utils.lineSegmentIntersection(workingOr,workingDest,wall.A,wall.B);
-            if(botright){
-                botright.y-=token.height;
-                botright.x-=token.width;
+            workingOr = foundry.utils.duplicate(origin);
+            workingDest = foundry.utils.duplicate(destination);
+            workingOr.y += token.height;
+            workingDest.y += token.height;
+            workingOr.x += token.width;
+            workingDest.x += token.width;
+            let botright = foundry.utils.lineSegmentIntersection(workingOr, workingDest, wall.A, wall.B);
+            if (botright) {
+                botright.y -= token.height;
+                botright.x -= token.width;
                 intersections.push(botright);
             }
         }
@@ -732,7 +814,4 @@ console.log("starting item flag update")
         await pack.importEntity(i);
         console.log(`Imported Item ${i.name} into Compendium pack ${pack.collection}`);
     }
-    */ 
-
-
-
+    */
