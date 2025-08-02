@@ -82,10 +82,10 @@ returns the roll message*/
             type === "rangedAttack" ||
             type === "meleeAttack" ||
             (type === "focuspower" &&
-             (fortykWeapon.system.class.value === "Psychic Bolt" ||
-              fortykWeapon.system.class.value === "Psychic Barrage" ||
-              fortykWeapon.system.class.value === "Psychic Storm" ||
-              fortykWeapon.system.class.value === "Psychic Blast"))
+                (fortykWeapon.system.class.value === "Psychic Bolt" ||
+                    fortykWeapon.system.class.value === "Psychic Barrage" ||
+                    fortykWeapon.system.class.value === "Psychic Storm" ||
+                    fortykWeapon.system.class.value === "Psychic Blast"))
         ) {
             attack = true;
         }
@@ -402,9 +402,9 @@ returns the roll message*/
                 attackType !== "swift" &&
                 attackType !== "lightning" &&
                 ((actor.getFlag("fortyk", "inescapableattack").toLowerCase().indexOf("ranged") !== -1 &&
-                  type === "rangedAttack") ||
-                 (actor.getFlag("fortyk", "inescapableattack").toLowerCase().indexOf("melee") !== -1 &&
-                  type === "meleeAttack"))
+                    type === "rangedAttack") ||
+                    (actor.getFlag("fortyk", "inescapableattack").toLowerCase().indexOf("melee") !== -1 &&
+                        type === "meleeAttack"))
             ) {
                 let inescPenalty = Math.max(-60, testDos * -10);
                 evadepenalty += inescPenalty;
@@ -922,8 +922,8 @@ returns the roll message*/
             if (hits > 1) hitLabel += "s";
             lineArray.push(
                 `<div class="chat-target"><a class="blast-ping" data-hits="${hits}" data-remaining-hits={{hits}} data-token="${tokenId}">` +
-                token.name +
-                `</a>: ${hits} ${hitLabel}</div>`
+                    token.name +
+                    `</a>: ${hits} ${hitLabel}</div>`
             );
         }
         if (lineArray.length > 0) {
@@ -1345,6 +1345,8 @@ returns the roll message*/
         //make an array to store the wounds of all targets so that they can all be updated together once done
         var newWounds = [];
         var extraDamage = [];
+        //make an array to store the active effects of each target
+        var activeEffectTargetArray = [];
         //make and array to track which walker vehicles have fallen
         var fallen = [];
 
@@ -1356,6 +1358,7 @@ returns the roll message*/
             for (let i = 0; i < targets.size; i++) {
                 newWounds.push(false);
                 extraDamage.push([]);
+                activeEffectTargetArray.push([]);
                 fallen.push(false);
             }
         }
@@ -1423,7 +1426,7 @@ returns the roll message*/
                 let tarNumbr = 0;
                 //if there are targets apply damage to all of them
                 for (let tar of targets) {
-                    let activeEffects = [];
+                    let activeEffects = activeEffectTargetArray[tarNumbr];
                     let data = {};
                     let tarActor = {};
                     data = tar.actor.system;
@@ -1550,7 +1553,7 @@ returns the roll message*/
                             } else if (curHit.value === "turret") {
                                 let turretWeapons = tarActor.itemTypes.rangedWeapon.filter(
                                     (weapon) =>
-                                    weapon.system.mounting.value === "turret" && weapon.system.state.value !== "X"
+                                        weapon.system.mounting.value === "turret" && weapon.system.state.value !== "X"
                                 );
                                 let wpnnmbr = turretWeapons.length;
                                 if (turretWeapons.length > 0) {
@@ -1879,8 +1882,8 @@ returns the roll message*/
                                 );
                             }
                             //lathe-wrought armor
-                            if( armorSuit.getFlag("fortyk", "lathewrought")){
-                                pen=Math.ceil(pen/2);
+                            if (armorSuit.getFlag("fortyk", "lathewrought")) {
+                                pen = Math.ceil(pen / 2);
                                 damageOptions.results.push(
                                     `<span> Lathe-wrought armor reduces penetration by half!</span>`
                                 );
@@ -1962,10 +1965,10 @@ returns the roll message*/
                             if (
                                 daemonic &&
                                 (weapon.type === "psychicPower" ||
-                                 fortykWeapon.getFlag("fortyk", "force") ||
-                                 fortykWeapon.getFlag("fortyk", "warp") ||
-                                 fortykWeapon.getFlag("fortyk", "sanctified") ||
-                                 fortykWeapon.getFlag("fortyk", "daemonbane"))
+                                    fortykWeapon.getFlag("fortyk", "force") ||
+                                    fortykWeapon.getFlag("fortyk", "warp") ||
+                                    fortykWeapon.getFlag("fortyk", "sanctified") ||
+                                    fortykWeapon.getFlag("fortyk", "daemonbane"))
                             ) {
                                 daemonic = parseInt(daemonic);
                                 if (!isNaN(daemonic)) {
@@ -2832,7 +2835,6 @@ returns the roll message*/
                                     damageOptions.results.push(`<span>Knocked back ${knockdistance}m.</span>`);
 
                                     this.knockback(knockdistance, attacker, tar);
-
                                 }
                             }
                             damageOptions.results.push(`</div>`);
@@ -3346,12 +3348,12 @@ returns the roll message*/
                             let socketOp = { type: "reportDamage", package: { target: tokenId, damage: damage } };
                             await game.socket.emit("system.fortyk", socketOp);
                         }
-                        await this.applyActiveEffect(tar, activeEffects, ignoreSON);
                     }
                     if (h === hits - 1) {
                         //update wounds
                         if (game.user.isGM || tar.isOwner) {
                             if (tarNumbr <= newWounds.length - 1) {
+                                await this.applyActiveEffect(tar, activeEffectTargetArray[tarNumbr], ignoreSON);
                                 await tarActor.update({ "system.secChar.wounds.value": newWounds[tarNumbr] });
                                 let explosions = extraDamage[tarNumbr];
 
@@ -3451,8 +3453,8 @@ returns the roll message*/
         let name = tarActor.getName();
         if (game.settings.get("fortyk", "privateDamage")) {
             let user_ids = Object.entries(tarActor.ownership)
-            .filter((p) => p[0] !== `default` && p[1] === 3)
-            .map((p) => p[0]);
+                .filter((p) => p[0] !== `default` && p[1] === 3)
+                .map((p) => p[0]);
 
             for (let user of user_ids) {
                 let userInstance = game.users.get(user);
@@ -3877,9 +3879,7 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async energyBodyCrits(attacker, actor, num, ignoreSON, activeEffects = [], source = "") {
         let tTest = false;
@@ -4083,9 +4083,7 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async energyArmCrits(attacker, actor, num, arm, ignoreSON, activeEffects = [], source = "") {
         let tTest = false;
@@ -4256,9 +4254,7 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async energyLegCrits(attacker, actor, num, leg, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -4446,9 +4442,7 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async explosiveCrits(attacker, actor, num, hitLoc, ignoreSON, activeEffects = [], source = "") {
         switch (hitLoc) {
@@ -4618,9 +4612,7 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async explosiveBodyCrits(attacker, actor, num, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -4761,9 +4753,7 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async explosiveArmCrits(attacker, actor, num, arm, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -4925,9 +4915,7 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async explosiveLegCrits(attacker, actor, num, leg, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -5089,9 +5077,7 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async impactCrits(attacker, actor, num, hitLoc, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -5276,9 +5262,7 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async impactBodyCrits(attacker, actor, num, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -5420,9 +5404,7 @@ returns the roll message*/
                 this.knockback(rolls.rolls[0], attacker, actorToken);
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async impactArmCrits(attacker, actor, num, arm, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -5563,9 +5545,7 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async impactLegCrits(attacker, actor, num, leg, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -5769,9 +5749,7 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async rendingCrits(attacker, actor, num, hitLoc, ignoreSON, activeEffects = [], source = "") {
         switch (hitLoc) {
@@ -6011,9 +5989,7 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async rendingBodyCrits(attacker, actor, num, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -6179,9 +6155,7 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async rendingArmCrits(attacker, actor, num, arm, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -6315,9 +6289,7 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async rendingLegCrits(attacker, actor, num, leg, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -6499,9 +6471,7 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        if (upd) {
-            await this.applyActiveEffect(actorToken, activeEffects);
-        }
+        
     }
     static async superHeavyRightEffects(token, num, hitLoc, ignoreSON, activeEffects = [], source = "", options = {}) {
         let actor = token.actor;
@@ -8188,11 +8158,11 @@ returns the roll message*/
             let smallestCollision = smallestDistance(actorToken, collisions);
             let newPoint;
             if (smallestCollision) {
-                newPoint=smallestCollision;
+                newPoint = smallestCollision;
             } else {
-                newPoint=knockbackCoord;
+                newPoint = knockbackCoord;
             }
-            newPoint=canvas.grid.getSnappedPoint(newPoint,{mode:CONST.GRID_SNAPPING_MODES.TOP_LEFT_CORNER});
+            newPoint = canvas.grid.getSnappedPoint(newPoint, { mode: CONST.GRID_SNAPPING_MODES.TOP_LEFT_CORNER });
             actorToken.document.update(newPoint);
         } catch (e) {
             console.log(e);
