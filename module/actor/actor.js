@@ -751,7 +751,7 @@ export class FortyKActor extends Actor {
                             let changestr = changeValue;
                             changeValue = Math.ceil(math.evaluate(changestr, selfScope));
                         } catch (err) {
-                            console.log(err, changeValue);
+                            console.log(err, changeValue, actor, selfScope);
                         }
                     }
                     let basevalue = parseFloat(objectByString(actorData, change.key));
@@ -2629,15 +2629,11 @@ export class FortyKActor extends Actor {
         let system = this.system;
         let characteristics = system.characteristics;
         let pr;
+        if (!(this.type === "npc" || this.type === "dwPC")) {
+            return {};
+        }
 
-        
-            try {
-                pr = system.psykana.pr.effective;
-            } catch (e) {
-                console.log(e, this)
-                return {};
-            }
-        
+        pr = system.psykana.pr.effective;
 
         if (!this.system.isPrepared) {
             for (let [key, char] of Object.entries(characteristics)) {

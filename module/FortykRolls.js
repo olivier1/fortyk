@@ -1515,6 +1515,7 @@ returns the roll message*/
                             results: [],
                             vehicle: vehicle
                         };
+                        let vehicleOptions;
                         if (vehicle) {
                             var targetWpn = null;
                             //check if hitting a weapon, weapons count as the same facing as the facing they are mounted on
@@ -1570,7 +1571,7 @@ returns the roll message*/
                             } else {
                                 damageOptions.facing = facing.label;
                             }
-                            var vehicleOptions = {};
+                            vehicleOptions = {};
 
                             vehicleOptions.explosions = extraDamage[tarNumbr];
                             vehicleOptions.targetWeapon = targetWpn;
@@ -2105,6 +2106,12 @@ returns the roll message*/
                         }
 
                         damage = damage - soak;
+                        let punchThrough = false;
+                        //check for RF and if no dmg, toggle bool for the text blurb later
+                        if (tens && damage <= 0) {
+                            damage = 1;
+                            punchThrough = true;
+                        }
                         //gauss weapon logic
                         if (fortykWeapon.getFlag("fortyk", "gauss") && tens && !isHordelike) {
                             let gaussAmt = new Roll("1d5", {});
@@ -2545,7 +2552,7 @@ returns the roll message*/
                             damageOptions.results.push(`</div>`);
                         }
                         //NIDITUS WEAPON
-                        if (!vehicle && (fortykWeapon.getFlag("fortyk", "niditus") && damage) > 0) {
+                        if (!vehicle && fortykWeapon.getFlag("fortyk", "niditus") && damage > 0) {
                             damageOptions.results.push(`<div class="chat-target flexcol">`);
                             if (tarActor.system.psykana.pr.value > 0) {
                                 let stun = await this.fortykTest(
@@ -3171,9 +3178,9 @@ returns the roll message*/
                             }
                         }
                         //if righteous fury ensure attack deals atleast 1 dmg
-                        if (tens && damage <= 0) {
+                        if (tens && punchThrough) {
                             damageOptions.results.push(`<span>Righteous fury deals 1 damage through the soak!</span>`);
-                            damage = 1;
+
                             tens = 0;
                         } else if (damage <= 0) {
                             damage = 0;
@@ -3879,7 +3886,6 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        
     }
     static async energyBodyCrits(attacker, actor, num, ignoreSON, activeEffects = [], source = "") {
         let tTest = false;
@@ -4083,7 +4089,6 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        
     }
     static async energyArmCrits(attacker, actor, num, arm, ignoreSON, activeEffects = [], source = "") {
         let tTest = false;
@@ -4254,7 +4259,6 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        
     }
     static async energyLegCrits(attacker, actor, num, leg, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -4442,7 +4446,6 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        
     }
     static async explosiveCrits(attacker, actor, num, hitLoc, ignoreSON, activeEffects = [], source = "") {
         switch (hitLoc) {
@@ -4612,7 +4615,6 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        
     }
     static async explosiveBodyCrits(attacker, actor, num, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -4753,7 +4755,6 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        
     }
     static async explosiveArmCrits(attacker, actor, num, arm, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -4915,7 +4916,6 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        
     }
     static async explosiveLegCrits(attacker, actor, num, leg, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -5077,7 +5077,6 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        
     }
     static async impactCrits(attacker, actor, num, hitLoc, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -5262,7 +5261,6 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        
     }
     static async impactBodyCrits(attacker, actor, num, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -5404,7 +5402,6 @@ returns the roll message*/
                 this.knockback(rolls.rolls[0], attacker, actorToken);
                 break;
         }
-        
     }
     static async impactArmCrits(attacker, actor, num, arm, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -5545,7 +5542,6 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        
     }
     static async impactLegCrits(attacker, actor, num, leg, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -5749,7 +5745,6 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        
     }
     static async rendingCrits(attacker, actor, num, hitLoc, ignoreSON, activeEffects = [], source = "") {
         switch (hitLoc) {
@@ -5989,7 +5984,6 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        
     }
     static async rendingBodyCrits(attacker, actor, num, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -6155,7 +6149,6 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        
     }
     static async rendingArmCrits(attacker, actor, num, arm, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -6289,7 +6282,6 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        
     }
     static async rendingLegCrits(attacker, actor, num, leg, ignoreSON, activeEffects = [], source = "") {
         let actorToken = getActorToken(actor);
@@ -6471,7 +6463,6 @@ returns the roll message*/
                 actor.flags.core.dead = true;
                 break;
         }
-        
     }
     static async superHeavyRightEffects(token, num, hitLoc, ignoreSON, activeEffects = [], source = "", options = {}) {
         let actor = token.actor;
