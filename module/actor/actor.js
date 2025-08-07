@@ -149,12 +149,12 @@ export class FortyKActor extends Actor {
                     }
                     if (
                         (!this.system.horde.value &&
-                            !this.system.formation.value &&
-                            newSize &&
-                            newSize !== this.system.secChar.size.value) ||
+                         !this.system.formation.value &&
+                         newSize &&
+                         newSize !== this.system.secChar.size.value) ||
                         ((this.system.horde.value || this.system.formation.value) &&
-                            newSize !== undefined &&
-                            newSize !== this.system.secChar.wounds.value)
+                         newSize !== undefined &&
+                         newSize !== this.system.secChar.wounds.value)
                     ) {
                         let size = 0;
                         let scale = 1;
@@ -277,6 +277,7 @@ export class FortyKActor extends Actor {
                     disciplines[i] = "";
                 }
             }
+            data.psykana.pr.sustain = data.psykana.pr.sustained.length;
         }
 
         if (this.getFlag("fortyk", "doubleteam")) {
@@ -291,7 +292,6 @@ export class FortyKActor extends Actor {
         }
         data.evasion = 0;
         data.evasionMod = 0;
-        data.psykana.pr.sustain = data.psykana.pr.sustained.length;
         //initialize skill modifiers from active events so that they are integers
         this.items.forEach((fortykItem, id, items) => {
             let item = fortykItem;
@@ -946,15 +946,15 @@ export class FortyKActor extends Actor {
             if (
                 rightHandWeaponData &&
                 this.getFlag("fortyk", "WeaponMaster")
-                    .toLowerCase()
-                    .includes(rightHandWeaponsystem.type.value.toLowerCase())
+                .toLowerCase()
+                .includes(rightHandWeaponsystem.type.value.toLowerCase())
             ) {
                 master = true;
             } else if (
                 leftHandWeaponData &&
                 this.getFlag("fortyk", "WeaponMaster")
-                    .toLowerCase()
-                    .includes(leftHandWeaponsystem.type.value.toLowerCase())
+                .toLowerCase()
+                .includes(leftHandWeaponsystem.type.value.toLowerCase())
             ) {
                 master = true;
             }
@@ -1441,9 +1441,9 @@ export class FortyKActor extends Actor {
             data.secChar.movement.half = Math.max(
                 Math.ceil(
                     (parseInt(this.getFlag("fortyk", "flyer")) +
-                        data.secChar.size.movement +
-                        data.secChar.movement.mod) *
-                        parseFloat(data.secChar.movement.multi)
+                     data.secChar.size.movement +
+                     data.secChar.movement.mod) *
+                    parseFloat(data.secChar.movement.multi)
                 ),
                 1
             );
@@ -1451,9 +1451,9 @@ export class FortyKActor extends Actor {
             data.secChar.movement.half = Math.max(
                 Math.ceil(
                     (parseInt(this.getFlag("fortyk", "hoverer")) +
-                        data.secChar.size.movement +
-                        data.secChar.movement.mod) *
-                        parseFloat(data.secChar.movement.multi)
+                     data.secChar.size.movement +
+                     data.secChar.movement.mod) *
+                    parseFloat(data.secChar.movement.multi)
                 ),
                 1
             );
@@ -1461,7 +1461,7 @@ export class FortyKActor extends Actor {
             data.secChar.movement.half = Math.max(
                 Math.ceil(
                     (data.characteristics.agi.bonus + data.secChar.size.movement + data.secChar.movement.mod) *
-                        parseFloat(data.secChar.movement.multi)
+                    parseFloat(data.secChar.movement.multi)
                 ),
                 1
             );
@@ -2081,8 +2081,8 @@ export class FortyKActor extends Actor {
                 }
                 let instance = actorSkills.find(
                     (skill) =>
-                        skill.name.toLowerCase() === name.toLowerCase() &&
-                        parent.toLowerCase() === skill.system.parent.value.toLowerCase()
+                    skill.name.toLowerCase() === name.toLowerCase() &&
+                    parent.toLowerCase() === skill.system.parent.value.toLowerCase()
                 );
                 if (instance) {
                     let training = instance.system.value;
@@ -2202,8 +2202,8 @@ export class FortyKActor extends Actor {
                                 }
                                 let instance = actorSkills.find(
                                     (skill) =>
-                                        skill.name.toLowerCase() === name.toLowerCase() &&
-                                        parent.toLowerCase() === skill.system.parent.value.toLowerCase()
+                                    skill.name.toLowerCase() === name.toLowerCase() &&
+                                    parent.toLowerCase() === skill.system.parent.value.toLowerCase()
                                 );
                                 if (instance) {
                                     let training = instance.system.value;
@@ -2543,8 +2543,8 @@ export class FortyKActor extends Actor {
             } else if (
                 (item.type === "rangedWeapon" || item.type === "meleeWeapon") &&
                 (item.system.class.value === "Titanic Ranged Weapon" ||
-                    item.system.class.value === "Titanic Artillery Weapon" ||
-                    item.system.class.value === "Titanic Melee Weapon")
+                 item.system.class.value === "Titanic Artillery Weapon" ||
+                 item.system.class.value === "Titanic Melee Weapon")
             ) {
                 if (item.system.state.value === "D") {
                     repairs.push({

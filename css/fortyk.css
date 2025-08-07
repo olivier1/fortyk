@@ -109,6 +109,46 @@
     grid-row-end :span 4;
     flex-direction: column;
 }
+.grid-row-span5{
+    grid-row-end :span 5;
+    flex-direction: column;
+}
+.grid-row-span6{
+    grid-row-end :span 6;
+    flex-direction: column;
+}
+.grid-row-span7{
+    grid-row-end :span 7;
+    flex-direction: column;
+}
+.grid-row-span8{
+    grid-row-end :span 8;
+    flex-direction: column;
+}
+.grid-row-span9{
+    grid-row-end :span 9;
+    flex-direction: column;
+}
+.grid-row-span10{
+    grid-row-end :span 10;
+    flex-direction: column;
+}
+.grid-row-span11{
+    grid-row-end :span 11;
+    flex-direction: column;
+}
+.grid-row-span12{
+    grid-row-end :span 12;
+    flex-direction: column;
+}
+.grid-row-span13{
+    grid-row-end :span 13;
+    flex-direction: column;
+}
+.grid-row-span14{
+    grid-row-end :span 14;
+    flex-direction: column;
+}
 .fortyk .simple-grid3{
     width:100%;
     height:100%;

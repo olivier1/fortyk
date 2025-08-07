@@ -83,12 +83,6 @@ Hooks.once("init", async function () {
         types: ["dwPC"],
         makeDefault: true
     });
-    Actors.registerSheet("fortyk", FortyKDHActorSheet, {
-        label: "Dark Heresy Sheet",
-        types: ["dhPC"],
-        makeDefault: true
-    });
-    Actors.registerSheet("fortyk", FortyKOWActorSheet, { label: "Only War Sheet", types: ["owPC"], makeDefault: true });
     Actors.registerSheet("fortyk", FortyKOWComradeSheet, {
         label: "Only War Comrade Sheet",
         types: ["owComrade"],

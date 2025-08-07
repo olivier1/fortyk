@@ -364,7 +364,7 @@
       "path": "packs/wargear",
       "system": "fortyk",
       "ownership": {
-        "PLAYER": "OBSERVER",
+        "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
       },
       "flags": {}

@@ -3,8 +3,6 @@
         "types": [
             "npc",
             "dwPC",
-            "dhPC",
-            "owPC",
             "owComrade",
             "owRegiment",
             "spaceship",
@@ -63,24 +61,6 @@
                     "type": "String"
                 }
             },
-            "creationOptionsDH": {
-                "homeWorld": {
-                    "value": "",
-                    "type": "String"
-                },
-                "background": {
-                    "value": "",
-                    "type": "String"
-                },
-                "role": {
-                    "value": "",
-                    "type": "String"
-                },
-                "divination": {
-                    "value": "",
-                    "type": "String"
-                }
-            },
             "creationOptionsDW": {
                 "chapter": {
                     "value": "",
@@ -96,21 +76,6 @@
                 },
                 "honours": {
                     "value": "",
-                    "type": "String"
-                }
-            },
-            "creationOptionsOW": {
-                "homeWorld": {
-                    "value": "",
-                    "type": "String"
-                },
-                "regiment": {
-                    "value": "",
-                    "type": "String"
-                },
-                "specialty": {
-                    "value": "",
-                    "path": "",
                     "type": "String"
                 }
             },
@@ -534,95 +499,6 @@
             "dodge": {
                 "mod": 0,
                 "total": 0
-            }
-        },
-        "dhPC": {
-            "templates": [
-                "description",
-                "characters",
-                "creationOptions",
-                "creationOptionsDH",
-                "player",
-                "sorting"
-            ],
-            "characteristics": {
-                "ws": {
-                    "value": 25
-                },
-                "bs": {
-                    "value": 25
-                },
-                "s": {
-                    "value": 25
-                },
-                "t": {
-                    "value": 25
-                },
-                "agi": {
-                    "value": 25
-                },
-                "int": {
-                    "value": 25
-                },
-                "per": {
-                    "value": 25
-                },
-                "wp": {
-                    "value": 25
-                },
-                "fel": {
-                    "value": 25
-                },
-                "inf": {
-                    "value": 25
-                }
-            },
-            "currency": {
-                "value": 0,
-                "income": 0
-            },
-            "goal": {
-                "value": "",
-                "type": "String"
-            }
-        },
-        "owPC": {
-            "templates": [
-                "description",
-                "characters",
-                "creationOptions",
-                "creationOptionsOW",
-                "player",
-                "sorting"
-            ],
-            "characteristics": {
-                "ws": {
-                    "value": 20
-                },
-                "bs": {
-                    "value": 20
-                },
-                "s": {
-                    "value": 20
-                },
-                "t": {
-                    "value": 20
-                },
-                "agi": {
-                    "value": 20
-                },
-                "int": {
-                    "value": 20
-                },
-                "per": {
-                    "value": 20
-                },
-                "wp": {
-                    "value": 20
-                },
-                "fel": {
-                    "value": 20
-                }
             }
         },
         "owComrade": {

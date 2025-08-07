@@ -129,21 +129,15 @@
 
                 <label class="list-item">Penetration: {{power.system.pen.value}}</label>
 
+                {{#if this.system.specialFlags.length}}
                 <div class="list-item">
                     <span>Special: 
-                        {{#each this.flags.fortyk as |flag key|}}
-
-                        {{#if this}}
-
-                        {{#with (lookup ../FORTYK.weaponFlags [key])~}}
-                        <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}" >
-
-                            {{label}}{{/with}}{{#if (isnumber this)}}({{this}}){{/if}}</a>
-                        {{/if}}{{/each}}
-
+                        {{#each this.system.specialFlags }}
+                        <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}">{{label}}</a>
+                        {{/each}}
                     </span>
-
                 </div>
+                {{/if}}
 
                 <label class="list-item">Damage Type: {{power.system.damageType.value}}</label>
 

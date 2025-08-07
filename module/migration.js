@@ -1,6 +1,14 @@
 
 export async function migrate(sysVer){
     if(!game.user.isGM)return;
+    let invalids=game.actors.invalidDocumentIds;
+    for(const invalidId of invalids){
+        let invalidDocument=game.actors.getInvalid(invalidId);
+        let type=invalidDocument.type;
+        if(type==="owPC"||"dhPC"){
+            invalidDocument.update({type:"dwPC"});
+        }
+    }
     if(foundry.utils.isNewerVersion(sysVer,"3.3.1")){
         
     }else if(foundry.utils.isNewerVersion(sysVer,"3.3")){
