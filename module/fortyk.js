@@ -804,7 +804,7 @@ Hooks.on("updateCombat", async (combat) => {
                         let fatigue = parseInt(actor.system.secChar.fatigue.value) + 1;
                         await actor.update({ "system.secChar.fatigue.value": fatigue });
                         let fireData = { name: "Fire", type: "rangedWeapon" };
-                        let fire = await Item.create(fireData, { temporary: true });
+                        let fire = await new Item(fireData, { temporary: true });
                         fire.flags.fortyk = {};
                         fire.system.damageType.value = "Energy";
                         fire.system.pen.value = 99999;

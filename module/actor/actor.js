@@ -377,7 +377,7 @@ export class FortyKActor extends Actor {
      *Prepare the sub documents and apply changes to the actor resulting*/
     prepareEmbeddedEntities() {
         let actorData = this;
-        if (actorData.type === "dwPC" || actorData.type === "dhPC" || actorData.type === "owPC") {
+        if (actorData.type === "dwPC") {
             this.applyActiveEffects();
             let items = this.items;
             const data = this.system;
@@ -389,6 +389,7 @@ export class FortyKActor extends Actor {
             this.items.forEach((fortykItem, id, items) => {
                 let item = fortykItem;
                 item.system = foundry.utils.duplicate(item._source.system);
+                item.flags = foundry.utils.duplicate(item._source.flags);
                 item.applyActiveEffects();
                 if (item.type === "skill") {
                     if (item.system.parent.value === "Forbidden Lore") {
@@ -514,7 +515,8 @@ export class FortyKActor extends Actor {
             this.items.forEach((fortykItem, id, items) => {
                 let item = fortykItem;
                 item.system = foundry.utils.duplicate(item._source.system);
-
+                item.flags = foundry.utils.duplicate(item._source.flags);
+                item.applyActiveEffects();
                 if (item.system.isEquipped) {
                     if (item.getFlag("fortyk", "encumbering")) {
                         data.secChar.movement.mod -= item.getFlag("fortyk", "encumbering");
@@ -529,7 +531,7 @@ export class FortyKActor extends Actor {
                 if (item.type === "rangedWeapon" || item.type === "meleeWeapon") {
                     item.system.isEquipped = true;
                 }
-                fortykItem.applyActiveEffects();
+               
             });
         } else if (actorData.type === "spaceship") {
             let items = this.items;

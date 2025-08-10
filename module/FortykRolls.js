@@ -82,10 +82,10 @@ returns the roll message*/
             type === "rangedAttack" ||
             type === "meleeAttack" ||
             (type === "focuspower" &&
-             (fortykWeapon.system.class.value === "Psychic Bolt" ||
-              fortykWeapon.system.class.value === "Psychic Barrage" ||
-              fortykWeapon.system.class.value === "Psychic Storm" ||
-              fortykWeapon.system.class.value === "Psychic Blast"))
+                (fortykWeapon.system.class.value === "Psychic Bolt" ||
+                    fortykWeapon.system.class.value === "Psychic Barrage" ||
+                    fortykWeapon.system.class.value === "Psychic Storm" ||
+                    fortykWeapon.system.class.value === "Psychic Blast"))
         ) {
             attack = true;
         }
@@ -402,9 +402,9 @@ returns the roll message*/
                 attackType !== "swift" &&
                 attackType !== "lightning" &&
                 ((actor.getFlag("fortyk", "inescapableattack").toLowerCase().indexOf("ranged") !== -1 &&
-                  type === "rangedAttack") ||
-                 (actor.getFlag("fortyk", "inescapableattack").toLowerCase().indexOf("melee") !== -1 &&
-                  type === "meleeAttack"))
+                    type === "rangedAttack") ||
+                    (actor.getFlag("fortyk", "inescapableattack").toLowerCase().indexOf("melee") !== -1 &&
+                        type === "meleeAttack"))
             ) {
                 let inescPenalty = Math.max(-60, testDos * -10);
                 evadepenalty += inescPenalty;
@@ -922,8 +922,8 @@ returns the roll message*/
             if (hits > 1) hitLabel += "s";
             lineArray.push(
                 `<div class="chat-target"><a class="blast-ping" data-hits="${hits}" data-remaining-hits={{hits}} data-token="${tokenId}">` +
-                token.name +
-                `</a>: ${hits} ${hitLabel}</div>`
+                    token.name +
+                    `</a>: ${hits} ${hitLabel}</div>`
             );
         }
         if (lineArray.length > 0) {
@@ -1354,6 +1354,7 @@ returns the roll message*/
             newWounds.push(false);
             extraDamage.push([]);
             fallen.push(false);
+            activeEffectTargetArray.push([]);
         } else {
             for (let i = 0; i < targets.size; i++) {
                 newWounds.push(false);
@@ -1433,7 +1434,7 @@ returns the roll message*/
                     data = tar.actor.system;
                     tarActor = tar.actor;
                     //check if target is dead
-                    if (!tarActor.getFlag("core", "dead")) {
+                    if (tarActor.getFlag("core", "dead")) {
                         continue;
                     }
                     //check if target is vehicle
@@ -1521,7 +1522,6 @@ returns the roll message*/
                     let vehicleOptions;
                     let targetWpn = null;
                     if (vehicle) {
-                       
                         //check if hitting a weapon, weapons count as the same facing as the facing they are mounted on
                         if (curHit.value === "weapon") {
                             let facingWeapons = [];
@@ -1558,7 +1558,7 @@ returns the roll message*/
                         } else if (curHit.value === "turret") {
                             let turretWeapons = tarActor.itemTypes.rangedWeapon.filter(
                                 (weapon) =>
-                                weapon.system.mounting.value === "turret" && weapon.system.state.value !== "X"
+                                    weapon.system.mounting.value === "turret" && weapon.system.state.value !== "X"
                             );
                             let wpnnmbr = turretWeapons.length;
                             if (turretWeapons.length > 0) {
@@ -1627,12 +1627,7 @@ returns the roll message*/
                     if (daemonic) tarDaemon = true;
                     let tarMachine = false;
                     if (tarActor.getFlag("fortyk", "machine")) tarDaemon = true;
-                    if (
-                        fortykWeapon.getFlag("fortyk", "fueledbyslaughter") &&
-                        !vehicle &&
-                        !tarDaemon &&
-                        !tarMachine
-                    ) {
+                    if (fortykWeapon.getFlag("fortyk", "fueledbyslaughter") && !vehicle && !tarDaemon && !tarMachine) {
                         tarActor.flags.fortyk.slaughterTarget = actor;
                     }
 
@@ -1730,9 +1725,7 @@ returns the roll message*/
                         damageOptions.results.push(`<div style="flex:none">Proven damage: ${proven}</div>`);
                     }
                     if (primitive) {
-                        damageOptions.results.push(
-                            `<div style="flex:none">Primitive damage loss: ${primitive}</div>`
-                        );
+                        damageOptions.results.push(`<div style="flex:none">Primitive damage loss: ${primitive}</div>`);
                     }
                     damageOptions.results.push(`</div>`);
 
@@ -1857,16 +1850,11 @@ returns the roll message*/
                             damageOptions.results.push(`<span>Lance increases penetration to ${pen}</span>`);
                         }
                         //handle melta weapons
-                        if (
-                            fortykWeapon.getFlag("fortyk", "melta") &&
-                            !tarActor.getFlag("fortyk", "ceramiteplating")
-                        ) {
+                        if (fortykWeapon.getFlag("fortyk", "melta") && !tarActor.getFlag("fortyk", "ceramiteplating")) {
                             let shortRange = parseInt(weapon.system.range.value) / 2;
                             if (distance <= shortRange) {
                                 pen = pen * 3;
-                                damageOptions.results.push(
-                                    `<span>Melta range increases penetration to ${pen}</span>`
-                                );
+                                damageOptions.results.push(`<span>Melta range increases penetration to ${pen}</span>`);
                             }
                         }
                         //ignore natural armor weapons
@@ -1970,10 +1958,10 @@ returns the roll message*/
                         if (
                             daemonic &&
                             (weapon.type === "psychicPower" ||
-                             fortykWeapon.getFlag("fortyk", "force") ||
-                             fortykWeapon.getFlag("fortyk", "warp") ||
-                             fortykWeapon.getFlag("fortyk", "sanctified") ||
-                             fortykWeapon.getFlag("fortyk", "daemonbane"))
+                                fortykWeapon.getFlag("fortyk", "force") ||
+                                fortykWeapon.getFlag("fortyk", "warp") ||
+                                fortykWeapon.getFlag("fortyk", "sanctified") ||
+                                fortykWeapon.getFlag("fortyk", "daemonbane"))
                         ) {
                             daemonic = parseInt(daemonic);
                             if (!isNaN(daemonic)) {
@@ -2020,9 +2008,7 @@ returns the roll message*/
                         if (vehicle) {
                             soak = 0;
                             curHit.value = "motive";
-                            damageOptions.results.push(
-                                `<span>Graviton ignores vehicle armor and increases vengeful.`
-                            );
+                            damageOptions.results.push(`<span>Graviton ignores vehicle armor and increases vengeful.`);
                         } else {
                             let gravitonDmg = armor;
                             damage += gravitonDmg;
@@ -2085,9 +2071,7 @@ returns the roll message*/
                                 `<span>Nowhere to hide reduces cover to ${Math.round(cover * 100)}%</span>`
                             );
                         } else {
-                            damageOptions.results.push(
-                                `<span>Cover reduces ranged damage by ${cover * 100}%</span>`
-                            );
+                            damageOptions.results.push(`<span>Cover reduces ranged damage by ${cover * 100}%</span>`);
                         }
                         let coverReduction = 1 - cover;
                         damage = Math.ceil(coverReduction * damage);
@@ -2121,9 +2105,7 @@ returns the roll message*/
                         let gaussAmt = new Roll("1d5", {});
                         await gaussAmt.evaluate();
 
-                        damageOptions.results.push(
-                            `<label> Gauss Weapon armor damage: ${gaussAmt._total}.</label> `
-                        );
+                        damageOptions.results.push(`<label> Gauss Weapon armor damage: ${gaussAmt._total}.</label> `);
 
                         let newArmor = Math.max(0, armor - gaussAmt._total);
 
@@ -2245,9 +2227,7 @@ returns the roll message*/
                         damageOptions.results.push(shock.template);
                         if (!shock.value) {
                             let stunActiveEffect = foundry.utils.duplicate(
-                                game.fortyk.FORTYK.StatusEffects[
-                                    game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")
-                                ]
+                                game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                             );
                             stunActiveEffect.transfer = false;
                             stunActiveEffect.duration = {
@@ -2357,9 +2337,7 @@ returns the roll message*/
                         damageOptions.results.push(drain.template);
                         if (!drain.value) {
                             let drainActiveEffect = foundry.utils.duplicate(
-                                game.fortyk.FORTYK.StatusEffects[
-                                    game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")
-                                ]
+                                game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")]
                             );
                             drainActiveEffect.transfer = false;
                             drainActiveEffect.changes = [];
@@ -2401,9 +2379,7 @@ returns the roll message*/
                         damageOptions.results.push(drain.template);
                         if (!drain.value) {
                             let drainActiveEffect = foundry.utils.duplicate(
-                                game.fortyk.FORTYK.StatusEffects[
-                                    game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")
-                                ]
+                                game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")]
                             );
                             drainActiveEffect.transfer = false;
                             drainActiveEffect.changes = [];
@@ -2453,9 +2429,7 @@ returns the roll message*/
                             await cryoRoll.evaluate();
                             let cryoDuration = parseInt(cryoRoll.result);
                             let cryoActiveEffect = foundry.utils.duplicate(
-                                game.fortyk.FORTYK.StatusEffects[
-                                    game.fortyk.FORTYK.StatusEffectsIndex.get("cryogenic")
-                                ]
+                                game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("cryogenic")]
                             );
                             cryoActiveEffect.transfer = false;
                             cryoActiveEffect.duration = {
@@ -2520,10 +2494,7 @@ returns the roll message*/
                             game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("crippled")]
                         );
                         crippleActiveEffect["flags.fortyk.crippling.location"] = curHit;
-                        crippleActiveEffect["flags.fortyk.crippling.num"] = fortykWeapon.getFlag(
-                            "fortyk",
-                            "crippling"
-                        );
+                        crippleActiveEffect["flags.fortyk.crippling.num"] = fortykWeapon.getFlag("fortyk", "crippling");
                         activeEffects.push(crippleActiveEffect);
                         let id = foundry.utils.randomID(5);
                         damageOptions.results.push(
@@ -2702,9 +2673,7 @@ returns the roll message*/
                             //if target is not daemon apply normal fire instead
                             if (!tarActor.getFlag("fortyk", "daemonic")) {
                                 fireActiveEffect = foundry.utils.duplicate(
-                                    game.fortyk.FORTYK.StatusEffects[
-                                        game.fortyk.FORTYK.StatusEffectsIndex.get("fire")
-                                    ]
+                                    game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("fire")]
                                 );
                             }
                             fireActiveEffect.flags = {
@@ -2798,11 +2767,7 @@ returns the roll message*/
                         damageOptions.results.push(`</div>`);
                     }
                     //concussive weapon
-                    if (
-                        !vehicle &&
-                        !isNaN(parseInt(fortykWeapon.getFlag("fortyk", "concussive"))) &&
-                        !isHordelike
-                    ) {
+                    if (!vehicle && !isNaN(parseInt(fortykWeapon.getFlag("fortyk", "concussive"))) && !isHordelike) {
                         damageOptions.results.push(`<div class="chat-target flexcol">`);
                         let concussRating = parseInt(fortykWeapon.getFlag("fortyk", "concussive"));
                         let stunMod = concussRating * 10;
@@ -2824,9 +2789,7 @@ returns the roll message*/
                                 `<label class="popup" data-id="${id}"> Stunned for ${stun.dos} rounds. <span class="popuptext chat-background" id="${id}">${tar.name} is stunned for ${stun.dos} rounds!</span></label>`
                             );
                             let stunActiveEffect = foundry.utils.duplicate(
-                                game.fortyk.FORTYK.StatusEffects[
-                                    game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")
-                                ]
+                                game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                             );
                             stunActiveEffect.duration = {
                                 rounds: stun.dos
@@ -2931,9 +2894,7 @@ returns the roll message*/
                     ) {
                         damage += 4;
                         chatDamage += 4;
-                        damageOptions.results.push(
-                            `Peerless Killer increases critical damage by 4 on called shots.`
-                        );
+                        damageOptions.results.push(`Peerless Killer increases critical damage by 4 on called shots.`);
                     }
                     damageOptions.results.push(`</div>`);
                     //impenetrable armor logic
@@ -3464,8 +3425,8 @@ returns the roll message*/
         let name = tarActor.getName();
         if (game.settings.get("fortyk", "privateDamage")) {
             let user_ids = Object.entries(tarActor.ownership)
-            .filter((p) => p[0] !== `default` && p[1] === 3)
-            .map((p) => p[0]);
+                .filter((p) => p[0] !== `default` && p[1] === 3)
+                .map((p) => p[0]);
 
             for (let user of user_ids) {
                 let userInstance = game.users.get(user);
