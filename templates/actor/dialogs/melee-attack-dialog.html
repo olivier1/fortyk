@@ -181,17 +181,12 @@
             <label class="section-title">Target's Size</label>
             <select class="size" name="size">
 
-                {{#if options.size}}
+               
                 {{#each size}}
                 <option value="{{@index}}" {{#if (equals @index ../options.size)}}selected{{/if}}>{{this.name}}</option>
 
                 {{/each}}
-                {{else}}
-                {{#each size}}
-                <option value="{{@index}}" {{#if (contains this.name "average")}}selected{{/if}}>{{this.name}}</option>
-
-                {{/each}}
-                {{/if}}
+                
             </select>
 
 

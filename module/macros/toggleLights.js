@@ -1,0 +1,1 @@
+canvas.scene.lights.forEach(l => l.update({hidden: !l.hidden}))

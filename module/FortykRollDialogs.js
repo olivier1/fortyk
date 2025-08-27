@@ -251,8 +251,9 @@ export class FortykRollDialogs {
             title += `${testLabel} ` + "Test";
         }
         let modifier = 0;
-        let char = actor.system.characteristics[testChar];
-        if (char) {
+        
+        if (testChar) {
+            let char = actor.system.characteristics[testChar];
             let base = char.value;
             let adv = char.advance;
             let mod = char.mod;
@@ -521,7 +522,7 @@ export class FortykRollDialogs {
         templateOptions["options"].selfProne = modifiers.selfProne;
         templateOptions["options"].stunned = modifiers.stunned;
         templateOptions["options"].helpless = modifiers.helpless;
-        if (modifiers.size) {
+        if (modifiers.size !== undefined) {
             templateOptions["options"].size = modifiers.size;
         } else {
             templateOptions["options"].size = actor.system.secChar.size.value;
@@ -979,7 +980,7 @@ export class FortykRollDialogs {
         templateOptions["options"].prone = modifiers.prone;
         templateOptions["options"].stunned = modifiers.stunned;
         templateOptions["options"].helpless = modifiers.helpless;
-        if (modifiers.size) {
+        if (modifiers.size !== undefined) {
             templateOptions["options"].size = modifiers.size;
         } else {
             templateOptions["options"].size = actor.system.secChar.size.value;
@@ -1156,7 +1157,6 @@ export class FortykRollDialogs {
             templateOptions["options"].long = long;
             templateOptions["options"].extreme = extreme;
         }
-        templateOptions["size"] = game.fortyk.FORTYK.size;
         templateOptions["modifiers"].miscMods = miscMods;
         let renderedTemplate = await renderTemplate(template, templateOptions);
 
@@ -1443,10 +1443,14 @@ export class FortykRollDialogs {
         let modifier = 0;
         let pr = actor.system.psykana.pr.effective;
         let psy = false;
+        let consumption;
         if (weapon.type === "psychicPower") {
             psy = true;
+            consumption = 0;
+        }else{
+            consumption = weapon.system.clip.consumption;
         }
-        let consumption = weapon.system.clip.consumption;
+    
         if (!psy) {
             var ammo = weapon.system.clip.value;
             if (ammo < consumption) {

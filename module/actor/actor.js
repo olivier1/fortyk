@@ -62,8 +62,6 @@ export class FortyKActor extends Actor {
         let actorData = actor;
         if (
             actorData.type === "dwPC" ||
-            actorData.type === "dhPC" ||
-            actorData.type === "owPC" ||
             actorData.type === "npc" ||
             actorData.type === "vehicle"
         ) {
@@ -108,8 +106,9 @@ export class FortyKActor extends Actor {
             }
             // Apply changes in Actor size to Token width/height
             let newSize = data["system.secChar.size.value"];
-            if (!newSize) {
+            if (newSize===undefined) {
                 newSize = parseInt(data?.flags?.fortyk?.size) - 1;
+                if(isNaN(newSize)) newSize=undefined;
                 if (newSize) {
                     data["system.secChar.size.value"] = newSize;
                 }
@@ -123,7 +122,7 @@ export class FortyKActor extends Actor {
                 vehicle = true;
             }
             if (vehicle) {
-                if (newSize && newSize !== this.system.secChar.size.value) {
+                if (typeof newSize === 'number' && newSize !== this.system.secChar.size.value) {
                     let size = 0;
                     size = game.fortyk.FORTYK.size[newSize].size;
                     let scale = game.fortyk.FORTYK.size[newSize].scale;
@@ -139,7 +138,7 @@ export class FortyKActor extends Actor {
                     }
                 }
             } else {
-                if ((wounds && (this.system.horde.value || this.system.formation.value)) || newSize) {
+                if ((wounds && (this.system.horde.value || this.system.formation.value)) || typeof newSize === 'number') {
                     if (this.system.horde.value || this.system.formation.value) {
                         newSize = data["system.secChar.wounds.value"];
                         if (newSize < 0) {
@@ -150,7 +149,7 @@ export class FortyKActor extends Actor {
                     if (
                         (!this.system.horde.value &&
                          !this.system.formation.value &&
-                         newSize &&
+                         typeof newSize === 'number' &&
                          newSize !== this.system.secChar.size.value) ||
                         ((this.system.horde.value || this.system.formation.value) &&
                          newSize !== undefined &&
@@ -169,8 +168,14 @@ export class FortyKActor extends Actor {
                             scale = game.fortyk.FORTYK.size[newSize].scale;
                             size = game.fortyk.FORTYK.size[newSize].size;
                         }
-                        if (this.isToken) this.token.update({ height: size, width: size });
-                        else if (
+                        if (this.isToken){
+                            let upd={};
+                            upd.width=size;
+                            upd.height=size;
+                            upd["texture.scaleX"]=scale;
+                            upd["texture.scaleY"]=scale;
+                            this.token.update(upd);
+                        } else if (
                             !data["prototypeToken.width"] &&
                             !foundry.utils.hasProperty(data, "prototypeToken.width")
                         ) {
