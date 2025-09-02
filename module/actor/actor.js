@@ -625,6 +625,7 @@ export class FortyKActor extends Actor {
         let actorData = this;
         let data = this.system;
         let selfPsy = [];
+        data.postEffects=false;
         this.effects.forEach(function (ae, id) {
             if (!ae.disabled) {
                 if (actor.uuid === ae.origin) {
@@ -677,9 +678,8 @@ export class FortyKActor extends Actor {
                         if (ae.getFlag("fortyk", "psy")) {
                             let adjustment = ae.getFlag("fortyk", "adjustment");
                             if (!powerActor.system.isPrepared) {
-                                let clone = powerActor.clone();
-                                clone.prepareData();
-                                powerActor = clone;
+                                data.postEffects=true;
+                                return; 
                             }
                             let actorPr = powerActor.system.psykana.pr.effective;
                             let scope = powerActor.getScope();

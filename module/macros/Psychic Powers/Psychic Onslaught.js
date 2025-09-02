@@ -7,7 +7,7 @@ let effectIds=[];
 let rangedWeapons=actor.itemTypes.rangedWeapon;
 rangedWeapons=rangedWeapons.concat(actor.itemTypes.ammunition);
 for(const rangedWeapon of rangedWeapons){
-    if (rangedWeapon.system.type.value==="Bolt"&&rangedWeapon.getFlag("fortyk","force")){
+    if (rangedWeapon.getFlag("fortyk","force")){
         let aeData={};
         aeData.name=power.name+" Buff";
 

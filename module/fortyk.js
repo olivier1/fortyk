@@ -248,6 +248,15 @@ Hooks.once("ready", async function () {
         let vehicle = vehicles[i];
         vehicle.preparePilot();
     }
+    //for actors with psychic buffs, we need to re prepare them once all the actors have been prepared
+    //prevents infinite loops when two psyker buff each other
+    let actors=game.actors.values();
+    for(let actor of actors){
+       if(actor.system.postEffects){
+           actor.prepareData();
+       }
+        
+    }
     //SOCKET used to update actors via the damage scripts
     game.socket.on("system.fortyk", async (data) => {
         if (data.type === "cardSplash") {
