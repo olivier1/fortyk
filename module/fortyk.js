@@ -252,10 +252,10 @@ Hooks.once("ready", async function () {
     //prevents infinite loops when two psyker buff each other
     let actors=game.actors.values();
     for(let actor of actors){
-       if(actor.system.postEffects){
-           actor.prepareData();
-       }
-        
+        if(actor.system.postEffects){
+            actor.prepareData();
+        }
+
     }
     //SOCKET used to update actors via the damage scripts
     game.socket.on("system.fortyk", async (data) => {
@@ -383,8 +383,8 @@ Hooks.once("ready", async function () {
                         fortykWeapon.template = targetIds[i].template;
                         let targetNames = "";
                         let targetTokens = game.canvas.tokens.children[0].children.filter((token) =>
-                            curTargets.includes(token.id)
-                        );
+                                                                                          curTargets.includes(token.id)
+                                                                                         );
                         let targetSet = new Set(targetTokens);
                         for (let j = 0; j < targetTokens.length; j++) {
                             let token = targetTokens[j];
@@ -791,7 +791,7 @@ Hooks.on("updateCombat", async (combat) => {
                             author: game.user._id,
                             speaker: { actor, alias: actor.getName() },
                             content:
-                                "On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
+                            "On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
                             classes: ["fortyk"],
                             flavor: `On Fire!`
                         };
@@ -876,7 +876,7 @@ Hooks.on("updateCombat", async (combat) => {
                             author: game.user._id,
                             speaker: { actor, alias: actor.getName() },
                             content:
-                                "On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
+                            "On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor. Deamons do not mitigate this damage and take additional damage equal to PR.",
                             classes: ["fortyk"],
                             flavor: `On Fire!`
                         };
@@ -892,11 +892,31 @@ Hooks.on("updateCombat", async (combat) => {
                         //await actor.update({"system.secChar.fatigue.value":fatigue});
                         let fireData = { name: "Purifying Fire", type: "rangedWeapon" };
                         let fire = await Item.create(fireData, { temporary: true });
-                        fire.flags.fortyk = { ignoreSoak: true };
+
                         fire.system.damageType.value = "Energy";
-                        fire.system.pen.value = 0;
-                        fire.system.damageFormula.value = activeEffect.flags.fortyk.damageString;
+                        fire.system.pen.value = 99999;
+                        if(actor.getFlag("fortyk","daemonic")){
+                            fire.flags.fortyk = { ignoreSoak: true };
+                            fire.system.damageFormula.value = activeEffect.flags.fortyk.damageString;
+                        }else{
+                            fire.system.damageFormula.value = "1d10";
+                        }
+
                         await FortykRolls.damageRoll(fire.system.damageFormula, actor, fire, 1, true);
+                        if(activeEffect.flags.fortyk.iconofburningflame){
+                            let pr = activeEffect.flags.fortyk.pr;
+                            let burningIconOptions = {
+                                author: game.user._id,
+                                speaker: { actor, alias: actor.getName() },
+                                content:
+                                `The Icon makes the purifying fire roar in a purging blaze! All daemons within ${pr}m must pass a willpower test or take ${pr} damage ignoring mitigation and become affected by purifying flames!`,
+                                classes: ["fortyk"],
+                                flavor: `Icon of Burning Flame`
+                            };
+                            await ChatMessage.create(burningIconOptions, {});
+
+                            await FortykRollDialogs.soulBlaze(actor, pr, true);
+                        }
                     } else {
                         if (actor.getFlag("fortyk", "firedamage")) {
                             actor.setFlag("fortyk", "firedamage", actor.getFlag("fortyk", "firedamage") + 6);
@@ -1646,10 +1666,10 @@ Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
             if (
                 actor &&
                 (actor.getFlag("fortyk", "jump") ||
-                    actor.getFlag("fortyk", "crawler") ||
-                    actor.getFlag("fortyk", "hoverer") ||
-                    actor.getFlag("fortyk", "flyer") ||
-                    actor.getFlag("fortyk", "skimmer"))
+                 actor.getFlag("fortyk", "crawler") ||
+                 actor.getFlag("fortyk", "hoverer") ||
+                 actor.getFlag("fortyk", "flyer") ||
+                 actor.getFlag("fortyk", "skimmer"))
             ) {
                 cost = 1;
             }
@@ -1694,7 +1714,7 @@ Hooks.once("item-piles-ready", async () => {
             {
                 path: "type",
                 filters:
-                    "psychicPower,skill,mutation,malignancy,disorder,injury,talentntrait,advancement,mission,cadetHouse,repairEntry,outpost,knightSpirit,eliteAdvance"
+                "psychicPower,skill,mutation,malignancy,disorder,injury,talentntrait,advancement,mission,cadetHouse,repairEntry,outpost,knightSpirit,eliteAdvance"
             }
         ],
 

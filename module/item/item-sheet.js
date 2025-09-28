@@ -285,24 +285,18 @@ export class FortyKItemSheet extends ItemSheet {
                                     modData.type = "mod";
                                     modData.effects = [foundry.utils.duplicate(activeEffect)];
                                     if (item.parent) {
-                                        await this.item.deleteEmbeddedDocuments("ActiveEffect", [itemId]);
+                                        
                                         await item.parent.createEmbeddedDocuments("Item", [modData]);
-                                        this.render(true);
+                                        
+                                    }
+                                }
+                            } 
+                            await this.item.deleteEmbeddedDocuments("ActiveEffect", [itemId]);
+                            this.render(true);
                                         let apps = item.parent.apps;
                                         for (const appKey in apps) {
                                             apps[appKey].render(true);
                                         }
-                                    }
-                                }
-                            } else {
-                                await this.item.deleteEmbeddedDocuments("ActiveEffect", [itemId]);
-                                this.render(true);
-                                var apps = item.parent.apps;
-                                for (const appKey in apps) {
-                                    apps[appKey].render(true);
-                                }
-                            }
-
                             this.render(true);
                             console.log(item.parent);
                         }

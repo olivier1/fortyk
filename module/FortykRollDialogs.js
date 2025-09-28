@@ -251,7 +251,7 @@ export class FortykRollDialogs {
             title += `${testLabel} ` + "Test";
         }
         let modifier = 0;
-        
+
         if (testChar) {
             let char = actor.system.characteristics[testChar];
             let base = char.value;
@@ -663,12 +663,12 @@ export class FortykRollDialogs {
                         let aimType = html.find("input[name=aim-type]:checked")[0].attributes["aimtype"].value;
                         const outnumberBonus = Number($(html).find('input[name="outnumber"]:checked').val());
                         let outnumberType = html.find("input[name=outnumber]:checked")[0].attributes["outnumbertype"]
-                            .value;
+                        .value;
                         //const terrainBonus = Number($(html).find('input[name="terrain"]:checked').val());
                         //let terrainType = html.find('input[name=terrain]:checked')[0].attributes["terraintype"].value;
                         const visibilityBonus = Number($(html).find('input[name="visibility"]:checked').val());
                         let visibilityType = html.find("input[name=visibility]:checked")[0].attributes["visibilitytype"]
-                            .value;
+                        .value;
                         let defensive = Number($(html).find('input[name="defensive"]:checked').val());
                         let prone = Number($(html).find('input[name="prone"]:checked').val());
                         let high = Number($(html).find('input[name="high"]:checked').val());
@@ -1186,7 +1186,7 @@ export class FortykRollDialogs {
 
                         const visibilityBonus = Number($(html).find('input[name="visibility"]:checked').val());
                         let visibilityType = html.find("input[name=visibility]:checked")[0].attributes["visibilitytype"]
-                            .value;
+                        .value;
                         let concealed = Number($(html).find('input[name="concealed"]:checked').val());
                         let prone = Number($(html).find('input[name="prone"]:checked').val());
                         let high = Number($(html).find('input[name="high"]:checked').val());
@@ -1413,13 +1413,13 @@ export class FortykRollDialogs {
             buttons: {
                 submit: {
                     label: "OK",
-                    callback: (html) => {
+                    callback: async (html) => {
                         let other = Number($(html).find('input[name="other"]').val());
                         modifierTracker.push({ value: other, label: "Input Modifier" });
 
                         testTarget = parseInt(testTarget) + parseInt(other);
 
-                        FortykRolls.fortykTest(
+                        let test= await FortykRolls.fortykTest(
                             testChar,
                             testType,
                             testTarget,
@@ -1431,6 +1431,10 @@ export class FortykRollDialogs {
                             false,
                             modifierTracker
                         );
+                        if(actor.getFlag("fortyk","soulblaze")&&test.value){
+                            let pr=actor.system.psykana.pr.effective;
+                            this.soulBlaze(actor, pr, actor.getFlag("fortyk","iconofburningflame"));
+                        }
                     }
                 }
             },
@@ -1438,6 +1442,60 @@ export class FortykRollDialogs {
 
             width: 200
         }).render(true);
+    }
+    static async soulBlaze(actor, pr, icon){
+        let tokens = canvas.tokens.children[0].children;
+        
+        let sourceToken=getActorToken(actor);
+        for(let token of tokens){
+            let tokenActor=token.actor;
+            if(token.id===sourceToken.id)continue;
+            if(tokenActor.getFlag("fortyk","daemonic")){
+                let distance= tokenDistance(token,sourceToken);
+                if(distance<=pr){
+                    let test= await FortykRolls.fortykTest(
+                        "wp",
+                        "char",
+                        tokenActor.system.characteristics.wp.total,
+                        tokenActor,
+                        "Soulblaze",
+                        null,
+                        false,
+                        "",
+                        false,
+                        []
+                    );
+                    if(!test.value){
+                        let fireData = { name: "Purifying Fire", type: "rangedWeapon" };
+                        let fire = await Item.create(fireData, { temporary: true });
+
+                        fire.system.damageType.value = "Energy";
+                        fire.system.pen.value = 99999;
+
+                        fire.flags.fortyk = { ignoreSoak: true };
+                        fire.system.damageFormula.value = `${pr}`;
+
+
+
+
+                        await FortykRolls.damageRoll(fire.system.damageFormula, tokenActor, fire, 1, true);
+                        let fireActiveEffect = foundry.utils.duplicate(
+                            game.fortyk.FORTYK.StatusEffects[
+                                game.fortyk.FORTYK.StatusEffectsIndex.get("purifyingflame")
+                            ]
+                        );
+                        fireActiveEffect.flags = {
+                            fortyk: { damageString: `1d10+${pr}`}
+                        };
+                        fireActiveEffect.flags.fortyk.pr=pr;
+                        if(icon){
+                            fireActiveEffect.flags.fortyk.iconofburningflame=true;
+                        }
+                        FortykRolls.applyActiveEffect(token, [fireActiveEffect], false);
+                    }
+                }
+            }
+        }
     }
     static async callSprayAttackDialog(actor, testLabel, weapon, options, sheet, title = "Enter test modifier") {
         let modifier = 0;
@@ -1450,7 +1508,7 @@ export class FortykRollDialogs {
         }else{
             consumption = weapon.system.clip.consumption;
         }
-    
+
         if (!psy) {
             var ammo = weapon.system.clip.value;
             if (ammo < consumption) {

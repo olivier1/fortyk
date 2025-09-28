@@ -851,6 +851,9 @@ export class FortyKActor extends Actor {
                 char.total += parseInt(data.globalMOD.value);
             }
         }
+        if( this.getFlag("fortyk","templeassassin") ){
+            data.reactions += data.characteristics.agi.bonus;
+        }
         data.secChar.fatigue.max = parseInt(data.characteristics.wp.bonus) + parseInt(data.characteristics.t.bonus);
         if (this.getFlag("fortyk", "neverquit")) {
             data.secChar.fatigue.max += 2;
@@ -1043,6 +1046,9 @@ export class FortyKActor extends Actor {
                 char.total += parseInt(data.globalMOD.value);
                 //char.total=Math.min(char.total,char.max);
             }
+        }
+        if( this.getFlag("fortyk","templeassassin") ){
+            data.reactions += data.characteristics.agi.bonus;
         }
         data.secChar.fatigue.max = parseInt(data.characteristics.wp.bonus) + parseInt(data.characteristics.t.bonus);
         //modify total characteristics depending on fatigue

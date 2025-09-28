@@ -1,7 +1,3 @@
-2025/09/02-09:06:40.567 5560 Recovering log #808
-2025/09/02-09:06:40.577 5560 Delete type=0 #808
-2025/09/02-09:06:40.577 5560 Delete type=3 #807
-2025/09/02-16:10:08.059 4140 Level-0 table #812: started
-2025/09/02-16:10:08.059 4140 Level-0 table #812: 0 bytes OK
-2025/09/02-16:10:08.063 4140 Delete type=0 #810
-2025/09/02-16:10:08.063 4140 Manual compaction at level-0 from '!folders!2i1FBjUl6xwK7N8E' @ 72057594037927935 : 1 .. '!journal.pages!y4MCUgA6fgVw68My.tmz6j58lZGJG8Kgy' @ 0 : 0; will stop at (end)
+2025/09/28-16:32:27.349 5dac Recovering log #900
+2025/09/28-16:32:27.360 5dac Delete type=0 #900
+2025/09/28-16:32:27.360 5dac Delete type=3 #898

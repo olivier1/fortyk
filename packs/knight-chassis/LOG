@@ -1,8 +1,3 @@
-2025/09/02-09:06:40.392 bdc Recovering log #3517
-2025/09/02-09:06:40.401 bdc Delete type=0 #3517
-2025/09/02-09:06:40.401 bdc Delete type=3 #3516
-2025/09/02-16:10:07.999 4140 Level-0 table #3521: started
-2025/09/02-16:10:07.999 4140 Level-0 table #3521: 0 bytes OK
-2025/09/02-16:10:08.003 4140 Delete type=0 #3519
-2025/09/02-16:10:08.003 4140 Manual compaction at level-0 from '!folders!INRa7bbW7CIXCYYa' @ 72057594037927935 : 1 .. '!items!y5EQJz2iMzcuXNBX' @ 0 : 0; will stop at (end)
-2025/09/02-16:10:08.003 4140 Manual compaction at level-1 from '!folders!INRa7bbW7CIXCYYa' @ 72057594037927935 : 1 .. '!items!y5EQJz2iMzcuXNBX' @ 0 : 0; will stop at (end)
+2025/09/28-16:32:27.148 4e28 Recovering log #3606
+2025/09/28-16:32:27.159 4e28 Delete type=0 #3606
+2025/09/28-16:32:27.159 4e28 Delete type=3 #3604
