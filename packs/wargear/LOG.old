@@ -1,7 +1,7 @@
-2025/09/28-14:42:47.494 5dac Recovering log #3617
-2025/09/28-14:42:47.506 5dac Delete type=0 #3617
-2025/09/28-14:42:47.506 5dac Delete type=3 #3615
-2025/09/28-16:32:22.731 2098 Level-0 table #3622: started
-2025/09/28-16:32:22.731 2098 Level-0 table #3622: 0 bytes OK
-2025/09/28-16:32:22.735 2098 Delete type=0 #3620
-2025/09/28-16:32:22.739 2098 Manual compaction at level-0 from '!folders!0UW9DkcGxS5nItEK' @ 72057594037927935 : 1 .. '!items.effects!msp4HQ8X2OBSgEIQ.LyqgY99Y8B532dtD' @ 0 : 0; will stop at (end)
+2025/10/04-11:37:35.860 5ad0 Recovering log #3635
+2025/10/04-11:37:35.870 5ad0 Delete type=0 #3635
+2025/10/04-11:37:35.870 5ad0 Delete type=3 #3633
+2025/10/04-13:29:09.101 f30 Level-0 table #3640: started
+2025/10/04-13:29:09.101 f30 Level-0 table #3640: 0 bytes OK
+2025/10/04-13:29:09.105 f30 Delete type=0 #3638
+2025/10/04-13:29:09.118 f30 Manual compaction at level-0 from '!folders!0UW9DkcGxS5nItEK' @ 72057594037927935 : 1 .. '!items.effects!msp4HQ8X2OBSgEIQ.LyqgY99Y8B532dtD' @ 0 : 0; will stop at (end)

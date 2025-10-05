@@ -182,7 +182,13 @@ export class FortykRollDialogs {
         const messageId = chatMessageNode.dataset.messageId;
         const message = game.messages.get(messageId);
         if (message) {
-            message.update({ content: chatContentNode.innerHTML });
+            if(message.isOwner){
+                message.update({ content: chatContentNode.innerHTML });
+            }else{
+                let socketOp = { type: "updateMessage", package: { message: message.id, update: { content: chatContentNode.innerHTML } } };
+                game.socket.emit("system.fortyk", socketOp);
+            }
+
         }
     }
     //handles test rerolls
@@ -1445,8 +1451,10 @@ export class FortykRollDialogs {
     }
     static async soulBlaze(actor, pr, icon){
         let tokens = canvas.tokens.children[0].children;
-        
+
         let sourceToken=getActorToken(actor);
+        let messageContent="";
+        let tests=[];
         for(let token of tokens){
             let tokenActor=token.actor;
             if(token.id===sourceToken.id)continue;
@@ -1462,38 +1470,60 @@ export class FortykRollDialogs {
                         null,
                         false,
                         "",
-                        false,
+                        true,
                         []
                     );
-                    if(!test.value){
-                        let fireData = { name: "Purifying Fire", type: "rangedWeapon" };
-                        let fire = await Item.create(fireData, { temporary: true });
+                    messageContent+=`<div class="chat-target"><a class="blast-ping" data-token="${token.id}">` +
+                        token.name + `'s</a> `+ test.template + `</div>`;
+                    test.token=token;
+                    test.tokenActor=tokenActor;
+                    tests.push(test);
 
-                        fire.system.damageType.value = "Energy";
-                        fire.system.pen.value = 99999;
-
-                        fire.flags.fortyk = { ignoreSoak: true };
-                        fire.system.damageFormula.value = `${pr}`;
-
-
-
-
-                        await FortykRolls.damageRoll(fire.system.damageFormula, tokenActor, fire, 1, true);
-                        let fireActiveEffect = foundry.utils.duplicate(
-                            game.fortyk.FORTYK.StatusEffects[
-                                game.fortyk.FORTYK.StatusEffectsIndex.get("purifyingflame")
-                            ]
-                        );
-                        fireActiveEffect.flags = {
-                            fortyk: { damageString: `1d10+${pr}`}
-                        };
-                        fireActiveEffect.flags.fortyk.pr=pr;
-                        if(icon){
-                            fireActiveEffect.flags.fortyk.iconofburningflame=true;
-                        }
-                        FortykRolls.applyActiveEffect(token, [fireActiveEffect], false);
-                    }
                 }
+            }
+        }
+        if(!messageContent)return;
+        let chatOptions = {
+            author: game.user._id,
+            speaker: { actor, alias: actor.getName() },
+            content: messageContent,
+            classes: ["fortyk"],
+            sound: "sounds/dice.wav",
+            flavor: `Soul Blaze Tests`
+        };
+
+        await ChatMessage.create(chatOptions, {});
+        for(let test of tests){
+            if(!test.value){
+                let token=test.token;
+                let tokenActor=test.tokenActor;
+                
+                let fireData = { name: "Purifying Fire", type: "rangedWeapon" };
+                let fire = await Item.create(fireData, { temporary: true });
+
+                fire.system.damageType.value = "Energy";
+                fire.system.pen.value = 99999;
+
+                fire.flags.fortyk = { ignoreSoak: true };
+                fire.system.damageFormula.value = `${pr}`;
+
+
+
+
+                await FortykRolls.damageRoll(fire.system.damageFormula, tokenActor, fire, 1, true);
+                let fireActiveEffect = foundry.utils.duplicate(
+                    game.fortyk.FORTYK.StatusEffects[
+                        game.fortyk.FORTYK.StatusEffectsIndex.get("purifyingflame")
+                    ]
+                );
+                fireActiveEffect.flags = {
+                    fortyk: { damageString: `1d10+${pr}`}
+                };
+                fireActiveEffect.flags.fortyk.pr=pr;
+                if(icon){
+                    fireActiveEffect.flags.fortyk.iconofburningflame=true;
+                }
+                FortykRolls.applyActiveEffect(token, [fireActiveEffect], false);
             }
         }
     }

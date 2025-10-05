@@ -1653,6 +1653,7 @@ export class FortyKActor extends Actor {
                 }
             }
             if (item.type === "meleeWeapon" || item.type === "rangedWeapon") {
+                
                 if (item.system.isEquipped) {
                     wornGear.weapons.push(item);
                 }

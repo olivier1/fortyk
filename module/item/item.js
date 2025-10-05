@@ -122,7 +122,7 @@ export class FortyKItem extends Item {
             let actor = this.actor;
 
             const scope = actor.getScope();
-            item.system.specialFlags = this.getFlags();
+            
             if (item.system.state) {
                 if (
                     item.system.state.value === "X" ||
@@ -423,7 +423,12 @@ export class FortyKItem extends Item {
 
             if (actor.type !== "vehicle" && actor.type !== "knightHouse") {
                 if (actor.getFlag("fortyk", "iconofburningflame") && item.system?.damageType?.value === "Energy") {
-                    item.flags.fortyk.flame = true;
+                    if(actor.getFlag("fortyk", "purifyingflames")){
+                        item.flags.fortyk.purifyingflame = true;
+                    }else{
+                        item.flags.fortyk.flame = true;
+                    }
+                    
                 }
 
                 if (actor.getFlag("fortyk", "purifyingflames") && item.getFlag("fortyk", "flame")) {
@@ -708,7 +713,7 @@ export class FortyKItem extends Item {
                     }
                 }
             }
-
+            item.system.specialFlags = this.getFlags();
             item.system.isPrepared = true;
         }
     }

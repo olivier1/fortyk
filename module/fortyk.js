@@ -330,6 +330,7 @@ Hooks.once("ready", async function () {
             let magdamage;
             let extraPen;
             let rerollNum;
+            let update;
             switch (data.type) {
                 case "damageRoll":
                     user = await game.users.get(data.package.user);
@@ -494,6 +495,12 @@ Hooks.once("ready", async function () {
                     options[path] = value;
                     await actor.update(options);
                     break;
+                case "updateMessage":
+                    let messageId=data.package.message;
+                    update=data.package.update;
+                    let message=game.messages.get(messageId);
+                    message.update(update);
+                    break;
                 case "setFlag":
                     let flag = data.package.flag;
                     let scope = data.package.scope;
@@ -519,7 +526,7 @@ Hooks.once("ready", async function () {
                     break;
                 case "updateLoans":
                     let loaned = data.package.loans;
-                    let update = data.package.update;
+                    update = data.package.update;
                     for (let i = 0; i < loaned.length; i++) {
                         let knight = await game.actors.get(loaned[i].knightId);
                         let update1 = foundry.utils.duplicate(update);
