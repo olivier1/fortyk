@@ -15,6 +15,11 @@
     src: url('../fonts/CaslonAntique-Italic.ttf');
     font-style:italic;
 }
+[draggable="true"] {
+  cursor: grab;
+}
+
+
 .fortyk{
     font-size:16px;
     font-family: "CaslonAntique";
@@ -416,7 +421,7 @@
     overflow: auto;
 }
 .fortyk .sheet-content .tab{
-    overflow:scroll;
+    overflow-y:scroll;
 }
 .fortyk .sheet-body.npc .tab {
     overflow: visible;
@@ -888,6 +893,13 @@
     height:100%;
     padding:3px;
     font-weight: bolder;
+}
+.fortyk .psy-grid-overflow{
+    height:70%;
+    overflow-y:auto;
+}
+.fortyk .psykana{
+    overflow:hidden !important;
 }
 .fortyk .npcskillntraits{
     height:100%;

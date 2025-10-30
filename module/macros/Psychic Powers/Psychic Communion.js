@@ -1,6 +1,6 @@
 let actor=scope.power.actor;
 let power=scope.power;
-var pr=power.system.curPR.value;
+var pr=parseInt(power.system.curPR.value);
 let targetIds=scope.targets;
 let targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
 let aeData=foundry.utils.duplicate(power.effects.entries().next().value[1]);
@@ -20,7 +20,7 @@ for(const target of targets){
     let aeInstance=await targetActor.createEmbeddedDocuments("ActiveEffect",[aeData]);
     console.log(aeInstance);
     effectIds.push(aeInstance[0].uuid);
-    let initiative=combatant.initiative;
+    let initiative=parseFloat(combatant.initiative);
     originalInitiatives.push({id:combatant.id,init:initiative});
     let newInit=initiative+2;
     await combat.setInitiative(combatant.id,newInit);

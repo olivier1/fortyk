@@ -536,7 +536,7 @@ export class FortyKActor extends Actor {
                 if (item.type === "rangedWeapon" || item.type === "meleeWeapon") {
                     item.system.isEquipped = true;
                 }
-               
+
             });
         } else if (actorData.type === "spaceship") {
             let items = this.items;
@@ -693,10 +693,13 @@ export class FortyKActor extends Actor {
                                 actor.system.psykana.pr.value +
                                 actor.system.psykana.pr.bonus -
                                 Math.max(0, actor.system.psykana.pr.sustain - 1);
-                            try {
-                                let changestr = changeValue;
-                                changeValue = Math.ceil(math.evaluate(changestr, { pr: pr }));
-                            } catch (err) {}
+                            if(changeValue.indexOf("pr")!==-1){
+                                try {
+                                    let changestr = changeValue;
+                                    changeValue = Math.ceil(math.evaluate(changestr, { pr: pr }));
+                                } catch (err) {}
+                            }
+
                         }
                         let basevalue = parseFloat(objectByString(actorData, change.key));
 
@@ -1653,7 +1656,7 @@ export class FortyKActor extends Actor {
                 }
             }
             if (item.type === "meleeWeapon" || item.type === "rangedWeapon") {
-                
+
                 if (item.system.isEquipped) {
                     wornGear.weapons.push(item);
                 }
@@ -1704,6 +1707,18 @@ export class FortyKActor extends Actor {
         actorData.role = role;
         actorData.background = background;
         actorData.planet = planet;
+        actorData.wornGear.weapons=actorData.wornGear.weapons.sort(function compare(a, b) {
+                        let valueA = a.sort;
+                        let valueB = b.sort;
+                        if (valueA < valueB) {
+                            return 1;
+                        }
+                        if (valueA > valueB) {
+                            return -1;
+                        }
+                        // a must be equal to b
+                        return 0;
+                    });
         try {
             this._sortItems(actorData);
         } catch (err) {}

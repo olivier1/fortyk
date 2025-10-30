@@ -122,7 +122,7 @@ export class FortyKItem extends Item {
             let actor = this.actor;
 
             const scope = actor.getScope();
-            
+
             if (item.system.state) {
                 if (
                     item.system.state.value === "X" ||
@@ -333,8 +333,8 @@ export class FortyKItem extends Item {
                 let ammos = actor.itemTypes.ammunition;
                 let validAmmos = ammos.filter(
                     (ammo) =>
-                        ammo.system.class.value === item.system.class.value &&
-                        ammo.system.type.value === item.system.type.value
+                    ammo.system.class.value === item.system.class.value &&
+                    ammo.system.type.value === item.system.type.value
                 );
                 item.validAmmos = validAmmos;
                 if (ammo && !ammo.system.default.value) {
@@ -428,7 +428,7 @@ export class FortyKItem extends Item {
                     }else{
                         item.flags.fortyk.flame = true;
                     }
-                    
+
                 }
 
                 if (actor.getFlag("fortyk", "purifyingflames") && item.getFlag("fortyk", "flame")) {
@@ -635,9 +635,9 @@ export class FortyKItem extends Item {
                     if (actor.getFlag("fortyk", "WeaponMaster")) {
                         if (
                             actor
-                                .getFlag("fortyk", "WeaponMaster")
-                                .toLowerCase()
-                                .includes(item.system.type.value.toLowerCase())
+                            .getFlag("fortyk", "WeaponMaster")
+                            .toLowerCase()
+                            .includes(item.system.type.value.toLowerCase())
                         ) {
                             item.system.damageFormula.value += "+2";
                             item.system.testMod.value += 10;
@@ -764,14 +764,16 @@ export class FortyKItem extends Item {
                     }
 
                     if (actor.getFlag("fortyk", "psyrating")) {
-                        try {
-                            let value = math.evaluate(changeValue, scope);
+                        if(changeValue.indexOf("pr")!==-1){
+                            try {
+                                let value = math.evaluate(changeValue, scope);
 
-                            if (!Number.isNaN(value)) {
-                                changeValue = value;
+                                if (!Number.isNaN(value)) {
+                                    changeValue = value;
+                                }
+                            } catch (err) {
+                                console.log(err, item);
                             }
-                        } catch (err) {
-                            console.log(err, item);
                         }
                     }
                     let basevalue = Number(objectByString(itemData, change.key));

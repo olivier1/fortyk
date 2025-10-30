@@ -298,7 +298,6 @@ export class FortyKItemSheet extends ItemSheet {
                                             apps[appKey].render(true);
                                         }
                             this.render(true);
-                            console.log(item.parent);
                         }
                     },
                     cancel: {
@@ -385,7 +384,6 @@ export class FortyKItemSheet extends ItemSheet {
         let bonuses = this.item.system.items;
         let node = event.currentTarget;
         let index = parseInt(node.dataset.index);
-        console.log(index, node);
         bonuses.splice(index, 1);
         this.item.update({ "system.items": bonuses });
     }

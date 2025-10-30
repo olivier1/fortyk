@@ -1201,7 +1201,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         };
                         forceData.system = { damageFormula: { value: `${hits}d10` }, damageType: { value: "Energy" } };
                         let force = await new Item(forceData, { temporary: true });
-                        console.log(force);
+                     
 
                         if (game.user.isGM) {
                             FortykRolls.damageRoll(force.system.damageFormula, actor, force, 1);

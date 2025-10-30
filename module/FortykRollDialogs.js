@@ -1,6 +1,7 @@
 import { FortykRolls } from "./FortykRolls.js";
 import { getActorToken } from "./utilities.js";
 import { tokenDistance } from "./utilities.js";
+import { isBlastTarget} from "./utilities.js";
 export class FortykRollDialogs {
     //activate chatlisteners
     static chatListeners(html) {
@@ -9,7 +10,7 @@ export class FortykRollDialogs {
         html.on("click", ".popup", this._onTestPoppup.bind(this));
         html.on("click", ".spray-torrent-ping", this._onSprayTorrentClick.bind(this));
         html.on("mouseup", ".reroll-popup", this._onPopupReroll.bind(this));
-        html.on("click", ".blast-ping", this._onBlastClick.bind(this));
+        html.on("click", ".blast-evade", this._onBlastClick.bind(this));
         html.on("click", ".ping-template", this._onTemplateClick.bind(this));
     }
     static async _onTemplateClick(event) {
@@ -23,9 +24,139 @@ export class FortykRollDialogs {
     static async _onBlastClick(event) {
         const dataset = event.currentTarget.dataset;
         const tokenId = dataset.token;
+        const weaponId = dataset.weapon;
         const token = canvas.tokens.get(tokenId);
         await canvas.animatePan({ x: token.center.x, y: token.center.y });
         game.canvas.ping({ x: token.center.x, y: token.center.y }, { duration: 2000 });
+        if (!game.user.isGM)return;
+        var targetElement = event.currentTarget;
+        const messageId = $(targetElement).closest(".chat-message")[0].dataset.messageId;
+        let messageContent = $(targetElement).closest(".message-content")[0];
+        const message = game.messages.get(messageId);
+        let hits = dataset.hits;
+        hits = parseInt(hits);
+        let htmlLine = targetElement.parentElement;
+        const userId = dataset.user;
+        const user = game.users.get(userId);
+
+        if (hits === 0) return;
+        let actor = token.actor;
+        let weapon = actor.items.get(weaponId);
+        let line =
+            `<a class="spray-torrent-ping" data-user="${userId}" data-hits="${0}" data-remaining-hits={{hits}} data-token="${tokenId}">` +
+            actor.getName() +
+            "</a> ";
+        let hitTemplates=message.flags.fortyk.targets[tokenId].templateIds;
+        let forcefielded = false;
+        let forcefield = actor.system.secChar.wornGear.forceField;
+        if (!jQuery.isEmptyObject(forcefield) && !forcefield.system.broken.value) {
+            let fieldResult = await FortykRolls.fortykForcefieldTest(forcefield, actor, hits, true);
+            foundry.audio.AudioHelper.play(
+                { src: "sounds/dice.wav", volume: 1, autoplay: true, loop: false },
+                true
+            );
+            for(const [index, result] of fieldResult.results.entries()){
+                if(result?.pass||result.overload){
+                    let template=await fromUuid(hitTemplates[index]);
+                    let ignoreArray=template.getFlag("fortyk","ignores");
+                    if(!ignoreArray){
+                        ignoreArray=[];
+                    }
+                    ignoreArray.push(token.id);
+                    template.setFlag("fortyk","ignores",ignoreArray);
+                }
+            }
+            hits = fieldResult.hits;
+            line += fieldResult.template;
+            forcefielded = true;
+        }
+
+        if (hits === 0) {
+            htmlLine.innerHTML = line;
+            let update={};
+            update[`flags.fortyk.targets.${tokenId}`]=null;
+            update.content=messageContent.innerHTML;
+            message.update(update);
+
+
+            return;
+        }
+        //if (forcefielded) line += `</br>${actor.getName()}`;
+        /*
+        let evadeCount = parseInt(actor.getFlag("core", "evasion"));
+        if(isNaN(evadeCount))evadeCount=0;
+        let maxEvade = actor.system.reactions;
+        let evadePoint;
+        if (evadeCount < maxEvade) {
+            //check half move vs distance to get out of templates
+            let halfMove=actor.system.secChar.movement.half;
+            let shortestSafeDistance=0;
+            for(let hitTemplate of hitTemplates){
+                let templateInstance=await fromUuid(hitTemplate);
+                if(!templateInstance)continue;
+                let distanceTravelled;
+                let point;
+                let vX=token.center.x-templateInstance.x;
+                let vY=token.center.y-templateInstance.y;
+                let magV= Math.sqrt(vX*vX + vY*vY);
+                if(magV===0){
+                    distanceTravelled=templateInstance.distance*100;
+                    point={x:(templateInstance.x+distanceTravelled), y:(templateInstance.y+distanceTravelled)};
+                }else{
+                    let aX= ((token.center.x-templateInstance.x)/(magV))*templateInstance.distance*100+templateInstance.x;
+                    let aY= ((token.center.y-templateInstance.y)/(magV))*templateInstance.distance*100+templateInstance.y;
+
+                    let xCoeff=(vX/Math.abs(vX));
+                    if(isNaN(xCoeff))xCoeff=0;
+                    let yCoeff=(vY/Math.abs(vY));
+                    if(isNaN(yCoeff))yCoeff=0;
+                    aX+=xCoeff*token.width;
+                    aY+=yCoeff*token.height;
+                    point={x:aX,y:aY}; 
+                }
+
+                //point=canvas.grid.getSnappedPoint(point, { mode: CONST.GRID_SNAPPING_MODES.TOP_LEFT_CORNER });
+                await canvas.animatePan({ x: point.x, y: point.y });
+                game.canvas.ping({ x: point.x, y: point.y }, { duration: 10000 });
+                distanceTravelled=Math.sqrt(Math.pow(point.x-token.center.x,2)+Math.pow(point.y-token.center.y,2));
+                //determine nearest point of the circle template that is outside, add the token width and height to it so it clears the edge of the token
+
+            }
+        }*/
+        /*        let dodge = 0;
+        let label = "Dodge";
+        if (actor.type === "npc") {
+            dodge = actor.system.dodge.total;
+        } else if (actor.type === "vehicle") {
+            dodge = actor.system.crew.jink;
+            label = "Jink";
+        } else {
+            dodge = actor.system.skills.dodge;
+        }
+
+        let result = await this.callRollDialog("agi", "evasion", dodge, actor, label, weapon, false, "", true);
+        foundry.audio.AudioHelper.play({ src: "sounds/dice.wav", volume: 1, autoplay: true, loop: false }, true);
+
+        let hitlabel = "hit";
+        if (hits > 1) hitlabel += "s";
+        if (result.value && result.dos >= hits) {
+            line += `passed ${result.template} and must move out of the area to not take damage`;
+            if (user.id !== game.user.id) {
+                let socketOp = { type: "removeTarget", package: { user: userId, token: token.id } };
+                game.socket.emit("system.fortyk", socketOp);
+            } else {
+                token.setTarget(false, { releaseOthers: false });
+            }
+        } else if (result.value && result.dos < hits) {
+            hits -= result.dos;
+            line += `passed ${result.template} but ${hits} ${hitlabel} remain`;
+        } else {
+            line += `failed ${result.template} and suffers ${hits} ${hitlabel}`;
+        }
+        */
+        htmlLine.innerHTML = line.replace("{{hits}}", hits);
+        message.update({ content: messageContent.innerHTML });
+        return;
     }
     //handles spray and torrent attack results
     static async _onSprayTorrentClick(event) {
@@ -1497,7 +1628,7 @@ export class FortykRollDialogs {
             if(!test.value){
                 let token=test.token;
                 let tokenActor=test.tokenActor;
-                
+
                 let fireData = { name: "Purifying Fire", type: "rangedWeapon" };
                 let fire = await Item.create(fireData, { temporary: true });
 

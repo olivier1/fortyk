@@ -576,8 +576,10 @@ export const getBlastTargets = function (templates) {
         let bounds = template._object._computeShape();
         bounds.x = template.x;
         bounds.y = template.y;
-
-        tokens.forEach((token, id, tokens) => {
+        let ignoreArray=template.getFlag("fortyk","ignores");
+        
+        tokens.forEach((token) => {
+            if(ignoreArray?.includes(token.id))return;
             let tokenBounds = token._object.bounds;
             let bottomIn = false;
             let topIn = false;
@@ -629,11 +631,81 @@ export const getBlastTargets = function (templates) {
                     targetted.push(token.id);
                 }*/
         });
-        let blastTargets = { template: { x: template.x, y: template.y }, targets: targetted };
+        let blastTargets = { template: { x: template.x, y: template.y, uuid:template.uuid }, targets: targetted };
         targets.push(blastTargets);
     }
 
     return targets;
+};
+export const isBlastTarget = function (token, templates) {
+    let scene = game.scenes.active;
+    let tokens = scene.tokens;
+    let targets = [];
+    let gridRatio = scene.dimensions.size / scene.dimensions.distance;
+    let isTarget=false;
+    for (let i = 0; i < templates.length; i++) {
+        let targetted = [];
+        let template = templates[i];
+        let bounds = template._object._computeShape();
+        bounds.x = template.x;
+        bounds.y = template.y;
+
+
+        let tokenBounds = token._object.bounds;
+        let bottomIn = false;
+        let topIn = false;
+        let rightIn = false;
+        let leftIn = false;
+        let tempInToken = false;
+        let tokenInTemp = bounds.contains(token._object.center.x - template.x, token._object.center.y - template.y);
+        if (
+            bounds.x > tokenBounds.left &&
+            bounds.x < tokenBounds.right &&
+            bounds.y > tokenBounds.top &&
+            bounds.y < tokenBounds.bottom
+        ) {
+            tempInToken = true;
+        }
+
+        let bottomIntersect = foundry.utils.lineCircleIntersection(
+            tokenBounds.bottomEdge.A,
+            tokenBounds.bottomEdge.B,
+            { x: bounds.x, y: bounds.y },
+            bounds.radius
+        );
+        bottomIn = !bottomIntersect.outside;
+        let topIntersect = foundry.utils.lineCircleIntersection(
+            tokenBounds.topEdge.A,
+            tokenBounds.topEdge.B,
+            { x: bounds.x, y: bounds.y },
+            bounds.radius
+        );
+        topIn = !topIntersect.outside;
+        let leftIntersect = foundry.utils.lineCircleIntersection(
+            tokenBounds.leftEdge.A,
+            tokenBounds.leftEdge.B,
+            { x: bounds.x, y: bounds.y },
+            bounds.radius
+        );
+        leftIn = !leftIntersect.outside;
+        let rightIntersect = foundry.utils.lineCircleIntersection(
+            tokenBounds.rightEdge.A,
+            tokenBounds.rightEdge.B,
+            { x: bounds.x, y: bounds.y },
+            bounds.radius
+        );
+        rightIn = !rightIntersect.outside;
+        if (tokenInTemp || bottomIn || topIn || leftIn || rightIn || tempInToken) {
+            isTarget=true;
+        }
+        /*if(bounds.overlaps(tokenBounds)){
+                    targetted.push(token.id);
+                }*/
+
+        
+    }
+
+    return isTarget;
 };
 /*returns the angle of the line between two tokens with 0 being direct south
 @targetToken: the targetted token

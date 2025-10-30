@@ -1,4 +1,4 @@
-<div class="sheet-psy flexcol">
+<div class="sheet-psy backgroundandnotes">
 
     <div class="psy-header grid grid-4col">
         {{#unless (contains system.psykana.psykerType.value "navigator")}}
@@ -77,7 +77,7 @@
 
     {{/unless}}
     <a class="item-create button" data-type="psychicPower" title="Add a new Psychic Power">Add Custom Psychic Power</a>
-    <div class="psy-powers grid grid-2col">
+    <div class="psy-powers grid grid-2col psy-grid-overflow">
         {{#each actor.psychicPowers as |power key|}}
         <div class="list-item flexcol">
 

@@ -907,21 +907,22 @@ returns the roll message*/
         for (const blastTarget of blastTargets) {
             for (const target of blastTarget.targets) {
                 if (targetIds[target] !== undefined) {
-                    targetIds[target]++;
+                    targetIds[target].count++;
+                    targetIds[target].templateIds.push(blastTarget.template.uuid);
                 } else {
-                    targetIds[target] = 1;
+                    targetIds[target] = {count:1,templateIds:[blastTarget.template.uuid]};
                 }
             }
         }
         let lineArray = [];
         for (const tokenId in targetIds) {
             let token = canvas.tokens.get(tokenId);
-            let hits = targetIds[tokenId];
+            let hits = targetIds[tokenId].count;
             let name = token.name;
             let hitLabel = "hit";
             if (hits > 1) hitLabel += "s";
             lineArray.push(
-                `<div class="chat-target"><a class="blast-ping" data-hits="${hits}" data-remaining-hits={{hits}} data-token="${tokenId}">` +
+                `<div class="chat-target"><a class="blast-evade" data-hits="${hits}" data-remaining-hits={{hits}} data-token="${tokenId}">` +
                     token.name +
                     `</a>: ${hits} ${hitLabel}</div>`
             );
@@ -936,9 +937,10 @@ returns the roll message*/
                 author: game.user,
                 speaker: { actor, alias: name },
                 content: blastTargetMsgContent,
-                flavor: "Target hits"
+                flavor: "Target hits",
+                flags:{fortyk:{targets:targetIds}}
             };
-            await ChatMessage.create(chatHits, {});
+            let message=await ChatMessage.create(chatHits, {});
         }
     }
     static async psychicPhenomena(mod, actor) {
@@ -1149,7 +1151,7 @@ returns the roll message*/
             templateOptions.id = id;
             template = "systems/fortyk/templates/chat/chat-forcefield-test-popup.html";
             renderedTemplate = await renderTemplate(template, templateOptions);
-            return { hits: remainingHits, template: renderedTemplate };
+            return { hits: remainingHits, template: renderedTemplate , results: hitResults};
         }
         renderedTemplate = await renderTemplate(template, templateOptions);
 
