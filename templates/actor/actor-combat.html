@@ -240,10 +240,9 @@
             </div>
             <div class="item-list">
                 {{#each wornGear.weapons}}
-
                 {{#if (contains this.type "ranged")}}
-                <div class="weapons grid grid-2col">
-                    <div class="weapon-name item" data-name="{{this.name}}" data-item-id="{{this.id}}" data-uuid="{{this.uuid}}" data-type="{{this.type}}" draggable="true">
+                <div class="weapons grid grid-2col item" data-name="{{this.name}}" data-item-id="{{this.id}}" data-uuid="{{this.uuid}}" data-type="{{this.type}}" draggable="true">
+                    <div class="weapon-name">
                         {{#if flags.fortyk.alternateprofiles}}
 
                         <select class="profile-select" data-id="{{this.id}}">
@@ -373,9 +372,9 @@
 
                 </div>
                 {{else if (contains this.type "melee")}}
-                <div class="weapons grid grid-2col">
+                <div class="weapons grid grid-2col" data-name="{{this.name}}" data-item-id="{{this.id}}" data-uuid="{{this.uuid}}" data-type="{{this.type}}" draggable="true">
 
-                    <div class="weapon-name item" data-name="{{this.name}}" data-item-id="{{this.id}}" data-uuid="{{this.uuid}}" data-type="{{this.type}}" draggable="true">
+                    <div class="weapon-name">
                         {{#if flags.fortyk.alternateprofiles}}
 
                         <select class="profile-select" data-id="{{this.id}}">

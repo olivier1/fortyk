@@ -79,9 +79,9 @@
     <a class="item-create button" data-type="psychicPower" title="Add a new Psychic Power">Add Custom Psychic Power</a>
     <div class="psy-powers grid grid-2col psy-grid-overflow">
         {{#each actor.psychicPowers as |power key|}}
-        <div class="list-item flexcol">
+        <div class="list-item flexcol item-list">
 
-            <div class="grid grid-3col">
+            <div class="grid grid-3col item" data-name="{{this.name}}" data-item-id="{{this.id}}" data-uuid="{{this.uuid}}" data-type="{{this.type}}" draggable="true">
 
 
 

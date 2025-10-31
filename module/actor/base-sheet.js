@@ -1236,6 +1236,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const item = await Item.implementation.fromDropData(data);
         const itemData = item.toObject();
         const sameActor = this.actor.uuid === item.parent?.uuid;
+        //make sure the copy wont be equipped by default
+        if(itemData.system.isEquipped)itemData.system.isEquipped=false;
         if (itemData.type === "mod") {
             if (this.actor.type !== "spaceship") {
                 let applied = await this._applyModToItem(item, sameActor);
@@ -1250,7 +1252,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
         // Handle item sorting within the same Actor
         if (sameActor) return super._onSortItem(event, itemData);
-
+        
         // Create the owned item
         return super._onDropItemCreate(itemData, event);
     }

@@ -1707,6 +1707,18 @@ export class FortyKActor extends Actor {
         actorData.role = role;
         actorData.background = background;
         actorData.planet = planet;
+        actorData.psychicPowers=actorData.psychicPowers.sort(function compare(a, b) {
+                        let valueA = a.sort;
+                        let valueB = b.sort;
+                        if (valueA < valueB) {
+                            return 1;
+                        }
+                        if (valueA > valueB) {
+                            return -1;
+                        }
+                        // a must be equal to b
+                        return 0;
+                    });
         actorData.wornGear.weapons=actorData.wornGear.weapons.sort(function compare(a, b) {
                         let valueA = a.sort;
                         let valueB = b.sort;
