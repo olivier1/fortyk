@@ -415,7 +415,7 @@ export class SpendExpDialog extends Application {
 
             await prObject.update({"system.specialisation.value":newPr});
             await this.loadDocuments(actor, true);
-            this._prCost();
+            this.calculatePRCost();
         }else if(this.options.mode==="Psychic Power"){
 
             let power=this.options.chosenPower;
@@ -472,13 +472,21 @@ export class SpendExpDialog extends Application {
         await this._render();
     }
 
-    _prCost() {
+    calculatePRCost() {
         let actor=this.options.actor;
         let pr=actor.system.psykana.pr.value;
         if(actor.getFlag("fortyk","librariantraining")){
             this.options.cost=(pr+1)*100;
         }else{
             this.options.cost=(pr+1)*200;
+        }
+
+        try {
+            let discount=parseInt(document.getElementById("discount").value);
+            this.options.cost-=discount;
+            this._updateCost();
+        } catch (e) {
+            //Catch Statement
         }
     }
     async _onIneligiblesClick(event){
@@ -499,7 +507,7 @@ export class SpendExpDialog extends Application {
         }else if(mode==="Signature Wargear"){
             this.options.cost=200;
         }else if(mode==="Psy Rating"){
-            this._prCost();
+            this.calculatePRCost();
         }
 
         this.position.height=this.options.heights[newMode];
@@ -572,9 +580,8 @@ export class SpendExpDialog extends Application {
                                   content:reasonString});
         }
         this.options.chosenPower=power;
-        let cost=power.system.cost.value;
-        this.options.cost=cost;
-        this._updateCost();
+        this.calculatePsyPowerCost();
+
         document.getElementById("submitButton").removeAttribute("disabled");
     }
     async _onEliteAdvanceChoice(event){
@@ -597,9 +604,9 @@ export class SpendExpDialog extends Application {
                                   content:reasonString});
         }
         this.options.chosenEliteAdvance=ea;
-        let cost=ea.system.cost.value;
-        this.options.cost=cost;
-        this._updateCost();
+        this.calculateEliteAdvanceCost();
+
+
         document.getElementById("submitButton").removeAttribute("disabled");
     }
     async _onTalentChoice(event){
@@ -633,9 +640,8 @@ export class SpendExpDialog extends Application {
         let splitAptitudes=aptitudes.toLowerCase().replace(/\s/g, '').split(",");
         let actorAptitudes=this.options.actor.system.aptitudes;
         let matchingAptitudes=0;
-        console.log(actorAptitudes, splitAptitudes)
         splitAptitudes.forEach(apt=> (apt==="general") ? matchingAptitudes+=1 :"");
-        console.log(matchingAptitudes)
+
         for(const apt in actorAptitudes){
 
             let apti=actorAptitudes[apt];
@@ -645,7 +651,6 @@ export class SpendExpDialog extends Application {
                 if(aptStr===apti){matchingAptitudes+=1;}
             });
         }
-        console.log(matchingAptitudes)
         if(matchingAptitudes>2){matchingAptitudes=2;}
 
         let cost=this.FORTYK.talentCosts[matchingAptitudes][tier-1];
@@ -732,10 +737,32 @@ export class SpendExpDialog extends Application {
         }else if(quality==="Best"){
             cost=cost*2;
         }
+        try{discount=parseInt(document.getElementById("discount").value);}
+        catch(err){}
+        cost=cost-discount;
         this.options.cost=cost;
         this._updateCost();
     }
-
+    calculatePsyPowerCost(){
+        let power=this.options.chosenPower;
+        let cost=parseInt(power.system.cost.value);
+        let discount=0;
+        try{discount=parseInt(document.getElementById("discount").value);}
+        catch(err){}
+        cost=cost-discount;
+        this.options.cost=cost;
+        this._updateCost();
+    }
+    calculateEliteAdvanceCost(){
+        let ea=this.options.chosenEliteAdvance;
+        let cost=ea.system.cost.value;
+        let discount=0;
+        try{discount=parseInt(document.getElementById("discount").value);}
+        catch(err){}
+        cost=cost-discount;
+        this.options.cost=cost;
+        this._updateCost();
+    }
     async _onDiscount(event){
         let mode=this.options.mode;
         if(mode==="Skill Upgrade"){
@@ -764,6 +791,12 @@ export class SpendExpDialog extends Application {
             }
         }else if(mode==="Signature Wargear"){
             this.calculateWargearCost();
+        }else if(mode==="Psy Rating"){
+            this.calculatePRCost();
+        }else if(mode==="Psychic Power"){
+            this.calculatePsyPowerCost();
+        }else if(mode==="Elite Advance"){
+            this.calculateEliteAdvanceCost();
         }
 
     }

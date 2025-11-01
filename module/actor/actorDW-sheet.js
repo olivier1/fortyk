@@ -29,7 +29,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 ".gear",
                 ".psykana",
                 ".sheet-skills",
-                ".sheet-content"
+                ".sheet-content",
+                ".psy-powers"
             ]
         });
     }
