@@ -1359,9 +1359,24 @@ Hooks.on("preCreateToken", async (document, data, options, userId) => {
     }
 });
 Hooks.on("refreshToken", async(tokenObject, options)=>{
-    if(!game.user.isGM)return;
     if(tokenObject.isPreview)return;
+    if(!game.user.isGM)return;
     if(!options.refreshPosition)return;
+    if(tokenObject.animationContexts.size===0) return;
+    let animationContexts=tokenObject.animationContexts;
+
+    let first=animationContexts.entries().next();
+    let value=first.value;
+    let to=value[1].to;
+    let invalid=false;
+    if(to.x!==undefined&&(to.x!==tokenObject.x))invalid=true;
+    if(to.y!==undefined&&(to.y!==tokenObject.y))invalid=true;
+    if(invalid)return;
+    let tokenDocument=tokenObject.document;
+
+   
+
+    
     let actor=tokenObject.actor;
     let aes=actor.effects;
     for(const ae of aes){
@@ -1369,7 +1384,7 @@ Hooks.on("refreshToken", async(tokenObject, options)=>{
         if(ae.getFlag("fortyk","psy")){
             let range=parseInt(ae.getFlag("fortyk","range"));
             let casterId=ae.getFlag("fortyk","casterTokenId");
-            let casterToken=game.canvas.tokens.children[0].children.find((child)=>child.id===casterId)
+            let casterToken=game.canvas.tokens.children[0].children.find((child)=>child.id===casterId);
             let distance=tokenDistance(tokenObject,casterToken);
             if(distance>range){
                 await ae.delete();
@@ -1399,7 +1414,7 @@ Hooks.on("refreshToken", async(tokenObject, options)=>{
         }
     }
     let auras=game.settings.get("fortyk","activeAuras");
-    let tokenDocument=tokenObject.document;
+
     for(const auraId of auras){
         let aura=await fromUuid(auraId);
         let caster=aura.actor;
@@ -1429,7 +1444,7 @@ Hooks.on("refreshToken", async(tokenObject, options)=>{
         aeData.origin = caster.uuid;
         aeData.statuses = [ae.name];
         for(const target of targets){
-            if(target.actor.statuses.has(auraName)) continue;
+            if(target.actor.getFlag("core",auraName)) continue;
             switch(auraType){
                 case "friendly":if(target.document.disposition!==casterTokenDocument.disposition)continue;
                     break;
@@ -1450,13 +1465,11 @@ Hooks.on("refreshToken", async(tokenObject, options)=>{
 
         }
         aura.setFlag("fortyk", "sustained", auraRecipients);
+
     }
-
-
-
-
-
 });
+
+
 Hooks.on("updateToken", async (token, diff, options, id) => {
 
     /*

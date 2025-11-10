@@ -1247,6 +1247,8 @@ export class FortyKItem extends Item {
             }
             let range = power.system.range.value;
             targets=targets.filter((token)=>range>=tokenDistance(token,actorToken));
+            targets=targets.filter((token)=>!token.getFlag("core",power.name));
+            if(targets.length===0)return ui.notifications.warn("No valid targets.");
             let ae = power.effects.entries().next().value[1];
             let aeData = foundry.utils.duplicate(ae);
 
@@ -1310,9 +1312,13 @@ export class FortyKItem extends Item {
                     tokens=tokens.filter((token)=>token.document.disposition!==actorToken.document.disposition);
                     break;
             }
-            let range = power.system.range.value;
+            console.log(tokens);
+            let range = parseInt(power.system.range.value);
+            console.log(range)
             targets=tokens.filter((token)=>range>=tokenDistance(token,actorToken));
-
+            targets=targets.filter((token)=>!token.getFlag("core",power.name));
+            
+            console.log(targets);
             let ae = power.effects.entries().next().value[1];
             let aeData = foundry.utils.duplicate(ae);
 

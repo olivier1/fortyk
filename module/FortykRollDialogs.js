@@ -81,79 +81,7 @@ export class FortykRollDialogs {
 
             return;
         }
-        //if (forcefielded) line += `</br>${actor.getName()}`;
-        /*
-        let evadeCount = parseInt(actor.getFlag("core", "evasion"));
-        if(isNaN(evadeCount))evadeCount=0;
-        let maxEvade = actor.system.reactions;
-        let evadePoint;
-        if (evadeCount < maxEvade) {
-            //check half move vs distance to get out of templates
-            let halfMove=actor.system.secChar.movement.half;
-            let shortestSafeDistance=0;
-            for(let hitTemplate of hitTemplates){
-                let templateInstance=await fromUuid(hitTemplate);
-                if(!templateInstance)continue;
-                let distanceTravelled;
-                let point;
-                let vX=token.center.x-templateInstance.x;
-                let vY=token.center.y-templateInstance.y;
-                let magV= Math.sqrt(vX*vX + vY*vY);
-                if(magV===0){
-                    distanceTravelled=templateInstance.distance*100;
-                    point={x:(templateInstance.x+distanceTravelled), y:(templateInstance.y+distanceTravelled)};
-                }else{
-                    let aX= ((token.center.x-templateInstance.x)/(magV))*templateInstance.distance*100+templateInstance.x;
-                    let aY= ((token.center.y-templateInstance.y)/(magV))*templateInstance.distance*100+templateInstance.y;
-
-                    let xCoeff=(vX/Math.abs(vX));
-                    if(isNaN(xCoeff))xCoeff=0;
-                    let yCoeff=(vY/Math.abs(vY));
-                    if(isNaN(yCoeff))yCoeff=0;
-                    aX+=xCoeff*token.width;
-                    aY+=yCoeff*token.height;
-                    point={x:aX,y:aY}; 
-                }
-
-                //point=canvas.grid.getSnappedPoint(point, { mode: CONST.GRID_SNAPPING_MODES.TOP_LEFT_CORNER });
-                await canvas.animatePan({ x: point.x, y: point.y });
-                game.canvas.ping({ x: point.x, y: point.y }, { duration: 10000 });
-                distanceTravelled=Math.sqrt(Math.pow(point.x-token.center.x,2)+Math.pow(point.y-token.center.y,2));
-                //determine nearest point of the circle template that is outside, add the token width and height to it so it clears the edge of the token
-
-            }
-        }*/
-        /*        let dodge = 0;
-        let label = "Dodge";
-        if (actor.type === "npc") {
-            dodge = actor.system.dodge.total;
-        } else if (actor.type === "vehicle") {
-            dodge = actor.system.crew.jink;
-            label = "Jink";
-        } else {
-            dodge = actor.system.skills.dodge;
-        }
-
-        let result = await this.callRollDialog("agi", "evasion", dodge, actor, label, weapon, false, "", true);
-        foundry.audio.AudioHelper.play({ src: "sounds/dice.wav", volume: 1, autoplay: true, loop: false }, true);
-
-        let hitlabel = "hit";
-        if (hits > 1) hitlabel += "s";
-        if (result.value && result.dos >= hits) {
-            line += `passed ${result.template} and must move out of the area to not take damage`;
-            if (user.id !== game.user.id) {
-                let socketOp = { type: "removeTarget", package: { user: userId, token: token.id } };
-                game.socket.emit("system.fortyk", socketOp);
-            } else {
-                token.setTarget(false, { releaseOthers: false });
-            }
-        } else if (result.value && result.dos < hits) {
-            hits -= result.dos;
-            line += `passed ${result.template} but ${hits} ${hitlabel} remain`;
-        } else {
-            line += `failed ${result.template} and suffers ${hits} ${hitlabel}`;
-        }
-        */
+        
         htmlLine.innerHTML = line.replace("{{hits}}", hits);
         message.update({ content: messageContent.innerHTML });
         return;
@@ -1205,6 +1133,10 @@ export class FortykRollDialogs {
             if(conceal){
                 miscMods-=parseInt(conceal);
                 modifierTracker.push({value:conceal, label:"Conceal Penalty"});
+            }
+            if(tarActor.getFlag("core","The Shrouding")&&!actor.getFlag("core","The Shrouding")){
+                miscMods+=-30;
+                modifierTracker.push({value:-30, label:"The Shrouding"});
             }
             if (tarActor.getFlag("fortyk", "dark")) {
                 templateOptions.options.targetDark = true;
