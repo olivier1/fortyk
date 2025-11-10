@@ -394,18 +394,38 @@ export class FortykRollDialogs {
             let base = char.value;
             let adv = char.advance;
             let mod = char.mod;
+            modifier+=mod;
             modifierTracker.push({ value: base, label: "Characteristic Base" });
             modifierTracker.push({ value: adv, label: "Caracteristic Advance" });
             modifierTracker.push({ value: mod, label: "Characteristic Modifier" });
         }
 
         let global = actor.system.globalMOD.value;
+        modifier+=global;
         modifierTracker.push({ value: global, label: "Global modifier" });
         if (testType === "skill" || testType === "evasion") {
             let training = item?.system?.value;
+            modifier+=training;
             let skillMod = item?.system?.mod?.value;
+            modifier+=skillMod;
             modifierTracker.push({ value: training, label: "Skill Training" });
             modifierTracker.push({ value: skillMod, label: "Skill Modifier" });
+        }
+        if (testType === "fear") {
+            let fearMod = parseInt(actor.system.secChar.fearMod);
+            if(fearMod!==0){
+                modifierTracker.push({ value: fearMod, label: "Miscellenaous Fear Modifiers" });  
+            }
+            modifier+=fearMod;
+            testTarget += fearMod;
+            if (
+                actor.getFlag("fortyk", "resistance") &&
+                actor.getFlag("fortyk", "resistance").toLowerCase().includes("fear")
+            ) {
+                testTarget += 10;
+                modifier+=10;
+                modifierTracker.push({ value: 10, label: "Resistance" });
+            }
         }
         if (testType === "evasion") {
             let evadeCount = parseInt(actor.getFlag("core", "evasion"));
@@ -415,26 +435,37 @@ export class FortykRollDialogs {
                 return { value: false, dos: 0, template: "Out of reactions!" };
             }
             if (actor.getFlag("fortyk", "evadeMod")) {
-                testTarget += parseInt(actor.getFlag("fortyk", "evadeMod"));
+                var evadeMod = parseInt(actor.getFlag("fortyk", "evadeMod"));
+                testTarget += evadeMod;
+                modifier+=evadeMod;
                 modifierTracker.push({ value: actor.getFlag("fortyk", "evadeMod"), label: "Evasion Modifier" });
             }
             if (actor.getFlag("core", "luminagen")) {
                 testTarget -= 10;
+                modifier-=10;
                 modifierTracker.push({ value: -10, label: "Luminagen" });
             }
             if (actor.getFlag("core", "holyShield")) {
                 modifierTracker.push({ value: 10, label: "Guarded Action" });
                 testTarget += 10;
+                modifier+=10;
             }
             if (actor.getFlag("fortyk", "versatile") && actor.getFlag("fortyk", "expertise")) {
                 testTarget += 10;
+                modifier+=10;
                 modifierTracker.push({ value: 10, label: "Versatility" });
             }
         }
-
+        let modifierString;
+        if(modifier>=0){
+            modifierString="+"+modifier.toString();
+        }else{
+            modifierString=modifier.toString();
+        }
         return await Dialog.wait({
             title: title,
-            content: `<p><label>Modifier:</label> <input id="modifier" type="number" name="modifier" value="${modifier}" autofocus/></p>`,
+            content: `
+            <label>Other Modifiers: ${modifierString}</label></br><p><label>Modifier:</label> <input id="modifier" type="number" name="modifier" value="0" autofocus/></p>`,
             buttons: {
                 submit: {
                     label: "OK",
@@ -454,16 +485,7 @@ export class FortykRollDialogs {
                         } else {
                             modifierTracker.push({ value: bonus, label: "Input Modifier" });
                             testTarget = parseInt(testTarget) + parseInt(bonus);
-                            if (testType === "fear") {
-                                testTarget += parseInt(actor.system.secChar.fearMod);
-                                if (
-                                    actor.getFlag("fortyk", "resistance") &&
-                                    actor.getFlag("fortyk", "resistance").toLowerCase().includes("fear")
-                                ) {
-                                    testTarget += 10;
-                                    modifierTracker.push({ value: 10, label: "Resistance" });
-                                }
-                            }
+
                             if (!reroll) {
                                 if (testType === "evasion") {
                                     if (actor.getFlag("fortyk", "evadeMod")) {
@@ -747,6 +769,11 @@ export class FortykRollDialogs {
                 vehicle = true;
                 templateOptions.vehicle = true;
             }
+            let conceal = tar.getFlag("fortyk","conceal");
+            if(conceal){
+                miscMods-=parseInt(conceal);
+                modifierTracker.push({value:conceal, label:"Conceal Penalty"});
+            }
             if (!vehicle) {
                 if (tar.system.horde.value) {
                     let hordeSize = tar.system.secChar.wounds.value;
@@ -942,7 +969,7 @@ export class FortykRollDialogs {
                         if (isNaN(other)) {
                             other = 0;
                         } else {
-                            modifierTracker.push({ value: `${other}`, label: `Other Modifiers` });
+                            modifierTracker.push({ value: `${other}`, label: `Input Modifier` });
                         }
 
                         modifierTracker.push({ value: `${attackTypeBonus}`, label: `${attacklabel} Attack Modifier` });
@@ -1174,6 +1201,11 @@ export class FortykRollDialogs {
             let tarActor = target.actor;
             let tar = tarActor;
             templateOptions["options"].inmelee = this.checkMelee(target);
+            let conceal = tar.getFlag("fortyk","conceal");
+            if(conceal){
+                miscMods-=parseInt(conceal);
+                modifierTracker.push({value:conceal, label:"Conceal Penalty"});
+            }
             if (tarActor.getFlag("fortyk", "dark")) {
                 templateOptions.options.targetDark = true;
             }
@@ -1459,7 +1491,7 @@ export class FortykRollDialogs {
                         if (isNaN(other)) {
                             other = 0;
                         } else {
-                            modifierTracker.push({ value: `${other}`, label: `Other Modifiers` });
+                            modifierTracker.push({ value: `${other}`, label: `Input Modifier` });
                         }
                         if (isNaN(melee)) {
                             melee = 0;

@@ -15,7 +15,7 @@
     src: url('../fonts/CaslonAntique-Italic.ttf');
     font-style:italic;
 }
-[draggable="true"] {
+.fortyk [draggable="true"] {
   cursor: grab;
 }
 
@@ -242,6 +242,8 @@
     display:grid;
     background-image: url(../../../ui/parchment.jpg);
 }
+.buff-debuff,
+.cancel-buff,
 .psy-macro{
     height: 100%;
 }

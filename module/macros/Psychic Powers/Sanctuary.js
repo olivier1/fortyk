@@ -3,7 +3,8 @@ let power=scope.power;
 let targetIds=scope.targets;
 let targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
 
-
+let range = power.system.range.value;
+let actorToken = game.fortyk.getActorToken(actor);
 
 let actorPR=actor.system.psykana.pr.effective;
 let powerPR=power.system.curPR.value;
@@ -19,15 +20,7 @@ let normalShieldData={name:"Sanctuary Shield",
                               origin:actorId
                           }
                       }};
-let daemonShieldData={name:"Sanctuary Shield(Daemon)",
-                      type:"forceField",
-                      flags:{
-                          fortyk:{
-                              sanctuaryDaemon:true,
-                              adjustment:adjustment,
-                              origin:actorId
-                          }
-                      }};
+
 let ae=power.effects.entries().next().value[1];
 console.log(ae)
 let aeData=foundry.utils.duplicate(ae);
@@ -35,7 +28,7 @@ let aeData=foundry.utils.duplicate(ae);
 aeData.name=ae.name+" Buff";
 
 
-aeData.flags={fortyk:{psy:true}};
+aeData.flags={fortyk:{psy:true, range: range, casterTokenId: actorToken.id}};
 aeData.disabled=false;
 aeData.origin=actorId;
 aeData.statuses = [aeData.name];
@@ -44,7 +37,7 @@ for(let i=0; i<targets.length;i++){
     let target=targets[i];
 
     let targetActor=target.actor;
-    let items=await targetActor.createEmbeddedDocuments("Item",[normalShieldData, daemonShieldData]);
+    let items=await targetActor.createEmbeddedDocuments("Item",[normalShieldData]);
     let effect= await targetActor.createEmbeddedDocuments("ActiveEffect",[aeData]);
     itemUuIds.push(effect[0].uuid);
     for(let j=0; j<items.length;j++){
@@ -59,6 +52,7 @@ for(let i=0; i<targets.length;i++){
 
 
 await power.setFlag("fortyk","sustained",itemUuIds);
+await power.setFlag("fortyk", "sustainedrange", range);
 if(power.system.sustain.value!=="No"){
     let sustained=actor.system.psykana.pr.sustained;
     sustained.push(power.id);

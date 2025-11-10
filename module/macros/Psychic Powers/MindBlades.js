@@ -11,7 +11,8 @@ let vetFunction=function(event){
         input.checked = false;
     }    
 };
-
+var actorToken = game.fortyk.getActorToken(actor);
+console.log(actorToken)
 let content=``;
 for(const target of targets){
     let tarActor=target.actor;
@@ -35,6 +36,8 @@ new Dialog({
                 let actorIds=new Set([]);
                 let effectIds=[];
                 let ids=[];
+                let range = power.system.range.value;
+                
                 for(const box of selectedCheckboxes){
                     let weaponId=box.value;
                     let actorId=box.dataset.owner;
@@ -49,9 +52,9 @@ new Dialog({
                         let weapon=await fromUuid(weaponId);
                         let aeData={};
                         aeData.name=power.name+" Buff";
-
-
-                        aeData.flags={fortyk:{psy:true}};
+                        
+                        
+                        aeData.flags={fortyk:{psy:true,range: range, casterTokenId: actorToken.id}};
                         aeData.disabled=false;
                         aeData.transfer=false;
                         aeData.origin=actorId;
@@ -66,7 +69,7 @@ new Dialog({
                     }
                     let mindAeData=foundry.utils.duplicate(power.effects.entries().next().value[1]);
                     mindAeData.name=mindAeData.name+" Buff";
-                    mindAeData.flags={fortyk:{psy:true}};
+                    mindAeData.flags={fortyk:{psy:true,range: range, casterTokenId: actorToken.id}};
                     mindAeData.disabled=false;
                     mindAeData.origin=actor.uuid;
                     mindAeData.statuses = [mindAeData.name];
@@ -76,6 +79,7 @@ new Dialog({
                         effectIds.push(aeInstance[0].uuid);
                     }
                     await power.setFlag("fortyk","sustained",effectIds);
+                    await power.setFlag("fortyk", "sustainedrange", range);
                     if(power.system.sustain.value!=="No"){
                         let sustained=actor.system.psykana.pr.sustained;
                         sustained.push(power.id);

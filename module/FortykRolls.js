@@ -82,10 +82,10 @@ returns the roll message*/
             type === "rangedAttack" ||
             type === "meleeAttack" ||
             (type === "focuspower" &&
-                (fortykWeapon.system.class.value === "Psychic Bolt" ||
-                    fortykWeapon.system.class.value === "Psychic Barrage" ||
-                    fortykWeapon.system.class.value === "Psychic Storm" ||
-                    fortykWeapon.system.class.value === "Psychic Blast"))
+             (fortykWeapon.system.class.value === "Psychic Bolt" ||
+              fortykWeapon.system.class.value === "Psychic Barrage" ||
+              fortykWeapon.system.class.value === "Psychic Storm" ||
+              fortykWeapon.system.class.value === "Psychic Blast"))
         ) {
             attack = true;
         }
@@ -402,9 +402,9 @@ returns the roll message*/
                 attackType !== "swift" &&
                 attackType !== "lightning" &&
                 ((actor.getFlag("fortyk", "inescapableattack").toLowerCase().indexOf("ranged") !== -1 &&
-                    type === "rangedAttack") ||
-                    (actor.getFlag("fortyk", "inescapableattack").toLowerCase().indexOf("melee") !== -1 &&
-                        type === "meleeAttack"))
+                  type === "rangedAttack") ||
+                 (actor.getFlag("fortyk", "inescapableattack").toLowerCase().indexOf("melee") !== -1 &&
+                  type === "meleeAttack"))
             ) {
                 let inescPenalty = Math.max(-60, testDos * -10);
                 evadepenalty += inescPenalty;
@@ -921,11 +921,23 @@ returns the roll message*/
             let name = token.name;
             let hitLabel = "hit";
             if (hits > 1) hitLabel += "s";
-            lineArray.push(
-                `<div class="chat-target"><a class="blast-evade" data-hits="${hits}" data-remaining-hits={{hits}} data-token="${tokenId}">` +
+            let actor=token.actor;
+            let forcefield = actor.system.secChar.wornGear.forceField;
+            if (!jQuery.isEmptyObject(forcefield) && !forcefield.system.broken.value) {
+                lineArray.push(
+                    `<div class="chat-target"><a class="blast-evade" data-hits="${hits}" data-remaining-hits={{hits}} data-token="${tokenId}">` +
+                    token.name +
+                    ` has forcefield</a>: ${hits} ${hitLabel}</div>`
+                );
+
+            }else{
+                lineArray.push(
+                    `<div class="chat-target"><a class="blast-evade" data-hits="${hits}" data-remaining-hits={{hits}} data-token="${tokenId}">` +
                     token.name +
                     `</a>: ${hits} ${hitLabel}</div>`
-            );
+                );
+            }
+
         }
         if (lineArray.length > 0) {
             let blastTargetMsgContent = "<div class='flexcol'>";
@@ -1560,7 +1572,7 @@ returns the roll message*/
                         } else if (curHit.value === "turret") {
                             let turretWeapons = tarActor.itemTypes.rangedWeapon.filter(
                                 (weapon) =>
-                                    weapon.system.mounting.value === "turret" && weapon.system.state.value !== "X"
+                                weapon.system.mounting.value === "turret" && weapon.system.state.value !== "X"
                             );
                             let wpnnmbr = turretWeapons.length;
                             if (turretWeapons.length > 0) {
@@ -1960,10 +1972,10 @@ returns the roll message*/
                         if (
                             daemonic &&
                             (weapon.type === "psychicPower" ||
-                                fortykWeapon.getFlag("fortyk", "force") ||
-                                fortykWeapon.getFlag("fortyk", "warp") ||
-                                fortykWeapon.getFlag("fortyk", "sanctified") ||
-                                fortykWeapon.getFlag("fortyk", "daemonbane"))
+                             fortykWeapon.getFlag("fortyk", "force") ||
+                             fortykWeapon.getFlag("fortyk", "warp") ||
+                             fortykWeapon.getFlag("fortyk", "sanctified") ||
+                             fortykWeapon.getFlag("fortyk", "daemonbane"))
                         ) {
                             daemonic = parseInt(daemonic);
                             if (!isNaN(daemonic)) {
@@ -3431,8 +3443,8 @@ returns the roll message*/
         let name = tarActor.getName();
         if (game.settings.get("fortyk", "privateDamage")) {
             let user_ids = Object.entries(tarActor.ownership)
-                .filter((p) => p[0] !== `default` && p[1] === 3)
-                .map((p) => p[0]);
+            .filter((p) => p[0] !== `default` && p[1] === 3)
+            .map((p) => p[0]);
 
             for (let user of user_ids) {
                 let userInstance = game.users.get(user);

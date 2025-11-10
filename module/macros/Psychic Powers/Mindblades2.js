@@ -5,6 +5,8 @@ async function lala(){
     let targetIds=scope.targets;
     let effectIds=[];
     let actorIds=new Set([]);
+    let range = power.system.range.value;
+    let actorToken = game.fortyk.getActorToken(actor);
     for(const idPair of targetIds){
 
         let weaponId=idPair.weapon;
@@ -15,7 +17,7 @@ async function lala(){
         aeData.name=power.name+" Buff";
 
 
-        aeData.flags={fortyk:{psy:true}};
+        aeData.flags={fortyk:{psy:true,range: range, casterTokenId: actorToken.id}};
         aeData.disabled=false;
         aeData.transfer=false;
         aeData.origin=actorId;
@@ -30,7 +32,7 @@ async function lala(){
     }
     let mindAeData=foundry.utils.duplicate(power.effects.entries().next().value[1]);
     mindAeData.name=mindAeData.name+" Buff";
-    mindAeData.flags={fortyk:{psy:true}};
+    mindAeData.flags={fortyk:{psy:true, range: range, casterTokenId: actorToken.id}};
     mindAeData.disabled=false;
     mindAeData.origin=actor.uuid;
     mindAeData.statuses = [mindAeData.name];
@@ -40,6 +42,7 @@ async function lala(){
         effectIds.push(aeInstance[0].uuid);
     }
     await power.setFlag("fortyk","sustained",effectIds);
+    await power.setFlag("fortyk", "sustainedrange", range);
     if(power.system.sustain.value!=="No"){
         let sustained=actor.system.psykana.pr.sustained;
         sustained.push(power.id);

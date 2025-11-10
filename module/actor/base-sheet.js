@@ -1075,7 +1075,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }).render(true);
         });
     }
-
+    
     //handles applying active effects from psychic powers
     async _onBuffDebuff(event) {
         event.preventDefault();
@@ -1084,6 +1084,10 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let targets = game.user.targets;
         let powerId = dataset["power"];
         let power = this.actor.getEmbeddedDocument("Item", powerId);
+        let powerClass=power.system.class.value;
+        if(powerClass==="Aura"){
+            return FortyKItem.applyAura(this.actor.uuid, powerId);
+        }
         let affects = power.system.affects.value;
         if (affects === "self") {
             FortyKItem.applyPsyBuffs(this.actor.uuid, powerId, targets.ids);
@@ -1107,7 +1111,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let powerId = event.currentTarget.attributes["data-power"].value;
         let macroId = event.currentTarget.attributes["data-macro"].value;
         let targetIds = game.user.targets.ids;
-        if (targetIds.size === 0) {
+        console.log(targetIds)
+        if (targetIds.length === 0) {
             ui.notifications.error("You must have targets to run psychic power macros.");
             return;
         }

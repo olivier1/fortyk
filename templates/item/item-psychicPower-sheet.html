@@ -103,6 +103,20 @@
             <a class="modifier button">Buff/Debuff</a>
         </div>
         {{/if}}
+        {{else if (contains system.class.value "Aura")}}
+        {{#if isGM}}
+        <div class="flexcol">
+            <a class="modifier button">Aura Efffects</a>
+        </div>
+        <div class="flexcol">
+            <label>Aura Type:</label>
+
+            <select class="power-char" name="system.auraType">
+                {{selectOptions FORTYK.auraTypes selected=system.auraType valueAttr="value" labelAttr="label"}}
+
+            </select>
+        </div>
+        {{/if}}
         {{else if (contains system.class.value "Macro")}}
         <div class="flexcol">
             <label>User:</label>

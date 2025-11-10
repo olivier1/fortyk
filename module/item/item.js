@@ -7,6 +7,7 @@ import { isEmpty } from "../utilities.js";
 import { objectByString } from "../utilities.js";
 import { setNestedKey } from "../utilities.js";
 import { getActorToken } from "../utilities.js";
+import { tokenDistance } from "../utilities.js";
 export class FortyKItem extends Item {
     //@Override the create function to add an activeeffect for modifiers to an item
     static async create(data, options) {
@@ -735,7 +736,9 @@ export class FortyKItem extends Item {
                 //if item is equipped and/or not disabled
                 let proceed = false;
                 let equipped = item.system.isEquipped;
-                if (equipped === undefined) {
+                if( actor.type==="npc"){
+                    proceed=true;
+                }else if (equipped === undefined) {
                     proceed = true;
                 } else if (equipped) {
                     if (item.system.state) {
@@ -1232,24 +1235,28 @@ export class FortyKItem extends Item {
     static async applyPsyBuffs(actorId, powerId, targetIds) {
         if (game.user.isGM) {
             let actor = await fromUuid(actorId);
+            let actorToken = getActorToken(actor);
             let power = actor.getEmbeddedDocument("Item", powerId);
+            
             let affects = power.system.affects.value;
             let targets;
             if (affects === "self") {
-                targets = [getActorToken(actor)];
+                targets = [actorToken];
             } else {
                 targets = game.canvas.tokens.children[0].children.filter((token) => targetIds.includes(token.id));
             }
-
+            let range = power.system.range.value;
+            targets=targets.filter((token)=>range>=tokenDistance(token,actorToken));
             let ae = power.effects.entries().next().value[1];
             let aeData = foundry.utils.duplicate(ae);
 
-            aeData.name = ae.name + " Buff";
+            aeData.name = ae.name;
             let actorPR = actor.system.psykana.pr.effective;
             let powerPR = power.system.curPR.value;
             let adjustment = actorPR - powerPR;
-
-            aeData.flags = { fortyk: { adjustment: adjustment, psy: true } };
+            console.log(actorToken);
+            aeData.flags = { fortyk: { adjustment: adjustment, psy: true , range: range, casterTokenId: actorToken.id} };
+            console.log(aeData)
             aeData.disabled = false;
             aeData.origin = actorId;
             aeData.statuses = [ae.name];
@@ -1271,6 +1278,7 @@ export class FortyKItem extends Item {
 
             if (power.system.sustain.value !== "No") {
                 await power.setFlag("fortyk", "sustained", effectUuIds);
+                await power.setFlag("fortyk", "sustainedrange", range);
                 let sustained = actor.system.psykana.pr.sustained;
                 sustained.push(power.id);
                 actor.update({ "system.psykana.pr.sustained": sustained });
@@ -1282,9 +1290,82 @@ export class FortyKItem extends Item {
             await game.socket.emit("system.fortyk", socketOp);
         }
     }
+    static async applyAura(actorId, powerId) {
+        if (game.user.isGM) {
+            let actor = await fromUuid(actorId);
+            let actorToken = getActorToken(actor);
+            let power = actor.getEmbeddedDocument("Item", powerId);
+            let activeAuras=game.settings.get("fortyk","activeAuras");
+            activeAuras.push(power.uuid);
+            game.settings.set("fortyk","activeAuras",activeAuras);
+            let auraType=power.system.auraType;
+            let targets;
+            let tokens=game.canvas.tokens.children[0].children;
+            console.log(auraType, actorToken)
+            switch(auraType){
+                case "friendly":
+                    tokens=tokens.filter((token)=>token.document.disposition===actorToken.document.disposition);
+                    break;
+                case "hostile":
+                    tokens=tokens.filter((token)=>token.document.disposition!==actorToken.document.disposition);
+                    break;
+            }
+            let range = power.system.range.value;
+            targets=tokens.filter((token)=>range>=tokenDistance(token,actorToken));
+
+            let ae = power.effects.entries().next().value[1];
+            let aeData = foundry.utils.duplicate(ae);
+
+            aeData.name = ae.name;
+            let actorPR = actor.system.psykana.pr.effective;
+            let powerPR = power.system.curPR.value;
+            let adjustment = actorPR - powerPR;
+            
+            console.log(actorToken);
+            aeData.flags = { fortyk: { adjustment: adjustment, psy: true , range: range, casterTokenId: actorToken.id} };
+            console.log(aeData)
+            aeData.disabled = false;
+            aeData.origin = actorId;
+            aeData.statuses = [ae.name];
+
+            let effectUuIds = [];
+            for (let i = 0; i < targets.length; i++) {
+                let target = targets[i];
+
+                let targetActor = target.actor;
+                let render = false;
+
+                let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
+
+                let ae = effect[0];
+                let effectuuid = await ae.uuid;
+
+                effectUuIds.push(effectuuid);
+            }
+
+            if (power.system.sustain.value !== "No") {
+                await power.setFlag("fortyk", "sustained", effectUuIds);
+                await power.setFlag("fortyk", "sustainedrange", range);
+                let sustained = actor.system.psykana.pr.sustained;
+                sustained.push(power.id);
+                actor.update({ "system.psykana.pr.sustained": sustained });
+            }
+        } else {
+            //if user isnt GM use socket to have gm apply the buffs/debuffs
+
+            let socketOp = { type: "aura", package: { actorId: actorId, powerId: powerId } };
+            await game.socket.emit("system.fortyk", socketOp);
+        }
+    }
     static async cancelPsyBuffs(actorId, powerId) {
         if (game.user.isGM) {
-            let power = await fromUuid(powerId);
+            let actor = await fromUuid(actorId);
+            let power = actor.getEmbeddedDocument("Item",powerId);
+            if(power.system.class.value==="Aura"){
+                let auras=game.settings.get("fortyk","activeAuras");
+                auras=auras.filter(e => e === powerId); 
+                game.settings.set("fortyk","activeAuras",auras);
+            }
             let buffs = power.getFlag("fortyk", "sustained");
             for (let i = 0; i < buffs.length; i++) {
                 let buffId = buffs[i];
@@ -1294,7 +1375,7 @@ export class FortyKItem extends Item {
                 } catch (err) {}
             }
             await power.setFlag("fortyk", "sustained", false);
-            let actor = await fromUuid(actorId);
+            
             let sustained = actor.system.psykana.pr.sustained;
             let powerIndex = sustained.indexOf(power.id);
             sustained.splice(powerIndex, 1);

@@ -100,7 +100,7 @@
                 <label class="list-item">Subtype: {{power.system.subtype.value}}</label>
                 <div class="list-item flexrow">
                     <label>PR: </label>
-                    <input type="number" class="item-text-input" data-target="system.curPR.value" data-item-id="{{power._id}}" value="{{power.system.curPR.value}}" data-dtype="Number">
+                    <input type="number" id="pr{{this.id}}" class="item-text-input" data-target="system.curPR.value" data-item-id="{{power._id}}" value="{{power.system.curPR.value}}" data-dtype="Number"{{#if power.flags.fortyk.sustained}} disabled{{/if}}>
                 </div>
 
 
@@ -157,13 +157,21 @@
                 <label class="list-item">Damage: <a class="damage-roll button" data-label="{{power.name}}" data-formula="{{power.system.damageFormula.value}}" data-weapon="{{power._id}}">{{power.system.damageFormula.value}}</a></label>
                 {{else if (contains power.system.class.value "Buff/Debuff")}}
                 {{#if power.flags.fortyk.sustained}}
-                <label class="list-item"><a class="cancel-buff button" data-label="{{power.name}}" data-power="{{power.uuid}}">Dispel Power</a></label>
+                <label class="list-item"><a class="cancel-buff button" data-label="{{power.name}}" data-power="{{power._id}}">Dispel Power</a></label>
                 {{else}}
                 <label class="list-item"><a class="buff-debuff button" data-label="{{power.name}}" data-power="{{power._id}}">Apply Buff/Debuff</a></label>
                 {{/if}}
+                {{else if (contains this.system.class.value "Aura")}}
+
+                {{#if this.flags.fortyk.sustained}}
+
+                <label class="list-item"><a class="cancel-buff button" data-label="{{this.name}}" data-power="{{this._id}}">Dispel Power</a></label>
+                {{else}}
+                <label class="list-item"><a class="buff-debuff button" data-label="{{this.name}}" data-power="{{this._id}}">Activate Aura</a></label>
+                {{/if}}
                 {{else if (contains power.system.class.value "Macro")}}
                 {{#if power.flags.fortyk.sustained}}
-                <label class="list-item"><a class="cancel-buff button" data-label="{{power.name}}" data-power="{{power.uuid}}">Dispel Power</a></label>
+                <label class="list-item"><a class="cancel-buff button" data-label="{{power.name}}" data-power="{{power._id}}">Dispel Power</a></label>
                 {{else}}
                 <label class="list-item"><a class="psy-macro button" data-label="{{power.name}}" data-macro="{{power.system.macro.id}}" data-power="{{this._id}}">Macro</a></label>
                 {{/if}}

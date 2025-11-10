@@ -163,8 +163,14 @@ FORTYK.psychicPowerTypes = [
     { value: "Psychic Storm" },
     { value: "Psychic Blast" },
     { value: "Buff/Debuff" },
+    { value: "Aura" },
     { value: "Other" },
     { value: "Macro" }
+];
+FORTYK.auraTypes = [
+    { value: "indiscriminate", label: "Indiscriminate" },
+    { value: "friendly", label: "Friendly" },
+    { value: "hostile", label: "Hostile" }
 ];
 FORTYK.psychicDisciplines = [
     { value: "Biomancy" },
@@ -181,13 +187,14 @@ FORTYK.psychicDisciplines = [
     { value: "Chapter" },
     { value: "Grey Knights" },
     { value: "WAAAGH!" },
+    { value: "Runes of Battle" },
+    { value: "Runes of Fate" },
     { value: "Navigator" }
 ];
 FORTYK.psychicPowerTargets = [
     { value: "multiple", label: "Multiple" },
     { value: "self", label: "Self" },
-    { value: "one", label: "One" },
-    { value: "aura", label: "Aura" }
+    { value: "one", label: "One" }
 ];
 FORTYK.spaceshipWeaponLocations = [
     { value: "Dorsal" },

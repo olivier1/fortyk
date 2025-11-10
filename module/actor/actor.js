@@ -260,7 +260,13 @@ export class FortyKActor extends Actor {
         for (let [key, hitLoc] of Object.entries(data.characterHitLocations)) {
             hitLoc.armor = 0;
         }
-
+        //check for fearMod
+        if (
+            this.getFlag("fortyk", "resistance") &&
+            this.getFlag("fortyk", "resistance").toLowerCase().includes("fear")
+        ){
+            data.secChar.fearRes=10;
+        }
         if (this.getFlag("fortyk", "quadruped")) {
             data.secChar.movement.multi = parseInt(data.secChar.movement.multi) * 2;
             let quad = this.getFlag("fortyk", "quadruped");
@@ -874,6 +880,11 @@ export class FortyKActor extends Actor {
                 }
             }
         }
+        let fearPreview=data.characteristics.wp.total+data.secChar.fearMod;
+        if(data.secChar.fearRes){
+            fearPreview+=data.secChar.fearRes;
+        }
+        data.secChar.fearPreview=fearPreview;
         if (game.settings.get("fortyk", "alternateWounds")) {
             let tb = data.characteristics.t.bonus;
             let wpb = data.characteristics.wp.bonus;
@@ -1708,29 +1719,29 @@ export class FortyKActor extends Actor {
         actorData.background = background;
         actorData.planet = planet;
         actorData.psychicPowers=actorData.psychicPowers.sort(function compare(a, b) {
-                        let valueA = a.sort;
-                        let valueB = b.sort;
-                        if (valueA < valueB) {
-                            return 1;
-                        }
-                        if (valueA > valueB) {
-                            return -1;
-                        }
-                        // a must be equal to b
-                        return 0;
-                    });
+            let valueA = a.sort;
+            let valueB = b.sort;
+            if (valueA < valueB) {
+                return 1;
+            }
+            if (valueA > valueB) {
+                return -1;
+            }
+            // a must be equal to b
+            return 0;
+        });
         actorData.wornGear.weapons=actorData.wornGear.weapons.sort(function compare(a, b) {
-                        let valueA = a.sort;
-                        let valueB = b.sort;
-                        if (valueA < valueB) {
-                            return 1;
-                        }
-                        if (valueA > valueB) {
-                            return -1;
-                        }
-                        // a must be equal to b
-                        return 0;
-                    });
+            let valueA = a.sort;
+            let valueB = b.sort;
+            if (valueA < valueB) {
+                return 1;
+            }
+            if (valueA > valueB) {
+                return -1;
+            }
+            // a must be equal to b
+            return 0;
+        });
         try {
             this._sortItems(actorData);
         } catch (err) {}

@@ -29,6 +29,9 @@ import { FortyKCards } from "./card/card.js";
 import { FortykTemplate } from "./measuredTemplate/template.js";
 import { objectByString } from "./utilities.js";
 import { migrate } from "./migration.js";
+import { tokenDistance } from "./utilities.js";
+import { getActorToken } from "./utilities.js";
+import { sleep } from "./utilities.js";
 Hooks.once("init", async function () {
     game.fortyk = {
         FortyKActor,
@@ -36,7 +39,8 @@ Hooks.once("init", async function () {
         FortykRolls,
         FORTYK,
         FORTYKTABLES,
-        FortykTemplate
+        FortykTemplate,
+        getActorToken
     };
     //make a map with the indexes of the various status effects
     game.fortyk.FORTYK.StatusEffectsIndex = (function () {
@@ -512,6 +516,9 @@ Hooks.once("ready", async function () {
                     break;
                 case "psyBuff":
                     FortyKItem.applyPsyBuffs(data.package.actorId, data.package.powerId, data.package.targetIds);
+                    break;
+                case "aura":
+                    FortyKItem.applyAura(data.package.actorId, data.package.powerId);
                     break;
                 case "cancelPsyBuff":
                     FortyKItem.cancelPsyBuffs(data.package.actorId, data.package.powerId);
@@ -1351,8 +1358,107 @@ Hooks.on("preCreateToken", async (document, data, options, userId) => {
         }
     }
 });
+Hooks.on("refreshToken", async(tokenObject, options)=>{
+    if(!game.user.isGM)return;
+    if(tokenObject.isPreview)return;
+    if(!options.refreshPosition)return;
+    let actor=tokenObject.actor;
+    let aes=actor.effects;
+    for(const ae of aes){
+        if(!ae)continue;
+        if(ae.getFlag("fortyk","psy")){
+            let range=parseInt(ae.getFlag("fortyk","range"));
+            let casterId=ae.getFlag("fortyk","casterTokenId");
+            let casterToken=game.canvas.tokens.children[0].children.find((child)=>child.id===casterId)
+            let distance=tokenDistance(tokenObject,casterToken);
+            if(distance>range){
+                await ae.delete();
+            }
+        } 
+    }
+    let psyPowers=actor.itemTypes.psychicPower;
+    for(const power of psyPowers){
+        if(power.getFlag("fortyk","sustained")){
+            let range=parseInt(power.getFlag("fortyk","sustainedrange"));
+            let buffs=power.getFlag("fortyk","sustained");
+            for(const buffId of buffs){
+                let buff = await fromUuid(buffId);
+                if(buff){
+                    let parent=buff.parent;
+                    if(parent instanceof Item){
+                        parent=parent.actor;
+                    }
+                    let buffTarget=getActorToken(parent);
+                    let distance=tokenDistance(buffTarget, tokenObject);
+                    if(distance>range){
+                        await buff.delete();
+                    }
+                }
+            }
 
-Hooks.on("preUpdateToken", async (scene, token, changes, diff, id) => {
+        }
+    }
+    let auras=game.settings.get("fortyk","activeAuras");
+    let tokenDocument=tokenObject.document;
+    for(const auraId of auras){
+        let aura=await fromUuid(auraId);
+        let caster=aura.actor;
+        let casterToken=getActorToken(caster);
+        let targets=[];
+        if(caster.id===actor.id){
+            targets=game.canvas.tokens.children[0].children;
+        }else{
+            targets.push(tokenObject);
+        }
+        let casterTokenDocument=casterToken.document;
+        let auraType=aura.system.auraType;
+        let range=parseInt(aura.getFlag("fortyk","sustainedrange"));
+        let auraName=aura.name;
+        let auraRecipients=aura.getFlag("fortyk", "sustained");
+        let ae = aura.effects.entries().next().value[1];
+        let aeData = foundry.utils.duplicate(ae);
+
+        aeData.name = ae.name;
+        let actorPR = caster.system.psykana.pr.effective;
+        let auraPR = aura.system.curPR.value;
+        let adjustment = actorPR - auraPR;
+
+        aeData.flags = { fortyk: { adjustment: adjustment, psy: true , range: range, casterTokenId: casterToken.id} };
+
+        aeData.disabled = false;
+        aeData.origin = caster.uuid;
+        aeData.statuses = [ae.name];
+        for(const target of targets){
+            if(target.actor.statuses.has(auraName)) continue;
+            switch(auraType){
+                case "friendly":if(target.document.disposition!==casterTokenDocument.disposition)continue;
+                    break;
+                case "hostile":if(target.document.disposition===casterTokenDocument.disposition)continue;
+
+            }
+            let distance=tokenDistance(target,casterToken);
+            if(distance>range)continue;
+
+            let render = false;
+
+            let effect = await target.actor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
+
+            let newAe = effect[0];
+            let effectuuid = await newAe.uuid;
+
+            auraRecipients.push(effectuuid);
+
+        }
+        aura.setFlag("fortyk", "sustained", auraRecipients);
+    }
+
+
+
+
+
+});
+Hooks.on("updateToken", async (token, diff, options, id) => {
+
     /*
     let effects=null;
     let data=null;
