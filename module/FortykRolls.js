@@ -1773,6 +1773,11 @@ returns the roll message*/
                         );
                     }
                     let soak = 0;
+                    if (vehicle) {
+                        soak = facing.value;
+                    } else {
+                        soak = parseInt(data.characterHitLocations[curHit.value].value);
+                    }
                     let armor;
                     if (vehicle) {
                         if (curHit.value === "turret") {
@@ -1789,7 +1794,9 @@ returns the roll message*/
                     }
                     //check for obsidian plate and psychic attack
                     if (tarActor.getFlag("fortyk", "obsidianplate") && fortykWeapon.type === "psychicPower") {
+                        soak=soak-armor;
                         armor *= 3;
+                        soak+=armor;
                     }
 
                     //check if weapon ignores soak
@@ -1881,9 +1888,17 @@ returns the roll message*/
                                 `<span>The weapon ignores ${tarActor.getFlag("fortyk", "naturalarmor")} natural armor.</span>`
                             );
                         }
+                        var psyArmor = parseInt(data.characterHitLocations[curHit.value].psy);
+                        if(tarActor.getFlag("fortyk","telekinedome")&&!actor.getFlag("fortyk", "telekinedome")){
+                          
+                            soak+=tarActor.getFlag("fortyk","telekinedome");
+                            armor+=tarActor.getFlag("fortyk","telekinedome");
+                            psyArmor+=tarActor.getFlag("fortyk","telekinedome");
+                        }
                         //ignore psychic armor weapons
                         if (fortykWeapon.getFlag("fortyk", "ignorePsychichArmor")) {
-                            pen += parseInt(data.characterHitLocations[curHit.value].psy);
+
+                            pen += psyArmor;
                             damageOptions.results.push(
                                 `<span>The weapon ignores ${data.characterHitLocations[curHit.value].psy} psychic armor.</span>`
                             );
@@ -1896,11 +1911,7 @@ returns the roll message*/
                             );
                         }
                         let maxPen = Math.min(armor, pen);
-                        if (vehicle) {
-                            soak = facing.value;
-                        } else {
-                            soak = parseInt(data.characterHitLocations[curHit.value].value);
-                        }
+
                         //scatter weapon logic
                         if (fortykWeapon.getFlag("fortyk", "scatter")) {
                             if (distance >= parseInt(weapon.system.range.value) / 2) {

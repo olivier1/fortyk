@@ -1247,7 +1247,7 @@ export class FortyKItem extends Item {
             }
             let range = power.system.range.value;
             targets=targets.filter((token)=>range>=tokenDistance(token,actorToken));
-            targets=targets.filter((token)=>!token.getFlag("core",power.name));
+            targets=targets.filter((token)=>!token.actor.getFlag("core",power.name));
             if(targets.length===0)return ui.notifications.warn("No valid targets.");
             let ae = power.effects.entries().next().value[1];
             let aeData = foundry.utils.duplicate(ae);
@@ -1256,9 +1256,9 @@ export class FortyKItem extends Item {
             let actorPR = actor.system.psykana.pr.effective;
             let powerPR = power.system.curPR.value;
             let adjustment = actorPR - powerPR;
-            console.log(actorToken);
+            
             aeData.flags = { fortyk: { adjustment: adjustment, psy: true , range: range, casterTokenId: actorToken.id} };
-            console.log(aeData)
+            
             aeData.disabled = false;
             aeData.origin = actorId;
             aeData.statuses = [ae.name];
@@ -1303,7 +1303,7 @@ export class FortyKItem extends Item {
             let auraType=power.system.auraType;
             let targets;
             let tokens=game.canvas.tokens.children[0].children;
-            console.log(auraType, actorToken)
+           
             switch(auraType){
                 case "friendly":
                     tokens=tokens.filter((token)=>token.document.disposition===actorToken.document.disposition);
@@ -1312,13 +1312,11 @@ export class FortyKItem extends Item {
                     tokens=tokens.filter((token)=>token.document.disposition!==actorToken.document.disposition);
                     break;
             }
-            console.log(tokens);
             let range = parseInt(power.system.range.value);
-            console.log(range)
+        
             targets=tokens.filter((token)=>range>=tokenDistance(token,actorToken));
-            targets=targets.filter((token)=>!token.getFlag("core",power.name));
+            targets=targets.filter((token)=>!token.actor.getFlag("core",power.name));
             
-            console.log(targets);
             let ae = power.effects.entries().next().value[1];
             let aeData = foundry.utils.duplicate(ae);
 
@@ -1327,9 +1325,8 @@ export class FortyKItem extends Item {
             let powerPR = power.system.curPR.value;
             let adjustment = actorPR - powerPR;
             
-            console.log(actorToken);
             aeData.flags = { fortyk: { adjustment: adjustment, psy: true , range: range, casterTokenId: actorToken.id} };
-            console.log(aeData)
+         
             aeData.disabled = false;
             aeData.origin = actorId;
             aeData.statuses = [ae.name];
@@ -1367,9 +1364,11 @@ export class FortyKItem extends Item {
         if (game.user.isGM) {
             let actor = await fromUuid(actorId);
             let power = actor.getEmbeddedDocument("Item",powerId);
+            
             if(power.system.class.value==="Aura"){
+                let powerUuid=power.uuid;
                 let auras=game.settings.get("fortyk","activeAuras");
-                auras=auras.filter(e => e === powerId); 
+                auras=auras.filter(e => e !== powerUuid);
                 game.settings.set("fortyk","activeAuras",auras);
             }
             let buffs = power.getFlag("fortyk", "sustained");
