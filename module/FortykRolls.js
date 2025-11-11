@@ -1890,7 +1890,7 @@ returns the roll message*/
                         }
                         var psyArmor = parseInt(data.characterHitLocations[curHit.value].psy);
                         if(tarActor.getFlag("fortyk","telekinedome")&&!actor.getFlag("fortyk", "telekinedome")){
-                          
+
                             soak+=tarActor.getFlag("fortyk","telekinedome");
                             armor+=tarActor.getFlag("fortyk","telekinedome");
                             psyArmor+=tarActor.getFlag("fortyk","telekinedome");
@@ -2795,6 +2795,111 @@ returns the roll message*/
                         }
                         damageOptions.results.push(`</div>`);
                     }
+                    //Disarming Attack
+                    if(!vehicle&&actor.getFlag("fortyk","disarmingattack")&&curHit.value.includes("arm")&&damage>0&&lastHit.attackType==="called"){
+                        let dos=lastHit.dos;
+                        let penalty=-5*dos;
+                        let bs=tarActor.system.characteristics.bs.total;
+                        let ws=tarActor.system.characteristics.ws.total;
+                        let char;
+                        let base=0;
+                        if(bs>ws){
+                            char="bs";
+                            base=bs;
+                        }else{
+                            char="ws";
+                            base=ws;
+                        }
+                        let disarm=await this.fortykTest(
+                            char,
+                            "char",
+                            base - penalty,
+                            tarActor,
+                            "Resist disarm",
+                            null,
+                            false,
+                            "",
+                            true
+                        );
+                        damageOptions.results.push(disarm.template);
+                        if(!disarm.value){
+                            damageOptions.results.push(
+                                `<label>Disarmed and must get their weapon.</label>`
+                            );
+                            let disarmActiveEffect = foundry.utils.duplicate(
+                                game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("target")]
+                            );
+                            
+                            activeEffects.push(disarmActiveEffect);
+                            damageOptions.results.push(`</div>`);
+                        }
+                    }
+                    //Crippling Attack
+                    if(!vehicle&&actor.getFlag("fortyk","cripplingattack")&&curHit.value.includes("leg")&&damage>0&&lastHit.attackType==="called"){
+                        let dos=lastHit.dos;
+                        let penalty=-5*dos;
+                       
+                        let char="agi";
+                        let base=tarActor.system.characteristics.agi.total;
+                        
+                        let crippling=await this.fortykTest(
+                            char,
+                            "char",
+                            base - penalty,
+                            tarActor,
+                            "Resist movement cripple",
+                            null,
+                            false,
+                            "",
+                            true
+                        );
+                        damageOptions.results.push(crippling.template);
+                        if(!crippling.value){
+                            let id = foundry.utils.randomID(5);
+                            damageOptions.results.push(
+                                `<label class="popup" data-id="${id}"> Movement crippled for ${crippling.dos} rounds. <span class="popuptext chat-background" id="${id}">${tar.name} has movement crippled for ${crippling.dos} rounds!</span></label>`
+                            );
+                            let cripplingActiveEffect = foundry.utils.duplicate(
+                                game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]
+                            );
+                            
+                            activeEffects.push(cripplingActiveEffect);
+                            damageOptions.results.push(`</div>`);
+                        }
+                    }
+                    //center mass
+                    if(!vehicle&&actor.getFlag("fortyk","centermass")&&curHit.value.includes("body")&&damage>0&&lastHit.attackType==="called"){
+                        let dos=lastHit.dos;
+                        let penalty=-5*dos;
+                       
+                        let char="t";
+                        let base=tarActor.system.characteristics.t.total;
+                        
+                        let stun=await this.fortykTest(
+                            char,
+                            "char",
+                            base - penalty,
+                            tarActor,
+                            "Resist stun",
+                            null,
+                            false,
+                            "",
+                            true
+                        );
+                        damageOptions.results.push(stun.template);
+                        if(!stun.value){
+                            let id = foundry.utils.randomID(5);
+                            damageOptions.results.push(
+                                `<label class="popup" data-id="${id}"> Stunned for ${stun.dos} rounds. <span class="popuptext chat-background" id="${id}">${tar.name} stunned for ${stun.dos} rounds!</span></label>`
+                            );
+                            let stunActiveEffect = foundry.utils.duplicate(
+                                game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]
+                            );
+                            
+                            activeEffects.push(stunActiveEffect);
+                            damageOptions.results.push(`</div>`);
+                        }
+                    }
                     //concussive weapon
                     if (!vehicle && !isNaN(parseInt(fortykWeapon.getFlag("fortyk", "concussive"))) && !isHordelike) {
                         damageOptions.results.push(`<div class="chat-target flexcol">`);
@@ -2971,6 +3076,12 @@ returns the roll message*/
                                 messages.push(weaknessOptions);
                             }
                         }
+                    }
+                    //head hunter talent
+                    if(!vehicle&&actor.getFlag("fortyk","headhunter")&&curHit.value==="head"&&damage>0&&lastHit.attackType==="called"){
+                        damage *= 2;
+                        chatDamage *= 2;
+                        damageOptions.results.push(`Head Hunter doubles effective damage to called shots to the head.`);
                     }
                     // true grit!@!!@
                     if (

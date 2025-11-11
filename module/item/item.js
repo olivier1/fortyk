@@ -334,8 +334,8 @@ export class FortyKItem extends Item {
                 let ammos = actor.itemTypes.ammunition;
                 let validAmmos = ammos.filter(
                     (ammo) =>
-                    ammo.system.class.value === item.system.class.value &&
-                    ammo.system.type.value === item.system.type.value
+                        ammo.system.class.value === item.system.class.value &&
+                        ammo.system.type.value === item.system.type.value
                 );
                 item.validAmmos = validAmmos;
                 if (ammo && !ammo.system.default.value) {
@@ -378,8 +378,20 @@ export class FortyKItem extends Item {
                     item.system.attackMods.single = parseInt(item.system.attackMods.single) + 10;
                 }
                 if (this.getFlag("fortyk", "accurate")) {
+                    
                     item.system.attackMods.aim.half = 20;
                     item.system.attackMods.aim.full = 30;
+                    if(actor.getFlag("fortyk","lethalaccuracy")){
+                        let vicious=this.getFlag("fortyk","vicious");
+                        let perB=scope.perb;
+                        let bonus=Math.ceil(perB/2);
+                        if(!vicious){
+                            vicious=bonus;
+                        }else{
+                            vicious+=bonus;
+                        }
+                        this.flags.fortyk.vicious=vicious;
+                    }
                 }
                 /*
                 *removed for new scatter bonus
@@ -424,12 +436,11 @@ export class FortyKItem extends Item {
 
             if (actor.type !== "vehicle" && actor.type !== "knightHouse") {
                 if (actor.getFlag("fortyk", "iconofburningflame") && item.system?.damageType?.value === "Energy") {
-                    if(actor.getFlag("fortyk", "purifyingflames")){
+                    if (actor.getFlag("fortyk", "purifyingflames")) {
                         item.flags.fortyk.purifyingflame = true;
-                    }else{
+                    } else {
                         item.flags.fortyk.flame = true;
                     }
-
                 }
 
                 if (actor.getFlag("fortyk", "purifyingflames") && item.getFlag("fortyk", "flame")) {
@@ -636,9 +647,9 @@ export class FortyKItem extends Item {
                     if (actor.getFlag("fortyk", "WeaponMaster")) {
                         if (
                             actor
-                            .getFlag("fortyk", "WeaponMaster")
-                            .toLowerCase()
-                            .includes(item.system.type.value.toLowerCase())
+                                .getFlag("fortyk", "WeaponMaster")
+                                .toLowerCase()
+                                .includes(item.system.type.value.toLowerCase())
                         ) {
                             item.system.damageFormula.value += "+2";
                             item.system.testMod.value += 10;
@@ -736,9 +747,9 @@ export class FortyKItem extends Item {
                 //if item is equipped and/or not disabled
                 let proceed = false;
                 let equipped = item.system.isEquipped;
-                if( actor.type==="npc"){
-                    proceed=true;
-                }else if (equipped === undefined) {
+                if (actor.type === "npc") {
+                    proceed = true;
+                } else if (equipped === undefined) {
                     proceed = true;
                 } else if (equipped) {
                     if (item.system.state) {
@@ -767,7 +778,7 @@ export class FortyKItem extends Item {
                     }
 
                     if (actor.getFlag("fortyk", "psyrating")) {
-                        if(changeValue.indexOf("pr")!==-1){
+                        if (changeValue.indexOf("pr") !== -1) {
                             try {
                                 let value = math.evaluate(changeValue, scope);
 
@@ -1237,7 +1248,7 @@ export class FortyKItem extends Item {
             let actor = await fromUuid(actorId);
             let actorToken = getActorToken(actor);
             let power = actor.getEmbeddedDocument("Item", powerId);
-            
+
             let affects = power.system.affects.value;
             let targets;
             if (affects === "self") {
@@ -1246,9 +1257,9 @@ export class FortyKItem extends Item {
                 targets = game.canvas.tokens.children[0].children.filter((token) => targetIds.includes(token.id));
             }
             let range = power.system.range.value;
-            targets=targets.filter((token)=>range>=tokenDistance(token,actorToken));
-            targets=targets.filter((token)=>!token.actor.getFlag("core",power.name));
-            if(targets.length===0)return ui.notifications.warn("No valid targets.");
+            targets = targets.filter((token) => range >= tokenDistance(token, actorToken));
+            targets = targets.filter((token) => !token.actor.getFlag("core", power.name));
+            if (targets.length === 0) return ui.notifications.warn("No valid targets.");
             let ae = power.effects.entries().next().value[1];
             let aeData = foundry.utils.duplicate(ae);
 
@@ -1256,9 +1267,11 @@ export class FortyKItem extends Item {
             let actorPR = actor.system.psykana.pr.effective;
             let powerPR = power.system.curPR.value;
             let adjustment = actorPR - powerPR;
-            
-            aeData.flags = { fortyk: { adjustment: adjustment, psy: true , range: range, casterTokenId: actorToken.id} };
-            
+
+            aeData.flags = {
+                fortyk: { adjustment: adjustment, psy: true, range: range, casterTokenId: actorToken.id }
+            };
+
             aeData.disabled = false;
             aeData.origin = actorId;
             aeData.statuses = [ae.name];
@@ -1297,26 +1310,26 @@ export class FortyKItem extends Item {
             let actor = await fromUuid(actorId);
             let actorToken = getActorToken(actor);
             let power = actor.getEmbeddedDocument("Item", powerId);
-            let activeAuras=game.settings.get("fortyk","activeAuras");
+            let activeAuras = game.settings.get("fortyk", "activeAuras");
             activeAuras.push(power.uuid);
-            game.settings.set("fortyk","activeAuras",activeAuras);
-            let auraType=power.system.auraType;
+            game.settings.set("fortyk", "activeAuras", activeAuras);
+            let auraType = power.system.auraType;
             let targets;
-            let tokens=game.canvas.tokens.children[0].children;
-           
-            switch(auraType){
+            let tokens = game.canvas.tokens.children[0].children;
+
+            switch (auraType) {
                 case "friendly":
-                    tokens=tokens.filter((token)=>token.document.disposition===actorToken.document.disposition);
+                    tokens = tokens.filter((token) => token.document.disposition === actorToken.document.disposition);
                     break;
                 case "hostile":
-                    tokens=tokens.filter((token)=>token.document.disposition!==actorToken.document.disposition);
+                    tokens = tokens.filter((token) => token.document.disposition !== actorToken.document.disposition);
                     break;
             }
             let range = parseInt(power.system.range.value);
-        
-            targets=tokens.filter((token)=>range>=tokenDistance(token,actorToken));
-            targets=targets.filter((token)=>!token.actor.getFlag("core",power.name));
-            
+
+            targets = tokens.filter((token) => range >= tokenDistance(token, actorToken));
+            targets = targets.filter((token) => !token.actor.getFlag("core", power.name));
+
             let ae = power.effects.entries().next().value[1];
             let aeData = foundry.utils.duplicate(ae);
 
@@ -1324,9 +1337,11 @@ export class FortyKItem extends Item {
             let actorPR = actor.system.psykana.pr.effective;
             let powerPR = power.system.curPR.value;
             let adjustment = actorPR - powerPR;
-            
-            aeData.flags = { fortyk: { adjustment: adjustment, psy: true , range: range, casterTokenId: actorToken.id} };
-         
+
+            aeData.flags = {
+                fortyk: { adjustment: adjustment, psy: true, range: range, casterTokenId: actorToken.id }
+            };
+
             aeData.disabled = false;
             aeData.origin = actorId;
             aeData.statuses = [ae.name];
@@ -1363,13 +1378,13 @@ export class FortyKItem extends Item {
     static async cancelPsyBuffs(actorId, powerId) {
         if (game.user.isGM) {
             let actor = await fromUuid(actorId);
-            let power = actor.getEmbeddedDocument("Item",powerId);
-            
-            if(power.system.class.value==="Aura"){
-                let powerUuid=power.uuid;
-                let auras=game.settings.get("fortyk","activeAuras");
-                auras=auras.filter(e => e !== powerUuid);
-                game.settings.set("fortyk","activeAuras",auras);
+            let power = actor.getEmbeddedDocument("Item", powerId);
+
+            if (power.system.class.value === "Aura") {
+                let powerUuid = power.uuid;
+                let auras = game.settings.get("fortyk", "activeAuras");
+                auras = auras.filter((e) => e !== powerUuid);
+                game.settings.set("fortyk", "activeAuras", auras);
             }
             let buffs = power.getFlag("fortyk", "sustained");
             for (let i = 0; i < buffs.length; i++) {
@@ -1380,7 +1395,7 @@ export class FortyKItem extends Item {
                 } catch (err) {}
             }
             await power.setFlag("fortyk", "sustained", false);
-            
+
             let sustained = actor.system.psykana.pr.sustained;
             let powerIndex = sustained.indexOf(power.id);
             sustained.splice(powerIndex, 1);
