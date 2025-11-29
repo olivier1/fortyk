@@ -163,6 +163,7 @@ FORTYK.psychicPowerTypes = [
     { value: "Psychic Storm" },
     { value: "Psychic Blast" },
     { value: "Buff/Debuff" },
+    { value: "Navigator Gaze"},
     { value: "Aura" },
     { value: "Other" },
     { value: "Macro" }
@@ -717,6 +718,8 @@ FORTYK.psykerTypes = {
     navigator: { value: "navigator", label: "Navigator", push: -1, sustain: "N/A", perils: -1 }
 };
 FORTYK.navigatorPowerTraining = [{ value: "Novice" }, { value: "Adept" }, { value: "Master" }];
+FORTYK.navigatorPowerCosts ={"Novice":200,"Adept":300,"Master":400};
+FORTYK.navigatorTrainingBoni = {"Novice":0,"Adept":10,"Master":20};
 FORTYK.itemStates = [{ value: "O" }, { value: "D" }, { value: "X" }];
 FORTYK.armorFlags = {
     explosive: {

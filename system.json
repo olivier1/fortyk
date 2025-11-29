@@ -405,6 +405,20 @@
         "ASSISTANT": "OWNER"
       }
     },
+    
+    {
+      "label": "Navigator Powers",
+      "type": "Item",
+      "name": "navigator-powers",
+      "path": "packs/navigator-powers",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "LIMITED",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {},
+      "package": "system"
+    },
     {
       "label": "Random Tables",
       "type": "RollTable",
@@ -462,6 +476,7 @@
             "wargear",
             "wargear-beta",
             "psychic-powers",
+            "navigator-powers",
             "skills",
             "elite-advances"
           ],

@@ -37,7 +37,7 @@ new Dialog({
                 let effectIds=[];
                 let ids=[];
                 let range = power.system.range.value;
-                
+
                 for(const box of selectedCheckboxes){
                     let weaponId=box.value;
                     let actorId=box.dataset.owner;
@@ -51,9 +51,9 @@ new Dialog({
                         actorIds.add(actorId);
                         let weapon=await fromUuid(weaponId);
                         let aeData={};
-                        aeData.name=power.name+" Buff";
-                        
-                        
+                        aeData.name=power.name;
+
+
                         aeData.flags={fortyk:{psy:true,range: range, casterTokenId: actorToken.id}};
                         aeData.disabled=false;
                         aeData.transfer=false;
@@ -68,7 +68,7 @@ new Dialog({
                         effectIds.push(ae[0].uuid);
                     }
                     let mindAeData=foundry.utils.duplicate(power.effects.entries().next().value[1]);
-                    mindAeData.name=mindAeData.name+" Buff";
+                    mindAeData.name=mindAeData.name;
                     mindAeData.flags={fortyk:{psy:true,range: range, casterTokenId: actorToken.id}};
                     mindAeData.disabled=false;
                     mindAeData.origin=actor.uuid;
@@ -78,12 +78,11 @@ new Dialog({
                         let aeInstance=await chosenActor.createEmbeddedDocuments("ActiveEffect",[mindAeData]);
                         effectIds.push(aeInstance[0].uuid);
                     }
-                    await power.setFlag("fortyk","sustained",effectIds);
-                    await power.setFlag("fortyk", "sustainedrange", range);
+
                     if(power.system.sustain.value!=="No"){
-                        let sustained=actor.system.psykana.pr.sustained;
-                        sustained.push(power.id);
-                        actor.update({"system.psykana.pr.sustained":sustained});
+                        await power.setFlag("fortyk","sustained",effectIds);
+                        await power.setFlag("fortyk", "sustainedrange", range);
+                       
                     }
                 }else{
                     let socketOp={type:"psyMacro",package:{powerId:power.id, macroId:"PyZOh263Cn3o1b5Z", actorId:actor.uuid, targetIds:ids}};

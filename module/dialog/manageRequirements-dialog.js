@@ -36,13 +36,17 @@ export class ManageRequirementsDialog extends Application {
         if(!data.chosenCompendium)data.chosenCompendium="";
         data.compendiumContents=this.compendiumContents;
         let psyPowersCompendium=game.packs.get("fortyk.psychic-powers");
+        let navPowersCompendium=game.packs.get("fortyk.navigator-powers");
+        
         data.psyPowers=await psyPowersCompendium.getDocuments();
+        data.psyPowers=data.psyPowers.concat(await navPowersCompendium.getDocuments());
         data.psyPowers=data.psyPowers.filter((power)=>{
             for(const psyflag in this.flag.psychicPowers){
                 if(psyflag===power.id)return false;
             }
             return true;
         });
+        
         data.psyPowers=data.psyPowers.sort((a,b)=>{
             if (a.name>b.name) {
                 return 1;
@@ -67,6 +71,7 @@ export class ManageRequirementsDialog extends Application {
         html.find('.delete-flag').click(this._onDeleteFlagClick.bind(this));
         html.find('.delete-OR-flag').click(this._onDeleteORFlagClick.bind(this));
         html.find('.delete-psy').click(this._onDeletePsyClick.bind(this));
+        html.find('.delete-neg-psy').click(this._onDeleteNegPsyClick.bind(this));
         html.find('.delete-skill').click(this._onDeleteSkillClick.bind(this));
         html.find('.save-reqs').click(this._onSaveReqsClick.bind(this));
         html.find('.char-creation-checkbox').click(this._onCharCreationClick.bind(this));
@@ -222,7 +227,14 @@ export class ManageRequirementsDialog extends Application {
 
         let flag=this.chosenPsy;
         if(!flag)return;
-        this.flag.psychicPowers[flag.flagId]=flag.label;
+         let negativeCheckbox=document.getElementById("notpsycheckbox");
+        let negative=negativeCheckbox.checked;
+        if(negative){
+            this.flag.negativePsyPowers[flag.flagId]=flag.label;
+        }else{
+            this.flag.psychicPowers[flag.flagId]=flag.label;
+        }
+        
         this.chosenFlag=undefined;
         this.render();
     }
@@ -264,6 +276,11 @@ export class ManageRequirementsDialog extends Application {
     _onDeletePsyClick(event){
         let flag=event.currentTarget.dataset.id;
         this.flag.psychicPowers[flag]=null;
+        this.render();
+    }
+    _onDeleteNegPsyClick(event){
+        let flag=event.currentTarget.dataset.id;
+        this.flag.negativePsyPowers[flag]=null;
         this.render();
     }
     _onDeleteSkillClick(event){
@@ -374,6 +391,7 @@ export class ManageRequirementsDialog extends Application {
             flags:{},
             ORflags:{},
             psychicPowers:{},
+            negativePsyPowers:{},
             skills:{},
             cybernetics:{
                 number:0,

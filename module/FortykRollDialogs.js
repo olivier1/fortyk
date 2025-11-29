@@ -81,7 +81,7 @@ export class FortykRollDialogs {
 
             return;
         }
-        
+
         htmlLine.innerHTML = line.replace("{{hits}}", hits);
         message.update({ content: messageContent.innerHTML });
         return;
@@ -322,10 +322,15 @@ export class FortykRollDialogs {
             let base = char.value;
             let adv = char.advance;
             let mod = char.mod;
-            modifier+=mod;
             modifierTracker.push({ value: base, label: "Characteristic Base" });
             modifierTracker.push({ value: adv, label: "Caracteristic Advance" });
-            modifierTracker.push({ value: mod, label: "Characteristic Modifier" });
+            if(mod){
+                modifier+=mod;
+                modifierTracker.push({ value: mod, label: "Characteristic Modifier" });
+            }
+
+
+
         }
 
         let global = actor.system.globalMOD.value;
@@ -333,11 +338,18 @@ export class FortykRollDialogs {
         modifierTracker.push({ value: global, label: "Global modifier" });
         if (testType === "skill" || testType === "evasion") {
             let training = item?.system?.value;
-            modifier+=training;
+            if(training){
+                modifier+=training;
+                modifierTracker.push({ value: training, label: "Skill Training" });
+            }
+
             let skillMod = item?.system?.mod?.value;
-            modifier+=skillMod;
-            modifierTracker.push({ value: training, label: "Skill Training" });
-            modifierTracker.push({ value: skillMod, label: "Skill Modifier" });
+            if(skillMod){
+                modifier+=skillMod;
+
+                modifierTracker.push({ value: skillMod, label: "Skill Modifier" });
+            }
+
         }
         if (testType === "fear") {
             let fearMod = parseInt(actor.system.secChar.fearMod);

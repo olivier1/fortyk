@@ -16,7 +16,7 @@
     font-style:italic;
 }
 .fortyk [draggable="true"] {
-  cursor: grab;
+    cursor: grab;
 }
 
 
@@ -217,7 +217,7 @@
 .manage-req-button{
     position: absolute;
     bottom: 8px;
-    width: -webkit-fill-available;
+    width: -webkit-fill-available !important;
     margin-right: 8px;
 
 }
@@ -241,6 +241,15 @@
     padding:5px;
     display:grid;
     background-image: url(../../../ui/parchment.jpg);
+}
+.npc-sheet{
+    flex: 0 1 auto !important;
+    overflow: hidden;
+    height: -webkit-fill-available;
+}
+.npc-header{
+    height: 20vh;
+    min-height: 271px;
 }
 .buff-debuff,
 .cancel-buff,
@@ -266,6 +275,7 @@
 }
 .fortyk .charSheet{
     overflow:auto;
+    height: -webkit-fill-available;
 }
 .fortyk header.sheet-header {
     -webkit-box-flex: 0;
@@ -424,6 +434,10 @@
 }
 .fortyk .sheet-content .tab{
     overflow-y:scroll;
+}
+.npc-content{
+    
+    height: 70% !important;
 }
 .fortyk .sheet-body.npc .tab {
     overflow: visible;
@@ -840,7 +854,7 @@
     font-variant-caps: petite-caps;
     margin-bottom: 3px;
     display:block;
-        
+
 }
 .fortyk .sheet-gear{
     align-items: start;
@@ -884,6 +898,9 @@
 }
 .fortyk .backgroundandnotes{
     height:100%;
+}
+.background{
+    min-height: 500px;
 }
 .fortyk .editor{
     height:100%;

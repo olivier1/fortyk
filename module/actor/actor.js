@@ -229,6 +229,9 @@ export class FortyKActor extends Actor {
         }
     }
     _prepareCharacterBaseData(data) {
+        //prepare base flags
+        if(!this.flags.core)this.flags.core={};
+        if(!this.flags.fortyk)this.flags.fortyk={};
         data.secChar.wornGear.armor = {};
         data.secChar.wornGear.weapons = [{}, {}];
         data.secChar.wornGear.forceField = {};
@@ -275,6 +278,7 @@ export class FortyKActor extends Actor {
         if (this.getFlag("fortyk", "crawler")) {
             data.secChar.movement.multi = parseInt(data.secChar.movement.multi) / 2;
         }
+
         if (this.getFlag("fortyk", "psyrating")) {
             data.psykana.pr.value = parseInt(this.getFlag("fortyk", "psyrating"));
             data.psykana.disciplineSlots = game.fortyk.FORTYKTABLES.psyDisciplineSlots[data.psykana.pr.value];
@@ -288,7 +292,13 @@ export class FortyKActor extends Actor {
                     disciplines[i] = "";
                 }
             }
-            data.psykana.pr.sustain = data.psykana.pr.sustained.length;
+            //data.psykana.pr.sustain = data.psykana.pr.sustained.length;
+            //initialize sustained array
+            data.psykana.sustained = [];
+        }
+        if(this.getFlag("fortyk","navigator")){
+            data.psykana.psykerType.value="navigator";
+            data.psykana.disciplines=["Navigator"];
         }
 
         if (this.getFlag("fortyk", "doubleteam")) {
@@ -508,6 +518,10 @@ export class FortyKActor extends Actor {
                 if (item.type === "forceField" && item.system.isEquipped) {
                     data.secChar.wornGear.forceField = item;
                 }
+                if( item.type === "psychicPower" && item.getFlag("fortyk", "sustained")){
+                    data.psykana.pr.sustained.push(item.id);
+                    console.log(item);
+                }
             });
             //store known xenos for deathwatchtraining
             if (this.getFlag("fortyk", "deathwatchtraining")) {
@@ -541,6 +555,9 @@ export class FortyKActor extends Actor {
                 }
                 if (item.type === "rangedWeapon" || item.type === "meleeWeapon") {
                     item.system.isEquipped = true;
+                }
+                if( item.type === "psychicPower" && item.getFlag("fortyk", "sustained") && item.system.sustain.value !== "No"){
+                    data.psykana.pr.sustained.push(item.id);
                 }
 
             });
@@ -632,11 +649,14 @@ export class FortyKActor extends Actor {
         let data = this.system;
         let selfPsy = [];
         data.postEffects=false;
-        this.effects.forEach(function (ae, id) {
+        
+        let otherAes=[];
+        let prBuffs=[];
+        for(const ae of this.effects){
             if (!ae.disabled) {
                 if (actor.uuid === ae.origin) {
                     selfPsy.push(ae);
-                    return;
+                    continue;
                 }
                 var powerActor = fromUuidSync(ae.origin);
 
@@ -747,7 +767,8 @@ export class FortyKActor extends Actor {
                     });
                 }
             }
-        });
+        }
+       
         if (selfPsy.length > 0) {
             for (let i = 0; i < selfPsy.length; i++) {
                 let pr =
@@ -925,10 +946,11 @@ export class FortyKActor extends Actor {
             char = parseInt(char);
         }
         //prepare psyker stuff
-        data.psykana.pr.effective =
+        let effective =
             parseInt(data.psykana.pr.value) +
             parseInt(data.psykana.pr.bonus) -
-            Math.max(0, parseInt(data.psykana.pr.sustain) - 1);
+            Math.max(0, parseInt(data.psykana.pr.sustained.length) - 1);
+        data.psykana.pr.effective= Math.max(0,effective);
         data.psykana.pr.maxPush =
             parseInt(data.psykana.pr.effective) +
             parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
@@ -1098,10 +1120,11 @@ export class FortyKActor extends Actor {
         data.parry.total = data.characteristics.ws.total + parseInt(data.parry.mod) + data.evasionMod;
         data.dodge.total = data.characteristics.agi.total + parseInt(data.dodge.mod) + data.evasionMod;
         //prepare psyker stuff
-        data.psykana.pr.effective =
+        let effective =
             parseInt(data.psykana.pr.value) +
             parseInt(data.psykana.pr.bonus) -
-            Math.max(0, parseInt(data.psykana.pr.sustain) - 1);
+            Math.max(0, parseInt(data.psykana.pr.sustained.length) - 1);
+        data.psykana.pr.effective= Math.max(0,effective);
         data.psykana.pr.maxPush =
             parseInt(data.psykana.pr.effective) +
             parseInt(game.fortyk.FORTYK.psykerTypes[data.psykana.psykerType.value].push);
@@ -2330,7 +2353,28 @@ export class FortyKActor extends Actor {
                                 await actor.setFlag("fortyk", data.flagId, false);
                                 await actor.deleteEmbeddedDocuments("Item", [data.itemId.value]);
                             } catch (err) {}
-                        } else if (advType === "Elite Advance") {
+                        } else if(advType==="Navigator Power"){
+                            let navPower=actor.getEmbeddedDocument("Item",data.itemId.value);
+                            let previousId=item.getFlag("fortyk","previousPowerCompendiumId");
+                            if(previousId){
+                                let previousCompendiumPower=await fromUuid(previousId);
+                                let itemData=foundry.utils.duplicate(previousCompendiumPower);
+
+                                let previousAdvanceId=item.getFlag("fortyk","previousAdvanceId");
+                                let previousAdvance=actor.getEmbeddedDocument("Item", previousAdvanceId);
+                                itemData["flags.fortyk.linkedAdvance"]=previousAdvanceId;
+                                itemData["flags.fortyk.compendiumId"]=previousCompendiumPower.uuid;
+                                itemData.name=previousCompendiumPower._source.name;
+                                itemData.sort=navPower.sort;
+                                let newOld=await actor.createEmbeddedDocuments("Item",[itemData]);
+                                previousAdvance.update({"system.itemId.value":newOld[0].id});
+                            }
+
+                            try {
+                                await actor.setFlag("fortyk", data.flagId, false);
+                                await actor.deleteEmbeddedDocuments("Item", [data.itemId.value]);
+                            } catch (err) {}
+                        }else if (advType === "Elite Advance") {
                             try {
                                 await actor.deleteEmbeddedDocuments("Item", [data.itemId.value]);
                             } catch (err) {}
@@ -2709,6 +2753,7 @@ export class FortyKActor extends Actor {
                 parseInt(system.psykana.pr.bonus) -
                 Math.max(0, parseInt(system.psykana.pr.sustain) - 1);
         }
+        pr=Math.max(0,pr);
 
         return {
             wsb: characteristics.ws.bonus,

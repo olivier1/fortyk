@@ -106,6 +106,11 @@ export class FortyKItemSheet extends ItemSheet {
                 { value: "gm", label: "GM" },
                 { value: "user", label: "User" }
             ];
+            if(this.item.system.class.value==="Psychic Bolt"||this.item.system.class.value==="Psychic Barrage"||this.item.system.class.value==="Psychic Storm"||this.item.system.class.value==="Psychic Blast"||this.item.system.class.value==="Navigator Gaze"){
+                data.attack=true;
+            }else{
+                data.attack=false;
+            }
         }
         if (item.getFlag("fortyk", "alternateprofiles")) {
             data.rangedWeapons = await this.getRangedWeapons();

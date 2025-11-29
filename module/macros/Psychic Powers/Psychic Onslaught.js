@@ -2,14 +2,14 @@ let actor=scope.power.actor;
 let power=scope.power;
 var pr=power.system.curPR.value;
 let aeData=foundry.utils.duplicate(power.effects.entries().next().value[1]);
-if(actor.getFlag("core","Psychic Onslaught Buff"))return ui.notifications.warn("Psychic Onslaught buff already applied");
+if(actor.getFlag("core","Psychic Onslaught"))return ui.notifications.warn("Psychic Onslaught buff already applied");
 let effectIds=[];
 let rangedWeapons=actor.itemTypes.rangedWeapon;
 rangedWeapons=rangedWeapons.concat(actor.itemTypes.ammunition);
 for(const rangedWeapon of rangedWeapons){
     if (rangedWeapon.getFlag("fortyk","force")){
         let aeData={};
-        aeData.name=power.name+" Buff";
+        aeData.name=power.name;
 
 
         aeData.flags={fortyk:{psy:true, expireafterattack:true}};
@@ -32,7 +32,7 @@ if(effectIds.length<1){return;}
 
 
 
-aeData.name=aeData.name+" Buff";
+aeData.name=aeData.name;
 aeData.flags={fortyk:{psy:true, expireafterattack:true}};
 aeData.disabled=false;
 aeData.origin=actor.uuid;

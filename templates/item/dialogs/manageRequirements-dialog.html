@@ -104,7 +104,7 @@
             </div>
         </div>
         <div class="tab flags" data-group="primary" data-tab="flags">
-            
+
             <div class="flexcol">
                 <select class="compendium-select">
                     <option value="">Choose a Compendium</option>
@@ -149,8 +149,8 @@
                 {{/each}}
 
             </div>
-            
-            
+
+
             <div>
                 <span class="section-title">OR Flags</span>
                 {{#each flag.ORflags as |flag key|}}
@@ -185,22 +185,46 @@
 
         </div>
         <div class="tab psy" data-group="primary" data-tab="psy">
-            <select class="psy-select">
-                <option value="">Choose a Psychic Power Requirement</option>
-                {{#each psyPowers}}
-                <option value="{{this.id}}">{{this.name}}</option>
-                {{/each}}
-            </select>
+            <div class="fexrow">
+                <div class="flexcol">
+                    <select class="psy-select">
+                        <option value="">Choose a Psychic Power Requirement</option>
+                        {{#each psyPowers}}
+                        <option value="{{this.id}}">{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>Negative flag</label><input type="checkbox" id="notpsycheckbox">
+                </div>
+            </div>
+
             <div class="flexcol">
                 <a  class="add-psy button">Add Psychic Power Requirement</a>
             </div>
-            <label>Psychic Power Requirements:</label>
-            {{#each flag.psychicPowers as |flag key|}}
-            {{#if flag}}
-            <label>{{flag}}</label>
-            <a class="delete-psy" data-id="{{key}}">Delete</a>
-            {{/if}}
-            {{/each}}
+            <div class="flexcol">
+                <label>Psychic Power Requirements:</label>
+                {{#each flag.psychicPowers as |flag key|}}
+                {{#if flag}}
+                <div>
+                    <label>{{flag}}</label>
+                    <a class="delete-psy" data-id="{{key}}">Delete</a>
+                </div>
+
+                {{/if}}
+                {{/each}}
+                <label>Negative Psychic Power Requirements:</label>
+                {{#each flag.negativePsyPowers as |flag key|}}
+                {{#if flag}}
+                <div>
+                    <label>{{flag}}</label>
+                    <a class="delete-neg-psy" data-id="{{key}}">Delete</a>
+                </div>
+
+                {{/if}}
+                {{/each}}
+            </div>
+
         </div>
 
     </section>

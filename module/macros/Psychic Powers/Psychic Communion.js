@@ -8,7 +8,7 @@ let targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.incl
 let aeData=foundry.utils.duplicate(power.effects.entries().next().value[1]);
 let combat=game.combats.active;
 if(!combat)return;
-aeData.name=aeData.name+" Buff";
+aeData.name=aeData.name;
 aeData.flags={fortyk:{psy:true, range: range, casterTokenId: actorToken.id}};
 aeData.disabled=false;
 aeData.origin=actor.uuid;
@@ -31,10 +31,9 @@ console.log(originalInitiatives, effectIds, power, actor);
 
 
 await power.setFlag("fortyk","initmods",originalInitiatives);
-await power.setFlag("fortyk","sustained",effectIds);
-await power.setFlag("fortyk", "sustainedrange", range);
+
 if(power.system.sustain.value!=="No"){
-    let sustained=actor.system.psykana.pr.sustained;
-    sustained.push(power.id);
-    actor.update({"system.psykana.pr.sustained":sustained});
+    await power.setFlag("fortyk","sustained",effectIds);
+await power.setFlag("fortyk", "sustainedrange", range);
+    
 }

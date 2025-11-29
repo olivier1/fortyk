@@ -1293,7 +1293,7 @@
                 "type": "Number"
             },
             "training": {
-                "value": "",
+                "value": "Novice",
                 "type": "String"
             },
             "cost": {

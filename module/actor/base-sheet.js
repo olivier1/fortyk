@@ -422,14 +422,14 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                 $(html)
                                     .find("input:checked")
                                     .each(function () {
-                                    selectedIds.push($(this).val());
-                                });
+                                        selectedIds.push($(this).val());
+                                    });
 
                                 let $selectedCompendiums = $("input:checked", html)
-                                .map(function () {
-                                    return this.getAttribute("data-compendium");
-                                })
-                                .get();
+                                    .map(function () {
+                                        return this.getAttribute("data-compendium");
+                                    })
+                                    .get();
 
                                 let talentsNTraits = [];
                                 for (let i = 0; i < selectedIds.length; i++) {
@@ -834,7 +834,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 actor.getFlag("fortyk", "twohandedbrutality") &&
                 fortykWeapon.system.twohanded.value &&
                 (actor.system.secChar.lastHit.attackType === "charge" ||
-                 actor.system.secChar.lastHit.attackType === "allout")
+                    actor.system.secChar.lastHit.attackType === "allout")
             ) {
                 dmg += actor.system.characteristics.s.bonus;
             }
@@ -999,8 +999,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                     weapon.template = targets[i].template;
                                     let targetNames = "";
                                     let targetTokens = game.canvas.tokens.children[0].children.filter((token) =>
-                                                                                                      curTargets.includes(token.id)
-                                                                                                     );
+                                        curTargets.includes(token.id)
+                                    );
                                     for (let j = 0; j < targetTokens.length; j++) {
                                         let token = targetTokens[j];
                                         if (j === targetTokens.length - 1) {
@@ -1075,7 +1075,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }).render(true);
         });
     }
-    
+
     //handles applying active effects from psychic powers
     async _onBuffDebuff(event) {
         event.preventDefault();
@@ -1084,8 +1084,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let targets = game.user.targets;
         let powerId = dataset["power"];
         let power = this.actor.getEmbeddedDocument("Item", powerId);
-        let powerClass=power.system.class.value;
-        if(powerClass==="Aura"){
+        let powerClass = power.system.class.value;
+        if (powerClass === "Aura") {
             return FortyKItem.applyAura(this.actor.uuid, powerId);
         }
         let affects = power.system.affects.value;
@@ -1111,12 +1111,13 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let powerId = event.currentTarget.attributes["data-power"].value;
         let macroId = event.currentTarget.attributes["data-macro"].value;
         let targetIds = game.user.targets.ids;
-        console.log(targetIds)
-        if (targetIds.length === 0) {
+        let power = this.actor.getEmbeddedDocument("Item", powerId);
+        let affects = power.system.affects.value;
+        if (affects !== "self" && targetIds.length === 0) {
             ui.notifications.error("You must have targets to run psychic power macros.");
             return;
         }
-        let power = this.actor.getEmbeddedDocument("Item", powerId);
+
         let user = power.system.macro.user;
         if (user === "user" || game.user.isGM) {
             FortyKItem.executePsyMacro(powerId, macroId, this.actor.uuid, targetIds);
@@ -1206,7 +1207,6 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                         };
                         forceData.system = { damageFormula: { value: `${hits}d10` }, damageType: { value: "Energy" } };
                         let force = await new Item(forceData, { temporary: true });
-                     
 
                         if (game.user.isGM) {
                             FortykRolls.damageRoll(force.system.damageFormula, actor, force, 1);
@@ -1242,7 +1242,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const itemData = item.toObject();
         const sameActor = this.actor.uuid === item.parent?.uuid;
         //make sure the copy wont be equipped by default
-        if(itemData.system.isEquipped)itemData.system.isEquipped=false;
+        if (itemData.system.isEquipped) itemData.system.isEquipped = false;
         if (itemData.type === "mod") {
             if (this.actor.type !== "spaceship") {
                 let applied = await this._applyModToItem(item, sameActor);
@@ -1257,7 +1257,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
         // Handle item sorting within the same Actor
         if (sameActor) return super._onSortItem(event, itemData);
-        
+
         // Create the owned item
         return super._onDropItemCreate(itemData, event);
     }
@@ -1334,10 +1334,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             let ae = await item.createEmbeddedDocuments("ActiveEffect", [effectData]);
             item.applyActiveEffects();
             item.prepareData();
-            
 
-                item.applyModWeight();
-            
+            item.applyModWeight();
 
             item.system.weight.total = (
                 parseInt(item.system.amount.value) * parseFloat(item.system.weight.value)

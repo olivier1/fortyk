@@ -12,7 +12,7 @@ export class SpendExpDialog extends Application {
             height: 280,
             mode:"Custom",
             default:null,
-            heights:{"Custom":280,"Characteristic Upgrade":275,"Skill Upgrade":275,"New Skill":805,"Talent":795, "Signature Wargear":360,"Psy Rating":300,"Psychic Power":765, "Elite Advance":765}
+            heights:{"Custom":280,"Characteristic Upgrade":275,"Skill Upgrade":275,"New Skill":805,"Talent":795, "Signature Wargear":360,"Psy Rating":300,"Psychic Power":765, "Navigator Power":765, "Elite Advance":765}
         });
     }
 
@@ -20,13 +20,19 @@ export class SpendExpDialog extends Application {
 
 
         const startTime=performance.now();
-        if(actor.system.psykana.pr.value>0){
+        if(actor.getFlag("fortyk","navigator")){
+            if(force||!this.navPowers){
+                this.psyPowers= await this._loadNavPowers();
+            }
+
+        }else if(actor.system.psykana.pr.value>0){
             if((force||!this.psyPowers)){
                 this.psyPowers= await this._loadPsyPowers();
             }else{
                 this.psyPowers= this.filterPsyPowers(this.rawPowers, actor); 
             }
         }
+
         if(force||!this.options.talents){
             this.options.talents=await this._loadTalents();
         }else{
@@ -57,7 +63,16 @@ export class SpendExpDialog extends Application {
         if(actor.getFlag("fortyk","deathwatchmarine")){
             data.advancementTypes.push({value:"Signature Wargear"});
         }
-        if(actor.system.psykana.pr.value>0){
+        if(actor.getFlag("fortyk","navigator")){
+            data.advancementTypes.push({value:"Navigator Power"});
+            data.disciplines=data.FORTYK.psychicDisciplines;
+            data.psyPowers=this.psyPowers;
+            if(!data.discipline||this.options.discipline===undefined){
+                data.discipline="All";
+            }else{
+                data.discipline=this.options.discipline;
+            }
+        }else if(actor.system.psykana.pr.value>0){
             data.pr=actor.system.psykana.pr.value;
             data.pr1=actor.system.psykana.pr.value+1;
             data.advancementTypes.push({value:"Psy Rating"});
@@ -171,7 +186,7 @@ export class SpendExpDialog extends Application {
         else if(this.options.mode==="Signature Wargear"){
             let input=document.getElementById("name").select();
         }
-        if(this.options.mode==="Talent"||this.options.mode==="Skill Upgrade"||this.options.mode==="Characteristic Upgrade"||this.options.mode==="Psychic Power"){
+        if(this.options.mode==="Talent"||this.options.mode==="Skill Upgrade"||this.options.mode==="Characteristic Upgrade"||this.options.mode==="Psychic Power"||this.options.mode==="Navigator Power"){
             document.getElementById("submitButton").setAttribute("disabled",true);
         }
 
@@ -449,6 +464,54 @@ export class SpendExpDialog extends Application {
             await this.loadDocuments(actor, true);
             this.options.cost=0;
 
+        }else if(this.options.mode==="Navigator Power"){
+
+            let power=this.options.chosenPower;
+            let flagId=power.id;
+            let advanceName="Psychic Power: "+power.name;
+            let itemData=foundry.utils.duplicate(power);
+            itemData["flags.fortyk.compendiumId"]=power.uuid;
+            itemData.name=power._source.name;
+            let powerData=power.system;
+            const advData = {
+                name: advanceName,
+                type: type,
+                system:{
+                    type:{value:"Navigator Power"},
+                    cost:{value:this.options.cost},
+                    flagId:flagId
+
+                }
+            };
+            if(powerData.training.value!=="Novice"){
+                let actorPowers=actor.itemTypes.psychicPower;
+                let oldPower=actorPowers.find((tnt)=> (tnt._source.name.toLowerCase()===power._source.name.toLowerCase()));
+                let oldSort=oldPower.sort;
+                let oldAdvanceId=oldPower.getFlag("fortyk","linkedAdvance");
+                advData["flags.fortyk.previousAdvanceId"]=oldAdvanceId;
+                itemData.sort=oldSort;
+                let oldCompendiumId=oldPower.getFlag("fortyk","compendiumId");
+                advData["flags.fortyk.previousPowerCompendiumId"]=oldCompendiumId;
+                await oldPower.delete();
+            }
+
+
+
+
+
+            // await actor.setFlag("fortyk",flagId,true);
+            let actorPower=await actor.createEmbeddedDocuments("Item",[itemData]);
+            let powerId=actorPower[0].id;
+            advData["system.itemId.value"]=powerId;
+
+
+            
+            let advanceArray=await actor.createEmbeddedDocuments("Item",[advData]);
+            let advance=advanceArray[0];
+            actorPower[0].setFlag("fortyk","linkedAdvance",advance.id);
+            await this.loadDocuments(actor, true);
+            this.options.cost=0;
+
         }else if(this.options.mode==="Elite Advance"){
             let ea=this.options.chosenEliteAdvance;
             let itemData=foundry.utils.duplicate(ea);
@@ -499,9 +562,11 @@ export class SpendExpDialog extends Application {
     async _onModeChange(event){
         event.preventDefault();
         let newMode=event.target.value;
+        
         this.options.mode=newMode;
         this.options.cost=0;
         let mode=this.options.mode;
+        
         if(mode==="New Skill"){
             this.baseSkillCost();
         }else if(mode==="Signature Wargear"){
@@ -865,9 +930,9 @@ export class SpendExpDialog extends Application {
         this._updateCost();
     }
     _updateCost(){
-        document.getElementById("cost").textContent=this.options.cost;
+        document.getElementById("cost").textContent=`${this.options.cost} EXP`;
         this.remainingExp=this.actorExp-this.options.cost;
-        document.getElementById("remainingExp").textContent=this.remainingExp;
+        document.getElementById("remainingExp").textContent=`${this.remainingExp} EXP`;
 
 
     }
@@ -900,6 +965,15 @@ export class SpendExpDialog extends Application {
     async _loadPsyPowers(){
         let actor=this.options.actor;
         const psyPowers=await game.packs.get("fortyk.psychic-powers");
+        let powers=await psyPowers.getDocuments();
+        this.rawPowers=powers;
+
+        let map = this.filterPsyPowers(powers, actor);
+        return map;
+    }
+    async _loadNavPowers(){
+        let actor=this.options.actor;
+        const psyPowers=await game.packs.get("fortyk.navigator-powers");
         let powers=await psyPowers.getDocuments();
         this.rawPowers=powers;
 

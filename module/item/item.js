@@ -92,6 +92,10 @@ export class FortyKItem extends Item {
         if (this.system.quality?.value) {
             this.name = `(${this.FORTYK.itemQualityAbrv[this.system.quality.value]}) ${this._source.name}`;
         }
+        if(this.type==="psychicPower"&&this.system.discipline.value==="Navigator"){
+            this.name = `${this._source.name}: ${this.system.training.value}`;
+            item.system.cost.value=item.FORTYK.navigatorPowerCosts[item.system.training.value];
+        }
 
         let qualityMods = this.FORTYK.qualityMods;
         if (item.type === "armor") {
@@ -334,8 +338,8 @@ export class FortyKItem extends Item {
                 let ammos = actor.itemTypes.ammunition;
                 let validAmmos = ammos.filter(
                     (ammo) =>
-                        ammo.system.class.value === item.system.class.value &&
-                        ammo.system.type.value === item.system.type.value
+                    ammo.system.class.value === item.system.class.value &&
+                    ammo.system.type.value === item.system.type.value
                 );
                 item.validAmmos = validAmmos;
                 if (ammo && !ammo.system.default.value) {
@@ -378,7 +382,7 @@ export class FortyKItem extends Item {
                     item.system.attackMods.single = parseInt(item.system.attackMods.single) + 10;
                 }
                 if (this.getFlag("fortyk", "accurate")) {
-                    
+
                     item.system.attackMods.aim.half = 20;
                     item.system.attackMods.aim.full = 30;
                     if(actor.getFlag("fortyk","lethalaccuracy")){
@@ -492,18 +496,8 @@ export class FortyKItem extends Item {
                             item.system.pen.value = 0;
                         }
 
-                        let training = 0;
-                        switch (item.system.training.value) {
-                            case "Novice":
-                                training = 0;
-                                break;
-                            case "Adept":
-                                training = 10;
-                                break;
-                            case "Master":
-                                training = 20;
-                                break;
-                        }
+                        let training = item.FORTYK.navigatorTrainingBoni[item.system.training.value];
+                       
                         let char = 0;
                         if (item.system.testChar.value === "psy") {
                             char = psyniscience;
@@ -647,9 +641,9 @@ export class FortyKItem extends Item {
                     if (actor.getFlag("fortyk", "WeaponMaster")) {
                         if (
                             actor
-                                .getFlag("fortyk", "WeaponMaster")
-                                .toLowerCase()
-                                .includes(item.system.type.value.toLowerCase())
+                            .getFlag("fortyk", "WeaponMaster")
+                            .toLowerCase()
+                            .includes(item.system.type.value.toLowerCase())
                         ) {
                             item.system.damageFormula.value += "+2";
                             item.system.testMod.value += 10;
@@ -1111,7 +1105,12 @@ export class FortyKItem extends Item {
             }
         }
         let ORflagRequirements = requirements.ORflags;
-        let ORcheck = !ORflagRequirements;
+        let ORcheck;
+        if(ORflagRequirements===undefined||jQuery.isEmptyObject(ORflagRequirements)){
+            ORcheck = true;
+        }else{
+            ORcheck = false;
+        }
         let ORfailLabels = [];
         for (const flag in ORflagRequirements) {
             let flagInstance = ORflagRequirements[flag];
@@ -1143,6 +1142,15 @@ export class FortyKItem extends Item {
             if (!psy) continue;
             if (!actor.getFlag("fortyk", psy)) {
                 failReasons.push(`You do not have ${psyRequirements[psy]}.`);
+                validated = false;
+            }
+        }
+        let negPsyRequirements=requirements.negativePsyPowers;
+        negPsyRequirements??=[];
+        for (const psy in negPsyRequirements) {
+            if (!psy) continue;
+            if (actor.getFlag("fortyk", psy)) {
+                failReasons.push(`You have ${psyRequirements[psy]}.`);
                 validated = false;
             }
         }
@@ -1257,8 +1265,8 @@ export class FortyKItem extends Item {
                 targets = game.canvas.tokens.children[0].children.filter((token) => targetIds.includes(token.id));
             }
             let range = power.system.range.value;
-            targets = targets.filter((token) => range >= tokenDistance(token, actorToken));
             targets = targets.filter((token) => !token.actor.getFlag("core", power.name));
+            targets = targets.filter((token) => range >= tokenDistance(token, actorToken));
             if (targets.length === 0) return ui.notifications.warn("No valid targets.");
             let ae = power.effects.entries().next().value[1];
             let aeData = foundry.utils.duplicate(ae);
@@ -1294,9 +1302,7 @@ export class FortyKItem extends Item {
             if (power.system.sustain.value !== "No") {
                 await power.setFlag("fortyk", "sustained", effectUuIds);
                 await power.setFlag("fortyk", "sustainedrange", range);
-                let sustained = actor.system.psykana.pr.sustained;
-                sustained.push(power.id);
-                actor.update({ "system.psykana.pr.sustained": sustained });
+
             }
         } else {
             //if user isnt GM use socket to have gm apply the buffs/debuffs
@@ -1325,10 +1331,13 @@ export class FortyKItem extends Item {
                     tokens = tokens.filter((token) => token.document.disposition !== actorToken.document.disposition);
                     break;
             }
+            if(power.system.notSelf){
+                tokens = tokens.filter((token) => token.id !== actorToken.id);
+            }
             let range = parseInt(power.system.range.value);
 
-            targets = tokens.filter((token) => range >= tokenDistance(token, actorToken));
-            targets = targets.filter((token) => !token.actor.getFlag("core", power.name));
+            targets = tokens.filter((token) => !token.actor.getFlag("core", power.name));
+            targets = targets.filter((token) => range >= tokenDistance(token, actorToken));
 
             let ae = power.effects.entries().next().value[1];
             let aeData = foundry.utils.duplicate(ae);
@@ -1364,9 +1373,7 @@ export class FortyKItem extends Item {
             if (power.system.sustain.value !== "No") {
                 await power.setFlag("fortyk", "sustained", effectUuIds);
                 await power.setFlag("fortyk", "sustainedrange", range);
-                let sustained = actor.system.psykana.pr.sustained;
-                sustained.push(power.id);
-                actor.update({ "system.psykana.pr.sustained": sustained });
+
             }
         } else {
             //if user isnt GM use socket to have gm apply the buffs/debuffs
@@ -1396,10 +1403,7 @@ export class FortyKItem extends Item {
             }
             await power.setFlag("fortyk", "sustained", false);
 
-            let sustained = actor.system.psykana.pr.sustained;
-            let powerIndex = sustained.indexOf(power.id);
-            sustained.splice(powerIndex, 1);
-            actor.update({ "system.psykana.pr.sustained": sustained });
+
             if (power.getFlag("fortyk", "initmods")) {
                 let combat = game.combats.active;
                 let inits = power.getFlag("fortyk", "initmods");

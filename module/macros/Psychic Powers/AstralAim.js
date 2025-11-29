@@ -9,7 +9,7 @@ let rangedWeapons=actor.itemTypes.rangedWeapon;
 rangedWeapons=rangedWeapons.concat(actor.itemTypes.ammunition);
 for(const rangedWeapon of rangedWeapons){
     let aeData={};
-    aeData.name=power.name+" Buff";
+    aeData.name=power.name;
 
 
     aeData.flags={fortyk:{psy:true, expireafterattack:true}};
@@ -28,7 +28,7 @@ for(const rangedWeapon of rangedWeapons){
 
 
 
-aeData.name=aeData.name+" Buff";
+aeData.name=aeData.name;
 aeData.flags={fortyk:{psy:true, expireafterattack:true}};
 aeData.disabled=false;
 aeData.origin=actor.uuid;

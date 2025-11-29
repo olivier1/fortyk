@@ -25,7 +25,7 @@ let ae=power.effects.entries().next().value[1];
 console.log(ae)
 let aeData=foundry.utils.duplicate(ae);
 
-aeData.name=ae.name+" Buff";
+aeData.name=ae.name;
 
 
 aeData.flags={fortyk:{psy:true, range: range, casterTokenId: actorToken.id}};
@@ -51,10 +51,9 @@ for(let i=0; i<targets.length;i++){
 
 
 
-await power.setFlag("fortyk","sustained",itemUuIds);
-await power.setFlag("fortyk", "sustainedrange", range);
+
 if(power.system.sustain.value!=="No"){
-    let sustained=actor.system.psykana.pr.sustained;
-    sustained.push(power.id);
-    actor.update({"system.psykana.pr.sustained":sustained});
+    await power.setFlag("fortyk","sustained",itemUuIds);
+    await power.setFlag("fortyk", "sustainedrange", range);
+
 }

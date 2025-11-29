@@ -254,12 +254,11 @@ Hooks.once("ready", async function () {
     }
     //for actors with psychic buffs, we need to re prepare them once all the actors have been prepared
     //prevents infinite loops when two psyker buff each other
-    let actors=game.actors.values();
-    for(let actor of actors){
-        if(actor.system.postEffects){
+    let actors = game.actors.values();
+    for (let actor of actors) {
+        if (actor.system.postEffects) {
             actor.prepareData();
         }
-
     }
     //SOCKET used to update actors via the damage scripts
     game.socket.on("system.fortyk", async (data) => {
@@ -388,8 +387,8 @@ Hooks.once("ready", async function () {
                         fortykWeapon.template = targetIds[i].template;
                         let targetNames = "";
                         let targetTokens = game.canvas.tokens.children[0].children.filter((token) =>
-                                                                                          curTargets.includes(token.id)
-                                                                                         );
+                            curTargets.includes(token.id)
+                        );
                         let targetSet = new Set(targetTokens);
                         for (let j = 0; j < targetTokens.length; j++) {
                             let token = targetTokens[j];
@@ -500,9 +499,9 @@ Hooks.once("ready", async function () {
                     await actor.update(options);
                     break;
                 case "updateMessage":
-                    let messageId=data.package.message;
-                    update=data.package.update;
-                    let message=game.messages.get(messageId);
+                    let messageId = data.package.message;
+                    update = data.package.update;
+                    let message = game.messages.get(messageId);
                     message.update(update);
                     break;
                 case "setFlag":
@@ -805,7 +804,7 @@ Hooks.on("updateCombat", async (combat) => {
                             author: game.user._id,
                             speaker: { actor, alias: actor.getName() },
                             content:
-                            "On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
+                                "On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
                             classes: ["fortyk"],
                             flavor: `On Fire!`
                         };
@@ -890,7 +889,7 @@ Hooks.on("updateCombat", async (combat) => {
                             author: game.user._id,
                             speaker: { actor, alias: actor.getName() },
                             content:
-                            "On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor. Deamons do not mitigate this damage and take additional damage equal to PR.",
+                                "On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor. Deamons do not mitigate this damage and take additional damage equal to PR.",
                             classes: ["fortyk"],
                             flavor: `On Fire!`
                         };
@@ -909,21 +908,20 @@ Hooks.on("updateCombat", async (combat) => {
 
                         fire.system.damageType.value = "Energy";
                         fire.system.pen.value = 99999;
-                        if(actor.getFlag("fortyk","daemonic")){
+                        if (actor.getFlag("fortyk", "daemonic")) {
                             fire.flags.fortyk = { ignoreSoak: true };
                             fire.system.damageFormula.value = activeEffect.flags.fortyk.damageString;
-                        }else{
+                        } else {
                             fire.system.damageFormula.value = "1d10";
                         }
 
                         await FortykRolls.damageRoll(fire.system.damageFormula, actor, fire, 1, true);
-                        if(activeEffect.flags.fortyk.iconofburningflame){
+                        if (activeEffect.flags.fortyk.iconofburningflame) {
                             let pr = activeEffect.flags.fortyk.pr;
                             let burningIconOptions = {
                                 author: game.user._id,
                                 speaker: { actor, alias: actor.getName() },
-                                content:
-                                `The Icon makes the purifying fire roar in a purging blaze! All daemons within ${pr}m must pass a willpower test or take ${pr} damage ignoring mitigation and become affected by purifying flames!`,
+                                content: `The Icon makes the purifying fire roar in a purging blaze! All daemons within ${pr}m must pass a willpower test or take ${pr} damage ignoring mitigation and become affected by purifying flames!`,
                                 classes: ["fortyk"],
                                 flavor: `Icon of Burning Flame`
                             };
@@ -1358,78 +1356,77 @@ Hooks.on("preCreateToken", async (document, data, options, userId) => {
         }
     }
 });
-Hooks.on("refreshToken", async(tokenObject, options)=>{
-    if(tokenObject.isPreview)return;
-    if(!game.user.isGM)return;
-    if(!options.refreshPosition)return;
-    if(tokenObject.animationContexts.size===0) return;
-    let animationContexts=tokenObject.animationContexts;
+Hooks.on("refreshToken", async (tokenObject, options) => {
+    if (tokenObject.isPreview) return;
+    if (!game.user.isGM) return;
+    if (!options.refreshPosition) return;
+    if (tokenObject.animationContexts.size === 0) return;
+    let animationContexts = tokenObject.animationContexts;
 
-    let first=animationContexts.entries().next();
-    let value=first.value;
-    let to=value[1].to;
-    let invalid=false;
-    if(to.x!==undefined&&(to.x!==tokenObject.x))invalid=true;
-    if(to.y!==undefined&&(to.y!==tokenObject.y))invalid=true;
-    if(invalid)return;
-    let tokenDocument=tokenObject.document;
+    let first = animationContexts.entries().next();
+    let value = first.value;
+    let to = value[1].to;
+    let invalid = false;
+    if (to.x !== undefined && to.x !== tokenObject.x) invalid = true;
+    if (to.y !== undefined && to.y !== tokenObject.y) invalid = true;
+    if (invalid) return;
+    let tokenDocument = tokenObject.document;
 
-   
-
-    
-    let actor=tokenObject.actor;
-    let aes=actor.effects;
-    for(const ae of aes){
-        if(!ae)continue;
-        if(ae.getFlag("fortyk","psy")){
-            let range=parseInt(ae.getFlag("fortyk","range"));
-            let casterId=ae.getFlag("fortyk","casterTokenId");
-            let casterToken=game.canvas.tokens.children[0].children.find((child)=>child.id===casterId);
-            let distance=tokenDistance(tokenObject,casterToken);
-            if(distance>range){
+    let actor = tokenObject.actor;
+    let aes = actor.effects;
+    for (const ae of aes) {
+        if (!ae) continue;
+        if (ae.getFlag("fortyk", "psy")) {
+            let range = parseInt(ae.getFlag("fortyk", "range"));
+            let casterId = ae.getFlag("fortyk", "casterTokenId");
+            let casterToken = game.canvas.tokens.children[0].children.find((child) => child.id === casterId);
+            let distance = tokenDistance(tokenObject, casterToken);
+            if (distance > range) {
                 await ae.delete();
             }
-        } 
+        }
     }
-    let psyPowers=actor.itemTypes.psychicPower;
-    for(const power of psyPowers){
-        if(power.getFlag("fortyk","sustained")){
-            let range=parseInt(power.getFlag("fortyk","sustainedrange"));
-            let buffs=power.getFlag("fortyk","sustained");
-            for(const buffId of buffs){
+    let psyPowers = actor.itemTypes.psychicPower;
+    for (const power of psyPowers) {
+        if (power.getFlag("fortyk", "sustained")) {
+            let range = parseInt(power.getFlag("fortyk", "sustainedrange"));
+            let buffs = power.getFlag("fortyk", "sustained");
+            for (const buffId of buffs) {
                 let buff = await fromUuid(buffId);
-                if(buff){
-                    let parent=buff.parent;
-                    if(parent instanceof Item){
-                        parent=parent.actor;
+                if (buff) {
+                    let parent = buff.parent;
+                    if (parent instanceof Item) {
+                        parent = parent.actor;
                     }
-                    let buffTarget=getActorToken(parent);
-                    let distance=tokenDistance(buffTarget, tokenObject);
-                    if(distance>range){
+                    let buffTarget = getActorToken(parent);
+                    let distance = tokenDistance(buffTarget, tokenObject);
+                    if (distance > range) {
                         await buff.delete();
                     }
                 }
             }
-
         }
     }
-    let auras=game.settings.get("fortyk","activeAuras");
+    let auras = game.settings.get("fortyk", "activeAuras");
 
-    for(const auraId of auras){
-        let aura=await fromUuid(auraId);
-        let caster=aura.actor;
-        let casterToken=getActorToken(caster);
-        let targets=[];
-        if(caster.id===actor.id){
-            targets=game.canvas.tokens.children[0].children;
-        }else{
+    for (const auraId of auras) {
+        let aura = await fromUuid(auraId);
+        let caster = aura.actor;
+        let casterToken = getActorToken(caster);
+        let targets = [];
+        if (caster.id === actor.id) {
+            targets = game.canvas.tokens.children[0].children;
+        } else {
             targets.push(tokenObject);
         }
-        let casterTokenDocument=casterToken.document;
-        let auraType=aura.system.auraType;
-        let range=parseInt(aura.getFlag("fortyk","sustainedrange"));
-        let auraName=aura.name;
-        let auraRecipients=aura.getFlag("fortyk", "sustained");
+        if(aura.system.notSelf){
+            targets=targets.filter((token)=>caster.id!==token.actor.id);
+        }
+        let casterTokenDocument = casterToken.document;
+        let auraType = aura.system.auraType;
+        let range = parseInt(aura.getFlag("fortyk", "sustainedrange"));
+        let auraName = aura.name;
+        let auraRecipients = aura.getFlag("fortyk", "sustained");
         let ae = aura.effects.entries().next().value[1];
         let aeData = foundry.utils.duplicate(ae);
 
@@ -1438,21 +1435,22 @@ Hooks.on("refreshToken", async(tokenObject, options)=>{
         let auraPR = aura.system.curPR.value;
         let adjustment = actorPR - auraPR;
 
-        aeData.flags = { fortyk: { adjustment: adjustment, psy: true , range: range, casterTokenId: casterToken.id} };
+        aeData.flags = { fortyk: { adjustment: adjustment, psy: true, range: range, casterTokenId: casterToken.id } };
 
         aeData.disabled = false;
         aeData.origin = caster.uuid;
         aeData.statuses = [ae.name];
-        for(const target of targets){
-            if(target.actor.getFlag("core",auraName)) continue;
-            switch(auraType){
-                case "friendly":if(target.document.disposition!==casterTokenDocument.disposition)continue;
+        for (const target of targets) {
+            if (target.actor.getFlag("core", auraName)) continue;
+            switch (auraType) {
+                case "friendly":
+                    if (target.document.disposition !== casterTokenDocument.disposition) continue;
                     break;
-                case "hostile":if(target.document.disposition===casterTokenDocument.disposition)continue;
-
+                case "hostile":
+                    if (target.document.disposition === casterTokenDocument.disposition) continue;
             }
-            let distance=tokenDistance(target,casterToken);
-            if(distance>range)continue;
+            let distance = tokenDistance(target, casterToken);
+            if (distance > range) continue;
 
             let render = false;
 
@@ -1462,16 +1460,12 @@ Hooks.on("refreshToken", async(tokenObject, options)=>{
             let effectuuid = await newAe.uuid;
 
             auraRecipients.push(effectuuid);
-
         }
         aura.setFlag("fortyk", "sustained", auraRecipients);
-
     }
 });
 
-
 Hooks.on("updateToken", async (token, diff, options, id) => {
-
     /*
     let effects=null;
     let data=null;
@@ -1792,10 +1786,10 @@ Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
             if (
                 actor &&
                 (actor.getFlag("fortyk", "jump") ||
-                 actor.getFlag("fortyk", "crawler") ||
-                 actor.getFlag("fortyk", "hoverer") ||
-                 actor.getFlag("fortyk", "flyer") ||
-                 actor.getFlag("fortyk", "skimmer"))
+                    actor.getFlag("fortyk", "crawler") ||
+                    actor.getFlag("fortyk", "hoverer") ||
+                    actor.getFlag("fortyk", "flyer") ||
+                    actor.getFlag("fortyk", "skimmer"))
             ) {
                 cost = 1;
             }
@@ -1840,7 +1834,7 @@ Hooks.once("item-piles-ready", async () => {
             {
                 path: "type",
                 filters:
-                "psychicPower,skill,mutation,malignancy,disorder,injury,talentntrait,advancement,mission,cadetHouse,repairEntry,outpost,knightSpirit,eliteAdvance"
+                    "psychicPower,skill,mutation,malignancy,disorder,injury,talentntrait,advancement,mission,cadetHouse,repairEntry,outpost,knightSpirit,eliteAdvance"
             }
         ],
 

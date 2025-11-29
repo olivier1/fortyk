@@ -9,7 +9,7 @@
     <div class="grid grid-3col">
         <div class="flexcol">
             <label>Name:</label>
-            <input type="text" value="{{name}}" name="name">
+            <input type="text" value="{{_source.name}}" name="name">
         </div>
         <div class="flexcol">
             <label>Discipline:</label>
@@ -75,7 +75,15 @@
             <label>Subtype:</label>
             <input type="text" value="{{system.subtype.value}}" name="system.subtype.value">
         </div>
-        {{#if (contains system.class.value "Psychic")}}
+        {{#if  (contains system.discipline.value "navigator")}}
+        <div class="flexcol">
+            Training:
+            <select class="power-training"  name="system.training.value">
+                {{selectOptions FORTYK.navigatorPowerTraining selected=system.training.value valueAttr="value" labelAttr="value"}}
+            </select>
+        </div>
+        {{/if}}
+        {{#if attack}}
         <div class="flexcol">
             <label>Damage:</label>
             <input type="text" value="{{system.damageFormula.formula}}" name="system.damageFormula.formula">
@@ -105,6 +113,10 @@
         {{/if}}
         {{else if (contains system.class.value "Aura")}}
         {{#if isGM}}
+        <div class="flexrow">
+                    <label>Don't affect self:</label>
+                    <input type="checkbox" class="aura-self" name="system.notSelf" {{checked system.notSelf}}>
+                </div>
         <div class="flexcol">
             <a class="modifier button">Aura Efffects</a>
         </div>
