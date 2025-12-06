@@ -1150,6 +1150,12 @@ Hooks.on("preDeleteCombat", async (combat, options, id) => {
                 await activeEffect.delete({});
             }
         }
+        let powers=actor.itemTypes.psychicPower;
+        for(let power of powers){
+            if(power.getFlag("fortyk","sustained")){
+                FortyKItem.cancelPsyBuffs(actor.uuid, power.id);
+            }
+        }
         if (actor.getFlag("fortyk", "evadeMod")) {
             await actor.setFlag("fortyk", "evadeMod", false);
         }
