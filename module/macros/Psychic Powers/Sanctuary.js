@@ -8,7 +8,6 @@ let actorToken = game.fortyk.getActorToken(actor);
 
 let actorPR=actor.system.psykana.pr.effective;
 let powerPR=power.system.curPR.value;
-let adjustment=actorPR-powerPR;
 let actorId=actor.uuid;
 
 let normalShieldData={name:"Sanctuary Shield",
@@ -16,8 +15,7 @@ let normalShieldData={name:"Sanctuary Shield",
                       flags:{
                           fortyk:{
                               sanctuary:true,
-                              adjustment:adjustment,
-                              origin:actorId
+                              origin:power.uuid
                           }
                       }};
 
@@ -30,7 +28,7 @@ aeData.name=ae.name;
 
 aeData.flags={fortyk:{psy:true, range: range, casterTokenId: actorToken.id}};
 aeData.disabled=false;
-aeData.origin=actorId;
+aeData.origin=power.uuid;
 aeData.statuses = [aeData.name];
 let itemUuIds=[]
 for(let i=0; i<targets.length;i++){

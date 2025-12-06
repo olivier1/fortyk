@@ -1238,6 +1238,12 @@ FORTYK.weaponFlags = {
         description:
             "Spray weapons use large area-effect shots to strike more foes, sacrificing range for wider coverage. Unlike other weapons,they have just one range and, when fired, hit all those in their area of effect. The wielder does not need to test Ballistic Skill; all creatures in the weapon’s path (a cone-shaped area extending in a 30° arc from the firer out to the weapon’s range) must make a Challenging (+0) Agility test or suffer one hit from the weapon. If the wielder does not possess the appropriate Weapon Training talent, targets gain a +20 bonus on the test; this rises to +30 if the weapon is Heavy and the wielder is not braced. Cover does not protect from Spray attacks unless it completely conceals a target. Because there is no attack roll, they are always considered to strike the Body location. They jam if the firer rolls a 9 on any damage dice (before any modifiers are applied). Due to the inaccurate nature of their design, they cannot be used to make Called Shot actions."
     },
+    sprayTough: {
+        value: false,
+        label: "Spray Toughness",
+        description:
+            "Spray weapons with this quality will target the toughness of their targets instead of the agility."
+    },
     storm: {
         value: false,
         label: "Storm",

@@ -21,7 +21,7 @@ for(const idPair of targetIds){
     aeData.flags={fortyk:{psy:true,range: range, casterTokenId: actorToken.id}};
     aeData.disabled=false;
     aeData.transfer=false;
-    aeData.origin=actorId;
+    aeData.origin=power.uuid;
     aeData.changes=[];
     if(weapon.getFlag("fortyk","razorsharp")){
         aeData.changes.push({key:"flags.fortyk.shredding",value:true,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM});
@@ -35,7 +35,7 @@ let mindAeData=foundry.utils.duplicate(power.effects.entries().next().value[1]);
 mindAeData.name=mindAeData.name;
 mindAeData.flags={fortyk:{psy:true, range: range, casterTokenId: actorToken.id}};
 mindAeData.disabled=false;
-mindAeData.origin=actor.uuid;
+mindAeData.origin=power.uuid;
 mindAeData.statuses = [mindAeData.name];
 for(const actorId of actorIds){
     let chosenActor=await fromUuid(actorId);

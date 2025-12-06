@@ -69,7 +69,7 @@ export class FortykRollDialogs {
             hits = fieldResult.hits;
             line += fieldResult.template;
             forcefielded = true;
-        }
+        }else{return}
 
         if (hits === 0) {
             htmlLine.innerHTML = line;
@@ -1717,13 +1717,27 @@ export class FortykRollDialogs {
                             let data = token.actor.system;
 
                             let testTarget = 0;
+                            let tough=false;
+                            if(weapon.getFlag("fortyk","sprayTough")){
+                                tough=true;
+                            }
                             if (tokenActor.type === "vehicle") {
                                 testTarget = data.crew.ratingTotal + mod;
                             } else {
-                                testTarget = data.characteristics.agi.total + mod;
+                                if(tough){
+                                    testTarget = data.characteristics.t.total + mod;
+                                }else{
+                                    testTarget = data.characteristics.agi.total + mod; 
+
+                                }
+
+                            }
+                            let testThingy="agi";
+                            if(tough){
+                                testThingy="t";
                             }
                             let test = await game.fortyk.FortykRolls.fortykTest(
-                                "agi",
+                                testThingy,
                                 "Test",
                                 testTarget,
                                 tokenActor,

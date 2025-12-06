@@ -15,7 +15,7 @@ for(const rangedWeapon of rangedWeapons){
     aeData.flags={fortyk:{psy:true, expireafterattack:true}};
     aeData.disabled=false;
     aeData.transfer=false;
-    aeData.origin=actor.id;
+    aeData.origin=power.id;
     aeData.changes=[];
     if(rangedWeapon.getFlag("fortyk","vengeful")){
         aeData.changes.push({key:"flags.fortyk.vengeful",value:-1*Math.ceil(pr/2),mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD});
@@ -31,7 +31,7 @@ for(const rangedWeapon of rangedWeapons){
 aeData.name=aeData.name;
 aeData.flags={fortyk:{psy:true, expireafterattack:true}};
 aeData.disabled=false;
-aeData.origin=actor.uuid;
+aeData.origin=power.uuid;
 aeData.statuses = [aeData.name];
 
 let aeInstance=await actor.createEmbeddedDocuments("ActiveEffect",[aeData]);

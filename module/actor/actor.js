@@ -107,7 +107,11 @@ export class FortyKActor extends Actor {
             // Apply changes in Actor size to Token width/height
             let newSize = data["system.secChar.size.value"];
             if (newSize===undefined) {
-                newSize = parseInt(data?.flags?.fortyk?.size) - 1;
+                newSize = parseInt(data["flags.fortyk.size"])-1;
+                if(isNaN(newSize)){
+                    newSize = parseInt(data?.flags?.fortyk?.size) - 1; 
+                }
+
                 if(isNaN(newSize)) newSize=undefined;
                 if (newSize) {
                     data["system.secChar.size.value"] = newSize;
@@ -294,7 +298,7 @@ export class FortyKActor extends Actor {
             }
             //data.psykana.pr.sustain = data.psykana.pr.sustained.length;
             //initialize sustained array
-            data.psykana.sustained = [];
+            data.psykana.pr.sustained = [];
         }
         if(this.getFlag("fortyk","navigator")){
             data.psykana.psykerType.value="navigator";
@@ -644,27 +648,37 @@ export class FortyKActor extends Actor {
     //OVERRIDE
     //custom function to manage effects that are linked to equippable items
     applyActiveEffects() {
+        
         let actor = this;
         let actorData = this;
         let data = this.system;
         let selfPsy = [];
-        data.postEffects=false;
-        
+        //data.postEffects=false;
+
         let otherAes=[];
         let prBuffs=[];
         for(const ae of this.effects){
             if (!ae.disabled) {
-                if (actor.uuid === ae.origin) {
-                    selfPsy.push(ae);
-                    continue;
+                let powerOriginId = ae.origin;
+
+                let powerOrigin=fromUuidSync(powerOriginId);
+                let powerActor=null;
+                if(powerOrigin){
+                    powerActor=powerOrigin.parent;
+                    if(!powerActor)continue;
+                    if (ae.getFlag("fortyk", "psy") && actor.uuid === powerActor.uuid) {
+                        selfPsy.push(ae);
+                        continue;
+                    }
                 }
-                var powerActor = fromUuidSync(ae.origin);
+
+
 
                 let proceed = false;
                 //check if ae is from an item if it origins drom a psychic power skip
 
-                if (!ae.getFlag("fortyk", "psy") && ae.origin) {
-                    let itemId = ae.origin.split(".")[3];
+                if (!ae.getFlag("fortyk", "psy") && powerOriginId) {
+                    let itemId = powerOriginId.split(".")[3];
                     let item = actor.getEmbeddedDocument("Item", itemId);
 
                     if (item) {
@@ -689,27 +703,30 @@ export class FortyKActor extends Actor {
                 }
                 //if item is equipped and/or not disabled
                 if (proceed) {
-                    ae.changes.forEach(function (change, i) {
+                    for(let change of ae.changes) {
                         let path = change.key.split(".");
                         let changeValue = change.value;
                         if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
                             if (typeof changeValue === "string") {
                                 if (changeValue.toLowerCase() === "true") {
-                                    return setNestedKey(actorData, path, true);
+                                    setNestedKey(actorData, path, true);
+                                    continue;
                                 } else if (changeValue.toLowerCase() === "false") {
-                                    return setNestedKey(actorData, path, false);
+                                    setNestedKey(actorData, path, false);
+                                    continue;
                                 }
                             }
                         }
                         if (ae.getFlag("fortyk", "psy")) {
-                            let adjustment = ae.getFlag("fortyk", "adjustment");
-                            if (!powerActor.system.isPrepared) {
+
+                            /*if (!powerActor.system.isPrepared) {
                                 data.postEffects=true;
-                                return; 
-                            }
-                            let actorPr = powerActor.system.psykana.pr.effective;
+                                continue; 
+                            }*/
+                            let powerPr = parseInt(powerOrigin.system.curPR.value);
+                            let prAdjust=powerActor.getPrAdjust();
                             let scope = powerActor.getScope();
-                            scope.pr = actorPr - adjustment;
+                            scope.pr = powerPr - prAdjust;
                             try {
                                 let changestr = changeValue;
                                 changeValue = Math.ceil(math.evaluate(changestr, scope));
@@ -718,7 +735,7 @@ export class FortyKActor extends Actor {
                             let pr =
                                 actor.system.psykana.pr.value +
                                 actor.system.psykana.pr.bonus -
-                                Math.max(0, actor.system.psykana.pr.sustain - 1);
+                                Math.max(0, actor.getPrAdjust());
                             if(changeValue.indexOf("pr")!==-1){
                                 try {
                                     let changestr = changeValue;
@@ -764,21 +781,20 @@ export class FortyKActor extends Actor {
                                 setNestedKey(actorData, path, changeValue);
                             }
                         }
-                    });
+                    }
                 }
             }
         }
-       
+
         if (selfPsy.length > 0) {
             for (let i = 0; i < selfPsy.length; i++) {
-                let pr =
-                    this.system.psykana.pr.value +
-                    this.system.psykana.pr.bonus -
-                    Math.max(0, this.system.psykana.pr.sustain - 1);
                 let ae = selfPsy[i];
-                let adjustment = ae.getFlag("fortyk", "adjustment");
+                let originPower=fromUuidSync(ae.origin);
+                let pr = parseInt(originPower.system.curPR.value)-this.getPrAdjust();
+                   
+                
+                
 
-                pr = pr - adjustment;
                 let selfScope = this.getScope();
                 selfScope.pr = pr;
                 ae.changes.forEach(function (change, i) {
@@ -1843,7 +1859,19 @@ export class FortyKActor extends Actor {
         actorData.eliteAdvances = eliteAdvances;
         actorData.armors = armors;
         actorData.forceFields = forceFields;
-
+        actorData.weapons=actorData.meleeWeapons.concat(actorData.rangedWeapons);
+        actorData.weapons=actorData.weapons.sort(function compare(a, b) {
+            let valueA = a.sort;
+            let valueB = b.sort;
+            if (valueA < valueB) {
+                return 1;
+            }
+            if (valueA > valueB) {
+                return -1;
+            }
+            // a must be equal to b
+            return 0;
+        });
         try {
             this._sortItems(actorData);
         } catch (err) {}
@@ -2782,6 +2810,20 @@ export class FortyKActor extends Actor {
             corr: system.secChar.corruption.value,
             pr: pr
         };
+    }
+    getPrAdjust(){
+        if(this.system.isPrepared){
+            return Math.max(0,this.system.psykana.pr.sustained.length-1);
+        }else{
+            let powers=this.itemTypes.psychicPower;
+            let sustained=-1;
+            for(let power of powers){
+                if(power.getFlag("fortyk", "sustained")){
+                    sustained++;
+                }
+            }
+            return Math.max(0,sustained);
+        }
     }
     deleteAfterAttackEffects() {
         for (const effect of this.effects) {

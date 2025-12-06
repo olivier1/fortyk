@@ -6,7 +6,7 @@ if(actor.getFlag("core","Might of Titan Buff"))return ui.notifications.warn("Mig
 aeData.name=aeData.name;
 aeData.flags={fortyk:{psy:true, expireafterattack:true}};
 aeData.disabled=false;
-aeData.origin=actor.uuid;
+aeData.origin=power.uuid;
 aeData.statuses = [aeData.name];
 
 let aeInstance=await actor.createEmbeddedDocuments("ActiveEffect",[aeData]);

@@ -168,7 +168,8 @@
                 <a class="item-create button" data-type="meleeWeapon" title="Add a Melee Weapon">Add melee weapon</a>
             </div>
             <div class="grid grid-2col item-list no-place">
-                {{#each actor.meleeWeapons}}
+                {{#each actor.weapons}}
+                {{#if (contains this.type "melee")}}
                 <div>
                     <div class="weapons grid grid-2col">
                         <div class="weapon-name item" data-item-id="{{this.id}}" data-uuid="{{this.uuid}}" data-type="{{this.type}}">
@@ -239,8 +240,7 @@
                         </div>
                     </div>
                 </div>
-                {{/each}}
-                {{#each actor.rangedWeapons}}
+                {{else}}
                 <div>
 
                     <div class="weapons grid grid-2col">
@@ -360,6 +360,7 @@
 
                     </div>
                 </div>
+                {{/if}}
                 {{/each}}
             </div>
         </div>

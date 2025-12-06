@@ -15,7 +15,7 @@ for(const rangedWeapon of rangedWeapons){
         aeData.flags={fortyk:{psy:true, expireafterattack:true}};
         aeData.disabled=false;
         aeData.transfer=false;
-        aeData.origin=actor.id;
+        aeData.origin=power.uuid;
         aeData.duration={rounds:0};
         aeData.changes=[];
         if(rangedWeapon.getFlag("fortyk","blast")){
@@ -35,7 +35,7 @@ if(effectIds.length<1){return;}
 aeData.name=aeData.name;
 aeData.flags={fortyk:{psy:true, expireafterattack:true}};
 aeData.disabled=false;
-aeData.origin=actor.uuid;
+aeData.origin=power.uuid;
 aeData.statuses = [aeData.name];
 
 let aeInstance=await actor.createEmbeddedDocuments("ActiveEffect",[aeData]);

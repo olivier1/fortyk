@@ -202,30 +202,17 @@ export class FortyKItem extends Item {
                     item.system.rating.overload = Math.ceil(math.evaluate(item.system.rating.overload, scope));
                 }
                 //logic for the sanctuary forcefields
-                if (item.getFlag("fortyk", "adjustment")) {
-                    let caster = fromUuidSync(item.getFlag("fortyk", "origin"));
-                    let actorPr;
-                    if (caster.uuid !== actor.uuid) {
-                        if (!caster.system.isPrepared) {
-                            caster.prepareData();
-                        }
-                        actorPr = caster.system.psykana.pr.effective;
-                    } else {
-                        actorPr =
-                            parseInt(actor.system.psykana.pr.value) +
-                            parseInt(actor.system.psykana.pr.bonus) -
-                            Math.max(0, actor.system.psykana.pr.sustain - 1);
-                    }
-                    let adjustment = item.getFlag("fortyk", "adjustment");
+                if (item.getFlag("fortyk", "sanctuary")) {
+                    
+                    let power = fromUuidSync(item.getFlag("fortyk", "origin"));
+                    let powerActor=power.parent;
 
-                    let pr = actorPr - adjustment;
+
+                    let pr = parseInt(power.system.curPR.value)-powerActor.getPrAdjust();
                     let max = 80;
-                    if (item.getFlag("fortyk", "sanctuary")) {
-                        item.system.rating.value = Math.min(max, 5 * pr);
-                    }
-                    if (item.getFlag("fortyk", "sanctuaryDaemon")) {
-                        item.system.rating.value = Math.min(max, 10 * pr);
-                    }
+                    item.system.rating.value = Math.min(max, 5 * pr);
+
+
                 }
 
                 return;
@@ -497,7 +484,7 @@ export class FortyKItem extends Item {
                         }
 
                         let training = item.FORTYK.navigatorTrainingBoni[item.system.training.value];
-                       
+
                         let char = 0;
                         if (item.system.testChar.value === "psy") {
                             char = psyniscience;
@@ -1274,14 +1261,14 @@ export class FortyKItem extends Item {
             aeData.name = ae.name;
             let actorPR = actor.system.psykana.pr.effective;
             let powerPR = power.system.curPR.value;
-            let adjustment = actorPR - powerPR;
+
 
             aeData.flags = {
-                fortyk: { adjustment: adjustment, psy: true, range: range, casterTokenId: actorToken.id }
+                fortyk: { psy: true, range: range, casterTokenId: actorToken.id }
             };
 
             aeData.disabled = false;
-            aeData.origin = actorId;
+            aeData.origin = power.uuid;
             aeData.statuses = [ae.name];
 
             let effectUuIds = [];
@@ -1345,14 +1332,14 @@ export class FortyKItem extends Item {
             aeData.name = ae.name;
             let actorPR = actor.system.psykana.pr.effective;
             let powerPR = power.system.curPR.value;
-            let adjustment = actorPR - powerPR;
+
 
             aeData.flags = {
-                fortyk: { adjustment: adjustment, psy: true, range: range, casterTokenId: actorToken.id }
+                fortyk: { psy: true, range: range, casterTokenId: actorToken.id }
             };
 
             aeData.disabled = false;
-            aeData.origin = actorId;
+            aeData.origin = power.uuid;
             aeData.statuses = [ae.name];
 
             let effectUuIds = [];
