@@ -92,10 +92,7 @@ export class FortyKItem extends Item {
         if (this.system.quality?.value) {
             this.name = `(${this.FORTYK.itemQualityAbrv[this.system.quality.value]}) ${this._source.name}`;
         }
-        if(this.type==="psychicPower"&&this.system.discipline.value==="Navigator"){
-            this.name = `${this._source.name}: ${this.system.training.value}`;
-            item.system.cost.value=item.FORTYK.navigatorPowerCosts[item.system.training.value];
-        }
+        
 
         let qualityMods = this.FORTYK.qualityMods;
         if (item.type === "armor") {

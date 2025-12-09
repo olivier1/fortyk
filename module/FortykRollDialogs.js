@@ -1,7 +1,7 @@
 import { FortykRolls } from "./FortykRolls.js";
 import { getActorToken } from "./utilities.js";
 import { tokenDistance } from "./utilities.js";
-import { isBlastTarget} from "./utilities.js";
+import { isBlastTarget } from "./utilities.js";
 export class FortykRollDialogs {
     //activate chatlisteners
     static chatListeners(html) {
@@ -12,6 +12,7 @@ export class FortykRollDialogs {
         html.on("mouseup", ".reroll-popup", this._onPopupReroll.bind(this));
         html.on("click", ".blast-evade", this._onBlastClick.bind(this));
         html.on("click", ".ping-template", this._onTemplateClick.bind(this));
+        html.on("click", ".nav-gaz-ping", this._onNavClick.bind(this));
     }
     static async _onTemplateClick(event) {
         const dataset = event.currentTarget.dataset;
@@ -28,7 +29,7 @@ export class FortykRollDialogs {
         const token = canvas.tokens.get(tokenId);
         await canvas.animatePan({ x: token.center.x, y: token.center.y });
         game.canvas.ping({ x: token.center.x, y: token.center.y }, { duration: 2000 });
-        if (!game.user.isGM)return;
+        if (!game.user.isGM) return;
         var targetElement = event.currentTarget;
         const messageId = $(targetElement).closest(".chat-message")[0].dataset.messageId;
         let messageContent = $(targetElement).closest(".message-content")[0];
@@ -43,41 +44,39 @@ export class FortykRollDialogs {
         let actor = token.actor;
         let weapon = actor.items.get(weaponId);
         let line =
-            `<a class="spray-torrent-ping" data-user="${userId}" data-hits="${0}" data-remaining-hits={{hits}} data-token="${tokenId}">` +
+            `<a class="blast-evade" data-user="${userId}" data-hits="${0}" data-remaining-hits={{hits}} data-token="${tokenId}">` +
             actor.getName() +
             "</a> ";
-        let hitTemplates=message.flags.fortyk.targets[tokenId].templateIds;
+        let hitTemplates = message.flags.fortyk.targets[tokenId].templateIds;
         let forcefielded = false;
         let forcefield = actor.system.secChar.wornGear.forceField;
         if (!jQuery.isEmptyObject(forcefield) && !forcefield.system.broken.value) {
             let fieldResult = await FortykRolls.fortykForcefieldTest(forcefield, actor, hits, true);
-            foundry.audio.AudioHelper.play(
-                { src: "sounds/dice.wav", volume: 1, autoplay: true, loop: false },
-                true
-            );
-            for(const [index, result] of fieldResult.results.entries()){
-                if(result?.pass||result.overload){
-                    let template=await fromUuid(hitTemplates[index]);
-                    let ignoreArray=template.getFlag("fortyk","ignores");
-                    if(!ignoreArray){
-                        ignoreArray=[];
+            foundry.audio.AudioHelper.play({ src: "sounds/dice.wav", volume: 1, autoplay: true, loop: false }, true);
+            for (const [index, result] of fieldResult.results.entries()) {
+                if (result?.pass || result.overload) {
+                    let template = await fromUuid(hitTemplates[index]);
+                    let ignoreArray = template.getFlag("fortyk", "ignores");
+                    if (!ignoreArray) {
+                        ignoreArray = [];
                     }
                     ignoreArray.push(token.id);
-                    template.setFlag("fortyk","ignores",ignoreArray);
+                    template.setFlag("fortyk", "ignores", ignoreArray);
                 }
             }
             hits = fieldResult.hits;
             line += fieldResult.template;
             forcefielded = true;
-        }else{return}
+        } else {
+            return;
+        }
 
         if (hits === 0) {
             htmlLine.innerHTML = line;
-            let update={};
-            update[`flags.fortyk.targets.${tokenId}`]=null;
-            update.content=messageContent.innerHTML;
+            let update = {};
+            update[`flags.fortyk.targets.${tokenId}`] = null;
+            update.content = messageContent.innerHTML;
             message.update(update);
-
 
             return;
         }
@@ -86,6 +85,68 @@ export class FortykRollDialogs {
         message.update({ content: messageContent.innerHTML });
         return;
     }
+    //handles navigator gaze results
+    static async _onNavClick(event) {
+        const dataset = event.currentTarget.dataset;
+        const tokenId = dataset.token;
+        const weaponId = dataset.weapon;
+        let hits = dataset.hits;
+        hits = parseInt(hits);
+        const token = canvas.tokens.get(tokenId);
+        await canvas.animatePan({ x: token.center.x, y: token.center.y });
+        game.canvas.ping({ x: token.center.x, y: token.center.y }, { duration: 2000 });
+        if (game.user.isGM) {
+            var targetElement = event.currentTarget;
+            const messageId = $(targetElement).closest(".chat-message")[0].dataset.messageId;
+            let messageContent = $(targetElement).closest(".message-content")[0];
+            const message = game.messages.get(messageId);
+            let htmlLine = targetElement.parentElement;
+            const userId = dataset.user;
+            const user = game.users.get(userId);
+            let targets = user.targets;
+            if (hits === 0) return;
+            let actor = token.actor;
+            let weapon = actor.items.get(weaponId);
+            let line =
+                `<a class="nav-gaze-ping" data-user="${userId}" data-hits="${0}" data-remaining-hits={{hits}} data-token="${tokenId}">` +
+                actor.getName() +
+                "</a> ";
+
+            let forcefielded = false;
+            let forcefield = actor.system.secChar.wornGear.forceField;
+            if (!jQuery.isEmptyObject(forcefield) && !forcefield.system.broken.value) {
+                let fieldResult = await FortykRolls.fortykForcefieldTest(forcefield, actor, hits, true);
+                foundry.audio.AudioHelper.play(
+                    { src: "sounds/dice.wav", volume: 1, autoplay: true, loop: false },
+                    true
+                );
+                hits = fieldResult.hits;
+                line += fieldResult.template;
+                forcefielded = true;
+            }
+
+            if (hits === 0) {
+                htmlLine.innerHTML = line;
+                message.update({ content: messageContent.innerHTML });
+                if (user.id !== game.user.id) {
+                    let socketOp = { type: "removeTarget", package: { user: userId, token: token.id } };
+                    game.socket.emit("system.fortyk", socketOp);
+                } else {
+                    token.setTarget(false, { releaseOthers: false });
+                }
+
+                return;
+            }
+            if (forcefielded) line += `</br>${actor.getName()}`;
+            
+
+            htmlLine.innerHTML = line.replace("{{hits}}", hits);
+            message.update({ content: messageContent.innerHTML });
+            return;
+        }
+    }
+    
+    
     //handles spray and torrent attack results
     static async _onSprayTorrentClick(event) {
         const dataset = event.currentTarget.dataset;
@@ -241,13 +302,15 @@ export class FortykRollDialogs {
         const messageId = chatMessageNode.dataset.messageId;
         const message = game.messages.get(messageId);
         if (message) {
-            if(message.isOwner){
+            if (message.isOwner) {
                 message.update({ content: chatContentNode.innerHTML });
-            }else{
-                let socketOp = { type: "updateMessage", package: { message: message.id, update: { content: chatContentNode.innerHTML } } };
+            } else {
+                let socketOp = {
+                    type: "updateMessage",
+                    package: { message: message.id, update: { content: chatContentNode.innerHTML } }
+                };
                 game.socket.emit("system.fortyk", socketOp);
             }
-
         }
     }
     //handles test rerolls
@@ -324,46 +387,42 @@ export class FortykRollDialogs {
             let mod = char.mod;
             modifierTracker.push({ value: base, label: "Characteristic Base" });
             modifierTracker.push({ value: adv, label: "Caracteristic Advance" });
-            if(mod){
-                modifier+=mod;
+            if (mod) {
+                modifier += mod;
                 modifierTracker.push({ value: mod, label: "Characteristic Modifier" });
             }
-
-
-
         }
 
         let global = actor.system.globalMOD.value;
-        modifier+=global;
+        modifier += global;
         modifierTracker.push({ value: global, label: "Global modifier" });
         if (testType === "skill" || testType === "evasion") {
             let training = item?.system?.value;
-            if(training){
-                modifier+=training;
+            if (training) {
+                modifier += training;
                 modifierTracker.push({ value: training, label: "Skill Training" });
             }
 
             let skillMod = item?.system?.mod?.value;
-            if(skillMod){
-                modifier+=skillMod;
+            if (skillMod) {
+                modifier += skillMod;
 
                 modifierTracker.push({ value: skillMod, label: "Skill Modifier" });
             }
-
         }
         if (testType === "fear") {
             let fearMod = parseInt(actor.system.secChar.fearMod);
-            if(fearMod!==0){
-                modifierTracker.push({ value: fearMod, label: "Miscellenaous Fear Modifiers" });  
+            if (fearMod !== 0) {
+                modifierTracker.push({ value: fearMod, label: "Miscellenaous Fear Modifiers" });
             }
-            modifier+=fearMod;
+            modifier += fearMod;
             testTarget += fearMod;
             if (
                 actor.getFlag("fortyk", "resistance") &&
                 actor.getFlag("fortyk", "resistance").toLowerCase().includes("fear")
             ) {
                 testTarget += 10;
-                modifier+=10;
+                modifier += 10;
                 modifierTracker.push({ value: 10, label: "Resistance" });
             }
         }
@@ -377,30 +436,30 @@ export class FortykRollDialogs {
             if (actor.getFlag("fortyk", "evadeMod")) {
                 var evadeMod = parseInt(actor.getFlag("fortyk", "evadeMod"));
                 testTarget += evadeMod;
-                modifier+=evadeMod;
+                modifier += evadeMod;
                 modifierTracker.push({ value: actor.getFlag("fortyk", "evadeMod"), label: "Evasion Modifier" });
             }
             if (actor.getFlag("core", "luminagen")) {
                 testTarget -= 10;
-                modifier-=10;
+                modifier -= 10;
                 modifierTracker.push({ value: -10, label: "Luminagen" });
             }
             if (actor.getFlag("core", "holyShield")) {
                 modifierTracker.push({ value: 10, label: "Guarded Action" });
                 testTarget += 10;
-                modifier+=10;
+                modifier += 10;
             }
             if (actor.getFlag("fortyk", "versatile") && actor.getFlag("fortyk", "expertise")) {
                 testTarget += 10;
-                modifier+=10;
+                modifier += 10;
                 modifierTracker.push({ value: 10, label: "Versatility" });
             }
         }
         let modifierString;
-        if(modifier>=0){
-            modifierString="+"+modifier.toString();
-        }else{
-            modifierString=modifier.toString();
+        if (modifier >= 0) {
+            modifierString = "+" + modifier.toString();
+        } else {
+            modifierString = modifier.toString();
         }
         return await Dialog.wait({
             title: title,
@@ -709,10 +768,10 @@ export class FortykRollDialogs {
                 vehicle = true;
                 templateOptions.vehicle = true;
             }
-            let conceal = tar.getFlag("fortyk","conceal");
-            if(conceal){
-                miscMods-=parseInt(conceal);
-                modifierTracker.push({value:conceal, label:"Conceal Penalty"});
+            let conceal = tar.getFlag("fortyk", "conceal");
+            if (conceal) {
+                miscMods -= parseInt(conceal);
+                modifierTracker.push({ value: conceal, label: "Conceal Penalty" });
             }
             if (!vehicle) {
                 if (tar.system.horde.value) {
@@ -1141,14 +1200,14 @@ export class FortykRollDialogs {
             let tarActor = target.actor;
             let tar = tarActor;
             templateOptions["options"].inmelee = this.checkMelee(target);
-            let conceal = tar.getFlag("fortyk","conceal");
-            if(conceal){
-                miscMods-=parseInt(conceal);
-                modifierTracker.push({value:conceal, label:"Conceal Penalty"});
+            let conceal = tar.getFlag("fortyk", "conceal");
+            if (conceal) {
+                miscMods -= parseInt(conceal);
+                modifierTracker.push({ value: conceal, label: "Conceal Penalty" });
             }
-            if(tarActor.getFlag("core","The Shrouding")&&!actor.getFlag("core","The Shrouding")){
-                miscMods+=-30;
-                modifierTracker.push({value:-30, label:"The Shrouding"});
+            if (tarActor.getFlag("core", "The Shrouding") && !actor.getFlag("core", "The Shrouding")) {
+                miscMods += -30;
+                modifierTracker.push({ value: -30, label: "The Shrouding" });
             }
             if (tarActor.getFlag("fortyk", "dark")) {
                 templateOptions.options.targetDark = true;
@@ -1498,6 +1557,196 @@ export class FortykRollDialogs {
             width: 400
         }).render(true);
     }
+    static async callNavigatorPowerDialog(
+        testChar,
+        testType,
+        testTarget,
+        actor,
+        testLabel,
+        item,
+        sheet,
+        modifiers,
+        modifierTracker = []
+
+    ) {
+        let template = "systems/fortyk/templates/actor/dialogs/navigator-power-dialog.html";
+        let templateOptions = {};
+        let actionType = item.system.action.value;
+        if (actionType.toLowerCase() === "reaction") {
+            let reactions = actor.system.reactions;
+            let spentReactions = actor.getFlag("core", "evasion");
+            if (spentReactions >= reactions) return ui.notifications.warn("Out of reactions!");
+        }
+        let powerType = item.system.class.value;
+        let gaze = powerType === "Navigator Gaze";
+        templateOptions.gaze = gaze;
+        var focusedGazed = actor.getFlag("fortyk", "focusedgaze");
+        templateOptions.focusedGaze = focusedGazed;
+        modifierTracker = modifierTracker.concat(item.system.modifiers);
+        let renderedTemplate = await renderTemplate(template, templateOptions);
+
+        new Dialog({
+            title: `${item.name} Navigator Power Test.`,
+            classes: "fortky",
+            content: renderedTemplate,
+            buttons: {
+                submit: {
+                    label: "OK",
+                    callback: async (html) => {
+                        let other = Number($(html).find('input[name="other"]').val());
+                        modifierTracker.push({ value: other, label: "Input Modifier" });
+                        let fog;
+                        let warned;
+                        let focusGaze;
+
+                        testTarget = parseInt(testTarget) + parseInt(other);
+                        if (gaze) {
+                            fog = document.getElementById("fog").checked;
+                            warned = document.getElementById("warned").checked;
+                            let fat = parseInt(actor.system.secChar.fatigue.value);
+                            if (focusedGazed) {
+                                focusGaze = document.getElementById("focus").checked;
+                                
+                                if(focusGaze)fat++;
+                            }
+
+                            fat++;
+
+                            actor.update({ "system.secChar.fatigue.value": fat });
+                        }
+                        let test = await FortykRolls.fortykTest(
+                            testChar,
+                            testType,
+                            testTarget,
+                            actor,
+                            testLabel,
+                            item,
+                            false,
+                            "",
+                            false,
+                            modifierTracker
+                        );
+                        if (test.value && gaze) {
+                            let range = 15;
+                            if (fog) range = 5;
+                            let casterToken = getActorToken(actor);
+                            let targetTokens;
+                            if(focusGaze){
+                                const templateData = {
+                                    t: "cone",
+
+                                    author: game.userId,
+
+                                    distance: range,
+
+                                    direction: 45,
+                                    angle: 30,
+
+                                    x: 1000,
+
+                                    y: 1000,
+
+                                    fillColor: game.user.color
+                                };
+
+                                const templateDoc = new MeasuredTemplateDocument(templateData, { parent: canvas.scene });
+
+                                const template = new game.fortyk.FortykTemplate(templateDoc);
+                                sheet.minimize();
+                                await template.drawPreview();
+                                sheet.maximize(); 
+                                let scene = game.canvas.scene;
+                                targetTokens = this.getSprayTargets(template, scene, actor)[0];
+                            }else{
+                                targetTokens = game.canvas.tokens.children[0].children.filter((token) => {
+                                    return tokenDistance(token, casterToken) <= range;
+                                });
+
+                            }
+
+                            let messageContent = "";
+                            let updatedtargets = [];
+                            let rolls = [];
+                            let i = 1;
+                            for (let token of targetTokens) {
+                                let tokenActor = token.actor;
+                                if (tokenActor.id === actor.id) continue;
+                                if (tokenActor.getFlag("core", "dead")) continue;
+                                if (tokenActor.getFlag("fortyk", "daemonic"))continue;
+                                if (tokenActor.getFlag("fortyk", "machine"))continue;
+                                if (tokenActor.getFlag("fortyk", "frombeyond"))continue;
+                                let tokenActorData = token.actor;
+                                let data = token.actor.system;
+
+                                let testTarget = 0;
+
+                                if (tokenActor.type === "vehicle") {
+                                    continue;
+                                } else {
+                                    let mod=0;
+                                    if(warned&&(token.disposition===casterToken.disposition||tokenActor.getFlag("core","stunned")||tokenActor.getFlag("core","unconscious")||tokenActor.getFlag("core","blind"))){
+                                        mod+=30;
+                                    }
+
+                                    testTarget = data.characteristics.wp.total+mod;
+                                }
+                                let testThingy = "wp";
+
+                                let targetTest = await game.fortyk.FortykRolls.fortykTest(
+                                    testThingy,
+                                    "Test",
+                                    testTarget,
+                                    tokenActor,
+                                    "Resist Navigator Gaze",
+                                    item,
+                                    false,
+                                    "",
+                                    true
+                                );
+                                let hit = 0;
+                                if (!targetTest.value||targetTest.value&&targetTest.dos<test.dos) {
+                                    updatedtargets.push(token.id);
+                                    hit++;
+                                }
+
+                                messageContent +=
+                                    `<div class="chat-target"><a class="nav-gaze-ping" data-weapon="${item.id}" data-user="${game.user.id}" data-hits="${hit}" data-token="${token.id}">${token.name}'s</a> ` +
+                                    targetTest.template +
+                                    `</div>`;
+                                let r = test.roll;
+                                r.dice[0].options.rollOrder = i;
+                                rolls.push(test.roll);
+                                i++;
+                            }
+                            messageContent += `<div class="chat-target">Selected targets can roll their forcefields to negate if available.</div>`;
+                            game.user.updateTokenTargets(updatedtargets);
+                            game.user.broadcastActivity({ targets: updatedtargets });
+                            
+
+                            let name = actor.getName();
+
+                            let chatOptions = {
+                                author: game.user._id,
+                                speaker: { actor, alias: name },
+                                rolls: rolls,
+                                content: messageContent,
+                                classes: ["fortyk"],
+                                sound: "sounds/dice.wav",
+                                flavor: `Navigator Gaze result`
+                            };
+
+                            await ChatMessage.create(chatOptions, {});
+
+
+                        }
+                    }
+                }
+            },
+            default: "submit",
+
+            width: 200
+        }).render(true);
+    }
     static async callFocusPowerDialog(
         testChar,
         testType,
@@ -1532,7 +1781,7 @@ export class FortykRollDialogs {
 
                         testTarget = parseInt(testTarget) + parseInt(other);
 
-                        let test= await FortykRolls.fortykTest(
+                        let test = await FortykRolls.fortykTest(
                             testChar,
                             testType,
                             testTarget,
@@ -1544,9 +1793,9 @@ export class FortykRollDialogs {
                             false,
                             modifierTracker
                         );
-                        if(actor.getFlag("fortyk","soulblaze")&&test.value){
-                            let pr=actor.system.psykana.pr.effective;
-                            this.soulBlaze(actor, pr, actor.getFlag("fortyk","iconofburningflame"));
+                        if (actor.getFlag("fortyk", "soulblaze") && test.value) {
+                            let pr = actor.system.psykana.pr.effective;
+                            this.soulBlaze(actor, pr, actor.getFlag("fortyk", "iconofburningflame"));
                         }
                     }
                 }
@@ -1556,19 +1805,19 @@ export class FortykRollDialogs {
             width: 200
         }).render(true);
     }
-    static async soulBlaze(actor, pr, icon){
+    static async soulBlaze(actor, pr, icon) {
         let tokens = canvas.tokens.children[0].children;
 
-        let sourceToken=getActorToken(actor);
-        let messageContent="";
-        let tests=[];
-        for(let token of tokens){
-            let tokenActor=token.actor;
-            if(token.id===sourceToken.id)continue;
-            if(tokenActor.getFlag("fortyk","daemonic")){
-                let distance= tokenDistance(token,sourceToken);
-                if(distance<=pr){
-                    let test= await FortykRolls.fortykTest(
+        let sourceToken = getActorToken(actor);
+        let messageContent = "";
+        let tests = [];
+        for (let token of tokens) {
+            let tokenActor = token.actor;
+            if (token.id === sourceToken.id) continue;
+            if (tokenActor.getFlag("fortyk", "daemonic")) {
+                let distance = tokenDistance(token, sourceToken);
+                if (distance <= pr) {
+                    let test = await FortykRolls.fortykTest(
                         "wp",
                         "char",
                         tokenActor.system.characteristics.wp.total,
@@ -1580,16 +1829,19 @@ export class FortykRollDialogs {
                         true,
                         []
                     );
-                    messageContent+=`<div class="chat-target"><a class="blast-ping" data-token="${token.id}">` +
-                        token.name + `'s</a> `+ test.template + `</div>`;
-                    test.token=token;
-                    test.tokenActor=tokenActor;
+                    messageContent +=
+                        `<div class="chat-target"><a class="blast-ping" data-token="${token.id}">` +
+                        token.name +
+                        `'s</a> ` +
+                        test.template +
+                        `</div>`;
+                    test.token = token;
+                    test.tokenActor = tokenActor;
                     tests.push(test);
-
                 }
             }
         }
-        if(!messageContent)return;
+        if (!messageContent) return;
         let chatOptions = {
             author: game.user._id,
             speaker: { actor, alias: actor.getName() },
@@ -1600,10 +1852,10 @@ export class FortykRollDialogs {
         };
 
         await ChatMessage.create(chatOptions, {});
-        for(let test of tests){
-            if(!test.value){
-                let token=test.token;
-                let tokenActor=test.tokenActor;
+        for (let test of tests) {
+            if (!test.value) {
+                let token = test.token;
+                let tokenActor = test.tokenActor;
 
                 let fireData = { name: "Purifying Fire", type: "rangedWeapon" };
                 let fire = await Item.create(fireData, { temporary: true });
@@ -1614,21 +1866,16 @@ export class FortykRollDialogs {
                 fire.flags.fortyk = { ignoreSoak: true };
                 fire.system.damageFormula.value = `${pr}`;
 
-
-
-
                 await FortykRolls.damageRoll(fire.system.damageFormula, tokenActor, fire, 1, true);
                 let fireActiveEffect = foundry.utils.duplicate(
-                    game.fortyk.FORTYK.StatusEffects[
-                        game.fortyk.FORTYK.StatusEffectsIndex.get("purifyingflame")
-                    ]
+                    game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("purifyingflame")]
                 );
                 fireActiveEffect.flags = {
-                    fortyk: { damageString: `1d10+${pr}`}
+                    fortyk: { damageString: `1d10+${pr}` }
                 };
-                fireActiveEffect.flags.fortyk.pr=pr;
-                if(icon){
-                    fireActiveEffect.flags.fortyk.iconofburningflame=true;
+                fireActiveEffect.flags.fortyk.pr = pr;
+                if (icon) {
+                    fireActiveEffect.flags.fortyk.iconofburningflame = true;
                 }
                 FortykRolls.applyActiveEffect(token, [fireActiveEffect], false);
             }
@@ -1642,7 +1889,7 @@ export class FortykRollDialogs {
         if (weapon.type === "psychicPower") {
             psy = true;
             consumption = 0;
-        }else{
+        } else {
             consumption = weapon.system.clip.consumption;
         }
 
@@ -1708,8 +1955,8 @@ export class FortykRollDialogs {
                         let updatedtargets = [];
                         let rolls = [];
                         let i = 1;
-                        for (let tokenId of targets) {
-                            let token = canvas.tokens.get(tokenId);
+                        for (let token of targets) {
+
                             let tokenActor = token.actor;
                             if (tokenActor.id === actor.id) continue;
                             if (tokenActor.getFlag("core", "dead")) continue;
@@ -1717,24 +1964,22 @@ export class FortykRollDialogs {
                             let data = token.actor.system;
 
                             let testTarget = 0;
-                            let tough=false;
-                            if(weapon.getFlag("fortyk","sprayTough")){
-                                tough=true;
+                            let tough = false;
+                            if (weapon.getFlag("fortyk", "sprayTough")) {
+                                tough = true;
                             }
                             if (tokenActor.type === "vehicle") {
                                 testTarget = data.crew.ratingTotal + mod;
                             } else {
-                                if(tough){
+                                if (tough) {
                                     testTarget = data.characteristics.t.total + mod;
-                                }else{
-                                    testTarget = data.characteristics.agi.total + mod; 
-
+                                } else {
+                                    testTarget = data.characteristics.agi.total + mod;
                                 }
-
                             }
-                            let testThingy="agi";
-                            if(tough){
-                                testThingy="t";
+                            let testThingy = "agi";
+                            if (tough) {
+                                testThingy = "t";
                             }
                             let test = await game.fortyk.FortykRolls.fortykTest(
                                 testThingy,
@@ -1754,7 +1999,7 @@ export class FortykRollDialogs {
                             }
 
                             messageContent +=
-                                `<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="${hit}" data-token="${tokenId}">${token.name}'s</a> ` +
+                                `<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="${hit}" data-token="${token.id}">${token.name}'s</a> ` +
                                 test.template +
                                 `</div>`;
                             let r = test.roll;
@@ -1862,8 +2107,8 @@ export class FortykRollDialogs {
                         let rolls = [];
                         let i = 1;
                         let targetList = [];
-                        for (let tokenId of targets) {
-                            let token = canvas.tokens.get(tokenId);
+                        for (let token of targets) {
+
 
                             let tokenActor = token.actor;
                             if (tokenActor.id === actor.id) continue;
@@ -1894,7 +2139,7 @@ export class FortykRollDialogs {
                                 targetList.push({ name: token.name, test: test, hits: 0, tokenId: tokenId });
                             } else {
                                 messageContent +=
-                                    `<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="0" data-token="${tokenId}">${token.name}'s</a> ` +
+                                    `<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="0" data-token="${token.id}">${token.name}'s</a> ` +
                                     test.template +
                                     `</div>`;
                             }
@@ -1979,7 +2224,7 @@ export class FortykRollDialogs {
         let attackerToken = getActorToken(attacker);
         let tokens = scene.tokens;
         let targets = [];
-        let gridRatio =  scene.dimensions.distance/scene.dimensions.size;
+        let gridRatio = scene.dimensions.distance / scene.dimensions.size;
 
         let targetted = [];
 
@@ -2011,7 +2256,7 @@ export class FortykRollDialogs {
                 isTargetted = FortykRollDialogs.rectangleIntersectsPolygon(bounds, tokenBounds);
             }
             if (isTargetted) {
-                targetted.push(token.id);
+                targetted.push(token);
             }
 
             /*if(bounds.overlaps(tokenBounds)){

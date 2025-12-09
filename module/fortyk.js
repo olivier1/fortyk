@@ -1136,6 +1136,7 @@ Hooks.on("updateCombat", async (combat) => {
 });
 Hooks.on("preDeleteCombat", async (combat, options, id) => {
     let combatants = combat.combatants;
+    
     combatants.forEach(async (combatant) => {
         let actor = combatant.actor;
         let tempMod = actor.system.secChar.tempMod.value;
@@ -1167,7 +1168,7 @@ Hooks.on("preDeleteCombat", async (combat, options, id) => {
         }
         await actor.update({ "system.secChar.lastHit.type": null });
     });
-    for (let index = 0; index < combat.combatants.length; index++) {}
+    game.settings.set("fortyk", "activeAuras",[]);
 });
 Hooks.on("preUpdateActor", (data, updatedData) => {});
 //add listeners to the chatlog for dice rolls

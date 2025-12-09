@@ -770,8 +770,20 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 testLabel += ` at PR ${pr}`;
             } else {
                 let training = item.system.training.value;
-                testLabel += ` at ${training} training`;
+                
                 modifierTracker.push({ value: training, label: "Power Training" });
+                FortykRollDialogs.callNavigatorPowerDialog(
+                    testChar,
+                    testType,
+                    testTarget,
+                    this.actor,
+                    testLabel,
+                    item,
+                    this,
+                    attackOptions,
+                    modifierTracker
+                );
+                return;
             }
 
             FortykRollDialogs.callFocusPowerDialog(

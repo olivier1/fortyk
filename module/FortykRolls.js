@@ -1647,7 +1647,7 @@ returns the roll message*/
                         let tarDaemon = false;
                         if (daemonic) tarDaemon = true;
                         let tarMachine = false;
-                        if (tarActor.getFlag("fortyk", "machine")) tarDaemon = true;
+                        if (tarActor.getFlag("fortyk", "machine")) tarMachine = true;
                         if (
                             fortykWeapon.getFlag("fortyk", "fueledbyslaughter") &&
                             !vehicle &&

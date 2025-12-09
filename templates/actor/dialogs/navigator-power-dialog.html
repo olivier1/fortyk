@@ -1,0 +1,23 @@
+
+<div class="flexcol">
+    {{#if gaze}}
+    <div class="flexrow">
+        <label>Fog</label>
+        <input type="checkbox" id="fog">
+    </div>
+    <div class="flexrow">
+        <label>Warn Friends</label>
+        <input type="checkbox" id="warned">
+    </div>
+    {{#if focusedGaze}}
+    <div class="flexrow">
+        <label>Focus Gaze</label>
+        <input type="checkbox" id="focus">
+    </div>
+    {{/if}}
+    {{/if}}
+    <div class="flexrow">
+        <label>Modifier</label>
+    <input type="number" id="modifier" name="other" value="0">
+    </div>
+</div>

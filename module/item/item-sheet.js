@@ -93,6 +93,8 @@ export class FortyKItemSheet extends ItemSheet {
                     // a must be equal to b
                     return 0;
                 });
+                
+
             } else {
                 data.compendiumItems = [];
             }
@@ -290,18 +292,18 @@ export class FortyKItemSheet extends ItemSheet {
                                     modData.type = "mod";
                                     modData.effects = [foundry.utils.duplicate(activeEffect)];
                                     if (item.parent) {
-                                        
+
                                         await item.parent.createEmbeddedDocuments("Item", [modData]);
-                                        
+
                                     }
                                 }
                             } 
                             await this.item.deleteEmbeddedDocuments("ActiveEffect", [itemId]);
                             this.render(true);
-                                        let apps = item.parent.apps;
-                                        for (const appKey in apps) {
-                                            apps[appKey].render(true);
-                                        }
+                            let apps = item.parent.apps;
+                            for (const appKey in apps) {
+                                apps[appKey].render(true);
+                            }
                             this.render(true);
                         }
                     },
@@ -374,7 +376,7 @@ export class FortyKItemSheet extends ItemSheet {
         bonuses.push(bonus);
         this.item.update({ "system.items": bonuses });
         this.chosenItem = null;
-        this.choseItemName = null;
+        this.chosenItemName = null;
         document.getElementById("add").setAttribute("disabled", "");
         this.render();
     }

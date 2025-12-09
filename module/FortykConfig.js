@@ -1939,6 +1939,11 @@ FORTYK.characterTypeFeatureLabels = {
         planet: "Cadet Branch",
         background: "Education",
         role: "Role"
+    },
+    navigator: {
+        planet: "House",
+        background: "Background",
+        role: "Role"
     }
 };
 FORTYK.operateChoices = [
