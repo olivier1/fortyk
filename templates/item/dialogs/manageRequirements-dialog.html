@@ -71,6 +71,14 @@
                     <input type="number" class="char-input" id="cor" value="{{flag.characteristics.cor.value}}">
                 </div>
                 <div class="flexcol">
+                    <label>{{flag.characteristics.mut.label}}</label>
+                    <input type="number" class="char-input" id="mut" value="{{flag.characteristics.mut.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.mastpow.label}}</label>
+                    <input type="number" class="char-input" id="mastpow" value="{{flag.characteristics.mastpow.value}}">
+                </div>
+                <div class="flexcol">
                     <label>Character Creation</label>
                     <input type="checkbox" class="char-creation-checkbox" {{#if flag.characterCreation}}checked{{/if}}>
                 </div>

@@ -914,7 +914,7 @@
     font-weight: bolder;
 }
 .fortyk .psy-grid-overflow{
-    height:65%;
+    height:calc(100vh - 460px);
     overflow-y:auto;
 }
 .fortyk .psykana{

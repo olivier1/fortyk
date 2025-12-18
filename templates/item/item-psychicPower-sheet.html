@@ -82,6 +82,14 @@
                 {{selectOptions FORTYK.navigatorPowerTraining selected=system.training.value valueAttr="value" labelAttr="value"}}
             </select>
         </div>
+        <div class="flexcol">
+            Navigator Power Flag:
+            <div class="flexrow">
+                <input type="text" id="navpowerflaginput" value="{{flags.fortyk.navpowerflag}}">
+                <a class="any-skill-icon navflagconfirm"></a>
+            </div>
+
+        </div>
         {{/if}}
         {{#if attack}}
         <div class="flexcol">
@@ -114,9 +122,9 @@
         {{else if (contains system.class.value "Aura")}}
         {{#if isGM}}
         <div class="flexrow">
-                    <label>Don't affect self:</label>
-                    <input type="checkbox" class="aura-self" name="system.notSelf" {{checked system.notSelf}}>
-                </div>
+            <label>Doesn't affect self:</label>
+            <input type="checkbox" class="aura-self" name="system.notSelf" {{checked system.notSelf}}>
+        </div>
         <div class="flexcol">
             <a class="modifier button">Aura Efffects</a>
         </div>

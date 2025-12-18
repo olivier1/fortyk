@@ -261,6 +261,120 @@ export const preLoadHandlebarsPartials = async function () {
 export const sleep = function (ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 };
+export const turnOffActorAuras= async function (tokenDocument){
+    let actor=tokenDocument.actor;
+    let tokenObject=tokenDocument.object;
+    let tnts=actor.itemTypes.talentntrait;
+    let powers=actor.itemTypes.psychicPower;
+    let scene=game.scenes.current;
+    let activeAuras = scene.getFlag("fortyk", "activeAuras");
+    if(!activeAuras)activeAuras=[];
+    for(let talent of tnts){
+        if(talent.system.isAura.value){
+            let auraBuffs=talent.getFlag("fortyk","sustained");
+            if(!auraBuffs)continue;
+            for(let buffId of auraBuffs){
+                let auraBuff= await fromUuid(buffId);
+                if(auraBuff){
+                    await auraBuff.delete();
+                }
+                
+            }
+            activeAuras=activeAuras.filter((aura)=>aura!==talent.uuid);
+            await scene.setFlag("fortyk", "activeAuras", activeAuras);
+        }
+    }
+    for (let power of powers){
+        if(power.getFlag("fortyk", "sustained")){
+            let auraBuffs=power.getFlag("fortyk","sustained");
+            if(!auraBuffs)continue;
+            for(let buffId of auraBuffs){
+                let auraBuff= await fromUuid(buffId);
+                if(auraBuff){
+                    await auraBuff.delete();
+                }
+                
+            }
+            activeAuras=activeAuras.filter((aura)=>aura!==power.uuid);
+            await scene.setFlag("fortyk", "activeAuras", activeAuras);
+        }
+    }
+    await applySceneAuras(activeAuras,actor,tokenObject);
+};
+export const applySceneAuras = async function (activeAuras, actor, tokenObject){
+    for (const auraId of activeAuras) {
+        let aura = await fromUuid(auraId);
+        if(!aura)continue;
+        let caster = aura.actor;
+        if(caster.getFlag("core","dead"))continue;
+        let casterToken = getActorToken(caster);
+        let targets = [];
+        if (caster.id === actor.id) {
+            targets = game.canvas.tokens.children[0].children;
+        } else {
+            targets.push(tokenObject);
+        }
+        if(aura.system.notSelf){
+            targets=targets.filter((token)=>caster.id!==token.actor.id);
+        }
+        let auraItemType=aura.type;
+        let range;
+        let auraType;
+        let psy=false;
+        let auraFlag=false;
+        if(auraItemType==="talentntrait"){
+            auraType=aura.system.isAura.auraType;
+            range=aura.system.isAura.range;
+            auraFlag=true;
+        }else{
+            psy=true;
+            auraType = aura.system.auraType;
+            range = parseInt(aura.getFlag("fortyk", "sustainedrange"));
+        }
+        let casterTokenDocument = casterToken.document;
+
+        let auraName = aura.name;
+        let auraRecipients = aura.getFlag("fortyk", "sustained");
+        if(!auraRecipients)continue;
+        let ae = aura.effects.entries().next().value[1];
+        let aeData = foundry.utils.duplicate(ae);
+
+        aeData.name = aura.name;
+        let los=aura.system?.isAura?.los;
+
+        aeData.flags = { fortyk: { psy: psy, los: los, aura: auraFlag, range: range, casterTokenId: casterToken.id } };
+
+        aeData.disabled = false;
+        aeData.origin = auraId;
+        aeData.statuses = [ae.name];
+        for (const target of targets) {
+            if (target.actor.getFlag("core", auraName)) continue;
+            switch (auraType) {
+                case "friendly":
+                    if (target.document.disposition !== casterTokenDocument.disposition) continue;
+                    break;
+                case "hostile":
+                    if (target.document.disposition === casterTokenDocument.disposition) continue;
+            }
+            if(los){
+                const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(target.center, casterToken.center, {mode:"any", type:"sight"});
+                if(collision)continue;
+            }
+            let distance = tokenDistance(target, casterToken);
+            if (distance > range) continue;
+
+            let render = false;
+
+            let effect = await target.actor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
+
+            let newAe = effect[0];
+            let effectuuid = await newAe.uuid;
+
+            auraRecipients.push(effectuuid);
+        }
+        aura.setFlag("fortyk", "sustained", auraRecipients);
+    }
+};
 //returns an actors token object, not the token document. Will search the active canvas for the current token.
 export const getActorToken = function (actor) {
     if (actor.token) {

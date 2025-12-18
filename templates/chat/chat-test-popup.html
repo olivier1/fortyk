@@ -3,6 +3,7 @@
 
 
         <span class="chat-target">{{title}}</span>
+        
         <div class="flexrow">
             <span class="chat-target">{{rollResult}}</span>
             <span class="chat-target">{{target}}</span>   
@@ -14,9 +15,15 @@
             <span class="">{{numberHits}}</span>
             {{/if}}
         </div>
-
+        {{#if opposed}}
+        <span class="chat-target">Opposed test</span>
+        <div class="flexrow">
+            <span class="chat-target">{{opposed.dos}} DoS</span>
+            <span class="chat-target">{{opposed.target}} Target</span>   
+        </div>
+        {{/if}}
         {{#unless reroll}}
-        <span class="button reroll-popup" data-actor="{{actor}}" data-char="{{char}}" data-roll-type="{{type}}" data-target="{{targetNumber}}" data-label="{{label}}" data-weapon="{{weapon}}" data-fire="{{fireRate}}">Reroll</span>
+        <span class="button reroll-popup" data-actor="{{actor}}" data-char="{{char}}" data-roll-type="{{type}}" data-target="{{targetNumber}}" data-label="{{label}}" data-weapon="{{weapon}}" data-fire="{{fireRate}}" data-opposeddos="{{opposed.dos}}" data-opposedtarget="{{opposed.target}}">Reroll</span>
         {{else}}
         <span class="rerolled-button">Rerolled</span>
         {{/unless}}

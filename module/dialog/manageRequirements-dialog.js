@@ -18,7 +18,7 @@ export class ManageRequirementsDialog extends Application {
         data.item=item;
         let flag=this.flag;
         if(!flag)flag=item.getFlag("fortyk","requirements");
-        if(!flag)flag=this.getDefaultFlag();
+        if(!flag){flag=this.getDefaultFlag();}else{foundry.utils.mergeObject(flag,this.getDefaultFlag(),{overwrite:false});}
         data.flag=flag;
         this.flag=flag;
         let compendiums=game.packs.filter((compendium, key)=>{
@@ -386,6 +386,14 @@ export class ManageRequirementsDialog extends Application {
                 cor:{
                     value:0,
                     label:"Corruption"
+                },
+                mut:{
+                    value:0,
+                    label:"Mutations"
+                },
+                mastpow:{
+                    value:0,
+                    label:"Mastered Powers"
                 }
             },
             flags:{},

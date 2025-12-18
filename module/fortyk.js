@@ -32,6 +32,8 @@ import { migrate } from "./migration.js";
 import { tokenDistance } from "./utilities.js";
 import { getActorToken } from "./utilities.js";
 import { sleep } from "./utilities.js";
+import { turnOffActorAuras } from "./utilities.js";
+import { applySceneAuras } from "./utilities.js";
 Hooks.once("init", async function () {
     game.fortyk = {
         FortyKActor,
@@ -387,8 +389,8 @@ Hooks.once("ready", async function () {
                         fortykWeapon.template = targetIds[i].template;
                         let targetNames = "";
                         let targetTokens = game.canvas.tokens.children[0].children.filter((token) =>
-                            curTargets.includes(token.id)
-                        );
+                                                                                          curTargets.includes(token.id)
+                                                                                         );
                         let targetSet = new Set(targetTokens);
                         for (let j = 0; j < targetTokens.length; j++) {
                             let token = targetTokens[j];
@@ -574,7 +576,7 @@ Hooks.once("ready", async function () {
                     token = canvas.tokens.get(id);
                     actor = data.package.actor;
                     let cause = data.package.cause;
-                    FortykRolls.applyDead(token, actor, cause);
+                    FortykRolls.applyDead(token, actor, null, cause);
                     break;
                 case "perilsRoll":
                     let ork = data.package.ork;
@@ -623,6 +625,9 @@ Hooks.on("combatStart", (combat, updateData) => {
                 } else if (token.disposition === 1) {
                     pcFears.push({ name: actor.getName(), fear: actor.getFlag("fortyk", "fear") });
                 }
+            }
+            if(actor.getFlag("fortyk","sanguinethirst")){
+                actor.setFlag("fortyk","butchercounter",0);
             }
         }
         if (enemyFears.length > 0) {
@@ -696,7 +701,36 @@ Hooks.on("updateCombat", async (combat) => {
         if (actor.getFlag("fortyk", "hardtargetEvasion")) {
             await actor.setFlag("fortyk", "hardtargetEvasion", false);
         }
-        if (actor.type !== "vehicle" && actor.system.psykana.pr.sustain > 0) {
+        if(actor.getFlag("fortyk","tidesoftime")){
+            if(combat.round%2===0){
+                let content="I have an extra half action this round!";
+                let tidesOptions = {
+                    author: game.user._id,
+                    speaker: ChatMessage.getSpeaker({ token: token }),
+                    content: content,
+                    classes: ["fortyk"],
+                    flavor: `Tides of Time`
+                };
+                await ChatMessage.create(tidesOptions, {});
+                let bubble = new ChatBubbles();
+                bubble.broadcast(token, content);
+                actor.setFlag("fortyk","tidesreaction",false);
+            }else{
+                let content="I have an extra reaction this round!";
+                let tidesOptions = {
+                    author: game.user._id,
+                    speaker: ChatMessage.getSpeaker({ token: token }),
+                    content: content,
+                    classes: ["fortyk"],
+                    flavor: `Tides of Time`
+                };
+                await ChatMessage.create(tidesOptions, {});
+                let bubble = new ChatBubbles();
+                bubble.broadcast(token, content);
+                actor.setFlag("fortyk","tidesreaction",true);
+            }
+        }
+        if (actor.type !== "vehicle" && actor.system.psykana.pr.sustained.length > 0) {
             let sustainedIds = actor.system.psykana.pr.sustained;
 
             let content = "<span>Sustaining the following Powers: </span>";
@@ -804,7 +838,7 @@ Hooks.on("updateCombat", async (combat) => {
                             author: game.user._id,
                             speaker: { actor, alias: actor.getName() },
                             content:
-                                "On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
+                            "On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor.",
                             classes: ["fortyk"],
                             flavor: `On Fire!`
                         };
@@ -889,7 +923,7 @@ Hooks.on("updateCombat", async (combat) => {
                             author: game.user._id,
                             speaker: { actor, alias: actor.getName() },
                             content:
-                                "On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor. Deamons do not mitigate this damage and take additional damage equal to PR.",
+                            "On round start, test willpower to act, suffer 1 level of fatigue and take 1d10 damage ignoring armor. Deamons do not mitigate this damage and take additional damage equal to PR.",
                             classes: ["fortyk"],
                             flavor: `On Fire!`
                         };
@@ -1136,12 +1170,19 @@ Hooks.on("updateCombat", async (combat) => {
 });
 Hooks.on("preDeleteCombat", async (combat, options, id) => {
     let combatants = combat.combatants;
-    
+    let scene=game.scenes.current;
     combatants.forEach(async (combatant) => {
         let actor = combatant.actor;
         let tempMod = actor.system.secChar.tempMod.value;
         if (tempMod) {
             await actor.update({ "system.secChar.tempMod.value": 0 });
+        }
+        
+        let powers=actor.itemTypes.psychicPower;
+        for(let power of powers){
+            if(power.getFlag("fortyk","sustained")){
+                FortyKItem.cancelPsyBuffs(actor.uuid, power.id);
+            }
         }
         for (let activeEffect of actor.effects) {
             if (activeEffect.name === "Evasion") {
@@ -1150,15 +1191,21 @@ Hooks.on("preDeleteCombat", async (combat, options, id) => {
             if (activeEffect.duration.type !== "none") {
                 await activeEffect.delete({});
             }
-        }
-        let powers=actor.itemTypes.psychicPower;
-        for(let power of powers){
-            if(power.getFlag("fortyk","sustained")){
-                FortyKItem.cancelPsyBuffs(actor.uuid, power.id);
+            if(activeEffect.getFlag("fortyk","temp")){
+                await activeEffect.delete();
             }
+            if(activeEffect.getFlag("fortyk","psy")){
+                await activeEffect.delete();
+            }
+            
         }
         if (actor.getFlag("fortyk", "evadeMod")) {
             await actor.setFlag("fortyk", "evadeMod", false);
+        }
+        if(actor.getFlag("fortyk", "butchercounter")){
+
+            await actor.setFlag("fortyk", "butchercounter",0);
+
         }
         if (actor.getFlag("core", "evasion")) {
             await actor.setFlag("core", "evasion", false);
@@ -1168,7 +1215,7 @@ Hooks.on("preDeleteCombat", async (combat, options, id) => {
         }
         await actor.update({ "system.secChar.lastHit.type": null });
     });
-    game.settings.set("fortyk", "activeAuras",[]);
+    //game.scene.setFlag("fortyk", "activeAuras",[]);
 });
 Hooks.on("preUpdateActor", (data, updatedData) => {});
 //add listeners to the chatlog for dice rolls
@@ -1352,17 +1399,113 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) => {
     }
 });
 Hooks.on("preCreateActor", (createData) => {});
+Hooks.on("preDeleteToken", async (tokenDocument, options, userId)=>{
+    if(!game.user.isGM)return;
+    await turnOffActorAuras(tokenDocument);
+});
 Hooks.on("preCreateToken", async (document, data, options, userId) => {
-    if (game.user.isGM) {
-        //modify token dimensions if scene ratio isnt 1
-        let gridRatio = canvas.dimensions.distance;
-        let newHeight = Math.max(0.1, document.height / gridRatio);
-        let newWidth = Math.max(0.1, document.width / gridRatio);
-        if (newHeight !== document.height || newWidth !== document.width) {
-            await document.updateSource({ height: newHeight, width: newWidth });
+    if (!game.user.isGM)return;
+    //modify token dimensions if scene ratio isnt 1
+    let gridRatio = canvas.dimensions.distance;
+    let newHeight = Math.max(0.1, document.height / gridRatio);
+    let newWidth = Math.max(0.1, document.width / gridRatio);
+    if (newHeight !== document.height || newWidth !== document.width) {
+        await document.updateSource({ height: newHeight, width: newWidth });
+    }
+
+});
+Hooks.on("createToken", async (tokenDocument, options, userId) => {
+    if(!game.user.isGM)return;
+    let actor=tokenDocument.actor;
+    if(actor.getFlag("core","dead"))return;
+    let tokenObject=tokenDocument.object;
+    tokenObject.x=tokenDocument.x;
+    tokenObject.y=tokenDocument.y;
+    let tnts=actor.itemTypes.talentntrait;
+    let scene=game.scenes.current;
+    let activeAuras = scene.getFlag("fortyk", "activeAuras");
+    if(!activeAuras)activeAuras=[];
+    for(let talent of tnts){
+        if(talent.system.isAura.value){
+            let auraBuffs=talent.getFlag("fortyk","sustained");
+            if(auraBuffs){
+                for(let buffId of auraBuffs){
+                    let auraBuff= await fromUuid(buffId);
+                    if(auraBuff){
+                        await auraBuff.delete();
+                    }
+
+                }
+            }
+
+            activeAuras.push(talent.uuid);
+
+            let auraType = talent.system.isAura.auraType;
+            let targets;
+            let tokens = game.canvas.tokens.children[0].children;
+
+            switch (auraType) {
+                case "friendly":
+                    tokens = tokens.filter((token) => token.document.disposition === tokenDocument.disposition);
+                    break;
+                case "hostile":
+                    tokens = tokens.filter((token) => token.document.disposition !== tokenDocument.disposition);
+                    break;
+            }
+            if (talent.system.isAura.notSelf) {
+                tokens = tokens.filter((token) => token.id !== tokenDocument.id);
+            }
+            let los = talent.system.isAura.los;
+            if(los){
+                tokens = tokens.filter((token) =>{
+                    const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(tokenObject.center, token.center, {mode:"any", type:"sight"});
+                    return !collision;
+                });
+            }
+            let range = parseInt(talent.system.isAura.range);
+
+            targets = tokens.filter((token) => !token.actor.getFlag("core", talent.name));
+            targets = targets.filter((token) => range >= tokenDistance(token, tokenObject));
+
+            let ae = talent.effects.entries().next().value[1];
+            let aeData = foundry.utils.duplicate(ae);
+
+            aeData.name = talent.name;
+
+
+            aeData.flags = {
+                fortyk: { aura:true, los:los, range: range, casterTokenId: tokenDocument.id }
+            };
+
+            aeData.disabled = false;
+            aeData.origin = talent.uuid;
+            aeData.statuses = [ae.name];
+
+            let effectUuIds = [];
+            for (let i = 0; i < targets.length; i++) {
+                let target = targets[i];
+
+                let targetActor = target.actor;
+                let render = false;
+
+                let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
+
+                let ae = effect[0];
+                let effectuuid = await ae.uuid;
+
+                effectUuIds.push(effectuuid);
+            }
+
+
+
+            await talent.setFlag("fortyk", "sustained", effectUuIds);
+            await talent.setFlag("fortyk", "sustainedrange", range);
         }
     }
+    scene.setFlag("fortyk", "activeAuras", activeAuras);
 });
+
+
 Hooks.on("refreshToken", async (tokenObject, options) => {
     if (tokenObject.isPreview) return;
     if (!game.user.isGM) return;
@@ -1378,18 +1521,25 @@ Hooks.on("refreshToken", async (tokenObject, options) => {
     if (to.y !== undefined && to.y !== tokenObject.y) invalid = true;
     if (invalid) return;
     let tokenDocument = tokenObject.document;
-
+    let scene=game.scenes.current;
     let actor = tokenObject.actor;
     let aes = actor.effects;
     for (const ae of aes) {
         if (!ae) continue;
-        if (ae.getFlag("fortyk", "psy")) {
+        if (ae.getFlag("fortyk", "psy")||ae.getFlag("fortyk", "aura")) {
             let range = parseInt(ae.getFlag("fortyk", "range"));
             let casterId = ae.getFlag("fortyk", "casterTokenId");
             let casterToken = game.canvas.tokens.children[0].children.find((child) => child.id === casterId);
             let distance = tokenDistance(tokenObject, casterToken);
             if (distance > range) {
                 await ae.delete();
+            }
+            let los=ae.getFlag("fortyk","los");
+            if(los){
+                const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(tokenObject.center, casterToken.center, {mode:"any", type:"sight"});
+                if(collision){
+                    await ae.delete();
+                }
             }
         }
     }
@@ -1398,6 +1548,7 @@ Hooks.on("refreshToken", async (tokenObject, options) => {
         if (power.getFlag("fortyk", "sustained")) {
             let range = parseInt(power.getFlag("fortyk", "sustainedrange"));
             let buffs = power.getFlag("fortyk", "sustained");
+            if(!buffs)continue;
             for (const buffId of buffs) {
                 let buff = await fromUuid(buffId);
                 if (buff) {
@@ -1410,66 +1561,50 @@ Hooks.on("refreshToken", async (tokenObject, options) => {
                     if (distance > range) {
                         await buff.delete();
                     }
+                    let los=buff.getFlag("fortyk","los");
+                    if(los){
+                        const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(tokenObject.center, buffTarget.center, {mode:"any", type:"sight"});
+                        if(collision){
+                            await buff.delete();
+                        }
+                    }
                 }
             }
         }
     }
-    let auras = game.settings.get("fortyk", "activeAuras");
-
-    for (const auraId of auras) {
-        let aura = await fromUuid(auraId);
-        let caster = aura.actor;
-        let casterToken = getActorToken(caster);
-        let targets = [];
-        if (caster.id === actor.id) {
-            targets = game.canvas.tokens.children[0].children;
-        } else {
-            targets.push(tokenObject);
-        }
-        if(aura.system.notSelf){
-            targets=targets.filter((token)=>caster.id!==token.actor.id);
-        }
-        let casterTokenDocument = casterToken.document;
-        let auraType = aura.system.auraType;
-        let range = parseInt(aura.getFlag("fortyk", "sustainedrange"));
-        let auraName = aura.name;
-        let auraRecipients = aura.getFlag("fortyk", "sustained");
-        let ae = aura.effects.entries().next().value[1];
-        let aeData = foundry.utils.duplicate(ae);
-
-        aeData.name = ae.name;
-        let actorPR = caster.system.psykana.pr.effective;
-        let auraPR = aura.system.curPR.value;
-        let adjustment = actorPR - auraPR;
-
-        aeData.flags = { fortyk: { adjustment: adjustment, psy: true, range: range, casterTokenId: casterToken.id } };
-
-        aeData.disabled = false;
-        aeData.origin = auraId;
-        aeData.statuses = [ae.name];
-        for (const target of targets) {
-            if (target.actor.getFlag("core", auraName)) continue;
-            switch (auraType) {
-                case "friendly":
-                    if (target.document.disposition !== casterTokenDocument.disposition) continue;
-                    break;
-                case "hostile":
-                    if (target.document.disposition === casterTokenDocument.disposition) continue;
+    let tnts = actor.itemTypes.talentntrait;
+    for (const talent of tnts) {
+        if (talent.system.isAura.value) {
+            let range = parseInt(talent.system.isAura.range);
+            let buffs = talent.getFlag("fortyk", "sustained");
+            if(!buffs)continue;
+            for (const buffId of buffs) {
+                let buff = await fromUuid(buffId);
+                if (buff) {
+                    let parent = buff.parent;
+                    if (parent instanceof Item) {
+                        parent = parent.actor;
+                    }
+                    let buffTarget = getActorToken(parent);
+                    let distance = tokenDistance(buffTarget, tokenObject);
+                    if (distance > range) {
+                        await buff.delete();
+                    }
+                    let los=buff.getFlag("fortyk","los");
+                    if(los){
+                        const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(tokenObject.center, buffTarget.center, {mode:"any", type:"sight"});
+                        if(collision){
+                            await buff.delete();
+                        }
+                    }
+                }
             }
-            let distance = tokenDistance(target, casterToken);
-            if (distance > range) continue;
-
-            let render = false;
-
-            let effect = await target.actor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
-
-            let newAe = effect[0];
-            let effectuuid = await newAe.uuid;
-
-            auraRecipients.push(effectuuid);
         }
-        aura.setFlag("fortyk", "sustained", auraRecipients);
     }
+    let auras = scene.getFlag("fortyk", "activeAuras");
+    if(!auras)auras=[];
+
+    applySceneAuras(auras, actor, tokenObject);
 });
 
 Hooks.on("updateToken", async (token, diff, options, id) => {
@@ -1793,10 +1928,10 @@ Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
             if (
                 actor &&
                 (actor.getFlag("fortyk", "jump") ||
-                    actor.getFlag("fortyk", "crawler") ||
-                    actor.getFlag("fortyk", "hoverer") ||
-                    actor.getFlag("fortyk", "flyer") ||
-                    actor.getFlag("fortyk", "skimmer"))
+                 actor.getFlag("fortyk", "crawler") ||
+                 actor.getFlag("fortyk", "hoverer") ||
+                 actor.getFlag("fortyk", "flyer") ||
+                 actor.getFlag("fortyk", "skimmer"))
             ) {
                 cost = 1;
             }
@@ -1841,7 +1976,7 @@ Hooks.once("item-piles-ready", async () => {
             {
                 path: "type",
                 filters:
-                    "psychicPower,skill,mutation,malignancy,disorder,injury,talentntrait,advancement,mission,cadetHouse,repairEntry,outpost,knightSpirit,eliteAdvance"
+                "psychicPower,skill,mutation,malignancy,disorder,injury,talentntrait,advancement,mission,cadetHouse,repairEntry,outpost,knightSpirit,eliteAdvance"
             }
         ],
 

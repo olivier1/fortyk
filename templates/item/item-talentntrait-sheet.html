@@ -44,6 +44,32 @@
         <label>Flag Id:</label>
         <input type="text" value="{{system.flagId.value}}" name="system.flagId.value">
     </div>
+    <div class="flexrow">
+        <label>Is an aura:</label>
+        <input type="checkbox" name="system.isAura.value" {{checked system.isAura.value}}>
+    </div>
+    {{#if system.isAura.value}}
+    <div class="flexcol">
+            <label>Aura Type:</label>
+
+            <select class="power-char" name="system.isAura.auraType">
+                {{selectOptions FORTYK.auraTypes selected=system.isAura.auraType valueAttr="value" labelAttr="label"}}
+
+            </select>
+        </div>
+    <div class="flexrow">
+        <label>Doesn't Affect Self:</label>
+        <input type="checkbox" name="system.isAura.notSelf" {{checked system.isAura.notSelf}}>
+    </div>
+    <div class="flexrow">
+        <label>Needs LoS:</label>
+        <input type="checkbox" name="system.isAura.los" {{checked system.isAura.los}}>
+    </div>
+    <div class="flexcol">
+        <label>Aura Range:</label>
+        <input type="text" value="{{system.isAura.range}}" name="system.isAura.range" data-dtype="Number">
+    </div>
+    {{/if}}
     {{/if}}
     <div class="item-description">
         <label>Description:</label>

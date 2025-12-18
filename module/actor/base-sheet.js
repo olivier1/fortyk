@@ -522,6 +522,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                                 width: 100
                                             });
                                             itemData.system.specialisation.value = chosenSpec;
+                                            if(itemData.system.isAura.value){
+                                                itemData.system.isAura.range=parseInt(chosenSpec);
+                                            }
                                         }
                                         talentsNTraits.push(itemData);
                                     }

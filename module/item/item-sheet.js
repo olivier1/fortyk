@@ -256,6 +256,7 @@ export class FortyKItemSheet extends ItemSheet {
         html.find(".remove-last").click(this._onRemoveItemClick.bind(this));
         html.find(".delete-mod").click(this._onDeleteModClick.bind(this));
         html.find(".manage-reqs").click(this._onManageReqsClick.bind(this));
+        html.find(".navflagconfirm").click(this._onNavFlagConfirmClick.bind(this));
         //handles melee weapon mod
 
         html.find(".weapon-mod").focusout(this._weaponModEdit.bind(this));
@@ -264,6 +265,19 @@ export class FortyKItemSheet extends ItemSheet {
         $("input[type=text]").focusin(function () {
             $(this).select();
         });
+    }
+    async _onNavFlagConfirmClick(event){
+        let navFlagInput=document.getElementById("navpowerflaginput");
+        let flag=navFlagInput.value;
+        let navPowerFlag=this.item.getFlag("fortyk","navpowerflag");
+        if(flag!==navPowerFlag){
+            this.item.setFlag("fortyk","navpowerflag",flag);
+            if(navPowerFlag){
+                this.item.setFlag("fortyk",navPowerFlag,false);
+            }
+            
+            this.item.setFlag("fortyk",flag,true);
+        }
     }
     async _onManageReqsClick(event) {
         event.preventDefault();
@@ -514,18 +528,17 @@ export class FortyKItemSheet extends ItemSheet {
         } else {
             specials = foundry.utils.duplicate(game.fortyk.FORTYK.weaponFlags);
         }
+        
 
         let flags = this.item._source.flags.fortyk;
 
         for (const flag in flags) {
             if (specials[flag]) {
                 if (specials[flag].num !== undefined) {
-                    if (isNaN(parseInt(flags[flag]))) {
-                        specials[flag].num = 0;
-                    } else {
+                    
                         specials[flag].num = flags[flag];
                         specials[flag].value = true;
-                    }
+                    
                 } else {
                     specials[flag].value = flags[flag];
                 }
@@ -560,7 +573,7 @@ export class FortyKItemSheet extends ItemSheet {
                                 let number;
                                 if (spec.num !== undefined && value) {
                                     number = html.find(`input[id=${key}num]`).val();
-                                    if (isNaN(parseFloat(number)) && number.toLowerCase().indexOf("pr") !== -1) {
+                                    if (isNaN(parseFloat(number))) {
                                         if (number !== spec.num) {
                                             num = true;
                                         }

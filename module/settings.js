@@ -80,13 +80,5 @@ export const registerSystemSettings = function() {
         type: Boolean,
         default: false
     });
-    //used to track active auras
-     game.settings.register("fortyk","activeAuras",{
-        name: "Used to track active auras",
-        hint: "Changes monetary system to Imperial bonds instead of Eagles.",
-        scope: "world",
-        config: false,
-        type: Array,
-        default: []
-    });
+    
 };

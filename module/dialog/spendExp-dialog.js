@@ -485,7 +485,7 @@ export class SpendExpDialog extends Application {
             };
             if(powerData.training.value!=="Novice"){
                 let actorPowers=actor.itemTypes.psychicPower;
-                let oldPower=actorPowers.find((tnt)=> (tnt._source.name.toLowerCase()===power._source.name.toLowerCase()));
+                let oldPower=actorPowers.find((tnt)=> (tnt._source.name.toLowerCase().split(":")[0]===power._source.name.toLowerCase().split(":")[0]));
                 let oldSort=oldPower.sort;
                 let oldAdvanceId=oldPower.getFlag("fortyk","linkedAdvance");
                 advData["flags.fortyk.previousAdvanceId"]=oldAdvanceId;

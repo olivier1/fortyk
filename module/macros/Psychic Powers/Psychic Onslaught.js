@@ -18,10 +18,12 @@ for(const rangedWeapon of rangedWeapons){
         aeData.origin=power.uuid;
         aeData.duration={rounds:0};
         aeData.changes=[];
+        console.log(pr)
+        let radius=Math.ceil(parseInt(pr)/2);
         if(rangedWeapon.getFlag("fortyk","blast")){
-            aeData.changes.push({key:"flags.fortyk.blast",value:pr,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD});
+            aeData.changes.push({key:"flags.fortyk.blast",value:radius,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD});
         }else{
-            aeData.changes.push({key:"flags.fortyk.blast",value:pr,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM});
+            aeData.changes.push({key:"flags.fortyk.blast",value:radius,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM});
         }
         let ae=await rangedWeapon.createEmbeddedDocuments("ActiveEffect",[aeData]);
         effectIds.push(ae[0].uuid);
