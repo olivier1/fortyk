@@ -1,3 +1,4 @@
+import { FortyKItem } from "./item/item.js";
 export const preloadHandlebarsTemplates = async function () {
     // Define template paths to load
     const templatePaths = [
@@ -276,44 +277,47 @@ export const turnOffActorAuras= async function (tokenDocument){
             for(let buffId of auraBuffs){
                 let auraBuff= await fromUuid(buffId);
                 if(auraBuff){
+                    let auraRecipient= auraBuff.parent;
                     await auraBuff.delete();
+                    let name = auraBuff.name;
+                    auraRecipient.flags.core[name]=false;
                 }
-                
+
             }
             activeAuras=activeAuras.filter((aura)=>aura!==talent.uuid);
-            await scene.setFlag("fortyk", "activeAuras", activeAuras);
+            
         }
     }
     for (let power of powers){
         if(power.getFlag("fortyk", "sustained")){
-            let auraBuffs=power.getFlag("fortyk","sustained");
-            if(!auraBuffs)continue;
-            for(let buffId of auraBuffs){
-                let auraBuff= await fromUuid(buffId);
-                if(auraBuff){
-                    await auraBuff.delete();
-                }
-                
-            }
+            await FortyKItem.cancelPsyBuffs(actor.uuid, power.id);
             activeAuras=activeAuras.filter((aura)=>aura!==power.uuid);
-            await scene.setFlag("fortyk", "activeAuras", activeAuras);
         }
     }
-    await applySceneAuras(activeAuras,actor,tokenObject);
+    await scene.setFlag("fortyk", "activeAuras", activeAuras);
+    scene.flags.fortyk.activeAuras=activeAuras;
+    await applySceneAuras(activeAuras,tokenObject);
 };
-export const applySceneAuras = async function (activeAuras, actor, tokenObject){
+export const applySceneAuras = async function (activeAuras, tokenObject){
     for (const auraId of activeAuras) {
         let aura = await fromUuid(auraId);
         if(!aura)continue;
         let caster = aura.actor;
+        let ae;
+        if(caster.isToken){
+            let baseActor= caster.parent.baseActor;
+            let baseActorTnts=baseActor.itemTypes.talentntrait;
+            baseActorTnts=baseActorTnts.concat(baseActor.itemTypes.wargear);
+            let baseAura=baseActorTnts.find((tnt)=>tnt.name===aura.name);
+            ae=baseAura.effects.entries().next().value[1];  
+        }else{
+            ae = aura.effects.entries().next().value[1];  
+        }
         if(caster.getFlag("core","dead"))continue;
         let casterToken = getActorToken(caster);
-        let targets = [];
-        if (caster.id === actor.id) {
-            targets = game.canvas.tokens.children[0].children;
-        } else {
-            targets.push(tokenObject);
-        }
+        if(!casterToken) continue;
+        let targets = game.canvas.tokens.children[0].children;;
+        
         if(aura.system.notSelf){
             targets=targets.filter((token)=>caster.id!==token.actor.id);
         }
@@ -322,7 +326,7 @@ export const applySceneAuras = async function (activeAuras, actor, tokenObject){
         let auraType;
         let psy=false;
         let auraFlag=false;
-        if(auraItemType==="talentntrait"){
+        if(auraItemType!=="psychicPower"){
             auraType=aura.system.isAura.auraType;
             range=aura.system.isAura.range;
             auraFlag=true;
@@ -333,13 +337,13 @@ export const applySceneAuras = async function (activeAuras, actor, tokenObject){
         }
         let casterTokenDocument = casterToken.document;
 
-        let auraName = aura.name;
+        let auraName = aura._source.name;
         let auraRecipients = aura.getFlag("fortyk", "sustained");
         if(!auraRecipients)continue;
-        let ae = aura.effects.entries().next().value[1];
+
         let aeData = foundry.utils.duplicate(ae);
 
-        aeData.name = aura.name;
+        aeData.name = auraName;
         let los=aura.system?.isAura?.los;
 
         aeData.flags = { fortyk: { psy: psy, los: los, aura: auraFlag, range: range, casterTokenId: casterToken.id } };
@@ -348,7 +352,11 @@ export const applySceneAuras = async function (activeAuras, actor, tokenObject){
         aeData.origin = auraId;
         aeData.statuses = [ae.name];
         for (const target of targets) {
-            if (target.actor.getFlag("core", auraName)) continue;
+            if(!target)continue;
+            if(!casterToken)continue;
+            let targetActor=target.actor;
+            
+            if (targetActor.getFlag("core", auraName)) continue;
             switch (auraType) {
                 case "friendly":
                     if (target.document.disposition !== casterTokenDocument.disposition) continue;
@@ -356,17 +364,39 @@ export const applySceneAuras = async function (activeAuras, actor, tokenObject){
                 case "hostile":
                     if (target.document.disposition === casterTokenDocument.disposition) continue;
             }
+            if(auraFlag){
+                let reqFlags=aura.system.isAura.reqFlags.split(",");
+                let negReqFlags=aura.system.isAura.negReqFlags.split(",");
+                let skip=false;
+
+                for(let reqFlag of reqFlags){
+                    reqFlag=reqFlag.trim();
+                    if(reqFlag==="")if(reqFlag==="")continue;
+                    if(!targetActor.getFlag("fortyk",reqFlag))skip=true;
+                }
+                for(let negReqFlag of negReqFlags){
+                    negReqFlag=negReqFlag.trim();
+                    if(negReqFlag==="")continue;
+                    if(targetActor.getFlag("fortyk",negReqFlag))skip=true;
+                }
+                if(skip)continue;
+            }
+            
+            let distance;
+            try {
+                distance = tokenDistance(target, casterToken);
+            } catch (e) {
+                continue;
+            }
+            if (distance > range) continue;
             if(los){
                 const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(target.center, casterToken.center, {mode:"any", type:"sight"});
                 if(collision)continue;
             }
-            let distance = tokenDistance(target, casterToken);
-            if (distance > range) continue;
-
             let render = false;
 
             let effect = await target.actor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
-
+            target.actor.flags.core[auraName]=true;
             let newAe = effect[0];
             let effectuuid = await newAe.uuid;
 
@@ -692,9 +722,11 @@ export const getBlastTargets = function (templates) {
         bounds.x = template.x;
         bounds.y = template.y;
         let ignoreArray=template.getFlag("fortyk","ignores");
-        
+
         tokens.forEach((token) => {
             if(ignoreArray?.includes(token.id))return;
+            const collision = CONFIG.Canvas.polygonBackends['move'].testCollision(token._object.center, template, {mode:"any", type:"move"});
+            if(collision) return;
             let tokenBounds = token._object.bounds;
             let bottomIn = false;
             let topIn = false;
@@ -817,7 +849,7 @@ export const isBlastTarget = function (token, templates) {
                     targetted.push(token.id);
                 }*/
 
-        
+
     }
 
     return isTarget;

@@ -476,7 +476,7 @@ export class FortykRollDialogs {
         const weapon = actor.items.get(dataset["weapon"]);
         const fireRate = dataset["fire"];
         if (type === "focuspower") {
-            if (this.actor.system.psykana.psykerType.value === "navigator") {
+            if (actor.system.psykana.psykerType.value === "navigator") {
 
                 let training = item.system.training.value;
                 let sheet;
@@ -500,6 +500,8 @@ export class FortykRollDialogs {
                     true
                 );
 
+            }else{
+                await this.callRollDialog(char, type, target, actor, label, weapon, true, fireRate);
             }
 
         }else{
@@ -559,14 +561,9 @@ export class FortykRollDialogs {
 
         if (testChar) {
             let char = actor.system.characteristics[testChar];
-            let base = char.value;
-            let adv = char.advance;
             let mod = char.mod;
-            modifierTracker.push({ value: base, label: "Characteristic Base" });
-            modifierTracker.push({ value: adv, label: "Caracteristic Advance" });
             if (mod) {
                 modifier += mod;
-                modifierTracker.push({ value: mod, label: "Characteristic Modifier" });
             }
         }
 
@@ -577,33 +574,26 @@ export class FortykRollDialogs {
             let training = item?.system?.value;
             if (training) {
                 modifier += training;
-                modifierTracker.push({ value: training, label: "Skill Training" });
             }
 
             let skillMod = item?.system?.mod?.value;
             if (skillMod) {
                 modifier += skillMod;
 
-                modifierTracker.push({ value: skillMod, label: "Skill Modifier" });
             }
         }
-        if (testType === "fear") {
+        if (testType === "fear" &&!reroll) {
             let fearMod = parseInt(actor.system.secChar.fearMod);
-            if (fearMod !== 0) {
-                modifierTracker.push({ value: fearMod, label: "Miscellenaous Fear Modifiers" });
-            }
+
             modifier += fearMod;
-            testTarget += fearMod;
             if (
                 actor.getFlag("fortyk", "resistance") &&
                 actor.getFlag("fortyk", "resistance").toLowerCase().includes("fear")
             ) {
-                testTarget += 10;
                 modifier += 10;
-                modifierTracker.push({ value: 10, label: "Resistance" });
             }
         }
-        if (testType === "evasion") {
+        if (testType === "evasion" && !reroll) {
             let evadeCount = parseInt(actor.getFlag("core", "evasion"));
             let maxEvade = actor.system.reactions;
             if (!reroll && evadeCount >= maxEvade) {
@@ -612,25 +602,33 @@ export class FortykRollDialogs {
             }
             if (actor.getFlag("fortyk", "evadeMod")) {
                 var evadeMod = parseInt(actor.getFlag("fortyk", "evadeMod"));
-                testTarget += evadeMod;
                 modifier += evadeMod;
-                modifierTracker.push({ value: actor.getFlag("fortyk", "evadeMod"), label: "Evasion Modifier" });
             }
             if (actor.getFlag("core", "luminagen")) {
-                testTarget -= 10;
                 modifier -= 10;
-                modifierTracker.push({ value: -10, label: "Luminagen" });
             }
             if (actor.getFlag("core", "holyShield")) {
-                modifierTracker.push({ value: 10, label: "Guarded Action" });
                 testTarget += 10;
                 modifier += 10;
             }
             if (actor.getFlag("fortyk", "versatile") && actor.getFlag("fortyk", "expertise")) {
-                testTarget += 10;
+
                 modifier += 10;
-                modifierTracker.push({ value: 10, label: "Versatility" });
             }
+        }
+        let tempMod = actor.system.secChar.tempMod.value;
+        if (tempMod) {
+
+            modifier += tempMod;
+
+
+        }
+        let command = actor.system.secChar.tempMod.command;
+        if (command) {
+
+            modifier += command;
+
+
         }
         let modifierString;
         if (modifier >= 0) {
@@ -638,10 +636,13 @@ export class FortykRollDialogs {
         } else {
             modifierString = modifier.toString();
         }
+        let content=`<label>Other Modifiers: ${modifierString}</label></br><p><label>Modifier:</label> <input id="modifier" type="number" name="modifier" value="0" autofocus/></p>`;
+        if(actor.getFlag("fortyk","leverage")){
+            content="<label>Leverage:</label><input type='checkbox' id='leveragebox'> <br>"+content;
+        }
         return await Dialog.wait({
             title: title,
-            content: `
-            <label>Other Modifiers: ${modifierString}</label></br><p><label>Modifier:</label> <input id="modifier" type="number" name="modifier" value="0" autofocus/></p>`,
+            content: content,
             buttons: {
                 submit: {
                     label: "OK",
@@ -663,6 +664,75 @@ export class FortykRollDialogs {
                             testTarget = parseInt(testTarget) + parseInt(bonus);
 
                             if (!reroll) {
+                                let leverage = $(html).find('input[id="leveragebox"]').is(":checked");
+                                if(leverage){
+                                    testChar="inf";
+                                    testTarget=actor.system.characteristics.inf.total;
+                                }
+                                if (testChar) {
+                                    let char = actor.system.characteristics[testChar];
+                                    let base = char.value;
+                                    let adv = char.advance;
+                                    let mod = char.mod;
+                                    modifierTracker.push({ value: base, label: "Characteristic Base" });
+                                    modifierTracker.push({ value: adv, label: "Caracteristic Advance" });
+                                    if (mod) {
+                                        modifierTracker.push({ value: mod, label: "Characteristic Modifier" });
+                                    }
+                                }
+
+                                let global = actor.system.globalMOD.value;
+                                modifierTracker.push({ value: global, label: "Global modifier" });
+                                if (testType === "skill" || testType === "evasion") {
+                                    let training = item?.system?.value;
+                                    if (training) {
+                                        modifierTracker.push({ value: training, label: "Skill Training" });
+                                    }
+
+                                    let skillMod = item?.system?.mod?.value;
+                                    if (skillMod) {
+
+                                        modifierTracker.push({ value: skillMod, label: "Skill Modifier" });
+                                    }
+                                }
+                                if (testType === "fear") {
+                                    let fearMod = parseInt(actor.system.secChar.fearMod);
+                                    if (fearMod !== 0) {
+                                        modifierTracker.push({ value: fearMod, label: "Miscellenaous Fear Modifiers" });
+                                    }
+                                    testTarget += fearMod;
+                                    if (
+                                        actor.getFlag("fortyk", "resistance") &&
+                                        actor.getFlag("fortyk", "resistance").toLowerCase().includes("fear")
+                                    ) {
+                                        testTarget += 10;
+                                        modifierTracker.push({ value: 10, label: "Resistance" });
+                                    }
+                                }
+                                if (testType === "evasion") {
+                                    let evadeCount = parseInt(actor.getFlag("core", "evasion"));
+                                    let maxEvade = actor.system.reactions;
+
+                                    if (actor.getFlag("fortyk", "evadeMod")) {
+                                        var evadeMod = parseInt(actor.getFlag("fortyk", "evadeMod"));
+                                        testTarget += evadeMod;
+                                        modifierTracker.push({ value: actor.getFlag("fortyk", "evadeMod"), label: "Evasion Modifier" });
+                                    }
+                                    if (actor.getFlag("core", "luminagen")) {
+                                        testTarget -= 10;
+                                        modifierTracker.push({ value: -10, label: "Luminagen" });
+                                    }
+                                    if (actor.getFlag("core", "holyShield")) {
+                                        modifierTracker.push({ value: 10, label: "Guarded Action" });
+                                        testTarget += 10;
+                                    }
+                                    if (actor.getFlag("fortyk", "versatile") && actor.getFlag("fortyk", "expertise")) {
+                                        testTarget += 10;
+                                        modifierTracker.push({ value: 10, label: "Versatility" });
+                                    }
+                                }
+
+
                                 if (testType === "evasion") {
                                     if (actor.getFlag("fortyk", "evadeMod")) {
                                         await actor.setFlag("fortyk", "evadeMod", false);
@@ -743,6 +813,7 @@ export class FortykRollDialogs {
         let targetDispositon = target.document.disposition;
         for (const token of tokens) {
             if (token.id === target.id) continue;
+            if(!token.actor) continue;
             if (this.cantAssistFlags(token.actor)) continue;
             if (token.document.disposition !== targetDispositon) {
                 let distance = tokenDistance(target, token);
@@ -823,7 +894,7 @@ export class FortykRollDialogs {
         let miscMods = 0;
         templateOptions["modifiers"] = foundry.utils.duplicate(actor.system.secChar.attacks);
         templateOptions["modifiers"].testMod = 0;
-        modifierTracker.push({ value: `${testTarget}`, label: `Base Target Value` });
+
         miscMods += item.system.testMod.value;
         if (miscMods !== 0) {
             modifierTracker.push({ value: `${miscMods}`, label: "Weapon Bonus" });
@@ -985,6 +1056,7 @@ export class FortykRollDialogs {
                 }
             }
         }
+        templateOptions.leverage=actor.getFlag("fortyk", "leverage");
         templateOptions["modifiers"].miscMods = miscMods;
         let renderedTemplate = await renderTemplate(template, templateOptions);
 
@@ -996,6 +1068,12 @@ export class FortykRollDialogs {
                 submit: {
                     label: "OK",
                     callback: async (html) => {
+                        let leverage = $(html).find('input[id="leveragebox"]').is(":checked");
+                        if(leverage){
+                            testChar="inf";
+                            testTarget=actor.system.characteristics.inf.total;
+                        }
+                        modifierTracker.unshift({ value: `${testTarget}`, label: `Base Target Value` });
                         const attackTypeBonus = Number($(html).find('input[name="attack-type"]:checked').val());
 
                         let guarded = Number($(html).find('input[name="guarded"]:checked').val());
@@ -1234,7 +1312,6 @@ export class FortykRollDialogs {
         templateOptions["modifiers"].standard = parseInt(item.system.attackMods.single);
         templateOptions["modifiers"].aim = item.system.attackMods.aim;
         templateOptions["modifiers"].testMod = 0;
-        modifierTracker.push({ value: `${testTarget}`, label: `Base Target Value` });
         modifierTracker.push({ value: `${item.system.testMod.value}`, label: "Weapon Bonus" });
         miscMods += item.system.testMod.value;
         if (actor.getFlag("fortyk", "versatility")) {
@@ -1507,6 +1584,7 @@ export class FortykRollDialogs {
             templateOptions["options"].long = long;
             templateOptions["options"].extreme = extreme;
         }
+        templateOptions.leverage=actor.getFlag("fortyk", "leverage");
         templateOptions["modifiers"].miscMods = miscMods;
         let renderedTemplate = await renderTemplate(template, templateOptions);
 
@@ -1518,6 +1596,12 @@ export class FortykRollDialogs {
                 submit: {
                     label: "OK",
                     callback: async (html) => {
+                        let leverage = $(html).find('input[id="leveragebox"]').is(":checked");
+                        if(leverage){
+                            testChar="inf";
+                            testTarget=actor.system.characteristics.inf.total;
+                        }
+                        modifierTracker.unshift({ value: `${testTarget}`, label: `Base Target Value` });
                         const attackTypeBonus = Number($(html).find('input[name="attack-type"]:checked').val());
 
                         let guarded = Number($(html).find('input[name="guarded"]:checked').val());
@@ -2234,6 +2318,7 @@ export class FortykRollDialogs {
             if (spentReactions >= reactions) return ui.notifications.warn("Out of reactions!");
         }
         modifierTracker = modifierTracker.concat(item.system.modifiers);
+        templateOptions.leverage=actor.getFlag("fortyk", "leverage");
         let renderedTemplate = await renderTemplate(template, templateOptions);
 
         new Dialog({
@@ -2246,7 +2331,17 @@ export class FortykRollDialogs {
                     callback: async (html) => {
                         let other = Number($(html).find('input[name="other"]').val());
                         modifierTracker.push({ value: other, label: "Input Modifier" });
-
+                        let leverage = $(html).find('input[id="leveragebox"]').is(":checked");
+                        if(leverage){
+                            testChar="inf";
+                            let inf=actor.system.characteristics.inf.total;
+                            let baseObject=modifierTracker.shift();
+                            let baseAmt=baseObject.value;
+                            testTarget-=baseAmt;
+                            testTarget+=inf;
+                            modifierTracker.unshift({value:inf,label:"Power Base"});
+                        }
+                        console.log(modifierTracker);
                         testTarget = parseInt(testTarget) + parseInt(other);
 
                         let test = await FortykRolls.fortykTest(
@@ -2284,29 +2379,31 @@ export class FortykRollDialogs {
             if (token.id === sourceToken.id) continue;
             if (tokenActor.getFlag("fortyk", "daemonic")) {
                 let distance = tokenDistance(token, sourceToken);
-                if (distance <= pr) {
-                    let test = await FortykRolls.fortykTest(
-                        "wp",
-                        "char",
-                        tokenActor.system.characteristics.wp.total,
-                        tokenActor,
-                        "Soulblaze",
-                        null,
-                        false,
-                        "",
-                        true,
-                        []
-                    );
-                    messageContent +=
-                        `<div class="chat-target"><a class="blast-ping" data-token="${token.id}">` +
-                        token.name +
-                        `'s</a> ` +
-                        test.template +
-                        `</div>`;
-                    test.token = token;
-                    test.tokenActor = tokenActor;
-                    tests.push(test);
-                }
+                if (distance > pr)continue;
+                const collision = CONFIG.Canvas.polygonBackends['move'].testCollision(token.center, sourceToken.center, {mode:"any", type:"move"});
+                if (collision) continue;
+                let test = await FortykRolls.fortykTest(
+                    "wp",
+                    "char",
+                    tokenActor.system.characteristics.wp.total,
+                    tokenActor,
+                    "Soulblaze",
+                    null,
+                    false,
+                    "",
+                    true,
+                    []
+                );
+                messageContent +=
+                    `<div class="chat-target"><a class="blast-ping" data-token="${token.id}">` +
+                    token.name +
+                    `'s</a> ` +
+                    test.template +
+                    `</div>`;
+                test.token = token;
+                test.tokenActor = tokenActor;
+                tests.push(test);
+
             }
         }
         if (!messageContent) return;
@@ -2569,15 +2666,15 @@ export class FortykRollDialogs {
                             this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "Invalid Number");
                             return;
                         }
-
+                        let attackerToken=getActorToken(actor);
                         let messageContent = "";
                         let updatedtargets = [];
                         let rolls = [];
                         let i = 1;
                         let targetList = [];
                         for (let token of targets) {
-
-
+                            const collision = CONFIG.Canvas.polygonBackends['move'].testCollision(token._object.center, attackerToken.center, {mode:"any", type:"move"});
+                            if(collision)continue;
                             let tokenActor = token.actor;
                             if (tokenActor.id === actor.id) continue;
                             if (tokenActor.getFlag("core", "dead")) continue;
@@ -2604,7 +2701,7 @@ export class FortykRollDialogs {
 
                             if (!test.value) {
                                 //updatedtargets.push(token.id);
-                                targetList.push({ name: token.name, test: test, hits: 0, tokenId: tokenId });
+                                targetList.push({ name: token.name, test: test, hits: 0, tokenId: token.id });
                             } else {
                                 messageContent +=
                                     `<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="0" data-token="${token.id}">${token.name}'s</a> ` +

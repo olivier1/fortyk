@@ -97,6 +97,18 @@
                 {{#if role}}
                 <div class="flexrow advanceElite">
                     <a class="item-descr fit-content" data-id="{{role.id}}" data-name="{{role.name}}" data-item-descr="{{role.system.description.value}}"><u>{{role.name}}</u></a>
+                    {{#if flags.fortyk.lost}}
+                    {{debug}}
+                    <i class="fa-solid fa-question fit-content" title="Lost on the Path"></i>
+                    {{/if}}
+                    {{#if role.flags.fortyk.mastered}}
+
+                    <i class="fa-solid fa-star fit-content" title="Path Mastered!"></i>
+                    {{#unless role.flags.fortyk.masterid}}
+                    <button class="button get-master fit-content" data-id="{{role.id}}">Get Mastery Ability</button>
+                    {{/unless}}
+
+                    {{/if}}
                     {{#if isGM}}
                     <a class="list-button item-delete" title="Delete" data-item-id="{{role.id}}"></a>
                     {{/if}}
@@ -107,6 +119,22 @@
             </div>
 
         </div>
+        {{#if goals}}
+        <div class="eliteAdvances flexcol">
+
+            <span class="descrSpan">Short Term Goal:</span>
+            <div class="flexrow">
+                <input type="text" class="combat-resources" data-target="system.goal.short" value="{{system.goal.short}}" data-dtype="String"/>
+                
+            </div>
+            <span class="descrSpan">Long Term Goal:</span>
+            <div class="flexrow">
+                <input type="text" class="combat-resources" data-target="system.goal.long" value="{{system.goal.long}}" data-dtype="String"/>
+                
+            </div>
+
+        </div>
+        {{/if}}
         {{#if eliteAdvances}}
         <div class="eliteAdvances flexcol">
 
@@ -117,6 +145,28 @@
                 <div class="flexrow advanceElite">
                     <a class="item-descr fit-content" data-id="{{id}}" data-name="{{name}}" data-item-descr="{{system.description.value}}"><u>{{name}}</u></a>
                     <a class="list-button item-delete" title="Delete" data-item-id="{{id}}"></a>
+                </div>
+                {{/each}}
+            </div>
+
+        </div>
+        {{/if}}
+        {{#if passiveRoles}}
+        <div class="eliteAdvances flexcol">
+
+            <span class="descrSpan">Passive Paths:</span>
+            <div class="flexrow">
+
+                {{#each passivePaths}}
+                <div class="flexrow advanceElite">
+                    <a class="item-descr fit-content" data-id="{{id}}" data-name="{{name}}" data-item-descr="{{system.description.value}}"><u>{{name}}</u></a>
+                    {{#if role.flags.fortyk.mastered}}
+                    <i class="fa-solid fa-star fit-content" title="Path Mastered!"></i>
+
+                    {{/if}}
+                    {{#if isGM}}
+                    <a class="list-button item-delete" title="Delete" data-item-id="{{id}}"></a>
+                    {{/if}}
                 </div>
                 {{/each}}
             </div>
@@ -153,7 +203,7 @@
                 <div class="resource-content flexrow flex-center flex-between">
                     <input type="number" class="combat-resources" data-target="system.secChar.fatigue.value" value="{{system.secChar.fatigue.value}}" data-dtype="Number"/>
                     <span> / </span>
-                    <span type="number">{{system.secChar.fatigue.max}}</span>
+                    <input type="number" value="{{system.secChar.fatigue.max}}" disabled>
                 </div>
             </div>
             {{#if flags.fortyk.hasinfluence}}

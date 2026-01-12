@@ -80,5 +80,14 @@ export const registerSystemSettings = function() {
         type: Boolean,
         default: false
     });
+    //Setting to use goals on character sheets
+    game.settings.register("fortyk","goals",{
+        name: "Use Goals",
+        hint: "Adds fields on the character sheets to track goals",
+        scope: "world",
+        config: true,
+        type: Boolean,
+        default: false
+    });
     
 };

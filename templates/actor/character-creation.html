@@ -1,16 +1,15 @@
-<header class="sheet-header flexrow">
+
     {{#unless characterType}}
-    <select id="charater-type-select">
-        <option value="">Choose a Character Type</option>
-        {{#each characterTypes}}
-        <option value="{{this.uuid}}">{{this.name}}</option>
-        {{/each}}
-    </select>
-    <div class="button confirm-character-type">Confirm Choice</div>
+<header class="sheet-header flexrow">
+    
+</header>
+{{> "systems/fortyk/templates/actor/characterCreationParts/stage3.html"}}
     {{else}}
+<header class="sheet-header flexrow">
     <div class="flexcol">
         <b>{{characterType.name}} Creation</b>
-        <p>{{characterType.system.description.value}}</p>
+        
+        
 
         <nav class="sheet-tabs tabs grid grid-2col" data-group="primary">
 
@@ -20,9 +19,9 @@
         </nav>
     </div>
 
-
-    {{/unless}}
 </header>
+    {{/unless}}
+
 <section class="sheet-content flex-group-center">
     <div class="tab main" data-group="primary" data-tab="main">
         {{#if (equals creationStage "1")}}
@@ -86,9 +85,11 @@
                     <label class="resource-label">CHAR</label>
                 </div>
                 {{#each system.characteristics as |char key|}}
+                {{#unless off}}
                 <div class="charCross flexcol flex-group-center">
                     <label class="resource-label">{{key}}</label>
                 </div>
+                {{/unless}}
                 {{/each}}
             </div>
             <div class="characteristics flexrow">
@@ -96,10 +97,12 @@
                     <label class="resource-label">TOTAL</label>
                 </div>
                 {{#each system.characteristics as |char key|}}
+                 {{#unless off}}
                 <div class="charCross flexcol flex-group-center">
                     <input type="number" value="{{char.total}}" disabled>
 
                 </div>
+                {{/unless}}
                 {{/each}}
             </div>
         </div>

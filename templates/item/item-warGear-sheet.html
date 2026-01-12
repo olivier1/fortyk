@@ -33,6 +33,40 @@
         <a class="modifier button">Active Effect</a>
     </div>
     {{/if}}
+    <div class="flexrow">
+        <label>Is an aura:</label>
+        <input type="checkbox" name="system.isAura.value" {{checked system.isAura.value}}>
+    </div>
+    {{#if system.isAura.value}}
+    <div class="flexcol">
+            <label>Aura Type:</label>
+
+            <select class="power-char" name="system.isAura.auraType">
+                {{selectOptions FORTYK.auraTypes selected=system.isAura.auraType valueAttr="value" labelAttr="label"}}
+
+            </select>
+        </div>
+    <div class="flexrow">
+        <label>Doesn't Affect Self:</label>
+        <input type="checkbox" name="system.isAura.notSelf" {{checked system.isAura.notSelf}}>
+    </div>
+    <div class="flexrow">
+        <label>Needs LoS:</label>
+        <input type="checkbox" name="system.isAura.los" {{checked system.isAura.los}}>
+    </div>
+    <div class="flexcol">
+        <label>Aura Range:</label>
+        <input type="text" value="{{system.isAura.range}}" name="system.isAura.range" data-dtype="Number">
+    </div>
+    <div class="flexcol">
+        <label>Flag Requirements:</label>
+        <input type="text" value="{{system.isAura.reqFlags}}" name="system.isAura.reqFlags" data-dtype="String">
+    </div>
+    <div class="flexcol">
+        <label>Negative Flag Requirements:</label>
+        <input type="text" value="{{system.isAura.negReqFlags}}" name="system.isAura.negReqFlags" data-dtype="String">
+    </div>
+    {{/if}}
      {{#if isGM}}
     <div class="item-description">
         <label>GM Description:</label>

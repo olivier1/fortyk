@@ -405,7 +405,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         );
         var options = {
             width: 666,
-            height: 600,
+            height: "auto",
             classes: ["systems/fortyk/css/fortyk.css", "tntdialog"]
         };
 
@@ -653,13 +653,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const dataset = element.dataset;
         let testType = dataset["rollType"];
         var testTarget = parseInt(dataset["target"]);
-        let tempMod = this.actor.system.secChar.tempMod.value;
+        
         let modifierTracker = [];
-        if (tempMod) {
-            testTarget += this.actor.system.secChar.tempMod.value;
-            modifierTracker.push({ value: tempMod, label: "Temporary Modifier" });
-            this.actor.update({ "system.secChar.tempMod.value": 0 });
-        }
+        
 
         var testLabel = dataset["label"];
         var testChar = dataset["char"];

@@ -36,6 +36,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     }
     /** @override **/
     async getData() {
+        const startTime=performance.now();
         let nameSort = function compare(a, b) {
             let valueA = a.name;
             let valueB = b.name;
@@ -53,12 +54,37 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let characterCreation = actor.getFlag("fortyk", "charactercreation");
         data.characterCreation = characterCreation;
         data.hasInfluence = actor.getFlag("fortyk", "hasinfluence");
+        data.goals=game.settings.get("fortyk", "goals");
         const FORTYK = game.fortyk.FORTYK;
         data.FORTYK = FORTYK;
         let characterType = actor.characterType;
         data.featureLabels = FORTYK.characterTypeFeatureLabels[characterType?.system?.flagId?.value];
+        if(actor.getFlag("fortyk","roguetradercharacter")){
+            data.featureLabels = FORTYK.characterTypeFeatureLabels["darkheresy"];
+        }
         data.actorAptitudes = this.prepareActorAptitudes(actor.system.aptitudes);
+        let disciplines = [];
+        let actorDisciplines = actor.system.psykana.disciplines;
+        for (let disc in actorDisciplines) {
+            let actorDisc = actorDisciplines[disc];
+            if (actorDisc) {
+                disciplines.push({ value: actorDisc });
+            }
+        }
+        disciplines = disciplines.sort((disc1, disc2) => {
+            let value1 = disc1.value;
+            let value2 = disc2.value;
+            if (value1 > value2) {
+                return 1;
+            }
+            if (value1 < value2) {
+                return -1;
+            }
+            // a must be equal to b
+            return 0;
+        });
 
+        data.ownDisciplines = disciplines;
         if (characterCreation) {
             if (!this.skillDescriptions) {
                 this.skillDescriptions = this.getSkillDescriptions();
@@ -72,8 +98,25 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             }
 
             if (!characterType) {
-                data.characterTypes = this.eaDocs.filter((ea) => ea.system.type.value === "charactertype");
-                data.characterTypes.sort(nameSort);
+                actor.flags.fortyk.creationstage=0;
+                data.creationStage=0;
+                data.features = this.eaDocs.filter((ea) => ea.system.type.value === "charactertype");
+                data.features=data.features.sort(nameSort);
+                data.stageLabel = "Character Type";
+
+                data.feature = this.feature;
+                if (data.feature) {
+                    data.featureCost = this.featureCost;
+                    data.rolledInsanity = this.rolledInsanity;
+                    data.rolledCorruption = this.rolledCorruption;
+                    data.featureBoni = this.featureBoni;
+                    data.featureEAs = this.featureEAs;
+                    data.featureTalents = this.featureTalents;
+                    data.featureTraits = this.featureTraits;
+                    data.featureGear = this.featureGear;
+                    data.featureSkill = this.featureSkill;
+                    data.featureAptitude = this.featureAptitude;
+                }
             } else {
                 data.skillRanks = this.getSkillRanks();
             }
@@ -137,9 +180,16 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                     break;
                 case 4:
                     data.stageLabel = data.featureLabels.role;
-                    let roles = this.eaDocs.filter((ea) => {
-                        return ea.system.type.value === "role" && ea.validateActor(actor).valid;
-                    });
+                    let roles;
+                    if (this.actor.getFlag("fortyk", "asuryani")) {
+                        roles = this.eaDocs.filter((ea) => {
+                            return ea.system.type.value === "asuryanipath" && ea.validateActor(actor).valid;
+                        });
+                    } else {
+                        roles = this.eaDocs.filter((ea) => {
+                            return ea.system.type.value === "role" && ea.validateActor(actor).valid;
+                        });
+                    }
                     roles.sort(nameSort);
                     data.features = roles;
                     data.feature = this.feature;
@@ -175,7 +225,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                     break;
             }
         }
+        const endTime=performance.now();
+        console.log(`Loading documents took ${endTime-startTime} ms`);
         return data;
+
     }
 
     /** @override */
@@ -184,7 +237,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let characterCreation = this.actor.getFlag("fortyk", "charactercreation");
         if (characterCreation) {
             //confirm character type choice
-            html.find(".confirm-character-type").click(this._onConfirmCharacterType.bind(this));
+            //html.find(".confirm-character-type").click(this._onConfirmCharacterType.bind(this));
             html.find(".feature-select").change(this._onFeatureChange.bind(this));
             html.find(".roll-fate").click(this._onRollFate.bind(this));
             html.find(".roll-wounds").click(this._onRollWounds.bind(this));
@@ -194,6 +247,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             html.find(".aptitude-radio").click(this._onAptitudeClicked.bind(this));
             html.find(".skill-radio").click(this._onSkillClicked.bind(this));
             html.find(".talent-radio").click(this._onTalentClicked.bind(this));
+            html.find(".boni-radio").click(this._onBoniClicked.bind(this));
+            html.find(".ea-radio").click(this._onEaClicked.bind(this));
             html.find(".trait-radio").click(this._onTraitClicked.bind(this));
             html.find(".gear-radio").click(this._onGearClicked.bind(this));
             html.find(".feature-plus-minus").change(this._onFeaturePlusMinusChange.bind(this));
@@ -208,6 +263,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             html.find(".finish-character-creation").click(this._onFinishCharacterCreation.bind(this));
             html.find(".previous-stage").click(this._onGoToPreviousStage.bind(this));
         } else {
+            //get path master ability
+            html.find(".get-master").click(this._onGetMastery.bind(this));
+            html.find(".change-path").click(this._onChangePathClick.bind(this));
+            html.find(".lost-choice").click(this._onLostChoiceClick.bind(this));
             //change skill characteristic
             html.find(".skill-char").change(this._onSkillCharEdit.bind(this));
             //change skill advancement
@@ -237,7 +296,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             html.find(".hand-weapon").change(this._onWeaponChange.bind(this));
 
             //filters
-            html.find(".skillfilter").keyup(this._onFilterChange.bind(this));
+            html.find(".skillfilter").keyup(this._onSkillFilterChange.bind(this));
+            html.find(".psyfilter").keyup(this._onPsyFilterChange.bind(this));
         }
         //shared listeners
         //spend exp button
@@ -276,6 +336,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 aptitudeObj.label = FORTYKaptitude.label;
                 aptitudeObj.description = FORTYKaptitude.description;
                 aptitudeArray.push(aptitudeObj);
+            }else{
+                aptitudeArray.push("");
             }
         }
         return aptitudeArray;
@@ -285,58 +347,60 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let characterType = actor.characterType;
         let pointBuy = characterType.system.pointBuy;
         let base = characterType.system.characteristics.all;
+        let chars = characterType.system.characteristics;
+        console.log(characterType.system.characteristics);
         let characteristics = {
             ws: {
                 label: "Weapon Skill",
-                base: base,
+                base: chars.ws === 0 || base === chars.ws ? base : chars.ws,
                 spent: 0,
                 total: 0
             },
             bs: {
                 label: "Ballistic Skill",
-                base: base,
+                base: chars.bs === 0 || base === chars.bs ? base : chars.bs,
                 spent: 0,
                 total: 0
             },
             s: {
                 label: "Strength",
-                base: base,
+                base: chars.s === 0 || base === chars.s ? base : chars.s,
                 spent: 0,
                 total: 0
             },
             t: {
                 label: "Toughness",
-                base: base,
+                base: chars.t === 0 || base === chars.t ? base : chars.t,
                 spent: 0,
                 total: 0
             },
             agi: {
                 label: "Agility",
-                base: base,
+                base: chars.agi === 0 || base === chars.agi ? base : chars.agi,
                 spent: 0,
                 total: 0
             },
             int: {
                 label: "Intelligence",
-                base: base,
+                base: chars.int === 0 || base === chars.int ? base : chars.int,
                 spent: 0,
                 total: 0
             },
             per: {
                 label: "Perception",
-                base: base,
+                base: chars.per === 0 || base === chars.per ? base : chars.per,
                 spent: 0,
                 total: 0
             },
             wp: {
                 label: "Willpower",
-                base: base,
+                base: chars.wp === 0 || base === chars.wp ? base : chars.wp,
                 spent: 0,
                 total: 0
             },
             fel: {
                 label: "Fellowship",
-                base: base,
+                base: chars.fel === 0 || base === chars.fel ? base : chars.fel,
                 spent: 0,
                 total: 0
             }
@@ -344,7 +408,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         if (actor.getFlag("fortyk", "hasinfluence")) {
             characteristics.inf = {
                 label: "Influence",
-                base: base,
+                base: chars.inf === 0 || base === chars.inf ? base : chars.inf,
                 spent: 0,
                 total: 0
             };
@@ -357,7 +421,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         return pointBuy;
     }
     parseAptitudes(aptitudes) {
-        aptitudes = aptitudes.trim();
+        if(!aptitudes) return undefined;
+        aptitudes = aptitudes.trim().toLowerCase().replace(/\s/g, "");
         const FORTYK = game.fortyk.FORTYK;
         const APTITUDES = FORTYK.aptitudes;
         let splitAptitudes = aptitudes.split(",");
@@ -383,9 +448,15 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             if (choices.length > 1) {
                 aptObject.choices = choices;
             }
-            aptitudesArray.push(aptObject);
+            if(apt){
+                aptitudesArray.push(aptObject); 
+            }
+
         }
-        return aptitudesArray;
+
+        return aptitudesArray; 
+
+
     }
     parseSkills(skills) {
         if (!skills) return undefined;
@@ -576,7 +647,12 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         if (!value) return;
         let index = parseInt(dataset.index);
         let parentIndex = parseInt(dataset.parentIndex);
+        let type=dataset.type;
+
         let talents = this.featureTalents;
+        if(type==="boni"){
+            talents=this.featureBoni;
+        }
         let node;
         if (Number.isInteger(parentIndex)) {
             node = talents[parentIndex][index];
@@ -701,6 +777,36 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             }
         }
     }
+    async _onBoniClicked(event) {
+        let radioButton = event.currentTarget;
+        let dataset = radioButton.dataset;
+        let index = parseInt(dataset.index);
+        let parentIndex = parseInt(dataset.parentIndex);
+        let featureBoni = this.featureBoni;
+
+        for (let i = 0; i < featureBoni[parentIndex].length; i++) {
+            if (i === index) {
+                featureBoni[parentIndex][i].checked = true;
+            } else {
+                featureBoni[parentIndex][i].checked = false;
+            }
+        }
+    }
+    async _onEaClicked(event) {
+        let radioButton = event.currentTarget;
+        let dataset = radioButton.dataset;
+        let index = parseInt(dataset.index);
+        let parentIndex = parseInt(dataset.parentIndex);
+        let featureEAs = this.featureEAs;
+
+        for (let i = 0; i < featureEAs[parentIndex].length; i++) {
+            if (i === index) {
+                featureEAs[parentIndex][i].checked = true;
+            } else {
+                featureEAs[parentIndex][i].checked = false;
+            }
+        }
+    }
     async _onGearClicked(event) {
         let radioButton = event.currentTarget;
         let dataset = radioButton.dataset;
@@ -784,7 +890,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         this.render();
     }
-    async _onConfirmCharacterType(event) {
+    /* async _onConfirmCharacterType(event) {
         let characterTypeSelect = document.getElementById("charater-type-select");
         let itemId = characterTypeSelect.value;
         let item = await fromUuid(itemId);
@@ -803,7 +909,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         await this.actor.createEmbeddedDocuments("Item", [itemData]);
         await sleep(100);
         this.render({ force: true });
-    }
+    }*/
     async _onConfirmCharSpent(event) {
         let pointBuy = this.pointBuy;
         if (pointBuy.remaining !== 0) {
@@ -815,7 +921,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             update.system.characteristics[char] = { value: chars[char].total };
         }
         update["flags.fortyk.creationstage"] = 3;
-
+        update["flags.fortyk.pointbuy"] = pointBuy;
         await this.actor.update(update);
         this.render();
     }
@@ -930,11 +1036,14 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             }
         }
         let skillCheck = true;
-        for (let skill of this.featureSkill) {
-            if (skill.key.indexOf("any") !== -1) {
-                skillCheck = false;
+        if (this.featureSkill) {
+            for (let skill of this.featureSkill) {
+                if (skill.key.indexOf("any") !== -1) {
+                    skillCheck = false;
+                }
             }
         }
+
         let rolledWounds = this.rolledWounds;
         if (game.settings.get("fortyk", "alternateWounds")) {
             rolledWounds = true;
@@ -977,8 +1086,9 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             update["system.secChar.corruption.value"] = this.rolledCorruption;
         }
         planet.system.aptitude.value = this.createAptitudeString(aptitudes);
-
-        planet.system.skills = this.createSkillString();
+        if (this.featureSkill) {
+            planet.system.skills = this.createSkillString();
+        }
         await actor.update(update);
         await actor.createEmbeddedDocuments("Item", [planet]);
         await actor.setFlag("fortyk", "creationstage", 2);
@@ -1007,11 +1117,14 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let insanityCheck = !feature.system.characteristics.ins || this.rolledInsanity;
         let aptitudes = this.featureAptitude;
         let aptitudesCheck = true;
-        for (let aptitude of aptitudes) {
-            if (aptitude.key === "any" && aptitude.checked !== false) {
-                aptitudesCheck = false;
+        if(aptitudes){
+            for (let aptitude of aptitudes) {
+                if (aptitude.key === "any" && aptitude.checked !== false) {
+                    aptitudesCheck = false;
+                }
             }
         }
+
         let skillCheck = true;
         let featureSkills = this.featureSkill;
         if (featureSkills) {
@@ -1045,8 +1158,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         if (featureSkills) {
             feature.system.skills = this.createSkillString();
         }
+        if(aptitudes){
+            feature.system.aptitude.value = this.createAptitudeString(aptitudes);
+        }
 
-        feature.system.aptitude.value = this.createAptitudeString(aptitudes);
 
         var cost = parseInt(feature.system.cost.value);
         if (cost) {
@@ -1054,10 +1169,33 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             actorExp -= cost;
             update["system.experience.starting"] = actorExp;
         }
+        let stage = actor.getFlag("fortyk", "creationstage");
+        if(!stage){
+            stage=1;
+            let pointBuy = feature.system.pointBuy;
+            let chars = feature.system.characteristics;
+            let hasInfluence = chars.hasInfluence;
+            let experience = parseInt(feature.system.experience);
+            update["flags.fortyk.pointbuy"] = pointBuy;
+            update["flags.fortyk.hasinfluence"]= hasInfluence;
+            update["system.experience.starting"]= experience;
+            let all=feature.system.characteristics.all;
+            for (let [key, char] of Object.entries(actor.system.characteristics)) {
+               if(all){
+                   update[`system.characteristics.${key}.value`]=all;
+               }else{
+                   update[`system.characteristics.${key}.value`]=chars[key];
+               }
+            }
+
+        }else{
+            stage++; 
+        }
         await actor.update(update);
         await actor.createEmbeddedDocuments("Item", [feature]);
-        let stage = actor.getFlag("fortyk", "creationstage");
-        stage++;
+
+
+
         await actor.setFlag("fortyk", "creationstage", stage);
         this.resetStage();
         this.render();
@@ -1088,9 +1226,19 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 featureEAs.push(copy);
             }
         }
+        if (featureDoc.system.type.value === "asuryanipath") {
+            let bonusId = featureDoc.system.asuryani.base.id;
+            let pathBonusInstance = await fromUuid(bonusId);
+            let bonusCopy = foundry.utils.duplicate(pathBonusInstance);
+            bonusCopy.description = pathBonusInstance.system.description.value;
+            bonusCopy.uuid = bonusId;
+            featureBoni.push(bonusCopy);
+        }
         featureTalents = this.parseChoices(featureTalents);
         featureGear = this.parseChoices(featureGear);
         featureTraits = this.parseChoices(featureTraits);
+        featureBoni = this.parseChoices(featureBoni);
+        featureEAs = this.parseChoices(featureEAs);
         if (featureBoni.length > 0) {
             this.featureBoni = featureBoni;
         } else {
@@ -1164,7 +1312,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         new Dialog({
             title: "Finish Character Creation",
             content:
-                "Are you sure you want to finish Character Creation? You will no longer be able to purchase advances which require it.",
+            "Are you sure you want to finish Character Creation? You will no longer be able to purchase advances which require it.",
             buttons: {
                 submit: {
                     label: "Yes",
@@ -1271,7 +1419,136 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         this.render();
     }
     /* -------------------------------------------- */
+    async _onGetMastery(event){
+        event.preventDefault();
+        let button = event.target.value;
+        let pathItemId = event.target.attributes["data-id"].value;
+        let actor=this.actor;
+        let path=actor.getEmbeddedDocument("Item", pathItemId);
+        let masterAbilityId=path.system.asuryani.mastery.id;
+        let masterAbility=await fromUuid(masterAbilityId);
+        let masterClone= foundry.utils.duplicate(masterAbility);
+        let masterInstance= await actor.createEmbeddedDocuments("Item", [masterClone]);
+        let masterId=masterInstance[0].id;
+        await path.setFlag("fortyk", "masterid", masterId);
+        await path.setFlag("fortyk", "mastered", true);
+    }
+    async _onChangePathClick(event){
 
+        var actor = this.actor;
+        let paths;
+
+        var pathPack = await game.packs.get("fortyk.elite-advances");
+        paths = await pathPack.getDocuments();
+        //filter for paths
+        paths = paths.filter((path)=>{
+            return path.system.type.value==="asuryanipath";
+        });
+        //filter for other validation
+        paths = paths.filter((path)=>{
+            return path.validateActor(this.actor).valid;
+        });
+        paths = paths.sort(function compare(a, b) {
+            if (a.name < b.name) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+            // a must be equal to b
+            return 0;});
+
+
+        let templateOptions = { tnts: paths };
+
+        let renderedTemplate = renderTemplate(
+            "systems/fortyk/templates/actor/dialogs/path-dialog.html",
+            templateOptions
+        );
+        var options = {
+            width: 666,
+            height: "auto",
+            classes: ["systems/fortyk/css/fortyk.css", "tntdialog"]
+        };
+
+        renderedTemplate.then((content) => {
+            new Dialog(
+                {
+                    title: "Pick new path",
+                    content: content,
+                    buttons: {
+                        submit: {
+                            label: "Confirm New Path",
+                            callback: async (html) => {
+                                let selectedId;
+                                $(html)
+                                    .find("input:checked")
+                                    .each(function () {
+                                    selectedId=this.getAttribute("data-uuid");
+                                });
+                                console.log(selectedId);
+                                let pathDocument= await fromUuid(selectedId);
+                                let pathCopy= foundry.utils.duplicate(pathDocument);
+                                let currentPath=this.actor.role;
+                                if(this.actor.system.lostChoice){
+                                    let baseAbilityId=currentPath.system.asuryani.base.id;
+                                    let baseAbility=actor.getEmbeddedDocument("Item", baseAbilityId);
+                                    if(baseAbility){
+                                        await baseAbility.delete();
+                                    }
+                                    let masterAbilityId=currentPath.system.asuryani.master.id;
+                                    let masterAbility=actor.getEmbeddedDocument("Item", masterAbilityId);
+                                    if(masterAbility){
+                                        await currentPath.setFlag("fortyk", "mastered", "false");
+                                        await masterAbility.delete();
+                                    }
+
+                                }
+                                currentPath.setFlag("fortyk", "active", false);
+                                await this.actor.createEmbeddedDocuments("Item", [pathCopy]);
+                                await actor.update({"system.secChar.insanity.value":0});
+
+
+                                this.render(true);
+                            }
+                        }
+                    },
+                    default: "submit"
+                },
+                options
+            ).render(true);
+        });
+    }
+    _onLostChoiceClick(event){
+        new Dialog({
+            title: `Your mind is fraying, make a choice!`,
+            content: ``,
+            buttons: {
+                lost: {
+                    label: "Become Lost",
+                    callback: async (html)=>{
+                        let currentPath=this.actor.role;
+                        let lostId=currentPath.system.asuryani.lost.id;
+                        let lostDocument=await fromUuid(lostId);
+                        let lostCopy=foundry.utils.duplicate(lostDocument);
+                        let lostInstance= await this.actor.createEmbeddedDocuments("Item",[lostCopy]);
+                        await currentPath.setFlag("fortyk", "lostid", lostInstance[0].id);
+                        await this.actor.setFlag("fortyk", "lost", true);
+                        await this.actor.update({"system.secChar.insanity.value":0});
+                    }
+                },
+                abandon: {
+                    label: "Abandon Path",
+                    callback: async (html)=>{
+                        await this._onChangePathClick(html);
+                    }
+                }
+            },
+            default: "submit",
+
+            width: 100
+        }).render(true);
+    }
     _onSkillsTab(event) {
         const tab = $(event.target.closest("[data-tab]")).html();
 
@@ -1575,7 +1852,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         await this.actor.prepare();
     }
 
-    _onFilterChange(event) {
+    _onSkillFilterChange(event) {
         let skills = document.getElementsByName("skill");
         let skillHeads = document.getElementsByName("skillheads");
 
@@ -1597,6 +1874,22 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 skillHeads[index].style.display = "";
             } else {
                 skillHeads[index].style.display = "none";
+            }
+        }
+    }
+    _onPsyFilterChange(event) {
+        let powers = document.getElementsByName("psypower");
+
+        let filterInput = document.getElementById("psyfilter");
+        let filter = filterInput.value.toLowerCase();
+        for (let i = 0; i < powers.length; i++) {
+            let power = powers[i];
+
+            let powerName = power.attributes["data-name"].value.toLowerCase();
+            if (powerName.indexOf(filter) > -1) {
+                power.hidden = false;
+            } else {
+                power.hidden = true;
             }
         }
     }

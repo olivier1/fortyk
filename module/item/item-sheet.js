@@ -70,6 +70,10 @@ export class FortyKItemSheet extends ItemSheet {
                 data.chars = foundry.utils.duplicate(game.fortyk.FORTYK.skillCharsInf);
                 data.chars.any = { name: "any", caps: "ANY" };
             }
+            if(this.item.system.type.value === "asuryanipath"){
+                data.paths=await this.getAsuryaniPathAbilities();
+                data.asuryani=item.system.asuryani;
+            }
 
             data.compendiums = game.packs
                 .values()
@@ -82,8 +86,8 @@ export class FortyKItemSheet extends ItemSheet {
                 data.compendiumItems = await items.getDocuments();
 
                 data.compendiumItems.sort(function compare(a, b) {
-                    let valueA = a.name;
-                    let valueB = b.name;
+                    let valueA = a._source.name;
+                    let valueB = b._source.name;
                     if (valueA < valueB) {
                         return -1;
                     }
@@ -93,7 +97,7 @@ export class FortyKItemSheet extends ItemSheet {
                     // a must be equal to b
                     return 0;
                 });
-                
+
 
             } else {
                 data.compendiumItems = [];
@@ -155,6 +159,12 @@ export class FortyKItemSheet extends ItemSheet {
 
         return quirks;
     }
+    async getAsuryaniPathAbilities(){
+        let abilityPack= await game.packs.get("fortyk.custom-bonus-and-drawbacks");
+        let abilityDocuments= await abilityPack.getDocuments();
+        let asuryaniPaths=abilityDocuments.filter((ability)=>ability?.folder?.name==="Path Bonuses");
+        return asuryaniPaths;
+    }
     async getRangedWeapons() {
         let wargear = await game.packs.get("fortyk.wargear");
         let wargearDocuments = await wargear.getDocuments();
@@ -164,8 +174,8 @@ export class FortyKItemSheet extends ItemSheet {
         let wargearbetaDocuments = await wargearbeta.getDocuments();
         let documents = wargearDocuments.concat(knightComponentDocuments, wargearbetaDocuments);
         documents.sort(function compare(a, b) {
-            let valueA = a.name;
-            let valueB = b.name;
+            let valueA = a._source.name;
+            let valueB = b._source.name;
             if (valueA < valueB) {
                 return -1;
             }
@@ -196,8 +206,8 @@ export class FortyKItemSheet extends ItemSheet {
         let wargearbetaDocuments = await wargearbeta.getDocuments();
         let documents = wargearDocuments.concat(knightComponentDocuments, wargearbetaDocuments);
         documents.sort(function compare(a, b) {
-            let valueA = a.name;
-            let valueB = b.name;
+            let valueA = a._source.name;
+            let valueB = b._source.name;
             if (valueA < valueB) {
                 return -1;
             }
@@ -256,7 +266,9 @@ export class FortyKItemSheet extends ItemSheet {
         html.find(".remove-last").click(this._onRemoveItemClick.bind(this));
         html.find(".delete-mod").click(this._onDeleteModClick.bind(this));
         html.find(".manage-reqs").click(this._onManageReqsClick.bind(this));
+        html.find(".manage-mastery-reqs").click(this._onManageMasteryReqsClick.bind(this));
         html.find(".navflagconfirm").click(this._onNavFlagConfirmClick.bind(this));
+        html.find(".add-path-item").click(this._onAddPathAbilityClick.bind(this));
         //handles melee weapon mod
 
         html.find(".weapon-mod").focusout(this._weaponModEdit.bind(this));
@@ -275,14 +287,19 @@ export class FortyKItemSheet extends ItemSheet {
             if(navPowerFlag){
                 this.item.setFlag("fortyk",navPowerFlag,false);
             }
-            
+
             this.item.setFlag("fortyk",flag,true);
         }
     }
     async _onManageReqsClick(event) {
         event.preventDefault();
-        let dialog = new ManageRequirementsDialog({ item: this.item });
+        let dialog = new ManageRequirementsDialog({ item: this.item, flag:"requirements" });
         dialog.render(true, { title: "Manage Requirements" });
+    }
+    async _onManageMasteryReqsClick(event){
+        event.preventDefault();
+        let dialog = new ManageRequirementsDialog({ item: this.item, flag:"masteryrequirements" });
+        dialog.render(true, { title: "Manage Mastery Requirements" });
     }
     async _onDeleteModClick(event) {
         event.preventDefault();
@@ -341,6 +358,19 @@ export class FortyKItemSheet extends ItemSheet {
         this.chosenItem = item;
         this.chosenItemName = name;
         document.getElementById("add").removeAttribute("disabled");
+    }
+
+    async _onAddPathAbilityClick(event){
+        let pathSelect=document.getElementById("path-ability-select");
+        let uuid = pathSelect.value;
+        let name = pathSelect.options[pathSelect.selectedIndex].text;
+        let typeSelect=document.getElementById("path-ability-type-select");
+        let abilityType=typeSelect.value;
+        let item=this.item;
+        let updatePath=`system.asuryani.${abilityType}`;
+        let update={};
+        update[updatePath]={id:uuid, name:name};
+        item.update(update);
     }
     async _onAddItemClick(event) {
         let bonuses = this.item.system.items;
@@ -528,17 +558,17 @@ export class FortyKItemSheet extends ItemSheet {
         } else {
             specials = foundry.utils.duplicate(game.fortyk.FORTYK.weaponFlags);
         }
-        
+
 
         let flags = this.item._source.flags.fortyk;
 
         for (const flag in flags) {
             if (specials[flag]) {
                 if (specials[flag].num !== undefined) {
-                    
-                        specials[flag].num = flags[flag];
-                        specials[flag].value = true;
-                    
+
+                    specials[flag].num = flags[flag];
+                    specials[flag].value = true;
+
                 } else {
                     specials[flag].value = flags[flag];
                 }

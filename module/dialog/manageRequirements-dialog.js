@@ -15,9 +15,10 @@ export class ManageRequirementsDialog extends Application {
     async getData(){
         let data=super.getData();
         let item=this.options.item;
+        data.advances=game.fortyk.FORTYK.advances;
         data.item=item;
         let flag=this.flag;
-        if(!flag)flag=item.getFlag("fortyk","requirements");
+        if(!flag)flag=item.getFlag("fortyk",this.options.flag);
         if(!flag){flag=this.getDefaultFlag();}else{foundry.utils.mergeObject(flag,this.getDefaultFlag(),{overwrite:false});}
         data.flag=flag;
         this.flag=flag;
@@ -77,6 +78,7 @@ export class ManageRequirementsDialog extends Application {
         html.find('.char-creation-checkbox').click(this._onCharCreationClick.bind(this));
         html.find('.char-input').keyup(this._onCharInput.bind(this));
         html.find('.char-input').keydown(this._onEnterInput.bind(this));
+        html.find('.char-select').change(this._onCharAdvanceChange.bind(this));
         html.find('.cyber-input').keyup(this._onCyberInput.bind(this));
         html.find('.cyber-input').keydown(this._onEnterInput.bind(this));
 
@@ -93,6 +95,12 @@ export class ManageRequirementsDialog extends Application {
     _onCharCreationClick(event){
         let value=event.currentTarget.checked;
         this.flag.characterCreation=value;
+    }
+    _onCharAdvanceChange(event){
+        let charSelect=event.currentTarget;
+        let value=parseInt(charSelect.value);
+        let char=charSelect.dataset.char;
+        this.flag.characteristics[char].adv=value;
     }
     _onCharInput(event){
         var element = event.target;
@@ -317,15 +325,15 @@ export class ManageRequirementsDialog extends Application {
         this.render();
     }
     async _onSaveReqsClick(event){
-
-        await this.options.item.update({"flags.fortyk.requirements":this.flag});
+        let flag=this.options.flag;
+            let update={};
+            update[flag]=this.flag;
+            await this.options.item.setFlag("fortyk", flag, this.flag);
         this.close();
     }
     async _onEnterInput(event){
         if (event.key === 'Enter') {
-
-            await this.options.item.update({"flags.fortyk.requirements":this.flag});
-            this.close();
+            this._onSaveReqsClick(event);
         }
     }
     getDefaultFlag(){
@@ -333,39 +341,48 @@ export class ManageRequirementsDialog extends Application {
             characteristics:{
                 ws:{
                     value:0,
-                    label:"Weapon Skill"
+                    label:"Weapon Skill",
+                    adv:"0"
                 },
                 bs:{
                     value:0,
-                    label:"Ballistic Skill"
+                    label:"Ballistic Skill",
+                    adv:"0"
                 },
                 s:{
                     value:0,
-                    label:"Strength"
+                    label:"Strength",
+                    adv:"0"
                 },
                 t:{
                     value:0,
-                    label:"Toughness"
+                    label:"Toughness",
+                    adv:"0"
                 },
                 per:{
                     value:0,
-                    label:"Perception"
+                    label:"Perception",
+                    adv:"0"
                 },
                 int:{
                     value:0,
-                    label:"Intelligence"
+                    label:"Intelligence",
+                    adv:"0"
                 },
                 wp:{
                     value:0,
-                    label:"Willpower"
+                    label:"Willpower",
+                    adv:"0"
                 },
                 fel:{
                     value:0,
-                    label:"Fellowship"
+                    label:"Fellowship",
+                    adv:"0"
                 },
                 agi:{
                     value:0,
-                    label:"Agility"
+                    label:"Agility",
+                    adv:"0"
                 },
                 inf:{
                     value:0,
@@ -394,6 +411,10 @@ export class ManageRequirementsDialog extends Application {
                 mastpow:{
                     value:0,
                     label:"Mastered Powers"
+                },
+                mastpath:{
+                    value:0,
+                    label:"Mastered Paths"
                 }
             },
             flags:{},

@@ -62,9 +62,9 @@ export class FortyKActor extends Actor {
     async update(data, options = {}) {
         let actor = this;
         let actorData = actor;
-        let dead=data?.flags?.core?.dead;
-        if(dead){
-            let token=getActorToken(this).document;
+        let dead = data?.flags?.core?.dead;
+        if (dead) {
+            let token = getActorToken(this).document;
             await turnOffActorAuras(token);
         }
         if (actorData.type === "dwPC" || actorData.type === "npc" || actorData.type === "vehicle") {
@@ -217,7 +217,7 @@ export class FortyKActor extends Actor {
             this.prepareDerivedData();
             this.system.isPrepared = true;
         } catch (e) {
-            console.log(e);
+            console.log(this.name,this,e);
             ui.notifications.error(`Failed to prepare ${this.name}! Check log for details.`);
         }
     }
@@ -242,7 +242,7 @@ export class FortyKActor extends Actor {
         //prepare base flags
         if (!this.flags.core) this.flags.core = {};
         if (!this.flags.fortyk) this.flags.fortyk = {};
-        if(!this.flags.fortyk.evadeMod)this.flags.fortyk.evadeMod=0;
+        if (!this.flags.fortyk.evadeMod) this.flags.fortyk.evadeMod = 0;
         data.secChar.wornGear.armor = {};
         data.secChar.wornGear.weapons = [{}, {}];
         data.secChar.wornGear.forceField = {};
@@ -323,6 +323,7 @@ export class FortyKActor extends Actor {
         }
         if (this.getFlag("fortyk", "stepaside")) data.reactions++;
         if (this.getFlag("fortyk", "tidesreaction")) data.reactions++;
+        if (this.getFlag("core", "totalDef")) data.reactions++;
         for (let [key, char] of Object.entries(data.characteristics)) {
             if (this.getFlag("fortyk", key + "UB")) {
                 char.uB = parseInt(this.getFlag("fortyk", key + "UB"));
@@ -423,7 +424,8 @@ export class FortyKActor extends Actor {
             data.experience.spent = 0;
             data.characteristics.inf.advance = 0;
             data.carry.value = 0;
-            let masteredPowers=0;
+            let masteredPowers = 0;
+            let masteredPaths = 0;
             let forRaces = [];
             this.items.forEach((fortykItem, id, items) => {
                 let item = fortykItem;
@@ -536,12 +538,14 @@ export class FortyKActor extends Actor {
                 if (item.type === "forceField" && item.system.isEquipped) {
                     data.secChar.wornGear.forceField = item;
                 }
-                if(item.type === "psychicPower" && item.system.training.value==="Master"){
+                if (item.type === "psychicPower" && item.system.training.value === "Master") {
                     masteredPowers++;
                 }
                 if (item.type === "psychicPower" && item.getFlag("fortyk", "sustained")) {
                     data.psykana.pr.sustained.push(item.id);
-
+                }
+                if(item.type === "eliteAdvance"&&item.getFlag("fortyk","mastered")){
+                    masteredPaths++;
                 }
             });
             //store known xenos for deathwatchtraining
@@ -551,7 +555,8 @@ export class FortyKActor extends Actor {
             if (this.getFlag("fortyk", "fieldvivisection")) {
                 actorData.flags.fortyk.fieldvivisection = forRaces;
             }
-            data.masteredPowers=masteredPowers;
+            data.masteredPowers = masteredPowers;
+            data.masteredPaths = masteredPaths;
             data.characteristics.inf.total = data.characteristics.inf.value + data.characteristics.inf.advance;
             data.experience.value =
                 parseInt(data.experience.starting) + parseInt(data.experience.earned) - parseInt(data.experience.spent);
@@ -695,7 +700,7 @@ export class FortyKActor extends Actor {
                 let proceed = false;
                 //check if ae is from an item if it origins drom a psychic power skip
 
-                if ((!ae.getFlag("fortyk", "psy") &&!ae.getFlag("fortyk","aura"))&& powerOriginId) {
+                if (!ae.getFlag("fortyk", "psy") && !ae.getFlag("fortyk", "aura") && powerOriginId) {
                     let itemId = powerOriginId.split(".")[3];
                     let item = actor.getEmbeddedDocument("Item", itemId);
 
@@ -735,13 +740,13 @@ export class FortyKActor extends Actor {
                                 }
                             }
                         }
-                        if(powerActor&&ae.getFlag("fortyk","aura")){
+                        if (powerActor && ae.getFlag("fortyk", "aura")) {
                             let scope = powerActor.getScope();
                             try {
                                 let changestr = changeValue;
                                 changeValue = Math.ceil(math.evaluate(changestr, scope));
                             } catch (err) {}
-                        }else if (powerActor&&ae.getFlag("fortyk", "psy")) {
+                        } else if (powerActor && ae.getFlag("fortyk", "psy")) {
                             /*if (!powerActor.system.isPrepared) {
                                 data.postEffects=true;
                                 continue; 
@@ -801,8 +806,7 @@ export class FortyKActor extends Actor {
                             //custom mode
                             if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
                                 setNestedKey(actorData, path, changeValue);
-                            }else if (change.mode === CONST.ACTIVE_EFFECT_MODES.ADD) {
-                                
+                            } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.ADD) {
                                 setNestedKey(actorData, path, changeValue);
                             }
                         }
@@ -818,6 +822,8 @@ export class FortyKActor extends Actor {
                 let pr = parseInt(originPower.system.curPR.value) - this.getPrAdjust();
 
                 let selfScope = this.getScope();
+                selfScope.TRUE=true;
+                selfScope.FALSE=false;
                 selfScope.pr = pr;
                 ae.changes.forEach(function (change, i) {
                     var changeValue = change.value;
@@ -902,9 +908,9 @@ export class FortyKActor extends Actor {
      */
     _prepareCharacterData(actorData) {
         const data = this.system;
-        if(this.getFlag("fortyk","unnatruralallure")){
-            data.characteristics.fel.value+=5;
-            data.characteristics.fel.value+=this.itemTypes.mutation.length;
+        if (this.getFlag("fortyk", "unnatruralallure")) {
+            data.characteristics.fel.value += 5;
+            data.characteristics.fel.value += this.itemTypes.mutation.length;
         }
         //prepare characteristics data
         for (let [key, char] of Object.entries(data.characteristics)) {
@@ -923,6 +929,7 @@ export class FortyKActor extends Actor {
                 char.total += parseInt(data.globalMOD.value);
             }
         }
+
         if (this.getFlag("fortyk", "templeassassin")) {
             data.reactions += data.characteristics.agi.bonus;
         }
@@ -1012,8 +1019,11 @@ export class FortyKActor extends Actor {
         if (this.getFlag("fortyk", "breedingcounts")) {
             inf += 10;
         }
-        data.currency.income = FORTYKTABLES.income[inf];
 
+        data.currency.income = FORTYKTABLES.income[inf];
+        if(!this.getFlag("fortyk","hasinfluence")){
+            data.characteristics.inf.off=true;
+        }
         //movement
         this.prepareMovement(data);
         //add up all armor and stuff
@@ -1048,6 +1058,11 @@ export class FortyKActor extends Actor {
             }
             if (master) {
                 data.secChar.initiative.value += 2;
+            }
+        }
+        if(!this.getFlag("fortyk","lost")){
+            if(parseInt(data.secChar.insanity.value)>=50){
+                this.system.lostChoice=true;
             }
         }
         //handle shields
@@ -1499,10 +1514,10 @@ export class FortyKActor extends Actor {
                     }
                 }
                 if (item.name === "Dodge") {
-                    if(this.getFlag("fortyk","unerringvision")){
-                        if(data.characteristics.per.total>data.characteristics.agi.total){
-                            item.system.characteristic.value="per";
-                            item.system.aptitudes.value="Perception, Defence";
+                    if (this.getFlag("fortyk", "unerringvision")) {
+                        if (data.characteristics.per.total > data.characteristics.agi.total) {
+                            item.system.characteristic.value = "per";
+                            item.system.aptitudes.value = "Perception, Defence";
                         }
                     }
                     item.system.mod.value += data.evasionMod;
@@ -1520,11 +1535,11 @@ export class FortyKActor extends Actor {
                 } else {
                     data.skillsTraining[name] = false;
                 }
-                if(this.getFlag("fortyk","darktracesoflegend")){
-                    if(item.system.parent.value==="Forbidden Lore"){
-                        item.system.aptitudes.value="General, General";
-                    }else if(item.name==="Fprbidden Lore"){
-                        item.system.aptitudes.value="General, General";
+                if (this.getFlag("fortyk", "darktracesoflegend")) {
+                    if (item.system.parent.value === "Forbidden Lore") {
+                        item.system.aptitudes.value = "General, General";
+                    } else if (item.name === "Fprbidden Lore") {
+                        item.system.aptitudes.value = "General, General";
                     }
                 }
                 data.skills[name] = item.system.total.value;
@@ -1626,7 +1641,7 @@ export class FortyKActor extends Actor {
         let role;
         let background;
         let planet;
-
+        const passivePaths = [];
         const wornGear = { weapons: [], armor: "", forceField: "" };
         let unrelenting = false;
 
@@ -1685,13 +1700,22 @@ export class FortyKActor extends Actor {
                 }
             }
             if (item.type === "psychicPower") {
-                if (data.psykana.filter) {
-                    if (data.psykana.filter === item.system.discipline.value) {
-                        psychicPowers.push(item);
+                let searchFilter = data.psykana.searchFilter;
+                let valid=true;
+                if(searchFilter){
+                    if(!item.name.toLowerCase().includes(searchFilter.toLowerCase())){
+                        valid=false;
                     }
-                } else {
-                    psychicPowers.push(item);
                 }
+                if (data.psykana.filter) {
+                    if (data.psykana.filter !== item.system.discipline.value) {
+                        valid=false;
+                    }
+                } 
+
+                item.filtered=!valid;
+
+                psychicPowers.push(item);
                 if (item.system.favorite) {
                     favoritePowers.push(item);
                 }
@@ -1725,6 +1749,19 @@ export class FortyKActor extends Actor {
                         break;
                     case "role":
                         role = item;
+                        break;
+                    case "asuryanipath":
+                        if(!item.getFlag("fortyk", "mastered")){
+                            let mastered=item.validateActor(this, item.getFlag("fortyk", "masteryrequirements"), true);
+                            if(mastered.valid){
+                                item.flags.fortyk.mastered=true;
+                            }
+                        }
+                        if(item.getFlag("fortyk","active")){
+                            role=item;
+                        }else{
+                            passivePaths.push(item);
+                        }
                         break;
                 }
             }
@@ -1792,6 +1829,7 @@ export class FortyKActor extends Actor {
         actorData.characterType = characterType;
         actorData.characterSubtype = characterSubtype;
         actorData.role = role;
+        actorData.passivePaths = passivePaths;
         actorData.background = background;
         actorData.planet = planet;
         actorData.psychicPowers = actorData.psychicPowers.sort(function compare(a, b) {
@@ -1834,10 +1872,11 @@ export class FortyKActor extends Actor {
                 for (let i = 0; i < profiles.length; i++) {
                     if (typeof profiles[i] === "string" || profiles[i] instanceof String) {
                         let uuid = profiles[i];
-                        let instance = await fromUuid(profiles[i]);
+                        let instance = await fromUuid(uuid);
 
                         if (instance) {
                             let instanceCopy = foundry.utils.duplicate(instance);
+                            instanceCopy.uuid = uuid;
                             instancedProfiles.push(instanceCopy);
                         }
                     }
@@ -2112,36 +2151,39 @@ export class FortyKActor extends Actor {
     //when creating active effects check if they are transferred from an item, if so give the active effect flag to the item for referrence.
     async _createEliteAdvanceBonuses(itemData) {
         let bonuses = itemData.system.items;
-        let bonusesInstances = [];
+        let bonusDatas = [];
         let actor = this;
         await this.setFlag("fortyk", itemData.system.flagId.value, true);
+        if((itemData.system.type.value !== "asuryanipath") || (itemData.system.type.value === "asuryanipath"&&this.getFlag("fortyk", "charactercreation"))){
 
-        for (const bonus of bonuses) {
-            let currentInstance = await fromUuid(bonus.uuid);
-            let cloneCurrentInstance = foundry.utils.duplicate(currentInstance);
-            if (currentInstance.type === "talentntrait") {
-                let spec = currentInstance.system.specialisation.value;
-                let flag = cloneCurrentInstance.system.flagId.value;
-                if (actor.getFlag("fortyk", flag)) {
-                    continue;
+
+            for (const bonus of bonuses) {
+                let currentInstance = await fromUuid(bonus.uuid);
+                let cloneCurrentInstance = foundry.utils.duplicate(currentInstance);
+                if (currentInstance.type === "talentntrait") {
+                    let spec = currentInstance.system.specialisation.value;
+                    let flag = cloneCurrentInstance.system.flagId.value;
+                    if (actor.getFlag("fortyk", flag)) {
+                        continue;
+                    }
+                    if (spec === "N/A") {
+                        //await this.setFlag("fortyk",flag,true);
+                    } else {
+                        cloneCurrentInstance.system.specialisation.value = bonus.spec;
+                        //await actor.setFlag("fortyk",flag,bonus.spec);
+                    }
+                } else if (currentInstance.type === "psychicPower") {
+                    //actor.setFlag("fortyk", currentInstance.id, true);
                 }
-                if (spec === "N/A") {
-                    //await this.setFlag("fortyk",flag,true);
-                } else {
-                    cloneCurrentInstance.system.specialisation.value = bonus.spec;
-                    //await actor.setFlag("fortyk",flag,bonus.spec);
+                if (bonus.amount) {
+                    cloneCurrentInstance.system.amount.value = bonus.amount;
                 }
-            } else if (currentInstance.type === "psychicPower") {
-                //actor.setFlag("fortyk", currentInstance.id, true);
+                bonusDatas.push(cloneCurrentInstance);
             }
-            if (bonus.amount) {
-                cloneCurrentInstance.system.amount.value = bonus.amount;
-            }
-            bonusesInstances.push(cloneCurrentInstance);
         }
 
         if (this.type === "npc") {
-            let instancedBonuses = await this.createEmbeddedDocuments("Item", bonusesInstances);
+            let instancedBonuses = await this.createEmbeddedDocuments("Item", bonusDatas);
             let bonusIds = instancedBonuses.map((bonus) => bonus.id);
             let parent = this.itemTypes.eliteAdvance.filter(
                 (item) => item.system.flagId.value === itemData.system.flagId.value
@@ -2179,25 +2221,45 @@ export class FortyKActor extends Actor {
                 actorInsanity += insValue;
                 await actor.update({ "system.secChar.insanity.value": actorInsanity });
             }
+        }else if(itemData.system.type.value === "asuryanipath"){
+            let pathBonusId = itemData.system.asuryani.base.id;
+            let pathBonusInstance = await fromUuid(pathBonusId);
+            let pathBonusClone = foundry.utils.duplicate(pathBonusInstance);
+            let pathOwnInstance= await this.createEmbeddedDocuments("Item", [pathBonusClone]);
+            let parent = this.itemTypes.eliteAdvance.find(
+                (item) => item.system.flagId.value === itemData.system.flagId.value
+            );
+            await parent.setFlag("fortyk", "pathBaseBonusId", pathOwnInstance[0].id);
+            await parent.setFlag("fortyk", "active", true);
         }
 
-        let aptitude = itemData.system.aptitude.value;
+
+        let aptitude = itemData.system.aptitude.value.trim().toLowerCase().replace(/\s/g, '');
         let splitAptitudes = aptitude.split(",");
         let aptitudes = foundry.utils.duplicate(this.system.aptitudes);
         let replacedOnce = false;
-        for (let apti of splitAptitudes) {
-            let i = 0;
-            let replaced = false;
-            while (i <= 7 && !replaced) {
-                let apt = aptitudes[i];
-                if (apt === "") {
-                    replaced = true;
-                    replacedOnce = true;
-                    aptitudes[i] = apti;
+        if(itemData.system.type.value === "asuryanipath"){
+            aptitudes[2]=splitAptitudes[0];
+            aptitudes[3]=splitAptitudes[1];
+            aptitudes[4]=splitAptitudes[2];
+            aptitudes[5]=splitAptitudes[3];
+            replacedOnce=true;
+        }else{
+            for (let apti of splitAptitudes) {
+                let i = 0;
+                let replaced = false;
+                while (i <= 7 && !replaced) {
+                    let apt = aptitudes[i];
+                    if (apt === "") {
+                        replaced = true;
+                        replacedOnce = true;
+                        aptitudes[i] = apti;
+                    }
+                    i++;
                 }
-                i++;
             }
         }
+
 
         if (replacedOnce) {
             await this.update({ "system.aptitudes": aptitudes });
@@ -2250,11 +2312,11 @@ export class FortyKActor extends Actor {
                     }
                     skillData.system.aptitudes = { value: aptitudes };
                     skillData["system.description.value"] = description;
-                    bonusesInstances.push(skillData);
+                    bonusDatas.push(skillData);
                 }
             }
         }
-        let instancedBonuses = await this.createEmbeddedDocuments("Item", bonusesInstances);
+        let instancedBonuses = await this.createEmbeddedDocuments("Item", bonusDatas);
         let bonusIds = instancedBonuses.map((bonus) => bonus.id);
         let parent = this.itemTypes.eliteAdvance.filter(
             (item) => item.system.flagId.value === itemData.system.flagId.value

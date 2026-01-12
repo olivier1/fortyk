@@ -57,11 +57,11 @@
             </div>
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="guarded" value="{{modifiers.guarded}}" label="Guarded"><label>Guarded: {{modifiers.guarded}}</label>
+                <div><input type="checkbox" name="guarded" value="{{modifiers.guarded}}" label="Guarded"></div><label>Guarded: {{modifiers.guarded}}</label>
             </div>
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="overwatch" value="-20" label="Overwatch"><label>Overwatch: -20</label>
+                <div><input type="checkbox" name="overwatch" value="-20" label="Overwatch"></div><label>Overwatch: -20</label>
             </div>
 
 
@@ -130,56 +130,56 @@
 
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="prone" value="-10"{{#if options.prone}} checked{{/if}}><label>Prone/Knocked Down/Higher Ground: -10</label>
+                <div><input type="checkbox" name="prone" value="-10"{{#if options.prone}} checked{{/if}}></div><label>Prone/Knocked Down/Higher Ground: -10</label>
             </div>
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="high" value="10"{{#if options.high}} checked{{/if}}><label>You are on higher ground: +10</label>
+                <div><input type="checkbox" name="high" value="10"{{#if options.high}} checked{{/if}}></div><label>You are on higher ground: +10</label>
             </div>
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="surprised" value="30" {{#if options.helpless}} checked{{/if}}><label>Surprised/Unaware: +30</label>
+                <div><input type="checkbox" name="surprised" value="30" {{#if options.helpless}} checked{{/if}}></div><label>Surprised/Unaware: +30</label>
 
             </div>
             {{#if hardTarget}}
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="running" value="-40" {{#if options.running}} checked{{/if}}><label>Running: -40</label>
+                <div><input type="checkbox" name="running" value="-40" {{#if options.running}} checked{{/if}}></div><label>Running: -40</label>
 
             </div>
             {{else}}
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="running" value="-20" {{#if options.running}} checked{{/if}}><label>Running: -20</label>
+                <div><input type="checkbox" name="running" value="-20" {{#if options.running}} checked{{/if}}></div><label>Running: -20</label>
 
             </div>
             {{/if}}
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="stunned" value="20" {{#if options.stunned}} checked{{/if}}><label>Stunned: +20</label>
+                <div><input type="checkbox" name="stunned" value="20" {{#if options.stunned}} checked{{/if}}></div><label>Stunned: +20</label>
 
             </div>
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="concealed" value="-30" ><label>Fully Concealed: -30</label>
+                <div><input type="checkbox" name="concealed" value="-30" ></div><label>Fully Concealed: -30</label>
 
             </div>
             {{#unless options.targetselection}}
             <div class="list-item flexrow">
 
-                <input type="checkbox" name="melee" value="-20"  {{#if options.inmelee}} checked{{/if}}><label>In melee: -20</label>
+                <div><input type="checkbox" name="melee" value="-20"  {{#if options.inmelee}} checked{{/if}}></div><label>In melee: -20</label>
 
             </div>
             {{/unless}}
             <label class="section-title">Target's Size</label>
             <select class="size" name="size">
-               
+
                 {{#each size}}
-                
+
                 <option value="{{@index}}" {{#if (equals @index ../options.size)}}selected{{/if}}>{{this.name}}</option>
 
                 {{/each}}
-                
+
             </select>
 
         </div>
@@ -187,6 +187,12 @@
 
 </div>
 <div class="flexcol">
+    {{#if leverage}}
+    <div class="fit-content flexrow">
+        <label>Leverage:</label>
+        <input type="checkbox" id="leveragebox">
+    </div>
+    {{/if}}
     <label class="section-title">Misc Modifiers: {{#if (greaterThan modifiers.miscMods -1)}}+{{/if}}{{modifiers.miscMods}}</label>
     <label class="section-title">Other Modifiers</label>
     <input type="number" id="modifier" name="other" value="{{modifiers.testMod}}">

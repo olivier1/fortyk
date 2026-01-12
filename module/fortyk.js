@@ -1,6 +1,8 @@
 // Import Modules
 import { FortyKActor } from "./actor/actor.js";
 import { ActorDialogs } from "./actor/actor-dialogs.js";
+import { FortyKToken } from "./token/fortykToken.js";
+import { FortyKRuler } from "./ruler/fortykRuler.js";
 import FortyKDWActorSheet from "./actor/actorDW-sheet.js";
 import { FortyKDHActorSheet } from "./actor/actorDH-sheet.js";
 import { FortyKOWActorSheet } from "./actor/actorOW-sheet.js";
@@ -81,6 +83,8 @@ Hooks.once("init", async function () {
     // Define custom Entity classes
     CONFIG.Actor.documentClass = FortyKActor;
     CONFIG.Item.documentClass = FortyKItem;
+    CONFIG.Canvas.rulerClass = FortyKRuler;
+    CONFIG.Token.documentClass = FortyKToken;
     //CONFIG.ActiveEffect.entityClass = FortyKActiveEffect;
     // Register sheet application classes
     Actors.unregisterSheet("core", ActorSheet);
@@ -442,6 +446,13 @@ Hooks.once("ready", async function () {
                     game.user.updateTokenTargets();
 
                     break;
+                case "settestflag":
+                    let success = data.package.success;
+                    let dos = data.package.dos;
+                    let testObj = { success: success, dos: dos };
+                    actor = await fromUuid(data.package.actor);
+                    actor.setFlag("fortyk", "lasttest", testObj);
+                    break;
                 case "damageWithJSONWeapon":
                     user = await game.users.get(data.package.user);
                     formula = { value: data.package.formula };
@@ -626,8 +637,8 @@ Hooks.on("combatStart", (combat, updateData) => {
                     pcFears.push({ name: actor.getName(), fear: actor.getFlag("fortyk", "fear") });
                 }
             }
-            if(actor.getFlag("fortyk","sanguinethirst")){
-                actor.setFlag("fortyk","butchercounter",0);
+            if (actor.getFlag("fortyk", "sanguinethirst")) {
+                actor.setFlag("fortyk", "butchercounter", 0);
             }
         }
         if (enemyFears.length > 0) {
@@ -701,9 +712,9 @@ Hooks.on("updateCombat", async (combat) => {
         if (actor.getFlag("fortyk", "hardtargetEvasion")) {
             await actor.setFlag("fortyk", "hardtargetEvasion", false);
         }
-        if(actor.getFlag("fortyk","tidesoftime")){
-            if(combat.round%2===0){
-                let content="I have an extra half action this round!";
+        if (actor.getFlag("fortyk", "tidesoftime")) {
+            if (combat.round % 2 === 0) {
+                let content = "I have an extra half action this round!";
                 let tidesOptions = {
                     author: game.user._id,
                     speaker: ChatMessage.getSpeaker({ token: token }),
@@ -714,9 +725,9 @@ Hooks.on("updateCombat", async (combat) => {
                 await ChatMessage.create(tidesOptions, {});
                 let bubble = new ChatBubbles();
                 bubble.broadcast(token, content);
-                actor.setFlag("fortyk","tidesreaction",false);
-            }else{
-                let content="I have an extra reaction this round!";
+                actor.setFlag("fortyk", "tidesreaction", false);
+            } else {
+                let content = "I have an extra reaction this round!";
                 let tidesOptions = {
                     author: game.user._id,
                     speaker: ChatMessage.getSpeaker({ token: token }),
@@ -727,7 +738,7 @@ Hooks.on("updateCombat", async (combat) => {
                 await ChatMessage.create(tidesOptions, {});
                 let bubble = new ChatBubbles();
                 bubble.broadcast(token, content);
-                actor.setFlag("fortyk","tidesreaction",true);
+                actor.setFlag("fortyk", "tidesreaction", true);
             }
         }
         if (actor.type !== "vehicle" && actor.system.psykana.pr.sustained.length > 0) {
@@ -1170,42 +1181,36 @@ Hooks.on("updateCombat", async (combat) => {
 });
 Hooks.on("preDeleteCombat", async (combat, options, id) => {
     let combatants = combat.combatants;
-    let scene=game.scenes.current;
+    let scene = game.scenes.current;
     combatants.forEach(async (combatant) => {
         let actor = combatant.actor;
         let tempMod = actor.system.secChar.tempMod.value;
         if (tempMod) {
             await actor.update({ "system.secChar.tempMod.value": 0 });
         }
-        
-        let powers=actor.itemTypes.psychicPower;
-        for(let power of powers){
-            if(power.getFlag("fortyk","sustained")){
-                FortyKItem.cancelPsyBuffs(actor.uuid, power.id);
+
+        let powers = actor.itemTypes.psychicPower;
+        for (let power of powers) {
+            if (power.getFlag("fortyk", "sustained")) {
+                await FortyKItem.cancelPsyBuffs(actor.uuid, power.id);
             }
         }
         for (let activeEffect of actor.effects) {
             if (activeEffect.name === "Evasion") {
-                await activeEffect.delete({});
+                await activeEffect.delete();
             }
             if (activeEffect.duration.type !== "none") {
-                await activeEffect.delete({});
-            }
-            if(activeEffect.getFlag("fortyk","temp")){
                 await activeEffect.delete();
             }
-            if(activeEffect.getFlag("fortyk","psy")){
+            if (activeEffect.getFlag("fortyk", "temp")) {
                 await activeEffect.delete();
             }
-            
         }
         if (actor.getFlag("fortyk", "evadeMod")) {
             await actor.setFlag("fortyk", "evadeMod", false);
         }
-        if(actor.getFlag("fortyk", "butchercounter")){
-
-            await actor.setFlag("fortyk", "butchercounter",0);
-
+        if (actor.getFlag("fortyk", "butchercounter")) {
+            await actor.setFlag("fortyk", "butchercounter", 0);
         }
         if (actor.getFlag("core", "evasion")) {
             await actor.setFlag("core", "evasion", false);
@@ -1399,12 +1404,11 @@ Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) => {
     }
 });
 Hooks.on("preCreateActor", (createData) => {});
-Hooks.on("preDeleteToken", async (tokenDocument, options, userId)=>{
-    if(!game.user.isGM)return;
-    await turnOffActorAuras(tokenDocument);
+Hooks.on("preDeleteToken", async (tokenDocument, options, userId) => {
+    if (!game.user.isGM) return;
 });
 Hooks.on("preCreateToken", async (document, data, options, userId) => {
-    if (!game.user.isGM)return;
+    if (!game.user.isGM) return;
     //modify token dimensions if scene ratio isnt 1
     let gridRatio = canvas.dimensions.distance;
     let newHeight = Math.max(0.1, document.height / gridRatio);
@@ -1412,29 +1416,29 @@ Hooks.on("preCreateToken", async (document, data, options, userId) => {
     if (newHeight !== document.height || newWidth !== document.width) {
         await document.updateSource({ height: newHeight, width: newWidth });
     }
-
 });
 Hooks.on("createToken", async (tokenDocument, options, userId) => {
-    if(!game.user.isGM)return;
-    let actor=tokenDocument.actor;
-    if(actor.getFlag("core","dead"))return;
-    let tokenObject=tokenDocument.object;
-    tokenObject.x=tokenDocument.x;
-    tokenObject.y=tokenDocument.y;
-    let tnts=actor.itemTypes.talentntrait;
-    let scene=game.scenes.current;
+    if (!game.user.isGM) return;
+    let actor = tokenDocument.actor;
+    if (actor.getFlag("core", "dead")) return;
+    let tokenObject = tokenDocument.object;
+    tokenObject.x = tokenDocument.x;
+    tokenObject.y = tokenDocument.y;
+    let tnts = actor.itemTypes.talentntrait;
+
+    tnts=tnts.concat(actor.itemTypes.wargear);
+    let scene = game.scenes.current;
     let activeAuras = scene.getFlag("fortyk", "activeAuras");
-    if(!activeAuras)activeAuras=[];
-    for(let talent of tnts){
-        if(talent.system.isAura.value){
-            let auraBuffs=talent.getFlag("fortyk","sustained");
-            if(auraBuffs){
-                for(let buffId of auraBuffs){
-                    let auraBuff= await fromUuid(buffId);
-                    if(auraBuff){
+    if (!activeAuras) activeAuras = [];
+    for (let talent of tnts) {
+        if (talent.system.isAura.value) {
+            let auraBuffs = talent.getFlag("fortyk", "sustained");
+            if (auraBuffs) {
+                for (let buffId of auraBuffs) {
+                    let auraBuff = await fromUuid(buffId);
+                    if (auraBuff) {
                         await auraBuff.delete();
                     }
-
                 }
             }
 
@@ -1455,26 +1459,54 @@ Hooks.on("createToken", async (tokenDocument, options, userId) => {
             if (talent.system.isAura.notSelf) {
                 tokens = tokens.filter((token) => token.id !== tokenDocument.id);
             }
+
+            let reqFlags=talent.system.isAura.reqFlags.split(",");
+            let negReqFlags=talent.system.isAura.negReqFlags.split(",");
+            tokens = tokens.filter((token) => {
+                let targetActor=token.actor;
+                let skip=false;
+                for(let reqFlag of reqFlags){
+                    reqFlag=reqFlag.trim();
+                    if(reqFlag==="")continue;
+                    if(!targetActor.getFlag("fortyk",reqFlag))skip=true;
+                }
+                return !skip;
+            });
+            tokens = tokens.filter((token) => {
+                let targetActor=token.actor;
+                let skip=false;
+                for(let negReqFlag of negReqFlags){
+                    negReqFlag=negReqFlag.trim();
+                    if(negReqFlag==="")continue;
+                    if(targetActor.getFlag("fortyk",negReqFlag))skip=true;
+                }
+                return !skip;
+            });
             let los = talent.system.isAura.los;
-            if(los){
-                tokens = tokens.filter((token) =>{
-                    const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(tokenObject.center, token.center, {mode:"any", type:"sight"});
+            if (los) {
+                tokens = tokens.filter((token) => {
+                    const collision = CONFIG.Canvas.polygonBackends["sight"].testCollision(
+                        tokenObject.center,
+                        token.center,
+                        { mode: "any", type: "sight" }
+                    );
                     return !collision;
                 });
             }
             let range = parseInt(talent.system.isAura.range);
 
-            targets = tokens.filter((token) => !token.actor.getFlag("core", talent.name));
+            targets = tokens.filter((token) => !token.actor.getFlag("core", talent._source.name));
             targets = targets.filter((token) => range >= tokenDistance(token, tokenObject));
+
+
 
             let ae = talent.effects.entries().next().value[1];
             let aeData = foundry.utils.duplicate(ae);
 
-            aeData.name = talent.name;
-
+            aeData.name = talent._source.name;
 
             aeData.flags = {
-                fortyk: { aura:true, los:los, range: range, casterTokenId: tokenDocument.id }
+                fortyk: { aura: true, los: los, range: range, casterTokenId: tokenDocument.id }
             };
 
             aeData.disabled = false;
@@ -1496,8 +1528,6 @@ Hooks.on("createToken", async (tokenDocument, options, userId) => {
                 effectUuIds.push(effectuuid);
             }
 
-
-
             await talent.setFlag("fortyk", "sustained", effectUuIds);
             await talent.setFlag("fortyk", "sustainedrange", range);
         }
@@ -1505,39 +1535,63 @@ Hooks.on("createToken", async (tokenDocument, options, userId) => {
     scene.setFlag("fortyk", "activeAuras", activeAuras);
 });
 
+Hooks.on("refreshToken", async (token, options) => {
 
-Hooks.on("refreshToken", async (tokenObject, options) => {
-    if (tokenObject.isPreview) return;
+    if (token.isPreview) return;
     if (!game.user.isGM) return;
     if (!options.refreshPosition) return;
-    if (tokenObject.animationContexts.size === 0) return;
-    let animationContexts = tokenObject.animationContexts;
+    if (token.animationContexts.size === 0) return;
+
+    let animationContexts = token.animationContexts;
 
     let first = animationContexts.entries().next();
     let value = first.value;
     let to = value[1].to;
     let invalid = false;
-    if (to.x !== undefined && to.x !== tokenObject.x) invalid = true;
-    if (to.y !== undefined && to.y !== tokenObject.y) invalid = true;
+    if (to.x !== undefined && to.x !== token.x) invalid = true;
+    if (to.y !== undefined && to.y !== token.y) invalid = true;
+
+
+
     if (invalid) return;
-    let tokenDocument = tokenObject.document;
-    let scene=game.scenes.current;
-    let actor = tokenObject.actor;
+    let rulers=canvas.controls.rulers.children;
+    let ruler=rulers.find((ruler)=>ruler.waypoints.length>0);
+    console.log(await ruler.moveToken());
+    let valid=true;
+    if(ruler){
+        let destination=ruler.destination;
+        if(token.center.x!==destination.x)valid=false;
+        if(token.center.y!==destination.y)valid=false;
+    }
+    if(!valid)return;
+    console.log(animationContexts);
+    let tokenDocument = token.document;
+    let scene = game.scenes.current;
+    let actor = token.actor;
     let aes = actor.effects;
     for (const ae of aes) {
         if (!ae) continue;
-        if (ae.getFlag("fortyk", "psy")||ae.getFlag("fortyk", "aura")) {
+        if (ae.getFlag("fortyk", "psy") || ae.getFlag("fortyk", "aura")) {
             let range = parseInt(ae.getFlag("fortyk", "range"));
             let casterId = ae.getFlag("fortyk", "casterTokenId");
             let casterToken = game.canvas.tokens.children[0].children.find((child) => child.id === casterId);
-            let distance = tokenDistance(tokenObject, casterToken);
+            if(!casterToken){
+                await ae.delete();
+                continue;
+            }
+            let distance = tokenDistance(token, casterToken);
             if (distance > range) {
                 await ae.delete();
+                continue;
             }
-            let los=ae.getFlag("fortyk","los");
-            if(los){
-                const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(tokenObject.center, casterToken.center, {mode:"any", type:"sight"});
-                if(collision){
+            let los = ae.getFlag("fortyk", "los");
+            if (los) {
+                const collision = CONFIG.Canvas.polygonBackends["sight"].testCollision(
+                    token.center,
+                    casterToken.center,
+                    { mode: "any", type: "sight" }
+                );
+                if (collision) {
                     await ae.delete();
                 }
             }
@@ -1548,7 +1602,7 @@ Hooks.on("refreshToken", async (tokenObject, options) => {
         if (power.getFlag("fortyk", "sustained")) {
             let range = parseInt(power.getFlag("fortyk", "sustainedrange"));
             let buffs = power.getFlag("fortyk", "sustained");
-            if(!buffs)continue;
+            if (!buffs) continue;
             for (const buffId of buffs) {
                 let buff = await fromUuid(buffId);
                 if (buff) {
@@ -1557,14 +1611,19 @@ Hooks.on("refreshToken", async (tokenObject, options) => {
                         parent = parent.actor;
                     }
                     let buffTarget = getActorToken(parent);
-                    let distance = tokenDistance(buffTarget, tokenObject);
+                    let distance = tokenDistance(buffTarget, token);
                     if (distance > range) {
                         await buff.delete();
+                        continue;
                     }
-                    let los=buff.getFlag("fortyk","los");
-                    if(los){
-                        const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(tokenObject.center, buffTarget.center, {mode:"any", type:"sight"});
-                        if(collision){
+                    let los = buff.getFlag("fortyk", "los");
+                    if (los) {
+                        const collision = CONFIG.Canvas.polygonBackends["sight"].testCollision(
+                            token.center,
+                            buffTarget.center,
+                            { mode: "any", type: "sight" }
+                        );
+                        if (collision) {
                             await buff.delete();
                         }
                     }
@@ -1573,11 +1632,12 @@ Hooks.on("refreshToken", async (tokenObject, options) => {
         }
     }
     let tnts = actor.itemTypes.talentntrait;
+    tnts = tnts.concat(actor.itemTypes.wargear);
     for (const talent of tnts) {
         if (talent.system.isAura.value) {
             let range = parseInt(talent.system.isAura.range);
             let buffs = talent.getFlag("fortyk", "sustained");
-            if(!buffs)continue;
+            if (!buffs) continue;
             for (const buffId of buffs) {
                 let buff = await fromUuid(buffId);
                 if (buff) {
@@ -1586,14 +1646,18 @@ Hooks.on("refreshToken", async (tokenObject, options) => {
                         parent = parent.actor;
                     }
                     let buffTarget = getActorToken(parent);
-                    let distance = tokenDistance(buffTarget, tokenObject);
+                    let distance = tokenDistance(buffTarget, token);
                     if (distance > range) {
                         await buff.delete();
                     }
-                    let los=buff.getFlag("fortyk","los");
-                    if(los){
-                        const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(tokenObject.center, buffTarget.center, {mode:"any", type:"sight"});
-                        if(collision){
+                    let los = buff.getFlag("fortyk", "los");
+                    if (los) {
+                        const collision = CONFIG.Canvas.polygonBackends["sight"].testCollision(
+                            token.center,
+                            buffTarget.center,
+                            { mode: "any", type: "sight" }
+                        );
+                        if (collision) {
                             await buff.delete();
                         }
                     }
@@ -1602,9 +1666,18 @@ Hooks.on("refreshToken", async (tokenObject, options) => {
         }
     }
     let auras = scene.getFlag("fortyk", "activeAuras");
-    if(!auras)auras=[];
+    if (!auras) auras = [];
+    auras=auras.filter((aura)=>{
+        let instance= fromUuidSync(aura);
+        if(instance){
+            return true;
+        }else{
+            return false;
+        }
+    });
+    await scene.setFlag("fortyk", "activeAuras", auras);
+    await applySceneAuras(auras, token);
 
-    applySceneAuras(auras, actor, tokenObject);
 });
 
 Hooks.on("updateToken", async (token, diff, options, id) => {

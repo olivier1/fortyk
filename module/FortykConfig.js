@@ -1232,6 +1232,12 @@ FORTYK.weaponFlags = {
         description:
             "These ensnaring devices use masses of fibrous webbing, adhesive fluids, and other entangling materials to bring an enemy down. When a target is struck by a weapon with this quality, it must make an Agility test with a penalty equal ten times the number in parentheses (X) or be Immobilised. For example, a weapon with Snare (1) would impose a –10 penalty on this test. An Immobilised target can attempt no actions other than trying to escape the bonds. As a Full Action, he can make a Challenging (+0) Strength or Agility test, with a penalty equal to ten times the number in parentheses (X). If he succeeds, he bursts free or wriggles out. The target is considered Helpless (see page 229) until he escapes."
     },
+    soulrazor: {
+        value: false,
+        label: "Soulrazor",
+        description:
+            "Each time a weapon with this quality deals damage the target must pass a -20 willpower test or take 2 damage per degree of failure and gain an equal amount of insanity points."
+    },
     spray: {
         value: false,
         label: "Spray",
@@ -1869,7 +1875,8 @@ FORTYK.eliteAdvanceTypes = [
     { value: "planet", label: "Planet" },
     { value: "background", label: "Background" },
     { value: "role", label: "Role" },
-    { value: "charactertype", label: "Character Type" }
+    { value: "charactertype", label: "Character Type" },
+    { value: "asuryanipath", label: "Asuryani Path" }
 ];
 FORTYK.psyChars = [
     { value: "wp", label: "Willpower" },
@@ -1929,6 +1936,11 @@ FORTYK.characterTypeFeatureLabels = {
         planet: "Vile Pleasure",
         background: "Background",
         role: "Role"
+    },
+    asuryani: {
+        planet: "Craftworld",
+        background: "Civilian Path",
+        role: "Active Path"
     },
     ork: {
         planet: "Klan",

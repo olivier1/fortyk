@@ -4,7 +4,8 @@
     <div class="grid grid-4col">
         {{#each actorAptitudes}}
         {{#if ../isGM}}
-        <select class="apt1-select" name="system.aptitudes.{{@index}}" data-dtype="String">    
+        <select class="apt1-select" name="system.aptitudes.{{@index}}" data-dtype="String">
+            <option value="">None</option>
             {{selectOptions ../FORTYK.aptitudes selected=this.aptitude valueAttr="key" labelAttr="label"}}
         </select>
         {{else}}
@@ -32,6 +33,22 @@
         </div>
     </div>
     <label class="section-title">Advancements</label>
+    {{#if system.lostChoice}}
+    <a class="lost-choice button">Make Lost Choice!</a>
+    <br>
+    {{else if flags.fortyk.lost}}
+    {{else if role.flags.fortyk.mastered}}
+
+
+    {{#unless role.flags.fortyk.masterid}}
+    <a class="button get-master" data-id="{{role.id}}">Get Mastery Ability</a>
+    <br>
+    {{else}}
+    <a class="button change-path">Pick New Path</a>
+    <br>
+    {{/unless}}
+
+    {{/if}}
     <a class="spend-exp button" data-type="advancement" title="Add a new Advancement">Add Advancement</a>
     <div class="list list4col grid grid-4col">
         <a class="list-item-header sort-button" data-sort-type="name" data-path="name" data-item-type="advancements">Name</a>

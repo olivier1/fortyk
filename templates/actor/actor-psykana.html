@@ -1,7 +1,7 @@
 <div class="sheet-psy backgroundandnotes">
-
-    <div class="psy-header grid grid-4col">
-        {{#unless (contains system.psykana.psykerType.value "navigator")}}
+ {{#unless (contains system.psykana.psykerType.value "navigator")}}
+    <div class="psy-header grid grid-6col">
+       
 
         <div class="flexrow list-item">
             <label>Psy Rating:</label>
@@ -28,8 +28,8 @@
             <input type="number" class="combat-resources" data-target="system.psykana.phenomena.value" value="{{system.psykana.phenomena.value}}" data-dtype="Number"/>
 
         </div>
-
-
+        {{else}}
+        <div class="psy-header grid grid-7col">
         {{/unless}}
         <div class="flexrow list-item">
             <label>Class:</label>
@@ -41,14 +41,18 @@
             <label>Psy Modifier:</label>
             <input type="number" class="combat-resources" data-target="system.psykana.mod.value" data-dtype="Number" value="{{system.psykana.mod.value}}">
         </div>
-        <div class="flexrow list-item">
+        <div class="flexrow list-item2">
             <label>Show:</label>
             <select class="psyType-select" name="system.psykana.filter" data-dtype="String">
 
                 <option value="">All</option>
-                {{selectOptions psyDisciplines selected=system.psykana.filter valueAttr="value" labelAttr="value"}}
+                {{selectOptions ownDisciplines selected=system.psykana.filter valueAttr="value" labelAttr="value"}}
             </select>
         </div>
+        <div class="flexrow list-item3">
+            <input type="text"  id="psyfilter" class="psyfilter combat-resources" data-target="system.psykana.searchFilter" data-dtype="String"   placeholder="Search...">
+        </div>
+        
 
 
     </div>
@@ -79,9 +83,9 @@
     <a class="item-create button" data-type="psychicPower" title="Add a new Psychic Power">Add Custom Psychic Power</a>
     <div class="psy-powers grid grid-2col psy-grid-overflow">
         {{#each actor.psychicPowers as |power key|}}
-        <div class="list-item flexcol item-list">
+        <div name="psypower" class="list-item flexcol item-list" data-name="{{this.name}}" {{#if filtered}}hidden{{/if}}>
 
-            <div class="grid grid-3col item" data-name="{{this.name}}" data-item-id="{{this.id}}" data-uuid="{{this.uuid}}" data-type="{{this.type}}" draggable="true">
+            <div class="grid grid-3col item " data-name="{{this.name}}" data-item-id="{{this.id}}" data-uuid="{{this.uuid}}" data-type="{{this.type}}" draggable="true">
 
 
 

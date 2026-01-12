@@ -642,6 +642,9 @@ export class FortyKItem extends Item {
                     }
                 }
                 if (item.type === "meleeWeapon" || item.type === "rangedWeapon") {
+                    if(actor.getFlag("fortyk","blessedflame")&&this.getFlag("fortyk","flame")){
+                        this.flags.forty.sanctified=true;
+                    }
                     if (actor.getFlag("fortyk", "WeaponMaster")) {
                         if (
                             actor
@@ -681,7 +684,14 @@ export class FortyKItem extends Item {
                         form = newNum + form;
                         item.system.damageFormula.value = form;
                     }
-
+                    if(actor.getFlag("fortyk","swordwind")){
+                        let proven=item.flags.fortyk.proven;
+                        if(proven){
+                            item.flags.fortyk.proven=Math.max(proven,3);
+                        }else{
+                            item.flags.fortyk.proven=3; 
+                        }
+                    }
                     try {
                         if (this.getFlag("fortyk", "force")) {
                             item.system.pen.value = parseInt(item.system.pen.value) + scope.pr;
@@ -888,10 +898,10 @@ export class FortyKItem extends Item {
         }
         return flags;
     }
-    validateActor(actor, requirements = this.getFlag("fortyk", "requirements")) {
+    validateActor(actor, requirements = this.getFlag("fortyk", "requirements"), mastery=false) {
+        const FORTYK=game.fortyk.FORTYK;
         var validated = true;
         var failReasons = [];
-        const FORTYK = this.FORTYK;
         if (!actor) {
             failReasons.push("No valid actor!");
             validated = false;
@@ -918,11 +928,14 @@ export class FortyKItem extends Item {
                 }
                 break;
             case "eliteAdvance":
-                let flagId = this.system.flagId.value;
-                if (actor.getFlag("fortyk", flagId)) {
-                    failReasons.push(`You already have this elite advance.`);
-                    validated = false;
+                if(!mastery){
+                    let flagId = this.system.flagId.value;
+                    if (actor.getFlag("fortyk", flagId)) {
+                        failReasons.push(`You already have this elite advance.`);
+                        validated = false;
+                    }
                 }
+
                 break;
             case "psychicPower":
                 let disciplines = Object.values(actor.system.psykana.disciplines);
@@ -950,12 +963,21 @@ export class FortyKItem extends Item {
         let charReqs = requirements.characteristics;
         let charBase = 0;
         let charReq = 0;
+        let adv;
         for (let [key, char] of Object.entries(actorChars)) {
             charBase = parseInt(char.value) + parseInt(char.advance);
             charReq = charReqs[key].value;
+
             if (charBase < charReq) {
                 failReasons.push(`You do not meet the ${charReq} ${charReqs[key].label} requirement.`);
                 validated = false;
+            }
+            adv = parseInt(charReqs[key].adv);
+            if(adv){
+                if(parseInt(char.advance)<adv){
+                    failReasons.push(`You do not meet the +${adv} ${charReqs[key].label} advance requirement.`);
+                    validated = false;
+                }
             }
         }
         let prReq = charReqs.pr.value;
@@ -992,6 +1014,12 @@ export class FortyKItem extends Item {
         let actorMastPows=actor.system.masteredPowers;
         if(actorMastPows<mastPowReq){
             failReasons.push(`You do not have ${mastPowReq} mastered powers.`);
+            validated = false;
+        }
+        let mastPathReq=charReqs?.mastpath?.value;
+        let actorMastPaths=actor.system.masteredPaths;
+        if(actorMastPaths<mastPathReq){
+            failReasons.push(`You do not have ${mastPathReq} mastered paths.`);
             validated = false;
         }
         let flagRequirements = requirements.flags;
@@ -1180,7 +1208,7 @@ export class FortyKItem extends Item {
             let skillName = skill.skillName;
             let parentName = skill.parentSkillName;
             let rank = skill.rank;
-            let rankValueReq = this.FORTYK.skillTraining[rank].value;
+            let rankValueReq = FORTYK.skillTraining[rank].value;
             let wildCardSkill = false;
             let wildCardParent = false;
             let match = false;
@@ -1274,7 +1302,14 @@ export class FortyKItem extends Item {
         if (game.user.isGM) {
             let actor = await fromUuid(actorId);
             let actorToken = getActorToken(actor);
-            let power = actor.getEmbeddedDocument("Item", powerId);
+            let power;
+            if(actor.isToken){
+                let baseActor= actor.parent.baseActor;
+                power= baseActor.getEmbeddedDocument("Item", powerId);
+            }else{
+                power = actor.getEmbeddedDocument("Item", powerId);
+            }
+            
 
             let affects = power.system.affects.value;
             let targets;
@@ -1283,11 +1318,11 @@ export class FortyKItem extends Item {
             } else {
                 targets = game.canvas.tokens.children[0].children.filter((token) => targetIds.includes(token.id));
             }
-            
+
             let range = power.system.range.value;
             targets = targets.filter((token) => !token.actor.getFlag("core", power.name));
             targets = targets.filter((token) => range >= tokenDistance(token, actorToken));
-            
+
             if (targets.length === 0) return ui.notifications.warn("No valid targets.");
             this.navigatorPsyTalents(actor,targets);
             let aes=[];
@@ -1296,7 +1331,7 @@ export class FortyKItem extends Item {
                 let aeData = foundry.utils.duplicate(ae);
 
                 aeData.name = ae.name;
-               
+
 
                 aeData.flags = {
                     fortyk: { psy: true, range: range, casterTokenId: actorToken.id }
@@ -1376,7 +1411,7 @@ export class FortyKItem extends Item {
             let aeData = foundry.utils.duplicate(ae);
 
             aeData.name = power.name;
-          
+
 
             aeData.flags = {
                 fortyk: { psy: true, range: range, casterTokenId: actorToken.id }
@@ -1535,7 +1570,7 @@ export class FortyKItem extends Item {
                 let render = false;
 
                 let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
-                
+
             }
         }
 

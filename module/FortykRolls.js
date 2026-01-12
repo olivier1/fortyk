@@ -43,7 +43,22 @@ returns the roll message*/
         opposed = null
     ) {
         let name = actor.getName();
-
+        let tempMod = actor.system.secChar.tempMod.value;
+        if (tempMod) {
+            target += actor.system.secChar.tempMod.value;
+            if(modifiers){
+                modifiers.push({ value: tempMod, label: "Temporary Modifier" });
+            }
+            await actor.update({ "system.secChar.tempMod.value": 0 });
+        }
+        let command = actor.system.secChar.tempMod.command;
+        if (command) {
+            target += actor.system.secChar.tempMod.command;
+            if(modifiers){
+                modifiers.push({ value: command, label: "Command Bonus" });
+            }
+            await actor.update({ "system.secChar.tempMod.command": 0 });
+        }
         try {
             let base = actor.system.characteristics[char].preGlobal;
             target = Math.max(base - 60, target);
@@ -241,6 +256,18 @@ returns the roll message*/
             if (type === "meleeAttack" && actor.getFlag("fortyk", "bonusmeleeattackdos")) {
                 testDos += parseInt(actor.getFlag("fortyk", "bonusmeleeattackdos"));
             }
+            let khaine = actor.getFlag("fortyk","wrathofkhaine");
+            if(khaine){
+                if(khaine.toLowerCase.includes("weapon skill")&&char==="ws"){
+                    testDos*=2;
+                }else if(khaine.toLowerCase.includes("ballistic skill")&&char==="bs"){
+                    testDos*=2;
+                }
+            }
+            if(actor.system.secChar.tempMod.asuryan){
+                testDos*=2;
+                await actor.update({"system.secChar.tempMod.asuryan":false});
+            }
             templateOptions["dos"] = "with " + testDos.toString() + " degree";
             if (testDos === 1) {
             } else {
@@ -293,7 +320,31 @@ returns the roll message*/
                 templateOptions["pass"] = "Failure!";
             }
         }
-        
+        //ishas vitality
+        if (type === "toxic" && !templateOptions["success"] && actor.getFlag("fortyk", "ishasvitality")) {
+            let tb = actor.system.characteristics.t.bonus;
+            let newDos = testDos - tb;
+            testDos = newDos;
+            if (newDos <= 0) {
+                templateOptions["dos"] = "with 1 degree";
+                templateOptions["dos"] += " of success!";
+                templateOptions["pass"] = "Isha's Vitality Pass!";
+                templateOptions["success"] = true;
+            } else {
+                templateOptions["dos"] = "with " + newDos + " degree";
+                if (newDos === 1) {
+                } else {
+                    templateOptions["dos"] += "s";
+                }
+                templateOptions["dos"] += " of failure!";
+                templateOptions["success"] = false;
+                if (testRoll >= 96) {
+                    templateOptions["pass"] = "96+ is an automatic failure!";
+                } else {
+                    templateOptions["pass"] = "Isha's Vitality Failure!";
+                }
+            }
+        }
         //adamantium faith logic
         if (type === "fear" && !templateOptions["success"] && actor.getFlag("fortyk", "adfaith")) {
             let wpb = actor.system.characteristics.wp.bonus;
@@ -482,12 +533,18 @@ returns the roll message*/
             await actor.setFlag("fortyk", "hardtargetEvasion", true);
         }
         //save the test result in a flag
-        let testResultFlag={};
-        testResultFlag.success=templateOptions.success;
-        testResultFlag.dos=testDos;
-        await actor.setFlag("fortyk", "lasttest", testResultFlag);
-        
-        
+
+
+        if(actor.isOwner){
+            let testResultFlag={};
+            testResultFlag.success=templateOptions.success;
+            testResultFlag.dos=testDos;
+            await actor.setFlag("fortyk", "lasttest", testResultFlag);
+        }else{
+            //if user isnt GM use socket to have gm roll the forcefield tests
+            let socketOp={type:"settestflag",package:{success:templateOptions.success,dos:testDos, actor:actor.uuid}};
+            await game.socket.emit("system.fortyk",socketOp);
+        }
         //give the chat object options and stuff
         let result = {};
         result.roll = roll;
@@ -511,7 +568,7 @@ returns the roll message*/
         if(templateOptions.success&&char==="wp"&&actor.getFlag("fortyk","warpopened")){
             let ae=await fromUuid(actor.getFlag("fortyk","warpopened"));
             ae.delete();
-            
+
         }
         //get first and second digits for hit locations and perils
         let firstDigit = Math.floor(testRoll / 10);
@@ -1899,10 +1956,11 @@ returns the roll message*/
                         let pen = 0;
                         //random pen logic
                         if (isNaN(weapon.system.pen.value)) {
-                            let randomPen = new Roll(weapon.system.pen.value, {});
+                            let scope=actor.getScope();
+                            let randomPen = new Roll(weapon.system.pen.value, scope);
                             await randomPen.evaluate();
                             damageOptions.results.push(
-                                `<span>Random weapon ${weapon.system.pen.value} penetration: ${randomPen._total}</span>`
+                                `<span>Penetration formula ${weapon.system.pen.value}: ${randomPen._total}</span>`
                             );
                             pen = randomPen._total;
                         } else {
@@ -2210,7 +2268,7 @@ returns the roll message*/
                             if(fortykWeapon.system.training.value==="Adept"){
                                 damage+=daemonic*2;
                             }else if(fortykWeapon.system.training.value==="Master"){
-                               damage+=daemonic*4; 
+                                damage+=daemonic*4; 
                             }
                         }
                         //make sure soak isnt negative
@@ -2314,7 +2372,7 @@ returns the roll message*/
                             }
                             let toxicTest = await this.fortykTest(
                                 "t",
-                                "char",
+                                "toxic",
                                 tarActor.system.characteristics.t.total - toxicMod,
                                 tarActor,
                                 `Resist toxic ${toxic}`,
@@ -2334,6 +2392,32 @@ returns the roll message*/
                             damageOptions.results.push(`</div>`);
                         }
                         let messages = [];
+                        //soulrazor
+                        if(!vehicle && damage > 0 && fortykWeapon.getFlag("fortyk", "soulrazor") && !isHordelike){
+                            damageOptions.results.push(`<div class="chat-target flexcol">`);
+                            let soulraze = await this.fortykTest(
+                                "wp",
+                                "char",
+                                tarActor.system.characteristics.wp.total-20,
+                                tarActor,
+                                "Resist soul razor",
+                                null,
+                                false,
+                                "",
+                                true
+                            );
+                            damageOptions.results.push(soulraze.template);
+                            if (!soulraze.value) {
+                                damage+=2*soulraze.dos;
+                                chatDamage+=2*soulraze.dos;
+
+                                damageOptions.results.push(
+                                    `Soulraze extra damage and insanity: ${soulraze.dos*2} damage.`
+                                );
+
+                            }
+                            damageOptions.results.push(`</div>`);
+                        }
                         //shocking weapon logic
                         if (!vehicle && damage > 0 && fortykWeapon.getFlag("fortyk", "shocking") && !isHordelike) {
                             damageOptions.results.push(`<div class="chat-target flexcol">`);
@@ -3793,7 +3877,7 @@ returns the roll message*/
             }
             let toxicTest = await this.fortykTest(
                 "t",
-                "char",
+                "toxic",
                 actor.system.characteristics.t.total - toxicMod,
                 actor,
                 `Resist toxic ${toxic}`,
@@ -8226,6 +8310,11 @@ returns the roll message*/
                     if (newAe.id === "stunned" && actor.getFlag("fortyk", "ironjaw")) {
                         skip = (
                             await this.fortykTest("t", "char", actor.system.characteristics.t.total, actor, "Iron Jaw")
+                        ).value;
+                    }
+                    if (newAe.id === "prone" && actor.getFlag("fortyk", "graceoftheasuryani")) {
+                        skip = (
+                            await this.fortykTest("agi", "char", actor.system.characteristics.agi.total, actor, "Grace of the Asuryani")
                         ).value;
                     }
                     if (newAe.id === "stunned" && actor.getFlag("core", "frenzy")) {

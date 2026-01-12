@@ -9,12 +9,7 @@
             <a class="item " data-tab="point-buy">POINT BUY</a>
 
         </nav>
-        {{else if (equals system.type.value "charactersubtype")}}
-        <nav class="sheet-tabs npc tabs flexrow" data-group="primary">
-
-            <a class="item " data-tab="main">MAIN</a>
-            <a class="item" data-tab="chars">CHARACTERISTICS</a>
-        </nav>
+        
         {{else if (equals system.type.value "planet")}}
         <nav class="sheet-tabs npc tabs flexrow" data-group="primary">
 
@@ -37,6 +32,12 @@
 
             <a class="item " data-tab="main">MAIN</a>
             <a class="item" data-tab="chars">CHARACTERISTICS</a>
+        </nav>
+        {{else if (equals system.type.value "asuryanipath")}}
+        <nav class="sheet-tabs npc tabs flexrow" data-group="primary">
+
+            <a class="item " data-tab="main">MAIN</a>
+            <a class="item" data-tab="path">PATH REQ &amp; ABILITIES</a>
         </nav>
         {{/if}}
 
@@ -61,13 +62,13 @@
 
                 </div>
                 {{#if (equals system.type.value "charactertype")}}
-               
+
                 <div class="flexcol">
                     <label>Starting Exp:</label>
                     <input type="text" value="{{system.experience}}" name="system.experience">
                 </div>
                 {{/if}}
-               
+
                 {{#if (equals system.type.value "planet")}}
 
                 <div class="flexcol">
@@ -187,7 +188,7 @@
                     <label>Has Influence</label>
                     <input type="checkbox" name="system.characteristics.hasInfluence" {{checked system.characteristics.hasInfluence}}>
                 </div>
-               
+
                 <div class="flexcol">
                     <label>Weapon Skill</label>
                     <input type="number" name="system.characteristics.ws" value="{{system.characteristics.ws}}">
@@ -207,6 +208,10 @@
                 <div class="flexcol">
                     <label>Agility</label>
                     <input type="number" name="system.characteristics.agi" value="{{system.characteristics.agi}}">
+                </div>
+                <div class="flexcol">
+                    <label>Perception</label>
+                    <input type="number" name="system.characteristics.per" value="{{system.characteristics.per}}">
                 </div>
                 <div class="flexcol">
                     <label>Intelligence</label>
@@ -280,6 +285,49 @@
                     <input type="number" name="system.pointBuy.limitPerChar" value="{{system.pointBuy.limitPerChar}}">
                 </div>
             </div>
+        </div>
+        <div class="tab path" data-group="primary" data-tab="path">
+            {{#if isGM}}
+            <div class="flexcol">
+                <a class="manage-mastery-reqs button">Mastery Requirements</a>
+            </div>
+
+            <div class="flexcol">
+                <label>Choose Ability:</label>
+                <select id="path-ability-select" data-index="{{@index}}">
+                    <option value="">None</option>
+                    {{debug this}}
+                    {{#each paths}}
+                    <option value="{{uuid}}">{{_source.name}}</option>
+                    {{/each}}
+
+                </select>
+            </div>
+            <select id="path-ability-type-select">
+                <option value="base">Base Ability</option>
+                <option value="mastery">Mastery Ability</option>    
+                <option value="lost">Lost Ability</option>    
+            </select>
+            <div class="flexcol">
+                <a class="add-path-item button">Add Ability</a>
+            </div>
+           
+            <div class="flexrow">
+             <div class="flexcol">
+                <label>Base Ability:</label>
+                 <label>{{asuryani.base.name}}</label>
+            </div>
+                 <div class="flexcol">
+                <label>Mastery Ability:</label>
+                 <label>{{asuryani.mastery.name}}</label>
+            </div>
+                 <div class="flexcol">
+                <label>Lost Ability:</label>
+                 <label>{{asuryani.lost.name}}</label>
+            </div>
+            </div>
+            
+            {{/if}}
         </div>
     </section>
 </form>

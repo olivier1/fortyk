@@ -5,9 +5,9 @@
     <div class="flexrow">
         <span class="chat-target">{{rollResult}}</span>
         {{#if modifiers}}
-        <label class="chat-target popup" data-id="{{id}}"> {{target}} <span class="popuptext2 chat-background flexcol" id="{{id}}">
+        <a class="chat-target popup" data-id="{{id}}"> {{target}} <span class="popuptext2 chat-background flexcol" id="{{id}}">
             {{#each modifiers}}{{#unless (equals value 0)}}<div class="pop-line"><span>{{this.label}}:</span> <span>{{#if (greaterThan value -1)}}+{{/if}}{{this.value}}</span></div>{{/unless}}
-            {{/each}}</span></label> 
+            {{/each}}</span></a> 
         {{else}}
         <span class="chat-target">{{target}}</span>   
         {{/if}}

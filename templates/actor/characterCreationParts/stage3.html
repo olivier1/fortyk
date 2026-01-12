@@ -16,7 +16,7 @@
     {{/if}}
     {{#if featureSkill}}
     <span class="section-title">{{stageLabel}} Skills</span>
-    <div class="grid grid-4col">
+    <div class="flexrow creation-groups">
 
         {{#each featureSkill}}
         {{#if choices}}
@@ -170,9 +170,9 @@
     {{#if featureTraits}}
     <span class="section-title">{{stageLabel}} Traits</span>
     <div class="flexrow creation-groups">
-        
+
         {{#each featureTraits}}
-        
+
         {{#if this.length}}
         <div class="grid-row-span{{this.length}} fit-content">
             {{#each this}}
@@ -257,12 +257,75 @@
         {{/each}}
     </div>
     {{/if}}
+    {{#if featureBoni}}
     <span class="section-title">{{stageLabel}} Bonus</span>
-    {{#each featureBoni}}
-    <span><b>{{this.name}}</b> {{editor this.description  button=false owner=owner editable=false}}</span>
-    {{/each}}
+    <div class="creation-groups flex-center">
+        {{#each featureBoni}}
+        {{#if this.length}}
+        <div class="grid-row-span{{this.length}} fit-content flex-center">
+            {{#each this}}
+            <div class="fit-content transparent">
+                <input type="radio" class="boni-radio" name="talent-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-name="{{this.name}}" value="{{this.uuid}}" {{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
 
 
+                {{#if this.length}}
+                <div class="fit-content transparent">
+                    {{#each this}}
+                    {{#if any}}
+                    <div class="fit-content transparent">
+                        <input id="{{@../index}}spec{{@index}}" type="text" class="any-spec-input" data-index="{{@index}}" data-parent-index="{{@../index}}" placeholder="{{this.name}}">
+                        <a class="any-spec-icon" data-id="{{@../index}}spec{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-type="boni"></a>
+                    </div>
+
+                    {{editor this.description  button=false owner=owner editable=false}}
+
+                    {{else}}
+                    <div class="transparent"><b>{{this.name}}</b> {{editor this.description  button=false owner=owner editable=false}}</div>
+
+                    {{/if}}
+                    {{#unless @last}}
+                    <span class="margin-4"> &amp; </span>
+                    {{/unless}}
+                    {{/each}}
+                </div>
+                {{else}}
+                {{#if any}}
+
+                <input id="{{@../index}}spec{{@index}}" type="text" class="any-spec-input" data-index="{{@index}}" data-parent-index="{{@../index}}" placeholder="{{this.name}}">
+                <a class="any-spec-icon" data-id="{{@../index}}spec{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-type="boni"></a>
+
+
+
+                {{else}}
+                <b>{{this.name}}</b>
+                {{/if}}
+                {{/if}}
+            </div>
+            {{editor this.description  button=false owner=owner editable=false}}
+            {{/each}}
+        </div>
+        {{else}}
+        {{#if any}}
+        <div class="fit-content">
+            <input id="{{@../index}}spec{{@index}}" type="text" class="any-spec-input" data-index="{{@index}}" data-parent-index="{{@../index}}" placeholder="{{this.name}}">
+            <a class="any-spec-icon" data-id="{{@../index}}spec{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-type="boni"></a>
+        </div>
+
+        {{editor this.description  button=false owner=owner editable=false}}
+
+        {{else}}
+        <div><b>{{this.name}}</b> {{editor this.description  button=false owner=owner editable=false}}</div>
+
+        {{/if}}
+        {{/if}}
+
+
+
+        {{/each}}
+    </div>
+
+    {{/if}}
+    {{#if featureAptitude}}
     <span class="section-title">{{stageLabel}} Aptitudes</span>
     <div class="flexrow creation-groups">
 
@@ -291,34 +354,69 @@
         {{/unless}}
         {{/each}}
     </div>
+    {{/if}}
+    {{debug this}}
     {{#if featureEAs}}
+    
     <span class="section-title">Elite Advance</span>
     <div class="flexrow creation-groups">
         {{#each featureEAs}}
         {{#if this.length}}
-        <div class="grid-row-span{{this.length}} fit-content">
+        <div class="grid-row-span{{this.length}} fit-content flex-center">
             {{#each this}}
-            <div class="fit-content">
-                <input type="radio" class="gear-radio" name="gear-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-name="{{this.name}}" value="{{this.uuid}}" {{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
+            <div class="fit-content transparent">
+                <input type="radio" class="ea-radio" name="talent-choice{{@../index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-name="{{this.name}}" value="{{this.uuid}}" {{#if this.checked}}checked{{else if (equals @index '0')}}checked{{/if}}>
+
 
                 {{#if this.length}}
-
-                <div class="list-item fit-content">
+                <div class="fit-content transparent">
                     {{#each this}}
-                    <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
+                    {{#if any}}
+                    <div class="fit-content transparent">
+                        <input id="{{@../index}}spec{{@index}}" type="text" class="any-spec-input" data-index="{{@index}}" data-parent-index="{{@../index}}" placeholder="{{this.name}}">
+                        <a class="any-spec-icon" data-id="{{@../index}}spec{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-type="ea"></a>
+                    </div>
+
+                    {{editor this.description  button=false owner=owner editable=false}}
+
+                    {{else}}
+                    <div class="transparent"><b>{{this.name}}</b> {{editor this.description  button=false owner=owner editable=false}}</div>
+
+                    {{/if}}
                     {{#unless @last}}
                     <span class="margin-4"> &amp; </span>
                     {{/unless}}
                     {{/each}}
                 </div>
                 {{else}}
-                <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
+                {{#if any}}
+
+                <input id="{{@../index}}spec{{@index}}" type="text" class="any-spec-input" data-index="{{@index}}" data-parent-index="{{@../index}}" placeholder="{{this.name}}">
+                <a class="any-spec-icon" data-id="{{@../index}}spec{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-type="boni"></a>
+
+
+
+                {{else}}
+                <b>{{this.name}}</b>
+                {{/if}}
                 {{/if}}
             </div>
+            {{editor this.description  button=false owner=owner editable=false}}
             {{/each}}
         </div>
         {{else}}
-        <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{this.name}}</a>
+        {{#if any}}
+        <div class="fit-content">
+            <input id="{{@../index}}spec{{@index}}" type="text" class="any-spec-input" data-index="{{@index}}" data-parent-index="{{@../index}}" placeholder="{{this.name}}">
+            <a class="any-spec-icon" data-id="{{@../index}}spec{{@index}}" data-index="{{@index}}" data-parent-index="{{@../index}}" data-type="boni"></a>
+        </div>
+
+        {{editor this.description  button=false owner=owner editable=false}}
+
+        {{else}}
+        <div><b>{{this.name}}</b> {{editor this.description  button=false owner=owner editable=false}}</div>
+
+        {{/if}}
         {{/if}}
         {{/each}}
     </div>
@@ -328,7 +426,7 @@
     <div class="section-title">Insanity</div>
     {{#unless rolledInsanity}}
 
-    <a class="roll-insanity" data-roll="{{feature.system.characteristics.ins}}">Roll {{feature.system.characteristics.ins}}</a>
+    <a class="roll-insanity creation-roll" data-roll="{{feature.system.characteristics.ins}}">Roll {{feature.system.characteristics.ins}}</a>
     {{else}}
     {{rolledInsanity}}
     {{/unless}}
@@ -339,7 +437,7 @@
     <div class="section-title">Corruption</div>
     {{#unless rolledCorruption}}
 
-    <a class="roll-corruption" data-roll="{{feature.system.characteristics.cor}}">Roll {{feature.system.characteristics.cor}}</a>
+    <a class="roll-corruption creation-roll" data-roll="{{feature.system.characteristics.cor}}">Roll {{feature.system.characteristics.cor}}</a>
     {{else}}
     {{rolledCorruption}}
     {{/unless}}
@@ -349,9 +447,13 @@
 
 </div>
 <div class="flexrow">
+    {{#unless (equals creationStage 0)}}
     <div class="button previous-stage">Go to previous stage</div>
+    {{/unless}}
     <div class="button confirm-feature-choice">Confirm {{stageLabel}} Choice</div>
 </div>
 {{else}}
+{{#unless (equals creationStage 0)}}
 <div class="button previous-stage">Go to previous stage</div>
+{{/unless}}
 {{/if}}

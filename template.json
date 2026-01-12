@@ -84,6 +84,7 @@
                 "secChar": {
                     "tempMod": {
                         "value": 0,
+                        "command": 0,
                         "type": "Number"
                     },
                     "wounds": {
@@ -963,6 +964,18 @@
                     "max": 0
                 }
             },
+            "canHaveAura":{
+                "isAura": {
+                    "value": false,
+                    "range": 0,
+                    "auraType": "indiscriminate",
+                    "los": false,
+                    "notSelf": false,
+                    "reqFlags":"",
+                    "negReqFlags":"",
+                    "type": "Boolean"
+                }
+            },
             "weapon": {
                 "damageFormula": {
                     "value": "1d10",
@@ -1157,7 +1170,8 @@
         "wargear": {
             "templates": [
                 "description",
-                "physicalProp"
+                "physicalProp",
+                "canHaveAura"
             ]
         },
         "cybernetic": {
@@ -1369,7 +1383,8 @@
         },
         "talentntrait": {
             "templates": [
-                "description"
+                "description",
+                "canHaveAura"
             ],
             "tier": {
                 "value": 1,
@@ -1394,14 +1409,6 @@
             "tags": {
                 "value": "",
                 "type": "String"
-            },
-            "isAura": {
-                "value": false,
-                "range": 0,
-                "auraType": "indiscriminate",
-                "los": false,
-                "notSelf": false,
-                "type": "Boolean"
             }
         },
         "advancement": {
@@ -1797,6 +1804,21 @@
                 "threshold": 0,
                 "roll": ""
             },
+            "asuryani":{
+                "base":{
+                    "id":"",
+                    "name":""
+                },
+                "mastery":{
+                    "id":"",
+                    "name":""
+                },
+                "lost":{
+                    "id":"",
+                    "name":""
+                }
+            }
+            ,
             "characteristics": {
                 "all": 25,
                 "hasInfluence": false,
