@@ -417,7 +417,6 @@ nav.tabs .item,
 #chat-log .dice-total {
   color: var(--terminal-warning);
   border: 1px solid var(--terminal-border) !important;
-  text-shadow: 0 0 2px var(--terminal-warning) !important;
 }
 
 #chat-log .dice-formula {
@@ -1037,6 +1036,9 @@ i:not([class*="fa-"]):not(.colored-icon),
 .fa-toolbox:before { color: #5f27cd !important; text-shadow: 0 0 3px #5f27cd !important; }
 .fa-star:before { color: goldenrod !important; text-shadow: 0 0 6px goldenrod !important; }
 .fa-question:before { color: purple!important; text-shadow: 0 0 6px purple !important; }
+.fa-file-import:before { color: goldenrod; 
+  text-shadow: 0 0 6px goldenrod !important;
+  font-family: 'Font Awesome 6 Pro'}
 /* Sidebar with standard icons */
 #sidebar .directory-item .entry-name {
   color: var(--terminal-text) !important;

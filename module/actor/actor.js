@@ -685,8 +685,14 @@ export class FortyKActor extends Actor {
         for (const ae of this.effects) {
             if (!ae.disabled) {
                 let powerOriginId = ae.origin;
-
-                let powerOrigin = fromUuidSync(powerOriginId);
+                let powerOrigin;
+                if(powerOriginId?.includes(this.id)){
+                    if(this.isToken&&!game.ready)continue;
+                   
+                }
+                powerOrigin = fromUuidSync(powerOriginId);  
+                
+                
                 let powerActor = null;
                 if (powerOrigin) {
                     powerActor = powerOrigin.parent;
@@ -917,6 +923,9 @@ export class FortyKActor extends Actor {
             if (key === "inf") {
                 char.total = Math.min(char.total, char.max);
                 char.preGlobal = char.total;
+                if(this.getFlag("fortyk", "roguetrader")){
+                    char.label="Profit Factor";
+                }
             } else {
                 char.total = parseInt(char.value) + parseInt(char.advance) + parseInt(char.mod);
                 if (key === "agi" && char.max !== 100) {

@@ -31,8 +31,8 @@
                                 <input type="text" class="combat-resources" data-target="system.complications.0" value="{{system.complications.[0]}}" data-dtype="String"/>
                                 <input type="text" class="combat-resources" data-target="system.complications.1" value="{{system.complications.[1]}}" data-dtype="String"/>
                             </div>
-                            
-                            
+
+
                         </div>
 
 
@@ -58,21 +58,39 @@
 
                 </div>
 
-                <div class="descrRow flexcol">
+                <!--<div class="descrRow flexcol">
                     <span class="descrSpan">Turret Rating:</span>
                     <input type="text" class="combat-resources" data-target="system.turret.value" value="{{system.turret.value}}" data-dtype="Number"/>
 
-                </div>
+                </div>-->
                 <div class="descrRow flexcol">
                     <span class="descrSpan">Void Shields:</span>
                     <input type="text" class="combat-resources" data-target="system.shields.value" value="{{system.shields.value}}" data-dtype="Number"/>
 
                 </div>
-                <div class="descrRow flexcol">
+                <div class=" flex-group-center">
+                    <label for="system.secChar.fatigue.value" class="resource-label">Supplies</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" class="combat-resources" name="system.cargo.supplies" value="{{system.cargo.supplies}}" data-dtype="Number"/>
+                        /
+                        <input type="text" class="combat-resources" name="system.cargo.suppliesMax" value="{{system.cargo.suppliesMax}}" data-dtype="Number"/>
+
+                    </div>
+                </div>
+                <div class="descrRow flex-group-center">
+                    <label for="system.secChar.fatigue.value" class="resource-label">Warp Fuel</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="text" class="combat-resources" name="system.cargo.fuel" value="{{system.cargo.fuel}}" data-dtype="Number"/>
+                        /
+                        <input type="text" class="combat-resources" name="system.cargo.fuelMax" value="{{system.cargo.fuelMax}}" data-dtype="Number"/>
+
+                    </div>
+                </div>
+                <!--<div class="descrRow flexcol">
                     <span class="descrSpan">Armor:</span>
                     <input type="text" class="combat-resources" data-target="system.armor.value" value="{{system.armor.value}}" data-dtype="Number"/>
 
-                </div>
+                </div>-->
                 <div class="descrRow flexcol">
                     <span class="char-total rollable button" data-roll-type="char" data-target="{{system.crew.rating}}" data-label="Crew Rating" data-char="">Crew Rating:</span>
                     <span class="descrSpan"></span>
@@ -94,7 +112,7 @@
                         <input type="text" class="combat-resources" data-target="system.crew.value" value="{{system.crew.value}}" data-dtype="String"/>
                         <span> / </span>
                         <input type="text" class="combat-resources" data-target="system.crew.max" value="{{system.crew.max}}" data-dtype="String"/>
-                        
+
                     </div>
                     <input type="text" class="combat-resources" data-target="system.crew.capacity" value="{{system.crew.capacity}}" placeholder="Crew capacity" data-dtype="String"/>
                 </div>
@@ -176,13 +194,13 @@
                 <a class="list-item sort-button" data-sort-type="sp" data-path="system.sp.value" data-item-type="components">SP</a>
                 <span class="list-button"></span>
                 <span class="list-button"></span>
-                
+
                 {{#each actor.components as |t key|}}
 
                 <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.system.description.value}}">{{t.name}}</a>
                 <select class="component-status" data-id="{{this._id}}">
                     {{selectOptions ../spaceshipComponentStatuses selected=system.status.value valueAttr="value" labelAttr="value"}}
-                    
+
                 </select>
                 <span class="item-descr list-item">{{t.system.power.value}}</span>
                 <span class="item-descr list-item">{{t.system.space.value}}</span>
@@ -246,10 +264,10 @@
                 {{#if (contains this.system.type.value "Torpedo")}}
                 <div class="list-item">
                     <select class="torpedo-ammo" data-weapon="{{this._id}}">
-                        
+
                         {{#select this.system.torpedo.id}}
                         <option value="" data-damage=" " data-rating="0">None</option>
-                        
+
                         {{#each ../actor.torpedoes}}
 
                         <option value="{{this._id}}" data-damage="{{this.system.damage.value}}" data-rating="{{this.system.rating.value}}">{{this.name}}</option>
@@ -322,7 +340,7 @@
 
                     </div>
                 </div>
-                <div class=" flex-group-center">
+                <!--<div class=" flex-group-center">
                     <label for="system.secChar.fatigue.value" class="resource-label">Supplies (In days)</label>
                     <div class="resource-content flexrow flex-center flex-between">
                         <input type="text" class="combat-resources" name="system.cargo.supplies" value="{{system.cargo.supplies}}" data-dtype="Number"/>
@@ -332,13 +350,14 @@
                     </div>
                 </div>
                 <div class=" flex-group-center">
-                    <label for="system.secChar.fatigue.value" class="resource-label">Fuel %</label>
-                    <div class="resource-content flexcol flex-center flex-between">
+                    <label for="system.secChar.fatigue.value" class="resource-label">Warp Fuel</label>
+                    <div class="resource-content flexrow flex-center flex-between">
                         <input type="text" class="combat-resources" name="system.cargo.fuel" value="{{system.cargo.fuel}}" data-dtype="Number"/>
-
+                        /
+                        <input type="text" class="combat-resources" name="system.cargo.fuelMax" value="{{system.cargo.fuelMax}}" data-dtype="Number"/>
 
                     </div>
-                </div>
+                </div>-->
             </div>
 
             <a class="item-create button" data-type="spaceshipCargo" title="Add Cargo">Add Cargo</a>

@@ -378,7 +378,7 @@ export class FortykRollDialogs {
         const dataset = button.dataset;
         const chatContentNode = $(button).closest(".message-content")[0];
         const chatMessageNode = $(button).closest(".chat-message")[0];
-        const actor = game.actors.get(dataset["actor"]);
+        const actor = await fromUuid(dataset["actor"]);
         const char = dataset["char"];
         const type = dataset["rollType"];
 
@@ -465,8 +465,10 @@ export class FortykRollDialogs {
         const dataset = event.currentTarget.dataset;
         const messageId = $(event.currentTarget).closest(".chat-message")[0].dataset.messageId;
         const message = game.messages.get(messageId);
+        let modifiers=message.getFlag("fortyk", "modifiers");
+        if(!modifiers)modifiers=[];
         console.log(message);
-        const actor = game.actors.get(dataset["actor"]);
+        const actor = await fromUuid(dataset["actor"]);
         const char = dataset["char"];
         const type = dataset["rollType"];
 
@@ -475,6 +477,7 @@ export class FortykRollDialogs {
 
         const weapon = actor.items.get(dataset["weapon"]);
         const fireRate = dataset["fire"];
+        
         if (type === "focuspower") {
             if (actor.system.psykana.psykerType.value === "navigator") {
 
@@ -501,11 +504,11 @@ export class FortykRollDialogs {
                 );
 
             }else{
-                await this.callRollDialog(char, type, target, actor, label, weapon, true, fireRate);
+                await this.callRollDialog(char, type, target, actor, label, weapon, true, fireRate, false, modifiers);
             }
 
         }else{
-            await this.callRollDialog(char, type, target, actor, label, weapon, true, fireRate);
+            await this.callRollDialog(char, type, target, actor, label, weapon, true, fireRate, false, modifiers);
         }
 
 
@@ -559,7 +562,7 @@ export class FortykRollDialogs {
         }
         let modifier = 0;
 
-        if (testChar) {
+        if (testChar&&(actor.type==="dwPC"||actor.type==="npc")) {
             let char = actor.system.characteristics[testChar];
             let mod = char.mod;
             if (mod) {

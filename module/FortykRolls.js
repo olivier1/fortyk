@@ -158,7 +158,7 @@ returns the roll message*/
             opposed:opposed
         };
         if (!reroll) {
-            templateOptions["actor"] = actor.id;
+            templateOptions["actor"] = actor.uuid;
             templateOptions["char"] = char;
             templateOptions["type"] = type;
             templateOptions["targetNumber"] = target;
@@ -562,7 +562,8 @@ returns the roll message*/
                 speaker: { actor, alias: name },
                 content: renderedTemplate,
                 classes: ["fortyk"],
-                flags: { fortyk: { templateOptions: templateOptions } }
+                flags: { fortyk: { templateOptions: templateOptions,
+                                 modifiers: modifiers}}
             });
         }
         if(templateOptions.success&&char==="wp"&&actor.getFlag("fortyk","warpopened")){
@@ -2030,19 +2031,23 @@ returns the roll message*/
                                 `<span>The weapon ignores ${tarActor.getFlag("fortyk", "naturalarmor")} natural armor.</span>`
                             );
                         }
-                        var psyArmor = parseInt(data.characterHitLocations[curHit.value].psy);
-                        if (tarActor.getFlag("fortyk", "telekinedome") && !actor.getFlag("fortyk", "telekinedome")) {
-                            soak += tarActor.getFlag("fortyk", "telekinedome");
-                            armor += tarActor.getFlag("fortyk", "telekinedome");
-                            psyArmor += tarActor.getFlag("fortyk", "telekinedome");
+                        if(!vehicle){
+                            var psyArmor = parseInt(data.characterHitLocations[curHit.value].psy); 
+                            if (tarActor.getFlag("fortyk", "telekinedome") && !actor.getFlag("fortyk", "telekinedome")) {
+
+                                soak += tarActor.getFlag("fortyk", "telekinedome");
+                                armor += tarActor.getFlag("fortyk", "telekinedome");
+                                psyArmor += tarActor.getFlag("fortyk", "telekinedome");
+                            }
+                            //ignore psychic armor weapons
+                            if (fortykWeapon.getFlag("fortyk", "ignorePsychichArmor")) {
+                                pen += psyArmor;
+                                damageOptions.results.push(
+                                    `<span>The weapon ignores ${data.characterHitLocations[curHit.value].psy} psychic armor.</span>`
+                                );
+                            }
                         }
-                        //ignore psychic armor weapons
-                        if (fortykWeapon.getFlag("fortyk", "ignorePsychichArmor")) {
-                            pen += psyArmor;
-                            damageOptions.results.push(
-                                `<span>The weapon ignores ${data.characterHitLocations[curHit.value].psy} psychic armor.</span>`
-                            );
-                        }
+
                         //lathe-wrought armor
                         if (armorSuit.getFlag("fortyk", "lathewrought")) {
                             pen = Math.ceil(pen / 2);
@@ -2187,7 +2192,7 @@ returns the roll message*/
                         }
                         //accurate weapon logic
                         if (fortykWeapon.getFlag("fortyk", "accurate") && lastHit.aim) {
-                            if (actor.getFlag("fortyk", "marksmanshonor") || distance > 10) {
+                            if (actor.getFlag("fortyk", "marksmanshonor") || distance > 2) {
                                 let accDice = Math.min(
                                     parseInt(fortykWeapon.getFlag("fortyk", "accurate")),
                                     Math.ceil((lastHit.dos - 1) / 2)

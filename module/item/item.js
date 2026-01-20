@@ -1303,14 +1303,7 @@ export class FortyKItem extends Item {
             let actor = await fromUuid(actorId);
             let actorToken = getActorToken(actor);
             let power;
-            if(actor.isToken){
-                let baseActor= actor.parent.baseActor;
-                power= baseActor.getEmbeddedDocument("Item", powerId);
-            }else{
-                power = actor.getEmbeddedDocument("Item", powerId);
-            }
-            
-
+            power = actor.getEmbeddedDocument("Item", powerId);
             let affects = power.system.affects.value;
             let targets;
             if (affects === "self") {
@@ -1326,7 +1319,15 @@ export class FortyKItem extends Item {
             if (targets.length === 0) return ui.notifications.warn("No valid targets.");
             this.navigatorPsyTalents(actor,targets);
             let aes=[];
-            for(let ae of power.effects){
+            let effects;
+            if(actor.isToken){
+                 let baseActor= actor.parent.baseActor;
+                let basePower= baseActor.getEmbeddedDocument("Item", powerId);
+                effects=basePower.effects;
+            }else{
+                effects=power.effects;
+            }
+            for(let ae of effects){
 
                 let aeData = foundry.utils.duplicate(ae);
 
