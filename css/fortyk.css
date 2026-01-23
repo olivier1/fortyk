@@ -39,6 +39,7 @@
   --terminal-text: #008800;
   --terminal-warning: #cccc00;
   --terminal-error: #cc0000;
+  --terminal-success: #00cdaf;
   --terminal-border: #008800;
   --terminal-font: 'Inquisitor';
   --terminal-glow: 0 0 2px #009900, 0 0 4px #009900, 0 0 6px #009900;
@@ -46,6 +47,10 @@
   --terminal-error-glow: 0 0 2px #cc0000, 0 0 4px #cc0000, 0 0 6px #cc0000;
   --terminal-text-shadow: 0 0 1px #009900;
   --terminal-font-size: 18px;
+  --terminal-border-image: url('../assets/emptyslate.png');
+  --terminal-delete-icon: url('../icons/deleteicon-red.png');
+  --terminal-edit-icon: url("../icons/editicon-gold.png");
+  --terminal-imp-eagle: url(../icons/impeagleSCAN.webp);
 }
 
 /**/
@@ -86,7 +91,7 @@
 
   height:100%;
   width:100%;
-  border-image-source: url('../assets/emptyslate.png') !important;
+  border-image-source: var(--terminal-border-image) !important;
   border-image-slice: 33 29 65 33 fill !important;
   border-image-outset: 0.95em 0.95em 0.85em 0.95em !important;
   border-image-repeat: stretch !important;
@@ -160,7 +165,7 @@ button:not([class*="fsc-"]), .button:not([class*="fsc-"]) {
 button:hover:not([class*="fsc-"]), .button:hover:not([class*="fsc-"]) {
   box-shadow: var(--terminal-glow) !important;
   color: var(--terminal-bg) !important;
-  text-shadow: var(--terminal-glow) !important;
+  text-shadow: var(--terminal-text-shadow) !important;
 }
 
 
@@ -287,7 +292,7 @@ nav.tabs .item,
 #chat-log .inline-roll:hover{
   box-shadow: var(--terminal-glow) !important;
   color: var(--terminal-bg) !important;
-  text-shadow: var(--terminal-glow) !important;
+  text-shadow: var(--terminal-text-shadow) !important;
 }
 
 #chat {
@@ -922,8 +927,8 @@ a[title*="Eliminar"] i,
 .fa-trash:before,
 .fa-times:before,
 .fa-close:before {
-  color: #ff4444 !important;
-  text-shadow: 0 0 3px #ff4444, 0 0 6px #ff4444 !important;
+  color: var(--terminal-error) !important;
+  text-shadow: var(--terminal-error-glow) !important;
   background-image: none;
 }
 
@@ -992,8 +997,8 @@ a[data-action="duplicate"] i,
 }
 
 #sidebar .directory-item .item-controls a[data-action="delete"] i {
-  color: #ff4444 !important;
-  text-shadow: 0 0 2px #ff4444 !important;
+  color: var(--terminal-error) !important;
+  text-shadow: var(--terminal-error-glow) !important;
 }
 
 #sidebar .directory-item .item-controls a[data-action="duplicate"] i {
@@ -1025,7 +1030,7 @@ i:not([class*="fa-"]):not(.colored-icon),
 }
 
 /* Specific Foundry VTT icons */
-.fa-dice-d20:before { color: #ff6b6b !important; text-shadow: 0 0 3px #ff6b6b !important; }
+.fa-dice-d20:before { color: #ff6b6b !important; text-shadow: 0 0 3px #ff6b6b !important; font-family: 'Font Awesome 6 Pro' }
 .fa-crosshairs:before { color: #4ecdc4 !important; text-shadow: 0 0 3px #4ecdc4 !important; }
 .fa-users:before { color: #45b7d1 !important; text-shadow: 0 0 3px #45b7d1 !important; }
 .fa-map:before { color: #96ceb4 !important; text-shadow: 0 0 3px #96ceb4 !important; }
@@ -1039,6 +1044,29 @@ i:not([class*="fa-"]):not(.colored-icon),
 .fa-file-import:before { color: goldenrod; 
   text-shadow: 0 0 6px goldenrod !important;
   font-family: 'Font Awesome 6 Pro'}
+.fa-passport:before { color: #0096FF; 
+  text-shadow: 0 0 6px #0096FF !important;
+  opacity:1;
+  font-family: 'Font Awesome 6 Pro'}
+.fa-times:before { color: goldenrod; 
+  text-shadow: 0 0 6px goldenrod !important;
+  font-family: 'Font Awesome 6 Pro'}
+.fa-cog:before { color: goldenrod; 
+  text-shadow: 0 0 6px goldenrod !important;
+  font-family: 'Font Awesome 6 Pro'}
+.fa-save:before {
+  color: var(--terminal-primary); 
+  text-shadow: 0 0 6px var(--terminal-primary) !important;
+  font-family: 'Font Awesome 6 Pro'
+}
+.fa-trash:before {
+  color: var(--terminal-error); 
+  text-shadow: var(--terminal-error-glow) !important;
+  font-family: 'Font Awesome 6 Pro'
+}
+.window-app .window-header .window-title .document-id-link{
+  opacity:1;
+}
 /* Sidebar with standard icons */
 #sidebar .directory-item .entry-name {
   color: var(--terminal-text) !important;
@@ -1914,7 +1942,7 @@ u:hover{
 }
 .fortyk .item-edit{
   background-color: none !important;
-  background: url("../icons/editicon-gold.png") !important;
+  background: var(--terminal-edit-icon) !important;
   -webkit-filter: drop-shadow(0 0 3px goldenrod);
   background-size: contain !important;
   background-repeat: no-repeat !important;
@@ -1933,12 +1961,9 @@ u:hover{
 .item-delete,
 .delete-repair{
   background-color: none !important;
-  background: url('../icons/deleteicon-red.png') !important;
+  background: var(--terminal-delete-icon) !important;
   background-size: contain !important;
   background-repeat: no-repeat !important;
-  -webkit-filter: drop-shadow(0 0 3px #ff4444);
-  color: #ff4444 !important;
-  text-shadow: 0 0 3px #ff4444, 0 0 6px #ff4444 !important;
   width:25px !important;
   height:25px !important;
   margin-left:3px;
@@ -2151,15 +2176,15 @@ u:hover{
 }
 .test-success{
   font-weight:bolder;
-  color: #00cdaf !important;
-  text-shadow: 0 0 10px #00cdaf;
+  color: var(--terminal-success) !important;
+  text-shadow: 0 0 10px var(--terminal-success);
   font-size: larger;
   font-variant-caps: petite-caps;
 }
 .test-failure{
   font-weight:bolder;
-  color: red !important;
-  text-shadow: 0 0 10px red;
+  color: var(--terminal-error) !important;
+  text-shadow: var(--terminal-error-glow) red;
   font-size: larger;
   font-variant-caps: petite-caps;
 }
@@ -2171,7 +2196,7 @@ u:hover{
   text-shadow: 0 0 10px goldenrod;
 }
 .power-push{
-  border-color: red !important;
+  border-color: var(--terminal-error) !important;
 }
 .power-push:hover{
   box-shadow: var(--terminal-error-glow) !important;
@@ -2244,9 +2269,9 @@ u:hover{
 }
 
 .invalid-checkbox{
-  border-color: red !important;
+  border-color: var(--terminal-error) !important;
   border-style: double;
-  accent-color: red;
+  accent-color: var(--terminal-error);
 }
 a.creation-roll{
   color:#4488ff !important;
@@ -2281,13 +2306,13 @@ a.creation-roll:hover{
   padding-left: 5px;
 }
 .chat-background{
-  background-image: url(../icons/impeagleSCAN.webp) !important;
+  background-image: var(--terminal-imp-eagle) !important;
   background-repeat: round !important;
   background-position-y: bottom !important;
 }
 .chat-message{
   background-color: var(--terminal-bg) !important;
-  background-image: url(../icons/impeagleSCAN.webp) !important;
+  background-image: var(--terminal-imp-eagle) !important;
   background-repeat: no-repeat !important;
   background-size:cover !important;
   background-position-y: center !important;
@@ -2304,8 +2329,8 @@ a.creation-roll:hover{
   text-shadow: 0 0 10px blue;
 }
 .chat-crit-fail{
-  color:darkred !important;
-  text-shadow: 0 0 10px darkred;
+  color:var(--terminal-error) !important;
+  text-shadow: 0 0 10px var(--terminal-error);
 }
 .chat-righteous{
   font-style:italic, bold !important; 
@@ -2554,7 +2579,7 @@ a.creation-roll:hover{
 }
 .highlight-slot{
   color: #000;
-  text-shadow: 0 0 10px red;
+  text-shadow: 0 0 10px var(--terminal-error);
   border: dotted;
 }
 .sheet-content-knight{

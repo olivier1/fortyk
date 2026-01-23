@@ -89,5 +89,22 @@ export const registerSystemSettings = function() {
         type: Boolean,
         default: false
     });
-    
+    //Setting to use goals on character sheets
+    game.settings.register("fortyk","colorScheme",{
+        name: "Color Scheme",
+        hint: "Change the Color Scheme",
+        scope: "client",
+        config: true,
+        type: Number,
+        default: false,
+        requiresReload: true,
+        choices: {
+            1: "Green",
+            2: "Cyan",
+            3: "Red",
+            4: "White",
+            5: "Green with R/G Color blind"
+        },
+    });
+
 };
