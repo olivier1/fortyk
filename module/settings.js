@@ -96,14 +96,14 @@ export const registerSystemSettings = function() {
         scope: "client",
         config: true,
         type: Number,
-        default: false,
+        default: 0,
         requiresReload: true,
         choices: {
-            1: "Green",
-            2: "Cyan",
-            3: "Red",
-            4: "White",
-            5: "Green with R/G Color blind"
+            0: "Green",
+            1: "Cyan",
+            2: "Red",
+            3: "White",
+            4: "Green with R/G Color blind"
         },
     });
 

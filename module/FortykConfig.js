@@ -1,4 +1,11 @@
 export const FORTYK = {};
+FORTYK.colorSchemes = [
+    "Default",
+    "Cyan",
+    "Red",
+    "White",
+    "Green w/ RG Colorblind"
+];
 FORTYK.races = [
     { value: "Human" },
     { value: "Ogryn" },

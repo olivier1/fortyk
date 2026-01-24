@@ -284,6 +284,7 @@ nav.tabs .item,
 #chat-log li *,
 #chat-log .inline-roll{
   background-image: none;
+  background:none;
 }
 #chat-log .inline-roll{
   background-image: none !important;

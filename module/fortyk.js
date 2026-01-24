@@ -39,10 +39,12 @@ import { applySceneAuras } from "./utilities.js";
 
 function manageColorScheme() {
     const colorScheme=game.settings.get("fortyk","colorScheme");
-    switch (colorScheme){
-        case 1:   
+    const colorSchemes=FORTYK.colorSchemes;
+    const schemeString=colorSchemes[colorScheme];
+    switch (schemeString){
+        case "Default":   
             break;
-        case 2:
+        case "Cyan":
             document.documentElement.style.setProperty('--terminal-primary', '#23D5D5');
             document.documentElement.style.setProperty('--terminal-secondary', '#39AAAA');
             document.documentElement.style.setProperty('--terminal-dim', '#395555');
@@ -61,43 +63,43 @@ function manageColorScheme() {
             document.documentElement.style.setProperty('--terminal-imp-eagle', 'url("../icons/impeagleSCAN-cyan.webp")');
             
             break;
-        case 3:
-            document.documentElement.style.setProperty('--terminal-primary', '#FF2C2C');
-            document.documentElement.style.setProperty('--terminal-secondary', '#FF7081');
-            document.documentElement.style.setProperty('--terminal-dim', '#FFBFBF');
-            document.documentElement.style.setProperty('--terminal-text', '#FF2C2C');
+        case "Red":
+            document.documentElement.style.setProperty('--terminal-primary', '#E73121');
+            document.documentElement.style.setProperty('--terminal-secondary', '#F15D49');
+            document.documentElement.style.setProperty('--terminal-dim', '#8B190A');
+            document.documentElement.style.setProperty('--terminal-text', '#E73121');
             document.documentElement.style.setProperty('--terminal-warning', '#cccc00');
             document.documentElement.style.setProperty('--terminal-success', 'royalblue');
             document.documentElement.style.setProperty('--terminal-error', 'orange');
-            document.documentElement.style.setProperty('--terminal-border', '#FF2C2C');
-            document.documentElement.style.setProperty('--terminal-glow', '0 0 2px #FF2C2C, 0 0 4px #FF2C2C, 0 0 6px #FF2C2C');
-            document.documentElement.style.setProperty('--terminal-innerglow', 'inset 0 0 2px #FF2C2C, inset 0 0 4px #FF2C2C, inset 0 0 6px #FF2C2C');
+            document.documentElement.style.setProperty('--terminal-border', '#E73121');
+            document.documentElement.style.setProperty('--terminal-glow', '0 0 2px #E73121, 0 0 4px #E73121, 0 0 6px #E73121');
+            document.documentElement.style.setProperty('--terminal-innerglow', 'inset 0 0 2px #E73121, inset 0 0 4px #E73121, inset 0 0 6px #E73121');
             document.documentElement.style.setProperty('--terminal-error-glow', '0 0 2px orange, 0 0 4px orange, 0 0 6px orange');
-            document.documentElement.style.setProperty('--terminal-text-shadow', '0 0 1px #FF2C2C');
+            document.documentElement.style.setProperty('--terminal-text-shadow', '0 0 1px #E73121');
             document.documentElement.style.setProperty('--terminal-border-image', 'url("../assets/emptyslate-red.png")');
             document.documentElement.style.setProperty('--terminal-delete-icon', 'url("../icons/deleteicon-orange.png")');
             document.documentElement.style.setProperty('--terminal-edit-icon', 'url("../icons/editicon-blue.png")');
             document.documentElement.style.setProperty('--terminal-imp-eagle', 'url("../icons/impeagleSCAN-red.webp")');
             break;
-        case 4:
-            document.documentElement.style.setProperty('--terminal-primary', '#FFFFE3');
-            document.documentElement.style.setProperty('--terminal-secondary', '#DBDBC3');
-            document.documentElement.style.setProperty('--terminal-dim', '#8A8A7B');
-            document.documentElement.style.setProperty('--terminal-text', '#FFFFE3');
+        case "White":
+            document.documentElement.style.setProperty('--terminal-primary', '#DBDBC3');
+            document.documentElement.style.setProperty('--terminal-secondary', '#8A8A7B');
+            document.documentElement.style.setProperty('--terminal-dim', '#4A4A31');
+            document.documentElement.style.setProperty('--terminal-text', '#DBDBC3');
             document.documentElement.style.setProperty('--terminal-warning', '#cccc00');
             document.documentElement.style.setProperty('--terminal-success', 'green');
             document.documentElement.style.setProperty('--terminal-error', 'red');
-            document.documentElement.style.setProperty('--terminal-border', '#FFFFE3');
-            document.documentElement.style.setProperty('--terminal-glow', '0 0 2px #FFFFE3, 0 0 4px #FFFFE3, 0 0 6px #FFFFE3');
-            document.documentElement.style.setProperty('--terminal-innerglow', 'inset 0 0 2px #FFFFE3, inset 0 0 4px #FFFFE3, inset 0 0 6px #FFFFE3');
+            document.documentElement.style.setProperty('--terminal-border', '#DBDBC3');
+            document.documentElement.style.setProperty('--terminal-glow', '0 0 2px #DBDBC3, 0 0 4px #DBDBC3, 0 0 6px #DBDBC3');
+            document.documentElement.style.setProperty('--terminal-innerglow', 'inset 0 0 2px #DBDBC3, inset 0 0 4px #DBDBC3, inset 0 0 6px #DBDBC3');
             document.documentElement.style.setProperty('--terminal-error-glow', '0 0 2px red, 0 0 4px red, 0 0 6px red');
-            document.documentElement.style.setProperty('--terminal-text-shadow', '0 0 1px #FFFFE3');
+            document.documentElement.style.setProperty('--terminal-text-shadow', '0 0 1px #DBDBC3');
             document.documentElement.style.setProperty('--terminal-border-image', 'url("../assets/emptyslate-white.png")');
             document.documentElement.style.setProperty('--terminal-delete-icon', 'url("../icons/deleteicon-red.png")');
             document.documentElement.style.setProperty('--terminal-edit-icon', 'url("../icons/editicon-gold.png")');
             document.documentElement.style.setProperty('--terminal-imp-eagle', 'url("../icons/impeagleSCAN-white.webp")');
             break;
-        case 5:
+        case "Green w/ RG Colorblind":
             document.documentElement.style.setProperty('--terminal-error', 'orange');
             document.documentElement.style.setProperty('--terminal-error-glow', '0 0 2px orange, 0 0 4px orange, 0 0 6px orange');
             document.documentElement.style.setProperty('--terminal-delete-icon', 'url("../icons/deleteicon-orange.png")');
