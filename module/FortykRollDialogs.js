@@ -5,18 +5,19 @@ import { isBlastTarget } from "./utilities.js";
 export class FortykRollDialogs {
     //activate chatlisteners
     static chatListeners(html) {
-        html.on("mouseup", ".reroll", this._onReroll.bind(this));
-        html.on("click", ".overheat", this._onOverheat.bind(this));
-        html.on("click", ".popup", this._onTestPoppup.bind(this));
-        html.on("click", ".spray-torrent-ping", this._onSprayTorrentClick.bind(this));
-        html.on("mouseup", ".reroll-popup", this._onPopupReroll.bind(this));
-        html.on("click", ".blast-evade", this._onBlastClick.bind(this));
-        html.on("click", ".ping-template", this._onTemplateClick.bind(this));
-        html.on("click", ".nav-gaze-ping", this._onNavClick.bind(this));
-        html.on("click", ".add-fatigue-wounds", this._onAddFatigueWoundsClick.bind(this));
-        html.on("click", ".add-insanity", this._onAddInsanityClick.bind(this));
-        html.on("click", ".hallucination", this._onAddHallucinationClick.bind(this));
-        html.on("click", ".courseuntravelled", this._onCourseUntravelledClick.bind(this));
+
+        $(html).find(".reroll").mouseup( this._onReroll.bind(this));
+        $(html).find(".overheat").click(this._onOverheat.bind(this));
+        $(html).find( ".popup").click(this._onTestPoppup.bind(this));
+        $(html).find(".spray-torrent-ping").click(this._onSprayTorrentClick.bind(this));
+        $(html).find(".reroll-popup").mouseup(this._onPopupReroll.bind(this));
+        $(html).find(".blast-evade").click(this._onBlastClick.bind(this));
+        $(html).find(".ping-template").click(this._onTemplateClick.bind(this));
+        $(html).find(".nav-gaze-ping").click(this._onNavClick.bind(this));
+        $(html).find(".add-fatigue-wounds").click(this._onAddFatigueWoundsClick.bind(this));
+        $(html).find(".add-insanity").click(this._onAddInsanityClick.bind(this));
+        $(html).find(".hallucination").click(this._onAddHallucinationClick.bind(this));
+        $(html).find(".courseuntravelled").click(this._onCourseUntravelledClick.bind(this));
     }
     static async _onCourseUntravelledClick(event){
         var targetElement = event.currentTarget;
@@ -812,13 +813,13 @@ export class FortykRollDialogs {
         });
     }
     static checkMelee(target) {
-        let tokens = canvas.tokens.children[0].children;
+        let tokens = game.scenes.current.tokens;
         let targetDispositon = target.document.disposition;
         for (const token of tokens) {
             if (token.id === target.id) continue;
             if(!token.actor) continue;
             if (this.cantAssistFlags(token.actor)) continue;
-            if (token.document.disposition !== targetDispositon) {
+            if (token.disposition !== targetDispositon) {
                 let distance = tokenDistance(target, token);
                 let reach = token.actor.system.reach;
                 if (distance <= reach) {
@@ -2049,7 +2050,7 @@ export class FortykRollDialogs {
                 let scene = game.canvas.scene;
                 targetTokens = this.getSprayTargets(template, scene, actor)[0];
             }else{
-                targetTokens = game.canvas.tokens.children[0].children.filter((token) => {
+                targetTokens = game.scenes.current.tokens.filter((token) => {
                     return tokenDistance(token, casterToken) <= range;
                 });
 

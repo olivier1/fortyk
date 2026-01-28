@@ -145,15 +145,15 @@ input[name="search"]{
 
 
 /* Buttons */
-button:not([class*="fsc-"]), .button:not([class*="fsc-"]) {
+button:not([class*="fsc-"], [class*="fa-"]), .button:not([class*="fsc-"], [class*="fa-"]) {
   background: none;
   color: var(--terminal-primary);
   border: 3px double var(--terminal-border) !important;
-  font-family: var(--terminal-font) !important;
+  font-family: var(--terminal-font);
   font-size: var(--terminal-font-size) !important;
   text-shadow: var(--terminal-text-shadow) !important;
   transition: all 0.3s ease !important;
-  padding: 6px 12px !important;
+  padding: 6px 12px ;
   display: inline-flex;
   justify-content: center;
   align-content: center;
@@ -285,10 +285,12 @@ nav.tabs .item,
 #chat-log .inline-roll{
   background-image: none;
   background:none;
+  color: var(--terminal-text) !important;
 }
 #chat-log .inline-roll{
   background-image: none !important;
   background: none !important;
+  color: var(--terminal-text) !important;
 }
 #chat-log .inline-roll:hover{
   box-shadow: var(--terminal-glow) !important;
@@ -306,19 +308,19 @@ nav.tabs .item,
   font-family: var(--terminal-font) !important;
   font-size: var(--terminal-font-size) !important;
 }
-#chat-controls > * {
+#chat-controls > *:not([class*="fa-"]) {
   color: var(--terminal-text) !important;
   background: var(--terminal-bg) !important;
   font-family: var(--terminal-font) !important;
   font-size: var(--terminal-font-size) !important;
 }
-#chat-controls > * > * {
+#chat-controls > * > *:not([class*="fa-"]) {
   color: var(--terminal-text) !important;
   background: var(--terminal-bg) !important;
   font-family: var(--terminal-font) !important;
   font-size: var(--terminal-font-size) !important;
 }
-#chat-controls > * > * > * {
+#chat-controls > * > * > *:not([class*="fa-"]) {
   color: var(--terminal-text) !important;
   background: var(--terminal-bg) !important;
   font-family: var(--terminal-font) !important;
@@ -975,6 +977,18 @@ a[data-action="duplicate"] i,
   color: #00dddd !important;
   text-shadow: 0 0 3px #00dddd, 0 0 6px #00dddd !important;
 }
+.control-icon{
+  background-color: var(--terminal-bg) !important;
+  color: var(--terminal-primary) !important;
+  padding: 0 !important;
+}
+.control-icon.active{
+ box-shadow: var(--terminal-glow);
+}
+.control-icon>img{
+  height: -webkit-fill-available;
+  width: -webkit-fill-available;
+}
 .sheet-icon{
   width:20px;
   height:20px;
@@ -988,7 +1002,7 @@ a[data-action="duplicate"] i,
   color: var(--terminal-bg) !important;
   text-shadow: var(--terminal-glow);
 }
-#sidebar{
+#sidebar-content{
   background-color: var(--terminal-bg)!important
 }
 /* Icons in right sidebar */
@@ -1011,7 +1025,11 @@ a[data-action="duplicate"] i,
   color: #ffaa00 !important;
   text-shadow: 0 0 2px #ffaa00 !important;
 }
-
+/*context menu*/
+#context-menu{
+  background-color: var(--terminal-bg)!important;
+  color: var(--terminal-text) !important;
+}
 /* Tool icons in left bar - different colors */
 #controls .control-tool:nth-child(1) i { color: #ff6666 !important; text-shadow: 0 0 3px #ff6666 !important; }
 #controls .control-tool:nth-child(2) i { color: #66ff66 !important; text-shadow: 0 0 3px #66ff66 !important; }
@@ -1120,9 +1138,21 @@ i:not([class*="fa-"]):not(.colored-icon),
 .combat-sidebar li.combatant.active>*,
 .combat-sidebar li.combatant.active>*>*,
 .combat-sidebar li.combatant.active>*>*>*{
-   background: none !important;
+   background: none ;
 }
-
+.combat-sidebar .combat-tracker .token-initiative button{
+  background-color: var(--terminal-dim) !important;
+  padding: 0 !important;
+  background-image: url(../icons/d10.webp);
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  vertical-align: sub;
+}
 /* Animation effects */
 @keyframes blink {
   0%, 50% { opacity: 1; }

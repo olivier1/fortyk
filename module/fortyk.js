@@ -433,7 +433,7 @@ Hooks.once("ready", async function () {
                     magdamage = data.package.magdmg;
                     extraPen = data.package.pen;
                     rerollNum = data.package.rerollNum;
-                    targets = game.canvas.tokens.children[0].children.filter((token) => targetIds.includes(token.id));
+                    targets = game.scenes.current.tokens.filter((token) => targetIds.includes(token.id));
                     targets = new Set(targets);
 
                     await FortykRolls.damageRoll(
@@ -470,7 +470,7 @@ Hooks.once("ready", async function () {
                         let curTargets = targetIds[i].targets;
                         fortykWeapon.template = targetIds[i].template;
                         let targetNames = "";
-                        let targetTokens = game.canvas.tokens.children[0].children.filter((token) =>
+                        let targetTokens = game.scenes.current.tokens.filter((token) =>
                                                                                           curTargets.includes(token.id)
                                                                                          );
                         let targetSet = new Set(targetTokens);
@@ -540,7 +540,7 @@ Hooks.once("ready", async function () {
                     targetIds = data.package.targets;
                     lastHit = data.package.lastHit;
                     hits = data.package.hits;
-                    targets = game.canvas.tokens.children[0].children.filter((token) => targetIds.includes(token.id));
+                    targets = game.scenes.current.tokens.filter((token) => targetIds.includes(token.id));
                     targets = new Set(targets);
 
                     await FortykRolls.damageRoll(
@@ -637,7 +637,7 @@ Hooks.once("ready", async function () {
                 case "forcefieldRoll":
                     targetIds = data.package.targets;
                     hits = data.package.hits;
-                    targets = game.canvas.tokens.children[0].children.filter((token) => targetIds.includes(token.id));
+                    targets = game.scenes.current.tokens.filter((token) => targetIds.includes(token.id));
 
                     targets = new Set(targets);
                     for (let tar of targets) {
@@ -1302,7 +1302,10 @@ Hooks.on("preDeleteCombat", async (combat, options, id) => {
 });
 Hooks.on("preUpdateActor", (data, updatedData) => {});
 //add listeners to the chatlog for dice rolls
-Hooks.on("renderChatLog", (log, html, data) => FortykRollDialogs.chatListeners(html));
+Hooks.on("renderChatLog", (log, html, data) => {
+    console.log(log,html,data)
+    FortykRollDialogs.chatListeners(log);
+    });
 //add listeners to dialogs to allow searching and the like
 Hooks.on("renderDialog", (dialog, html, data) => ActorDialogs.chatListeners(html));
 //add listeners to compendiums for knight sheet interaction
@@ -1398,7 +1401,7 @@ Hooks.on("renderCompendium", (compendium, html, data) => {
         });
     };
 
-    html.find(".directory-item").each((i, li) => {
+    $(html).find(".directory-item").each((i, li) => {
         li.addEventListener("dragstart", onDragComponent.bind(compendium), false);
         li.addEventListener("dragend", onStopDragComponent.bind(compendium), false);
         //li.addEventListener("dragover", this._onDragOverSlot.bind(compendium), false);
@@ -1524,14 +1527,14 @@ Hooks.on("createToken", async (tokenDocument, options, userId) => {
 
             let auraType = talent.system.isAura.auraType;
             let targets;
-            let tokens = game.canvas.tokens.children[0].children;
+            let tokens = game.scenes.current.tokens;
 
             switch (auraType) {
                 case "friendly":
-                    tokens = tokens.filter((token) => token.document.disposition === tokenDocument.disposition);
+                    tokens = tokens.filter((token) => token.disposition === tokenDocument.disposition);
                     break;
                 case "hostile":
-                    tokens = tokens.filter((token) => token.document.disposition !== tokenDocument.disposition);
+                    tokens = tokens.filter((token) => token.disposition !== tokenDocument.disposition);
                     break;
             }
             if (talent.system.isAura.notSelf) {
@@ -1565,7 +1568,7 @@ Hooks.on("createToken", async (tokenDocument, options, userId) => {
                 tokens = tokens.filter((token) => {
                     const collision = CONFIG.Canvas.polygonBackends["sight"].testCollision(
                         tokenObject.center,
-                        token.center,
+                        token._object.center,
                         { mode: "any", type: "sight" }
                     );
                     return !collision;
@@ -1613,36 +1616,11 @@ Hooks.on("createToken", async (tokenDocument, options, userId) => {
     scene.setFlag("fortyk", "activeAuras", activeAuras);
 });
 
-Hooks.on("refreshToken", async (token, options) => {
+Hooks.on("moveToken", async (token, options) => {
 
-    if (token.isPreview) return;
+
     if (!game.user.isGM) return;
-    if (!options.refreshPosition) return;
-    if (token.animationContexts.size === 0) return;
 
-    let animationContexts = token.animationContexts;
-
-    let first = animationContexts.entries().next();
-    let value = first.value;
-    let to = value[1].to;
-    let invalid = false;
-    if (to.x !== undefined && to.x !== token.x) invalid = true;
-    if (to.y !== undefined && to.y !== token.y) invalid = true;
-
-
-
-    if (invalid) return;
-    let rulers=canvas.controls.rulers.children;
-    let ruler=rulers.find((ruler)=>ruler.waypoints.length>0);
-    console.log(await ruler.moveToken());
-    let valid=true;
-    if(ruler){
-        let destination=ruler.destination;
-        if(token.center.x!==destination.x)valid=false;
-        if(token.center.y!==destination.y)valid=false;
-    }
-    if(!valid)return;
-    console.log(animationContexts);
     let tokenDocument = token.document;
     let scene = game.scenes.current;
     let actor = token.actor;
@@ -1652,7 +1630,7 @@ Hooks.on("refreshToken", async (token, options) => {
         if (ae.getFlag("fortyk", "psy") || ae.getFlag("fortyk", "aura")) {
             let range = parseInt(ae.getFlag("fortyk", "range"));
             let casterId = ae.getFlag("fortyk", "casterTokenId");
-            let casterToken = game.canvas.tokens.children[0].children.find((child) => child.id === casterId);
+            let casterToken = game.scenes.current.tokens.find((child) => child.id === casterId);
             if(!casterToken){
                 await ae.delete();
                 continue;

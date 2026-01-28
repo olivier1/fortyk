@@ -1,4 +1,5 @@
 import { FortyKItem } from "./item/item.js";
+import { FortyKToken } from "./token/fortykToken.js";
 export const preloadHandlebarsTemplates = async function () {
     // Define template paths to load
     const templatePaths = [
@@ -316,7 +317,7 @@ export const applySceneAuras = async function (activeAuras, tokenObject){
         if(caster.getFlag("core","dead"))continue;
         let casterToken = getActorToken(caster);
         if(!casterToken) continue;
-        let targets = game.canvas.tokens.children[0].children;;
+        let targets = game.scenes.current.tokens;
         
         if(aura.system.notSelf){
             targets=targets.filter((token)=>caster.id!==token.actor.id);
@@ -359,10 +360,10 @@ export const applySceneAuras = async function (activeAuras, tokenObject){
             if (targetActor.getFlag("core", auraName)) continue;
             switch (auraType) {
                 case "friendly":
-                    if (target.document.disposition !== casterTokenDocument.disposition) continue;
+                    if (target.disposition !== casterTokenDocument.disposition) continue;
                     break;
                 case "hostile":
-                    if (target.document.disposition === casterTokenDocument.disposition) continue;
+                    if (target.disposition === casterTokenDocument.disposition) continue;
             }
             if(auraFlag){
                 let reqFlags=aura.system.isAura.reqFlags.split(",");
@@ -371,7 +372,7 @@ export const applySceneAuras = async function (activeAuras, tokenObject){
 
                 for(let reqFlag of reqFlags){
                     reqFlag=reqFlag.trim();
-                    if(reqFlag==="")if(reqFlag==="")continue;
+                    if(reqFlag==="")continue;
                     if(!targetActor.getFlag("fortyk",reqFlag))skip=true;
                 }
                 for(let negReqFlag of negReqFlags){
@@ -438,6 +439,8 @@ export const parseHtmlForInline = function (html) {
     return intArray;
 };
 export const tokenDistance = function (token1, token2) {
+    if(token1 instanceof FortyKToken)token1=token1._object;
+    if(token2 instanceof FortyKToken)token2=token2._object;
     if (canvas.scene.grid.type === CONST.GRID_TYPES.GRIDLESS) {
         //let distancePx=Math.sqrt(Math.pow(gridRatio*(token1x-token2x),2)+Math.pow(gridRatio*(token1y-token2y),2)+Math.pow((token1.document.elevation-token2.document.elevation),2));
 

@@ -1,9 +1,9 @@
 //utility functions to handle events on dialogs created from the actor sheets
 export class ActorDialogs {
     static chatListeners(html) {
-        html.find(".tntfilter").keyup(this._onTntFilterChange.bind(this));
-        html.find(".tntfilter").ready(this._onPopupReady.bind(this));
-        html.find(".tntdescr-button").click(this._onTntDescrClick.bind(this));
+        $(html).find(".tntfilter").keyup(this._onTntFilterChange.bind(this));
+        $(html).find(".tntfilter").ready(this._onPopupReady.bind(this));
+        $(html).find(".tntdescr-button").click(this._onTntDescrClick.bind(this));
         /*html.find('.ae').click(this._onAeClick.bind(this));
         html.find('.ae-create').click(this._onAeCreate.bind(this));
         html.find('.ae-delete').click(this._onAeDelete.bind(this));*/

@@ -1009,7 +1009,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                     let curTargets = targets[i].targets;
                                     weapon.template = targets[i].template;
                                     let targetNames = "";
-                                    let targetTokens = game.canvas.tokens.children[0].children.filter((token) =>
+                                    let targetTokens = game.scenes.current.tokens.filter((token) =>
                                         curTargets.includes(token.id)
                                     );
                                     for (let j = 0; j < targetTokens.length; j++) {

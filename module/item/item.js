@@ -1309,7 +1309,7 @@ export class FortyKItem extends Item {
             if (affects === "self") {
                 targets = [actorToken];
             } else {
-                targets = game.canvas.tokens.children[0].children.filter((token) => targetIds.includes(token.id));
+                targets = game.scenes.current.tokens.filter((token) => targetIds.includes(token.id));
             }
 
             let range = power.system.range.value;
@@ -1390,7 +1390,7 @@ export class FortyKItem extends Item {
             scene.setFlag("fortyk", "activeAuras", activeAuras);
             let auraType = power.system.auraType;
             let targets;
-            let tokens = game.canvas.tokens.children[0].children;
+            let tokens = game.scenes.current.tokens;
 
             switch (auraType) {
                 case "friendly":
