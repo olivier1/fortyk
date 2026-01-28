@@ -48,7 +48,7 @@ function manageColorScheme() {
             document.documentElement.style.setProperty('--terminal-primary', '#23D5D5');
             document.documentElement.style.setProperty('--terminal-secondary', '#39AAAA');
             document.documentElement.style.setProperty('--terminal-dim', '#395555');
-            document.documentElement.style.setProperty('--terminal-text', '#23D5D5');
+            document.documentElement.style.setProperty('--terminal-text', '#5bc7c7');
             document.documentElement.style.setProperty('--terminal-warning', '#cccc00');
             document.documentElement.style.setProperty('--terminal-success', 'royalblue');
             document.documentElement.style.setProperty('--terminal-error', 'orange');
@@ -67,7 +67,7 @@ function manageColorScheme() {
             document.documentElement.style.setProperty('--terminal-primary', '#E73121');
             document.documentElement.style.setProperty('--terminal-secondary', '#F15D49');
             document.documentElement.style.setProperty('--terminal-dim', '#8B190A');
-            document.documentElement.style.setProperty('--terminal-text', '#E73121');
+            document.documentElement.style.setProperty('--terminal-text', '#ff6557');
             document.documentElement.style.setProperty('--terminal-warning', '#cccc00');
             document.documentElement.style.setProperty('--terminal-success', 'royalblue');
             document.documentElement.style.setProperty('--terminal-error', 'orange');

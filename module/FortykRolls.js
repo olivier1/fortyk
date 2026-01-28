@@ -464,7 +464,7 @@ returns the roll message*/
                 templateOptions["psyboltAttunement"] = `Psybolt attunement evasion penalty: ${inescPenalty}`;
             }
             if (actor.getFlag("fortyk", "inescapablebolt") && fortykWeapon.system.class.value === "Psychic Bolt") {
-                let inescPenalty = Math.max(-60, testDos * -10);
+                let inescPenalty = testDos * -10;
                 evadepenalty += inescPenalty;
                 templateOptions["inescapableBolt"] = `Inescapable bolt evasion penalty: ${inescPenalty}`;
             }
@@ -479,7 +479,7 @@ returns the roll message*/
                  (actor.getFlag("fortyk", "inescapableattack").toLowerCase().indexOf("melee") !== -1 &&
                   type === "meleeAttack"))
             ) {
-                let inescPenalty = Math.max(-60, testDos * -10);
+                let inescPenalty = testDos * -10;
                 evadepenalty += inescPenalty;
                 templateOptions["inescapableAttack"] = `Inescapable attack evasion penalty: ${inescPenalty}`;
             }
@@ -514,7 +514,7 @@ returns the roll message*/
                 evadepenalty+=parseInt(seekpath);
                 templateOptions["ebbandflow"] = `Evasion penalty due to Seek the Path: ${seekpath}`;
             }
-            evadepenalty = Math.max(evadepenalty, -60);
+            //evadepenalty = Math.max(evadepenalty, -60);
             if (tarActor) {
                 if (game.user.isGM || tarActor.isOwner) {
                     await tarActor.setFlag("fortyk", "evadeMod", evadepenalty);
