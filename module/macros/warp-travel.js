@@ -3,14 +3,14 @@ let applyChanges = false;
 new Dialog({
     title: `Roll Weather`,
     content: `
-<form>
+<section>
 
 
 <div class="form-group">
 <label>Additional Modifier</label>
 <input type="text" name="mod" value="0">
 </div>
-</form>
+</section>
 `,
     buttons: {
         yes: {

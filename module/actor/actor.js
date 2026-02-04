@@ -250,6 +250,7 @@ export class FortyKActor extends Actor {
         data.reactions = 1;
         //prepare corruption for BC
         let corruption = data.secChar.corruption;
+        console.log(corruption)
         if (game.settings.get("fortyk", "bcCorruption")) {
             corruption.value =
                 parseInt(corruption.value) +
@@ -1937,7 +1938,18 @@ export class FortyKActor extends Actor {
             }
         }
 
-        actorData.psychicPowers = psychicPowers;
+        actorData.psychicPowers = psychicPowers.sort(function compare(a, b) {
+            let valueA = a.sort;
+            let valueB = b.sort;
+            if (valueA < valueB) {
+                return 1;
+            }
+            if (valueA > valueB) {
+                return -1;
+            }
+            // a must be equal to b
+            return 0;
+        });
         actorData.meleeWeapons = meleeweapons;
         actorData.rangedWeapons = rangedWeapons;
         actorData.talentsntraits = talentsntraits;

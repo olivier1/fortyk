@@ -1,0 +1,207 @@
+<section class="tab sheet-content {{tabs.armor.id}} {{tabs.armor.cssClass}}"
+         data-tab="{{tabs.armor.id}}"
+         data-group="{{tabs.armor.group}}">
+    <div class="flexrow" style="align-items: flex-start;">
+        <div class="flexcol">
+            <div class="npc-info">
+                <span class="section-title">Skills</span>
+                {{#if editable}}
+                <prose-mirror
+                              name="system.skills.value"
+                              button="true"
+                              editable="{{editable}}"
+                              toggled="false"
+                              value="{{system.skills.value}}">
+                    {{{enrichedSKills}}}
+                </prose-mirror>
+                {{else}}
+                {{{enrichedSkills}}}
+                {{/if}}
+
+            </div>
+            <div class="npc-info">
+                <span class="section-title">Equipment</span>
+                {{#if editable}}
+                <prose-mirror
+                              name="system.equipment.value"
+                              button="true"
+                              editable="{{editable}}"
+                              toggled="false"
+                              value="{{system.equipment.value}}">
+                    {{{enrichedEquipment}}}
+                </prose-mirror>
+                {{else}}
+                {{{enrichedEquipment}}}
+                {{/if}}
+
+            </div>
+        </div>
+        <div class="flexcol">
+            <div class="flex-group-center flexrow">
+                <div class="flexcol">
+                    <span class="section-title">Parry Modifier</span>
+                    <input type="text" class="combat-resources" data-target="system.parry.mod" value="{{system.parry.mod}}" data-dtype="Number"/>
+                </div>
+                <div class="flexcol">
+                    <span class="section-title">Dodge Modifier</span>
+                    <input type="text" class="combat-resources" data-target="system.dodge.mod" value="{{system.dodge.mod}}" data-dtype="Number"/>
+                </div>
+            </div>
+            <span class="section-title">COVER</span>
+            <select class="cover"  name="system.secChar.cover.value">
+                {{selectOptions coverTypes selected=system.secChar.cover.value valueAttr="value" labelAttr="label"}}
+
+            </select>
+
+            <div class="flexcol flex-group-center">
+                <span class="section-title">MOVEMENT</span>
+                <div class="flexrow movement resources">
+                    <div class="resource flex-group-center">
+                        <label for="system.fatigue.value" class="resource-label">Half Move</label>
+                        <div class="resource-content flexrow flex-center flex-between">
+                            <span>{{system.secChar.movement.half}}</span>
+                        </div>
+                    </div>
+                    <div class="resource flex-group-center">
+                        <label for="system.fatigue.value" class="resource-label">Full Move</label>
+                        <div class="resource-content flexrow flex-center flex-between">
+                            <span>{{system.secChar.movement.full}}</span>
+                        </div>
+                    </div>
+                    <div class="resource flex-group-center">
+                        <label for="system.fatigue.value" class="resource-label">Charge</label>
+                        <div class="resource-content flexrow flex-center flex-between">
+                            <span>{{system.secChar.movement.charge}}</span>
+                        </div>
+                    </div>
+                    <div class="resource flex-group-center">
+                        <label for="system.fatigue.value" class="resource-label">Run</label>
+                        <div class="resource-content flexrow flex-center flex-between">
+                            <span>{{system.secChar.movement.run}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="forcefield flexcol">
+
+                    <span class="section-title">FORCE FIELD</span>
+                    <div class="flexcol flex-group-center">
+                        <div class="flexrow">
+                            <select class="force-field" >
+
+                                <option value="" {{#if system.secChar.wornGear.forceField}}selected{{/if}}>None</option>
+                                {{#each actor.forceFields}}
+                                <option value="{{this._id}}" {{#if this.system.isEquipped}}selected{{/if}}>{{this.name}}</option>
+                                {{/each}}
+                            </select>
+
+                            {{#if system.secChar.wornGear.forceField._id}}
+                            <a class="item-edit" data-item-id="{{system.secChar.wornGear.forceField._id}}"data-type="forceField" title="Edit Forcefield"></a>
+                            <a class="item-delete minus-button" data-item-id="{{system.secChar.wornGear.forceField._id}}"data-type="forceField" title="Delete Forcefield"></a>
+                            {{else}}
+                            <a class="item-create plus-button" data-type="forceField" title="Add Forcefield"></a>
+                            {{/if}}
+                        </div>
+                        {{#if system.secChar.wornGear.forceField._id}}
+                        <div class="forcefield flexrow flex-group-center">
+                            {{#unless system.secChar.wornGear.forceField.system.broken.value}}
+                            <label>Overload: {{system.secChar.wornGear.forceField.system.rating.overload}}</label>
+                            <label>Rating: </label>
+
+                            <span class="forcefield rollable button" data-roll-type="forcefield" data-id="{{system.secChar.wornGear.forceField._id}}">{{system.secChar.wornGear.forceField.system.rating.value}}</span>
+                            {{else}}
+                            <span class="forcefield repairForcefield button" data-id="{{system.secChar.wornGear.forceField._id}}" >Repair</span>
+                            {{/unless}}
+
+                        </div>
+
+
+                        {{/if}}
+                    </div>
+
+                </div>
+            </div>
+            <div class="forcefield flexcol">
+                <span class="section-title">ARMOR & ABSORBTION</span>
+                <div class="flexrow">
+                    <select class="armor-select" >
+
+                        <option value="" {{#if system.secChar.wornGear.armor}}selected{{/if}}>None</option>
+                        {{#each actor.armors}}
+
+                        <option value="{{this._id}}" {{#if this.system.isEquipped}}selected{{/if}}>{{this.name}}</option>
+                        {{/each}}
+                    </select>
+
+                    {{#if system.secChar.wornGear.armor._id}}
+                    <a class="item-edit" data-item-id="{{system.secChar.wornGear.armor._id}}"data-type="armor" title="Edit Armor"></a>
+                    <a class="item-delete minus-button" data-item-id="{{system.secChar.wornGear.armor._id}}"data-type="armor" title="Delete Armor"></a>
+                    {{else}}
+                    <a class="item-create plus-button" data-type="armor" title="Add Armor"></a>
+                    {{/if}}
+
+                </div>
+                <span class="section-title">SIZE</span>
+                <select class="sizeSelect" name="system.secChar.size.value" data-dtype="Number">
+                    {{selectOptions size selected=system.secChar.size.value valueAttr="index" labelAttr="name"}}
+
+                </select>
+
+                <div class="flexcol">
+
+                    <div class="flexrow flex-group-center">
+                        <div class="armor flexcol flex-group-center">
+
+                            <span>Head</span>
+                            <span>(1-10)</span>
+
+                            <span title="Armor">{{system.characterHitLocations.head.armor}}</span>
+                            <span title="Total Soak">{{system.characterHitLocations.head.value}}</span>
+                        </div>
+
+                    </div>
+                    <div class="flexrow flex-group-center">
+                        <div class="armor flexcol flex-group-center">
+
+                            <span>Left Arm</span>
+                            <span>(21-30)</span>
+                            <span title="Armor">{{system.characterHitLocations.lArm.armor}}</span>
+                            <span title="Total Soak">{{system.characterHitLocations.lArm.value}}</span>
+                        </div>
+                        <div class="armor flexcol flex-group-center">
+
+                            <span>Body</span>
+                            <span>(31-70)</span>
+                            <span title="Armor">{{system.characterHitLocations.body.armor}}</span>
+                            <span title="Total Soak">{{system.characterHitLocations.body.value}}</span>
+                        </div>
+                        <div class="armor flexcol flex-group-center">
+
+                            <span>Right Arm</span>
+                            <span>(11-20)</span>
+                            <span title="Armor">{{system.characterHitLocations.rArm.armor}}</span>
+                            <span title="Total Soak">{{system.characterHitLocations.rArm.value}}</span>
+                        </div>
+                    </div>
+                    <div class="flexrow flex-group-center">
+
+                        <div class="armor flexcol flex-group-center">
+
+                            <span>Left Leg</span>
+                            <span>(71-85)</span>
+                            <span title="Armor" >{{system.characterHitLocations.lLeg.armor}}</span>
+                            <span title="Total Soak">{{system.characterHitLocations.lLeg.value}}</span>
+                        </div>
+                        <div class="armor flexcol flex-group-center">
+
+                            <span>Right Leg</span>
+                            <span>(86-100)</span>
+                            <span title="Armor" >{{system.characterHitLocations.rLeg.armor}}</span>
+                            <span title="Total Soak">{{system.characterHitLocations.rLeg.value}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>

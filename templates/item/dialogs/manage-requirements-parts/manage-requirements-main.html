@@ -1,0 +1,155 @@
+<section class="tab sheet-content {{tabs.manageReqMain.id}} {{tabs.manageReqMain.cssClass}}"
+         data-tab="{{tabs.manageReqMain.id}}"
+         data-group="{{tabs.manageReqMain.group}}">
+
+            <div class="grid grid-4col">
+                <div class="flexcol">
+                    <label>{{flag.characteristics.ws.label}}</label>
+                    <input type="number" class="char-input" id="ws" value="{{flag.characteristics.ws.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.bs.label}}</label>
+                    <input type="number" class="char-input" id="bs" value="{{flag.characteristics.bs.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.s.label}}</label>
+                    <input type="number" class="char-input" id="s" value="{{flag.characteristics.s.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.t.label}}</label>
+                    <input type="number" class="char-input" id="t" value="{{flag.characteristics.t.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.agi.label}}</label>
+                    <input type="number" class="char-input" id="agi" value="{{flag.characteristics.agi.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.per.label}}</label>
+                    <input type="number" class="char-input" id="per" value="{{flag.characteristics.per.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.int.label}}</label>
+                    <input type="number" class="char-input" id="int" value="{{flag.characteristics.int.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.wp.label}}</label>
+                    <input type="number" class="char-input" id="wp" value="{{flag.characteristics.wp.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.fel.label}}</label>
+                    <input type="number" class="char-input" id="fel" value="{{flag.characteristics.fel.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.ws.label}} Adv</label>
+                    <select class="char-select" data-char="ws">
+                        {{#each advances}}
+                        <option value="{{this.value}}" {{#if (equals ../flag.characteristics.ws.adv this.value)}}selected{{/if}}>{{this.label}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.bs.label}} Adv</label>
+                    <select class="char-select" data-char="bs">
+                        {{#each advances}}
+                        <option value="{{this.value}}" {{#if (equals ../flag.characteristics.bs.adv this.value)}}selected{{/if}}>{{this.label}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.s.label}} Adv</label>
+                    <select class="char-select" data-char="s">
+                        {{#each advances}}
+                        <option value="{{this.value}}" {{#if (equals ../flag.characteristics.s.adv this.value)}}selected{{/if}}>{{this.label}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.t.label}} Adv</label>
+                    <select class="char-select" data-char="t">
+                        {{#each advances}}
+                        <option value="{{this.value}}" {{#if (equals ../flag.characteristics.t.adv this.value)}}selected{{/if}}>{{this.label}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.agi.label}} Adv</label>
+                   <select class="char-select" data-char="agi">
+                        {{#each advances}}
+                       {{debug this}}
+                        <option value="{{this.value}}" {{#if (equals ../flag.characteristics.agi.adv this.value)}}selected{{/if}}>{{this.label}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.per.label}} Adv</label>
+                    <select class="char-select" data-char="per">
+                        {{#each advances}}
+                        <option value="{{this.value}}" {{#if (equals ../flag.characteristics.per.adv this.value)}}selected{{/if}}>{{this.label}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.int.label}} Adv</label>
+                    <select class="char-select" data-char="int">
+                        {{#each advances}}
+                        <option value="{{this.value}}" {{#if (equals ../flag.characteristics.int.adv this.value)}}selected{{/if}}>{{this.label}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.wp.label}} Adv</label>
+                    <select class="char-select" data-char="wp">
+                        {{#each advances}}
+                        <option value="{{this.value}}" {{#if (equals ../flag.characteristics.wp.adv this.value)}}selected{{/if}}>{{this.label}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.fel.label}} Adv</label>
+                    <select class="char-select" data-char="fel">
+                        {{#each advances}}
+                        <option value="{{this.value}}" {{#if (equals ../flag.characteristics.fel.adv this.value)}}selected{{/if}}>{{this.label}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.inf.label}}</label>
+                    <input type="number" class="char-input" id="inf" value="{{flag.characteristics.inf.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.exp.label}}</label>
+                    <input type="number" class="char-input" id="exp" value="{{flag.characteristics.exp.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.pr.label}}</label>
+                    <input type="number" class="char-input" id="pr" value="{{flag.characteristics.pr.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.ins.label}}</label>
+                    <input type="number" class="char-input" id="ins" value="{{flag.characteristics.ins.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.cor.label}}</label>
+                    <input type="number" class="char-input" id="cor" value="{{flag.characteristics.cor.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.mut.label}}</label>
+                    <input type="number" class="char-input" id="mut" value="{{flag.characteristics.mut.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.mastpow.label}}</label>
+                    <input type="number" class="char-input" id="mastpow" value="{{flag.characteristics.mastpow.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>{{flag.characteristics.mastpath.label}}</label>
+                    <input type="number" class="char-input" id="mastpow" value="{{flag.characteristics.mastpath.value}}">
+                </div>
+                <div class="flexcol">
+                    <label>Character Creation</label>
+                    <input type="checkbox" class="char-creation-checkbox" {{#if flag.characterCreation}}checked{{/if}}>
+                </div>
+
+            </div>
+
+
+        </section>

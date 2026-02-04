@@ -1,0 +1,29 @@
+<section class="tab sheet-content {{tabs.hangar.id}} {{tabs.hangar.cssClass}}"
+         data-tab="{{tabs.hangar.id}}"
+         data-group="{{tabs.hangar.group}}">
+
+    <a class="item-create button" data-type="spaceshipSquadron" title="Add Squadron">Add Squadron</a>
+    <div class="list list6col grid grid-6col">
+        <span class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="squadrons">Name</span>
+        <span class="list-item sort-button" data-sort-type="type" data-path="system.type.value" data-item-type="squadrons">Type</span>
+        <span class="list-item sort-button" data-sort-type="rating" data-path="system.rating.value" data-item-type="squadrons">Rating</span>
+        <span class="list-item sort-button" data-sort-type="halfstr" data-path="system.halfstr.value" data-item-type="squadrons">Half</span>
+        <span class="list-button"></span>
+        <span class="list-button"></span>
+        {{#each actor.squadrons as |t key|}}
+
+        <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.system.description.value}}">{{t.name}}</a>
+        <span class="list-item">{{t.system.type.value}}</span>
+        <span class="list-item">{{t.system.rating.value}}</span>
+        <span class="list-item"><input type="checkbox" class="halfstr" data-item-id="{{this._id}}"  {{checked this.system.halfstr.value}}></span>
+        <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
+        <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
+
+
+
+        {{/each}}
+
+    </div>
+
+
+</section>

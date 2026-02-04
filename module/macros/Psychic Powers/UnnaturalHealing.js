@@ -8,7 +8,7 @@ let healing=Math.ceil(power.system.curPR.value);
 healing+=narthRoll._total;
 
 let targetIds=scope.targets;
-let targets=game.scenes.current.tokens.filter(token=>targetIds.includes(token.id));
+let targets=canvas.tokens.placeables.filter(token=>targetIds.includes(token.id));
 for(const target of targets){
     let chatFirstAid={author: game.users.current,
                       speaker:{user: game.users.current},

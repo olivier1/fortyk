@@ -3,7 +3,7 @@ let tables=[['Tier 1 Accessories','Level 2 Requisition Accessories','Level 3 Req
             ['Tier 1 Melee Weapons','Level 2 Requisition Melee Weapons','Level 3 Requisition Melee Weapons','Level 4 Requisition Melee Weapons','Level 5 Requisition Melee Weapons'],
             ['Tier 1 Purity seals','Level 2 Requisition Purity seals','Level 3 Requisition Purity seals','Level 4 Requisition Purity seals','Level 5 Requisition Purity seals'],
             ['Tier 1 Ranged Weapons','Level 2 Requisition Ranged Weapons','Level 3 Requisition Ranged Weapons','Level 4 Requisition Ranged Weapons','Level 5 Requisition Ranged Weapons']];
-let content=`<form>
+let content=`<section>
 <div class="form-group">
 <label>Requisition Level</label>
 <select id="req-level" name="req-level">
@@ -28,7 +28,7 @@ let content=`<form>
 <label>Items to Roll</label>
 <input type="number" value="1" data-edit="light-color" name="rollnumber">
 </div>
-</form>`;
+</section>`;
 let proceed=false;
 new Dialog({
     title: `Generate Requisition Items`,

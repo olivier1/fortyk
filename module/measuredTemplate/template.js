@@ -1,7 +1,7 @@
 /**
  * A helper class for building MeasuredTemplates for 5e spells and abilities
  */
-export class FortykTemplate extends MeasuredTemplate {
+export class FortykTemplate extends foundry.canvas.placeables.MeasuredTemplate {
  /**
   * Track the timestamp when the last mouse move event was captured.
   * @type {number}

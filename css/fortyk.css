@@ -76,13 +76,11 @@
 #tokenizer div{
   background-color: var(--terminal-bg) !important;
 }
-.app.window-app:not([class*="fsc-"]) {
+.application {
   padding-bottom: 0.85em;
-
-
-
+  overflow:visible;
 }
-.window-app:not([class*="fsc-"])::after{
+.application:after{
   position:absolute;
 
   content:'';
@@ -99,8 +97,9 @@
   background:none;
   top:0;
   left:0;
+  overflow: visible;
 
-  
+
 }
 /* SPECIFIC EXCLUSIONS FOR ICONS - VERY IMPORTANT */
 /* DO NOT apply terminal styles to icon elements */
@@ -161,7 +160,12 @@ button:not([class*="fsc-"], [class*="fa-"]), .button:not([class*="fsc-"], [class
   line-height: 14px !important;
   width:100%;
 }
-
+button.icon.toggle{
+  width:unset !important;
+}
+button.icon.toggle:disabled{
+  display:none;
+}
 button:hover:not([class*="fsc-"]), .button:hover:not([class*="fsc-"]) {
   box-shadow: var(--terminal-glow) !important;
   color: var(--terminal-bg) !important;
@@ -257,6 +261,34 @@ nav.tabs .item,
   border-color: var(--terminal-border) !important;
 }
 
+.pc-sheet-header>nav{
+  display: grid;
+  grid-column: span 3 / span 3;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+nav>a {
+  line-height: 20px;
+  height:50px;
+  width:100%;
+  border: 1px solid var(--terminal-primary);
+  font-size: 24px;
+  display: inline-flex;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap;
+  padding: 5px !important;
+}
+nav>a.active{
+  border:4px;
+  border-style:double;
+  box-shadow: var(--terminal-glow);
+
+}
+nav>a.active>*{
+  color:var(--terminal-bg) !important;
+  text-shadow: var(--terminal-glow);
+}
 /* Elements with inline or default borders */
 [style*="border"],
 [style*="border-top"],
@@ -875,7 +907,9 @@ section.chat-sidebar .jump-to-bottom > a{
   background-color: var(--terminal-bg) ;
   color: var(--terminal-text) !important;
 }
-
+.dialog-content{
+  display:block;
+}
 /* Dialog buttons */
 .dialog .dialog-buttons,
 .window-app .dialog-buttons:not([class*="fsc-"]) {
@@ -890,6 +924,13 @@ section.chat-sidebar .jump-to-bottom > a{
 .window-app textarea:not([class*="fsc-"]),
 .dialog select,
 .window-app select:not([class*="fsc-"]) {
+  background-color: var(--terminal-bg) ;
+  color: var(--terminal-text) !important;  /* ¡Cambiado a --terminal-text para que use el color de texto normal! */
+  border: 1px solid var(--terminal-border) !important;
+  font-family: var(--terminal-font) !important;
+  font-size: var(--terminal-font-size) !important;
+}
+select{
   background-color: var(--terminal-bg) ;
   color: var(--terminal-text) !important;  /* ¡Cambiado a --terminal-text para que use el color de texto normal! */
   border: 1px solid var(--terminal-border) !important;
@@ -929,6 +970,7 @@ a[title*="Delete"] i,
 a[title*="Eliminar"] i,
 .fa-trash:before,
 .fa-times:before,
+.fa-xmark:before,
 .fa-close:before {
   color: var(--terminal-error) !important;
   text-shadow: var(--terminal-error-glow) !important;
@@ -983,11 +1025,16 @@ a[data-action="duplicate"] i,
   padding: 0 !important;
 }
 .control-icon.active{
- box-shadow: var(--terminal-glow);
+  box-shadow: var(--terminal-glow);
 }
 .control-icon>img{
   height: -webkit-fill-available;
   width: -webkit-fill-available;
+}
+.ui-control,
+.hotbar-page-control{
+  background-color:rgba(11, 10, 19, 0.75) !important;
+  color: var(--terminal-primary);
 }
 .sheet-icon{
   width:20px;
@@ -1003,7 +1050,8 @@ a[data-action="duplicate"] i,
   text-shadow: var(--terminal-glow);
 }
 #sidebar-content{
-  background-color: var(--terminal-bg)!important
+  background-color: var(--terminal-bg)!important;
+
 }
 /* Icons in right sidebar */
 #sidebar .directory-item .item-controls a[data-action="edit"] i {
@@ -1138,7 +1186,7 @@ i:not([class*="fa-"]):not(.colored-icon),
 .combat-sidebar li.combatant.active>*,
 .combat-sidebar li.combatant.active>*>*,
 .combat-sidebar li.combatant.active>*>*>*{
-   background: none ;
+  background: none ;
 }
 .combat-sidebar .combat-tracker .token-initiative button{
   background-color: var(--terminal-dim) !important;
@@ -1210,8 +1258,13 @@ input[type="checkbox"]:not(:disabled):hover:before {
 }
 input[type="checkbox"]{
   position:relative !important;
+  width: 20px;
+  height: 20px;
 }
-
+h1, h2, h3, h4, h5, h6{
+  font-family: "Inquisitor";
+  color: var(--terminal-text);
+}
 .sheet.journal-entry .journal-entry-content{
   background: var(--terminal-bg) !important;
 }
@@ -1381,6 +1434,7 @@ u:hover{
   text-align: center;
   padding: 5px;
   border: 1px solid #999;
+
 }
 .flex-group-left {
   -webkit-box-pack: start;
@@ -1395,6 +1449,7 @@ u:hover{
   text-align: right;
 }
 .flex-center {
+  display: flex;
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
@@ -1402,6 +1457,8 @@ u:hover{
   -ms-flex-pack: center;
   justify-content: center;
   text-align: center;
+  align-self: center;
+  justify-self: center;
 }
 .no-flex{
   flex:none;
@@ -1438,12 +1495,11 @@ u:hover{
 }
 .npc-sheet{
   flex: 0 1 auto !important;
-  overflow: hidden;
   height: -webkit-fill-available;
 }
 .npc-header{
   height: 20vh;
-  min-height: 271px;
+  min-height: 450px;
 }
 .buff-debuff,
 .cancel-buff,
@@ -1469,7 +1525,7 @@ u:hover{
 }
 .fortyk .charSheet{
   overflow:auto;
-  height: -webkit-fill-available;
+  max-height: 80vh;
 }
 .fortyk span{
   background: none !important;
@@ -1513,11 +1569,53 @@ u:hover{
   margin-top: 0px;
   margin-bottom:5px;
 }
-.fortyk input[type="radio"]{
-  height: 1.1em;
-  margin-right: 3px;
-  max-width: fit-content;
-  max-height: fit-content;
+
+.fortyk input[type="radio"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  max-width:20px;
+  max-height:20px;
+  border: 2px solid var(--terminal-primary);
+  border-radius: 50%;
+  background-color: var(--terminal-bg);
+  transition: 0.2s;
+  margin-right: 8px;
+}
+.fortyk input[type="radio"]::after{
+  content: none;
+}
+.fortyk input[type="radio"]:checked::after{
+  content: none;
+}
+.fortyk input[type="radio"]:checked {
+  border-color: var(--terminal-warning);
+  background-color: var(--terminal-dim);
+}
+.fortyk input[type="radio"]::before{
+  content:none;
+}
+.fortyk input[type="radio"]:checked::before {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--terminal-text);
+  margin: 4px 4px;
+  box-shadow: var(--terminal-glow);
+}
+.fortyk input[type="text"]{
+  color: var(--terminal-text);
+  --input-placeholder-color: var(--terminal-secondary);
+}
+.fortyk input[type="number"]{
+  color: var(--terminal-text);
+  --input-placeholder-color: var(--terminal-secondary);
+}
+.special-dialog{
+  overflow-y:scroll;
+  max-height: 60vh;
 }
 .fortyk .descr .descrRow{
   width:100%;
@@ -1589,7 +1687,7 @@ u:hover{
 }
 .char-total{
   width:100%;
-  height:100%;
+  max-height:100%;
 }
 .creation-groups{
   padding:0.5em;
@@ -1597,16 +1695,8 @@ u:hover{
   place-content: center;
   gap: 0.5em;
 }
-.sheet nav.sheet-tabs {
-  height:auto !important; 
-  -webkit-box-flex: 1;
-  margin-top: 0px;
-  font-variant-caps: petite-caps;
-  font-weight:bold;
-  font-style:bold;
-  flex:auto;
-  font-size:17px;
-}
+
+
 .fortyk nav.sheet-tabs2 {
   -webkit-box-flex: 1;
   margin-top: 0px;
@@ -1629,7 +1719,11 @@ u:hover{
   height: 100%;
   overflow: auto;
 }
+prose-mirror{
+  height: 300px !important;
+}
 .fortyk .sheet-content .tab{
+  height: 100%;
   overflow-y:scroll;
 }
 .npc-content{
@@ -1666,7 +1760,7 @@ u:hover{
   background-color: transparent !important;
 }
 .editor{
-   background: transparent !important;
+  background: transparent !important;
   background-color: transparent !important;
 }
 .transparent{
@@ -1688,18 +1782,7 @@ u:hover{
   border-bottom: 1px solid #AAA;
 }
 
-.fortyk .tabs .item {
-  line-height: 20px;
-  height:50px;
-  width:100%;
-  border: 1px solid #999;
-  font-size: 24px;
-  display: inline-flex;
-  justify-content: center;
-  align-content: center;
-  flex-wrap: wrap;
-  padding: 5px !important;
-}
+
 .fortyk .tabs .item.active {
   text-decoration: underline;
   text-shadow: none;
@@ -1875,10 +1958,11 @@ u:hover{
 }
 .fortyk .skills.tab{
   overflow:hidden !important;
+  height:680px;
 }
 .fortyk .sheet-skills{
   height:95%;
-  overflow:scroll;
+  overflow:auto;
 }
 .fortyk .skills .skills-header{
   border: 1px solid #AAA;
@@ -1952,7 +2036,7 @@ u:hover{
   height:100%;
 }
 .fortyk .skills .skills-header .skillSubItem:before{
-  font-family:'Font Awesome 5 Free';
+  font-family:'Font Awesome 6 Pro';
   content:" \f105";
 }
 .margin-left-23{
@@ -2109,10 +2193,19 @@ u:hover{
 .combat2{
   overflow: hidden !important;
 }
-.fortyk .forcefield{
+.forcefield{
   width:100%;
 }
-
+.force-field{
+  width:auto;
+}
+.resources{
+  align-items: stretch;
+  width:100%;
+}
+.flex-grow2{
+  flex-grow:2;
+}
 .fortyk .armor-select{
   flex:16;
 }
@@ -2122,6 +2215,7 @@ u:hover{
 }
 .fortyk .item-sheet{
   flex: 1;
+  overflow:auto;
 }
 .fortyk .item-description{
   flex-grow:10;
@@ -2197,6 +2291,7 @@ u:hover{
 }
 .fortyk .movementbox{
   align-items:center;
+  padding-bottom:10px;
 }
 .fortyk .movementbox .movementlabel{
   height:75%;

@@ -1,0 +1,44 @@
+<section class="tab sheet-content {{tabs.manageReqPsy.id}} {{tabs.manageReqPsy.cssClass}}"
+         data-tab="{{tabs.manageReqPsy.id}}"
+         data-group="{{tabs.manageReqPsy.group}}">
+            <div class="fexrow">
+                <div class="flexcol">
+                    <select class="psy-select">
+                        <option value="">Choose a Psychic Power Requirement</option>
+                        {{#each psyPowers}}
+                        <option value="{{this.id}}">{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>Negative flag</label><input type="checkbox" id="notpsycheckbox">
+                </div>
+            </div>
+
+            <div class="flexcol">
+                <a  class="add-psy button">Add Psychic Power Requirement</a>
+            </div>
+            <div class="flexcol">
+                <label>Psychic Power Requirements:</label>
+                {{#each flag.psychicPowers as |flag key|}}
+                {{#if flag}}
+                <div>
+                    <label>{{flag}}</label>
+                    <a class="delete-psy" data-id="{{key}}">Delete</a>
+                </div>
+
+                {{/if}}
+                {{/each}}
+                <label>Negative Psychic Power Requirements:</label>
+                {{#each flag.negativePsyPowers as |flag key|}}
+                {{#if flag}}
+                <div>
+                    <label>{{flag}}</label>
+                    <a class="delete-neg-psy" data-id="{{key}}">Delete</a>
+                </div>
+
+                {{/if}}
+                {{/each}}
+            </div>
+
+        </div>

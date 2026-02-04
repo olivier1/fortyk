@@ -13,9 +13,9 @@ export class FortyKDHActorSheet extends FortyKDWActorSheet {
     
     /** @override */
 
-    static get defaultOptions() {
+    static get DEFAULT_OPTIONS() {
        
-        return foundry.utils.mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.DEFAULT_OPTIONS, {
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/actorDH-sheet.html",
             width: 666,

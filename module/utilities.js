@@ -3,6 +3,8 @@ import { FortyKToken } from "./token/fortykToken.js";
 export const preloadHandlebarsTemplates = async function () {
     // Define template paths to load
     const templatePaths = [
+        //foundry template
+        "templates/generic/tab-navigation.hbs",
         // Actor Sheet Partials
         "systems/fortyk/templates/actor/actor-main.html",
         "systems/fortyk/templates/actor/actorDH-main.html",
@@ -45,7 +47,7 @@ export const preloadHandlebarsTemplates = async function () {
     ];
 
     // Load the template parts
-    return loadTemplates(templatePaths);
+    return foundry.applications.handlebars.loadTemplates(templatePaths);
 };
 export const preLoadHandlebarsPartials = async function () {
     Handlebars.registerPartial(
@@ -412,14 +414,14 @@ export const getActorToken = function (actor) {
         return actor.token._object;
     }
     let tokens = [];
-    if (canvas.tokens.children.length > 0) {
-        tokens = canvas.tokens.children[0].children;
+    if (game.scenes.current.tokens.size > 0) {
+        tokens = game.scenes.current.tokens;
     }
 
     let t = null;
     for (let token of tokens) {
         if (token.actor && token.actor.id === actor.id) {
-            t = token;
+            t = token._object;
         }
     }
     return t;

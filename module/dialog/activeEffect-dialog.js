@@ -1,17 +1,24 @@
-export class ActiveEffectDialog extends Dialog {
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class ActiveEffectDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
-    static get defaultOptions() {
+    static DEFAULT_OPTIONS = {
 
-        return foundry.utils.mergeObject(super.defaultOptions, {
+            tag: 'form',
             classes: ["fortyk"],
             template: "systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html",
             default:null,
-            height:"auto"
-        });
+            position:{height:"auto"}
+
+    }
+    static PARTS = {
+        form:{
+            template:"systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html"
+        }
     }
 
-    activateListeners(html) {
-        super.activateListeners(html);
+    _onRender(context, options) {
+        super._onRender(context, options);
+        const html=$(this.element);
 
 
         html.find('.ae').click(this._onAeClick.bind(this));
@@ -20,9 +27,12 @@ export class ActiveEffectDialog extends Dialog {
 
 
     } 
-    getData(){
-
-        return this.data;
+    async _prepareContext(options){
+        let context=await super._prepareContext(options);
+        context.actor=this.options.actor;
+        context.item=this.options.item;
+        console.log(context);
+        return context;
     }
     async _onAeClick(event){
         let effectId = event.currentTarget.attributes["data-ae-id"].value;
@@ -40,7 +50,7 @@ export class ActiveEffectDialog extends Dialog {
         let document;
         let effectData={name:"newActiveEffect","label":"newActiveEffect"};
         if(actorId){
-            document=game.actors.get(actorId);
+            document= await fromUuid(actorId);
         }else if(itemId){
             effectData.transfer=false;
             document=await fromUuid(itemId);
@@ -99,7 +109,7 @@ export class ActiveEffectDialog extends Dialog {
 
         let templateOptions={actor:actor,item:item};
 
-        let renderedTemplate=await renderTemplate('systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html', templateOptions);
+        let renderedTemplate=await foundry.applications.handlebars.renderTemplate('systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html', templateOptions);
         this.content=renderedTemplate;
 
         this.render(true);

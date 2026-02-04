@@ -1,0 +1,26 @@
+<section class="tab sheet-content {{tabs.manageReqSkills.id}} {{tabs.manageReqSkills.cssClass}}"
+         data-tab="{{tabs.manageReqSkills.id}}"
+         data-group="{{tabs.manageReqSkills.group}}">
+            <label>Skill Name</label>
+            <input type="text" id="skillname">
+            <label>Parent Skill Name</label>
+            <input type="text" id="parentskillname">
+            <label>Skill Rank</label>
+            <select id="skillrank-select">
+                {{#each item.FORTYK.skillTraining as |training key|}}
+                <option value="{{key}}">{{training.name}}</option>
+                {{/each}}
+            </select>
+            <div class="flexcol">
+                <a  class="add-skill button">Add Skill Requirement</a>
+            </div>
+            <div>
+                <label>Skill Requirements:</label>
+                {{#each flag.skills as |flag key|}}
+                {{#if flag}}
+                <label>{{flag.name}}: {{flag.rank}}</label>
+                <a class="delete-skill" data-id="{{key}}">Delete</a>
+                {{/if}}
+                {{/each}}
+            </div>
+        </section>

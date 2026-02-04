@@ -1,0 +1,68 @@
+<section class="tab sheet-content {{tabs.manageReqFlags.id}} {{tabs.manageReqFlags.cssClass}}"
+         data-tab="{{tabs.manageReqFlags.id}}"
+         data-group="{{tabs.manageReqFlags.group}}">
+
+            <div class="flexcol">
+                <select class="compendium-select">
+                    <option value="">Choose a Compendium</option>
+                    {{#each compendiums}}
+                    <option value="{{this.metadata.id}}" {{#if (equals this.metadata.id ../chosenCompendium)}}selected{{/if}}>{{this.title}}</option>
+                    {{/each}}
+                </select>
+                {{#if compendiumContents}}
+                <div class="flexrow">
+                    <select class="req-select">
+                        <option value="">Choose a Requirement</option>
+                        {{#each compendiumContents}}
+                        <option value="{{this.system.flagId.value}}" data-type="{{this.type}}" data-spec="{{this.system.specialisation.value}}">{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                    <label>Negative flag</label><input type="checkbox" id="notflagcheckbox">
+
+                </div>
+                <div class="flexcol">
+                    <a  class="add-flag button">Add AND Requirement</a>
+                </div>
+                <div class="flexcol">
+                    <a  class="add-OR-flag button">Add OR Requirement</a>
+                </div>
+
+                {{/if}}
+            </div>
+            <div>
+                <span class="section-title">AND Flags</span>
+                {{#each flag.flags as |flag key|}}
+                {{#if flag}}
+                {{#if flag.negative}}
+                Not
+                {{/if}}
+                {{#if flag.spec}}
+                <label>{{flag.label}}:{{flag.spec}}</label>
+                {{else}}
+                <label>{{flag.label}}</label>
+                {{/if}}
+                <a class="delete-flag" data-id="{{key}}">Delete</a>
+                {{/if}}
+                {{/each}}
+
+            </div>
+
+
+            <div>
+                <span class="section-title">OR Flags</span>
+                {{#each flag.ORflags as |flag key|}}
+                {{#if flag}}
+                {{#if flag.negative}}
+                Not
+                {{/if}}
+                {{#if flag.spec}}
+                <label>{{flag.label}}:{{flag.spec}}</label>
+                {{else}}
+                <label>{{flag.label}}</label>
+                {{/if}}
+                <a class="delete-OR-flag" data-id="{{key}}">Delete</a>
+                {{/if}}
+                {{/each}}
+
+            </div>
+        </section>

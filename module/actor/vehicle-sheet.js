@@ -4,25 +4,26 @@ import FortyKBaseActorSheet from "./base-sheet.js";
 export class FortyKVehicleSheet extends FortyKBaseActorSheet {
 
     /** @override */
-    static get defaultOptions() {
+    static DEFAULT_OPTIONS= {
 
-        return foundry.utils.mergeObject(super.defaultOptions, {
+            tag: 'form',
             classes: ["fortyk", "sheet", "actor"],
-            template: "systems/fortyk/templates/actor/vehicle-sheet.html",
-            width: 666,
-            height: 660,
-            tabs: [],
-            default:null,
-            scrollY: [".sheet-content"]
+            window:{width: 666,
+            height: 660}
 
 
 
-        });
+
+    }
+    static PARTS = {
+        header: {
+            template: 'systems/fortyk/templates/actor/vehicle-sheet.html'
+        }
     }
     /* -------------------------------------------- */
     /** @override */
-    async getData() {
-        const data = await super.getData();
+    async _prepareContext(options) {
+        const data = await super._prepareContext(options);
         
         
         let actor=this.actor;
@@ -36,8 +37,9 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
     }
 
     /** @override */
-    activateListeners(html) {
-        super.activateListeners(html);
+    _onRender(context, options) {
+        super._onRender(context, options);
+        const html=$(this.element);
         // Everything below here is only needed if the sheet is editable
 
 

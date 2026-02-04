@@ -1,7 +1,7 @@
 import { applySceneAuras } from "../utilities.js";
 import { tokenDistance } from "../utilities.js";
 import { getActorToken } from "../utilities.js";
-export class FortyKRuler extends Ruler{
+export class FortyKRuler extends foundry.canvas.interaction.Ruler{
     //OVERRIDE
     async _preMove(token){
         console.log("hello");

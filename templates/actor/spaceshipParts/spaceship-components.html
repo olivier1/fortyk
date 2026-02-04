@@ -1,0 +1,67 @@
+<section class="tab sheet-content {{tabs.components.id}} {{tabs.components.cssClass}}"
+         data-tab="{{tabs.components.id}}"
+         data-group="{{tabs.components.group}}">
+
+            <div class="descr flexrow">
+
+                <div class="resource flex-group-center">
+                    <label for="system.secChar.wounds.value" class="resource-label">Ship Points</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <div class="flexcol">Start:<input type="text" class="combat-resources" name="system.shipPoints.value" value="{{system.shipPoints.value}}" data-dtype="Number"/></div>
+                        <div class="flexcol"> Spent:
+                            <span>{{system.shipPoints.spent}}</span></div>
+
+                        <div class="flexcol"> Remnaining:
+                            <span>{{system.shipPoints.remaining}}</span></div>
+
+                    </div>
+                </div>
+                <div class="resource flex-group-center">
+                    <label for="system.secChar.fatigue.value" class="resource-label">Power</label>
+                    <div class="resource-content flexcol flex-center flex-between">
+                        {{system.power.value}}
+
+                        <input type="text" class="combat-resources" name="system.power.max" value="{{system.power.max}}" data-dtype="Number"/>
+                    </div>
+                </div>
+                <div class="resource  flex-group-center">
+                    <label for="system.secChar.space.value" class="resource-label">Space</label>
+                    <div class="resource-content flexcol flex-center flex-between">
+                        {{system.space.value}}
+
+                        <input type="text" class="combat-resources" name="system.space.max" value="{{system.space.max}}" data-dtype="Number"/>
+                    </div>
+                </div>
+
+
+            </div>
+            <a class="shipComponent-create button" data-type="shipComponent" title="Add Ship Component">Add Ship Component</a>
+            <div class="list list7col grid grid-7col">
+                <a class="list-item sort-button" data-sort-type="name" data-path="name" data-item-type="components">Name</a>
+                <a class="list-item sort-button" data-sort-type="status" data-path="system.status.value" data-item-type="components">Status</a>
+                <a class="list-item sort-button" data-sort-type="power" data-path="system.power.value" data-item-type="components">Power</a>
+                <a class="list-item sort-button" data-sort-type="space" data-path="system.space.value" data-item-type="components">Space</a>
+                <a class="list-item sort-button" data-sort-type="sp" data-path="system.sp.value" data-item-type="components">SP</a>
+                <span class="list-button"></span>
+                <span class="list-button"></span>
+
+                {{#each actor.components as |t key|}}
+
+                <a class="item-descr list-item drag" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.system.description.value}}">{{t.name}}</a>
+                <select class="component-status" data-id="{{this._id}}">
+                    {{selectOptions ../spaceshipComponentStatuses selected=system.status.value valueAttr="value" labelAttr="value"}}
+
+                </select>
+                <span class="item-descr list-item">{{t.system.power.value}}</span>
+                <span class="item-descr list-item">{{t.system.space.value}}</span>
+                <span class="item-descr list-item">{{t.system.sp.value}}</span>
+                <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
+                <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
+
+
+
+                {{/each}}
+
+            </div>
+
+        </section>

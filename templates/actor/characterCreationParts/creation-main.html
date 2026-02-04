@@ -1,0 +1,17 @@
+<section class="tab sheet-content {{tabs.creationMain.id}} {{tabs.creationMain.cssClass}}"
+         data-tab="{{tabs.creationMain.id}}"
+         data-group="{{tabs.creationMain.group}}">
+    {{#if (equals creationStage "1")}}
+    {{> "systems/fortyk/templates/actor/characterCreationParts/stage1.html"}}
+    {{else if (equals creationStage "2")}}
+    {{> "systems/fortyk/templates/actor/characterCreationParts/stage2.html"}}
+    {{else if (equals creationStage "3")}}
+    {{> "systems/fortyk/templates/actor/characterCreationParts/stage3.html"}}
+    {{else if (equals creationStage "4")}}
+    {{> "systems/fortyk/templates/actor/characterCreationParts/stage3.html"}}
+    {{else if (equals creationStage "5")}}
+    {{> "systems/fortyk/templates/actor/characterCreationParts/stage5.html"}}
+    {{else if (equals creationStage "6")}}
+    {{> "systems/fortyk/templates/actor/characterCreationParts/stage6.html"}}
+    {{/if}}
+</section>

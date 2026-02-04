@@ -1,10 +1,40 @@
-<div class="flexcol backgroundandnotes">
-    <div class="actor-background">
-        <label>Background:</label>
-        {{editor system.notesAndBackground.background target="system.notesAndBackground.background" button=true owner=owner editable=editable}}
+<section class="tab sheet-content {{tabs.background.id}} {{tabs.background.cssClass}}"
+         data-tab="{{tabs.background.id}}"
+         data-group="{{tabs.background.group}}">
+    <div class="flexcol backgroundandnotes">
+
+        <div class="actor-background">
+            <label>Background:</label>
+
+           {{#if editable}}
+            <prose-mirror
+                          name="system.notesAndBackground.background"
+                          button="true"
+                          editable="{{editable}}"
+                          toggled="false"
+                          value="{{system.notesAndBackground.background}}">
+                {{{enrichedBackground}}}
+            </prose-mirror>
+            {{else}}
+            {{{enrichedBackground}}}
+            {{/if}}
+
+        </div>
+        <div class="actor-background">
+            <label>Notes:</label>
+            {{#if editable}}
+            <prose-mirror
+                          name="system.notesAndBackground.notes"
+                          button="true"
+                          editable="{{editable}}"
+                          toggled="false"
+                          value="{{system.notesAndBackground.notes}}">
+                {{{enrichedNotes}}}
+            </prose-mirror>
+            {{else}}
+            {{{enrichedNotes}}}
+            {{/if}}
+
+        </div>
     </div>
-    <div class="actor-background">
-        <label>Notes:</label>
-        {{editor system.notesAndBackground.notes target="system.notesAndBackground.notes" button=true owner=owner editable=editable}}
-    </div>
-</div>
+</section>

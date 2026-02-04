@@ -7,8 +7,8 @@ import {CreateRepairEntryDialog} from "../dialog/createRepairEntry-dialog.js";
 export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
 
     /** @override */
-    static get defaultOptions() {
-        return foundry.utils.mergeObject(super.defaultOptions, {
+    static DEFAULT_OPTIONS= {
+            tag: 'form',
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/knightHouse-sheet.html",
             width: 666,
@@ -21,11 +21,11 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
 
                      ]
 
-        });
+
     }
     /** @override */
-    async getData() {
-        const data = await super.getData();
+    async _prepareContext(options) {
+        const data = await super._prepareContext(options);
         let actor=this.actor;
         data.isGM=game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
@@ -82,7 +82,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         let item=await this.actor.getEmbeddedDocument("Item",itemId);
         let house=this.actor;
         let knight=game.actors.get(item.system.knight.value);
-        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
+        let renderedTemplate=foundry.applications.handlebars.renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
         renderedTemplate.then(content => {
             new Dialog({
                 title: "Deletion Confirmation",
@@ -170,7 +170,7 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         event.preventDefault();
         let templateOptions={"type":[{"name":"knightComponent","label":"Component"},{"name":"rangedWeapon","label":"Ranged Weapon"},{"name":"meleeWeapon","label":"Melee Weapon"},{"name":"ammunition","label":"Ammunition"},{"name":"knightArmor","label":"Armor"},{"name":"knightStructure","label":"Structure"},{"name":"knightCore","label":"Core"},{"name":"forceField","label":"Force Field"}]};
 
-        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/select-wargear-type-dialog.html', templateOptions);
+        let renderedTemplate=foundry.applications.handlebars.renderTemplate('systems/fortyk/templates/actor/dialogs/select-wargear-type-dialog.html', templateOptions);
 
         renderedTemplate.then(content => { 
             new Dialog({

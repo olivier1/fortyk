@@ -4,20 +4,21 @@ import { tokenDistance } from "./utilities.js";
 import { isBlastTarget } from "./utilities.js";
 export class FortykRollDialogs {
     //activate chatlisteners
-    static chatListeners(html) {
-
-        $(html).find(".reroll").mouseup( this._onReroll.bind(this));
-        $(html).find(".overheat").click(this._onOverheat.bind(this));
-        $(html).find( ".popup").click(this._onTestPoppup.bind(this));
-        $(html).find(".spray-torrent-ping").click(this._onSprayTorrentClick.bind(this));
-        $(html).find(".reroll-popup").mouseup(this._onPopupReroll.bind(this));
-        $(html).find(".blast-evade").click(this._onBlastClick.bind(this));
-        $(html).find(".ping-template").click(this._onTemplateClick.bind(this));
-        $(html).find(".nav-gaze-ping").click(this._onNavClick.bind(this));
-        $(html).find(".add-fatigue-wounds").click(this._onAddFatigueWoundsClick.bind(this));
-        $(html).find(".add-insanity").click(this._onAddInsanityClick.bind(this));
-        $(html).find(".hallucination").click(this._onAddHallucinationClick.bind(this));
-        $(html).find(".courseuntravelled").click(this._onCourseUntravelledClick.bind(this));
+    static chatListeners(log) {
+        const html=$(log.element);
+        console.log(html)
+        html.find(".reroll").click( this._onReroll.bind(this));
+        html.find(".overheat").click(this._onOverheat.bind(this));
+        html.find(".popup").click(this._onTestPoppup.bind(this));
+        html.find(".spray-torrent-ping").click(this._onSprayTorrentClick.bind(this));
+        html.find(".reroll-popup").mouseup(this._onPopupReroll.bind(this));
+        html.find(".blast-evade").click(this._onBlastClick.bind(this));
+        html.find(".ping-template").click(this._onTemplateClick.bind(this));
+        html.find(".nav-gaze-ping").click(this._onNavClick.bind(this));
+        html.find(".add-fatigue-wounds").click(this._onAddFatigueWoundsClick.bind(this));
+        html.find(".add-insanity").click(this._onAddInsanityClick.bind(this));
+        html.find(".hallucination").click(this._onAddHallucinationClick.bind(this));
+        html.find(".courseuntravelled").click(this._onCourseUntravelledClick.bind(this));
     }
     static async _onCourseUntravelledClick(event){
         var targetElement = event.currentTarget;
@@ -478,7 +479,7 @@ export class FortykRollDialogs {
 
         const weapon = actor.items.get(dataset["weapon"]);
         const fireRate = dataset["fire"];
-        
+
         if (type === "focuspower") {
             if (actor.system.psykana.psykerType.value === "navigator") {
 
@@ -642,16 +643,20 @@ export class FortykRollDialogs {
         }
         let content=`<label>Other Modifiers: ${modifierString}</label></br><p><label>Modifier:</label> <input id="modifier" type="number" name="modifier" value="0" autofocus/></p>`;
         if(actor.getFlag("fortyk","leverage")){
-            content="<label>Leverage:</label><input type='checkbox' id='leveragebox'> <br>"+content;
+            content="<label>Leverage:</label><input type='checkbox' id='leveragebox' name='leveragebox'> <br>"+content;
         }
-        return await Dialog.wait({
-            title: title,
+        return await foundry.applications.api.DialogV2.wait({
+            window:{title: title,
+                    width:100,
+                   height:"auto"},
             content: content,
-            buttons: {
-                submit: {
+            buttons: [
+                {
                     label: "OK",
                     callback: async (html) => {
-                        const bonus = Number($(html).find('input[name="modifier"]').val());
+                        console.log(html)
+                        let button=html.target;
+                        const bonus = Number(button.form.elements.modifier.value);
                         if (isNaN(bonus)) {
                             this.callRollDialog(
                                 testChar,
@@ -668,7 +673,7 @@ export class FortykRollDialogs {
                             testTarget = parseInt(testTarget) + parseInt(bonus);
 
                             if (!reroll) {
-                                let leverage = $(html).find('input[id="leveragebox"]').is(":checked");
+                                let leverage = button.form.elements.leveragebox?.value;
                                 if(leverage){
                                     testChar="inf";
                                     testTarget=actor.system.characteristics.inf.total;
@@ -786,10 +791,9 @@ export class FortykRollDialogs {
                         }
                     }
                 }
-            },
+            ],
             default: "submit",
 
-            width: 100
         });
     }
     static async callMeldDialog(actor, testTarget) {
@@ -813,7 +817,7 @@ export class FortykRollDialogs {
         });
     }
     static checkMelee(target) {
-        let tokens = game.scenes.current.tokens;
+        let tokens = canvas.tokens.placeables;
         let targetDispositon = target.document.disposition;
         for (const token of tokens) {
             if (token.id === target.id) continue;
@@ -1062,7 +1066,7 @@ export class FortykRollDialogs {
         }
         templateOptions.leverage=actor.getFlag("fortyk", "leverage");
         templateOptions["modifiers"].miscMods = miscMods;
-        let renderedTemplate = await renderTemplate(template, templateOptions);
+        let renderedTemplate = await foundry.applications.handlebars.renderTemplate(template, templateOptions);
 
         new Dialog({
             title: `${item.name} Melee Attack Test.`,
@@ -1590,7 +1594,7 @@ export class FortykRollDialogs {
         }
         templateOptions.leverage=actor.getFlag("fortyk", "leverage");
         templateOptions["modifiers"].miscMods = miscMods;
-        let renderedTemplate = await renderTemplate(template, templateOptions);
+        let renderedTemplate = await foundry.applications.handlebars.renderTemplate(template, templateOptions);
 
         new Dialog({
             title: `${item.name} Ranged Attack Test.`,
@@ -2050,7 +2054,7 @@ export class FortykRollDialogs {
                 let scene = game.canvas.scene;
                 targetTokens = this.getSprayTargets(template, scene, actor)[0];
             }else{
-                targetTokens = game.scenes.current.tokens.filter((token) => {
+                targetTokens = canvas.tokens.placeables.filter((token) => {
                     return tokenDistance(token, casterToken) <= range;
                 });
 
@@ -2116,7 +2120,8 @@ export class FortykRollDialogs {
                 i++;
             }
             messageContent += `<div class="chat-target">Selected targets can roll their forcefields to negate if available.</div>`;
-            game.user.updateTokenTargets(updatedtargets);
+            game.user.targets.clear();
+            game.user.targets.add(...updatedtargets);
             game.user.broadcastActivity({ targets: updatedtargets });
 
 
@@ -2172,7 +2177,7 @@ export class FortykRollDialogs {
         var focusedGazed = actor.getFlag("fortyk", "focusedgaze");
         templateOptions.focusedGaze = focusedGazed;
         modifierTracker = modifierTracker.concat(item.system.modifiers);
-        let renderedTemplate = await renderTemplate(template, templateOptions);
+        let renderedTemplate = await foundry.applications.handlebars.renderTemplate(template, templateOptions);
 
         new Dialog({
             title: `${item.name} Navigator Power Test.`,
@@ -2323,7 +2328,7 @@ export class FortykRollDialogs {
         }
         modifierTracker = modifierTracker.concat(item.system.modifiers);
         templateOptions.leverage=actor.getFlag("fortyk", "leverage");
-        let renderedTemplate = await renderTemplate(template, templateOptions);
+        let renderedTemplate = await foundry.applications.handlebars.renderTemplate(template, templateOptions);
 
         new Dialog({
             title: `${item.name} Focus Power Test.`,
@@ -2474,137 +2479,136 @@ export class FortykRollDialogs {
         if (actor.getFlag("fortyk", "psyboltattunement") && weapon.getFlag("fortyk", "force")) {
             modifier -= pr * 5;
         }
-        new Dialog({
-            title: title,
+        foundry.applications.api.DialogV2.wait({
+            window:{title: title,
+                    width: 100},
             content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="${modifier}" autofocus/></p>`,
-            buttons: {
-                submit: {
-                    label: "OK",
-                    callback: async (html) => {
-                        const templateData = {
-                            t: "cone",
+            buttons: [
+                {label: "OK",
+                callback: async (html) => {
+                    const templateData = {
+                        t: "cone",
 
-                            author: game.userId,
+                        author: game.userId,
 
-                            distance: weapon.system.range.value,
+                        distance: weapon.system.range.value,
 
-                            direction: 45,
-                            angle: 30,
+                        direction: 45,
+                        angle: 30,
 
-                            x: 1000,
+                        x: 1000,
 
-                            y: 1000,
+                        y: 1000,
 
-                            fillColor: game.user.color
-                        };
+                        fillColor: game.user.color
+                    };
 
-                        const templateDoc = new MeasuredTemplateDocument(templateData, { parent: canvas.scene });
+                    const templateDoc = new MeasuredTemplateDocument(templateData, { parent: canvas.scene });
 
-                        const template = new game.fortyk.FortykTemplate(templateDoc);
-                        sheet.minimize();
-                        await template.drawPreview();
-                        sheet.maximize();
+                    const template = new game.fortyk.FortykTemplate(templateDoc);
+                    sheet.minimize();
+                    await template.drawPreview();
+                    sheet.maximize();
 
-                        let scene = game.canvas.scene;
-                        let targets = this.getSprayTargets(template, scene, actor)[0];
+                    let scene = game.canvas.scene;
+                    let targets = this.getSprayTargets(template, scene, actor)[0];
 
-                        let mod = Number($(html).find('input[name="modifier"]').val());
+                    let mod = Number($(html).find('input[name="modifier"]').val());
 
-                        if (targets.size === 0) {
-                            this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "No targets");
-                            return;
-                        }
-
-                        if (isNaN(mod)) {
-                            this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "Invalid Number");
-                            return;
-                        }
-
-                        let messageContent = "";
-                        let updatedtargets = [];
-                        let rolls = [];
-                        let i = 1;
-                        for (let token of targets) {
-
-                            let tokenActor = token.actor;
-                            if (tokenActor.id === actor.id) continue;
-                            if (tokenActor.getFlag("core", "dead")) continue;
-                            let tokenActorData = token.actor;
-                            let data = token.actor.system;
-
-                            let testTarget = 0;
-                            let tough = false;
-                            if (weapon.getFlag("fortyk", "sprayTough")) {
-                                tough = true;
-                            }
-                            if (tokenActor.type === "vehicle") {
-                                testTarget = data.crew.ratingTotal + mod;
-                            } else {
-                                if (tough) {
-                                    testTarget = data.characteristics.t.total + mod;
-                                } else {
-                                    testTarget = data.characteristics.agi.total + mod;
-                                }
-                            }
-                            let testThingy = "agi";
-                            if (tough) {
-                                testThingy = "t";
-                            }
-                            let test = await game.fortyk.FortykRolls.fortykTest(
-                                testThingy,
-                                "Test",
-                                testTarget,
-                                tokenActor,
-                                "Avoid Spray Attack",
-                                weapon,
-                                false,
-                                "",
-                                true
-                            );
-                            let hit = 0;
-                            if (!test.value) {
-                                updatedtargets.push(token.id);
-                                hit++;
-                            }
-
-                            messageContent +=
-                                `<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="${hit}" data-token="${token.id}">${token.name}'s</a> ` +
-                                test.template +
-                                `</div>`;
-                            let r = test.roll;
-                            r.dice[0].options.rollOrder = i;
-                            rolls.push(test.roll);
-                            i++;
-                        }
-                        messageContent += `<div class="chat-target">Selected targets may attempt to evade if they have a reaction remaining and have enough movement from their half-move to exit the attack's area of effect.</div>`;
-                        game.user.updateTokenTargets(updatedtargets);
-                        game.user.broadcastActivity({ targets: updatedtargets });
-                        let name;
-                        if (actor.isToken) {
-                            name = actor.token.name;
-                        } else {
-                            name = actor.name;
-                        }
-                        let chatOptions = {
-                            author: game.user._id,
-                            speaker: { actor, alias: name },
-                            rolls: rolls,
-                            content: messageContent,
-                            classes: ["fortyk"],
-                            sound: "sounds/dice.wav",
-                            flavor: `Spray Attack result`
-                        };
-
-                        await ChatMessage.create(chatOptions, {});
-                        if (!psy) {
-                            await weapon.update({ "system.clip.value": ammo - consumption });
-                        }
+                    if (targets.size === 0) {
+                        this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "No targets");
+                        return;
                     }
-                }
-            },
-            default: "submit",
 
-            width: 100
+                    if (isNaN(mod)) {
+                        this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "Invalid Number");
+                        return;
+                    }
+
+                    let messageContent = "";
+                    let updatedtargets = [];
+                    let rolls = [];
+                    let i = 1;
+                    for (let token of targets) {
+
+                        let tokenActor = token.actor;
+                        if (tokenActor.id === actor.id) continue;
+                        if (tokenActor.getFlag("core", "dead")) continue;
+                        let tokenActorData = token.actor;
+                        let data = token.actor.system;
+
+                        let testTarget = 0;
+                        let tough = false;
+                        if (weapon.getFlag("fortyk", "sprayTough")) {
+                            tough = true;
+                        }
+                        if (tokenActor.type === "vehicle") {
+                            testTarget = data.crew.ratingTotal + mod;
+                        } else {
+                            if (tough) {
+                                testTarget = data.characteristics.t.total + mod;
+                            } else {
+                                testTarget = data.characteristics.agi.total + mod;
+                            }
+                        }
+                        let testThingy = "agi";
+                        if (tough) {
+                            testThingy = "t";
+                        }
+                        let test = await game.fortyk.FortykRolls.fortykTest(
+                            testThingy,
+                            "Test",
+                            testTarget,
+                            tokenActor,
+                            "Avoid Spray Attack",
+                            weapon,
+                            false,
+                            "",
+                            true
+                        );
+                        let hit = 0;
+                        if (!test.value) {
+                            updatedtargets.push(token.id);
+                            hit++;
+                        }
+
+                        messageContent +=
+                            `<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="${hit}" data-token="${token.id}">${token.name}'s</a> ` +
+                            test.template +
+                            `</div>`;
+                        let r = test.roll;
+                        r.dice[0].options.rollOrder = i;
+                        rolls.push(test.roll);
+                        i++;
+                    }
+                    messageContent += `<div class="chat-target">Selected targets may attempt to evade if they have a reaction remaining and have enough movement from their half-move to exit the attack's area of effect.</div>`;
+                    game.user.targets.clear();
+                    game.user.targets.add(...updatedtargets);
+                    game.user.broadcastActivity({ targets: updatedtargets });
+                    let name;
+                    if (actor.isToken) {
+                        name = actor.token.name;
+                    } else {
+                        name = actor.name;
+                    }
+                    let chatOptions = {
+                        author: game.user._id,
+                        speaker: { actor, alias: name },
+                        rolls: rolls,
+                        content: messageContent,
+                        classes: ["fortyk"],
+                        sound: "sounds/dice.wav",
+                        flavor: `Spray Attack result`
+                    };
+
+                    await ChatMessage.create(chatOptions, {});
+                    if (!psy) {
+                        await weapon.update({ "system.clip.value": ammo - consumption });
+                    }
+                }}
+
+            ],
+            default: "submit"
         }).render(true);
     }
     static async callTorrentAttackDialog(actor, testLabel, weapon, options, sheet, title = "Enter test modifier") {
@@ -2755,7 +2759,8 @@ export class FortykRollDialogs {
                             messageContent += `<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="${target.hits}" data-token="${target.tokenId}">${target.name}'s</a> ${target.test.template} takes ${target.hits} hits!</div>`;
                         }
                         messageContent += `<div class="chat-target">Targets who suffer hits must pass an evasion test with degrees of success equal to the number of hits or take the remaining hits.</div>`;
-                        game.user.updateTokenTargets(updatedtargets);
+                        game.user.targets.clear();
+                        game.user.targets.add(...updatedtargets);
                         game.user.broadcastActivity({ targets: updatedtargets });
                         let name;
                         if (actor.isToken) {

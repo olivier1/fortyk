@@ -165,6 +165,8 @@ Hooks.once("init", async function () {
     CONFIG.Token.documentClass = FortyKToken;
     //CONFIG.ActiveEffect.entityClass = FortyKActiveEffect;
     // Register sheet application classes
+    const Actors=foundry.documents.collections.Actors;
+    const ActorSheet=foundry.appv1.sheets.ActorSheet;
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet("fortyk", FortyKDWActorSheet, {
         label: "Deathwatch Sheet",
@@ -202,6 +204,8 @@ Hooks.once("init", async function () {
         types: ["knightHouse"],
         makeDefault: true
     });
+    const Items=foundry.documents.collections.Items;
+    const ItemSheet=foundry.appv1.sheets.ItemSheet;
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });
     //setup handcards
@@ -433,7 +437,7 @@ Hooks.once("ready", async function () {
                     magdamage = data.package.magdmg;
                     extraPen = data.package.pen;
                     rerollNum = data.package.rerollNum;
-                    targets = game.scenes.current.tokens.filter((token) => targetIds.includes(token.id));
+                    targets = canvas.tokens.placeables.filter((token) => targetIds.includes(token.id));
                     targets = new Set(targets);
 
                     await FortykRolls.damageRoll(
@@ -470,7 +474,7 @@ Hooks.once("ready", async function () {
                         let curTargets = targetIds[i].targets;
                         fortykWeapon.template = targetIds[i].template;
                         let targetNames = "";
-                        let targetTokens = game.scenes.current.tokens.filter((token) =>
+                        let targetTokens = canvas.tokens.placeables.filter((token) =>
                                                                                           curTargets.includes(token.id)
                                                                                          );
                         let targetSet = new Set(targetTokens);
@@ -485,7 +489,8 @@ Hooks.once("ready", async function () {
                             }
                         }
                         if (curTargets.length !== 0) {
-                            game.user.updateTokenTargets(curTargets);
+                            game.user.targets.clear();
+                            game.user.targets.add(...curTargets);
 
                             let chatBlast2 = {
                                 author: game.user._id,
@@ -521,7 +526,7 @@ Hooks.once("ready", async function () {
                         }
                     }
                     actor.deleteAfterAttackEffects();
-                    game.user.updateTokenTargets();
+                    game.user.targets.clear();
 
                     break;
                 case "settestflag":
@@ -540,7 +545,7 @@ Hooks.once("ready", async function () {
                     targetIds = data.package.targets;
                     lastHit = data.package.lastHit;
                     hits = data.package.hits;
-                    targets = game.scenes.current.tokens.filter((token) => targetIds.includes(token.id));
+                    targets = canvas.tokens.placeables.filter((token) => targetIds.includes(token.id));
                     targets = new Set(targets);
 
                     await FortykRolls.damageRoll(
@@ -637,7 +642,7 @@ Hooks.once("ready", async function () {
                 case "forcefieldRoll":
                     targetIds = data.package.targets;
                     hits = data.package.hits;
-                    targets = game.scenes.current.tokens.filter((token) => targetIds.includes(token.id));
+                    targets = canvas.tokens.placeables.filter((token) => targetIds.includes(token.id));
 
                     targets = new Set(targets);
                     for (let tar of targets) {
@@ -758,7 +763,7 @@ Hooks.on("combatStart", (combat, updateData) => {
 });
 //round management effects, when a token's turn starts
 Hooks.on("updateCombat", async (combat) => {
-    game.user.updateTokenTargets();
+    game.user.targets.clear();
     game.user.broadcastActivity({ targets: [] });
     //current combatant stuff
     let token = canvas.tokens.get(combat.current.tokenId);
@@ -1303,7 +1308,7 @@ Hooks.on("preDeleteCombat", async (combat, options, id) => {
 Hooks.on("preUpdateActor", (data, updatedData) => {});
 //add listeners to the chatlog for dice rolls
 Hooks.on("renderChatLog", (log, html, data) => {
-    console.log(log,html,data)
+
     FortykRollDialogs.chatListeners(log);
     });
 //add listeners to dialogs to allow searching and the like

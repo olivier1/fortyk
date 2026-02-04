@@ -17,7 +17,7 @@ let options = `
  
 new Dialog({
  title: `Die Roller`,
- content: `<form>${options}</form>`,
+ content: `<section>${options}</section>`,
  buttons: {
   
   d6: {

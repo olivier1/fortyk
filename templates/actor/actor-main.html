@@ -1,319 +1,323 @@
-<div class="sheet-main flexcol">
+<section class="tab sheet-content {{tabs.main.id}} {{tabs.main.cssClass}}"
+         data-tab="{{tabs.main.id}}"
+         data-group="{{tabs.main.group}}">
+    <div class="sheet-main flexcol">
 
 
 
 
 
-    <div class="header-fields">
-        <div class="descr grid grid-3col">
-            <div class="descrRow flexcol">
-                <span class="descrSpan">Name:</span>
-                <input type="text" class="combat-resources" data-target="name" value="{{actor.name}}" data-dtype="String"/>
+        <div class="header-fields">
+            <div class="descr grid grid-3col">
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Name:</span>
+                    <input type="text" class="combat-resources" data-target="name" value="{{actor.name}}" data-dtype="String"/>
+                </div>
+
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Age:</span>
+                    <input type="number" class="combat-resources" data-target="system.age.value" value="{{system.age.value}}" data-dtype="Number"/>
+                </div>
+
+                {{#if characterType}}
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Character Type:</span>
+                    <div class="flexrow advanceElite">
+                        <a class="item-descr fit-content" data-id="{{characterType.id}}" data-name="{{characterType.name}}" data-item-descr="{{characterType.system.description.value}}"><u>{{characterType.name}}</u></a>
+                        {{#if isGM}}
+                        <a class="list-button item-delete" title="Delete" data-item-id="{{characterType.id}}"></a>
+                        {{/if}}
+                    </div>
+                </div>
+                {{else}}
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Race:</span>
+                    <select class="raceSelect" name="system.race.value" data-dtype="String">
+                        {{selectOptions races selected=system.race.value valueAttr="value" labelAttr="value"}}
+                    </select>
+
+                </div>
+                {{/if}}
+
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Build:</span>
+                    <input type="text" class="combat-resources" data-target="system.build.value" value="{{system.build.value}}" data-dtype="String"/>
+                </div>
+
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Hair:</span>
+                    <input type="text" class="combat-resources" data-target="system.hair.value" value="{{system.hair.value}}" data-dtype="String"/>
+                </div>
+
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Eye:</span>
+                    <input type="text" class="combat-resources" data-target="system.eye.value" value="{{system.eye.value}}" data-dtype="String"/>
+                </div>
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Quirks:</span>
+                    <input type="text" class="combat-resources" data-target="system.quirks.value" value="{{system.quirks.value}}" data-dtype="String"/>
+                </div>
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Superstitions:</span>
+                    <input type="text" class="combat-resources" data-target="system.superstitions.value" value="{{system.superstitions.value}}" data-dtype="String"/>
+                </div>
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">Momentos:</span>
+                    <input type="text" class="combat-resources" data-target="system.momentos.value" value="{{system.momentos.value}}" data-dtype="String"/>
+                </div>
+
             </div>
-
-            <div class="descrRow flexcol">
-                <span class="descrSpan">Age:</span>
-                <input type="number" class="combat-resources" data-target="system.age.value" value="{{system.age.value}}" data-dtype="Number"/>
-            </div>
-
-            {{#if characterType}}
-            <div class="descrRow flexcol">
-                <span class="descrSpan">Character Type:</span>
-                <div class="flexrow advanceElite">
-                    <a class="item-descr fit-content" data-id="{{characterType.id}}" data-name="{{characterType.name}}" data-item-descr="{{characterType.system.description.value}}"><u>{{characterType.name}}</u></a>
-                    {{#if isGM}}
-                    <a class="list-button item-delete" title="Delete" data-item-id="{{characterType.id}}"></a>
+            <div class="descr grid grid-3col">
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">{{featureLabels.planet}}:</span>
+                    {{#if planet}}
+                    <div class="flexrow advanceElite">
+                        <a class="item-descr fit-content" data-id="{{planet.id}}" data-name="{{planet.name}}" data-item-descr="{{planet.system.description.value}}"><u>{{planet.name}}</u></a>
+                        {{#if isGM}}
+                        <a class="list-button item-delete" title="Delete" data-item-id="{{planet.id}}"></a>
+                        {{/if}}
+                    </div>
+                    {{else}}
+                    <input type="text" class="combat-resources" data-target="system.chapter.value" value="{{system.chapter.value}}" data-dtype="String"/>
                     {{/if}}
                 </div>
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">{{featureLabels.background}}:</span>
+                    {{#if background}}
+                    <div class="flexrow advanceElite">
+                        <a class="item-descr fit-content" data-id="{{background.id}}" data-name="{{background.name}}" data-item-descr="{{background.system.description.value}}"><u>{{background.name}}</u></a>
+                        {{#if isGM}}
+                        <a class="list-button item-delete" title="Delete" data-item-id="{{background.id}}"></a>
+                        {{/if}}
+                    </div>
+                    {{else}}
+                    <input type="text" class="combat-resources" data-target="system.background.value" value="{{system.background.value}}" data-dtype="String"/>
+                    {{/if}}
+                </div>
+
+                <div class="descrRow flexcol">
+                    <span class="descrSpan">{{featureLabels.role}}:</span>
+                    {{#if role}}
+                    <div class="flexrow advanceElite">
+                        <a class="item-descr fit-content" data-id="{{role.id}}" data-name="{{role.name}}" data-item-descr="{{role.system.description.value}}"><u>{{role.name}}</u></a>
+                        {{#if flags.fortyk.lost}}
+                        {{debug}}
+                        <i class="fa-solid fa-question fit-content" title="Lost on the Path"></i>
+                        {{/if}}
+                        {{#if role.flags.fortyk.mastered}}
+
+                        <i class="fa-solid fa-star fit-content" title="Path Mastered!"></i>
+                        {{#unless role.flags.fortyk.masterid}}
+                        <a class="button get-master fit-content" data-id="{{role.id}}">Get Mastery Ability</a>
+                        {{/unless}}
+
+                        {{/if}}
+                        {{#if isGM}}
+                        <a class="list-button item-delete" title="Delete" data-item-id="{{role.id}}"></a>
+                        {{/if}}
+                    </div>
+                    {{else}}
+                    <input type="text" class="combat-resources" data-target="system.role.value" value="{{system.role.value}}" data-dtype="String"/>
+                    {{/if}}
+                </div>
+
             </div>
-            {{else}}
-            <div class="descrRow flexcol">
-                <span class="descrSpan">Race:</span>
-                <select class="raceSelect" name="system.race.value" data-dtype="String">
-                    {{selectOptions races selected=system.race.value valueAttr="value" labelAttr="value"}}
+            {{#if goals}}
+            <div class="eliteAdvances flexcol">
+
+                <span class="descrSpan">Short Term Goal:</span>
+                <div class="flexrow">
+                    <input type="text" class="combat-resources" data-target="system.goal.short" value="{{system.goal.short}}" data-dtype="String"/>
+
+                </div>
+                <span class="descrSpan">Long Term Goal:</span>
+                <div class="flexrow">
+                    <input type="text" class="combat-resources" data-target="system.goal.long" value="{{system.goal.long}}" data-dtype="String"/>
+
+                </div>
+
+            </div>
+            {{/if}}
+            {{#if eliteAdvances}}
+            <div class="eliteAdvances flexcol">
+
+                <span class="descrSpan">Elite Advances:</span>
+                <div class="flexrow">
+
+                    {{#each eliteAdvances}}
+                    <div class="flexrow advanceElite">
+                        <a class="item-descr fit-content" data-id="{{id}}" data-name="{{name}}" data-item-descr="{{system.description.value}}"><u>{{name}}</u></a>
+                        <a class="list-button item-delete" title="Delete" data-item-id="{{id}}"></a>
+                    </div>
+                    {{/each}}
+                </div>
+
+            </div>
+            {{/if}}
+            {{#if passiveRoles}}
+            <div class="eliteAdvances flexcol">
+
+                <span class="descrSpan">Passive Paths:</span>
+                <div class="flexrow">
+
+                    {{#each passivePaths}}
+                    <div class="flexrow advanceElite">
+                        <a class="item-descr fit-content" data-id="{{id}}" data-name="{{name}}" data-item-descr="{{system.description.value}}"><u>{{name}}</u></a>
+                        {{#if role.flags.fortyk.mastered}}
+                        <i class="fa-solid fa-star fit-content" title="Path Mastered!"></i>
+
+                        {{/if}}
+                        {{#if isGM}}
+                        <a class="list-button item-delete" title="Delete" data-item-id="{{id}}"></a>
+                        {{/if}}
+                    </div>
+                    {{/each}}
+                </div>
+
+            </div>
+            {{/if}}
+            {{#if flags.fortyk.darkheresy}}
+            <div>
+                <span class="descrSpan">Divination:</span>
+                <input type="text" class="combat-resources" data-target="system.divination.value" value="{{system.divination.value}}" data-dtype="String"/>
+
+            </div>
+            {{/if}}
+            {{#if flags.fortyk.deathwatchmarine}}
+            <div class="eliteAdvances flexcol">
+
+                <span class="descrSpan">Honours:</span>
+                <input type="text" class="combat-resources" data-target="system.honours.value" value="{{system.honours.value}}" data-dtype="String"/>
+
+            </div>
+            {{/if}}
+            <div class="resources flexrow">
+
+                <div class="flex-group-center">
+                    <label for="system.secChar.wounds.value" class="resource-label">Wounds</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="number" class="combat-resources" data-target="system.secChar.wounds.value" value="{{system.secChar.wounds.value}}" data-dtype="Number"/>
+                        <span> / </span>
+                        <input type="number" class="combat-resources" data-target="system.secChar.wounds.max" value="{{system.secChar.wounds.max}}" data-dtype="Number" {{#if alternateWounds}}disabled{{/if}}/>
+                    </div>
+                </div>
+                <div class="flex-group-center">
+                    <label for="system.secChar.fatigue.value" class="resource-label">Fatigue</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="number" class="combat-resources" data-target="system.secChar.fatigue.value" value="{{system.secChar.fatigue.value}}" data-dtype="Number"/>
+                        <span> / </span>
+                        <input type="number" value="{{system.secChar.fatigue.max}}" disabled>
+                    </div>
+                </div>
+                {{#if flags.fortyk.hasinfluence}}
+                <div class=" flex-group-center">
+                    <label for="system.fatigue.value" class="resource-label">{{system.characteristics.inf.label}}</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="number" class="combat-resources" data-target="system.characteristics.inf.value" value="{{system.characteristics.inf.value}}" data-dtype="Number"/>
+                        <span> -&gt; </span>
+                        <span class="char-total rollable button" data-roll-type="char" data-target="{{system.characteristics.inf.total}}" data-label="{{system.characteristics.inf.label}}" data-char="inf">{{system.characteristics.inf.total}}</span>
+                    </div>
+                </div>
+                {{/if}}
+                <div class=" flex-group-center">
+                    <label for="system.fatigue.value" class="resource-label">Global Modifier</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="number" class="combat-resources" data-target="system.globalMOD.value" value="{{system.globalMOD.value}}" data-dtype="Number"/>
+                    </div>
+                </div>
+                <div class=" flex-group-center">
+                    <label for="system.fatigue.value" class="resource-label">Fate</label>
+                    <div class="resource-content flexrow flex-center flex-between">
+                        <input type="number" class="combat-resources" data-target="system.secChar.fate.value" value="{{system.secChar.fate.value}}" data-dtype="Number"/>
+                        <span> / </span>
+                        <input type="number" class="combat-resources" data-target="system.secChar.fate.max" value="{{system.secChar.fate.max}}" data-dtype="Number"/>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="characteristics grid grid-10col">
+
+
+
+
+                <span class="characteristicsSpan"></span>
+
+
+
+                {{#each system.characteristics as |char key|}}
+                {{#unless (compareString key "inf")}}
+                <div class="charCross flexcol flex-group-center">
+                    <label for="system.characteristics.{{key}}.value" class="resource-label">{{key}}</label>
+                </div>
+                {{/unless}}
+                {{/each}}
+
+
+                <div class="charCross flexcol flex-group-center">
+                    <span class="characteristicsSpan">Base
+                    </span>
+                </div>
+                {{#each system.characteristics as |char key|}}
+                {{#unless (compareString key "inf")}}
+                <div>
+                    <input type="number" class="combat-resources" data-target="system.characteristics.{{key}}.value" value="{{char.value}}" data-dtype="Number"/>
+
+
+                </div>
+                {{/unless}}
+                {{/each}}
+
+                <div class="charCross flexcol flex-group-center">
+                    <span class="characteristicsSpan">Unnat</span>
+                </div>
+                {{#each system.characteristics as |char key|}}
+                {{#unless (compareString key "inf")}}
+                <div>
+
+                    <input type="number" class="combat-resources" data-target="system.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number" disabled/>
+                </div>
+                {{/unless}}
+                {{/each}}
+                <div class="charCross flexcol flex-group-center">
+                    <span class="characteristicsSpan">Adv</span>
+                </div>
+                {{#each system.characteristics as |char key|}}
+                {{#unless (compareString key "inf")}}
+
+                <select class="charSelect" name="system.characteristics.{{key}}.advance" data-dtype="Number" {{#unless ../isGM}}disabled{{/unless}}>
+                    {{selectOptions ../advances selected=char.advance valueAttr="value" labelAttr="label"}}
+
                 </select>
-
-            </div>
-            {{/if}}
-
-            <div class="descrRow flexcol">
-                <span class="descrSpan">Build:</span>
-                <input type="text" class="combat-resources" data-target="system.build.value" value="{{system.build.value}}" data-dtype="String"/>
-            </div>
-
-            <div class="descrRow flexcol">
-                <span class="descrSpan">Hair:</span>
-                <input type="text" class="combat-resources" data-target="system.hair.value" value="{{system.hair.value}}" data-dtype="String"/>
-            </div>
-
-            <div class="descrRow flexcol">
-                <span class="descrSpan">Eye:</span>
-                <input type="text" class="combat-resources" data-target="system.eye.value" value="{{system.eye.value}}" data-dtype="String"/>
-            </div>
-            <div class="descrRow flexcol">
-                <span class="descrSpan">Quirks:</span>
-                <input type="text" class="combat-resources" data-target="system.quirks.value" value="{{system.quirks.value}}" data-dtype="String"/>
-            </div>
-            <div class="descrRow flexcol">
-                <span class="descrSpan">Superstitions:</span>
-                <input type="text" class="combat-resources" data-target="system.superstitions.value" value="{{system.superstitions.value}}" data-dtype="String"/>
-            </div>
-            <div class="descrRow flexcol">
-                <span class="descrSpan">Momentos:</span>
-                <input type="text" class="combat-resources" data-target="system.momentos.value" value="{{system.momentos.value}}" data-dtype="String"/>
-            </div>
-
-        </div>
-        <div class="descr grid grid-3col">
-            <div class="descrRow flexcol">
-                <span class="descrSpan">{{featureLabels.planet}}:</span>
-                {{#if planet}}
-                <div class="flexrow advanceElite">
-                    <a class="item-descr fit-content" data-id="{{planet.id}}" data-name="{{planet.name}}" data-item-descr="{{planet.system.description.value}}"><u>{{planet.name}}</u></a>
-                    {{#if isGM}}
-                    <a class="list-button item-delete" title="Delete" data-item-id="{{planet.id}}"></a>
-                    {{/if}}
-                </div>
-                {{else}}
-                <input type="text" class="combat-resources" data-target="system.chapter.value" value="{{system.chapter.value}}" data-dtype="String"/>
-                {{/if}}
-            </div>
-            <div class="descrRow flexcol">
-                <span class="descrSpan">{{featureLabels.background}}:</span>
-                {{#if background}}
-                <div class="flexrow advanceElite">
-                    <a class="item-descr fit-content" data-id="{{background.id}}" data-name="{{background.name}}" data-item-descr="{{background.system.description.value}}"><u>{{background.name}}</u></a>
-                    {{#if isGM}}
-                    <a class="list-button item-delete" title="Delete" data-item-id="{{background.id}}"></a>
-                    {{/if}}
-                </div>
-                {{else}}
-                <input type="text" class="combat-resources" data-target="system.background.value" value="{{system.background.value}}" data-dtype="String"/>
-                {{/if}}
-            </div>
-
-            <div class="descrRow flexcol">
-                <span class="descrSpan">{{featureLabels.role}}:</span>
-                {{#if role}}
-                <div class="flexrow advanceElite">
-                    <a class="item-descr fit-content" data-id="{{role.id}}" data-name="{{role.name}}" data-item-descr="{{role.system.description.value}}"><u>{{role.name}}</u></a>
-                    {{#if flags.fortyk.lost}}
-                    {{debug}}
-                    <i class="fa-solid fa-question fit-content" title="Lost on the Path"></i>
-                    {{/if}}
-                    {{#if role.flags.fortyk.mastered}}
-
-                    <i class="fa-solid fa-star fit-content" title="Path Mastered!"></i>
-                    {{#unless role.flags.fortyk.masterid}}
-                    <button class="button get-master fit-content" data-id="{{role.id}}">Get Mastery Ability</button>
-                    {{/unless}}
-
-                    {{/if}}
-                    {{#if isGM}}
-                    <a class="list-button item-delete" title="Delete" data-item-id="{{role.id}}"></a>
-                    {{/if}}
-                </div>
-                {{else}}
-                <input type="text" class="combat-resources" data-target="system.role.value" value="{{system.role.value}}" data-dtype="String"/>
-                {{/if}}
-            </div>
-
-        </div>
-        {{#if goals}}
-        <div class="eliteAdvances flexcol">
-
-            <span class="descrSpan">Short Term Goal:</span>
-            <div class="flexrow">
-                <input type="text" class="combat-resources" data-target="system.goal.short" value="{{system.goal.short}}" data-dtype="String"/>
-                
-            </div>
-            <span class="descrSpan">Long Term Goal:</span>
-            <div class="flexrow">
-                <input type="text" class="combat-resources" data-target="system.goal.long" value="{{system.goal.long}}" data-dtype="String"/>
-                
-            </div>
-
-        </div>
-        {{/if}}
-        {{#if eliteAdvances}}
-        <div class="eliteAdvances flexcol">
-
-            <span class="descrSpan">Elite Advances:</span>
-            <div class="flexrow">
-
-                {{#each eliteAdvances}}
-                <div class="flexrow advanceElite">
-                    <a class="item-descr fit-content" data-id="{{id}}" data-name="{{name}}" data-item-descr="{{system.description.value}}"><u>{{name}}</u></a>
-                    <a class="list-button item-delete" title="Delete" data-item-id="{{id}}"></a>
-                </div>
+                {{/unless}}
                 {{/each}}
-            </div>
 
-        </div>
-        {{/if}}
-        {{#if passiveRoles}}
-        <div class="eliteAdvances flexcol">
 
-            <span class="descrSpan">Passive Paths:</span>
-            <div class="flexrow">
-
-                {{#each passivePaths}}
-                <div class="flexrow advanceElite">
-                    <a class="item-descr fit-content" data-id="{{id}}" data-name="{{name}}" data-item-descr="{{system.description.value}}"><u>{{name}}</u></a>
-                    {{#if role.flags.fortyk.mastered}}
-                    <i class="fa-solid fa-star fit-content" title="Path Mastered!"></i>
-
-                    {{/if}}
-                    {{#if isGM}}
-                    <a class="list-button item-delete" title="Delete" data-item-id="{{id}}"></a>
-                    {{/if}}
+                <div class="charCross flexcol flex-group-center">
+                    <span class="characteristicsSpan">Temp</span>
                 </div>
+                {{#each system.characteristics as |char key|}}
+                {{#unless (compareString key "inf")}}
+                <input type="number" class="combat-resources" data-target="system.characteristics.{{key}}.mod" value="{{char.mod}}" data-dtype="Number"/>
+
+                {{/unless}}
                 {{/each}}
-            </div>
 
-        </div>
-        {{/if}}
-        {{#if flags.fortyk.darkheresy}}
-        <div>
-            <span class="descrSpan">Divination:</span>
-            <input type="text" class="combat-resources" data-target="system.divination.value" value="{{system.divination.value}}" data-dtype="String"/>
 
-        </div>
-        {{/if}}
-        {{#if flags.fortyk.deathwatchmarine}}
-        <div class="eliteAdvances flexcol">
-
-            <span class="descrSpan">Honours:</span>
-            <input type="text" class="combat-resources" data-target="system.honours.value" value="{{system.honours.value}}" data-dtype="String"/>
-
-        </div>
-        {{/if}}
-        <div class="resources flexrow">
-
-            <div class="flex-group-center">
-                <label for="system.secChar.wounds.value" class="resource-label">Wounds</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <input type="number" class="combat-resources" data-target="system.secChar.wounds.value" value="{{system.secChar.wounds.value}}" data-dtype="Number"/>
-                    <span> / </span>
-                    <input type="number" class="combat-resources" data-target="system.secChar.wounds.max" value="{{system.secChar.wounds.max}}" data-dtype="Number" {{#if alternateWounds}}disabled{{/if}}/>
+                <div class="charCross flexcol flex-group-center">
+                    <span class="characteristicsSpan">Total</span>
                 </div>
-            </div>
-            <div class="flex-group-center">
-                <label for="system.secChar.fatigue.value" class="resource-label">Fatigue</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <input type="number" class="combat-resources" data-target="system.secChar.fatigue.value" value="{{system.secChar.fatigue.value}}" data-dtype="Number"/>
-                    <span> / </span>
-                    <input type="number" value="{{system.secChar.fatigue.max}}" disabled>
+                {{#each system.characteristics as |char key|}}
+                {{#unless (compareString key "inf")}}
+                <div class="charCross flexcol flex-group-center">
+                    <span class="char-total rollable button" data-roll-type="char" data-target="{{char.total}}" data-label="{{char.label}}" data-char="{{key}}" title="Bonus: {{char.bonus}}">{{char.total}}</span>
                 </div>
-            </div>
-            {{#if flags.fortyk.hasinfluence}}
-            <div class=" flex-group-center">
-                <label for="system.fatigue.value" class="resource-label">{{system.characteristics.inf.label}}</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <input type="number" name="system.characteristics.inf.value" value="{{system.characteristics.inf.value}}" data-dtype="Number"/>
-                    <span> -&gt; </span>
-                    <span class="char-total rollable button" data-roll-type="char" data-target="{{system.characteristics.inf.total}}" data-label="{{system.characteristics.inf.label}}" data-char="inf">{{system.characteristics.inf.total}}</span>
-                </div>
-            </div>
-            {{/if}}
-            <div class=" flex-group-center">
-                <label for="system.fatigue.value" class="resource-label">Global Modifier</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <input type="number" class="combat-resources" data-target="system.globalMOD.value" value="{{system.globalMOD.value}}" data-dtype="Number"/>
-                </div>
-            </div>
-            <div class=" flex-group-center">
-                <label for="system.fatigue.value" class="resource-label">Fate</label>
-                <div class="resource-content flexrow flex-center flex-between">
-                    <input type="number" class="combat-resources" data-target="system.secChar.fate.value" value="{{system.secChar.fate.value}}" data-dtype="Number"/>
-                    <span> / </span>
-                    <input type="number" class="combat-resources" data-target="system.secChar.fate.max" value="{{system.secChar.fate.max}}" data-dtype="Number"/>
-                </div>
-            </div>
-        </div>
+                {{/unless}}
+                {{/each}}
 
-
-        <div class="characteristics grid grid-10col">
-
-
-
-
-            <span class="characteristicsSpan"></span>
-
-
-
-            {{#each system.characteristics as |char key|}}
-            {{#unless (compareString key "inf")}}
-            <div class="charCross flexcol flex-group-center">
-                <label for="system.characteristics.{{key}}.value" class="resource-label">{{key}}</label>
-            </div>
-            {{/unless}}
-            {{/each}}
-
-
-            <div class="charCross flexcol flex-group-center">
-                <span class="characteristicsSpan">Base
-                </span>
-            </div>
-            {{#each system.characteristics as |char key|}}
-            {{#unless (compareString key "inf")}}
-            <div>
-                <input type="number" class="combat-resources" data-target="system.characteristics.{{key}}.value" value="{{char.value}}" data-dtype="Number"/>
 
 
             </div>
-            {{/unless}}
-            {{/each}}
-
-            <div class="charCross flexcol flex-group-center">
-                <span class="characteristicsSpan">Unnat</span>
-            </div>
-            {{#each system.characteristics as |char key|}}
-            {{#unless (compareString key "inf")}}
-            <div>
-
-                <input type="number" class="combat-resources" data-target="system.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number" disabled/>
-            </div>
-            {{/unless}}
-            {{/each}}
-            <div class="charCross flexcol flex-group-center">  
-                <span class="characteristicsSpan">Adv</span>
-            </div>
-            {{#each system.characteristics as |char key|}}
-            {{#unless (compareString key "inf")}}
-
-            <select class="charSelect" name="system.characteristics.{{key}}.advance" data-dtype="Number" {{#unless ../isGM}}disabled{{/unless}}>
-                {{selectOptions ../advances selected=char.advance valueAttr="value" labelAttr="label"}}
-
-            </select>
-            {{/unless}}
-            {{/each}}
-
-
-            <div class="charCross flexcol flex-group-center"> 
-                <span class="characteristicsSpan">Temp</span>
-            </div>
-            {{#each system.characteristics as |char key|}}
-            {{#unless (compareString key "inf")}}
-            <input type="number" class="combat-resources" data-target="system.characteristics.{{key}}.mod" value="{{char.mod}}" data-dtype="Number"/>
-
-            {{/unless}}
-            {{/each}}
-
-
-            <div class="charCross flexcol flex-group-center">
-                <span class="characteristicsSpan">Total</span>
-            </div>
-            {{#each system.characteristics as |char key|}}
-            {{#unless (compareString key "inf")}}
-            <div class="charCross flexcol flex-group-center">
-                <span class="char-total rollable button" data-roll-type="char" data-target="{{char.total}}" data-label="{{char.label}}" data-char="{{key}}" title="Bonus: {{char.bonus}}">{{char.total}}</span>
-            </div>
-            {{/unless}}
-            {{/each}}
-
-
-
         </div>
     </div>
-</div>
+</section>

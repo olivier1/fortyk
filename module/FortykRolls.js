@@ -553,10 +553,10 @@ returns the roll message*/
             let id = foundry.utils.randomID(5);
             let popupTemplate = "systems/fortyk/templates/chat/chat-test-popup.html";
             templateOptions.id = id;
-            let renderedPopupTemplate = await renderTemplate(popupTemplate, templateOptions);
+            let renderedPopupTemplate = await foundry.applications.handlebars.renderTemplate(popupTemplate, templateOptions);
             result.template = renderedPopupTemplate;
         } else {
-            let renderedTemplate = await renderTemplate(template, templateOptions);
+            let renderedTemplate = await foundry.applications.handlebars.renderTemplate(template, templateOptions);
             await roll.toMessage({
                 author: game.user,
                 speaker: { actor, alias: name },
@@ -1287,10 +1287,10 @@ returns the roll message*/
             let id = foundry.utils.randomID(5);
             templateOptions.id = id;
             template = "systems/fortyk/templates/chat/chat-forcefield-test-popup.html";
-            renderedTemplate = await renderTemplate(template, templateOptions);
+            renderedTemplate = await foundry.applications.handlebars.renderTemplate(template, templateOptions);
             return { hits: remainingHits, template: renderedTemplate, results: hitResults };
         }
-        renderedTemplate = await renderTemplate(template, templateOptions);
+        renderedTemplate = await foundry.applications.handlebars.renderTemplate(template, templateOptions);
 
         let chatOptions = {
             author: game.user,
@@ -3636,7 +3636,7 @@ returns the roll message*/
                             messages.push(chatOptions);
                         }
                         damageOptions.results.push(`</div>`);
-                        let renderedDamageTemplate = await renderTemplate(damageTemplate, damageOptions);
+                        let renderedDamageTemplate = await foundry.applications.handlebars.renderTemplate(damageTemplate, damageOptions);
                         var txt = document.createElement("textarea");
                         txt.innerHTML = renderedDamageTemplate;
                         renderedDamageTemplate = txt.value;

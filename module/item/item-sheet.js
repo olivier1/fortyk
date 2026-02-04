@@ -6,39 +6,268 @@
 import { objectByString } from "../utilities.js";
 import { ActiveEffectDialog } from "../dialog/activeEffect-dialog.js";
 import { ManageRequirementsDialog } from "../dialog/manageRequirements-dialog.js";
-export class FortyKItemSheet extends ItemSheet {
+const { HandlebarsApplicationMixin } = foundry.applications.api;
+
+export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applications.sheets.ItemSheetV2) {
     /** @override */
-    static get defaultOptions() {
-        return foundry.utils.mergeObject(super.defaultOptions, {
-            classes: ["fortyk", "sheet", "item"],
-            width: 520,
-            height: 600,
-            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "main" }],
-            default: null
-        });
+    static DEFAULT_OPTIONS= {
+        tag:"form",
+        form:{
+            handler: FortyKItemSheet._onSubmitForm,
+            submitOnChange: true
+        },
+        classes: ["fortyk", "sheet", "item"],
+        position:{width: 520,
+                  height: "auto"},
+        window: {
+            controls: [
+                {
+                    icon: 'fas fa-asterisk',
+                    label: 'Manage AEs',
+                    action: 'manageAEs',
+                    visible: this.isGM // Only show if the user is the owner (GM)
+                }
+            ]
+        },
+        actions: {
+
+            manageAEs: this._onModifierClick
+        }
+
+    }
+    static PARTS = {
+        form: {
+            template: 'systems/fortyk/templates/item/item-sheet.html',
+            scrollable: ['']
+        },
+        ammunitionMain: {
+            template: 'systems/fortyk/templates/item/itemParts/ammunition-main.html'
+        },
+        mods: {
+            template: 'systems/fortyk/templates/item/itemParts/mods.html'
+        },
+        description: {
+            template: 'systems/fortyk/templates/item/itemParts/description.html'
+        },
+        armorMain: {
+            template: 'systems/fortyk/templates/item/itemParts/armor-main.html'
+        },
+        armor: {
+            template: 'systems/fortyk/templates/item/itemParts/armor.html'
+        },
+        armorMods: {
+            template: 'systems/fortyk/templates/item/itemParts/armor-mods.html'
+        },
+        eaMain: {
+            template: 'systems/fortyk/templates/item/itemParts/eliteAdvance-main.html'
+        },
+        eaChars: {
+            template: 'systems/fortyk/templates/item/itemParts/eliteAdvance-chars.html'
+        },
+        eaPB: {
+            template: 'systems/fortyk/templates/item/itemParts/eliteAdvance-pointBuy.html'
+        },
+        eaPath: {
+            template: 'systems/fortyk/templates/item/itemParts/eliteAdvance-path.html'
+        },
+        meleeMain: {
+            template: 'systems/fortyk/templates/item/itemParts/meleeWeapon-main.html'
+        },
+        weaponMods: {
+            template: 'systems/fortyk/templates/item/itemParts/weapon-mods.html'
+        },
+        altProfile: {
+            template: 'systems/fortyk/templates/item/itemParts/alternate-profile.html'
+        },
+        rangedMain: {
+            template: 'systems/fortyk/templates/item/itemParts/rangedWeapon-main.html'
+        },
+    }
+    static TABS = {
+        sheet:{
+            tabs:[
+
+            ]
+        }
+    }
+    _getTabsConfig(group) {
+        const tabs = foundry.utils.deepClone(super._getTabsConfig(group));
+
+        const item = this.document;
+        const itemType=item.type;
+        console.log(itemType);
+        // Modify tabs based on document properties
+        switch(itemType){
+            case "ammunition":
+
+                tabs.tabs.push( { id: 'ammunitionMain', group: 'sheet', label: `Main` });
+                if(!item.system.default.value){
+                    tabs.tabs.push({ id: 'mods', group: 'sheet', label: `Mods` });
+                }
+                tabs.tabs.push({ id: 'description', group: 'sheet', label: `Description` });
+                tabs.initial="ammunitionMain";
+                break;
+            case "armor":
+
+                tabs.tabs.push( { id: 'armorMain', group: 'sheet', label: `Main` });
+                tabs.tabs.push({ id: 'armor', group: 'sheet', label: `Armor` });
+                tabs.tabs.push({ id: 'armorMods', group: 'sheet', label: `Mods` });
+
+                tabs.tabs.push({ id: 'description', group: 'sheet', label: `Description` });
+                tabs.initial="armorMain";
+                break;
+            case "eliteAdvance":
+                const eaType=item.system.type.value;
+                tabs.initial="eaMain";
+                tabs.tabs.push( { id: 'eaMain', group: 'sheet', label: `Main` });
+                switch(eaType){
+                    case "charactertype":
+
+                        tabs.tabs.push( { id: 'eaChars', group: 'sheet', label: `Characteristics` });
+                        tabs.tabs.push( { id: 'eaPB', group: 'sheet', label: `Point Buy` });
+                        break;
+                    case "planet":
+
+                        tabs.tabs.push( { id: 'eaChars', group: 'sheet', label: `Characteristics` });
+                        break;
+                    case "background":
+
+                        tabs.tabs.push( { id: 'eaChars', group: 'sheet', label: `Characteristics` });
+                        break;
+                    case "role":
+
+                        break;
+                    case "ea":
+
+                        tabs.tabs.push( { id: 'eaChars', group: 'sheet', label: `Characteristics` });
+                        break;
+                    case "asuryanipath":
+
+                        tabs.tabs.push( { id: 'eaPath', group: 'sheet', label: `Path Req &amp; Abilities` });
+                        break;
+                }
+                tabs.tabs.push( { id: 'description', group: 'sheet', label: `Description` });
+                break;
+            case "meleeWeapon":
+                tabs.tabs.push( { id: 'meleeMain', group: 'sheet', label: `Main` });
+                tabs.tabs.push({ id: 'weaponMods', group: 'sheet', label: `Mods` });
+                tabs.tabs.push({ id: 'altProfile', group: 'sheet', label: `Alternate Profiles` });
+
+                tabs.tabs.push({ id: 'description', group: 'sheet', label: `Description` });
+                tabs.initial="meleeMain";
+                break;
+            case "rangedWeapon":
+                tabs.tabs.push( { id: 'rangedMain', group: 'sheet', label: `Main` });
+                tabs.tabs.push({ id: 'weaponMods', group: 'sheet', label: `Mods` });
+                tabs.tabs.push({ id: 'altProfile', group: 'sheet', label: `Alternate Profiles` });
+
+                tabs.tabs.push({ id: 'description', group: 'sheet', label: `Description` });
+                tabs.initial="rangedMain";
+                break;
+        }
+
+
+        return tabs;
+    }
+    _configureRenderOptions(options){
+        super._configureRenderOptions(options);
+        const parts=options.parts;
+        const item = this.document;
+        const itemType=item.type;
+        let filter;
+        let filteredArray;
+        switch(itemType){
+            case "ammunition":
+                filter=['form',
+                        'ammunitionMain',
+                        'mods',
+                        'description'];
+                filteredArray = parts.filter(item => filter.includes(item));
+
+                break;
+            case "armor":
+                filter=['form',
+                        'armorMain',
+                        'armor',
+                        'armorMods',
+                        'description'];
+                filteredArray = parts.filter(item => filter.includes(item));
+
+                break;
+            case "eliteAdvance":
+                filter=['form',
+                        'eaMain',
+                        'eaChars',
+                        'eaPB',
+                        'eaPath',
+                        'description'];
+                filteredArray = parts.filter(item => filter.includes(item));
+
+                break;
+            case "meleeWeapon":
+                filter=['form',
+                        'meleeMain',
+                        'weaponMods',
+                        'altProfile',
+                        'description'];
+                filteredArray = parts.filter(item => filter.includes(item));
+
+                break;
+            case "rangedWeapon":
+                filter=['form',
+                        'rangedMain',
+                        'weaponMods',
+                        'altProfile',
+                        'description'];
+                filteredArray = parts.filter(item => filter.includes(item));
+
+                break;
+            default:
+                filter=['form'];
+                filteredArray = parts.filter(item => filter.includes(item));
+        }
+        options.parts=filteredArray;
+        return options;
+    }
+    _configureRenderParts(options) {
+        const parts = foundry.utils.deepClone(this.constructor.PARTS);
+        Object.values(parts).forEach(p => p.templates ??= []);
+        const item = this.document; // Access the item document
+        const templatePath = `systems/fortyk/templates/item/item-${item.type}-sheet.html`;
+
+        // Update the part's template dynamically
+        parts.form.template = templatePath;
+        return parts;
     }
 
-    /** @override */
-    get template() {
-        let type = this.item.type;
-        return `systems/fortyk/templates/item/item-${type}-sheet.html`;
 
-        // Return a single sheet for all item types.
-
-        // Alternatively, you could use the following return statement to do a
-        // unique item sheet by type, like `weapon-sheet.html`.
-
-        // return `${path}/${this.item.system.type}-sheet.html`;
-    }
 
     /* -------------------------------------------- */
 
     /** @override */
-    async getData() {
-        const item = this.item;
-        const data = this.item;
+    async _prepareContext(options) {
+
+        const item = this.document;
+        const data = this.document;
+        data.tabs=this._prepareTabs("sheet");
+        data.enrichedDescription= await foundry.applications.ux.TextEditor.implementation.enrichHTML(data.system.description.value,
+                                                                                                     {
+            // Only show secret blocks to owner
+            secrets: this.document.isOwner,
+            // For Actors and Items
+            relativeTo: this.document
+        });
+        if(game.user.isGM){
+            data.enrichedGMDescription= await foundry.applications.ux.TextEditor.implementation.enrichHTML(data.system.description.gm,
+                                                                                                           {
+                // Only show secret blocks to owner
+                secrets: this.document.isOwner,
+                // For Actors and Items
+                relativeTo: this.document
+            });
+        }
         data.mods = data.effects.filter((item) => item.flags?.fortyk?.modsystem);
-        if (this.item.type === "skill") {
+        if (this.document.type === "skill") {
             //GET THE SKILLS WITH CHILDREN
             if (this.actor) {
                 data.skillgroups = this.actor.items.filter(function (item) {
@@ -65,12 +294,12 @@ export class FortyKItemSheet extends ItemSheet {
         if (this.actor && this.actor.type === "vehicle") {
             data.vehicle = true;
         }
-        if (this.item.type === "eliteAdvance") {
-            if (this.item.system.type.value === "planet") {
+        if (this.document.type === "eliteAdvance") {
+            if (this.document.system.type.value === "planet") {
                 data.chars = foundry.utils.duplicate(game.fortyk.FORTYK.skillCharsInf);
                 data.chars.any = { name: "any", caps: "ANY" };
             }
-            if(this.item.system.type.value === "asuryanipath"){
+            if(this.document.system.type.value === "asuryanipath"){
                 data.paths=await this.getAsuryaniPathAbilities();
                 data.asuryani=item.system.asuryani;
             }
@@ -103,7 +332,7 @@ export class FortyKItemSheet extends ItemSheet {
                 data.compendiumItems = [];
             }
         }
-        if (this.item.type === "psychicPower") {
+        if (this.document.type === "psychicPower") {
             let macroCompendium = game.packs.get("fortyk.fortykmacros");
             let psyFolder = macroCompendium.folders.get("MQBztfL3KvhTnCw9");
             let content = psyFolder.contents;
@@ -112,7 +341,7 @@ export class FortyKItemSheet extends ItemSheet {
                 { value: "gm", label: "GM" },
                 { value: "user", label: "User" }
             ];
-            if(this.item.system.class.value==="Psychic Bolt"||this.item.system.class.value==="Psychic Barrage"||this.item.system.class.value==="Psychic Storm"||this.item.system.class.value==="Psychic Blast"||this.item.system.class.value==="Navigator Gaze"){
+            if(this.document.system.class.value==="Psychic Bolt"||this.document.system.class.value==="Psychic Barrage"||this.document.system.class.value==="Psychic Storm"||this.document.system.class.value==="Psychic Blast"||this.document.system.class.value==="Navigator Gaze"){
                 data.attack=true;
             }else{
                 data.attack=false;
@@ -125,11 +354,11 @@ export class FortyKItemSheet extends ItemSheet {
         if (item.type === "knightChassis") {
             data.quirks = await this.getQuirks();
         }
-        data.item = this.item;
+        data.item = this.document;
         data.isGM = game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
         data.FORTYK = game.fortyk.FORTYK;
-        data.editable = this.options.editable;
+        data.editable = this.isEditable;
         return data;
     }
     async getQuirks() {
@@ -234,7 +463,7 @@ export class FortyKItemSheet extends ItemSheet {
     /** @override */
     setPosition(options = {}) {
         const position = super.setPosition(options);
-        const sheetBody = this.element.find(".sheet-body");
+        const sheetBody = $(this.element).find(".sheet-body");
         const bodyHeight = position.height - 192;
         sheetBody.css("height", bodyHeight);
         return position;
@@ -243,15 +472,15 @@ export class FortyKItemSheet extends ItemSheet {
     /* -------------------------------------------- */
 
     /** @override */
-    activateListeners(html) {
-        super.activateListeners(html);
+    _onRender(context, options) {
+        super._onRender(context, options);
+        const html=$(this.element);
 
         // Everything below here is only needed if the sheet is editable
-        if (!this.options.editable) return;
+        if (!this.isEditable) return;
         html.find(".skill-type").change(this._onParentChange.bind(this));
         html.find(".skill-children").click(this._onChildrenClick.bind(this));
         html.find(".special").click(this._onSpecialClick.bind(this));
-        html.find(".modifier").click(this._onModifierClick.bind(this));
         html.find(".addProfile").click(this._onAddProfileClick.bind(this));
         html.find(".removeProfile").click(this._onRemoveProfileClick.bind(this));
         html.find(".clone").click(this._onCloneClick.bind(this));
@@ -277,37 +506,50 @@ export class FortyKItemSheet extends ItemSheet {
         $("input[type=text]").focusin(function () {
             $(this).select();
         });
+        //stop the change event on all inputs because its jank
+        $("input[type=text]").change(function (event){
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        });
+        $("input[type=number]").change(function (event){
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        });
+        $("select:not([class])").change(function (event){
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        });
     }
     async _onNavFlagConfirmClick(event){
         let navFlagInput=document.getElementById("navpowerflaginput");
         let flag=navFlagInput.value;
-        let navPowerFlag=this.item.getFlag("fortyk","navpowerflag");
+        let navPowerFlag=this.document.getFlag("fortyk","navpowerflag");
         if(flag!==navPowerFlag){
-            this.item.setFlag("fortyk","navpowerflag",flag);
+            this.document.setFlag("fortyk","navpowerflag",flag);
             if(navPowerFlag){
-                this.item.setFlag("fortyk",navPowerFlag,false);
+                this.document.setFlag("fortyk",navPowerFlag,false);
             }
 
-            this.item.setFlag("fortyk",flag,true);
+            this.document.setFlag("fortyk",flag,true);
         }
     }
     async _onManageReqsClick(event) {
         event.preventDefault();
-        let dialog = new ManageRequirementsDialog({ item: this.item, flag:"requirements" });
+        let dialog = new ManageRequirementsDialog({ item: this.document, flag:"requirements" });
         dialog.render(true, { title: "Manage Requirements" });
     }
     async _onManageMasteryReqsClick(event){
         event.preventDefault();
-        let dialog = new ManageRequirementsDialog({ item: this.item, flag:"masteryrequirements" });
+        let dialog = new ManageRequirementsDialog({ item: this.document, flag:"masteryrequirements" });
         dialog.render(true, { title: "Manage Mastery Requirements" });
     }
     async _onDeleteModClick(event) {
         event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;
-        let item = this.item;
-        let activeEffect = await this.item.getEmbeddedDocument("ActiveEffect", itemId);
+        let item = this.document;
+        let activeEffect = await this.document.getEmbeddedDocument("ActiveEffect", itemId);
 
-        let renderedTemplate = renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
         renderedTemplate.then((content) => {
             new Dialog({
                 title: "Deletion Confirmation",
@@ -329,7 +571,7 @@ export class FortyKItemSheet extends ItemSheet {
                                     }
                                 }
                             } 
-                            await this.item.deleteEmbeddedDocuments("ActiveEffect", [itemId]);
+                            await this.document.deleteEmbeddedDocuments("ActiveEffect", [itemId]);
                             this.render(true);
                             let apps = item.parent.apps;
                             for (const appKey in apps) {
@@ -366,14 +608,14 @@ export class FortyKItemSheet extends ItemSheet {
         let name = pathSelect.options[pathSelect.selectedIndex].text;
         let typeSelect=document.getElementById("path-ability-type-select");
         let abilityType=typeSelect.value;
-        let item=this.item;
+        let item=this.document;
         let updatePath=`system.asuryani.${abilityType}`;
         let update={};
         update[updatePath]={id:uuid, name:name};
         item.update(update);
     }
     async _onAddItemClick(event) {
-        let bonuses = this.item.system.items;
+        let bonuses = this.document.system.items;
         let isORInput = document.getElementById("OR");
         let isOR = isORInput?.checked;
         let isANDInput = document.getElementById("AND");
@@ -418,32 +660,32 @@ export class FortyKItemSheet extends ItemSheet {
         }
 
         bonuses.push(bonus);
-        this.item.update({ "system.items": bonuses });
+        this.document.update({ "system.items": bonuses });
         this.chosenItem = null;
         this.chosenItemName = null;
         document.getElementById("add").setAttribute("disabled", "");
         this.render();
     }
     _onRemoveItemClick(event) {
-        let bonuses = this.item.system.items;
+        let bonuses = this.document.system.items;
         if (bonuses.length) {
             bonuses.pop();
-            this.item.update({ "system.items": bonuses });
+            this.document.update({ "system.items": bonuses });
         }
     }
     _onDeleteIndexClick(event) {
-        let bonuses = this.item.system.items;
+        let bonuses = this.document.system.items;
         let node = event.currentTarget;
         let index = parseInt(node.dataset.index);
         bonuses.splice(index, 1);
-        this.item.update({ "system.items": bonuses });
+        this.document.update({ "system.items": bonuses });
     }
     _onCloneClick(event) {
-        let item = this.item.clone();
+        let item = this.document.clone();
         Item.create(foundry.utils.duplicate(item));
     }
     async _onAddProfileClick(event) {
-        let item = this.item;
+        let item = this.document;
         if (!item.getFlag("fortyk", "profiles")) {
             await item.setFlag("fortyk", "profiles", [""]);
         } else {
@@ -453,7 +695,7 @@ export class FortyKItemSheet extends ItemSheet {
         }
     }
     async _onRemoveProfileClick(event) {
-        let item = this.item;
+        let item = this.document;
 
         let profiles = item.getFlag("fortyk", "profiles");
         profiles.pop();
@@ -464,13 +706,13 @@ export class FortyKItemSheet extends ItemSheet {
         const dataset = event.currentTarget.dataset;
         const uuid = event.currentTarget.value;
         let index = dataset.index;
-        let item = this.item;
+        let item = this.document;
         let profiles = item.getFlag("fortyk", "profiles");
         profiles.splice(index, 1, uuid);
         item.setFlag("fortyk", "profiles", profiles);
     }
     async _onMakeAmmoClick(event) {
-        let weapon = this.item._source;
+        let weapon = this.document._source;
         let ammoData = {};
         let actor = this.actor;
         ammoData["name"] = `${weapon.name} Ammunition`;
@@ -500,17 +742,17 @@ export class FortyKItemSheet extends ItemSheet {
             await actor.update({ "system.knight.components": components });
         }
     }
-    async _onModifierClick(event) {
-        /*let item=this.item;
+    static async _onModifierClick(event) {
+        /*let item=this.document;
 
         if(item.effects.size===0){
             let disabled=false;
-            if(this.item.type==="psychicPower"){
+            if(this.document.type==="psychicPower"){
                 disabled=true;
             }
             let modifiersData={
                 id: "modifiers",
-                label: this.item.name,
+                label: this.document.name,
                 changes:[],
                 transfer:true,
                 disabled:disabled}
@@ -523,7 +765,7 @@ export class FortyKItemSheet extends ItemSheet {
 
 
         new ActiveEffectConfig(ae).render(true);*/
-        let item = this.item;
+        let item = this.document;
         let sheet = this;
 
         var options = {
@@ -551,16 +793,16 @@ export class FortyKItemSheet extends ItemSheet {
     }
 
     async _onSpecialClick(event) {
-        let item = this.item;
+        let item = this.document;
         let specials = {};
-        if (this.item.type === "armor") {
+        if (this.document.type === "armor") {
             specials = foundry.utils.duplicate(game.fortyk.FORTYK.armorFlags);
         } else {
             specials = foundry.utils.duplicate(game.fortyk.FORTYK.weaponFlags);
         }
 
 
-        let flags = this.item._source.flags.fortyk;
+        let flags = this.document._source.flags.fortyk;
 
         for (const flag in flags) {
             if (specials[flag]) {
@@ -575,34 +817,35 @@ export class FortyKItemSheet extends ItemSheet {
             }
         }
         let templateOptions = { specials: specials };
-        let renderedTemplate = renderTemplate(
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate(
             "systems/fortyk/templates/item/dialogs/weapon-special-dialog.html",
             templateOptions
         );
 
         renderedTemplate.then((content) => {
-            new Dialog({
-                title: "Weapon Special Qualities",
+            foundry.applications.api.DialogV2.wait({
+                window:{title: "Weapon Special Qualities"},
                 content: content,
-                buttons: {
-                    submit: {
+                buttons: [
+                    {
                         label: "Confirm",
-                        callback: async (html) => {
+                        callback: async (event) => {
+                            let html=event.target.form.elements;
                             for (let [key, spec] of Object.entries(specials)) {
                                 let bool = false;
-                                let value = html.find(`input[id=${key}]`).is(":checked");
+                                let value = html[key].checked;
                                 if (value !== spec.value) {
                                     bool = true;
                                 }
 
                                 if (bool && spec.num === undefined) {
-                                    await this.item.setFlag("fortyk", key, value);
+                                    await this.document.setFlag("fortyk", key, value);
                                 }
 
                                 let num = false;
                                 let number;
                                 if (spec.num !== undefined && value) {
-                                    number = html.find(`input[id=${key}num]`).val();
+                                    number = html[`${key}num`].value;
                                     if (isNaN(parseFloat(number))) {
                                         if (number !== spec.num) {
                                             num = true;
@@ -616,20 +859,20 @@ export class FortyKItemSheet extends ItemSheet {
                                 } else if (
                                     spec.num !== undefined &&
                                     !value &&
-                                    this.item.getFlag("fortyk", key) !== undefined
+                                    this.document.getFlag("fortyk", key) !== undefined
                                 ) {
-                                    await this.item.setFlag("fortyk", key, false);
+                                    await this.document.setFlag("fortyk", key, false);
                                 }
 
                                 if (num) {
-                                    await this.item.setFlag("fortyk", key, number);
+                                    await this.document.setFlag("fortyk", key, number);
                                 }
                             }
                         }
                     }
-                },
+                ],
                 default: "submit"
-            }).render(true);
+            });
         });
     }
     async _weaponModEdit(event) {
@@ -637,10 +880,11 @@ export class FortyKItemSheet extends ItemSheet {
         if (!this.updateObj) {
             this.updateObj = {};
         }
-        let item = this.item;
+        let item = this.document;
         let target = event.target.attributes["data-target"].value;
         let newAmt = event.target.value;
-        let type = event.target.attributes["data-dtype"].value;
+        let type = event.target.attributes["data-dtype"]?.value;
+        type??="String";
         if (type === "Number") {
             newAmt = parseFloat(newAmt);
             if (isNaN(newAmt)) {
@@ -668,7 +912,7 @@ export class FortyKItemSheet extends ItemSheet {
             if (!this.updateObj) {
                 this.updateObj = {};
             }
-            let item = this.item;
+            let item = this.document;
             let target = event.target.attributes["data-target"].value;
             let newAmt = event.target.value;
             let type = event.target.attributes["data-dtype"].value;
@@ -692,15 +936,15 @@ export class FortyKItemSheet extends ItemSheet {
         /*let value=event.currentTarget.value;
 
         if(value!==""){
-            let item=this.item;
+            let item=this.document;
             if(item.system.hasChildren){
                 let children=this.actor.items.filter(item=>function(item){
-                    return item.system.parent.value===this.item.system.name.value});
+                    return item.system.parent.value===this.document.system.name.value});
                 for(let i of children){
                     await i.update({'system.parent.value':""});
 
                 }
-                await this.item.update({'system.hasChildren.value':false});
+                await this.document.update({'system.hasChildren.value':false});
             }
 
 
@@ -711,7 +955,7 @@ export class FortyKItemSheet extends ItemSheet {
     async _onChildrenClick(event) {
         let value = event.currentTarget.checked;
         if (value) {
-            await this.item.update({ "system.parent.value": "" });
+            await this.document.update({ "system.parent.value": "" });
         }
     }
     async _onHardpointEdit(event) {
@@ -719,7 +963,7 @@ export class FortyKItemSheet extends ItemSheet {
         if (!this.updateObj) {
             this.updateObj = {};
         }
-        let item = this.item;
+        let item = this.document;
         let location = event.target.attributes["data-location"].value;
         let type = event.target.attributes["data-type"].value;
         let newAmt = event.target.value;
@@ -757,7 +1001,7 @@ export class FortyKItemSheet extends ItemSheet {
             if (!this.updateObj) {
                 this.updateObj = {};
             }
-            let item = this.item;
+            let item = this.document;
             let location = event.target.attributes["data-location"].value;
             let type = event.target.attributes["data-type"].value;
             let newAmt = event.target.value;
@@ -787,5 +1031,22 @@ export class FortyKItemSheet extends ItemSheet {
                 this.updateObj = undefined;
             }
         }
+    }
+    static async _onSubmitForm(event, form, formData){
+        console.log(event,formData);
+        event.preventDefault();
+        let object=formData.object;
+        let description=object.system?.description?.value;
+        let GMDescription=object.system?.description?.gm;
+
+        if(description){
+            object.system.description.value=foundry.utils.cleanHTML(description);
+
+        }
+        if(GMDescription){
+            object.system.description.gm=foundry.utils.cleanHTML(GMDescription);
+
+        }
+        await this.document.update(formData.object);
     }
 }
