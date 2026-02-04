@@ -82,7 +82,7 @@ if(bl){
 
 new Dialog({
   title: title,
-  content: `<form>${options}</form>`,
+  content: `<setion>${options}</section>`,
   buttons: {
 
     d6: {

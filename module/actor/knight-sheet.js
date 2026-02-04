@@ -4,8 +4,8 @@ import FortyKBaseActorSheet from "./base-sheet.js";
 import { objectByString } from "../utilities.js";
 export class FortyKKnightSheet extends FortyKBaseActorSheet {
     /** @override */
-    static get defaultOptions() {
-        return foundry.utils.mergeObject(super.defaultOptions, {
+    static DEFAULT_OPTIONS ={
+            tag: 'form',
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/knight-sheet.html",
             width: 980,
@@ -13,11 +13,11 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "mechbay" }],
             default: null,
             scrollY: [".left-mechbay", ".info4", ".sheet-content", ".sheet-content-knight"]
-        });
+
     }
     /** @override */
-    async getData() {
-        const data = await super.getData();
+    async _prepareContext(options) {
+        const data = await super._prepareContext(options);
         const actor = data.actor;
         const system = actor.system;
         data.isGM = game.user.isGM;
@@ -624,7 +624,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         chassis = chassis.filter((chassis) => chassis.type === "knightChassis");
         let templateOptions = { chassis: chassis };
         let actor = this.actor;
-        let renderedTemplate = renderTemplate(
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate(
             "systems/fortyk/templates/actor/dialogs/knight-chassis-dialog.html",
             templateOptions
         );
@@ -712,7 +712,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         });
         let templateOptions = { spirit: spirit };
         let actor = this.actor;
-        let renderedTemplate = renderTemplate(
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate(
             "systems/fortyk/templates/actor/dialogs/knight-spirit-dialog.html",
             templateOptions
         );
@@ -1019,7 +1019,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         let itemId = event.currentTarget.attributes["data-item-id"].value;
         let item = await this.actor.getEmbeddedDocument("Item", itemId);
 
-        let renderedTemplate = renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
         renderedTemplate.then((content) => {
             new Dialog({
                 title: "Deletion Confirmation",
@@ -1050,7 +1050,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         let itemId = event.currentTarget.attributes["data-item-id"].value;
         let item = await this.actor.getEmbeddedDocument("Item", itemId);
 
-        let renderedTemplate = renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
         renderedTemplate.then((content) => {
             new Dialog({
                 title: "Deletion Confirmation",
@@ -1079,7 +1079,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         let itemId = event.currentTarget.attributes["data-item-id"].value;
         let item = await this.actor.getEmbeddedDocument("Item", itemId);
 
-        let renderedTemplate = renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
         renderedTemplate.then((content) => {
             new Dialog({
                 title: "Deletion Confirmation",
@@ -1143,7 +1143,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;
         let item = await this.actor.getEmbeddedDocument("Item", itemId);
-        let renderedTemplate = renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
         renderedTemplate.then((content) => {
             new Dialog({
                 title: "Deletion Confirmation",
@@ -1203,7 +1203,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;
         let item = await this.actor.getEmbeddedDocument("Item", itemId);
-        let renderedTemplate = renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
         renderedTemplate.then((content) => {
             new Dialog({
                 title: "Deletion Confirmation",
@@ -1370,7 +1370,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             hits = 1;
         }
         options.hits = hits;
-        let renderedTemplate = renderTemplate("systems/fortyk/templates/actor/dialogs/damage-dialog.html", options);
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/damage-dialog.html", options);
         let formula = dataset["formula"];
         renderedTemplate.then((content) => {
             new Dialog({

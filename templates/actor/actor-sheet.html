@@ -1,67 +1,22 @@
 
-<form class="{{cssClass}} charSheet flexcol" autocomplete="off">
+<div class="{{cssClass}}" autocomplete="off">
+
     {{#unless characterCreation}}
     {{!-- Sheet Header --}}
-    <header class="sheet-header flexrow">
+    <header class="pc-sheet-header sheet-header flexrow">
 
-        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
-        {{!-- Sheet Tab Navigation --}}
-        <nav class="sheet-tabs tabs grid grid-3col" data-group="primary">
+        <img class="profile-img" src="{{actor.img}}" data-action="editImage" data-field="img" alt="Portrait" title="{{actor.name}}" />
+       {{>'templates/generic/tab-navigation.hbs'}}
 
-            <a class="item bat" data-tab="main">Main</a>
-            <a class="item bat" data-tab="skills">Skills</a>
-            <a class="item bat" data-tab="tnt">Talents & Traits</a>
-            <a class="item bat" data-tab="gear">Gear & Cybernetics</a>
-            <a class="item bat" data-tab="exp">Exp & Missions</a>
-
-
-            <a class="item bat" data-tab="psykana">Psykana</a>
-            <a class="item bat" data-tab="combat">Combat</a>
-            <a class="item bat" data-tab="corruption">Corruption, Insanity & Injury</a>
-            <a class="item bat" data-tab="background">Background & Notes</a>
-
-        </nav>
 
     </header>
 
 
 
-    {{!-- Sheet Body --}}
-    <section class="sheet-content">
+    {{else}}
+    {{> "systems/fortyk/templates/actor/character-creation.html"}}
+    {{/unless}}
+</div>
 
-        {{!-- Main Tab --}}
-        <div class="tab main" data-group="primary" data-tab="main">
 
-            {{> "systems/fortyk/templates/actor/actor-main.html"}}
-        </div>
-
-        <div class="tab skills"  data-group="primary" data-tab="skills">
-            {{> "systems/fortyk/templates/actor/actor-skills.html"}}
-        </div>
-        <div class="tab tnt" data-group="primary" data-tab="tnt">
-            {{> "systems/fortyk/templates/actor/actor-tnt.html"}}
-        </div>
-        <div class="tab exp" data-group="primary" data-tab="exp">
-            {{> "systems/fortyk/templates/actor/actor-exp.html"}}
-        </div>
-        <div class="tab combat" data-group="primary" data-tab="combat">
-            {{> "systems/fortyk/templates/actor/actor-combat.html"}}
-        </div>
-        <div class="tab gear" data-group="primary" data-tab="gear">
-            {{> "systems/fortyk/templates/actor/actor-gear.html"}}
-        </div>
-        <div class="tab psykana" data-group="primary" data-tab="psykana">
-            {{> "systems/fortyk/templates/actor/actor-psykana.html"}}
-        </div>
-        <div class="tab corruption" data-group="primary" data-tab="corruption">
-            {{> "systems/fortyk/templates/actor/actor-corruption.html"}}
-        </div>
-        <div class="tab background" data-group="primary" data-tab="background">
-            {{> "systems/fortyk/templates/actor/actor-background.html"}}
-        </div>
-        {{else}}
-        {{> "systems/fortyk/templates/actor/character-creation.html"}}
-        {{/unless}}
-    </section>
-</form>
 

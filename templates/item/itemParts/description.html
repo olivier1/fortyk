@@ -1,0 +1,36 @@
+<section class="tab sheet-content {{tabs.description.id}} {{tabs.description.cssClass}}"
+         data-tab="{{tabs.description.id}}"
+         data-group="{{tabs.description.group}}">
+    {{#if isGM}}
+    <div class="item-description">
+        <label>GM Description:</label>
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.gm"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.gm}}">
+            {{{enrichedGMDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedGMDescription}}}
+        {{/if}}
+    </div>
+    {{/if}}
+    <div class="item-description">
+        <label>Description:</label>
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.value"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.value}}">
+            {{{enrichedDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedDescription}}}
+        {{/if}}
+    </div>
+</section>

@@ -1,129 +1,61 @@
-<div class="sheet-corruption-insanity flexrow">
+<section class="tab sheet-content {{tabs.corruption.id}} {{tabs.corruption.cssClass}}"
+         data-tab="{{tabs.corruption.id}}"
+         data-group="{{tabs.corruption.group}}">
+    <div class="sheet-corruption-insanity flexrow">
 
-    {{#unless actor.flags.fortyk.incorruptibledevotion}}
-    <div class="corruption flexcol">
-        <div class="corr-item flexrow">
-            {{#if bcCorruption}}
-            <div class="flexcol">
-                <div class="flexrow">
-                    <div class="flexcol">
-                        <label>Khorne:</label>
-                        <input type="number" name="system.secChar.corruption.khorne" value="{{system.secChar.corruption.khorne}}">
-                    </div>
-                    <div class="flexcol">
-                        <label>Nurgle:</label>
-                        <input type="number" name="system.secChar.corruption.nurgle" value="{{system.secChar.corruption.nurgle}}">
-                    </div>
-                    <div class="flexcol">
-                        <label>Slaanesh:</label>
-                        <input type="number" name="system.secChar.corruption.slaanesh" value="{{system.secChar.corruption.slaanesh}}">
-                    </div>
-                    <div class="flexcol">
-                        <label>Tzeentch:</label>
-                        <input type="number" name="system.secChar.corruption.tzeentch" value="{{system.secChar.corruption.tzeentch}}">
-                    </div>
-                    {{#if actor.flags.fortyk.malice}}
-                    <div class="flexcol">
-                        <label>Malice:</label>
-                        <input type="number" name="system.secChar.corruption.malice" value="{{system.secChar.corruption.malice}}">
-                    </div>
-                    {{/if}}
+        {{#unless actor.flags.fortyk.incorruptibledevotion}}
+        <div class="corruption flexcol">
+            <div class="corr-item flexrow">
+                {{#if bcCorruption}}
+                <div class="flexcol">
+                    <div class="flexrow">
+                        <div class="flexcol">
+                            <label>Khorne:</label>
+                            <input type="number" class="combat-resources" data-target="system.secChar.corruption.khorne" value="{{system.secChar.corruption.khorne}}">
+                        </div>
+                        <div class="flexcol">
+                            <label>Nurgle:</label>
+                            <input type="number" class="combat-resources" data-target="system.secChar.corruption.nurgle" value="{{system.secChar.corruption.nurgle}}">
+                        </div>
+                        <div class="flexcol">
+                            <label>Slaanesh:</label>
+                            <input type="number" class="combat-resources" data-target="system.secChar.corruption.slaanesh" value="{{system.secChar.corruption.slaanesh}}">
+                        </div>
+                        <div class="flexcol">
+                            <label>Tzeentch:</label>
+                            <input type="number" class="combat-resources" data-target="system.secChar.corruption.tzeentch" value="{{system.secChar.corruption.tzeentch}}">
+                        </div>
+                        {{#if actor.flags.fortyk.malice}}
+                        <div class="flexcol">
+                            <label>Malice:</label>
+                            <input type="number" class="combat-resources" data-target="system.secChar.corruption.malice" value="{{system.secChar.corruption.malice}}">
+                        </div>
+                        {{/if}}
 
+                    </div>
+                    <label>Total Corruption:</label>
+                    <input type="number" class="combat-resources" data-target="system.secChar.corruption.value" value="{{system.secChar.corruption.value}}" disabled>
                 </div>
-                <label>Total Corruption:</label>
-                <input type="number" name="system.secChar.corruption.value" value="{{system.secChar.corruption.value}}" disabled>
-            </div>
-            {{else}}
-            <label>Corruption:</label>
-            <input type="number" name="system.secChar.corruption.value" value="{{system.secChar.corruption.value}}">
-            {{/if}}
+                {{else}}
+                <label>Corruption:</label>
+                <input type="number" class="combat-resources" data-target="system.secChar.corruption.value" value="{{system.secChar.corruption.value}}">
+                {{/if}}
 
-        </div>
-        <div class="corr-item flexrow">
-            <label>Malignancy Test Modifier:</label>
-            <input type="number" name="system.secChar.corruption.mod" value="{{system.secChar.corruption.mod}}" disabled>
-        </div>
-        <div class="corr-item flexrow">
-            <label class="malice-secret">Characteristics Used:</label>
-            <input type="text" name="system.secChar.corruption.chars" value="{{system.secChar.corruption.chars}}">
-        </div>
-        <a class="corr-item item-create button" data-type="malignancy" title="Add new malignancy">Add Malignancy</a>
-        <div class="list list3col grid grid-3col">
-            <span class="list-item-header">Name</span>
-            <span class="list-item-header"></span>
-            <span class="list-item-header-last"></span>
-            {{#each actor.malignancies as |m key|}}
-
-            <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.system.description.value}}">{{m.name}}</a>
-            <span class="list-button"><a class="list-button item-edit" title="Edit Malignancy" data-item-id="{{m._id}}"></a></span>
-            <span class="list-button"><a class="list-button item-delete" title="Delete Malignancy" data-item-id="{{m._id}}"></a></span>
-
-
-
-            {{/each}}
-
-        </div>
-        <a class="corr-item item-create button" data-type="mutation" title="Add new mutation">Add Mutation</a>
-        <div class="list list3col grid grid-3col">
-            <span class="list-item-header">Name</span>
-            <span class="list-item-header"></span>
-            <span class="list-item-header-last"></span>
-            {{#each actor.mutations as |m key|}}
-
-            <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.system.description.value}}">{{m.name}}</a>
-            <span class="list-button"><a class="list-button item-edit" title="Edit Mutation" data-item-id="{{m._id}}"></a></span>
-            <span class="list-button"><a class="list-button item-delete" title="Delete Mutation" data-item-id="{{m._id}}"></a></span>
-
-
-
-
-
-            {{/each}}
-
-        </div>
-    </div>
-    {{/unless}}
-    <div class="corruption flexcol">
-        <div class="corruption flexcol">
-            <div class="corr-item flexrow">
-                <label>Insanity:</label>
-                <input type="number" name="system.secChar.insanity.value" value="{{system.secChar.insanity.value}}">
             </div>
             <div class="corr-item flexrow">
-                <label>Trauma Test Modifier:</label>
-                <input type="number" name="system.secChar.insanity.mod" value="{{system.secChar.insanity.mod}}" disabled>
+                <label>Malignancy Test Modifier:</label>
+                <input type="text"  value="{{system.secChar.corruption.mod}}" disabled>
             </div>
             <div class="corr-item flexrow">
-                <label>Trauma:</label>
-                <input type="text" name="system.secChar.shock" value="{{system.secChar.insanity.shock}}">
+                <label class="malice-secret">Characteristics Used:</label>
+                <input type="text" data-target="system.secChar.corruption.chars" value="{{system.secChar.corruption.chars}}">
             </div>
-            <a class="corr-item item-create button" data-type="disorder" title="Add new disorder">Add Disorder</a>
+            <a class="corr-item item-create button" data-type="malignancy" title="Add new malignancy">Add Malignancy</a>
             <div class="list list3col grid grid-3col">
                 <span class="list-item-header">Name</span>
                 <span class="list-item-header"></span>
                 <span class="list-item-header-last"></span>
-                {{#each actor.disorders as |d key|}}
-
-                <a class="item-descr list-item" data-name="{{d.name}}" data-item-descr="{{d.system.description.value}}">{{d.name}}</a>
-                <span class="list-button"><a class="list-button item-edit" title="Edit Disorder" data-item-id="{{d._id}}"></a></span>
-                <span class="list-button"> <a class="list-button item-delete" title="Delete Disorder" data-item-id="{{d._id}}"></a></span>
-
-
-
-
-
-                {{/each}}
-
-            </div>
-        </div>
-        <div class="corruption flexcol">
-            <a class="corr-item item-create button" data-type="injury" title="Add new Injury">Add Injury</a>
-            <div class="list list3col grid grid-3col">
-                <span class="list-item-header">Name</span>
-                <span class="list-item-header"></span>
-                <span class="list-item-header-last"></span>
-
-                {{#each actor.injuries as |m key|}}
+                {{#each actor.malignancies as |m key|}}
 
                 <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.system.description.value}}">{{m.name}}</a>
                 <span class="list-button"><a class="list-button item-edit" title="Edit Malignancy" data-item-id="{{m._id}}"></a></span>
@@ -131,11 +63,83 @@
 
 
 
+                {{/each}}
+
+            </div>
+            <a class="corr-item item-create button" data-type="mutation" title="Add new mutation">Add Mutation</a>
+            <div class="list list3col grid grid-3col">
+                <span class="list-item-header">Name</span>
+                <span class="list-item-header"></span>
+                <span class="list-item-header-last"></span>
+                {{#each actor.mutations as |m key|}}
+
+                <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.system.description.value}}">{{m.name}}</a>
+                <span class="list-button"><a class="list-button item-edit" title="Edit Mutation" data-item-id="{{m._id}}"></a></span>
+                <span class="list-button"><a class="list-button item-delete" title="Delete Mutation" data-item-id="{{m._id}}"></a></span>
+
+
+
 
 
                 {{/each}}
 
             </div>
         </div>
+        {{/unless}}
+        <div class="corruption flexcol">
+            <div class="corruption flexcol">
+                <div class="corr-item flexrow">
+                    <label>Insanity:</label>
+                    <input type="number" class="combat-resources" data-target="system.secChar.insanity.value" value="{{system.secChar.insanity.value}}">
+                </div>
+                <div class="corr-item flexrow">
+                    <label>Trauma Test Modifier:</label>
+                    <input type="text"  value="{{system.secChar.insanity.mod}}" disabled>
+                </div>
+                <div class="corr-item flexrow">
+                    <label>Trauma:</label>
+                    <input type="text" class="combat-resources" data-target="system.secChar.shock" value="{{system.secChar.insanity.shock}}">
+                </div>
+                <a class="corr-item item-create button" data-type="disorder" title="Add new disorder">Add Disorder</a>
+                <div class="list list3col grid grid-3col">
+                    <span class="list-item-header">Name</span>
+                    <span class="list-item-header"></span>
+                    <span class="list-item-header-last"></span>
+                    {{#each actor.disorders as |d key|}}
+
+                    <a class="item-descr list-item" data-name="{{d.name}}" data-item-descr="{{d.system.description.value}}">{{d.name}}</a>
+                    <span class="list-button"><a class="list-button item-edit" title="Edit Disorder" data-item-id="{{d._id}}"></a></span>
+                    <span class="list-button"> <a class="list-button item-delete" title="Delete Disorder" data-item-id="{{d._id}}"></a></span>
+
+
+
+
+
+                    {{/each}}
+
+                </div>
+            </div>
+            <div class="corruption flexcol">
+                <a class="corr-item item-create button" data-type="injury" title="Add new Injury">Add Injury</a>
+                <div class="list list3col grid grid-3col">
+                    <span class="list-item-header">Name</span>
+                    <span class="list-item-header"></span>
+                    <span class="list-item-header-last"></span>
+
+                    {{#each actor.injuries as |m key|}}
+
+                    <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.system.description.value}}">{{m.name}}</a>
+                    <span class="list-button"><a class="list-button item-edit" title="Edit Malignancy" data-item-id="{{m._id}}"></a></span>
+                    <span class="list-button"><a class="list-button item-delete" title="Delete Malignancy" data-item-id="{{m._id}}"></a></span>
+
+
+
+
+
+                    {{/each}}
+
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</section>

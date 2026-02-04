@@ -2,7 +2,7 @@
 new Dialog({
     title: `Change Ion Shield Orientation`,
     content: `
-<form>
+<section>
 <div class="form-group">
 <label>Ion Shield Facing</label>
 <select id="ion-rotation" name="ion-rotation">
@@ -13,7 +13,7 @@ new Dialog({
 <option value="180">Rear</option>
 </select>
 </div>
-</form>
+</section>
 `,
     buttons: {
         yes: {

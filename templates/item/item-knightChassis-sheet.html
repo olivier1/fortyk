@@ -21,31 +21,31 @@
     </div>
     <div class="flexcol">
         <label>Tonnage:</label>
-        <input type="text" value="{{system.tonnage.value}}" name="system.tonnage.value">
+        <input type="text" class="weapon-mod" value="{{system.tonnage.value}}" data-target="system.tonnage.value">
     </div>
     <div class="flexcol">
         <label>Space:</label>
-        <input type="text" value="{{system.space.value}}" name="system.space.value">
+        <input type="text" class="weapon-mod" value="{{system.space.value}}" data-target="system.space.value">
     </div>
     <div class="flexcol">
         <label>Structural Integrity:</label>
-        <input type="text" value="{{system.structuralIntegrity.value}}" name="system.structuralIntegrity.value">
+        <input type="text" class="weapon-mod" value="{{system.structuralIntegrity.value}}" data-target="system.structuralIntegrity.value">
     </div>
     <div class="flexcol">
         <label>Max Armor:</label>
-        <input type="text" value="{{system.armor.value}}" name="system.armor.value">
+        <input type="text" class="weapon-mod" value="{{system.armor.value}}" data-target="system.armor.value">
     </div>
     <div class="flexcol">
         <label>Base Speed:</label>
-        <input type="text" value="{{system.speed.value}}" name="system.speed.value">
+        <input type="text" class="weapon-mod" value="{{system.speed.value}}" data-target="system.speed.value">
     </div>
     <div class="flexcol">
         <label>Manoeuvrability:</label>
-        <input type="text" value="{{system.manoeuvrability.value}}" name="system.manoeuvrability.value">
+        <input type="text" class="weapon-mod" value="{{system.manoeuvrability.value}}" data-target="system.manoeuvrability.value">
     </div>
     <div class="flexcol">
         <label>Size:</label>
-        <input type="text" value="{{system.size.value}}" name="system.size.value">
+        <input type="text" class="weapon-mod" value="{{system.size.value}}" data-target="system.size.value">
     </div>
     <div class="flexcol">
         <label>Carapace Hard points:</label>
@@ -78,13 +78,37 @@
         <input type="text" class="knight-Hardpoint" value="{{system.hardPoints.torso.auxiliary.length}}" data-location="torso" data-type="auxiliary">
     </div>
 
+
     {{#if isGM}}
-    <div class="flexcol">
-        <a class="modifier button">Active Effect</a>
+    <div class="item-description">
+        <label>GM Description:</label>
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.gm"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.gm}}">
+            {{{enrichedGMDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedGMDescription}}}
+        {{/if}}
     </div>
     {{/if}}
     <div class="item-description">
         <label>Description:</label>
-        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.value"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.value}}">
+            {{{enrichedDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedDescription}}}
+        {{/if}}
     </div>
 </form>

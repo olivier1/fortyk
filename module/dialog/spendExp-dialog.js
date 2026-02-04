@@ -1,62 +1,86 @@
 import {FortyKItem} from "../item/item.js";
-export class SpendExpDialog extends Application {
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
     /** @override */
+    #talents=null;
+    #rawTalents=null;
+    #eliteAdvances=null;
+    #rawEliteAdvances=null;
+    #psyPowers = null;
+    #rawPowers = null;
+    #cost = 0;
+    #discipline = "";
+    #chosenSkill = null;
+    #chosenChar = null;
+    #chosenTalent = null;
+    #chosenPower = null;
+    #chosenEliteAdvance = null;
+    #charUpg = null;
+    #mode = "Custom";
+    static DEFAULT_OPTIONS= {
 
-    static get defaultOptions() {
-
-        return foundry.utils.mergeObject(super.defaultOptions, {
-            classes: ["fortyk"],
-            template: "systems/fortyk/templates/actor/dialogs/spendExp-dialog.html",
+        tag: 'form',
+        classes: ["fortyk"],
+        template: "systems/fortyk/templates/actor/dialogs/spendExp-dialog.html",
+        position:{
             width: 666,
-            height: 280,
-            mode:"Custom",
-            default:null,
-            heights:{"Custom":280,"Characteristic Upgrade":275,"Skill Upgrade":275,"New Skill":805,"Talent":795, "Signature Wargear":360,"Psy Rating":300,"Psychic Power":765, "Navigator Power":765, "Elite Advance":765}
-        });
-    }
+            height: "auto"
+        },
 
+        mode:"Custom",
+        default:null,
+        heights:{"Custom":280,"Characteristic Upgrade":275,"Skill Upgrade":275,"New Skill":805,"Talent":795, "Signature Wargear":360,"Psy Rating":300,"Psychic Power":765, "Navigator Power":765, "Elite Advance":765}
+
+
+    }
+    static PARTS = {
+        form:{
+            template:"systems/fortyk/templates/actor/dialogs/spendExp-dialog.html",
+            scrollable:['.tntgrid']
+        }
+    }
     async loadDocuments(actor, force=false) {
 
 
         const startTime=performance.now();
         if(actor.getFlag("fortyk","navigator")){
-            if(force||!this.navPowers){
-                this.psyPowers= await this._loadNavPowers();
+            if(force||!this.#psyPowers){
+                this.#psyPowers= await this._loadNavPowers();
             }
 
         }else if(actor.system.psykana.pr.value>0){
-            if((force||!this.psyPowers)){
-                this.psyPowers= await this._loadPsyPowers();
+            if((force||!this.#psyPowers)){
+                this.#psyPowers= await this._loadPsyPowers();
             }else{
-                this.psyPowers= this.filterPsyPowers(this.rawPowers, actor); 
+                this.#psyPowers= this.filterPsyPowers(this.#rawPowers, actor);
             }
         }
 
-        if(force||!this.options.talents){
-            this.options.talents=await this._loadTalents();
+        if(force||!this.talents){
+            this.#talents=await this._loadTalents();
         }else{
-            this.options.talents=this.filterTalents(this.rawTalents, actor);
+            this.#talents=this.filterTalents(this.#rawTalents, actor);
         }
-        if(force||!this.options.eliteAdvances){
-            this.options.eliteAdvances=await this._loadEliteAdvances();
+        if(force||!this.#eliteAdvances){
+            this.#eliteAdvances=await this._loadEliteAdvances();
         }else{
-            this.options.eliteAdvances=this.filterEliteAdvances(this.rawEliteAdvances, actor);
+            this.#eliteAdvances=this.filterEliteAdvances(this.#rawEliteAdvances, actor);
         }
         const endTime=performance.now();
         console.log(`Loading documents took ${endTime-startTime} ms`);
 
     }
 
-    async getData(){
+    async _prepareContext(options){
 
         let data=this;
         let actor=this.options.actor;
         await this.loadDocuments(actor);
-        if(!this.options.cost){this.options.cost=0;}
+        if(!this.#cost){this.#cost=0;}
         data.ineligibles=this.ineligibles;
         data.actorExp=actor.system.experience.value;
-        data.cost=this.options.cost;
+        data.cost=this.#cost;
         data.remainingExp=data.actorExp-data.cost;
         data.FORTYK=game.fortyk.FORTYK;
         data.advancementTypes=foundry.utils.duplicate(data.FORTYK.advancementTypes);
@@ -66,11 +90,11 @@ export class SpendExpDialog extends Application {
         if(actor.getFlag("fortyk","navigator")){
             data.advancementTypes.push({value:"Navigator Power"});
             data.disciplines=data.FORTYK.psychicDisciplines;
-            data.psyPowers=this.psyPowers;
-            if(!data.discipline||this.options.discipline===undefined){
+            data.psyPowers=this.#psyPowers;
+            if(!data.discipline||this.#discipline===undefined){
                 data.discipline="All";
             }else{
-                data.discipline=this.options.discipline;
+                data.discipline=this.#discipline;
             }
         }else if(actor.system.psykana.pr.value>0){
             data.pr=actor.system.psykana.pr.value;
@@ -79,14 +103,14 @@ export class SpendExpDialog extends Application {
             data.advancementTypes.push({value:"Psychic Power"});
             data.disciplines=data.FORTYK.psychicDisciplines;
 
-            data.psyPowers=this.psyPowers;
-            if(!data.discipline||this.options.discipline===undefined){
+            data.psyPowers=this.#psyPowers;
+            if(!data.discipline||this.#discipline===undefined){
                 data.discipline="All";
             }else{
-                data.discipline=this.options.discipline;
+                data.discipline=this.#discipline;
             }
         }
-        data.mode=this.options.mode;
+        data.mode=this.#mode;
         data.skills=actor.skills;
         data.parentSkills=data.skills.filter(skill => skill.system.hasChildren.value);
         data.upgradeableSkills=data.skills.reduce(function(map,skill){
@@ -114,14 +138,15 @@ export class SpendExpDialog extends Application {
 
 
 
-        data.talents=this.options.talents;
+        data.talents=this.#talents;
 
 
-        data.eliteAdvances=this.options.eliteAdvances;
+        data.eliteAdvances=this.#eliteAdvances;
         return data;
     }
-    activateListeners(html) {
-        super.activateListeners(html);
+    _onRender(context, options) {
+        super._onRender(context, options);
+        const html=$(this.element);
         //select dialog mode
         html.find('.mode').change(this._onModeChange.bind(this));
         //select new skill type
@@ -160,6 +185,15 @@ export class SpendExpDialog extends Application {
         $("input[type=text]").focusin(function() {
             $(this).select();
         });
+        //stop the change event on all inputs because its jank
+      $("input").change(function (event){
+          event.stopImmediatePropagation();
+          event.preventDefault();
+      });
+       $("select:not([class])").change(function (event){
+          event.stopImmediatePropagation();
+          event.preventDefault();
+       });
 
 
     } 
@@ -175,18 +209,18 @@ export class SpendExpDialog extends Application {
         return upgChars;
     }
     _onTalentLoad(event){
-        if(this.options.mode==="Custom"){
+        if(this.#mode==="Custom"){
             let input=document.getElementById("custom-name").select();
-        }else if(this.options.mode==="New Skill"){
+        }else if(this.#mode==="New Skill"){
             let input=document.getElementById("name").select();
-        }else if(this.options.mode==="Talent"){
+        }else if(this.#mode==="Talent"){
 
             let input=document.getElementById("talentfilter").select();
         }
-        else if(this.options.mode==="Signature Wargear"){
+        else if(this.#mode==="Signature Wargear"){
             let input=document.getElementById("name").select();
         }
-        if(this.options.mode==="Talent"||this.options.mode==="Skill Upgrade"||this.options.mode==="Characteristic Upgrade"||this.options.mode==="Psychic Power"||this.options.mode==="Navigator Power"){
+        if(this.#mode==="Talent"||this.#mode==="Skill Upgrade"||this.#mode==="Characteristic Upgrade"||this.#mode==="Psychic Power"||this.#mode==="Navigator Power"){
             document.getElementById("submitButton").setAttribute("disabled",true);
         }
 
@@ -218,7 +252,7 @@ export class SpendExpDialog extends Application {
             return;
         }
         const type = "advancement";
-        if(this.options.mode==="Custom"){
+        if(this.#mode==="Custom"){
 
             const name = document.getElementById("custom-name").value;
             const itemData = {
@@ -226,15 +260,15 @@ export class SpendExpDialog extends Application {
                 type: type,
                 system:{
                     type:{value:"Custom"},
-                    cost:{value:this.options.cost}
+                    cost:{value:this.#cost}
                 }
             };
 
             let item=await FortyKItem.create(itemData,{temporary:true});
             await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
-            this.options.cost=0;
-        }else if(this.options.mode==="Skill Upgrade"){
-            let skill=this.options.chosenSkill;
+            this.#cost=0;
+        }else if(this.#mode==="Skill Upgrade"){
+            let skill=this.#chosenSkill;
             let skillUpgrade=parseInt(skill.system.value);
 
             if(skillUpgrade===-20){skillUpgrade=0;}else{skillUpgrade+=10;}
@@ -248,7 +282,7 @@ export class SpendExpDialog extends Application {
                 type: type,
                 system:{
                     type:{value:"Skill Upgrade"},
-                    cost:{value:this.options.cost},
+                    cost:{value:this.#cost},
                     itemId:{value:skill.id}
 
                 }
@@ -257,8 +291,8 @@ export class SpendExpDialog extends Application {
             let item=await FortyKItem.create(itemData,{temporary:true});
             await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
             await actor.updateEmbeddedDocuments("Item",[{"_id":skill.id,"system.value":skillUpgrade}]);
-            this.options.cost=0;
-        }else if(this.options.mode==="New Skill"){
+            this.#cost=0;
+        }else if(this.#mode==="New Skill"){
             let advanceName="";
             let skillName=document.getElementById("name").value;
             let parent=document.getElementById("skill-type").value;
@@ -291,7 +325,7 @@ export class SpendExpDialog extends Application {
                 type: type,
                 data:{
                     type:{value:"New Skill"},
-                    cost:{value:this.options.cost},
+                    cost:{value:this.#cost},
                     itemId:{value:skill[0].id}
 
                 }
@@ -299,9 +333,9 @@ export class SpendExpDialog extends Application {
             await actor.createEmbeddedDocuments("Item",[advData]);
             await this.loadDocuments(actor, true);
             this.baseSkillCost();
-        }else if(this.options.mode==="Characteristic Upgrade"){
-            let char=this.options.chosenChar;
-            let training=this.options.charUpg;
+        }else if(this.#mode==="Characteristic Upgrade"){
+            let char=this.#chosenChar;
+            let training=this.#charUpg;
             let name = this.FORTYK.characteristics[char].label+" +"+training;
 
             const itemData = {
@@ -309,7 +343,7 @@ export class SpendExpDialog extends Application {
                 type: type,
                 system:{
                     type:{value:"Characteristic Upgrade"},
-                    cost:{value:this.options.cost},
+                    cost:{value:this.#cost},
                     characteristic:{value:char}
 
                 }
@@ -322,10 +356,10 @@ export class SpendExpDialog extends Application {
             update[path]=training;
             await actor.update(update);
             await this.loadDocuments(actor, true);
-            this.options.cost=0;
-        }else if(this.options.mode==="Talent"){
+            this.#cost=0;
+        }else if(this.#mode==="Talent"){
 
-            let talent=this.options.chosenTalent;
+            let talent=this.#chosenTalent;
             let advanceName="Talent: "+talent.name;
             let itemData=foundry.utils.duplicate(talent);
             let tntData=talent.system;
@@ -386,32 +420,32 @@ export class SpendExpDialog extends Application {
                 type: type,
                 system:{
                     type:{value:"Talent"},
-                    cost:{value:this.options.cost},
+                    cost:{value:this.#cost},
                     itemId:{value:talentId}
 
                 }
             };
             await actor.createEmbeddedDocuments("Item",[advData]);
-            this.options.cost=0;
+            this.#cost=0;
             await this.loadDocuments(actor, true);
 
-            this.talents=this.options.talents;
+            this.talents=this.talents;
 
-        }else if(this.options.mode==="Signature Wargear"){
+        }else if(this.#mode==="Signature Wargear"){
             const wargearName = document.getElementById("name").value;
             const itemData = {
                 name: `Signature Wargear: ${wargearName}`,
                 type: type,
                 system:{
                     type:{value:"Signature Wargear"},
-                    cost:{value:this.options.cost}
+                    cost:{value:this.#cost}
                 }
             };
 
             let item=await new FortyKItem(itemData,{temporary:true});
             await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
-            this.options.cost=0;
-        }else if(this.options.mode==="Psy Rating"){
+            this.#cost=0;
+        }else if(this.#mode==="Psy Rating"){
             let pr=actor.system.psykana.pr.value;
             let newPr=pr+1;
             const itemData = {
@@ -419,7 +453,7 @@ export class SpendExpDialog extends Application {
                 type: type,
                 system:{
                     type:{value:"Psy Rating"},
-                    cost:{value:this.options.cost}
+                    cost:{value:this.#cost}
                 }
             };
 
@@ -431,9 +465,9 @@ export class SpendExpDialog extends Application {
             await prObject.update({"system.specialisation.value":newPr});
             await this.loadDocuments(actor, true);
             this.calculatePRCost();
-        }else if(this.options.mode==="Psychic Power"){
+        }else if(this.#mode==="Psychic Power"){
 
-            let power=this.options.chosenPower;
+            let power=this.#chosenPower;
             let flagId=power.id;
             let advanceName="Psychic Power: "+power.name;
             let itemData=foundry.utils.duplicate(power);
@@ -454,7 +488,7 @@ export class SpendExpDialog extends Application {
                 type: type,
                 system:{
                     type:{value:"Psychic Power"},
-                    cost:{value:this.options.cost},
+                    cost:{value:this.#cost},
                     itemId:{value:powerId},
                     flagId:flagId
 
@@ -462,11 +496,11 @@ export class SpendExpDialog extends Application {
             };
             await actor.createEmbeddedDocuments("Item",[advData]);
             await this.loadDocuments(actor, true);
-            this.options.cost=0;
+            this.#cost=0;
 
-        }else if(this.options.mode==="Navigator Power"){
+        }else if(this.#mode==="Navigator Power"){
 
-            let power=this.options.chosenPower;
+            let power=this.#chosenPower;
             let flagId=power.id;
             let advanceName="Psychic Power: "+power.name;
             let itemData=foundry.utils.duplicate(power);
@@ -478,7 +512,7 @@ export class SpendExpDialog extends Application {
                 type: type,
                 system:{
                     type:{value:"Navigator Power"},
-                    cost:{value:this.options.cost},
+                    cost:{value:this.#cost},
                     flagId:flagId
 
                 }
@@ -505,15 +539,15 @@ export class SpendExpDialog extends Application {
             advData["system.itemId.value"]=powerId;
 
 
-            
+
             let advanceArray=await actor.createEmbeddedDocuments("Item",[advData]);
             let advance=advanceArray[0];
             actorPower[0].setFlag("fortyk","linkedAdvance",advance.id);
             await this.loadDocuments(actor, true);
-            this.options.cost=0;
+            this.#cost=0;
 
-        }else if(this.options.mode==="Elite Advance"){
-            let ea=this.options.chosenEliteAdvance;
+        }else if(this.#mode==="Elite Advance"){
+            let ea=this.#chosenEliteAdvance;
             let itemData=foundry.utils.duplicate(ea);
             let advanceName="Elite Advance: "+ea.name;
             let actorEA=await actor.createEmbeddedDocuments("Item",[itemData]);
@@ -523,30 +557,30 @@ export class SpendExpDialog extends Application {
                 type: type,
                 system:{
                     type:{value:"Psychic Power"},
-                    cost:{value:this.options.cost},
+                    cost:{value:this.#cost},
                     itemId:{value:eaId},
                     flagId:itemData.system.flagId.value
                 }
             };
             await actor.createEmbeddedDocuments("Item",[advData]);
-            this.options.cost=0;
+            this.#cost=0;
             await this.loadDocuments(actor, true);
         }
-        await this._render();
+        await this.render();
     }
 
     calculatePRCost() {
         let actor=this.options.actor;
         let pr=actor.system.psykana.pr.value;
         if(actor.getFlag("fortyk","librariantraining")){
-            this.options.cost=(pr+1)*100;
+            this.#cost=(pr+1)*100;
         }else{
-            this.options.cost=(pr+1)*200;
+            this.#cost=(pr+1)*200;
         }
 
         try {
             let discount=parseInt(document.getElementById("discount").value);
-            this.options.cost-=discount;
+            this.#cost-=discount;
             this._updateCost();
         } catch (e) {
             //Catch Statement
@@ -561,32 +595,34 @@ export class SpendExpDialog extends Application {
 
     async _onModeChange(event){
         event.preventDefault();
+        event.stopImmediatePropagation();
         let newMode=event.target.value;
-        
-        this.options.mode=newMode;
-        this.options.cost=0;
-        let mode=this.options.mode;
-        
+
+        this.#mode=newMode;
+        this.#cost=0;
+        let mode=this.#mode;
+
         if(mode==="New Skill"){
             this.baseSkillCost();
         }else if(mode==="Signature Wargear"){
-            this.options.cost=200;
+            this.#cost=200;
         }else if(mode==="Psy Rating"){
             this.calculatePRCost();
         }
 
         this.position.height=this.options.heights[newMode];
-        this.options.chosenSkill=undefined;
-        this.options.chosenChar=undefined;
-        this.options.chosenTalent=undefined;
-        this.options.chosenPower=undefined;
-        this.options.chosenEliteAdvance=undefined;
+        this.#chosenSkill=undefined;
+        this.#chosenChar=undefined;
+        this.#chosenTalent=undefined;
+        this.#chosenPower=undefined;
+        this.#chosenEliteAdvance=undefined;
         this._updateCost();
-        await this._render();
+        await this.render();
 
     }
     async _onSkillTypeChange(event){
         event.preventDefault();
+        event.stopImmediatePropagation();
         let newSkillType=event.target.value;
         if(newSkillType!==""){
             document.getElementById("children").setAttribute("disabled",true);
@@ -605,23 +641,27 @@ export class SpendExpDialog extends Application {
         }
     }
     async _onAptitudeChange(event){
+        event.preventDefault();
+        event.stopImmediatePropagation();
         this.newSkillCost();
     }
     async _onSkillUpgrade(event){
         event.preventDefault();
+        event.stopImmediatePropagation();
         let skillId=event.target.value;
         let skill=await this.options.actor.getEmbeddedDocument("Item",skillId);
-        this.options.chosenSkill=skill;
+        this.#chosenSkill=skill;
         this.calculateSkillCost(skill.system.aptitudes.value,skill.system.value);
         document.getElementById("submitButton").removeAttribute("disabled");
 
     }
     async _onCharUpgrade(event){
         event.preventDefault();
+        event.stopImmediatePropagation();
         let charKey=event.target.value;
         let charAdv=this.options.actor.system.characteristics[charKey].advance;
         let charAptitudes=this.FORTYK.characteristics[charKey].aptitudes;
-        this.options.chosenChar=charKey;
+        this.#chosenChar=charKey;
         this.calculateCharCost(charAptitudes,charAdv);
         document.getElementById("submitButton").removeAttribute("disabled");
     }
@@ -644,7 +684,7 @@ export class SpendExpDialog extends Application {
             return Dialog.prompt({title:"Failed requirements",
                                   content:reasonString});
         }
-        this.options.chosenPower=power;
+        this.#chosenPower=power;
         this.calculatePsyPowerCost();
 
         document.getElementById("submitButton").removeAttribute("disabled");
@@ -668,7 +708,7 @@ export class SpendExpDialog extends Application {
             return Dialog.prompt({title:"Failed requirements",
                                   content:reasonString});
         }
-        this.options.chosenEliteAdvance=ea;
+        this.#chosenEliteAdvance=ea;
         this.calculateEliteAdvanceCost();
 
 
@@ -693,7 +733,7 @@ export class SpendExpDialog extends Application {
             return Dialog.prompt({title:"Failed requirements",
                                   content:reasonString});
         }
-        this.options.chosenTalent=talent;
+        this.#chosenTalent=talent;
         let aptitudes=talent.system.aptitudes.value;
         let tier=parseInt(talent.system.tier.value);
         if(isNaN(tier)){tier=3;}
@@ -721,7 +761,7 @@ export class SpendExpDialog extends Application {
         let cost=this.FORTYK.talentCosts[matchingAptitudes][tier-1];
         let discount=parseInt(document.getElementById("discount").value);
         cost=cost-discount;
-        this.options.cost=cost;
+        this.#cost=cost;
         this._updateCost();
     }
     async calculateCharCost(aptitudes,training){
@@ -740,8 +780,8 @@ export class SpendExpDialog extends Application {
         let cost=this.FORTYK.characteristicUpgradeCosts[matchingAptitudes][training];
         let discount=parseInt(document.getElementById("discount").value);
         cost=cost-discount;
-        this.options.cost=cost;
-        this.options.charUpg=training;
+        this.#cost=cost;
+        this.#charUpg=training;
         this._updateCost();
     }
     async newSkillCost(){
@@ -776,13 +816,17 @@ export class SpendExpDialog extends Application {
         try{discount=parseInt(document.getElementById("discount").value);}
         catch(err){}
         cost=cost-discount;
-        this.options.cost=cost;
+        this.#cost=cost;
         this._updateCost();
     }
     async _onRarityChange(event){
+        event.preventDefault();
+        event.stopImmediatePropagation();
         this.calculateWargearCost();
     }
     async _onQualityChange(event){
+        event.preventDefault();
+        event.stopImmediatePropagation();
         this.calculateWargearCost();
     }
     calculateWargearCost(){
@@ -805,39 +849,39 @@ export class SpendExpDialog extends Application {
         try{discount=parseInt(document.getElementById("discount").value);}
         catch(err){}
         cost=cost-discount;
-        this.options.cost=cost;
+        this.#cost=cost;
         this._updateCost();
     }
     calculatePsyPowerCost(){
-        let power=this.options.chosenPower;
+        let power=this.#chosenPower;
         let cost=parseInt(power.system.cost.value);
         let discount=0;
         try{discount=parseInt(document.getElementById("discount").value);}
         catch(err){}
         cost=cost-discount;
-        this.options.cost=cost;
+        this.#cost=cost;
         this._updateCost();
     }
     calculateEliteAdvanceCost(){
-        let ea=this.options.chosenEliteAdvance;
+        let ea=this.#chosenEliteAdvance;
         let cost=ea.system.cost.value;
         let discount=0;
         try{discount=parseInt(document.getElementById("discount").value);}
         catch(err){}
         cost=cost-discount;
-        this.options.cost=cost;
+        this.#cost=cost;
         this._updateCost();
     }
     async _onDiscount(event){
-        let mode=this.options.mode;
+        let mode=this.#mode;
         if(mode==="Skill Upgrade"){
-            let skill=this.options.chosenSkill;
+            let skill=this.#chosenSkill;
 
             if(skill){
                 this.calculateSkillCost(skill.system.aptitudes.value,skill.system.value);
             }
         }else if(mode==="Characteristic Upgrade"){
-            let char=this.options.chosenChar;
+            let char=this.#chosenChar;
             if(char){
                 let charAdv=this.options.actor.system.characteristics[char].advance;
                 let charAptitudes=this.FORTYK.characteristics[char].aptitudes;
@@ -847,7 +891,7 @@ export class SpendExpDialog extends Application {
         }else if(mode==="New Skill"){
             this.newSkillCost();
         }else if(mode==="Talent"){
-            let talent=this.options.chosenTalent;
+            let talent=this.#chosenTalent;
             if(talent){
                 let aptitudes=talent.system.aptitudes.value;
                 let tier=parseInt(talent.system.tier.value);
@@ -905,9 +949,11 @@ export class SpendExpDialog extends Application {
 
     }
     _onDisciplineChange(event){
+        event.preventDefault();
+        event.stopImmediatePropagation();
         let powers=document.getElementsByName("tntEntry");
         let discipline=event.target.value;
-        this.options.discipline=discipline;
+        this.#discipline=discipline;
         for(let i=0;i<powers.length;i++){
             let power=powers[i];
 
@@ -926,12 +972,12 @@ export class SpendExpDialog extends Application {
         let newcost=parseInt(event.target.value);
 
         if(isNaN(newcost)){newcost=0;}
-        this.options.cost=newcost;
+        this.#cost=newcost;
         this._updateCost();
     }
     _updateCost(){
-        document.getElementById("cost").textContent=`${this.options.cost} EXP`;
-        this.remainingExp=this.actorExp-this.options.cost;
+        document.getElementById("cost").textContent=`${this.#cost} EXP`;
+        this.remainingExp=this.actorExp-this.#cost;
         document.getElementById("remainingExp").textContent=`${this.remainingExp} EXP`;
 
 
@@ -966,7 +1012,7 @@ export class SpendExpDialog extends Application {
         let actor=this.options.actor;
         const psyPowers=await game.packs.get("fortyk.psychic-powers");
         let powers=await psyPowers.getDocuments();
-        this.rawPowers=powers;
+        this.#rawPowers=powers;
 
         let map = this.filterPsyPowers(powers, actor);
         return map;
@@ -975,7 +1021,7 @@ export class SpendExpDialog extends Application {
         let actor=this.options.actor;
         const psyPowers=await game.packs.get("fortyk.navigator-powers");
         let powers=await psyPowers.getDocuments();
-        this.rawPowers=powers;
+        this.#rawPowers=powers;
 
         let map = this.filterPsyPowers(powers, actor);
         return map;
@@ -1030,7 +1076,7 @@ export class SpendExpDialog extends Application {
             tnts=tnts.concat(await dwTalents.getDocuments());
 
         }
-        this.rawTalents=tnts;
+        this.#rawTalents=tnts;
         let map = this.filterTalents(tnts, actor);
         return map;
     }
@@ -1064,7 +1110,7 @@ export class SpendExpDialog extends Application {
         let actor=this.options.actor;
         const eliteAdvancePack=await game.packs.get("fortyk.elite-advances");
         let eliteAdvances=await eliteAdvancePack.getDocuments();
-        this.rawEliteAdvances=eliteAdvances;
+        this.#rawEliteAdvances=eliteAdvances;
         let map = this.filterEliteAdvances(eliteAdvances, actor);
         return map;
     }

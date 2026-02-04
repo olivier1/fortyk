@@ -1,0 +1,108 @@
+<section class="tab sheet-content {{tabs.weapons.id}} {{tabs.weapons.cssClass}}"
+         data-tab="{{tabs.weapons.id}}"
+         data-group="{{tabs.weapons.group}}">
+            <div class="flex-group-center">
+                <label for="system.secChar.space.value" class="resource-label">Weapon slots</label>
+                <div class="resource-content flexrow flex-center flex-between">
+                    <div class="flexcol"> Dorsal:
+                        <input type="text"  name="system.weaponCapacity.dorsal" value="{{system.weaponCapacity.dorsal}}" data-dtype="Number"/></div>
+
+                    <div class="flexcol"> Prow:
+                        <input type="text"  name="system.weaponCapacity.prow" value="{{system.weaponCapacity.prow}}" data-dtype="Number"/></div>
+
+                    <div class="flexcol">Keel:
+                        <input type="text"  name="system.weaponCapacity.keel" value="{{system.weaponCapacity.keel}}" data-dtype="Number"/></div>
+
+                    <div class="flexcol">Port:
+                        <input type="text" name="system.weaponCapacity.port" value="{{system.weaponCapacity.port}}" data-dtype="Number"/></div>
+
+                    <div class="flexcol">Starboard:
+                        <input type="text"  name="system.weaponCapacity.starboard" value="{{system.weaponCapacity.starboard}}" data-dtype="Number"/></div>
+
+                </div>
+            </div>
+            {{#each actor.weapons as |t key|}}
+            {{#if (contains this.system.status.value "Online")}}
+            <div class="weapons grid grid-3col">
+                <div class="list-item-header3">
+                    <span>Name: {{this.name}}</span>
+                </div>
+                <div class="list-item">
+                    <span>Type: {{this.system.type.value}}</span>
+
+                </div>
+                <div class="list-item">
+                    <span>Location: {{this.system.location.value}}</span>
+
+                </div>
+
+                <div class="list-item">
+                    <span>Range: {{this.system.range.value}}</span>
+                </div>
+
+
+
+                <div class="list-item">
+                    <label>Strength: {{this.system.strength.value}}</label>
+                </div>
+                {{#if (contains this.system.type.value "Torpedo")}}
+                <div class="list-item">
+                    <select class="torpedo-ammo" data-weapon="{{this._id}}">
+
+                        {{#select this.system.torpedo.id}}
+                        <option value="" data-damage=" " data-rating="0">None</option>
+
+                        {{#each ../actor.torpedoes}}
+
+                        <option value="{{this._id}}" data-damage="{{this.system.damage.value}}" data-rating="{{this.system.rating.value}}">{{this.name}}</option>
+
+                        {{/each}}
+
+                        {{/select}}
+                    </select>
+                </div>
+                <div class="list-item">
+                    <label>Rating: {{this.system.torpedo.rating}}</label>
+                </div>
+                {{else if (contains this.system.type.value "Hangar")}}
+                <div class="list-item">
+                    <select class="torpedo-ammo" data-weapon="{{this._id}}">
+
+                        {{#select this.system.torpedo.id}}
+                        <option value="" data-damage=" " data-rating="0">None</option>
+
+                        {{#each ../actor.bombers}}
+
+                        <option value="{{this._id}}" data-damage="{{../system.damage.value}}" data-rating="{{this.system.rating.value}}">{{this.name}}</option>
+
+                        {{/each}}
+
+                        {{/select}}
+                    </select>
+                </div>
+                <div class="list-item">
+                    <label>Rating: {{this.system.torpedo.rating}}</label>
+                </div>
+                {{/if}}
+                <div class="list-item">
+                    <span>Attack:</span>
+                    {{#if (contains this.system.type.value "Hangar")}}
+                    <a class=" rollable button" data-label="Spaceship Attack" data-roll-type="char" data-target="{{../hangarAttack}}" data-char="" data-rating="{{this.system.torpedo.rating}}"> {{../hangarAttack}}+{{this.system.torpedo.rating}}</a>
+                    {{else}}
+                    <a class=" rollable button" data-label="Spaceship Attack" data-roll-type="char" data-target="{{../bs}}" data-char="" data-rating="{{this.system.torpedo.rating}}"> {{../bs}}{{#if (contains this.system.type.value "Torpedo")}}+{{this.system.torpedo.rating}} {{/if}}</a>
+                    {{/if}}
+
+
+                </div>
+                <div class="list-item">
+                    <span>Damage: </span>
+                    <a class="space-damage-roll button" data-label="{{this.name}}" data-formula="{{this.system.damage.value}}" data-weapon="{{this._id}}"> {{this.system.damage.value}}</a>
+
+                </div>
+
+
+
+            </div>
+            {{/if}}
+            {{/each}}
+        </section>

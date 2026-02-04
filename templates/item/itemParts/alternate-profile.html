@@ -1,0 +1,31 @@
+<section class="tab sheet-content {{tabs.altProfile.id}} {{tabs.altProfile.cssClass}}"
+         data-tab="{{tabs.altProfile.id}}"
+         data-group="{{tabs.altProfile.group}}">
+            <div class="flexrow">
+                <label>Has alternate profiles:</label>
+                <input type="checkbox" name="flags.fortyk.alternateprofiles" {{checked flags.fortyk.alternateprofiles}}>
+            </div>
+            {{#if flags.fortyk.alternateprofiles}}
+            <div class="flexrow simple-grid3">
+                <div class="flexcol">
+                    <a class="addProfile plus-button button"></a>
+                </div>
+                <div class="flexcol">
+                    <a class="removeProfile minus-button button"></a>
+                </div>
+                <div class="flexcol">
+
+                    {{#each flags.fortyk.profiles}}
+                    <select class="profile-select" data-index="{{@index}}">
+
+                        <option value="">Select a profile</option>
+                        {{selectOptions ../meleeWeapons selected=this valueAttr="uuid" labelAttr="name"}}
+
+                    </select>
+                    {{/each}}
+                </div>
+
+            </div>
+
+            {{/if}}
+        </section>

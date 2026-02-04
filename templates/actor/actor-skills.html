@@ -1,94 +1,99 @@
 
-
-<div class="flexrow">
-    <input type="text"  id="skillfilter" class="skillfilter" placeholder="Search...">
-    <button class="item-create button" data-type="skill" title="Add new skill">New Skill</button>
-</div>
-<div class="sheet-skills flexcol">
+<section class="tab sheet-content {{tabs.skills.id}} {{tabs.skills.cssClass}}"
+         data-tab="{{tabs.skills.id}}"
+         data-group="{{tabs.skills.group}}">
 
 
-
-    <div class="skills-header skills-group grid grid-7col">
-        <a class="skillItem sort-button" data-sort-type="name" data-path="name" data-item-type="skills">Skill</a>
-        <a class="skillItem sort-button" data-sort-type="char" data-path="system.characteristic.value" data-item-type="skills">Characteristic</a>
-        <a class="skillItem sort-button" data-sort-type="rank" data-path="system.value" data-item-type="skills">Rank</a>
-        <a class="skillItem sort-button" data-sort-type="mod" data-path="system.mod.value" data-item-type="skills">Temporary</a>
-        <a class="skillItem sort-button" data-sort-type="total" data-path="system.total.value" data-item-type="skills">Total</a>
-        <span class="skillItem">Edit</span>
-        <span class="skillItem">Del.</span>
+    <div class="flexrow">
+        <input type="text"  id="skillfilter" class="skillfilter" placeholder="Search...">
+        <a class="item-create button" data-type="skill" title="Add new skill">New Skill</a>
     </div>
+    <div class="sheet-skills flexcol">
 
 
-    {{#each actor.skills as |skill key|}}
 
-
-    {{#if skill.system.hasChildren.value}}
-
-    <div class="skills-group grid grid-7col" name="skillheads">
-        <div class="skillItem skill-group">
-            <a class=" item-descr" data-name="{{skill.name}}" data-item-descr="{{skill.system.description.value}}" title="Skill Use: {{skill.system.skillUse.value}}">{{skill.name}}</a>
+        <div class="skills-header skills-group grid grid-7col">
+            <a class="skillItem sort-button" data-sort-type="name" data-path="name" data-item-type="skills">Skill</a>
+            <a class="skillItem sort-button" data-sort-type="char" data-path="system.characteristic.value" data-item-type="skills">Characteristic</a>
+            <a class="skillItem sort-button" data-sort-type="rank" data-path="system.value" data-item-type="skills">Rank</a>
+            <a class="skillItem sort-button" data-sort-type="mod" data-path="system.mod.value" data-item-type="skills">Temporary</a>
+            <a class="skillItem sort-button" data-sort-type="total" data-path="system.total.value" data-item-type="skills">Total</a>
+            <span class="skillItem">Edit</span>
+            <span class="skillItem">Del.</span>
         </div>
-        
-
-        <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{skill._id}}"></a>
-        <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{skill._id}}"></a>
-
-    </div>
-
-    {{#each ../actor.skills as |spec a|}}
 
 
-    {{#if (compareString skill.name spec.system.parent.value)}}
+        {{#each actor.skills as |skill key|}}
 
-    <div class="skills-header grid grid-7col" name="skill">
-        <a class="skillSubItem item-descr" name="name" data-name="{{spec.name}}" data-item-descr="{{skill.system.description.value}}" title="Skill Use: {{skill.system.skillUse.value}}">{{spec.name}}</a>
-        <select data-item-id="{{spec._id}}" class="skillItem skill-char">
-            {{selectOptions ../../skillChars selected=spec.system.characteristic.value valueAttr="name" labelAttr="caps"}}
-           
-        </select>   
-        <select  data-item-id="{{spec._id}}" class="skillItem skill-adv">
-            {{selectOptions ../../skillTraining selected=spec.system.value valueAttr="value" labelAttr="name"}}
-           
-        </select>
-        <input data-item-id="{{spec._id}}" class="skillItem item-text-input" type="number" data-target="system.mod.value" value="{{spec.system.mod.value}}" data-dtype="Number"/>
 
-        <span data-item-id="{{spec._id}}" class="rollable skillItem button" data-roll-type="skill" data-target="{{spec.system.total.value}}" data-label="{{spec.system.parent.value}}: {{spec.name}}" data-char="{{spec.system.characteristic.value}}" >{{spec.system.total.value}}</span>
-        <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{spec._id}}"></a>
-        <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{spec._id}}"></a>
+        {{#if skill.system.hasChildren.value}}
 
-    </div>
-    {{/if}}
-    {{/each}}
+        <div class="skills-group grid grid-7col" name="skillheads">
+            <div class="skillItem skill-group">
+                <a class=" item-descr" data-name="{{skill.name}}" data-item-descr="{{skill.system.description.value}}" title="Skill Use: {{skill.system.skillUse.value}}">{{skill.name}}</a>
+            </div>
 
-    <!--<div class="skills-header flexrow" name="skillheads">
+
+            <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{skill._id}}"></a>
+            <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{skill._id}}"></a>
+
+        </div>
+
+        {{#each ../actor.skills as |spec a|}}
+
+
+        {{#if (compareString skill.name spec.system.parent.value)}}
+
+        <div class="skills-header grid grid-7col" name="skill">
+            <a class="skillSubItem item-descr" name="name" data-name="{{spec.name}}" data-item-descr="{{skill.system.description.value}}" title="Skill Use: {{skill.system.skillUse.value}}">{{spec.name}}</a>
+            <select data-item-id="{{spec._id}}" class="skillItem skill-char">
+                {{selectOptions ../../skillChars selected=spec.system.characteristic.value valueAttr="name" labelAttr="caps"}}
+
+            </select>
+            <select  data-item-id="{{spec._id}}" class="skillItem skill-adv">
+                {{selectOptions ../../skillTraining selected=spec.system.value valueAttr="value" labelAttr="name"}}
+
+            </select>
+            <input data-item-id="{{spec._id}}" class="skillItem item-text-input" type="number" data-target="system.mod.value" value="{{spec.system.mod.value}}" data-dtype="Number"/>
+
+            <span data-item-id="{{spec._id}}" class="rollable skillItem button" data-roll-type="skill" data-target="{{spec.system.total.value}}" data-label="{{spec.system.parent.value}}: {{spec.name}}" data-char="{{spec.system.characteristic.value}}" >{{spec.system.total.value}}</span>
+            <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{spec._id}}"></a>
+            <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{spec._id}}"></a>
+
+        </div>
+        {{/if}}
+        {{/each}}
+
+        <!--<div class="skills-header flexrow" name="skillheads">
         <span class="skillItem gap"></span>
 
 
     </div>-->
-    {{else if (compareString skill.system.parent.value)}}
-    <div class="skills-header grid grid-7col" name="skill">
+        {{else if (compareString skill.system.parent.value)}}
+        <div class="skills-header grid grid-7col" name="skill">
 
-        <a class="skillItem item-descr" name="name" data-name="{{skill.name}}" data-item-descr="{{skill.system.description.value}}" title="Skill Use: {{skill.system.skillUse.value}}">{{skill.name}}</a>
-        <select  data-item-id="{{skill._id}}" class="skillItem skill-char">
-            {{selectOptions ../skillChars selected=skill.system.characteristic.value valueAttr="name" labelAttr="caps"}}
-        </select>
-        <select data-item-id="{{skill._id}}" class="skillItem skill-adv">
-            {{selectOptions ../skillTraining selected=skill.system.value valueAttr="value" labelAttr="name"}}
-          
-        </select>
-        <input data-item-id="{{skill._id}}" class="skillItem item-text-input" data-target="system.mod.value" type="number" value="{{skill.system.mod.value}}" data-dtype="Number"/>
-        {{#if (contains skill.name "Dodge")}}
-        <span class="rollable skillItem button" data-item-id="{{skill._id}}" data-roll-type="evasion" data-target="{{skill.system.total.value}}" data-label="{{skill.name}}" data-char="{{skill.system.characteristic.value}}" >{{skill.system.total.value}}</span>
-        {{else if (contains skill.name "Parry")}}
-        <span class="rollable skillItem button" data-item-id="{{skill._id}}" data-roll-type="evasion" data-target="{{skill.system.total.value}}" data-label="{{skill.name}}" data-char="{{skill.system.characteristic.value}}" >{{skill.system.total.value}}</span>
-        {{else}}
-        <span class="rollable skillItem button" data-item-id="{{skill._id}}" data-roll-type="skill" data-target="{{skill.system.total.value}}" data-label="{{skill.name}}" data-char="{{skill.system.characteristic.value}}" >{{skill.system.total.value}}</span>
+            <a class="skillItem item-descr" name="name" data-name="{{skill.name}}" data-item-descr="{{skill.system.description.value}}" title="Skill Use: {{skill.system.skillUse.value}}">{{skill.name}}</a>
+            <select  data-item-id="{{skill._id}}" class="skillItem skill-char">
+                {{selectOptions ../skillChars selected=skill.system.characteristic.value valueAttr="name" labelAttr="caps"}}
+            </select>
+            <select data-item-id="{{skill._id}}" class="skillItem skill-adv">
+                {{selectOptions ../skillTraining selected=skill.system.value valueAttr="value" labelAttr="name"}}
+
+            </select>
+            <input data-item-id="{{skill._id}}" class="skillItem item-text-input" data-target="system.mod.value" type="number" value="{{skill.system.mod.value}}" data-dtype="Number"/>
+            {{#if (contains skill.name "Dodge")}}
+            <span class="rollable skillItem button" data-item-id="{{skill._id}}" data-roll-type="evasion" data-target="{{skill.system.total.value}}" data-label="{{skill.name}}" data-char="{{skill.system.characteristic.value}}" >{{skill.system.total.value}}</span>
+            {{else if (contains skill.name "Parry")}}
+            <span class="rollable skillItem button" data-item-id="{{skill._id}}" data-roll-type="evasion" data-target="{{skill.system.total.value}}" data-label="{{skill.name}}" data-char="{{skill.system.characteristic.value}}" >{{skill.system.total.value}}</span>
+            {{else}}
+            <span class="rollable skillItem button" data-item-id="{{skill._id}}" data-roll-type="skill" data-target="{{skill.system.total.value}}" data-label="{{skill.name}}" data-char="{{skill.system.characteristic.value}}" >{{skill.system.total.value}}</span>
+            {{/if}}
+            <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{skill._id}}"></a>
+            <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{skill._id}}"></a>
+
+        </div>
         {{/if}}
-        <a class="skillItem item-edit" title="Edit Skill" data-item-id="{{skill._id}}"></a>
-        <a class="skillItem item-delete" title="Delete Skill" data-item-id="{{skill._id}}"></a>
 
+        {{/each}}
     </div>
-    {{/if}}
-
-    {{/each}}
-</div>
+</section>

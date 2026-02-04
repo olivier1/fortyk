@@ -1,7 +1,7 @@
 import { applySceneAuras } from "../utilities.js";
 import { tokenDistance } from "../utilities.js";
 import { getActorToken } from "../utilities.js";
-export class FortyKRuler extends Ruler{
+export class FortyKRuler extends foundry.canvas.interaction.Ruler{
     //OVERRIDE
     async _preMove(token){
         console.log("hello");
@@ -18,7 +18,7 @@ export class FortyKRuler extends Ruler{
             if (ae.getFlag("fortyk", "psy") || ae.getFlag("fortyk", "aura")) {
                 let range = parseInt(ae.getFlag("fortyk", "range"));
                 let casterId = ae.getFlag("fortyk", "casterTokenId");
-                let casterToken = game.canvas.tokens.children[0].children.find((child) => child.id === casterId);
+                let casterToken = game.scenes.current.tokens.find((child) => child.id === casterId);
                 if(!casterToken){
                     await ae.delete();
                     continue;

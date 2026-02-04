@@ -1,5 +1,5 @@
 
-let targets=game.canvas.tokens.children[0].children;
+let targets=canvas.tokens.placeables;
 let actor=game.user.character;
 let asuryan=actor.getFlag("fortyk", "majestyofasuryan");
 for(let target of targets){

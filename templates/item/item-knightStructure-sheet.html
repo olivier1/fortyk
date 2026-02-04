@@ -14,15 +14,15 @@
     
     <div class="flexcol">
         <label>Space taken % (0.%):</label>
-        <input type="text" value="{{system.space.value}}" name="system.space.value">
+        <input type="text" class="weapon-mod" value="{{system.space.value}}" data-target="system.space.value">
     </div>
     <div class="flexcol">
         <label>Space Increase % (1.%):</label>
-        <input type="text" value="{{system.space.mod}}" name="system.space.mod">
+        <input type="text" class="weapon-mod" value="{{system.space.mod}}" data-target="system.space.mod">
     </div>
     <div class="flexcol">
         <label>Structural Integrity Modifier % (1.%):</label>
-        <input type="text" value="{{system.SI.mod}}" name="system.SI.mod">
+        <input type="text" class="weapon-mod" value="{{system.SI.mod}}" data-target="system.SI.mod">
     </div>
     <div class="flexcol">
         <label>Item Quality:</label>
@@ -37,13 +37,37 @@
             {{selectOptions FORTYK.itemRarity selected=system.rarity.value valueAttr="value" labelAttr="label"}}
         </select>
     </div>
+
     {{#if isGM}}
-    <div class="flexcol">
-        <a class="modifier button">Active Effect</a>
+    <div class="item-description">
+        <label>GM Description:</label>
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.gm"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.gm}}">
+            {{{enrichedGMDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedGMDescription}}}
+        {{/if}}
     </div>
     {{/if}}
     <div class="item-description">
         <label>Description:</label>
-        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.value"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.value}}">
+            {{{enrichedDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedDescription}}}
+        {{/if}}
     </div>
 </form>

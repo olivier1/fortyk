@@ -1,95 +1,99 @@
-<div class="sheet-exp flexcol">
-    <label class="section-title">Aptitudes</label>
+<section class="tab sheet-content {{tabs.exp.id}} {{tabs.exp.cssClass}}"
+         data-tab="{{tabs.exp.id}}"
+         data-group="{{tabs.exp.group}}">
+    <div class="sheet-exp flexcol">
+        <label class="section-title">Aptitudes</label>
 
-    <div class="grid grid-4col">
-        {{#each actorAptitudes}}
-        {{#if ../isGM}}
-        <select class="apt1-select" name="system.aptitudes.{{@index}}" data-dtype="String">
-            <option value="">None</option>
-            {{selectOptions ../FORTYK.aptitudes selected=this.aptitude valueAttr="key" labelAttr="label"}}
-        </select>
+        <div class="grid grid-4col">
+            {{#each actorAptitudes}}
+            {{#if ../isGM}}
+            <select class="apt1-select" name="system.aptitudes.{{@index}}" data-dtype="String">
+                <option value="">None</option>
+                {{selectOptions ../FORTYK.aptitudes selected=this.aptitude valueAttr="key" labelAttr="label"}}
+            </select>
+            {{else}}
+            <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}"><u>{{this.label}}</u></a>
+            {{/if}}
+            {{/each}}
+        </div>
+        <label class="section-title">Experience</label>
+        <div class="flexrow">
+            <div class="flexcol">
+                <label>Starting Exp:</label>
+                <input type="number" class="combat-resources" data-target="system.experience.starting" value="{{system.experience.starting}}" data-dtype="Number">
+            </div>
+            <div class="flexcol">
+                <label>Exp Earned:</label>
+                <span class="exp-item">{{system.experience.earned}}</span>
+            </div>
+            <div class="flexcol">
+                <label>Exp Spent:</label>
+                <span class="exp-item">{{system.experience.spent}}</span>
+            </div>
+            <div class="flexcol">
+                <label>Remaining Exp:</label>
+                <span class="exp-item">{{system.experience.value}}</span>
+            </div>
+        </div>
+        <label class="section-title">Advancements</label>
+        {{#if system.lostChoice}}
+        <a class="lost-choice button">Make Lost Choice!</a>
+        <br>
+        {{else if flags.fortyk.lost}}
+        {{else if role.flags.fortyk.mastered}}
+
+
+        {{#unless role.flags.fortyk.masterid}}
+        <a class="button get-master" data-id="{{role.id}}">Get Mastery Ability</a>
+        <br>
         {{else}}
-        <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}"><u>{{this.label}}</u></a>
+        <a class="button change-path">Pick New Path</a>
+        <br>
+        {{/unless}}
+
         {{/if}}
-        {{/each}}
-    </div>
-    <label class="section-title">Experience</label>
-    <div class="flexrow">
-        <div class="flexcol">
-            <label>Starting Exp:</label>
-            <input type="number" name="system.experience.starting" value="{{system.experience.starting}}" data-dtype="Number">
+        <a class="spend-exp button" data-type="advancement" title="Add a new Advancement">Add Advancement</a>
+        <div class="list list4col grid grid-4col">
+            <a class="list-item-header sort-button" data-sort-type="name" data-path="name" data-item-type="advancements">Name</a>
+            <a class="list-item-header sort-button" data-sort-type="cost" data-path="system.cost.value" data-item-type="advancements">Cost</a>
+            <span class="list-item-header"></span>
+            <span class="list-item-header-last"></span>
+            {{#each actor.advancements as |a key|}}
+
+            <a class="item-descr list-item" data-name="{{a.name}}" data-item-descr="{{a.system.description.value}}">{{a.name}}</a>
+            <label class="list-item">{{a.system.cost.value}}</label>
+            <span class="list-button"><a class="list-button item-edit" title="Edit" data-item-id="{{a._id}}"></a></span>
+            <span class="list-button"><a class="list-button item-delete" title="Delete" data-item-id="{{a._id}}"></a></span>
+
+
+
+
+
+            {{/each}}
+
         </div>
-        <div class="flexcol">
-            <label>Exp Earned:</label>
-            <span class="exp-item">{{system.experience.earned}}</span>
-        </div>
-        <div class="flexcol">
-            <label>Exp Spent:</label>
-            <span class="exp-item">{{system.experience.spent}}</span>
-        </div>
-        <div class="flexcol">
-            <label>Remaining Exp:</label>
-            <span class="exp-item">{{system.experience.value}}</span>
+        <span class="section-title">Missions</span>
+        <a class="item-create button" data-type="mission" title="Add a new Mission">Add Mission</a>
+        <div class="list list5col grid grid-5col">
+            <a class="list-item-header sort-button" data-sort-type="name" data-path="name" data-item-type="missions">Name</a>
+            <a class="list-item-header sort-button" data-sort-type="exp" data-path="system.exp.value" data-item-type="missions">Exp</a>
+            <a class="list-item-header sort-button" data-sort-type="inf" data-path="system.inf.value" data-item-type="missions">Inf</a>
+            <span class="list-item-header"></span>
+            <span class="list-item-header-last"></span>
+            {{#each actor.missions as |m key|}}
+
+            <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.system.description.value}}">{{m.name}}</a>
+            <span class="list-item">{{m.system.exp.value}}</span>
+            <span class="list-item">{{m.system.inf.value}}</span>
+            <span class="list-button"><a class="list-button item-edit" title="Edit" data-item-id="{{m._id}}"></a></span>
+            <span class="list-button"><a class="list-button item-delete" title="Delete" data-item-id="{{m._id}}"></a></span>
+
+
+
+
+
+            {{/each}}
+
         </div>
     </div>
-    <label class="section-title">Advancements</label>
-    {{#if system.lostChoice}}
-    <a class="lost-choice button">Make Lost Choice!</a>
-    <br>
-    {{else if flags.fortyk.lost}}
-    {{else if role.flags.fortyk.mastered}}
-
-
-    {{#unless role.flags.fortyk.masterid}}
-    <a class="button get-master" data-id="{{role.id}}">Get Mastery Ability</a>
-    <br>
-    {{else}}
-    <a class="button change-path">Pick New Path</a>
-    <br>
-    {{/unless}}
-
-    {{/if}}
-    <a class="spend-exp button" data-type="advancement" title="Add a new Advancement">Add Advancement</a>
-    <div class="list list4col grid grid-4col">
-        <a class="list-item-header sort-button" data-sort-type="name" data-path="name" data-item-type="advancements">Name</a>
-        <a class="list-item-header sort-button" data-sort-type="cost" data-path="system.cost.value" data-item-type="advancements">Cost</a>
-        <span class="list-item-header"></span>
-        <span class="list-item-header-last"></span>
-        {{#each actor.advancements as |a key|}}
-
-        <a class="item-descr list-item" data-name="{{a.name}}" data-item-descr="{{a.system.description.value}}">{{a.name}}</a>
-        <label class="list-item">{{a.system.cost.value}}</label>
-        <span class="list-button"><a class="list-button item-edit" title="Edit" data-item-id="{{a._id}}"></a></span>
-        <span class="list-button"><a class="list-button item-delete" title="Delete" data-item-id="{{a._id}}"></a></span>
-
-
-
-
-
-        {{/each}}
-
-    </div>
-    <span class="section-title">Missions</span>
-    <a class="item-create button" data-type="mission" title="Add a new Mission">Add Mission</a>
-    <div class="list list5col grid grid-5col">
-        <a class="list-item-header sort-button" data-sort-type="name" data-path="name" data-item-type="missions">Name</a>
-        <a class="list-item-header sort-button" data-sort-type="exp" data-path="system.exp.value" data-item-type="missions">Exp</a>
-        <a class="list-item-header sort-button" data-sort-type="inf" data-path="system.inf.value" data-item-type="missions">Inf</a>
-        <span class="list-item-header"></span>
-        <span class="list-item-header-last"></span>
-        {{#each actor.missions as |m key|}}
-
-        <a class="item-descr list-item" data-name="{{m.name}}" data-item-descr="{{m.system.description.value}}">{{m.name}}</a>
-        <span class="list-item">{{m.system.exp.value}}</span>
-        <span class="list-item">{{m.system.inf.value}}</span>
-        <span class="list-button"><a class="list-button item-edit" title="Edit" data-item-id="{{m._id}}"></a></span>
-        <span class="list-button"><a class="list-button item-delete" title="Delete" data-item-id="{{m._id}}"></a></span>
-
-
-
-
-
-        {{/each}}
-
-    </div>
-</div>
+</section>

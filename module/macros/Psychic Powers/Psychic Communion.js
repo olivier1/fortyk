@@ -4,7 +4,7 @@ var pr=parseInt(power.system.curPR.value);
 let range = power.system.range.value;
 let actorToken = game.fortyk.getActorToken(actor);
 let targetIds=scope.targets;
-let targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
+let targets=canvas.tokens.placeables.filter(token=>targetIds.includes(token.id));
 let aeData=foundry.utils.duplicate(power.effects.entries().next().value[1]);
 let combat=game.combats.active;
 if(!combat)return;

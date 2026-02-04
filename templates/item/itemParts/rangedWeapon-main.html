@@ -1,0 +1,157 @@
+<section class="tab sheet-content {{tabs.rangedMain.id}} {{tabs.rangedMain.cssClass}}"
+         data-tab="{{tabs.rangedMain.id}}"
+         data-group="{{tabs.rangedMain.group}}">
+            {{#if isGM}}
+            <label class="button clone">Copy Item</label>
+            {{/if}}
+            {{#if actor}}
+            <label class="button make-ammo">Make Ammunition</label>
+            {{else}}
+            <span>You will have to create an ammunition item in order to fire your ranged weapon, unless it is a thrown weapon in which case it will use the amount of the weapon as ammo.</span>
+            {{/if}}
+            <div class="grid grid-3col">
+
+                <div class="flexcol">
+                    <label>Range:</label>
+                    <input type="text" class="weapon-mod" value="{{system.range.formula}}" data-target="system.range.formula" data-dtype="String">
+                </div>
+                <div class="flexcol">
+                    <label>Damage:</label>
+                    <input type="text" class="weapon-mod" value="{{system.damageFormula.formula}}" data-target="system.damageFormula.formula" data-dtype="String">
+                </div>
+                <div class="flexcol">
+                    <label>Penetration:</label>
+                    <input type="text" class="weapon-mod" value="{{system.pen.formula}}" data-target="system.pen.formula" data-dtype="String">
+                </div>
+                <div class="flexcol">
+                    <label>Clip Size:</label>
+                    <input type="text" class="weapon-mod" value="{{system.clip.formula}}" data-target="system.clip.formula" data-dtype="Number">
+                </div>
+                <div class="flexcol">
+                    <label>Clip cur:</label>
+                    <input type="text" class="weapon-mod" value="{{system.clip.value}}" data-target="system.clip.value" data-dtype="Number">
+                </div>
+                <div class="flexcol">
+                    <label>Reload:</label>
+                    <input type="text" class="weapon-mod" value="{{system.reload.value}}" data-target="system.reload.value" data-dtype="String">
+                </div>
+
+
+                <div class="flexcol">
+                    <label>Rate of Fire:</label>
+                    <div class="flexrow">
+                        <input type="text" class="weapon-mod" value="{{system.rof.[0].value}}" data-target="system.rof.0.value" data-dtype="String">
+                        <span>/</span>
+                        <input type="text" class="weapon-mod" value="{{system.rof.[1].value}}" data-target="system.rof.1.value" data-dtype="String">
+                        <span>/</span>
+                        <input type="text" class="weapon-mod" value="{{system.rof.[2].value}}" data-target="system.rof.2.value" data-dtype="String">
+                    </div>
+
+
+                </div>
+                <div class="flexcol">
+                    <label>Ammo Consumption:</label>
+                    <input type="text" class="weapon-mod" value="{{system.clip.consumption}}" data-target="system.clip.consumption" data-dtype="Number">
+                </div>
+                <div class="flexcol">
+                    <label>Damage Type:</label>
+                    <select class="damage-type" name="system.damageType.value">
+
+                        {{selectOptions FORTYK.damageTypes selected=system.damageType.value valueAttr="value" labelAttr="value"}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>Weapon Class:</label>
+
+                    <select class="weapon-type"  name="system.class.value">
+                        {{selectOptions FORTYK.rangedWeaponClasses selected=system.class.value valueAttr="value" labelAttr="value"}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>Weapon Type:</label>
+
+                    <select class="weapon-type"  name="system.type.value">
+                        {{selectOptions FORTYK.rangedWeaponTypes selected=system.type.value valueAttr="value" labelAttr="value"}}
+                    </select>
+                </div>
+                {{#if vehicle}}
+                <div class="flexcol">
+                    <label>Mounting:</label>
+                    <select class="mounting" name="system.mounting.value">
+
+                        {{selectOptions FORTYK.weaponMounts selected=system.mounting.value valueAttr="value" labelAttr="label"}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>Facing:</label>
+                    <select class="facing" name="system.facing.value">
+
+                        {{selectOptions FORTYK.weaponFacings selected=system.facing.value valueAttr="value" labelAttr="label"}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>State:</label>
+                    <select class="state" name="system.state.value">
+
+                        {{selectOptions FORTYK.itemStates selected=system.state.value valueAttr="value" labelAttr="value"}}
+                    </select>
+                </div>
+                {{/if}}
+                <div class="flexcol">
+                    <label>Item Quality:</label>
+
+                    <select class="quality"  name="system.quality.value">
+                        {{selectOptions FORTYK.itemQualities selected=system.quality.value valueAttr="value" labelAttr="value"}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>Rarity:</label>
+                    <select class="power-type" name="system.rarity.value">
+                        {{selectOptions FORTYK.itemRarity selected=system.rarity.value valueAttr="value" labelAttr="label"}}
+                    </select>
+                </div>
+
+                <div class="flexcol">
+                    <label>Weight:</label>
+                    <input type="text" class="weapon-mod" value="{{system.weight.value}}" data-target="system.weight.value" data-dtype="Number">
+                </div>
+                <div class="flexcol">
+                    <label>Space:</label>
+                    <input type="text" class="weapon-mod" value="{{system.space.value}}" data-target="system.space.value" data-dtype="Number">
+                </div>
+                <div class="flexrow">
+                    <label>is Hidden:</label>
+                    <input type="checkbox" class="weapon-mod" name="flags.fortyk.hidden" {{checked flags.fortyk.hidden}}>
+                </div>
+
+
+
+
+                <div class="flexcol simple-grid3">
+                    <label>Attack Modifiers:</label>
+                    <div class="flexrow">
+                        <div class="flexcol">
+                            <label>Single Shot:</label>
+                            <input type="text" class="weapon-mod" value="{{system.attackMods.single}}" data-target="system.attackMods.single" data-dtype="Number">
+                        </div>
+                        <div class="flexcol">
+                            <label>Semi Auto:</label>
+                            <input type="text" class="weapon-mod" value="{{system.attackMods.semi}}" data-target="system.attackMods.semi" data-dtype="Number">
+                        </div>
+                        <div class="flexcol">
+                            <label>Full Auto:</label>
+                            <input type="text" class="weapon-mod" value="{{system.attackMods.full}}" data-target="system.attackMods.full" data-dtype="Number">
+                        </div>
+                        <div class="flexcol">
+                            <label>Suppressive:</label>
+                            <input type="text" class="weapon-mod" value="{{system.attackMods.suppressive}}" data-target="system.attackMods.suppressive" data-dtype="Number">
+                        </div>
+                        <div class="flexcol">
+                            <label>Test Mod:</label>
+                            <input type="text" class="weapon-mod" value="{{system.testMod.value}}" data-target="system.testMod.value" data-dtype="Number">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>

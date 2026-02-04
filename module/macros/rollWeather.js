@@ -3,7 +3,7 @@ let applyChanges = false;
 new Dialog({
     title: `Roll Weather`,
     content: `
-<form>
+<section>
 <div class="form-group">
 <label>Season</label>
 <select id="season" name="season">
@@ -21,7 +21,7 @@ new Dialog({
 <option value="1">Late</option>
 </select>
 </div>
-</form>
+</section>
 `,
     buttons: {
         yes: {

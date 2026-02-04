@@ -20,11 +20,11 @@
     </div>
     <div class="flexcol">
         <label>Tonnage:</label>
-        <input type="text" value="{{system.weight.value}}" name="system.weight.value">
+        <input type="text" class="weapon-mod" value="{{system.weight.value}}" data-target="system.weight.value">
     </div>
     <div class="flexcol">
         <label>Space:</label>
-        <input type="text" value="{{system.space.value}}" name="system.space.value">
+        <input type="text" class="weapon-mod" value="{{system.space.value}}" data-target="system.space.value">
     </div>
     <div class="flexcol">
         <label>Item Quality:</label>
@@ -39,13 +39,37 @@
             {{selectOptions FORTYK.itemRarity selected=system.rarity.value valueAttr="value" labelAttr="label"}}
         </select>
     </div>
+
     {{#if isGM}}
-    <div class="flexcol">
-        <a class="modifier button">Active Effect</a>
+    <div class="item-description">
+        <label>GM Description:</label>
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.gm"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.gm}}">
+            {{{enrichedGMDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedGMDescription}}}
+        {{/if}}
     </div>
     {{/if}}
     <div class="item-description">
         <label>Description:</label>
-        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.value"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.value}}">
+            {{{enrichedDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedDescription}}}
+        {{/if}}
     </div>
 </form>

@@ -8,41 +8,39 @@
     {{/if}}
     <div class="flexcol">
         <label>Name:</label>
-        <input type="text" value="{{name}}" name="name">
+        <input type="text" class="weapon-mod" value="{{name}}" data-target="name">
     </div>
     <div class="flexcol">
         <label>Tier:</label>
-        <input type="text" value="{{system.tier.value}}" name="system.tier.value">
+        <input type="text" class="weapon-mod" value="{{system.tier.value}}" data-target="system.tier.value">
     </div>
     <div class="flexcol">
         <label>Prerequisites:</label>
-        <input type="text" value="{{system.prereqs.value}}" name="system.prereqs.value">
+        <input type="text" class="weapon-mod" value="{{system.prereqs.value}}" data-target="system.prereqs.value">
     </div>
     <div class="flexcol">
         <label>Aptitudes:</label>
-        <input type="text" value="{{system.aptitudes.value}}" name="system.aptitudes.value">
+        <input type="text" class="weapon-mod" value="{{system.aptitudes.value}}" data-target="system.aptitudes.value">
     </div>
     <div class="flexcol">
         <label>Specialisation:</label>
-        <input type="text" value="{{system.specialisation.value}}" name="system.specialisation.value">
+        <input type="text" class="weapon-mod" value="{{system.specialisation.value}}" data-target="system.specialisation.value">
     </div>
     {{#if isGM}}
     Don't change this unless you know what youre doing!
     <div class="flexcol">
         <a class="manage-reqs button">Manage Requirements</a>
     </div>
-    <div class="flexcol">
-        <a class="modifier button">Active Effect</a>
-    </div>
+
 
     <div class="flexcol">
         <label>Tags:</label>
-        <input type="text" value="{{system.tags.value}}" name="system.tags.value">
+        <input type="text" class="weapon-mod" value="{{system.tags.value}}" data-target="system.tags.value">
     </div>
 
     <div class="flexcol">
         <label>Flag Id:</label>
-        <input type="text" value="{{system.flagId.value}}" name="system.flagId.value">
+        <input type="text" class="weapon-mod" value="{{system.flagId.value}}" data-target="system.flagId.value">
     </div>
     <div class="flexrow">
         <label>Is an aura:</label>
@@ -67,20 +65,48 @@
     </div>
     <div class="flexcol">
         <label>Aura Range:</label>
-        <input type="text" value="{{system.isAura.range}}" name="system.isAura.range" data-dtype="Number">
+        <input type="text" class="weapon-mod" value="{{system.isAura.range}}" data-target="system.isAura.range" data-dtype="Number">
     </div>
     <div class="flexcol">
         <label>Flag Requirements:</label>
-        <input type="text" value="{{system.isAura.reqFlags}}" name="system.isAura.reqFlags" data-dtype="String">
+        <input type="text" class="weapon-mod" value="{{system.isAura.reqFlags}}" data-target="system.isAura.reqFlags" data-dtype="String">
     </div>
     <div class="flexcol">
         <label>Negative Flag Requirements:</label>
-        <input type="text" value="{{system.isAura.negReqFlags}}" name="system.isAura.negReqFlags" data-dtype="String">
+        <input type="text" class="weapon-mod" value="{{system.isAura.negReqFlags}}" data-target="system.isAura.negReqFlags" data-dtype="String">
     </div>
     {{/if}}
     {{/if}}
+    {{#if isGM}}
+    <div class="item-description">
+        <label>GM Description:</label>
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.gm"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.gm}}">
+            {{{enrichedGMDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedGMDescription}}}
+        {{/if}}
+    </div>
+    {{/if}}
     <div class="item-description">
         <label>Description:</label>
-        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.value"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.value}}">
+            {{{enrichedDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedDescription}}}
+        {{/if}}
     </div>
 </form>

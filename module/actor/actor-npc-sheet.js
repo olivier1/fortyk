@@ -3,6 +3,7 @@ import { objectByString } from "../utilities.js";
 import { setNestedKey } from "../utilities.js";
 import FortyKBaseActorSheet from "./base-sheet.js";
 export class FortyKNPCSheet extends FortyKBaseActorSheet {
+
     static async create(data, options) {
         data.skillFilter = "";
         super.create(data, options);
@@ -10,18 +11,51 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
 
     /** @override */
 
-    static get defaultOptions() {
-        return foundry.utils.mergeObject(super.defaultOptions, {
-            classes: ["fortyk", "sheet", "actor"],
-            template: "systems/fortyk/templates/actor/actor-npc-sheet.html",
-            width: 600,
-            height: "auto",
-            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "weapons" }],
-            scrollY: [".weapons",".armor", ".npc-psykana", ".tnt", ".description"],
-            default: null
-        });
-    }
+    static DEFAULT_OPTIONS = {
 
+        classes: ["fortyk", "sheet", "actor"],
+        template: "systems/fortyk/templates/actor/actor-npc-sheet.html",
+        window:{width: 600,
+        height: "auto"}
+
+    }
+    static PARTS = {
+        form: {
+            template: 'systems/fortyk/templates/actor/actor-npc-sheet.html'
+        },
+        weapons: {
+            template: 'systems/fortyk/templates/actor/npcParts/npc-weapons.html',
+            scrollable: ['']
+        },
+        armor: {
+            template: 'systems/fortyk/templates/actor/npcParts/npc-armor.html',
+            scrollable: ['']
+        },
+        tnt: {
+            template: 'systems/fortyk/templates/actor/npcParts/npc-tnt.html',
+            scrollable: ['']
+        },
+        psy: {
+            template: 'systems/fortyk/templates/actor/npcParts/npc-psykana.html',
+            scrollable: ['']
+        },
+        description: {
+            template: 'systems/fortyk/templates/actor/npcParts/npc-description.html',
+            scrollable: ['']
+        }
+    }
+    static TABS = {
+        sheet:{
+            tabs:[
+                { id: 'weapons', group: 'sheet', label: 'Chars & Weapons' },
+                { id: 'armor', group: 'sheet', label: 'Skills & Equipment' },
+                { id: 'tnt', group: 'sheet', label: 'Talents & Traits' },
+                { id: 'psy', group: 'sheet', label: 'Psykana' },
+                { id: 'description', group: 'sheet', label: 'Description' }
+            ],
+            initial:"weapons"
+        }
+    }
     /* -------------------------------------------- */
 
     /** @override */
@@ -37,8 +71,35 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
         data.size=FORTYK.size;
         return data;
     }*/
-    activateListeners(html) {
-        super.activateListeners(html);
+    async _prepareContext(options) {
+        const context= await super._prepareContext(options);
+        context.tabs=this._prepareTabs("sheet");
+         context.enrichedDescription= await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.system.description.value,
+                                                                                               {
+            // Only show secret blocks to owner
+            secrets: this.document.isOwner,
+            // For Actors and Items
+            relativeTo: this.document
+        });
+        context.enrichedSkills= await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.system.skills.value,
+                                                                                               {
+            // Only show secret blocks to owner
+            secrets: this.document.isOwner,
+            // For Actors and Items
+            relativeTo: this.document
+        });
+        context.enrichedEquipment= await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.system.equipment.value,
+                                                                                               {
+            // Only show secret blocks to owner
+            secrets: this.document.isOwner,
+            // For Actors and Items
+            relativeTo: this.document
+        });
+        return context;
+    }
+   _onRender(context, options) {
+        super._onRender(context, options);
+        const html=$(this.element);
         //right click profile img
         html.find(".npc-img").contextmenu(this._onImgRightClick.bind(this));
 

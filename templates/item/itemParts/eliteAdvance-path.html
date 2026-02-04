@@ -1,0 +1,45 @@
+<section class="tab sheet-content {{tabs.eaPath.id}} {{tabs.eaPath.cssClass}}"
+         data-tab="{{tabs.eaPath.id}}"
+         data-group="{{tabs.eaPath.group}}">
+            {{#if isGM}}
+            <div class="flexcol">
+                <a class="manage-mastery-reqs button">Mastery Requirements</a>
+            </div>
+
+            <div class="flexcol">
+                <label>Choose Ability:</label>
+                <select id="path-ability-select" data-index="{{@index}}">
+                    <option value="">None</option>
+                    {{debug this}}
+                    {{#each paths}}
+                    <option value="{{uuid}}">{{_source.name}}</option>
+                    {{/each}}
+
+                </select>
+            </div>
+            <select id="path-ability-type-select">
+                <option value="base">Base Ability</option>
+                <option value="mastery">Mastery Ability</option>
+                <option value="lost">Lost Ability</option>
+            </select>
+            <div class="flexcol">
+                <a class="add-path-item button">Add Ability</a>
+            </div>
+
+            <div class="flexrow">
+             <div class="flexcol">
+                <label>Base Ability:</label>
+                 <label>{{asuryani.base.name}}</label>
+            </div>
+                 <div class="flexcol">
+                <label>Mastery Ability:</label>
+                 <label>{{asuryani.mastery.name}}</label>
+            </div>
+                 <div class="flexcol">
+                <label>Lost Ability:</label>
+                 <label>{{asuryani.lost.name}}</label>
+            </div>
+            </div>
+
+            {{/if}}
+        </section>

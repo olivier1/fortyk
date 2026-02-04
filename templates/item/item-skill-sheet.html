@@ -31,7 +31,7 @@
         <div class="flexcol">
             <label>Name:</label>
             
-            <input type="text" class="name skill-dialog" name="name" value="{{name}}" data-dtype="String" required>
+            <input type="text" class="name skill-dialog weapon-mod" data-target="name" value="{{name}}" data-dtype="String" required>
         </div>
         <div class="flexcol">
             <label>Characteristic</label>
@@ -51,15 +51,43 @@
         </div>
         <div class="flexcol">
         <label>Aptitudes:</label>
-            <input type="text" class="aptitudes skill-dialog" name="system.aptitudes.value" value="{{system.aptitudes.value}}" data-dtype="String" required>
+            <input type="text" class="aptitudes skill-dialog weapon-mod" data-target="system.aptitudes.value" value="{{system.aptitudes.value}}" data-dtype="String" required>
         </div>
         <div class="flexcol">
         <label>Skill Use:</label>
-            <input type="text" class="skill-use skill-dialog" name="system.skillUse.value" value="{{system.skillUse.value}}" data-dtype="String" required>
+            <input type="text" class="skill-use skill-dialog weapon-mod" data-target="system.skillUse.value" value="{{system.skillUse.value}}" data-dtype="String" required>
         </div>
-        <div class="item-description">
-        <label>Skill Description:</label>
-            {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
-        </div>
+        {{#if isGM}}
+    <div class="item-description">
+        <label>GM Description:</label>
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.gm"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.gm}}">
+            {{{enrichedGMDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedGMDescription}}}
+        {{/if}}
+    </div>
+    {{/if}}
+    <div class="item-description">
+        <label>Description:</label>
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.value"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.value}}">
+            {{{enrichedDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedDescription}}}
+        {{/if}}
+    </div>
         
     </form>

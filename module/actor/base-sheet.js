@@ -7,18 +7,88 @@ import { tokenDistance } from "../utilities.js";
 import { getVehicleFacing } from "../utilities.js";
 import { FortyKItem } from "../item/item.js";
 import { getBlastTargets } from "../utilities.js";
-export default class FortyKBaseActorSheet extends ActorSheet {
+import { ActiveEffectDialog } from "../dialog/activeEffect-dialog.js";
+const { HandlebarsApplicationMixin } = foundry.applications.api;
+const { DragDrop } = foundry.applications.ux;
+
+export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2) {
+    #dragDrop;
     /** @override */
-    static get defaultOptions() {
-        return foundry.utils.mergeObject(super.defaultOptions, {
-            scrollY: [".main", ".skills", ".tnt", ".exp", ".combat", ".gear", ".psykana", ".sheet-skills"]
+    static DEFAULT_OPTIONS = {
+        tag: 'form',
+        form:{
+            handler: FortyKBaseActorSheet._onSubmitForm,
+            submitOnChange: true
+        },
+        dragDrop: [{
+            dragSelector: '[data-drag="true"]',
+            dropSelector: '.drop-zone'
+        }],
+        actions: {
+            editImage: this.#onEditImage,
+            manageAEs: this._manageAEs
+        },
+        window: {
+            controls: [
+                {
+                    icon: 'fas fa-asterisk',
+                    label: 'Manage AEs',
+                    action: 'manageAEs',
+                    visible: this.isGM // Only show if the user is the owner (GM)
+                }
+            ]
+        }
+
+    }
+    constructor(options = {}) {
+        super(options);
+        this.#dragDrop = this.#createDragDropHandlers();
+    }
+    static async #onEditImage(event, target) {
+        const field = target.dataset.field || "img";
+        const current = foundry.utils.getProperty(this.document, field);
+
+        const fp = new foundry.applications.apps.FilePicker({
+            type: "image",
+            current: current,
+            callback: (path) => this.document.update({ [field]: path })
         });
+
+        fp.render(true);
+    }
+    #createDragDropHandlers() {
+        return this.options.dragDrop.map((d) => {
+            d.permissions = {
+                dragstart: this._canDragStart.bind(this),
+                drop: this._canDragDrop.bind(this)
+            };
+            d.callbacks = {
+                dragstart: this._onDragStart.bind(this),
+                dragover: this._onDragOver.bind(this),
+                drop: this._onDrop.bind(this)
+            };
+            return new DragDrop(d);
+        });
+    }
+
+
+
+    _canDragStart(selector) {
+        return this.document.isOwner && this.isEditable
+    }
+
+    _canDragDrop(selector) {
+        return this.document.isOwner && this.isEditable
+    }
+
+    _onDragOver(event) {
+        // Optional: handle dragover events if needed
     }
     /* -------------------------------------------- */
     /** @override */
-    async getData() {
-        const data = await super.getData().actor;
-        data.actor = await this.actor.prepare();
+    async _prepareContext(options) {
+        const data = this.document;
+        data.actor = await this.document.prepare();
         data.isGM = game.user.isGM;
         data.dtypes = ["String", "Number", "Boolean"];
         data.races = game.fortyk.FORTYK.races;
@@ -32,8 +102,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         if (!data?.eliteAdvances?.length) {
             data.eliteAdvances = undefined;
         }
-
-        data.editable = this.options.editable;
+        data.owner=this.isOwner;
+        data.editable = this.isEditable;
         data.money = game.settings.get("fortyk", "dhMoney");
         data.alternateWounds = game.settings.get("fortyk", "alternateWounds");
         data.bcCorruption = game.settings.get("fortyk", "bcCorruption");
@@ -42,15 +112,17 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         return data;
     }
     /** @override */
-    activateListeners(html) {
-        super.activateListeners(html);
+    _onRender(context, options) {
+        super._onRender(context, options);
+        const html=$(this.element);
         //right click profile img
         html.find(".profile-img").contextmenu(this._onImgRightClick.bind(this));
 
         // Everything below here is only needed if the sheet is editable
         //get item description
         html.find(".item-descr").click(this._onItemDescrGet.bind(this));
-        if (!this.options.editable) return;
+
+        if (!this.isEditable) return;
 
         //handles combat tab resources
 
@@ -104,12 +176,30 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         });
 
         // Autoselect entire text
-        $("input[type=text]").focusin(function () {
+        $("input[type=text]").focusin(function (event) {
             $(this).select();
+
         });
-        $("input[type=number]").focusin(function () {
+        $("input[type=number]").focusin(function (event) {
             $(this).select();
+
         });
+        //stop the change event on all inputs because its jank
+        $("input[type=number]").change(function (event){
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        });
+         $("input[type=text]").change(function (event){
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        });
+        $("select:not([class])").change(function (event){
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        });
+
+        this.#dragDrop.forEach((d) => d.bind(this.element))
+
     }
     _onDragListItem(event) {
         let data = {};
@@ -399,7 +489,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
 
         let templateOptions = { tnts: tnts };
 
-        let renderedTemplate = renderTemplate(
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate(
             "systems/fortyk/templates/actor/dialogs/tnt-dialog.html",
             templateOptions
         );
@@ -422,14 +512,14 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                 $(html)
                                     .find("input:checked")
                                     .each(function () {
-                                        selectedIds.push($(this).val());
-                                    });
+                                    selectedIds.push($(this).val());
+                                });
 
                                 let $selectedCompendiums = $("input:checked", html)
-                                    .map(function () {
-                                        return this.getAttribute("data-compendium");
-                                    })
-                                    .get();
+                                .map(function () {
+                                    return this.getAttribute("data-compendium");
+                                })
+                                .get();
 
                                 let talentsNTraits = [];
                                 for (let i = 0; i < selectedIds.length; i++) {
@@ -553,7 +643,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         let itemId = event.currentTarget.attributes["data-item-id"].value;
         let item = await this.actor.getEmbeddedDocument("Item", itemId);
 
-        let renderedTemplate = renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
         renderedTemplate.then((content) => {
             new Dialog({
                 title: "Deletion Confirmation",
@@ -610,6 +700,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     }
     //handles firing mode change for maximal weapons
     async _onMaximalClick(event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
         let dataset = event.currentTarget.dataset;
         let weaponID = dataset["itemId"];
         let fortykWeapon = this.actor.items.get(weaponID);
@@ -632,6 +724,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     //handles firing mode change for las weapons
     async _onLasModeChange(event) {
         event.preventDefault();
+        event.stopImmediatePropagation();
         const data = this.actor.system;
         let dataset = event.currentTarget.dataset;
 
@@ -653,9 +746,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         const dataset = element.dataset;
         let testType = dataset["rollType"];
         var testTarget = parseInt(dataset["target"]);
-        
+
         let modifierTracker = [];
-        
+
 
         var testLabel = dataset["label"];
         var testChar = dataset["char"];
@@ -769,7 +862,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 testLabel += ` at PR ${pr}`;
             } else {
                 let training = item.system.training.value;
-                
+
                 modifierTracker.push({ value: training, label: "Power Training" });
                 FortykRollDialogs.callNavigatorPowerDialog(
                     testChar,
@@ -845,7 +938,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 actor.getFlag("fortyk", "twohandedbrutality") &&
                 fortykWeapon.system.twohanded.value &&
                 (actor.system.secChar.lastHit.attackType === "charge" ||
-                    actor.system.secChar.lastHit.attackType === "allout")
+                 actor.system.secChar.lastHit.attackType === "allout")
             ) {
                 dmg += actor.system.characteristics.s.bonus;
             }
@@ -881,7 +974,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                 reroll++;
             }
             options.reroll = reroll;
-            let renderedTemplate = renderTemplate("systems/fortyk/templates/actor/dialogs/damage-dialog.html", options);
+            let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/damage-dialog.html", options);
             let formula = foundry.utils.duplicate(weapon.system.damageFormula);
             renderedTemplate.then((content) => {
                 new Dialog({
@@ -977,7 +1070,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
         options.reroll = reroll;
 
-        let renderedTemplate = renderTemplate("systems/fortyk/templates/actor/dialogs/damage-dialog.html", options);
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/damage-dialog.html", options);
         let formula = foundry.utils.duplicate(weapon.system.damageFormula);
         renderedTemplate.then((content) => {
             new Dialog({
@@ -1009,9 +1102,9 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                     let curTargets = targets[i].targets;
                                     weapon.template = targets[i].template;
                                     let targetNames = "";
-                                    let targetTokens = game.canvas.tokens.children[0].children.filter((token) =>
-                                        curTargets.includes(token.id)
-                                    );
+                                    let targetTokens = canvas.tokens.placeables.filter((token) =>
+                                                                                         curTargets.includes(token.id)
+                                                                                        );
                                     for (let j = 0; j < targetTokens.length; j++) {
                                         let token = targetTokens[j];
                                         if (j === targetTokens.length - 1) {
@@ -1023,7 +1116,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
                                         }
                                     }
                                     if (curTargets.length !== 0) {
-                                        game.user.updateTokenTargets(curTargets);
+                                        game.user.targets.clear();
+                                        game.user.targets.add(...curTargets);
                                         let name = actor.getName();
                                         let chatBlast2 = {
                                             author: game.user._id,
@@ -1151,6 +1245,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     }
     async _onWeaponProfileChange(event) {
         event.preventDefault();
+        event.stopImmediatePropagation();
         let uuid = event.currentTarget.value;
         let itemId = event.currentTarget.attributes["data-id"].value;
         let item = this.actor.getEmbeddedDocument("Item", itemId);
@@ -1159,6 +1254,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
     }
     //handle enabling and disabling active effects associated with armor
     async _onArmorChange(event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
         let actor = this.actor;
         let newArmorId = event.currentTarget.value;
         let newArmor = actor.getEmbeddedDocument("Item", newArmorId);
@@ -1179,6 +1276,8 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         }
     }
     async _onForceFieldChange(event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
         let actor = this.actor;
         let newForceFieldId = event.currentTarget.value;
         let newForceField = actor.getEmbeddedDocument("Item", newForceFieldId);
@@ -1251,6 +1350,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
         if (!this.actor.isOwner) return false;
         const item = await Item.implementation.fromDropData(data);
         const itemData = item.toObject();
+        itemData.id=itemData._id;
         const sameActor = this.actor.uuid === item.parent?.uuid;
         //make sure the copy wont be equipped by default
         if (itemData.system.isEquipped) itemData.system.isEquipped = false;
@@ -1267,7 +1367,7 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             }
         }
         // Handle item sorting within the same Actor
-        if (sameActor) return super._onSortItem(event, itemData);
+        if (sameActor) return super._onSortItem(event, item);
 
         // Create the owned item
         return super._onDropItemCreate(itemData, event);
@@ -1387,5 +1487,66 @@ export default class FortyKBaseActorSheet extends ActorSheet {
             default: "submit",
             width: 100
         });
+    }
+    static async _manageAEs(){
+        let actor = this.document;
+            if (this.token) {
+                actor = this.token.actor;
+            }
+
+            var options = {
+                id: "aeDialog"
+            };
+            var d = new ActiveEffectDialog(
+                {
+                    title: "Active Effects",
+                    actor: actor,
+                    buttons: {
+                        button: {
+                            label: "Ok",
+                            callback: async (html) => {
+                               this.document.dialog = undefined;
+                            }
+                        }
+                    },
+                    close: function () {
+                        this.document.dialog = undefined;
+                    }
+                },
+                options
+            ).render(true);
+            this.document.dialog = d;
+    }
+    static async _onSubmitForm(event, form, formData){
+        console.log(event,formData);
+        event.preventDefault();
+        let object=formData.object;
+        let background=object.system?.notesAndBackground?.background;
+        let notes=object.system?.notesAndBackground?.notes;
+        let description=object.system?.description?.value;
+        let skills=object.system?.skills?.value;
+        let equipment=object.system?.equipment?.value;
+
+        if(description){
+            object.system.description.value=foundry.utils.cleanHTML(description);
+
+        }
+        if(skills){
+            object.system.skills.value=foundry.utils.cleanHTML(skills);
+
+        }
+        if(equipment){
+            object.system.equipment.value=foundry.utils.cleanHTML(equipment);
+
+        }
+        if(background){
+            object.system.notesAndBackground.background=foundry.utils.cleanHTML(background);
+
+        }
+        if(notes){
+            object.system.notesAndBackground.notes=foundry.utils.cleanHTML(notes);
+
+        }
+        await this.document.update(formData.object);
     }
 }

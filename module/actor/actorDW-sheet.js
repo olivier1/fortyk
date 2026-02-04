@@ -10,32 +10,103 @@ import { sleep } from "../utilities.js";
  * @extends {ActorSheet}
  */
 export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
-    /** @override */
 
-    static get defaultOptions() {
-        return foundry.utils.mergeObject(super.defaultOptions, {
-            classes: ["fortyk", "sheet", "actor"],
-            template: "systems/fortyk/templates/actor/actor-sheet.html",
-            width: 666,
-            height: "auto",
-            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "main" }],
-            default: null,
-            scrollY: [
-                ".main",
-                ".skills",
-                ".tnt",
-                ".exp",
-                ".combat",
-                ".gear",
-                ".psykana",
-                ".sheet-skills",
-                ".sheet-content",
-                ".psy-powers"
+    /** @override */
+    /** @inheritDoc */
+    static PARTS = {
+        header: {
+            template: 'systems/fortyk/templates/actor/actor-sheet.html',
+            scrollable: ['.charSheet']
+        },
+
+        main: {
+            template: "systems/fortyk/templates/actor/actor-main.html",
+            scrollable: ['']
+        },
+        skills: {
+            template: "systems/fortyk/templates/actor/actor-skills.html",
+            scrollable: ['.sheet-skills']
+        },
+        tnt: {
+            template: "systems/fortyk/templates/actor/actor-tnt.html",
+            scrollable: ['']
+        },
+        exp: {
+            template: "systems/fortyk/templates/actor/actor-exp.html",
+            scrollable: ['']
+        },
+        combat: {
+            template: "systems/fortyk/templates/actor/actor-combat.html",
+            scrollable: ['.combat']
+        },
+        gear: {
+            template: "systems/fortyk/templates/actor/actor-gear.html",
+            scrollable: ['']
+        },
+        psykana: {
+            template: "systems/fortyk/templates/actor/actor-psykana.html",
+            scrollable: ['.psy-powers']
+        },
+        corruption: {
+            template: "systems/fortyk/templates/actor/actor-corruption.html",
+            scrollable: ['']
+        },
+        background: {
+            template: "systems/fortyk/templates/actor/actor-background.html",
+            scrollable: ['']
+        },
+        creationMain: {
+            template: "systems/fortyk/templates/actor/characterCreationParts/creation-main.html",
+            scrollable: ['']
+        },
+        creationPreview: {
+            template: "systems/fortyk/templates/actor/characterCreationParts/creation-preview.html",
+            scrollable: ['']
+        }
+    }
+
+    static TABS = {
+        sheet:{
+            tabs: [
+                { id: 'main', group: 'sheet', label: 'Main' },
+                { id: 'skills', group: 'sheet', label: 'Skills' },
+                { id: 'tnt', group: 'sheet', label: 'Talents & Traits' },
+                { id: 'gear', group: 'sheet', label: 'Gear & Cybernetics' },
+                { id: 'exp', group: 'sheet', label: 'Exp & Missions' },
+                { id: 'psykana', group: 'sheet', label: 'Psykana' },
+                { id: 'combat', group: 'sheet', label: 'Combat' },
+                { id: 'corruption', group: 'sheet', label: "Mental & Physical"},
+                { id: 'background', group: 'sheet', label: 'Background & Notes' }
             ]
-        });
+        }
+
+
+    }
+    _getTabsConfig(group) {
+        const tabs = foundry.utils.deepClone(super._getTabsConfig(group));
+        const characterCreation = this.document.getFlag("fortyk", "charactercreation");
+        // Modify tabs based on document properties
+        if (characterCreation) {
+            let creationStage=this.document.getFlag("fortyk", "creationstage");
+            if(!creationStage)creationStage=0;
+            tabs.initial="creationMain";
+            tabs.tabs=[];
+            tabs.tabs.push({ id: 'creationMain', group: 'sheet', label: `Stage ${creationStage}` });
+            tabs.tabs.push({ id: 'creationPreview', group: 'sheet', label: 'Preview' });
+        }else{
+            tabs.initial="main";
+        }
+
+        return tabs;
+    }
+    static DEFAULT_OPTIONS = {
+        tag: 'form',
+        classes: ["fortyk", "sheet", "actor"],
+        position: { width: 680, height: 'auto' }
+
     }
     /** @override **/
-    async getData() {
+    async _prepareContext(options) {
         const startTime=performance.now();
         let nameSort = function compare(a, b) {
             let valueA = a.name;
@@ -49,8 +120,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             // a must be equal to b
             return 0;
         };
-        let data = await super.getData();
-        let actor = this.actor;
+        let data = await super._prepareContext(options);
+        let actor = this.document;
         let characterCreation = actor.getFlag("fortyk", "charactercreation");
         data.characterCreation = characterCreation;
         data.hasInfluence = actor.getFlag("fortyk", "hasinfluence");
@@ -62,6 +133,23 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         if(actor.getFlag("fortyk","roguetradercharacter")){
             data.featureLabels = FORTYK.characterTypeFeatureLabels["darkheresy"];
         }
+        data.enrichedBackground= await foundry.applications.ux.TextEditor.implementation.enrichHTML(data.system.notesAndBackground.background,
+                                                                                                    {
+            // Only show secret blocks to owner
+            secrets: this.document.isOwner,
+            // For Actors and Items
+            relativeTo: this.document
+        });
+        data.enrichedNotes= await foundry.applications.ux.TextEditor.implementation.enrichHTML(data.system.notesAndBackground.notes,
+                                                                                               {
+            // Only show secret blocks to owner
+            secrets: this.document.isOwner,
+            // For Actors and Items
+            relativeTo: this.document
+        });
+
+
+        data.tabs=this._prepareTabs("sheet");
         data.actorAptitudes = this.prepareActorAptitudes(actor.system.aptitudes);
         let disciplines = [];
         let actorDisciplines = actor.system.psykana.disciplines;
@@ -128,7 +216,9 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                     planets.sort(nameSort);
                     data.planets = planets;
                     data.feature = this.feature;
+                    if(data.feature?.system?.type?.value==="charactertype")data.feature=undefined;
                     if (data.feature) {
+
                         data.alternateWounds = game.settings.get("fortyk", "alternateWounds");
                         if (data.alternateWounds) {
                             data.featureAlternateWoundLabel = "+" + data.feature.system.wounds.alternate;
@@ -232,8 +322,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     }
 
     /** @override */
-    activateListeners(html) {
-        super.activateListeners(html);
+    _onRender(context, options) {
+        super._onRender(context, options);
+        const html=$(this.element);
+        if(!this.isEditable)return;
         let characterCreation = this.actor.getFlag("fortyk", "charactercreation");
         if (characterCreation) {
             //confirm character type choice
@@ -708,6 +800,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         element.value = newAmt;
     }
     _onFeaturePlusMinusChange(event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
         let featurePlusMinusSelect = event.currentTarget;
         let choice = featurePlusMinusSelect.value;
         let id = featurePlusMinusSelect.id;
@@ -725,6 +819,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         this.render();
     }
     _onAptitudeAnyChange(event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
         let aptitudeAnySelect = event.currentTarget;
         let aptitudes = game.fortyk.FORTYK.aptitudes;
 
@@ -1181,11 +1277,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             update["system.experience.starting"]= experience;
             let all=feature.system.characteristics.all;
             for (let [key, char] of Object.entries(actor.system.characteristics)) {
-               if(all){
-                   update[`system.characteristics.${key}.value`]=all;
-               }else{
-                   update[`system.characteristics.${key}.value`]=chars[key];
-               }
+                if(all){
+                    update[`system.characteristics.${key}.value`]=all;
+                }else{
+                    update[`system.characteristics.${key}.value`]=chars[key];
+                }
             }
 
         }else{
@@ -1198,9 +1294,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         await actor.setFlag("fortyk", "creationstage", stage);
         this.resetStage();
-        this.render();
+        await this.render(true);
     }
     async _onFeatureChange(event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
         this.resetStage();
         let featureSelect = event.currentTarget;
         let featureId = featureSelect.value;
@@ -1461,7 +1559,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         let templateOptions = { tnts: paths };
 
-        let renderedTemplate = renderTemplate(
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate(
             "systems/fortyk/templates/actor/dialogs/path-dialog.html",
             templateOptions
         );
@@ -1576,7 +1674,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             ]
         };
 
-        let renderedTemplate = renderTemplate(
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate(
             "systems/fortyk/templates/actor/dialogs/select-wargear-type-dialog.html",
             templateOptions
         );
@@ -1685,6 +1783,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         }
     }
     async _onExtraWeaponChange(event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
         let actor = this.actor;
         const weaponId = event.currentTarget.value;
         const index = parseInt(event.currentTarget.dataset["index"]);
@@ -1704,6 +1804,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     //handles when swapping ammo type in a ranged weapon
     async _onAmmoChange(event) {
         event.preventDefault();
+        event.stopImmediatePropagation();
         const dataset = event.currentTarget.dataset;
         const weapon = this.actor.getEmbeddedDocument("Item", dataset["weapon"]);
         if (!weapon) {
@@ -1789,6 +1890,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     //handles when weapons are swapped and stuff
     async _onWeaponChange(event) {
         event.preventDefault();
+        event.stopImmediatePropagation();
         const data = this.actor.system;
 
         let actor = this.actor;
@@ -1853,6 +1955,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     }
 
     _onSkillFilterChange(event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
         let skills = document.getElementsByName("skill");
         let skillHeads = document.getElementsByName("skillheads");
 
@@ -1878,6 +1982,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         }
     }
     _onPsyFilterChange(event) {
+         event.preventDefault();
+            event.stopImmediatePropagation();
         let powers = document.getElementsByName("psypower");
 
         let filterInput = document.getElementById("psyfilter");

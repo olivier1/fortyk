@@ -1,0 +1,29 @@
+<section class="tab sheet-content {{tabs.weaponMods.id}} {{tabs.weaponMods.cssClass}}"
+         data-tab="{{tabs.weaponMods.id}}"
+         data-group="{{tabs.weaponMods.group}}">
+            <div class="flexcol">
+                <a class="special button">Special Qualities</a>
+
+            </div>
+
+            <div class="flexrow">
+
+                <label>Upgrades: {{this.getModCount}}/{{system.mods.max}}</label>
+            </div>
+            <div class="sheet-tnt flexcol">
+                <label>Upgrades:</label>
+                <div class="list list2col1 grid grid-3col">
+
+                    <a class="list-item-header" data-sort-type="name" data-path="name" data-item-type="talentsntraits">Name</a>
+                    <a class="list-item-header" data-sort-type="name" data-path="name" data-item-type="talentsntraits">Description</a>
+                    <span class="list-item-header-last"></span>
+                    {{#each mods as |t key|}}
+                    <span class="list-item" data-id="{{t.id}}" data-name="{{t.name}}" data-item-descr="{{t.description}}">{{t.name}}</span>
+                    <span class="list-item"> {{unescape t.description}}</span>
+                    <span class="list-button"> <a class="list-button item-delete delete-mod" title="Delete"  data-item-id="{{t.id}}"></a></span>
+                    {{/each}}
+
+                </div>
+
+            </div>
+        </section>

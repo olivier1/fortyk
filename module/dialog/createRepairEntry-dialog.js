@@ -1,11 +1,12 @@
 import {FortyKItem} from "../item/item.js";
-export class CreateRepairEntryDialog extends Application {
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class CreateRepairEntryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
     /** @override */
 
-    static get defaultOptions() {
+    static DEFAULT_OPTIONS= {
 
-        return foundry.utils.mergeObject(super.defaultOptions, {
+            tag: 'form',
             classes: ["fortyk"],
             template: "systems/fortyk/templates/actor/dialogs/createRepairEntry-dialog.html",
             width: 666,
@@ -19,11 +20,11 @@ export class CreateRepairEntryDialog extends Application {
             dos:0,
             default:null,
             tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "repair" }]
-        });
+
     }
 
-    async getData(){
-        const data=super.getData();
+    async _prepareContext(options){
+        const data=super._prepareContext(options);
 
         let house=this.options.actor;
         let knightIds=house.system.knights;

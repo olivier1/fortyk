@@ -83,683 +83,87 @@
                 </div>
             </div>
         </div>
+<div class="characteristics grid grid-10col">
 
-        <nav class="sheet-tabs npc tabs grid grid-5col" data-group="primary">
 
-            <a class="item " data-tab="weapons">CHARS & WEAPONS</a>
-            <a class="item" data-tab="armor">SKILLS & EQUIPMENT</a>
-            <a class="item" data-tab="tnt">TALENTS & TRAITS</a>
-            <a class="item" data-tab="npc-psykana">PSYKANA</a>
-            <a class="item" data-tab="description">DESCRIPTION</a>
 
-        </nav>
+
+
+        <span class="characteristicsSpan"></span>
+
+
+        {{#each system.characteristics as |char key|}}
+        {{#unless (compareString key "inf")}}
+        <div class="charCross flexcol flex-group-center">
+            <label for="system.characteristics.{{key}}.value" class="resource-label">{{key}}</label>
+        </div>
+        {{/unless}}
+        {{/each}}
+
+
+        <div class="charCross flexcol flex-group-center">
+            <span class="characteristicsSpan">Base
+            </span>
+        </div>
+        {{#each system.characteristics as |char key|}}
+        {{#unless (compareString key "inf")}}
+        <div>
+            <input type="number" class="combat-resources" data-target="system.characteristics.{{key}}.value" value="{{char.value}}" data-dtype="Number"/>
+
+
+        </div>
+        {{/unless}}
+        {{/each}}
+
+        <div class="charCross flexcol flex-group-center">
+            <span class="characteristicsSpan">Unnat</span>
+        </div>
+        {{#each system.characteristics as |char key|}}
+        {{#unless (compareString key "inf")}}
+        <div>
+            <input type="number" class="combat-resources" data-target="system.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number"/>
+
+        </div>
+        {{/unless}}
+        {{/each}}
+
+
+
+
+
+
+        <div class="charCross flexcol flex-group-center">
+            <span class="characteristicsSpan">Total</span>
+        </div>
+        {{#each system.characteristics as |char key|}}
+        {{#unless (compareString key "inf")}}
+        <div class="charCross flexcol flex-group-center">
+            <span class="char-total rollable button" data-roll-type="char" data-target="{{char.total}}" data-label="{{char.label}}" data-char="{{key}}" title="Bonus: {{char.bonus}}">{{char.total}}</span>
+        </div>
+        {{/unless}}
+        {{/each}}
+
+
+
+    </div>
+
+    {{>'templates/generic/tab-navigation.hbs'}}
+
     </header>
 
 
 
 
-    <section class="sheet-content npc-content">
-        <div class="tab weapons" data-group="primary" data-tab="weapons">
-            <div class="characteristics grid grid-10col">
 
 
 
 
 
-                <span class="characteristicsSpan"></span>
 
 
-                {{#each system.characteristics as |char key|}}
-                {{#unless (compareString key "inf")}}
-                <div class="charCross flexcol flex-group-center">
-                    <label for="system.characteristics.{{key}}.value" class="resource-label">{{key}}</label>
-                </div>
-                {{/unless}}
-                {{/each}}
-
-
-                <div class="charCross flexcol flex-group-center">
-                    <span class="characteristicsSpan">Base
-                    </span>
-                </div>
-                {{#each system.characteristics as |char key|}}
-                {{#unless (compareString key "inf")}}
-                <div>
-                    <input type="number" class="combat-resources" data-target="system.characteristics.{{key}}.value" value="{{char.value}}" data-dtype="Number"/>
-
-
-                </div>
-                {{/unless}}
-                {{/each}}
-
-                <div class="charCross flexcol flex-group-center">
-                    <span class="characteristicsSpan">Unnat</span>
-                </div>
-                {{#each system.characteristics as |char key|}}
-                {{#unless (compareString key "inf")}}
-                <div>
-                    <input type="number" class="combat-resources" data-target="system.characteristics.{{key}}.uB" value="{{char.uB}}" data-dtype="Number"/>
-
-                </div>
-                {{/unless}}
-                {{/each}}
-
-
-
-
-
-
-                <div class="charCross flexcol flex-group-center">
-                    <span class="characteristicsSpan">Total</span>
-                </div>
-                {{#each system.characteristics as |char key|}}
-                {{#unless (compareString key "inf")}}
-                <div class="charCross flexcol flex-group-center">
-                    <span class="char-total rollable button" data-roll-type="char" data-target="{{char.total}}" data-label="{{char.label}}" data-char="{{key}}" title="Bonus: {{char.bonus}}">{{char.total}}</span>
-                </div>
-                {{/unless}}
-                {{/each}}
-
-
-
-            </div>
-            <div class="flexrow">
-                <a class="item-create button" data-type="rangedWeapon" title="Add a Ranged Weapon">Add ranged weapon</a>
-                <a class="item-create button" data-type="meleeWeapon" title="Add a Melee Weapon">Add melee weapon</a>
-            </div>
-            <div class="grid grid-2col item-list no-place">
-                {{#each actor.weapons}}
-                {{#if (contains this.type "melee")}}
-                <div>
-                    <div class="weapons grid grid-2col">
-                        <div class="weapon-name item" data-item-id="{{this.id}}" data-uuid="{{this.uuid}}" data-type="{{this.type}}">
-                            {{#if flags.fortyk.alternateprofiles}}
-
-                            <select class="profile-select" data-id="{{this.id}}">
-                                <option value="">{{this._source.name}}</option>
-                                {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
-
-                            </select>
-                            {{else}}
-
-                            <span>{{this.name}}</span>
-
-                            {{/if}}
-                        </div>
-
-
-                        <div class="list-item">
-                            <span>Attack: </span>
-                            <span class="melee-attack rollable button" data-roll-type="meleeAttack" data-target="{{../system.characteristics.ws.total}}" data-item-id="{{this._id}}" data-label="Melee Attack" data-char="ws">Roll</span>
-                        </div>
-                        <div class="list-item">
-                            <span>Damage: </span>
-                            <a class="damage-roll button" data-label="{{this.name}}" data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.system.damageFormula.value}}</a>
-                        </div>
-                        {{#if this.flags.fortyk.force}}
-                        <div class="list-item">
-
-                            <a class="force-roll button" data-label="Force"> Force</a>
-
-
-                        </div>
-                        {{/if}}
-                        <div class="list-item">
-                            <span>Reach: {{this.system.range.value}}m</span>
-                        </div>
-                        <div class="list-item">
-                            <span>Penetration: {{this.system.pen.value}}</span>
-
-                        </div>
-                        {{#if this.system.specialFlags.length}}
-                        <div class="list-item">
-                            <span>Special: 
-                                {{#each this.system.specialFlags }}
-                                <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}">{{label}}</a>
-                                {{/each}}
-                            </span>
-                        </div>
-                        {{/if}}
-                        <div class="list-item">
-                            <span>Damage Type: {{this.system.damageType.value}}</span>
-
-                        </div>
-                        <div class="list-item">
-                            <span>Weapon Class: {{this.system.class.value}}</span>
-
-
-                        </div>
-                        <div class="list-item">
-                            <span>Weapon Type: {{this.system.type.value}}</span>
-
-
-                        </div>
-                        <div class="list-item flexrow">
-                            <a class="list-button item-edit" title="Edit" data-item-id="{{this._id}}"></a>
-                            <a class="list-button item-delete" title="Delete" data-item-id="{{this._id}}"></a>
-                        </div>
-                    </div>
-                </div>
-                {{else}}
-                <div>
-
-                    <div class="weapons grid grid-2col">
-                        <div class="weapon-name item" data-item-id="{{this.id}}" data-uuid="{{this.uuid}}" data-type="{{this.type}}">
-                            {{#if flags.fortyk.alternateprofiles}}
-
-                            <select class="profile-select" data-id="{{this.id}}">
-                                <option value="">{{this._source.name}}</option>
-                                {{selectOptions flags.fortyk.instancedProfiles selected=flags.fortyk.currentprofile valueAttr="uuid" labelAttr="name"}}
-
-                            </select>
-                            {{else}}
-
-                            <span>{{this.name}}</span>
-
-                            {{/if}}
-                        </div>
-
-
-                        <div class="list-item">
-                            <span>Attack: </span>
-                            {{#if this.flags.fortyk.spray}}
-                            <span class="spray-attack rollable button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span>
-                            {{else if this.flags.fortyk.torrent}}
-                            <span class="torrent-attack rollable button" data-roll-type="torrentAttack" data-item-id="{{this.id}}" data-label="Torrent Attack" >Torrent</span>
-                            {{else}}
-
-                            <span class="ranged-attack rollable button" data-roll-type="rangedAttack" data-target="{{../system.characteristics.bs.total}}" data-item-id="{{this.id}}" data-label="Ranged Attack" data-char="bs">Roll</span>
-
-                            {{/if}}
-
-                        </div>
-                        <div class="list-item">
-                            <span>Damage: </span>
-                            <a class="damage-roll button" data-label="{{this.name}}"data-formula="{{this.system.damageFormula.value}}" data-weapon="{{this._id}}"> {{this.system.damageFormula.value}}</a>
-
-                        </div>
-
-                        {{#if this.flags.fortyk.force}}
-                        <div class="list-item">
-
-                            <a class="force-roll button" data-label="Force"> Force</a>
-
-
-                        </div>
-                        {{/if}}
-                        {{#if this.flags.fortyk.maximal}}
-                        <div class="list-item">
-                            <span>Maximal: <input type="checkbox" class="maximal" data-item-id="{{this._id}}"  {{checked this.flags.fortyk.maximalMode}}></span>
-
-
-                        </div>
-                        {{/if}}
-                        {{#if this.flags.fortyk.lasModal}}
-                        <div class="list-item">
-                            <span>Las Fire Mode: 
-                                <select class="lasMode"  data-item-id="{{this._id}}" data-dtype="Number">
-                                    {{selectOptions this.FORTYK.lasModes selected=this.flags.fortyk.lasMode valueAttr="key" labelAttr="label"}}
-
-                                </select>
-                            </span>
-
-
-                        </div>
-                        {{/if}}
-                        <div class="list-item flexrow">
-                            <span>Clip: </span>
-
-                            <input class="item-text-input" type="number" data-target="system.clip.value" value="{{this.system.clip.value}}" name="this.system.clip.value" data-item-id="{{this._id}}" data-dtype="Number">
-                            <span> / </span>
-                            <span>{{this.system.clip.max}}</span>
-
-                        </div>
-                        <div class="list-item">
-                            <span>Range: {{this.system.range.value}}m</span>
-                        </div>
-                        <div class="list-item">
-                            <span>Penetration: {{this.system.pen.value}}</span>
-
-                        </div>
-                        <div class="list-item">
-                            <label>Rate of Fire: {{this.system.rof.[0].value}}/{{this.system.rof.[1].value}}/{{this.system.rof.[2].value}}</label>
-                        </div>
-                        <div class="list-item">
-                            <span>Reload: {{this.system.reload.value}}</span>
-
-                        </div>
-                        {{#if this.system.specialFlags.length}}
-                        <div class="list-item">
-                            <span>Special: 
-                                {{#each this.system.specialFlags }}
-                                <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}">{{label}}</a>
-                                {{/each}}
-                            </span>
-                        </div>
-                        {{/if}}
-                        <div class="list-item">
-                            <span>Damage Type: {{this.system.damageType.value}}</span>
-
-                        </div>
-                        <div class="list-item">
-                            <span>Weapon Class: {{this.system.class.value}}</span>
-
-
-                        </div>
-                        <div class="list-item">
-                            <span>Weapon Type: {{this.system.type.value}}</span>
-
-
-                        </div>
-                        <div class="list-item flexrow">
-
-                            <a class="list-button item-edit" title="Edit" data-item-id="{{this._id}}"></a>
-                            <a class="list-button item-delete" title="Delete" data-item-id="{{this._id}}"></a>
-
-                        </div>
-
-                    </div>
-                </div>
-                {{/if}}
-                {{/each}}
-            </div>
-        </div>
-        <div class="tab armor" data-group="primary" data-tab="armor">
-            <div class="flexrow">
-                <div class="flexcol">
-                    <div class="npc-info">
-                        <span class="section-title">Skills</span>
-
-                        {{editor system.skills.value target="system.skills.value" button=true owner=owner editable=editable rollData=rollData}}
-                    </div>
-                    <div class="npc-info">
-                        <span class="section-title">Equipment</span>
-                        {{editor system.equipment.value target="system.equipment.value" button=true owner=owner editable=editable rollData=rollData}}
-                    </div>
-                </div>
-                <div class="flexcol">
-                    <div class="flex-group-center flexrow">
-                        <div class="flexcol">
-                            <span class="section-title">Parry Modifier</span>
-                            <input type="text" class="combat-resources" data-target="system.parry.mod" value="{{system.parry.mod}}" data-dtype="Number"/>
-                        </div>
-                        <div class="flexcol">
-                            <span class="section-title">Dodge Modifier</span>
-                            <input type="text" class="combat-resources" data-target="system.dodge.mod" value="{{system.dodge.mod}}" data-dtype="Number"/>
-                        </div>
-                    </div>
-                    <span class="section-title">COVER</span>
-                    <select class="cover"  name="system.secChar.cover.value">
-                        {{selectOptions coverTypes selected=system.secChar.cover.value valueAttr="value" labelAttr="label"}}
-
-                    </select>
-
-                    <div class="flexcol flex-group-center">
-                        <span class="section-title">MOVEMENT</span>
-                        <div class="flexrow movement">
-                            <div class="resource flex-group-center">
-                                <label for="system.fatigue.value" class="resource-label">Half Move</label>
-                                <div class="resource-content flexrow flex-center flex-between">
-                                    <span>{{system.secChar.movement.half}}</span>
-                                </div>
-                            </div>
-                            <div class="resource flex-group-center">
-                                <label for="system.fatigue.value" class="resource-label">Full Move</label>
-                                <div class="resource-content flexrow flex-center flex-between">
-                                    <span>{{system.secChar.movement.full}}</span>
-                                </div>
-                            </div>
-                            <div class="resource flex-group-center">
-                                <label for="system.fatigue.value" class="resource-label">Charge</label>
-                                <div class="resource-content flexrow flex-center flex-between">
-                                    <span>{{system.secChar.movement.charge}}</span>
-                                </div>
-                            </div>
-                            <div class="resource flex-group-center">
-                                <label for="system.fatigue.value" class="resource-label">Run</label>
-                                <div class="resource-content flexrow flex-center flex-between">
-                                    <span>{{system.secChar.movement.run}}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="forcefield flexcol">
-
-                            <span class="section-title">FORCE FIELD</span>
-                            <div class="flexcol flex-group-center">
-                                <div class="flexrow">
-                                    <select class="force-field" >
-
-                                        <option value="" {{#if system.secChar.wornGear.forceField}}selected{{/if}}>None</option>
-                                        {{#each actor.forceFields}}
-                                        <option value="{{this._id}}" {{#if this.system.isEquipped}}selected{{/if}}>{{this.name}}</option>
-                                        {{/each}}
-                                    </select>
-
-                                    {{#if system.secChar.wornGear.forceField._id}}
-                                    <a class="item-edit" data-item-id="{{system.secChar.wornGear.forceField._id}}"data-type="forceField" title="Edit Forcefield"></a>
-                                    <a class="item-delete minus-button" data-item-id="{{system.secChar.wornGear.forceField._id}}"data-type="forceField" title="Delete Forcefield"></a>
-                                </div>
-                                <div class="forcefield flexrow flex-group-center">
-                                    {{#unless system.secChar.wornGear.forceField.system.broken.value}}
-                                    <label>Overload: {{system.secChar.wornGear.forceField.system.rating.overload}}</label>
-                                    <label>Rating: </label> 
-
-                                    <span class="forcefield rollable button" data-roll-type="forcefield" data-id="{{system.secChar.wornGear.forceField._id}}">{{system.secChar.wornGear.forceField.system.rating.value}}</span>
-                                    {{else}}
-                                    <span class="forcefield repairForcefield button" data-id="{{system.secChar.wornGear.forceField._id}}" >Repair</span>
-                                    {{/unless}}
-
-                                </div>
-                                {{else}}
-                                <a class="item-create plus-button" data-type="forceField" title="Add Forcefield"></a>
-                            </div>
-                            {{/if}}
-                        </div>
-                    </div>
-                    <div class="forcefield flexcol">
-                        <span class="section-title">ARMOR & ABSORBTION</span>
-                        <div class="flexrow">
-                            <select class="armor-select" >
-
-                                <option value="" {{#if system.secChar.wornGear.armor}}selected{{/if}}>None</option>
-                                {{#each actor.armors}}
-
-                                <option value="{{this._id}}" {{#if this.system.isEquipped}}selected{{/if}}>{{this.name}}</option>
-                                {{/each}}
-                            </select>
-
-                            {{#if system.secChar.wornGear.armor._id}}
-                            <a class="item-edit" data-item-id="{{system.secChar.wornGear.armor._id}}"data-type="armor" title="Edit Armor"></a>
-                            <a class="item-delete minus-button" data-item-id="{{system.secChar.wornGear.armor._id}}"data-type="armor" title="Delete Armor"></a>
-                            {{else}}
-                            <a class="item-create plus-button" data-type="armor" title="Add Armor"></a>
-                            {{/if}}
-
-                        </div>
-                        <span class="section-title">SIZE</span>
-                        <select class="sizeSelect" name="system.secChar.size.value" data-dtype="Number">
-                            {{selectOptions size selected=system.secChar.size.value valueAttr="index" labelAttr="name"}}
-
-                        </select>
-
-                        <div class="flexcol">
-
-                            <div class="flexrow flex-group-center">
-                                <div class="armor flexcol flex-group-center">
-
-                                    <span>Head</span>
-                                    <span>(1-10)</span>
-
-                                    <span title="Armor">{{system.characterHitLocations.head.armor}}</span>
-                                    <span title="Total Soak">{{system.characterHitLocations.head.value}}</span>
-                                </div>
-
-                            </div>
-                            <div class="flexrow flex-group-center">
-                                <div class="armor flexcol flex-group-center">
-
-                                    <span>Left Arm</span>
-                                    <span>(21-30)</span>
-                                    <span title="Armor">{{system.characterHitLocations.lArm.armor}}</span>
-                                    <span title="Total Soak">{{system.characterHitLocations.lArm.value}}</span>
-                                </div>
-                                <div class="armor flexcol flex-group-center">
-
-                                    <span>Body</span>
-                                    <span>(31-70)</span>
-                                    <span title="Armor">{{system.characterHitLocations.body.armor}}</span>
-                                    <span title="Total Soak">{{system.characterHitLocations.body.value}}</span>
-                                </div>
-                                <div class="armor flexcol flex-group-center">
-
-                                    <span>Right Arm</span>
-                                    <span>(11-20)</span>
-                                    <span title="Armor">{{system.characterHitLocations.rArm.armor}}</span>
-                                    <span title="Total Soak">{{system.characterHitLocations.rArm.value}}</span>
-                                </div>
-                            </div>
-                            <div class="flexrow flex-group-center">
-
-                                <div class="armor flexcol flex-group-center">
-
-                                    <span>Left Leg</span>
-                                    <span>(71-85)</span>
-                                    <span title="Armor" >{{system.characterHitLocations.lLeg.armor}}</span>
-                                    <span title="Total Soak">{{system.characterHitLocations.lLeg.value}}</span>
-                                </div>
-                                <div class="armor flexcol flex-group-center">
-
-                                    <span>Right Leg</span>
-                                    <span>(86-100)</span>
-                                    <span title="Armor" >{{system.characterHitLocations.rLeg.armor}}</span>
-                                    <span title="Total Soak">{{system.characterHitLocations.rLeg.value}}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        </div>
-    <div class="tab tnt" data-group="primary" data-tab="tnt">
-
-        <div class="tnt flexcol">
-            {{#if eliteAdvances}}
-            <span class="descrSpan">Templates:</span>
-            <div class="flexrow">
-
-                {{#each eliteAdvances}}
-                <div class="flexrow advanceElite">
-                    <a class="item-descr" data-id="{{id}}" data-name="{{name}}" data-item-descr="{{system.description.value}}"><u>{{name}}</u></a>
-                    <a class="list-button item-delete" title="Delete" data-item-id="{{id}}"></a>
-                </div>
-                {{/each}}
-            </div>
-            {{/if}}
-            <a class="tnt-create button" data-type="talentntrait" title="Add a new Talent or Trait">Add Talent or Trait</a>
-            <div class="list list3col grid grid-3col">
-                <span class="list-item">Name</span>
-                <span class="list-button"></span>
-                <span class="list-button"></span>
-                {{#each actor.talentsntraits as |t key|}}
-
-                <a class="item-descr list-item" data-name="{{t.name}}" data-item-descr="{{t.system.description.value}}">{{t.name}}{{#unless (compareString "N/A" t.system.specialisation.value)}} ({{t.system.specialisation.value}}){{/unless}} </a>
-                <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
-                <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
-
-
-
-                {{/each}}
-
-            </div>
-
-        </div>
-    </div>
-    <div class="tab npc-psykana" data-group="primary" data-tab="npc-psykana">
-        <div class="psy flexcol">
-
-            <div class="psy-header grid grid-4col">
-                {{#unless (contains system.psykana.psykerType.value "navigator")}}
-
-                <div class="flexrow list-item">
-                    <label>Psy Rating:</label>
-                    <input type="number" class="combat-resources" data-target="system.psykana.pr.value" value="{{system.psykana.pr.value}}" data-dtype="Number" {{#if flags.fortyk.sustained}} disabled{{/if}}/>
-
-                </div>
-                <div class="flexrow list-item">
-                    <label>Sustained Powers:</label>
-                    <input type="number" class="combat-resources" data-target="system.psykana.pr.sustain" value="{{system.psykana.pr.sustained.length}}" data-dtype="Number" disabled/>
-
-                </div>
-                <div class="flexrow list-item">
-                    <label>Effective PR: {{system.psykana.pr.effective}}</label>
-
-                </div>
-                <div class="flexrow list-item">
-                    <label>Phenomena Modifier:</label>
-                    <input type="number" class="combat-resources" data-target="system.psykana.phenomena.value" value="{{system.psykana.phenomena.value}}" data-dtype="Number"/>
-
-                </div>
-
-
-                {{/unless}}
-                <div class="flexrow list-item">
-                    <label>Class:</label>
-                    <select class="psyType-select" name="system.psykana.psykerType.value" data-dtype="String">
-                        {{selectOptions psykerTypes selected=system.psykana.psykerType.value valueAttr="value" labelAttr="label"}}
-
-                    </select>
-                </div>
-                <div class="flexrow list-item">
-                    <label>Psy Modifier:</label>
-                    <input type="number" class="combat-resources" data-target="system.psykana.mod.value" value="{{system.psykana.mod.value}}">
-                </div>
-                <div class="flexrow list-item2">
-                    <label>Show:</label>
-                    <select class="psyType-select" name="system.psykana.filter" data-dtype="String">
-                        <option value="">All</option>
-                        {{selectOptions psyDisciplines selected=system.psykana.filter valueAttr="value" labelAttr="value"}}
-
-                    </select>
-                </div>
-
-
-            </div>
-            {{#if (greaterThan system.psykana.pr.value 0)}}
-            <a class="item-create button" data-type="psychicPower" title="Add a new Psychic Power">Add Psychic Power</a>
-            <div class="psy-powers grid grid-2col">
-                {{#each actor.psychicPowers as |power key|}}
-                <div class="list-item flexcol">
-
-                    <div class="grid grid-3col">
-
-
-
-
-                        <a class="list-item psy-name item-descr" data-name="{{this.name}}" data-item-descr="{{this.system.description.value}}">Name: {{this.name}}</a>
-
-
-
-
-                        <label class="list-item">Action: {{power.system.action.value}}</label>
-
-                        {{#unless (contains ../system.psykana.psykerType.value "navigator")}}
-                        <label class="list-item">Discipline: {{power.system.discipline.value}}</label>
-                        <label class="list-item">Power Type: {{power.system.class.value}}</label>
-
-                        <label class="list-item">Subtype: {{power.system.subtype.value}}</label>
-                        <div class="list-item flexrow">
-                            <label>PR: </label>
-                            <input type="number" id="pr{{this.id}}"  class="item-text-input" data-target="system.curPR.value" data-item-id="{{power._id}}" value="{{power.system.curPR.value}}" data-dtype="Number">
-                        </div>
-
-
-                        <label class="list-item">Sustain: {{power.system.sustain.value}}</label>
-                        {{else}}
-                        <div class="list-item2">
-                            Training:
-                            <select class="power-training" data-item-id="{{power._id}}"  name="system.training.value">
-                                {{selectOptions FORTYK.navigatorPowerTraining selected=power.system.training.value valueAttr="value" labelAttr="value"}}
-
-                            </select>
-                        </div>
-                        {{/unless}}
-                        <label class="list-item">Test Type: {{power.system.testChar.value}}</label>
-
-
-
-                        <label class="list-item">Modifier: {{power.system.testMod.value}}</label>
-
-
-
-                        <label class="list-item">Range: {{power.system.range.value}}m</label>
-
-                        {{#if (contains power.system.class.value "psychic")}}
-
-
-
-                        <label class="list-item">Penetration: {{power.system.pen.value}}</label>
-
-                        {{#if this.system.specialFlags.length}}
-                        <div class="list-item">
-                            <span>Special: 
-                                {{#each this.system.specialFlags }}
-                                <a class="item-descr" data-name="{{label}}" data-item-descr="{{description}}">{{label}}</a>
-                                {{/each}}
-                            </span>
-                        </div>
-                        {{/if}}
-
-                        <label class="list-item">Damage Type: {{power.system.damageType.value}}</label>
-
-                        {{/if}}
-
-                        <div class="list-item flexcol">
-                            <label>Test Target: </label>
-                            <span data-item-id="{{power._id}}" class="rollable powerItem button{{#if (greaterThan power.system.curPR.value ../system.psykana.pr.effective)}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-target="{{power.system.target.value}}" data-PR="{{power.system.curPR.value}}" data-label="{{power.name}}" data-char="{{power.system.testChar.type}}">{{power.system.target.value}}</span>
-                        </div>
-                        {{#if (contains power.system.class.value "psychic")}}
-                        {{#if power.flags.fortyk.spray}}
-                        <label class="list-item">
-                            <label>Attack: </label>
-                            <span class="spray-attack rollable powerItem button" data-roll-type="sprayAttack" data-item-id="{{this.id}}" data-label="Spray Attack" >Spray</span></label>
-                        {{/if}}
-                        <label class="list-item">Damage: <a class="damage-roll button" data-label="{{power.name}}"data-formula="{{power.system.damageFormula.value}}" data-weapon="{{power._id}}">{{power.system.damageFormula.value}}</a></label>
-                        {{else if (contains power.system.class.value "Buff/Debuff")}}
-                        {{#if power.flags.fortyk.sustained}}
-                        <label class="list-item"><a class="cancel-buff button" data-label="{{power.name}}"data-power="{{power._id}}">Dispel Power</a></label>
-                        {{else}}
-                        <label class="list-item"><a class="buff-debuff button" data-label="{{power.name}}"data-power="{{power._id}}">Apply Buff/Debuff</a></label>
-                        {{/if}}
-                        {{else if (contains this.system.class.value "Aura")}}
-
-                        {{#if this.flags.fortyk.sustained}}
-
-                        <label class="list-item"><a class="cancel-buff button" data-label="{{this.name}}" data-power="{{this._id}}">Dispel Power</a></label>
-                        {{else}}
-                        <label class="list-item"><a class="buff-debuff button" data-label="{{this.name}}" data-power="{{this._id}}">Activate Aura</a></label>
-                        {{/if}}
-                        {{else if (contains power.system.class.value "Macro")}}
-                        {{#if power.flags.fortyk.sustained}}
-                        <label class="list-item"><a class="cancel-buff button" data-label="{{power.name}}"data-power="{{power._id}}">Dispel Power</a></label>
-                        {{else}}
-                        <label class="list-item"><a class="psy-macro button" data-label="{{power.name}}"data-macro="{{power.system.macro.id}}"data-power="{{this._id}}">Macro</a></label>
-                        {{/if}}
-                        {{/if}}
-                        <div class="list-item flexrow">
-
-                            <a class="item-edit" title="Edit Power" data-item-id="{{power._id}}"></a>
-                            <a class="item-delete" title="Delete Power" data-item-id="{{power._id}}"></a>
-                        </div>
-                    </div>
-
-
-
-                </div>
-                {{/each}}
-            </div>
-            {{/if}}
-        </div>
-    </div>
-    <div class="tab description" data-group="primary" data-tab="description">
-        <div class="item-description">
-            {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable rollData=rollData}}
-        </div>
-    </div>
-    </section>
-
-
-
-
-
-
-
-
-
-{{else}}
-<img class="npc-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
-{{editor system.description.value target="system.description.value" button=true owner=owner editable=false rollData=rollData}}
-{{/if}}
+    {{else}}
+    <img class="npc-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
+    {{{enrichedDescription}}}
+    {{/if}}
 
 </form>

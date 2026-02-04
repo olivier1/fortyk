@@ -1,0 +1,36 @@
+<section class="tab sheet-content {{tabs.tnt.id}} {{tabs.tnt.cssClass}}"
+         data-tab="{{tabs.tnt.id}}"
+         data-group="{{tabs.tnt.group}}">
+
+        <div class="tnt flexcol">
+            {{#if eliteAdvances}}
+            <span class="descrSpan">Templates:</span>
+            <div class="flexrow">
+
+                {{#each eliteAdvances}}
+                <div class="flexrow advanceElite">
+                    <a class="item-descr" data-id="{{id}}" data-name="{{name}}" data-item-descr="{{system.description.value}}"><u>{{name}}</u></a>
+                    <a class="list-button item-delete" title="Delete" data-item-id="{{id}}"></a>
+                </div>
+                {{/each}}
+            </div>
+            {{/if}}
+            <a class="tnt-create button" data-type="talentntrait" title="Add a new Talent or Trait">Add Talent or Trait</a>
+            <div class="list list3col grid grid-3col">
+                <span class="list-item">Name</span>
+                <span class="list-button"></span>
+                <span class="list-button"></span>
+                {{#each actor.talentsntraits as |t key|}}
+
+                <a class="item-descr list-item" data-name="{{t.name}}" data-item-descr="{{t.system.description.value}}">{{t.name}}{{#unless (compareString "N/A" t.system.specialisation.value)}} ({{t.system.specialisation.value}}){{/unless}} </a>
+                <a class="list-button item-edit" title="Edit" data-item-id="{{t._id}}"></a>
+                <a class="list-button item-delete" title="Delete" data-item-id="{{t._id}}"></a>
+
+
+
+                {{/each}}
+
+            </div>
+
+        </div>
+    </section>

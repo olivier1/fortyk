@@ -1,16 +1,16 @@
 <form class="{{cssClass}} item-sheet flexcol">
     <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
-
+        <div class="flexcol">
+            <label>Name:</label>
+            <input type="text" class="weapon-mod" value="{{_source.name}}" data-target="name">
+        </div>
     </header>
     {{#if isGM}}
     <label class="button clone">Copy Item</label>
     {{/if}}
     <div class="grid grid-3col">
-        <div class="flexcol">
-            <label>Name:</label>
-            <input type="text" value="{{_source.name}}" name="name">
-        </div>
+
         <div class="flexcol">
             <label>Discipline:</label>
             <select class="discipline" name="system.discipline.value">
@@ -20,11 +20,11 @@
         </div>
         <div class="flexcol">
             <label>Cost:</label>
-            <input type="text" value="{{system.cost.value}}" name="system.cost.value">
+            <input type="text" class="weapon-mod" value="{{system.cost.value}}" data-target="system.cost.value">
         </div>
         <div class="flexcol">
             <label>Requirements:</label>
-            <input type="text" value="{{system.reqs.value}}" name="system.reqs.value">
+            <input type="text" class="weapon-mod" value="{{system.reqs.value}}" data-target="system.reqs.value">
         </div>
         <div class="flexcol">
             <label>Power Type:</label>
@@ -36,7 +36,7 @@
         </div>
         <div class="flexcol">
             <label>Action:</label>
-            <input type="text" value="{{system.action.value}}" name="system.action.value">
+            <input type="text" class="weapon-mod" value="{{system.action.value}}" data-target="system.action.value">
         </div>
         <div class="flexcol">
             <label>Targets:</label>
@@ -58,22 +58,22 @@
         </div>
         <div class="flexcol">
             <label>Modifier:</label>
-            <input type="text" value="{{system.testMod.value}}" name="system.testMod.value" data-dtype="Number">
+            <input type="text" class="weapon-mod" value="{{system.testMod.value}}" data-target="system.testMod.value" data-dtype="Number">
         </div>
 
 
 
         <div class="flexcol">
             <label>Range:</label>
-            <input type="text" value="{{system.range.formula}}" name="system.range.formula">
+            <input type="text" class="weapon-mod" value="{{system.range.formula}}" data-target="system.range.formula">
         </div>
         <div class="flexcol">
             <label>Sustain:</label>
-            <input type="text" value="{{system.sustain.value}}" name="system.sustain.value">
+            <input type="text" class="weapon-mod" value="{{system.sustain.value}}" data-target="system.sustain.value">
         </div>
         <div class="flexcol">
             <label>Subtype:</label>
-            <input type="text" value="{{system.subtype.value}}" name="system.subtype.value">
+            <input type="text" class="weapon-mod" value="{{system.subtype.value}}" data-target="system.subtype.value">
         </div>
         {{#if  (contains system.discipline.value "navigator")}}
         <div class="flexcol">
@@ -94,11 +94,11 @@
         {{#if attack}}
         <div class="flexcol">
             <label>Damage:</label>
-            <input type="text" value="{{system.damageFormula.formula}}" name="system.damageFormula.formula">
+            <input type="text" class="weapon-mod" value="{{system.damageFormula.formula}}" data-target="system.damageFormula.formula">
         </div>
         <div class="flexcol">
             <label>Penetration:</label>
-            <input type="text" value="{{system.pen.formula}}" name="system.pen.formula" data-dtype="String">
+            <input type="text" class="weapon-mod" value="{{system.pen.formula}}" data-target="system.pen.formula" data-dtype="String">
         </div>
         <div class="flexcol">
 
@@ -155,21 +155,41 @@
 
             </select>
         </div>
-        {{#if isGM}}
-        <div class="flexcol">
-            <a class="modifier button">Active Effect</a>
-        </div>
+
         {{/if}}
-        {{/if}}
-        {{#if isGM}}
-        <div class="flexcol">
-            <a class="manage-reqs button">Manage Requirements</a>
-        </div>
-        {{/if}}
+
     </div>
 
+    {{#if isGM}}
+    <div class="item-description">
+        <label>GM Description:</label>
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.gm"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.gm}}">
+            {{{enrichedGMDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedGMDescription}}}
+        {{/if}}
+    </div>
+    {{/if}}
     <div class="item-description">
         <label>Description:</label>
-        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.value"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.value}}">
+            {{{enrichedDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedDescription}}}
+        {{/if}}
     </div>
 </form>

@@ -3,7 +3,7 @@ let applyChanges = false;
 new Dialog({
     title: `Token Vision Configuration`,
     content: `
-<form>
+<section>
 <div class="form-group">
 <label>Display Name Type</label>
 <select id="name-type" name="name-type">
@@ -65,7 +65,7 @@ new Dialog({
 <label>Light Color</label>
 <input type="color" value="${token.document.light.color || '#000000'}" data-edit="light-color" name="light-color">
 </div>
-</form>
+</section>
 `,
     buttons: {
         yes: {

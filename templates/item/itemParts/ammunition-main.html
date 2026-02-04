@@ -1,0 +1,73 @@
+<section class="tab sheet-content {{tabs.ammunitionMain.id}} {{tabs.ammunitionMain.cssClass}}"
+         data-tab="{{tabs.ammunitionMain.id}}"
+         data-group="{{tabs.ammunitionMain.group}}">
+    {{#if isGM}}
+    <label class="button clone">Copy Item</label>
+    {{/if}}
+    <span>Make sure that the weapon class and type match the weapon that you are making the ammunition for or it will not show in the combat tab.</span>
+    <div class="grid grid-2col">
+
+        <div class="flexcol">
+            <label>Weight:</label>
+            <input type="text" class="weapon-mod" value="{{system.weight.value}}" data-target="system.weight.value">
+        </div>
+        <div class="flexcol">
+            <label>Space:</label>
+            <input type="text" class="weapon-mod" value="{{system.space.value}}" data-target="system.space.value">
+        </div>
+        <div class="flexcol">
+            <label>Rarity:</label>
+            <select class="power-type" name="system.rarity.value">
+                {{selectOptions FORTYK.itemRarity selected=system.rarity.value valueAttr="value" labelAttr="label"}}
+            </select>
+        </div>
+
+        <div class="flexrow">
+            <label>Default Ammunition?:</label>
+            <input type="checkbox" name="system.default.value" {{checked system.default.value}}>
+        </div>
+        {{#unless system.default.value}}
+        <div class="flexcol">
+            <label>Damage:</label>
+            <input type="text" class="weapon-mod" value="{{system.damageFormula.formula}}" data-target="system.damageFormula.formula">
+        </div>
+        <div class="flexcol">
+            <label>Penetration:</label>
+            <input type="text" class="weapon-mod" value="{{system.pen.formula}}" data-target="system.pen.formula">
+        </div>
+        <div class="flexcol">
+            <label>Range:</label>
+            <input type="text" class="weapon-mod" value="{{system.range.formula}}" data-target="system.range.formula">
+        </div>
+
+        <div class="flexcol">
+            <label>Damage Type:</label>
+            <select class="damage-type" name="system.damageType.value">
+                {{selectOptions FORTYK.damageTypes selected=system.damageType.value valueAttr="value" labelAttr="value"}}
+            </select>
+        </div>
+        {{/unless}}
+        <div class="flexcol">
+            <label>Weapon Class:</label>
+
+            <select class="weapon-type"  name="system.class.value">
+                {{selectOptions FORTYK.rangedWeaponClasses selected=system.class.value valueAttr="value" labelAttr="value"}}
+            </select>
+        </div>
+        <div class="flexcol">
+            <label>Weapon Type:</label>
+
+            <select class="weapon-type"  name="system.type.value">
+                {{selectOptions FORTYK.rangedWeaponTypes selected=system.type.value valueAttr="value" labelAttr="value"}}
+            </select>
+        </div>
+        <div class="flexcol">
+            <label>Item Quality:</label>
+
+            <select class="quality"  name="system.quality.value">
+                {{selectOptions FORTYK.itemQualities selected=system.quality.value valueAttr="value" labelAttr="value"}}
+            </select>
+        </div>
+    </div>
+
+</section>

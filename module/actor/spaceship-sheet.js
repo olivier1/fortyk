@@ -4,9 +4,9 @@ import FortyKBaseActorSheet from "./base-sheet.js";
 export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
 
     /** @override */
-    static get defaultOptions() {
+    static DEFAULT_OPTIONS= {
 
-        return foundry.utils.mergeObject(super.defaultOptions, {
+            tag: 'form',
             classes: ["fortyk", "sheet", "actor"],
             template: "systems/fortyk/templates/actor/spaceship-sheet.html",
             width: 666,
@@ -22,13 +22,48 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
 
 
 
-        });
+    }
+    static PARTS = {
+        header: {
+            template: 'systems/fortyk/templates/actor/spaceship-sheet.html'
+        },
+
+        components: {
+            template: "systems/fortyk/templates/actor/spaceshipParts/spaceship-components.html",
+            scrollable: ['']
+        },
+        weapons: {
+            template: "systems/fortyk/templates/actor/spaceshipParts/spaceship-weapons.html",
+            scrollable: ['']
+        },
+        cargo: {
+            template: "systems/fortyk/templates/actor/spaceshipParts/spaceship-cargo.html",
+            scrollable: ['']
+        },
+        hangar: {
+            template: "systems/fortyk/templates/actor/spaceshipParts/spaceship-hangar.html",
+            scrollable: ['']
+        }
+    }
+
+    static TABS = {
+        sheet:{
+            tabs: [
+                { id: 'components', group: 'sheet', label: 'Components' },
+                { id: 'weapons', group: 'sheet', label: 'Weapons' },
+                { id: 'cargo', group: 'sheet', label: 'Cargo' },
+                { id: 'hangar', group: 'sheet', label: 'Hangar' }
+            ],
+            initial:"components"
+        }
+
+
     }
     /* -------------------------------------------- */
     /** @override */
-    async getData() {
-        const data = await super.getData();
-
+    async _prepareContext(options) {
+        const data = await super._prepareContext(options);
+        data.tabs=this._prepareTabs("sheet");
         if(game.user.character===null){
             data.bs=this.actor.system.crew.rating;
             data.hangarAttack=this.actor.system.crew.rating;
@@ -69,8 +104,9 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
     }
 
     /** @override */
-    activateListeners(html) {
-        super.activateListeners(html);
+    _onRender(context, options) {
+        super._onRender(context, options);
+        const html=$(this.element);
         // Everything below here is only needed if the sheet is editable
 
         //damage roll button
@@ -138,7 +174,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
         event.preventDefault();
         let templateOptions={"type":[{"name":"spaceshipComponent","label":"Spaceship Component"},{"name":"spaceshipWeapon","label":"Spaceship Weapon"}]};
 
-        let renderedTemplate=renderTemplate('systems/fortyk/templates/actor/dialogs/select-wargear-type-dialog.html', templateOptions);
+        let renderedTemplate=foundry.applications.handlebars.renderTemplate('systems/fortyk/templates/actor/dialogs/select-wargear-type-dialog.html', templateOptions);
 
         renderedTemplate.then(content => { 
             new Dialog({

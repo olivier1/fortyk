@@ -1,0 +1,31 @@
+<section class="tab sheet-content {{tabs.armorMain.id}} {{tabs.armorMain.cssClass}}"
+         data-tab="{{tabs.armorMain.id}}"
+         data-group="{{tabs.armorMain.group}}">
+            {{#if isGM}}
+            <label class="button clone">Copy Item</label>
+            {{/if}}
+
+            <div class="flexcol">
+                <label>Weight:</label>
+                <input type="text" class="weapon-mod" value="{{system.weight.value}}" data-target="system.weight.value">
+            </div>
+            <div class="flexcol">
+                <label>Item Quality:</label>
+
+                <select class="quality"  name="system.quality.value">
+                    {{selectOptions FORTYK.itemQualities selected=system.quality.value valueAttr="value" labelAttr="value"}}
+                </select>
+            </div>
+            <div class="flexcol">
+                <label>Rarity:</label>
+                <select class="power-type" name="system.rarity.value">
+                    {{selectOptions FORTYK.itemRarity selected=system.rarity.value valueAttr="value" labelAttr="label"}}
+                </select>
+            </div>
+            <div class="flexcol">
+                <label>Max Agility:</label>
+                <input type="text" class="weapon-mod" value="{{system.maxAgi.value}}" data-target="system.maxAgi.value">
+            </div>
+
+
+        </section>

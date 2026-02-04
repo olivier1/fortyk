@@ -1,23 +1,62 @@
-export class ManageRequirementsDialog extends Application {
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class ManageRequirementsDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
-    static get defaultOptions() {
+    static DEFAULT_OPTIONS= {
 
-        return foundry.utils.mergeObject(super.defaultOptions, {
+            tag: 'form',
             classes: ["fortyk"],
-            template: "systems/fortyk/templates/item/dialogs/manageRequirements-dialog.html",
-            width: 666,
-            height: 605,
-            default:null,
-            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".req-content", initial: "characteristic" }]
-        });
+            position:{width: 666,
+            height: 605}
+
+    }
+    static PARTS = {
+        form: {
+            template: 'systems/fortyk/templates/item/dialogs/manageRequirements-dialog.html',
+            scrollable: ['']
+        },
+
+        manageReqMain: {
+            template: "systems/fortyk/templates/item/dialogs/manage-requirements-parts/manage-requirements-main.html",
+            scrollable: ['']
+        },
+        manageReqSkills: {
+            template: "systems/fortyk/templates/item/dialogs/manage-requirements-parts/manage-requirements-skills.html",
+            scrollable: ['']
+        },
+        manageReqFlags: {
+            template: "systems/fortyk/templates/item/dialogs/manage-requirements-parts/manage-requirements-flags.html",
+            scrollable: ['']
+        },
+        manageReqCyber: {
+            template: "systems/fortyk/templates/item/dialogs/manage-requirements-parts/manage-requirements-cyber.html",
+            scrollable: ['']
+        },
+        manageReqPsy: {
+            template: "systems/fortyk/templates/item/dialogs/manage-requirements-parts/manage-requirements-psy.html",
+            scrollable: ['']
+        }
+    }
+    static TABS = {
+        sheet:{
+            tabs: [
+                { id: 'manageReqMain', group: 'sheet', label: 'Main' },
+                { id: 'manageReqSkills', group: 'sheet', label: 'Skills' },
+                { id: 'manageReqFlags', group: 'sheet', label: 'Flags' },
+                { id: 'manageReqCyber', group: 'sheet', label: 'Cybernetics' },
+                { id: 'manageReqPsy', group: 'sheet', label: 'Psychic Powers' }
+            ],
+            initial:"manageReqMain"
+        }
+
     }
 
-    async getData(){
-        let data=super.getData();
+    async _prepareContext(options){
+        let data=await super._prepareContext(options);
         let item=this.options.item;
         data.advances=game.fortyk.FORTYK.advances;
         data.item=item;
         let flag=this.flag;
+        data.tabs=this._prepareTabs("sheet");
         if(!flag)flag=item.getFlag("fortyk",this.options.flag);
         if(!flag){flag=this.getDefaultFlag();}else{foundry.utils.mergeObject(flag,this.getDefaultFlag(),{overwrite:false});}
         data.flag=flag;
@@ -60,8 +99,9 @@ export class ManageRequirementsDialog extends Application {
         });
         return data;
     }
-    activateListeners(html) {
-        super.activateListeners(html);
+    _onRender(context, options) {
+        super._onRender(context, options);
+        const html=$(this.element);
         html.find('.compendium-select').change(this._onCompendiumChange.bind(this));
         html.find('.req-select').change(this._onRequirementChange.bind(this));
         html.find('.psy-select').change(this._onPsyChange.bind(this));

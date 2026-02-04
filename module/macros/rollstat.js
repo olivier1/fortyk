@@ -42,7 +42,7 @@ let title;
 
 new Dialog({
   title: title,
-  content: `<form>${options}</form>`,
+  content: `<section>${options}</section>`,
   buttons: {
 
     d6: {

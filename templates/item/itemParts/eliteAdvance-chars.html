@@ -1,0 +1,91 @@
+<section class="tab sheet-content {{tabs.eaChars.id}} {{tabs.eaChars.cssClass}}"
+         data-tab="{{tabs.eaChars.id}}"
+         data-group="{{tabs.eaChars.group}}">
+            <div class="grid grid-4col">
+                {{#if (equals system.type.value "charactertype")}}
+                <div class="flexcol">
+                    <label>All Chars</label>
+                    <input type="number" class="weapon-mod" data-target="system.characteristics.all" value="{{system.characteristics.all}}">
+                </div>
+                <div class="flexcol">
+                    <label>Has Influence</label>
+                    <input type="checkbox" class="weapon-mod" data-target="system.characteristics.hasInfluence" {{checked system.characteristics.hasInfluence}}>
+                </div>
+
+                <div class="flexcol">
+                    <label>Weapon Skill</label>
+                    <input type="number" class="weapon-mod" data-target="system.characteristics.ws" value="{{system.characteristics.ws}}">
+                </div>
+                <div class="flexcol">
+                    <label>Ballistic Skill</label>
+                    <input type="number" class="weapon-mod" data-target="system.characteristics.bs" value="{{system.characteristics.bs}}">
+                </div>
+                <div class="flexcol">
+                    <label>Strength</label>
+                    <input type="number" class="weapon-mod" data-target="system.characteristics.s" value="{{system.characteristics.s}}">
+                </div>
+                <div class="flexcol">
+                    <label>Toughness</label>
+                    <input type="number" class="weapon-mod" data-target="system.characteristics.t" value="{{system.characteristics.t}}">
+                </div>
+                <div class="flexcol">
+                    <label>Agility</label>
+                    <input type="number" class="weapon-mod" data-target="system.characteristics.agi" value="{{system.characteristics.agi}}">
+                </div>
+                <div class="flexcol">
+                    <label>Perception</label>
+                    <input type="number" class="weapon-mod" data-target="system.characteristics.per" value="{{system.characteristics.per}}">
+                </div>
+                <div class="flexcol">
+                    <label>Intelligence</label>
+                    <input type="number" class="weapon-mod" data-target="system.characteristics.int" value="{{system.characteristics.int}}">
+                </div>
+                <div class="flexcol">
+                    <label>Willpower</label>
+                    <input type="number" class="weapon-mod" data-target="system.characteristics.wp" value="{{system.characteristics.wp}}">
+                </div>
+                <div class="flexcol">
+                    <label>Fellowship</label>
+                    <input type="number" class="weapon-mod" data-target="system.characteristics.fel" value="{{system.characteristics.fel}}">
+                </div>
+                <div class="flexcol">
+                    <label>Influence</label>
+                    <input type="number" class="weapon-mod" data-target="system.characteristics.inf" value="{{system.characteristics.inf}}">
+                </div>
+                {{/if}}
+
+                <div class="flexcol">
+                    <label>Insanity</label>
+                    <input type="text" class="weapon-mod" data-target="system.characteristics.ins" value={{system.characteristics.ins}}>
+                </div>
+                <div class="flexcol">
+                    <label>Corruption</label>
+                    <input type="text" class="weapon-mod" data-target="system.characteristics.cor" value={{system.characteristics.cor}}>
+                </div>
+                {{#if (equals system.type.value "planet")}}
+                <div class="flexcol">
+                    <label>Plus 1</label>
+                    <select name="system.characteristics.plus1">
+                        <option value="">None</option>
+                        {{selectOptions chars selected=system.characteristics.plus1 valueAttr="name" labelAttr="caps"}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>Plus 2</label>
+                    <select name="system.characteristics.plus2">
+                        <option value="">None</option>
+                        {{selectOptions chars selected=system.characteristics.plus2 valueAttr="name" labelAttr="caps"}}
+                    </select>
+                </div>
+                <div class="flexcol">
+                    <label>Minus</label>
+                    <select name="system.characteristics.minus">
+                        <option value="">None</option>
+                        {{selectOptions chars selected=system.characteristics.minus valueAttr="name" labelAttr="caps"}}
+                    </select>
+                </div>
+                {{/if}}
+
+
+            </div>
+        </section>

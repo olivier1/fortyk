@@ -8,25 +8,53 @@
     {{/if}}
     <div class="flexcol">
         <label>Name:</label>
-        <input type="text" value="{{name}}" name="name">
+        <input type="text" class="weapon-mod" value="{{name}}" data-target="name">
     </div>
     <div class="flexcol">
         <label>Table Range:</label>
         <div class="flexrow">
             <div class="flexcol">
                 <label>Min:</label>
-                <input type="text" value="{{system.min.value}}" name="system.min.value">
+                <input type="text" class="weapon-mod" value="{{system.min.value}}" data-target="system.min.value">
             </div>
             <div class="flexcol">
                 <label>Max:</label>
-                <input type="text" value="{{system.max.value}}" name="system.max.value">
+                <input type="text" class="weapon-mod" value="{{system.max.value}}" data-target="system.max.value">
             </div>
         </div>
 
     </div>
 
+     {{#if isGM}}
+    <div class="item-description">
+        <label>GM Description:</label>
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.gm"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.gm}}">
+            {{{enrichedGMDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedGMDescription}}}
+        {{/if}}
+    </div>
+    {{/if}}
     <div class="item-description">
         <label>Description:</label>
-        {{editor system.description.value target="system.description.value" button=true owner=owner editable=editable}}
+        {{#if editable}}
+        <prose-mirror
+                      name="system.description.value"
+                      button="true"
+                      editable="{{editable}}"
+                      toggled="false"
+                      value="{{system.description.value}}">
+            {{{enrichedDescription}}}
+        </prose-mirror>
+        {{else}}
+        {{{enrichedDescription}}}
+        {{/if}}
     </div>
 </form>

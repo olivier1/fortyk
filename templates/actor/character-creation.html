@@ -1,172 +1,21 @@
 
-    {{#unless characterType}}
-<header class="sheet-header flexrow">
-    
+{{#unless characterType}}
+
+<header class="charSheet flexcol">
+    {{> "systems/fortyk/templates/actor/characterCreationParts/stage3.html"}}
 </header>
-{{> "systems/fortyk/templates/actor/characterCreationParts/stage3.html"}}
-    {{else}}
+
+
+
+{{else}}
 <header class="sheet-header flexrow">
     <div class="flexcol">
-        <b>{{characterType.name}} Creation</b>
-        
-        
+        <h2 class="flex-center">{{characterType.name}} Creation</h2>
+        {{>'templates/generic/tab-navigation.hbs'}}
 
-        <nav class="sheet-tabs tabs grid grid-2col" data-group="primary">
 
-            <a class="item bat" data-tab="main">Stage {{creationStage}}</a>
-            <a class="item bat" data-tab="preview">Preview</a>
-
-        </nav>
     </div>
 
 </header>
-    {{/unless}}
+{{/unless}}
 
-<section class="sheet-content flex-group-center">
-    <div class="tab main" data-group="primary" data-tab="main">
-        {{#if (equals creationStage "1")}}
-        {{> "systems/fortyk/templates/actor/characterCreationParts/stage1.html"}}
-        {{else if (equals creationStage "2")}}
-        {{> "systems/fortyk/templates/actor/characterCreationParts/stage2.html"}}
-        {{else if (equals creationStage "3")}}
-        {{> "systems/fortyk/templates/actor/characterCreationParts/stage3.html"}}
-        {{else if (equals creationStage "4")}}
-        {{> "systems/fortyk/templates/actor/characterCreationParts/stage3.html"}}
-        {{else if (equals creationStage "5")}}
-        {{> "systems/fortyk/templates/actor/characterCreationParts/stage5.html"}}
-        {{else if (equals creationStage "6")}}
-        {{> "systems/fortyk/templates/actor/characterCreationParts/stage6.html"}}
-        {{/if}}
-    </div>
-    <div class="tab preview" data-group="primary" data-tab="preview">
-
-        <span class="section-title">Features</span>
-        <div class="descr grid grid-3col">
-            <div class="descrRow flexcol">
-                <span class="descrSpan">{{featureLabels.planet}}:</span>
-                {{#if planet}}
-                <div class="flexrow flex-center">
-                    <a class="item-descr fit-content" data-id="{{planet.id}}" data-name="{{planet.name}}" data-item-descr="{{planet.system.description.value}}"><u>{{planet.name}}</u></a>
-
-                </div>
-                {{else}}
-                <label>Not Chosen</label>
-                {{/if}}
-            </div>
-            <div class="descrRow flexcol">
-                <span class="descrSpan">{{featureLabels.background}}:</span>
-                {{#if background}}
-                <div class="flexrow flex-center">
-                    <a class="item-descr fit-content" data-id="{{background.id}}" data-name="{{background.name}}" data-item-descr="{{background.system.description.value}}"><u>{{background.name}}</u></a>
-
-                </div>
-                {{else}}
-                <label>Not Chosen</label>
-                {{/if}}
-            </div>
-
-            <div class="descrRow flexcol">
-                <span class="descrSpan">{{featureLabels.role}}:</span>
-                {{#if role}}
-                <div class="flexrow flex-center">
-                    <a class="item-descr fit-content" data-id="{{role.id}}" data-name="{{role.name}}" data-item-descr="{{role.system.description.value}}"><u>{{role.name}}</u></a>
-
-                </div>
-                {{else}}
-                <label>Not Chosen</label>
-                {{/if}}
-            </div>
-
-        </div>
-        <span class="section-title">Characteristics</span>
-        <div class="flexcol">
-            <div class="characteristics flexrow">
-                <div class="charCross flexcol flex-group-center list-item-header">
-                    <label class="resource-label">CHAR</label>
-                </div>
-                {{#each system.characteristics as |char key|}}
-                {{#unless off}}
-                <div class="charCross flexcol flex-group-center">
-                    <label class="resource-label">{{key}}</label>
-                </div>
-                {{/unless}}
-                {{/each}}
-            </div>
-            <div class="characteristics flexrow">
-                <div class="charCross flexcol flex-group-center list-item-header">
-                    <label class="resource-label">TOTAL</label>
-                </div>
-                {{#each system.characteristics as |char key|}}
-                 {{#unless off}}
-                <div class="charCross flexcol flex-group-center">
-                    <input type="number" value="{{char.total}}" disabled>
-
-                </div>
-                {{/unless}}
-                {{/each}}
-            </div>
-        </div>
-        <div class="grid grid-5col">
-            <div class="flexcol">
-                <label for="system.fatigue.value" class="resource-label">Wounds</label>
-                <input type="text"   value="{{system.secChar.wounds.max}}" data-dtype="Number" disabled/>
-
-            </div>
-            <div class="flexcol">
-                <label for="system.fatigue.value" class="resource-label">Fatigue</label>
-                <input type="text"  value="{{system.secChar.fatigue.max}}" data-dtype="Number" disabled/>
-
-
-            </div>
-            <div class="flexcol">
-                <label for="system.fatigue.value" class="resource-label">Fate</label>
-                <input type="text"  value="{{system.secChar.fate.max}}" data-dtype="Number" disabled/>
-
-
-            </div>
-            <div class="flexcol">
-                <label class="resource-label">Corruption</label>
-                <input type="text" name="system.secChar.corruption.value" value="{{system.secChar.corruption.value}}" disabled>
-            </div>
-            <div class="flexcol">
-                <label class="resource-label">Insanity</label>
-                <input type="text" name="system.secChar.insanity.value" value="{{system.secChar.insanity.value}}" disabled>
-            </div>
-        </div>
-        <span class="section-title">Aptitudes</span>
-        <div class="grid grid-4col">
-            {{#each actorAptitudes}}
-
-            <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.label}}"><u>{{this.label}}</u></a>
-            {{/each}}
-        </div>
-        <span class="section-title">Skills</span>
-        <div class="grid grid-3col">
-            {{#each skillRanks}}
-            <a class="item-descr" data-name="{{this.label}}" data-item-descr="{{this.description}}"><u>{{this.label}}</u></a>
-            {{/each}}
-        </div>
-
-        <span class="section-title">Bonus, Traits & Talents</span>
-        <div class="grid grid-3col">
-            {{#each actor.talentsntraits as |t key|}}
-
-            <a class="item-descr" data-item-id="{{t.id}}" data-uuid="{{t.uuid}}" data-type="{{t.type}}" data-id="{{t._id}}" data-name="{{t.name}}" data-item-descr="{{t.system.description.value}}"><u>{{t.name}}{{#unless (compareString "N/A" t.system.specialisation.value)}} ({{t.system.specialisation.value}}){{/unless}}</u> </a>
-
-            {{/each}}
-        </div>
-        <span class="section-title">Equipment</span>
-        <div class="grid grid-3col">
-            {{#each actor.wargear as |w key|}}
-
-            <a class="item-descr" data-name="{{w.name}}" data-item-id="{{w.id}}" data-uuid="{{w.uuid}}" data-type="{{w.type}}" data-item-descr="{{w.system.description.value}}"><u>{{w.name}}</u></a>
-            {{/each}}
-            {{#each actor.cybernetics as |c key|}}
-            <a class="item-descr" data-name="{{c.name}}" data-item-descr="{{c.system.description.value}}"><u>{{c.name}}</u></a>
-            {{/each}}
-        </div>
-
-
-
-    </div>
-</section>

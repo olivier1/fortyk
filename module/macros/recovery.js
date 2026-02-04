@@ -24,7 +24,7 @@ let options = `
 
 new Dialog({
     title: `Recovery test`,
-    content: `<form>${options}</form>`,
+    content: `<section>${options}</section>`,
     buttons: {
 
         d6: {

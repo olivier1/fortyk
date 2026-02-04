@@ -2,7 +2,7 @@ let actor=scope.power.actor;
 let power=scope.power;
 var pr=power.system.curPR.value;
 let targetIds=scope.targets;
-let targets=game.canvas.tokens.children[0].children.filter(token=>targetIds.includes(token.id));
+let targets=canvas.tokens.placeables.filter(token=>targetIds.includes(token.id));
 let vetFunction=function(event){
     let input=event.currentTarget;
     let checks=$('input[type=checkbox]:checked.weaponchkbox').length;

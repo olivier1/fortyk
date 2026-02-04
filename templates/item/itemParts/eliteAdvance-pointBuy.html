@@ -1,0 +1,22 @@
+<section class="tab sheet-content {{tabs.eaPB.id}} {{tabs.eaPB.cssClass}}"
+         data-tab="{{tabs.eaPB.id}}"
+         data-group="{{tabs.eaPB.group}}">
+            <div class="grid grid-3col">
+                <div class="flexcol">
+                    <label>Point Buy Name</label>
+                    <input type="Text" class="weapon-mod" data-target="system.pointBuy.type" value="{{system.pointBuy.type}}">
+                </div>
+                <div class="flexcol">
+                    <label>Amount</label>
+                    <input type="number" class="weapon-mod" data-target="system.pointBuy.amount" value="{{system.pointBuy.amount}}">
+                </div>
+                <div class="flexcol">
+                    <label>Chars cannot go above this number</label>
+                    <input type="number" class="weapon-mod" data-target="system.pointBuy.charLimit" value="{{system.pointBuy.charLimit}}">
+                </div>
+                <div class="flexcol">
+                    <label>Cannot allocate more than this number of points to a char</label>
+                    <input type="number" class="weapon-mod" data-target="system.pointBuy.limitPerChar" value="{{system.pointBuy.limitPerChar}}">
+                </div>
+            </div>
+        </section>
