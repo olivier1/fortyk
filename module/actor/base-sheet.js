@@ -8,6 +8,7 @@ import { getVehicleFacing } from "../utilities.js";
 import { FortyKItem } from "../item/item.js";
 import { getBlastTargets } from "../utilities.js";
 import { ActiveEffectDialog } from "../dialog/activeEffect-dialog.js";
+import { tntDialog } from "../dialog/tnt-dialog.js";
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { DragDrop } = foundry.applications.ux;
 
@@ -15,15 +16,17 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
     #dragDrop;
     /** @override */
     static DEFAULT_OPTIONS = {
-        tag: 'form',
-        form:{
+        tag: "form",
+        form: {
             handler: FortyKBaseActorSheet._onSubmitForm,
             submitOnChange: true
         },
-        dragDrop: [{
-            dragSelector: '[data-drag="true"]',
-            dropSelector: '.drop-zone'
-        }],
+        dragDrop: [
+            {
+                dragSelector: '[data-drag="true"]',
+                dropSelector: ".drop-zone"
+            }
+        ],
         actions: {
             editImage: this.#onEditImage,
             manageAEs: this._manageAEs
@@ -31,15 +34,14 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         window: {
             controls: [
                 {
-                    icon: 'fas fa-asterisk',
-                    label: 'Manage AEs',
-                    action: 'manageAEs',
+                    icon: "fas fa-asterisk",
+                    label: "Manage AEs",
+                    action: "manageAEs",
                     visible: this.isGM // Only show if the user is the owner (GM)
                 }
             ]
         }
-
-    }
+    };
     constructor(options = {}) {
         super(options);
         this.#dragDrop = this.#createDragDropHandlers();
@@ -71,14 +73,12 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         });
     }
 
-
-
     _canDragStart(selector) {
-        return this.document.isOwner && this.isEditable
+        return this.document.isOwner && this.isEditable;
     }
 
     _canDragDrop(selector) {
-        return this.document.isOwner && this.isEditable
+        return this.document.isOwner && this.isEditable;
     }
 
     _onDragOver(event) {
@@ -102,7 +102,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         if (!data?.eliteAdvances?.length) {
             data.eliteAdvances = undefined;
         }
-        data.owner=this.isOwner;
+        data.owner = this.isOwner;
         data.editable = this.isEditable;
         data.money = game.settings.get("fortyk", "dhMoney");
         data.alternateWounds = game.settings.get("fortyk", "alternateWounds");
@@ -114,7 +114,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
     /** @override */
     _onRender(context, options) {
         super._onRender(context, options);
-        const html=$(this.element);
+        const html = $(this.element);
         //right click profile img
         html.find(".profile-img").contextmenu(this._onImgRightClick.bind(this));
 
@@ -178,28 +178,25 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         // Autoselect entire text
         $("input[type=text]").focusin(function (event) {
             $(this).select();
-
         });
         $("input[type=number]").focusin(function (event) {
             $(this).select();
-
         });
         //stop the change event on all inputs because its jank
-        $("input[type=number]").change(function (event){
+        $("input[type=number]").change(function (event) {
             event.stopImmediatePropagation();
             event.preventDefault();
         });
-         $("input[type=text]").change(function (event){
+        $("input[type=text]").change(function (event) {
             event.stopImmediatePropagation();
             event.preventDefault();
         });
-        $("select:not([class])").change(function (event){
+        $("select:not([class])").change(function (event) {
             event.stopImmediatePropagation();
             event.preventDefault();
         });
 
-        this.#dragDrop.forEach((d) => d.bind(this.element))
-
+        this.#dragDrop.forEach((d) => d.bind(this.element));
     }
     _onDragListItem(event) {
         let data = {};
@@ -265,21 +262,19 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
             height: "auto"
         };
         let img = this.actor.img;
-        let dlg = new Dialog(
+        let dlg = foundry.applications.api.DialogV2.wait(
             {
-                title: `Profile Image`,
+                window: { title: `Profile Image` },
                 content: `<img src="${img}"  width="auto" height="auto">`,
-                buttons: {
-                    submit: {
+                buttons: [
+                    {
                         label: "OK",
                         callback: null
                     }
-                },
-                default: "submit"
+                ]
             },
             options
         );
-        dlg.render(true);
     }
     //handles the duplicate inputs for wounds fatigue fate points etc on the combat tab
 
@@ -378,21 +373,20 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
             height: "auto"
         };
         var name = event.currentTarget.dataset["name"];
-        let dlg = new Dialog(
+        let dlg = foundry.applications.api.DialogV2.wait(
             {
-                title: `${name} Description`,
+                window: { title: `${name} Description` },
+                position: { height: "auto", width: 300 },
                 content: "<div class='description-popup'>" + descr + "</div>",
-                buttons: {
-                    submit: {
+                buttons: [
+                    {
                         label: "OK",
                         callback: null
                     }
-                },
-                default: "submit"
+                ]
             },
             options
         );
-        dlg.render(true);
     }
     //Handle creating a new item, will sort the item type before making the new item
     async _onItemCreate(event) {
@@ -412,223 +406,13 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
     async _onTntCreate(event) {
         event.preventDefault();
         var actor = this.actor;
-        let tnts;
-        if (actor.type === "vehicle") {
-            var vehicleTraits = await game.packs.get("fortyk.vehicle-traits");
-            tnts = await vehicleTraits.getDocuments();
-        } else {
-            var dh2Talents = await game.packs.get("fortyk.talent-core-dh2");
-            tnts = await dh2Talents.getDocuments();
-            var dh2Traits = await game.packs.get("fortyk.traits-core-dh2");
-            tnts = tnts.concat(await dh2Traits.getDocuments());
-            var dh2EnemyWithinTalents = await game.packs.get("fortyk.talents-enemies-within");
-            tnts = tnts.concat(await dh2EnemyWithinTalents.getDocuments());
-            var dh2EnemyWithoutTalents = await game.packs.get("fortyk.talents-enemies-without");
-            tnts = tnts.concat(await dh2EnemyWithoutTalents.getDocuments());
-            var dh2EnemyBeyondTalents = await game.packs.get("fortyk.talents-enemies-beyond");
-            tnts = tnts.concat(await dh2EnemyBeyondTalents.getDocuments());
-            var owCoreTalents = await game.packs.get("fortyk.talents-ow-core");
-            tnts = tnts.concat(await owCoreTalents.getDocuments());
-            var owHOTETalents = await game.packs.get("fortyk.talents-hammer-of-the-emperor");
-            tnts = tnts.concat(await owHOTETalents.getDocuments());
-            var owShieldOfHumanityTalents = await game.packs.get("fortyk.talents-shield-of-humanity");
-            tnts = tnts.concat(await owShieldOfHumanityTalents.getDocuments());
-            var customTalents = await game.packs.get("fortyk.custom-talents");
-            tnts = tnts.concat(await customTalents.getDocuments());
-            var customBonus = await game.packs.get("fortyk.custom-bonus-and-drawbacks");
-            tnts = tnts.concat(await customBonus.getDocuments());
-        }
-        //load different packs depending on actor type
-        if (actor.type === "dhPC" || actor.type === "npc") {
-            var dh2CoreBonus = await game.packs.get("fortyk.role-homeworld-and-background-bonuscore-dh2");
-            tnts = tnts.concat(await dh2CoreBonus.getDocuments());
-            var dh2EnemiesWithinBonus = await game.packs.get(
-                "fortyk.role-homeworld-and-background-bonusenemies-within"
-            );
-            tnts = tnts.concat(await dh2EnemiesWithinBonus.getDocuments());
-            var dh2EnemiesWithoutBonus = await game.packs.get(
-                "fortyk.role-homeworld-and-background-bonusenemies-without"
-            );
-            tnts = tnts.concat(await dh2EnemiesWithoutBonus.getDocuments());
-            var dh2EnemiesBeyondBonus = await game.packs.get(
-                "fortyk.role-homeworld-and-background-bonusenemies-beyond"
-            );
-            tnts = tnts.concat(await dh2EnemiesBeyondBonus.getDocuments());
-        } else if (actor.type === "dwPC" || actor.type === "npc") {
-            var dwBonus = await game.packs.get("fortyk.deathwatch-bonus-and-drawbacks");
-            tnts = tnts.concat(await dwBonus.getDocuments());
-            var dwTalents = await game.packs.get("fortyk.deathwatch-talents");
-            tnts = tnts.concat(await dwTalents.getDocuments());
-        } else if (actor.type === "owPC" || actor.type === "npc") {
-            var owCoreAbilities = await game.packs.get("fortyk.homeworld-and-specialty-abilities-core-ow");
-            tnts = tnts.concat(await owCoreAbilities.getDocuments());
-            var owHOTEAbilities = await game.packs.get(
-                "fortyk.homeworld-and-specialty-abilities-hammer-of-the-emperor"
-            );
-            tnts = tnts.concat(await owHOTEAbilities.getDocuments());
-            var owHOTEOrders = await game.packs.get("fortyk.orders-hammer-of-the-emperor");
-            tnts = tnts.concat(await owHOTEOrders.getDocuments());
-            var owShieldOfHumanityAbilities = await game.packs.get(
-                "fortyk.homeworld-and-specialty-abilities-shield-of-humanity"
-            );
-            tnts = tnts.concat(await owShieldOfHumanityAbilities.getDocuments());
-            var owShieldOfHumanityOrders = await game.packs.get("fortyk.orders-shield-of-humanity");
-            tnts = tnts.concat(await owShieldOfHumanityOrders.getDocuments());
-        }
-        tnts = tnts.sort(function compare(a, b) {
-            if (a.name < b.name) {
-                return -1;
-            }
-            if (a.name > b.name) {
-                return 1;
-            }
-            // a must be equal to b
-            return 0;
-        });
-        tnts = tnts.filter((tnt) => !actor.getFlag("fortyk", tnt.system.flagId.value));
 
-        let templateOptions = { tnts: tnts };
-
-        let renderedTemplate = foundry.applications.handlebars.renderTemplate(
-            "systems/fortyk/templates/actor/dialogs/tnt-dialog.html",
-            templateOptions
-        );
-        var options = {
-            width: 666,
-            height: "auto",
-            classes: ["systems/fortyk/css/fortyk.css", "tntdialog"]
-        };
-
-        renderedTemplate.then((content) => {
-            new Dialog(
-                {
-                    title: "Add Talents, Traits and Bonus",
-                    content: content,
-                    buttons: {
-                        submit: {
-                            label: "Add selected to Character",
-                            callback: async (html) => {
-                                let selectedIds = [];
-                                $(html)
-                                    .find("input:checked")
-                                    .each(function () {
-                                    selectedIds.push($(this).val());
-                                });
-
-                                let $selectedCompendiums = $("input:checked", html)
-                                .map(function () {
-                                    return this.getAttribute("data-compendium");
-                                })
-                                .get();
-
-                                let talentsNTraits = [];
-                                for (let i = 0; i < selectedIds.length; i++) {
-                                    let tnt = null;
-                                    switch ($selectedCompendiums[i]) {
-                                        case "fortyk.talent-core-dh2":
-                                            tnt = await dh2Talents.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.traits-core-dh2":
-                                            tnt = await dh2Traits.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.talents-enemies-within":
-                                            tnt = await dh2EnemyWithinTalents.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.talents-enemies-without":
-                                            tnt = await dh2EnemyWithoutTalents.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.talents-enemies-beyond":
-                                            tnt = await dh2EnemyBeyondTalents.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.role-homeworld-and-background-bonuscore-dh2":
-                                            tnt = await dh2CoreBonus.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.role-homeworld-and-background-bonusenemies-without":
-                                            tnt = await dh2EnemiesWithoutBonus.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.role-homeworld-and-background-bonusenemies-within":
-                                            tnt = await dh2EnemiesWithinBonus.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.role-homeworld-and-background-bonusenemies-beyond":
-                                            tnt = await dh2EnemiesBeyondBonus.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.deathwatch-bonus-and-drawbacks":
-                                            tnt = await dwBonus.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.deathwatch-talents":
-                                            tnt = await dwTalents.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.talents-ow-core":
-                                            tnt = await owCoreTalents.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.talents-hammer-of-the-emperor":
-                                            tnt = await owHOTETalents.getDocument(selectedIds[i]);
-
-                                            break;
-                                        case "fortyk.talents-shield-of-humanity":
-                                            tnt = await owShieldOfHumanityTalents.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.homeworld-and-specialty-abilities-core-ow":
-                                            tnt = await owCoreAbilities.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.homeworld-and-specialty-abilities-hammer-of-the-emperor":
-                                            tnt = await owHOTEAbilities.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.orders-hammer-of-the-emperor":
-                                            tnt = await owHOTEOrders.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.homeworld-and-specialty-abilities-shield-of-humanity":
-                                            tnt = await owShieldOfHumanityAbilities.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.orders-shield-of-humanity":
-                                            tnt = await owShieldOfHumanityOrders.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.custom-talents":
-                                            tnt = await customTalents.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.custom-bonus-and-drawbacks":
-                                            tnt = await customBonus.getDocument(selectedIds[i]);
-                                            break;
-                                        case "fortyk.vehicle-traits":
-                                            tnt = await vehicleTraits.getDocument(selectedIds[i]);
-                                            break;
-                                    }
-                                    let itemData = foundry.utils.duplicate(tnt);
-
-                                    let spec = itemData.system.specialisation.value;
-                                    let flag = itemData.system.flagId.value;
-                                    if (!actor.getFlag("fortyk", flag)) {
-                                        if (spec === "N/A") {
-                                            //await actor.setFlag("fortyk",flag,true);
-                                        } else {
-                                            let chosenSpec = await Dialog.prompt({
-                                                title: `Choose specialisation for ${tnt.name}`,
-                                                content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${itemData.system.specialisation.value}" autofocus/></p>`,
-                                                callback: async (html) => {
-                                                    const choosenSpec = $(html).find('input[name="spec"]').val();
-                                                    //await actor.setFlag("fortyk",flag,choosenSpec);
-                                                    return choosenSpec;
-                                                },
-                                                width: 100
-                                            });
-                                            itemData.system.specialisation.value = chosenSpec;
-                                            if(itemData.system.isAura.value){
-                                                itemData.system.isAura.range=parseInt(chosenSpec);
-                                            }
-                                        }
-                                        talentsNTraits.push(itemData);
-                                    }
-                                }
-                                await actor.createEmbeddedDocuments("Item", talentsNTraits);
-                                this.render(true);
-                            }
-                        }
-                    },
-                    default: "submit"
-                },
-                options
-            ).render(true);
-        });
+        new tntDialog({
+            window: { title: "Add Talents, Traits and Bonus" },
+            position: { width: 666, height: "auto" },
+            actor: actor,
+            classes: []
+        }).render(true);
     }
     //Edits the item that was clicked
     async _onItemEdit(event) {
@@ -643,24 +427,22 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         let itemId = event.currentTarget.attributes["data-item-id"].value;
         let item = await this.actor.getEmbeddedDocument("Item", itemId);
 
-        let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate(
+            "systems/fortyk/templates/actor/dialogs/delete-item-dialog.html"
+        );
         renderedTemplate.then((content) => {
-            new Dialog({
+            foundry.applications.api.DialogV2.wait({
                 title: "Deletion Confirmation",
                 content: content,
-                buttons: {
-                    submit: {
-                        label: "Yes",
+                buttons: [
+                    {
+                        label: "Ok",
                         callback: async (dlg) => {
                             await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
                             this.render(true);
                         }
-                    },
-                    cancel: {
-                        label: "No",
-                        callback: null
                     }
-                },
+                ],
                 default: "submit"
             }).render(true);
         });
@@ -748,7 +530,6 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         var testTarget = parseInt(dataset["target"]);
 
         let modifierTracker = [];
-
 
         var testLabel = dataset["label"];
         var testChar = dataset["char"];
@@ -938,7 +719,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                 actor.getFlag("fortyk", "twohandedbrutality") &&
                 fortykWeapon.system.twohanded.value &&
                 (actor.system.secChar.lastHit.attackType === "charge" ||
-                 actor.system.secChar.lastHit.attackType === "allout")
+                    actor.system.secChar.lastHit.attackType === "allout")
             ) {
                 dmg += actor.system.characteristics.s.bonus;
             }
@@ -974,16 +755,21 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                 reroll++;
             }
             options.reroll = reroll;
-            let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/damage-dialog.html", options);
+            let renderedTemplate = foundry.applications.handlebars.renderTemplate(
+                "systems/fortyk/templates/actor/dialogs/damage-dialog.html",
+                options
+            );
             let formula = foundry.utils.duplicate(weapon.system.damageFormula);
             renderedTemplate.then((content) => {
-                new Dialog({
-                    title: `Number of Hits & Bonus Damage`,
+                foundry.applications.api.DialogV2.wait({
+                    window: { title: `Number of Hits & Bonus Damage` },
                     content: content,
-                    buttons: {
-                        submit: {
+                    position: { width: 100 },
+                    buttons: [
+                        {
                             label: "OK",
-                            callback: async (el) => {
+                            callback: async (event) => {
+                                let el = event.target.form;
                                 const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
                                 const dmg = $(el).find('input[name="dmg"]').val();
                                 const pen = parseInt(Number($(el).find('input[name="pen"]').val()));
@@ -1028,10 +814,8 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                                 }
                             }
                         }
-                    },
-                    default: "submit",
-                    width: 100
-                }).render(true);
+                    ]
+                });
             });
         } else if (dataset.formula) {
             let roll = new Roll(dataset.formula, this.actor.system);
@@ -1070,16 +854,20 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         }
         options.reroll = reroll;
 
-        let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/damage-dialog.html", options);
+        let renderedTemplate = foundry.applications.handlebars.renderTemplate(
+            "systems/fortyk/templates/actor/dialogs/damage-dialog.html",
+            options
+        );
         let formula = foundry.utils.duplicate(weapon.system.damageFormula);
         renderedTemplate.then((content) => {
-            new Dialog({
-                title: `Number of Hits & Bonus Damage`,
+            foundry.applications.api.DialogV2.wait({
+                window: { title: `Number of Hits & Bonus Damage` },
                 content: content,
-                buttons: {
-                    submit: {
+                buttons: [
+                    {
                         label: "OK",
-                        callback: async (el) => {
+                        callback: async (event) => {
+                            let el = event.target.form;
                             hits = parseInt(Number($(el).find('input[name="hits"]').val()));
                             dmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
                             pen = parseInt(Number($(el).find('input[name="pen"]').val()));
@@ -1103,8 +891,8 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                                     weapon.template = targets[i].template;
                                     let targetNames = "";
                                     let targetTokens = canvas.tokens.placeables.filter((token) =>
-                                                                                         curTargets.includes(token.id)
-                                                                                        );
+                                        curTargets.includes(token.id)
+                                    );
                                     for (let j = 0; j < targetTokens.length; j++) {
                                         let token = targetTokens[j];
                                         if (j === targetTokens.length - 1) {
@@ -1116,8 +904,15 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                                         }
                                     }
                                     if (curTargets.length !== 0) {
-                                        game.user.targets.clear();
-                                        game.user.targets.add(...curTargets);
+                                        game.user._onUpdateTokenTargets([]);
+                                        for (let target of targetTokens) {
+                                            target.setTarget(true, {
+                                                user: game.user,
+                                                releaseOthers: false,
+                                                groupSelection: true
+                                            });
+                                        }
+
                                         let name = actor.getName();
                                         let chatBlast2 = {
                                             author: game.user._id,
@@ -1139,7 +934,14 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                                             rerollNum
                                         );
 
-                                        game.user.updateTokenTargets();
+                                        for (let target of targetTokens) {
+                                            target.setTarget(false, {
+                                                user: game.user,
+                                                releaseOthers: false,
+                                                groupSelection: true
+                                            });
+                                        }
+                                        game.user.broadcastActivity({ targets: game.user.targets.ids });
                                         //clean templates after
                                         let scene = game.scenes.active;
                                         let templates = scene.templates;
@@ -1174,7 +976,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                             }
                         }
                     }
-                },
+                ],
                 default: "submit",
                 width: 100
             }).render(true);
@@ -1300,13 +1102,14 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         const element = event.currentTarget;
         const dataset = element.dataset;
         let actor = this.actor;
-        new Dialog({
-            title: `Force Attack`,
+        foundry.applications.api.DialogV2.wait({
+            window: { title: `Force Attack` },
             content: `<p><label>Number of Dice:</label> <input type="text" id="modifier" name="hits" value="1" data-dtype="Number" autofocus/></p>`,
             buttons: {
                 submit: {
                     label: "OK",
-                    callback: async (el) => {
+                    callback: async (event) => {
+                        let el = event.target.form;
                         const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
 
                         let forceData = { name: "Force", type: "psychicPower" };
@@ -1350,7 +1153,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         if (!this.actor.isOwner) return false;
         const item = await Item.implementation.fromDropData(data);
         const itemData = item.toObject();
-        itemData.id=itemData._id;
+        itemData.id = itemData._id;
         const sameActor = this.actor.uuid === item.parent?.uuid;
         //make sure the copy wont be equipped by default
         if (itemData.system.isEquipped) itemData.system.isEquipped = false;
@@ -1370,7 +1173,9 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         if (sameActor) return super._onSortItem(event, item);
 
         // Create the owned item
-        return super._onDropItemCreate(itemData, event);
+
+        const result = await this.actor.createEmbeddedDocuments("Item", [itemData])[0];
+        return result ?? null;
     }
     async _applyModToItem(originItem, sameActor) {
         async function deleteOrigin() {
@@ -1453,14 +1258,25 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
             ).toFixed(2);
             deleteOrigin();
         }
-        return await Dialog.wait({
-            title: "Choose item to apply upgrade",
+        return foundry.applications.api.DialogV2.wait({
+            window: { title: "Choose item to apply upgrade" },
+            position: { width: 100 },
             content: content,
-            buttons: {
-                submit: {
+            actions: {
+                inventory: async function addToInventory(event) {
+                    let html = event.target.form;
+                    if (!sameActor) {
+                        deleteOrigin();
+                    }
+                    return false;
+                }
+            },
+            buttons: [
+                {
                     label: "Add to item",
-                    callback: (html) => {
-                        let itemId = html.find(".itemradio:checked")[0].value;
+                    callback: (event) => {
+                        let html = event.target.form;
+                        let itemId = $(html).find(".itemradio:checked")[0].value;
                         if (!itemId) {
                             if (!sameActor) {
                                 deleteOrigin();
@@ -1473,79 +1289,65 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                         }
                     }
                 },
-                cancel: {
+                {
                     label: "Add to inventory",
-                    callback: (html) => {
-                        if (!sameActor) {
-                            deleteOrigin();
-                        }
-                        return false;
-                    }
+                    action: "inventory"
                 }
-            },
-            render: (html) => {},
-            default: "submit",
-            width: 100
+            ]
         });
     }
-    static async _manageAEs(){
+    static async _manageAEs() {
         let actor = this.document;
-            if (this.token) {
-                actor = this.token.actor;
-            }
+        if (this.token) {
+            actor = this.token.actor;
+        }
 
-            var options = {
-                id: "aeDialog"
-            };
-            var d = new ActiveEffectDialog(
-                {
-                    title: "Active Effects",
-                    actor: actor,
-                    buttons: {
-                        button: {
-                            label: "Ok",
-                            callback: async (html) => {
-                               this.document.dialog = undefined;
-                            }
+        var options = {
+            id: "aeDialog"
+        };
+        var d = new ActiveEffectDialog(
+            {
+                title: "Active Effects",
+                actor: actor,
+                buttons: {
+                    button: {
+                        label: "Ok",
+                        callback: async (html) => {
+                            this.document.dialog = undefined;
                         }
-                    },
-                    close: function () {
-                        this.document.dialog = undefined;
                     }
                 },
-                options
-            ).render(true);
-            this.document.dialog = d;
+                close: function () {
+                    this.document.dialog = undefined;
+                }
+            },
+            options
+        ).render(true);
+        this.document.dialog = d;
     }
-    static async _onSubmitForm(event, form, formData){
-        console.log(event,formData);
+    static async _onSubmitForm(event, form, formData) {
         event.preventDefault();
-        let object=formData.object;
-        let background=object.system?.notesAndBackground?.background;
-        let notes=object.system?.notesAndBackground?.notes;
-        let description=object.system?.description?.value;
-        let skills=object.system?.skills?.value;
-        let equipment=object.system?.equipment?.value;
+        let object = formData.object;
+        let background = object.system?.notesAndBackground?.background;
+        let notes = object.system?.notesAndBackground?.notes;
+        let description = object.system?.description?.value;
+        let skills = object.system?.skills?.value;
+        let equipment = object.system?.equipment?.value;
 
-        if(description){
-            object.system.description.value=foundry.utils.cleanHTML(description);
-
+        if (description) {
+            object.system.description.value = foundry.utils.cleanHTML(description);
         }
-        if(skills){
-            object.system.skills.value=foundry.utils.cleanHTML(skills);
-
+        if (skills) {
+            object.system.skills.value = foundry.utils.cleanHTML(skills);
         }
-        if(equipment){
-            object.system.equipment.value=foundry.utils.cleanHTML(equipment);
-
+        if (equipment) {
+            object.system.equipment.value = foundry.utils.cleanHTML(equipment);
         }
-        if(background){
-            object.system.notesAndBackground.background=foundry.utils.cleanHTML(background);
-
+        if (background) {
+            object.system.notesAndBackground.background = foundry.utils.cleanHTML(background);
         }
-        if(notes){
-            object.system.notesAndBackground.notes=foundry.utils.cleanHTML(notes);
-
+        if (notes) {
+            object.system.notesAndBackground.notes = foundry.utils.cleanHTML(notes);
         }
         await this.document.update(formData.object);
     }

@@ -1,63 +1,63 @@
 
 
-    <form class="{{cssClass}} item-sheet new-skill flexcol">
-         <header class="sheet-header">
-        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
-        
+<section class="{{cssClass}} item-sheet new-skill flexcol">
+    <header class="sheet-header">
+        <img class="profile-img" src="{{img}}" data-action="editImage" data-field="img" alt="Portrait">
+
     </header>
-        {{#if isGM}}
+    {{#if isGM}}
     <label class="button clone">Copy Item</label>
     {{/if}}
-        <div class="flexcol">
-            <label>Skill Type:</label>
-            <select class="skill-type" name="system.parent.value">
-                
-                {{#select system.parent.value}}
-                <option class="new-skill-select" value="" selected>Stand Alone Skill</option>
-                {{#each skillgroups as |skill key|}}
-                
-                
-                <option class="new-skill-select" value="{{skill.name}}">{{skill.name}}</option>
-                
-                {{/each}}
-                {{/select}}
-               
-            </select>
-        </div>
-        <div class="flexcol">
-            <label>Specialisations:</label>
+    <div class="flexcol">
+        <label>Skill Type:</label>
+        <select class="skill-type" name="system.parent.value">
+
+            {{#select system.parent.value}}
+            <option class="new-skill-select" value="" selected>Stand Alone Skill</option>
+            {{#each skillgroups as |skill key|}}
+
+
+            <option class="new-skill-select" value="{{skill.name}}">{{skill.name}}</option>
+
+            {{/each}}
+            {{/select}}
+
+        </select>
+    </div>
+    <div class="flexcol">
+        <label>Specialisations:</label>
         <input id="children" type="checkbox" class="skill-children" name="system.hasChildren.value" {{#if (compareString system.parent.value)}} {{checked system.hasChildren.value}}{{else}} disabled {{/if}}>
-        </div>
-        <div class="flexcol">
-            <label>Name:</label>
-            
-            <input type="text" class="name skill-dialog weapon-mod" data-target="name" value="{{name}}" data-dtype="String" required>
-        </div>
-        <div class="flexcol">
-            <label>Characteristic</label>
-            <select class="skill-characteristic" name="system.characteristic.value">
-                {{#select system.characteristic.value}}
-                <option value="ws">Weapon Skill</option>
-                <option value="bs">Ballistic Skill</option>
-                <option value="s">Strength</option>
-                <option value="t">Toughness</option>
-                <option value="agi">Agility</option>
-                <option value="int">Intelligence</option>
-                <option value="per">Perception</option>
-                <option value="wp">Willpower</option>
-                <option value="fel">Fellowship</option>   
-               {{/select}}
-            </select>
-        </div>
-        <div class="flexcol">
+    </div>
+    <div class="flexcol">
+        <label>Name:</label>
+
+        <input type="text" class="name skill-dialog weapon-mod" data-target="name" value="{{name}}" data-dtype="String" required>
+    </div>
+    <div class="flexcol">
+        <label>Characteristic</label>
+        <select class="skill-characteristic" name="system.characteristic.value">
+            {{#select system.characteristic.value}}
+            <option value="ws">Weapon Skill</option>
+            <option value="bs">Ballistic Skill</option>
+            <option value="s">Strength</option>
+            <option value="t">Toughness</option>
+            <option value="agi">Agility</option>
+            <option value="int">Intelligence</option>
+            <option value="per">Perception</option>
+            <option value="wp">Willpower</option>
+            <option value="fel">Fellowship</option>   
+            {{/select}}
+        </select>
+    </div>
+    <div class="flexcol">
         <label>Aptitudes:</label>
-            <input type="text" class="aptitudes skill-dialog weapon-mod" data-target="system.aptitudes.value" value="{{system.aptitudes.value}}" data-dtype="String" required>
-        </div>
-        <div class="flexcol">
+        <input type="text" class="aptitudes skill-dialog weapon-mod" data-target="system.aptitudes.value" value="{{system.aptitudes.value}}" data-dtype="String" required>
+    </div>
+    <div class="flexcol">
         <label>Skill Use:</label>
-            <input type="text" class="skill-use skill-dialog weapon-mod" data-target="system.skillUse.value" value="{{system.skillUse.value}}" data-dtype="String" required>
-        </div>
-        {{#if isGM}}
+        <input type="text" class="skill-use skill-dialog weapon-mod" data-target="system.skillUse.value" value="{{system.skillUse.value}}" data-dtype="String" required>
+    </div>
+    {{#if isGM}}
     <div class="item-description">
         <label>GM Description:</label>
         {{#if editable}}
@@ -89,5 +89,5 @@
         {{{enrichedDescription}}}
         {{/if}}
     </div>
-        
-    </form>
+
+</section>

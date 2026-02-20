@@ -63,6 +63,40 @@ export class FortyKActor extends Actor {
         let actor = this;
         let actorData = actor;
         let dead = data?.flags?.core?.dead;
+        var statuses = data.statuses;
+        if(statuses){
+            let token=getActorToken(this);
+            let detectionModes=token.document.detectionModes;
+          
+                let seeInvisibilityMode = detectionModes.find(mode => mode.id === "seeInvisibility");
+                if(!seeInvisibilityMode){
+                    detectionModes.push({
+                        id: "seeInvisibility",
+                        enabled: false,
+                        range: 60 
+                    });
+                }
+                seeInvisibilityMode = detectionModes.find(mode => mode.id === "seeInvisibility");
+
+                for(let mode of detectionModes){
+                    if(mode.range=== Infinity){
+                        mode.range=60;
+                    }
+                }
+                if(this.statuses.has("seeInvis")){
+
+
+
+                    seeInvisibilityMode.enabled = true;
+
+
+                }else{
+                    seeInvisibilityMode.enabled = false;
+
+                }
+                token.document.update({"detectionModes":detectionModes});
+            
+        }
         if (dead) {
             let token = getActorToken(this).document;
             await turnOffActorAuras(token);
@@ -250,7 +284,6 @@ export class FortyKActor extends Actor {
         data.reactions = 1;
         //prepare corruption for BC
         let corruption = data.secChar.corruption;
-        console.log(corruption)
         if (game.settings.get("fortyk", "bcCorruption")) {
             corruption.value =
                 parseInt(corruption.value) +
@@ -689,11 +722,11 @@ export class FortyKActor extends Actor {
                 let powerOrigin;
                 if(powerOriginId?.includes(this.id)){
                     if(this.isToken&&!game.ready)continue;
-                   
+
                 }
                 powerOrigin = fromUuidSync(powerOriginId);  
-                
-                
+
+
                 let powerActor = null;
                 if (powerOrigin) {
                     powerActor = powerOrigin.parent;
@@ -1055,14 +1088,14 @@ export class FortyKActor extends Actor {
                 rightHandWeaponData &&
                 this.getFlag("fortyk", "WeaponMaster")
                 .toLowerCase()
-                .includes(rightHandWeaponsystem.type.value.toLowerCase())
+                .includes(rightHandWeapon.system.type.value.toLowerCase())
             ) {
                 master = true;
             } else if (
                 leftHandWeaponData &&
                 this.getFlag("fortyk", "WeaponMaster")
                 .toLowerCase()
-                .includes(leftHandWeaponsystem.type.value.toLowerCase())
+                .includes(leftHandWeapon.system.type.value.toLowerCase())
             ) {
                 master = true;
             }
@@ -2543,26 +2576,14 @@ export class FortyKActor extends Actor {
         }
         //handle if psy rating changed to update sustained powers
         let psy;
-        try {
-            psy = changed.system.psykana.pr.sustained;
-        } catch (err) {}
+
+        psy = changed?.system?.psykana?.pr?.sustained;
         if (psy !== undefined) {
             this.updateSustainedActors();
         }
-        let pr;
-        try {
-            pr = changed.system.psykana.pr.bonus;
-        } catch (err) {}
 
-        if (pr !== undefined) {
-            this.updateSustainedActors();
-        }
-        try {
-            pr = changed.system.psykana.pr.value;
-        } catch (err) {}
-        if (pr !== undefined) {
-            this.updateSustainedActors();
-        }
+
+
         super._onUpdate(changed, options, userId);
     }
     updateSustainedActors() {

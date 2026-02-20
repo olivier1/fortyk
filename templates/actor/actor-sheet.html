@@ -1,11 +1,11 @@
 
-<div class="{{cssClass}}" autocomplete="off">
+<section class="{{cssClass}}" autocomplete="off">
 
     {{#unless characterCreation}}
     {{!-- Sheet Header --}}
     <header class="pc-sheet-header sheet-header flexrow">
 
-        <img class="profile-img" src="{{actor.img}}" data-action="editImage" data-field="img" alt="Portrait" title="{{actor.name}}" />
+        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
        {{>'templates/generic/tab-navigation.hbs'}}
 
 
@@ -16,7 +16,7 @@
     {{else}}
     {{> "systems/fortyk/templates/actor/character-creation.html"}}
     {{/unless}}
-</div>
+</section>
 
 
 

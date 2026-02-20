@@ -7,7 +7,7 @@
                 <div class="resource flex-group-center">
                     <label for="system.secChar.wounds.value" class="resource-label">Ship Points</label>
                     <div class="resource-content flexrow flex-center flex-between">
-                        <div class="flexcol">Start:<input type="text" class="combat-resources" name="system.shipPoints.value" value="{{system.shipPoints.value}}" data-dtype="Number"/></div>
+                        <div class="flexcol">Start:<input type="text" class="combat-resources" data-target="system.shipPoints.value" value="{{system.shipPoints.value}}" data-dtype="Number"/></div>
                         <div class="flexcol"> Spent:
                             <span>{{system.shipPoints.spent}}</span></div>
 
@@ -21,7 +21,7 @@
                     <div class="resource-content flexcol flex-center flex-between">
                         {{system.power.value}}
 
-                        <input type="text" class="combat-resources" name="system.power.max" value="{{system.power.max}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" data-target="system.power.max" value="{{system.power.max}}" data-dtype="Number"/>
                     </div>
                 </div>
                 <div class="resource  flex-group-center">
@@ -29,7 +29,7 @@
                     <div class="resource-content flexcol flex-center flex-between">
                         {{system.space.value}}
 
-                        <input type="text" class="combat-resources" name="system.space.max" value="{{system.space.max}}" data-dtype="Number"/>
+                        <input type="text" class="combat-resources" data-target="system.space.max" value="{{system.space.max}}" data-dtype="Number"/>
                     </div>
                 </div>
 

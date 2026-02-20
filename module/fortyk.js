@@ -2,7 +2,7 @@
 import { FortyKActor } from "./actor/actor.js";
 import { ActorDialogs } from "./actor/actor-dialogs.js";
 import { FortyKToken } from "./token/fortykToken.js";
-import { FortyKRuler } from "./ruler/fortykRuler.js";
+import { FortyKTokenRuler } from "./ruler/fortykTokenRuler.js";
 import FortyKDWActorSheet from "./actor/actorDW-sheet.js";
 import { FortyKDHActorSheet } from "./actor/actorDH-sheet.js";
 import { FortyKOWActorSheet } from "./actor/actorOW-sheet.js";
@@ -38,79 +38,128 @@ import { turnOffActorAuras } from "./utilities.js";
 import { applySceneAuras } from "./utilities.js";
 
 function manageColorScheme() {
-    const colorScheme=game.settings.get("fortyk","colorScheme");
-    const colorSchemes=FORTYK.colorSchemes;
-    const schemeString=colorSchemes[colorScheme];
-    switch (schemeString){
-        case "Default":   
+    const colorScheme = game.settings.get("fortyk", "colorScheme");
+    const colorSchemes = FORTYK.colorSchemes;
+    const schemeString = colorSchemes[colorScheme];
+    switch (schemeString) {
+        case "Default":
             break;
         case "Cyan":
-            document.documentElement.style.setProperty('--terminal-primary', '#23D5D5');
-            document.documentElement.style.setProperty('--terminal-secondary', '#39AAAA');
-            document.documentElement.style.setProperty('--terminal-dim', '#395555');
-            document.documentElement.style.setProperty('--terminal-text', '#5bc7c7');
-            document.documentElement.style.setProperty('--terminal-warning', '#cccc00');
-            document.documentElement.style.setProperty('--terminal-success', 'royalblue');
-            document.documentElement.style.setProperty('--terminal-error', 'orange');
-            document.documentElement.style.setProperty('--terminal-border', '#23D5D5');
-            document.documentElement.style.setProperty('--terminal-glow', '0 0 2px #00FFFF, 0 0 4px #00FFFF, 0 0 6px #00FFFF');
-            document.documentElement.style.setProperty('--terminal-innerglow', 'inset 0 0 2px #00FFFF, inset 0 0 4px #00FFFF, inset 0 0 6px #009900');
-            document.documentElement.style.setProperty('--terminal-error-glow', '0 0 2px orange, 0 0 4px orange, 0 0 6px orange');
-            document.documentElement.style.setProperty('--terminal-text-shadow', '0 0 1px #00FFFF');
-            document.documentElement.style.setProperty('--terminal-border-image', 'url("../assets/emptyslate-cyan.png")');
-            document.documentElement.style.setProperty('--terminal-delete-icon', 'url("../icons/deleteicon-orange.png")');
-            document.documentElement.style.setProperty('--terminal-edit-icon', 'url("../icons/editicon-blue.png")');
-            document.documentElement.style.setProperty('--terminal-imp-eagle', 'url("../icons/impeagleSCAN-cyan.webp")');
-            
+            document.documentElement.style.setProperty("--terminal-primary", "#23D5D5");
+            document.documentElement.style.setProperty("--terminal-secondary", "#39AAAA");
+            document.documentElement.style.setProperty("--terminal-dim", "#395555");
+            document.documentElement.style.setProperty("--terminal-text", "#5bc7c7");
+            document.documentElement.style.setProperty("--terminal-warning", "#cccc00");
+            document.documentElement.style.setProperty("--terminal-success", "royalblue");
+            document.documentElement.style.setProperty("--terminal-error", "orange");
+            document.documentElement.style.setProperty("--terminal-border", "#23D5D5");
+            document.documentElement.style.setProperty(
+                "--terminal-glow",
+                "0 0 2px #00FFFF, 0 0 4px #00FFFF, 0 0 6px #00FFFF"
+            );
+            document.documentElement.style.setProperty(
+                "--terminal-innerglow",
+                "inset 0 0 2px #00FFFF, inset 0 0 4px #00FFFF, inset 0 0 6px #009900"
+            );
+            document.documentElement.style.setProperty(
+                "--terminal-error-glow",
+                "0 0 2px orange, 0 0 4px orange, 0 0 6px orange"
+            );
+            document.documentElement.style.setProperty("--terminal-text-shadow", "0 0 1px #00FFFF");
+            document.documentElement.style.setProperty(
+                "--terminal-border-image",
+                'url("../assets/emptyslate-cyan.png")'
+            );
+            document.documentElement.style.setProperty(
+                "--terminal-delete-icon",
+                'url("../icons/deleteicon-orange.png")'
+            );
+            document.documentElement.style.setProperty("--terminal-edit-icon", 'url("../icons/editicon-blue.png")');
+            document.documentElement.style.setProperty(
+                "--terminal-imp-eagle",
+                'url("../icons/impeagleSCAN-cyan.webp")'
+            );
+
             break;
         case "Red":
-            document.documentElement.style.setProperty('--terminal-primary', '#E73121');
-            document.documentElement.style.setProperty('--terminal-secondary', '#F15D49');
-            document.documentElement.style.setProperty('--terminal-dim', '#8B190A');
-            document.documentElement.style.setProperty('--terminal-text', '#ff6557');
-            document.documentElement.style.setProperty('--terminal-warning', '#cccc00');
-            document.documentElement.style.setProperty('--terminal-success', 'royalblue');
-            document.documentElement.style.setProperty('--terminal-error', 'orange');
-            document.documentElement.style.setProperty('--terminal-border', '#E73121');
-            document.documentElement.style.setProperty('--terminal-glow', '0 0 2px #E73121, 0 0 4px #E73121, 0 0 6px #E73121');
-            document.documentElement.style.setProperty('--terminal-innerglow', 'inset 0 0 2px #E73121, inset 0 0 4px #E73121, inset 0 0 6px #E73121');
-            document.documentElement.style.setProperty('--terminal-error-glow', '0 0 2px orange, 0 0 4px orange, 0 0 6px orange');
-            document.documentElement.style.setProperty('--terminal-text-shadow', '0 0 1px #E73121');
-            document.documentElement.style.setProperty('--terminal-border-image', 'url("../assets/emptyslate-red.png")');
-            document.documentElement.style.setProperty('--terminal-delete-icon', 'url("../icons/deleteicon-orange.png")');
-            document.documentElement.style.setProperty('--terminal-edit-icon', 'url("../icons/editicon-blue.png")');
-            document.documentElement.style.setProperty('--terminal-imp-eagle', 'url("../icons/impeagleSCAN-red.webp")');
+            document.documentElement.style.setProperty("--terminal-primary", "#E73121");
+            document.documentElement.style.setProperty("--terminal-secondary", "#F15D49");
+            document.documentElement.style.setProperty("--terminal-dim", "#8B190A");
+            document.documentElement.style.setProperty("--terminal-text", "#ff6557");
+            document.documentElement.style.setProperty("--terminal-warning", "#cccc00");
+            document.documentElement.style.setProperty("--terminal-success", "royalblue");
+            document.documentElement.style.setProperty("--terminal-error", "orange");
+            document.documentElement.style.setProperty("--terminal-border", "#E73121");
+            document.documentElement.style.setProperty(
+                "--terminal-glow",
+                "0 0 2px #E73121, 0 0 4px #E73121, 0 0 6px #E73121"
+            );
+            document.documentElement.style.setProperty(
+                "--terminal-innerglow",
+                "inset 0 0 2px #E73121, inset 0 0 4px #E73121, inset 0 0 6px #E73121"
+            );
+            document.documentElement.style.setProperty(
+                "--terminal-error-glow",
+                "0 0 2px orange, 0 0 4px orange, 0 0 6px orange"
+            );
+            document.documentElement.style.setProperty("--terminal-text-shadow", "0 0 1px #E73121");
+            document.documentElement.style.setProperty(
+                "--terminal-border-image",
+                'url("../assets/emptyslate-red.png")'
+            );
+            document.documentElement.style.setProperty(
+                "--terminal-delete-icon",
+                'url("../icons/deleteicon-orange.png")'
+            );
+            document.documentElement.style.setProperty("--terminal-edit-icon", 'url("../icons/editicon-blue.png")');
+            document.documentElement.style.setProperty("--terminal-imp-eagle", 'url("../icons/impeagleSCAN-red.webp")');
             break;
         case "White":
-            document.documentElement.style.setProperty('--terminal-primary', '#DBDBC3');
-            document.documentElement.style.setProperty('--terminal-secondary', '#8A8A7B');
-            document.documentElement.style.setProperty('--terminal-dim', '#4A4A31');
-            document.documentElement.style.setProperty('--terminal-text', '#DBDBC3');
-            document.documentElement.style.setProperty('--terminal-warning', '#cccc00');
-            document.documentElement.style.setProperty('--terminal-success', 'green');
-            document.documentElement.style.setProperty('--terminal-error', 'red');
-            document.documentElement.style.setProperty('--terminal-border', '#DBDBC3');
-            document.documentElement.style.setProperty('--terminal-glow', '0 0 2px #DBDBC3, 0 0 4px #DBDBC3, 0 0 6px #DBDBC3');
-            document.documentElement.style.setProperty('--terminal-innerglow', 'inset 0 0 2px #DBDBC3, inset 0 0 4px #DBDBC3, inset 0 0 6px #DBDBC3');
-            document.documentElement.style.setProperty('--terminal-error-glow', '0 0 2px red, 0 0 4px red, 0 0 6px red');
-            document.documentElement.style.setProperty('--terminal-text-shadow', '0 0 1px #DBDBC3');
-            document.documentElement.style.setProperty('--terminal-border-image', 'url("../assets/emptyslate-white.png")');
-            document.documentElement.style.setProperty('--terminal-delete-icon', 'url("../icons/deleteicon-red.png")');
-            document.documentElement.style.setProperty('--terminal-edit-icon', 'url("../icons/editicon-gold.png")');
-            document.documentElement.style.setProperty('--terminal-imp-eagle', 'url("../icons/impeagleSCAN-white.webp")');
+            document.documentElement.style.setProperty("--terminal-primary", "#DBDBC3");
+            document.documentElement.style.setProperty("--terminal-secondary", "#8A8A7B");
+            document.documentElement.style.setProperty("--terminal-dim", "#4A4A31");
+            document.documentElement.style.setProperty("--terminal-text", "#DBDBC3");
+            document.documentElement.style.setProperty("--terminal-warning", "#cccc00");
+            document.documentElement.style.setProperty("--terminal-success", "green");
+            document.documentElement.style.setProperty("--terminal-error", "red");
+            document.documentElement.style.setProperty("--terminal-border", "#DBDBC3");
+            document.documentElement.style.setProperty(
+                "--terminal-glow",
+                "0 0 2px #DBDBC3, 0 0 4px #DBDBC3, 0 0 6px #DBDBC3"
+            );
+            document.documentElement.style.setProperty(
+                "--terminal-innerglow",
+                "inset 0 0 2px #DBDBC3, inset 0 0 4px #DBDBC3, inset 0 0 6px #DBDBC3"
+            );
+            document.documentElement.style.setProperty(
+                "--terminal-error-glow",
+                "0 0 2px red, 0 0 4px red, 0 0 6px red"
+            );
+            document.documentElement.style.setProperty("--terminal-text-shadow", "0 0 1px #DBDBC3");
+            document.documentElement.style.setProperty(
+                "--terminal-border-image",
+                'url("../assets/emptyslate-white.png")'
+            );
+            document.documentElement.style.setProperty("--terminal-delete-icon", 'url("../icons/deleteicon-red.png")');
+            document.documentElement.style.setProperty("--terminal-edit-icon", 'url("../icons/editicon-gold.png")');
+            document.documentElement.style.setProperty(
+                "--terminal-imp-eagle",
+                'url("../icons/impeagleSCAN-white.webp")'
+            );
             break;
         case "Green w/ RG Colorblind":
-            document.documentElement.style.setProperty('--terminal-error', 'orange');
-            document.documentElement.style.setProperty('--terminal-error-glow', '0 0 2px orange, 0 0 4px orange, 0 0 6px orange');
-            document.documentElement.style.setProperty('--terminal-delete-icon', 'url("../icons/deleteicon-orange.png")');
-            document.documentElement.style.setProperty('--terminal-edit-icon', 'url("../icons/editicon-blue.png")');
-            break; 
+            document.documentElement.style.setProperty("--terminal-error", "orange");
+            document.documentElement.style.setProperty(
+                "--terminal-error-glow",
+                "0 0 2px orange, 0 0 4px orange, 0 0 6px orange"
+            );
+            document.documentElement.style.setProperty(
+                "--terminal-delete-icon",
+                'url("../icons/deleteicon-orange.png")'
+            );
+            document.documentElement.style.setProperty("--terminal-edit-icon", 'url("../icons/editicon-blue.png")');
+            break;
     }
-
-
-
-    
-
 }
 
 Hooks.once("init", async function () {
@@ -140,7 +189,7 @@ Hooks.once("init", async function () {
         return statusFlags;
     })();
     CONFIG.MeasuredTemplate.defaults.angle = 30;
-    
+
     /**
      * Set an initiative formula for the system
      * @type {String}
@@ -161,12 +210,12 @@ Hooks.once("init", async function () {
     // Define custom Entity classes
     CONFIG.Actor.documentClass = FortyKActor;
     CONFIG.Item.documentClass = FortyKItem;
-    CONFIG.Canvas.rulerClass = FortyKRuler;
+    CONFIG.Token.rulerClass = FortyKTokenRuler;
     CONFIG.Token.documentClass = FortyKToken;
     //CONFIG.ActiveEffect.entityClass = FortyKActiveEffect;
     // Register sheet application classes
-    const Actors=foundry.documents.collections.Actors;
-    const ActorSheet=foundry.appv1.sheets.ActorSheet;
+    const Actors = foundry.documents.collections.Actors;
+    const ActorSheet = foundry.appv1.sheets.ActorSheet;
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet("fortyk", FortyKDWActorSheet, {
         label: "Deathwatch Sheet",
@@ -204,8 +253,8 @@ Hooks.once("init", async function () {
         types: ["knightHouse"],
         makeDefault: true
     });
-    const Items=foundry.documents.collections.Items;
-    const ItemSheet=foundry.appv1.sheets.ItemSheet;
+    const Items = foundry.documents.collections.Items;
+    const ItemSheet = foundry.appv1.sheets.ItemSheet;
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });
     //setup handcards
@@ -293,7 +342,6 @@ Hooks.once("init", async function () {
     });
     Handlebars.registerHelper("unescape", function (text) {
         var doc = new DOMParser().parseFromString(text, "text/html");
-        console.log(doc.documentElement.textContent);
         return doc.documentElement.textContent;
     });
     Handlebars.registerHelper("threshold", function (text) {
@@ -474,9 +522,7 @@ Hooks.once("ready", async function () {
                         let curTargets = targetIds[i].targets;
                         fortykWeapon.template = targetIds[i].template;
                         let targetNames = "";
-                        let targetTokens = canvas.tokens.placeables.filter((token) =>
-                                                                                          curTargets.includes(token.id)
-                                                                                         );
+                        let targetTokens = canvas.tokens.placeables.filter((token) => curTargets.includes(token.id));
                         let targetSet = new Set(targetTokens);
                         for (let j = 0; j < targetTokens.length; j++) {
                             let token = targetTokens[j];
@@ -489,9 +535,15 @@ Hooks.once("ready", async function () {
                             }
                         }
                         if (curTargets.length !== 0) {
-                            game.user.targets.clear();
-                            game.user.targets.add(...curTargets);
-
+                            game.user._onUpdateTokenTargets([]);
+                            for (let target of targetTokens) {
+                                target.setTarget(true, {
+                                    user: game.user,
+                                    releaseOthers: false,
+                                    groupSelection: true
+                                });
+                            }
+                            game.user.broadcastActivity({ targets: game.user.targets.ids });
                             let chatBlast2 = {
                                 author: game.user._id,
                                 speaker: { actor, alias: actor.getName() },
@@ -526,7 +578,7 @@ Hooks.once("ready", async function () {
                         }
                     }
                     actor.deleteAfterAttackEffects();
-                    game.user.targets.clear();
+                    game.user._onUpdateTokenTargets([]);
 
                     break;
                 case "settestflag":
@@ -763,7 +815,7 @@ Hooks.on("combatStart", (combat, updateData) => {
 });
 //round management effects, when a token's turn starts
 Hooks.on("updateCombat", async (combat) => {
-    game.user.targets.clear();
+    game.user._onUpdateTokenTargets([]);
     game.user.broadcastActivity({ targets: [] });
     //current combatant stuff
     let token = canvas.tokens.get(combat.current.tokenId);
@@ -784,10 +836,10 @@ Hooks.on("updateCombat", async (combat) => {
             }
         } catch (err) {}
 
-        const currentWindows = Object.values(ui.windows);
+        const currentWindows = foundry.applications.instances;
 
         for (let window of currentWindows) {
-            if (window.actor) await window.close();
+            if (window[1].actor) await window[1].close();
         }
         if (actor.type === "npc") {
             await actor.sheet.render(true);
@@ -852,7 +904,7 @@ Hooks.on("updateCombat", async (combat) => {
         }
         var dead = {};
         let aeTime = async function (activeEffect, actor) {
-            if (activeEffect.duration.rounds !== null && !activeEffect.disabled) {
+            if (!Number.isNaN(parseInt(activeEffect.duration.rounds)) && !activeEffect.disabled) {
                 let remaining = Math.ceil(activeEffect.duration.rounds);
                 if (remaining < 1) {
                     remaining = 0;
@@ -1282,7 +1334,7 @@ Hooks.on("preDeleteCombat", async (combat, options, id) => {
             if (activeEffect.name === "Evasion") {
                 await activeEffect.delete();
             }
-            if (activeEffect.duration.type !== "none") {
+            if (!Number.isNaN(parseInt(activeEffect.duration.rounds))) {
                 await activeEffect.delete();
             }
             if (activeEffect.getFlag("fortyk", "temp")) {
@@ -1307,12 +1359,12 @@ Hooks.on("preDeleteCombat", async (combat, options, id) => {
 });
 Hooks.on("preUpdateActor", (data, updatedData) => {});
 //add listeners to the chatlog for dice rolls
-Hooks.on("renderChatLog", (log, html, data) => {
 
-    FortykRollDialogs.chatListeners(log);
-    });
+Hooks.on("renderChatMessageHTML", (log, html, data) => {
+    FortykRollDialogs.chatListeners(html);
+});
 //add listeners to dialogs to allow searching and the like
-Hooks.on("renderDialog", (dialog, html, data) => ActorDialogs.chatListeners(html));
+Hooks.on("renderDialogV2", (dialog, html, data) => ActorDialogs.chatListeners(dialog, html));
 //add listeners to compendiums for knight sheet interaction
 Hooks.on("renderCompendium", (compendium, html, data) => {
     let knightComponentSlot = function (component) {
@@ -1406,7 +1458,9 @@ Hooks.on("renderCompendium", (compendium, html, data) => {
         });
     };
 
-    $(html).find(".directory-item").each((i, li) => {
+    $(html)
+        .find(".directory-item")
+        .each((i, li) => {
         li.addEventListener("dragstart", onDragComponent.bind(compendium), false);
         li.addEventListener("dragend", onStopDragComponent.bind(compendium), false);
         //li.addEventListener("dragover", this._onDragOverSlot.bind(compendium), false);
@@ -1414,6 +1468,7 @@ Hooks.on("renderCompendium", (compendium, html, data) => {
 });
 
 Hooks.on("preCreateItem", (actor, data, options) => {});
+
 //set flags on the actor when adding an active effect if it should activate a flag
 Hooks.on("createActiveEffect", async (ae, options, id) => {
     if (game.user.isGM) {
@@ -1425,9 +1480,9 @@ Hooks.on("createActiveEffect", async (ae, options, id) => {
             } else {
                 await actor.setFlag("core", flag, true);
             }
-            let statuses = actor.statuses;
+            let statuses = foundry.utils.deepClone(actor.statuses);
             statuses.add(flag);
-            actor.update({ statuses: statuses });
+            await actor.update({ statuses: statuses });
         });
     }
 });
@@ -1449,46 +1504,7 @@ Hooks.on("deleteActiveEffect", async (ae, options, id) => {
 /**
  * Add the manage active effects button to actor sheets
  */
-Hooks.on("getActorSheetHeaderButtons", (sheet, buttons) => {
-    if (game.user.isGM) {
-        let button = {};
-        button.class = "custom";
-        button.icon = "fas fa-asterisk";
-        button.label = "Manage AEs";
-        button.onclick = async () => {
-            let actor = sheet.actor;
-            if (sheet.token) {
-                actor = sheet.token.actor;
-            }
 
-            var options = {
-                id: "aeDialog"
-            };
-            var d = new ActiveEffectDialog(
-                {
-                    title: "Active Effects",
-                    actor: actor,
-                    buttons: {
-                        button: {
-                            label: "Ok",
-                            callback: async (html) => {
-                                sheet.actor.dialog = undefined;
-                            }
-                        }
-                    },
-                    close: function () {
-                        sheet.actor.dialog = undefined;
-                    }
-                },
-                options
-            ).render(true);
-            sheet.actor.dialog = d;
-        };
-        let close = buttons.pop();
-        buttons.push(button);
-        buttons.push(close);
-    }
-});
 Hooks.on("preCreateActor", (createData) => {});
 Hooks.on("preDeleteToken", async (tokenDocument, options, userId) => {
     if (!game.user.isGM) return;
@@ -1503,6 +1519,113 @@ Hooks.on("preCreateToken", async (document, data, options, userId) => {
         await document.updateSource({ height: newHeight, width: newWidth });
     }
 });
+//adapted the module multidrop
+Hooks.on("dropCanvasData", (canvas, dropData, dragEvent) => {
+
+    if (dropData?.type === "Actor") {
+
+        const actor = fromUuidSync(dropData.uuid);
+
+        if (actor) {
+            if (actor.prototypeToken.actorLink) {
+                return;
+            }
+
+            handleMultiDrop(actor, canvas, dragEvent);
+            return false;
+        }
+    }
+});
+async function handleMultiDrop(actor, canvas, dragEvent) {
+    const noOfCopies = await numberOfCopiesDialog(actor);
+    await _handleDropActors({ event: dragEvent, actor, noOfCopies });
+}
+
+function numberOfCopiesDialog(actor) {
+    return new Promise((resolve, reject) => {
+        const dialog = foundry.applications.api.DialogV2.wait({
+            window: { title: game.i18n.localize("md.no-of-copies-title") },
+            content: `<section class="md-dialog">
+                        <h5>Actor to create: ${actor.name}</h1>
+                        <label for="noOfCopies">How many</label>
+                        <input type="number" id="modifier" name="noOfCopies" value="1">
+                      </section>`,
+            buttons: [
+                {
+                    label: "Create",
+                    callback: (event) => {
+                        let html=event.target.form;
+                        const formElement = html.elements;
+                        let noCopies= parseInt(formElement.noOfCopies.value);
+
+
+                        return resolve(noCopies);
+                    }
+                }
+            ]
+        });
+    });
+}
+
+async function _handleDropActors({ event, actor, noOfCopies }) {
+    const topLeft = _translateToTopLeftGrid(event);
+    const xPosition = topLeft.x;
+    const yPosition = topLeft.y;
+
+    if (noOfCopies < 1) return;
+
+    let distance = 0;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    for (let dropped = 0; dropped < noOfCopies; dropped++) {
+        if (dropped === Math.pow(1 + distance * 2, 2)) {
+            distance += 1;
+            offsetX = -1 * distance * canvas.grid.sizeX;
+            offsetY = -1 * distance * canvas.grid.sizeY;
+        }
+
+        const totalTries = Math.pow(1 + distance * 2, 2) - Math.pow(distance * 2 - 1, 2);
+
+        const tries = Math.pow(1 + distance * 2, 2) - dropped;
+
+        await _dropActor({
+            actor,
+            xPosition: xPosition + offsetX,
+            yPosition: yPosition + offsetY
+        });
+
+        if (totalTries - tries < totalTries / 4) {
+            offsetX += canvas.grid.sizeX;
+        } else if (totalTries - tries < (2 * totalTries) / 4) {
+            offsetY += canvas.grid.sizeY;
+        } else if (totalTries - tries < (3 * totalTries) / 4) {
+            offsetX -= canvas.grid.sizeX;
+        } else {
+            offsetY -= canvas.grid.sizeY;
+        }
+    }
+}
+
+async function _dropActor({ actor, xPosition, yPosition, isHidden, elevation }) {
+    const tokenDocument = await actor.getTokenDocument({
+        x: xPosition,
+        y: yPosition,
+        hidden: isHidden,
+        elevation: isNaN(elevation) ? 0 : elevation
+    });
+    return tokenDocument.constructor.create(tokenDocument, {
+        parent: canvas.scene
+    });
+}
+
+function _translateToTopLeftGrid(event) {
+    const transform = canvas.tokens.worldTransform;
+    const tx = (event.clientX - transform.tx) / canvas.stage.scale.x;
+    const ty = (event.clientY - transform.ty) / canvas.stage.scale.y;
+
+    return canvas.grid.getTopLeftPoint({x:tx, y:ty});
+}
 Hooks.on("createToken", async (tokenDocument, options, userId) => {
     if (!game.user.isGM) return;
     let actor = tokenDocument.actor;
@@ -1512,7 +1635,7 @@ Hooks.on("createToken", async (tokenDocument, options, userId) => {
     tokenObject.y = tokenDocument.y;
     let tnts = actor.itemTypes.talentntrait;
 
-    tnts=tnts.concat(actor.itemTypes.wargear);
+    tnts = tnts.concat(actor.itemTypes.wargear);
     let scene = game.scenes.current;
     let activeAuras = scene.getFlag("fortyk", "activeAuras");
     if (!activeAuras) activeAuras = [];
@@ -1546,25 +1669,25 @@ Hooks.on("createToken", async (tokenDocument, options, userId) => {
                 tokens = tokens.filter((token) => token.id !== tokenDocument.id);
             }
 
-            let reqFlags=talent.system.isAura.reqFlags.split(",");
-            let negReqFlags=talent.system.isAura.negReqFlags.split(",");
+            let reqFlags = talent.system.isAura.reqFlags.split(",");
+            let negReqFlags = talent.system.isAura.negReqFlags.split(",");
             tokens = tokens.filter((token) => {
-                let targetActor=token.actor;
-                let skip=false;
-                for(let reqFlag of reqFlags){
-                    reqFlag=reqFlag.trim();
-                    if(reqFlag==="")continue;
-                    if(!targetActor.getFlag("fortyk",reqFlag))skip=true;
+                let targetActor = token.actor;
+                let skip = false;
+                for (let reqFlag of reqFlags) {
+                    reqFlag = reqFlag.trim();
+                    if (reqFlag === "") continue;
+                    if (!targetActor.getFlag("fortyk", reqFlag)) skip = true;
                 }
                 return !skip;
             });
             tokens = tokens.filter((token) => {
-                let targetActor=token.actor;
-                let skip=false;
-                for(let negReqFlag of negReqFlags){
-                    negReqFlag=negReqFlag.trim();
-                    if(negReqFlag==="")continue;
-                    if(targetActor.getFlag("fortyk",negReqFlag))skip=true;
+                let targetActor = token.actor;
+                let skip = false;
+                for (let negReqFlag of negReqFlags) {
+                    negReqFlag = negReqFlag.trim();
+                    if (negReqFlag === "") continue;
+                    if (targetActor.getFlag("fortyk", negReqFlag)) skip = true;
                 }
                 return !skip;
             });
@@ -1583,8 +1706,6 @@ Hooks.on("createToken", async (tokenDocument, options, userId) => {
 
             targets = tokens.filter((token) => !token.actor.getFlag("core", talent._source.name));
             targets = targets.filter((token) => range >= tokenDistance(token, tokenObject));
-
-
 
             let ae = talent.effects.entries().next().value[1];
             let aeData = foundry.utils.duplicate(ae);
@@ -1621,124 +1742,167 @@ Hooks.on("createToken", async (tokenDocument, options, userId) => {
     scene.setFlag("fortyk", "activeAuras", activeAuras);
 });
 
-Hooks.on("moveToken", async (token, options) => {
 
+let moveTokens = {};
+async function fetchData(promise, time){
+    if (!moveTokens[time].promise){
+        moveTokens[time].promise=true;
+        await handleMoveAuras(promise, time);
+    }
+}
+function isOnFinalWaypoint(movement) {
+    return movement.pending.waypoints.length===0;
+}
+async function handleMoveAuras(promise, time){
+    let tokens=moveTokens[time];
+    await promise;
+    for(let token of tokens){
+        let tokenDocument = token.document;
+        let scene = game.scenes.current;
+        let actor = token.actor;
+        if(!actor)return;
+        let aes = actor.effects;
+        for (const ae of aes) {
+            if (!ae) continue;
+            if (ae.getFlag("fortyk", "psy") || ae.getFlag("fortyk", "aura")) {
+                let range = parseInt(ae.getFlag("fortyk", "range"));
+                let casterId = ae.getFlag("fortyk", "casterTokenId");
+                let casterToken = game.scenes.current.tokens.find((child) => child.id === casterId);
+                if (!casterToken) {
+                    await ae.delete();
+                    continue;
+                }
+                let distance = tokenDistance(token, casterToken);
+                let del=false;
+                if (distance > range) {
+                    del=true;
+                }
+                let los = ae.getFlag("fortyk", "los");
+                if (los) {
+                    const collision = CONFIG.Canvas.polygonBackends["sight"].testCollision(
+                        token.center,
+                        casterToken.center,
+                        { mode: "any", type: "sight" }
+                    );
+                    if (collision) {
+                        del=true;
+                    }
+                }
+                if(del)ae.delete();
+            }
+
+        }
+        let psyPowers = actor.itemTypes.psychicPower;
+        for (const power of psyPowers) {
+            if (power.getFlag("fortyk", "sustained")) {
+                let range = parseInt(power.getFlag("fortyk", "sustainedrange"));
+                let buffs = power.getFlag("fortyk", "sustained");
+                if (!buffs) continue;
+                for (const buffId of buffs) {
+                    let buff = await fromUuid(buffId);
+                    if (buff) {
+                        let parent = buff.parent;
+                        if (parent instanceof Item) {
+                            parent = parent.actor;
+                        }
+                        let buffTarget = getActorToken(parent);
+                        let distance = tokenDistance(buffTarget, token);
+                        let del=false;
+                        if (distance > range) {
+                            del=true;
+                        }
+                        let los = buff.getFlag("fortyk", "los");
+                        if (los) {
+                            const collision = CONFIG.Canvas.polygonBackends["sight"].testCollision(
+                                token.center,
+                                buffTarget.center,
+                                { mode: "any", type: "sight" }
+                            );
+                            if (collision) {
+                                del=true;
+                            }
+
+                        }
+                        if(del)buff.delete();
+                    }
+                }
+                buffs=buffs.filter((buff)=>fromUuidSync(buff));
+                await talent.setFlag("fortyk", "sustained", buffs);
+            }
+        }
+        let tnts = actor.itemTypes.talentntrait;
+        tnts = tnts.concat(actor.itemTypes.wargear);
+        for (const talent of tnts) {
+            if (talent.system.isAura.value) {
+                let range = parseInt(talent.system.isAura.range);
+                let buffs = talent.getFlag("fortyk", "sustained");
+                if (!buffs) continue;
+
+
+                for (const buffId of buffs) {
+                    let buff = await fromUuid(buffId);
+                    if (buff) {
+                        let parent = buff.parent;
+                        if (parent instanceof Item) {
+                            parent = parent.actor;
+                        }
+                        let buffTarget = getActorToken(parent);
+                        if(!buffTarget)continue;
+                        let distance = tokenDistance(buffTarget, token);
+                        let del=false;
+                        if (distance > range) {
+                            del=true;
+
+                        }
+                        let los = buff.getFlag("fortyk", "los");
+                        if (los) {
+                            const collision = CONFIG.Canvas.polygonBackends["sight"].testCollision(
+                                token.center,
+                                buffTarget.center,
+                                { mode: "any", type: "sight" }
+                            );
+                            if (collision) {
+                                del=true;
+                            }
+                        }
+                        if(del)await buff.delete();
+                    }
+                }
+                buffs=buffs.filter((buff)=>fromUuidSync(buff));
+                await talent.setFlag("fortyk", "sustained", buffs);
+            }
+        }
+        let auras = scene.getFlag("fortyk", "activeAuras");
+        if (!auras) auras = [];
+        auras = auras.filter((aura) => {
+            let instance = fromUuidSync(aura);
+            if (instance) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+        await scene.setFlag("fortyk", "activeAuras", auras);
+        await applySceneAuras(auras, token);
+    }
+    moveTokens[time]=undefined;
+}
+async function addToPromiseQueue(token, movement, promise){
+    let time=Math.floor(performance.now()/1000);
+    if(!moveTokens[time]){
+        moveTokens[time]=[token];
+    }else{
+        moveTokens[time].push(token);
+    }
+
+    await fetchData(promise, time);
+}
+Hooks.on("moveToken", async (token, movement, operation, user) => {
 
     if (!game.user.isGM) return;
-
-    let tokenDocument = token.document;
-    let scene = game.scenes.current;
-    let actor = token.actor;
-    let aes = actor.effects;
-    for (const ae of aes) {
-        if (!ae) continue;
-        if (ae.getFlag("fortyk", "psy") || ae.getFlag("fortyk", "aura")) {
-            let range = parseInt(ae.getFlag("fortyk", "range"));
-            let casterId = ae.getFlag("fortyk", "casterTokenId");
-            let casterToken = game.scenes.current.tokens.find((child) => child.id === casterId);
-            if(!casterToken){
-                await ae.delete();
-                continue;
-            }
-            let distance = tokenDistance(token, casterToken);
-            if (distance > range) {
-                await ae.delete();
-                continue;
-            }
-            let los = ae.getFlag("fortyk", "los");
-            if (los) {
-                const collision = CONFIG.Canvas.polygonBackends["sight"].testCollision(
-                    token.center,
-                    casterToken.center,
-                    { mode: "any", type: "sight" }
-                );
-                if (collision) {
-                    await ae.delete();
-                }
-            }
-        }
-    }
-    let psyPowers = actor.itemTypes.psychicPower;
-    for (const power of psyPowers) {
-        if (power.getFlag("fortyk", "sustained")) {
-            let range = parseInt(power.getFlag("fortyk", "sustainedrange"));
-            let buffs = power.getFlag("fortyk", "sustained");
-            if (!buffs) continue;
-            for (const buffId of buffs) {
-                let buff = await fromUuid(buffId);
-                if (buff) {
-                    let parent = buff.parent;
-                    if (parent instanceof Item) {
-                        parent = parent.actor;
-                    }
-                    let buffTarget = getActorToken(parent);
-                    let distance = tokenDistance(buffTarget, token);
-                    if (distance > range) {
-                        await buff.delete();
-                        continue;
-                    }
-                    let los = buff.getFlag("fortyk", "los");
-                    if (los) {
-                        const collision = CONFIG.Canvas.polygonBackends["sight"].testCollision(
-                            token.center,
-                            buffTarget.center,
-                            { mode: "any", type: "sight" }
-                        );
-                        if (collision) {
-                            await buff.delete();
-                        }
-                    }
-                }
-            }
-        }
-    }
-    let tnts = actor.itemTypes.talentntrait;
-    tnts = tnts.concat(actor.itemTypes.wargear);
-    for (const talent of tnts) {
-        if (talent.system.isAura.value) {
-            let range = parseInt(talent.system.isAura.range);
-            let buffs = talent.getFlag("fortyk", "sustained");
-            if (!buffs) continue;
-            for (const buffId of buffs) {
-                let buff = await fromUuid(buffId);
-                if (buff) {
-                    let parent = buff.parent;
-                    if (parent instanceof Item) {
-                        parent = parent.actor;
-                    }
-                    let buffTarget = getActorToken(parent);
-                    let distance = tokenDistance(buffTarget, token);
-                    if (distance > range) {
-                        await buff.delete();
-                    }
-                    let los = buff.getFlag("fortyk", "los");
-                    if (los) {
-                        const collision = CONFIG.Canvas.polygonBackends["sight"].testCollision(
-                            token.center,
-                            buffTarget.center,
-                            { mode: "any", type: "sight" }
-                        );
-                        if (collision) {
-                            await buff.delete();
-                        }
-                    }
-                }
-            }
-        }
-    }
-    let auras = scene.getFlag("fortyk", "activeAuras");
-    if (!auras) auras = [];
-    auras=auras.filter((aura)=>{
-        let instance= fromUuidSync(aura);
-        if(instance){
-            return true;
-        }else{
-            return false;
-        }
-    });
-    await scene.setFlag("fortyk", "activeAuras", auras);
-    await applySceneAuras(auras, token);
-
+    if(!isOnFinalWaypoint(movement)) return;
+    addToPromiseQueue(token, movement, token._object.movementAnimationPromise);
+    return true;
 });
 
 Hooks.on("updateToken", async (token, diff, options, id) => {
@@ -1817,54 +1981,7 @@ Hooks.on("updateToken", async (token, diff, options, id) => {
         }
     }*/
 });
-//drag ruler integration
-Hooks.once("dragRuler.ready", (Speedprovider) => {
-    class FortykSpeedProvider extends Speedprovider {
-        get colors() {
-            return [
-                { id: "half", default: 0xadd8e6, name: "Half Move" },
-                { id: "full", default: 0x191970, name: "Full Move" },
-                { id: "charge", default: 0xffa500, name: "Charge Move" },
-                { id: "run", default: 0xffff00, name: "Run" }
-            ];
-        }
-        getRanges(token) {
-            let movement;
-            let ranges;
-            if (token.actor.type === "spaceship") {
-                ranges = [];
-            } else if (token.actor.type === "vehicle") {
-                movement = token.actor.system.secChar.speed;
-                if (token.actor.getFlag("fortyk", "enhancedmotivesystem")) {
-                    ranges = [
-                        { range: movement.tactical * 2, color: "full" },
-                        { range: movement.tactical * 3, color: "run" }
-                    ];
-                } else if (token.actor.getFlag("fortyk", "ponderous")) {
-                    ranges = [
-                        { range: movement.tactical / 2, color: "full" },
-                        { range: movement.tactical, color: "run" }
-                    ];
-                } else {
-                    ranges = [
-                        { range: movement.tactical, color: "full" },
-                        { range: movement.tactical * 2, color: "run" }
-                    ];
-                }
-            } else {
-                movement = token.actor.system.secChar.movement;
-                ranges = [
-                    { range: movement.half, color: "half" },
-                    { range: movement.full, color: "full" },
-                    { range: movement.charge, color: "charge" },
-                    { range: movement.run, color: "run" }
-                ];
-            }
-            return ranges;
-        }
-    }
-    dragRuler.registerSystem("fortyk", FortykSpeedProvider);
-});
+
 Hooks.on("simple-calendar-date-time-change", async (dateData) => {
     if (!SimpleCalendar.api.isPrimaryGM()) {
         return;

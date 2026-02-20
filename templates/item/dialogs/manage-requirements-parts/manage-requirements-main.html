@@ -75,7 +75,6 @@
                     <label>{{flag.characteristics.agi.label}} Adv</label>
                    <select class="char-select" data-char="agi">
                         {{#each advances}}
-                       {{debug this}}
                         <option value="{{this.value}}" {{#if (equals ../flag.characteristics.agi.adv this.value)}}selected{{/if}}>{{this.label}}</option>
                         {{/each}}
                     </select>

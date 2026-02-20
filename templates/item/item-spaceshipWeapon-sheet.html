@@ -1,6 +1,6 @@
-<form class="{{cssClass}} item-sheet flexcol">
+<section class="{{cssClass}} item-sheet flexcol">
     <header class="sheet-header">
-        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
+        <img class="profile-img" src="{{img}}" data-action="editImage" data-field="img" alt="Portrait">
 
     </header>
     {{#if isGM}}
@@ -25,11 +25,9 @@
     <div class="flexcol">
         <label>Type:</label>
         <select class="damage-type" name="system.type.value">
-            {{#select system.type.value}}
-            {{#each FORTYK.spaceshipWeaponTypes}}
-            <option value="{{this}}">{{this}}</option>
-            {{/each}}
-            {{/select}}
+             
+            {{selectOptions FORTYK.spaceshipWeaponTypes selected=system.type.value valueAttr="value" labelAttr="value"}}
+            
         </select>
     </div>
     <div class="flexcol">
@@ -47,11 +45,8 @@
     <div class="flexcol">
         <label>Location:</label>
         <select class="damage-type" name="system.location.value">
-            {{#select system.location.value}}
-            {{#each FORTYK.spaceshipWeaponLocations}}
-            <option value="{{this}}">{{this}}</option>
-            {{/each}}
-            {{/select}}
+            {{selectOptions FORTYK.spaceshipWeaponLocations selected=system.location.value valueAttr="value" labelAttr="label"}}
+           
         </select>
     </div>
 
@@ -87,4 +82,4 @@
         {{{enrichedDescription}}}
         {{/if}}
     </div>
-</form>
+</section>

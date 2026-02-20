@@ -10,7 +10,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     #psyPowers = null;
     #rawPowers = null;
     #cost = 0;
-    #discipline = "";
+    #discipline = "All";
     #chosenSkill = null;
     #chosenChar = null;
     #chosenTalent = null;
@@ -22,17 +22,11 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
         tag: 'form',
         classes: ["fortyk"],
-        template: "systems/fortyk/templates/actor/dialogs/spendExp-dialog.html",
         position:{
             width: 666,
             height: "auto"
         },
-
-        mode:"Custom",
-        default:null,
-        heights:{"Custom":280,"Characteristic Upgrade":275,"Skill Upgrade":275,"New Skill":805,"Talent":795, "Signature Wargear":360,"Psy Rating":300,"Psychic Power":765, "Navigator Power":765, "Elite Advance":765}
-
-
+        mode:"Custom"
     }
     static PARTS = {
         form:{
@@ -91,11 +85,9 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
             data.advancementTypes.push({value:"Navigator Power"});
             data.disciplines=data.FORTYK.psychicDisciplines;
             data.psyPowers=this.#psyPowers;
-            if(!data.discipline||this.#discipline===undefined){
-                data.discipline="All";
-            }else{
-                data.discipline=this.#discipline;
-            }
+            
+            data.discipline=this.#discipline;
+            
         }else if(actor.system.psykana.pr.value>0){
             data.pr=actor.system.psykana.pr.value;
             data.pr1=actor.system.psykana.pr.value+1;
@@ -104,11 +96,9 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
             data.disciplines=data.FORTYK.psychicDisciplines;
 
             data.psyPowers=this.#psyPowers;
-            if(!data.discipline||this.#discipline===undefined){
-                data.discipline="All";
-            }else{
-                data.discipline=this.#discipline;
-            }
+          
+            data.discipline=this.#discipline;
+            
         }
         data.mode=this.#mode;
         data.skills=actor.skills;
@@ -610,7 +600,6 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
             this.calculatePRCost();
         }
 
-        this.position.height=this.options.heights[newMode];
         this.#chosenSkill=undefined;
         this.#chosenChar=undefined;
         this.#chosenTalent=undefined;

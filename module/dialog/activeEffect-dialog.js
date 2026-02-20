@@ -31,7 +31,6 @@ export class ActiveEffectDialog extends HandlebarsApplicationMixin(ApplicationV2
         let context=await super._prepareContext(options);
         context.actor=this.options.actor;
         context.item=this.options.item;
-        console.log(context);
         return context;
     }
     async _onAeClick(event){

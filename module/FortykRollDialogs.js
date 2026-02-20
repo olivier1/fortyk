@@ -5,20 +5,19 @@ import { isBlastTarget } from "./utilities.js";
 export class FortykRollDialogs {
     //activate chatlisteners
     static chatListeners(log) {
-        const html=$(log.element);
-        console.log(html)
-        html.find(".reroll").click( this._onReroll.bind(this));
-        html.find(".overheat").click(this._onOverheat.bind(this));
-        html.find(".popup").click(this._onTestPoppup.bind(this));
-        html.find(".spray-torrent-ping").click(this._onSprayTorrentClick.bind(this));
-        html.find(".reroll-popup").mouseup(this._onPopupReroll.bind(this));
-        html.find(".blast-evade").click(this._onBlastClick.bind(this));
-        html.find(".ping-template").click(this._onTemplateClick.bind(this));
-        html.find(".nav-gaze-ping").click(this._onNavClick.bind(this));
-        html.find(".add-fatigue-wounds").click(this._onAddFatigueWoundsClick.bind(this));
-        html.find(".add-insanity").click(this._onAddInsanityClick.bind(this));
-        html.find(".hallucination").click(this._onAddHallucinationClick.bind(this));
-        html.find(".courseuntravelled").click(this._onCourseUntravelledClick.bind(this));
+        const html=$(log);
+        $(html).find(".reroll").click( this._onReroll.bind(this));
+        $(html).find(".overheat").click(this._onOverheat.bind(this));
+        $(html).find(".popup").click(this._onTestPoppup.bind(this));
+        $(html).find(".spray-torrent-ping").click(this._onSprayTorrentClick.bind(this));
+        $(html).find(".reroll-popup").mouseup(this._onPopupReroll.bind(this));
+        $(html).find(".blast-evade").click(this._onBlastClick.bind(this));
+        $(html).find(".ping-template").click(this._onTemplateClick.bind(this));
+        $(html).find(".nav-gaze-ping").click(this._onNavClick.bind(this));
+        $(html).find(".add-fatigue-wounds").click(this._onAddFatigueWoundsClick.bind(this));
+        $(html).find(".add-insanity").click(this._onAddInsanityClick.bind(this));
+        $(html).find(".hallucination").click(this._onAddHallucinationClick.bind(this));
+        $(html).find(".courseuntravelled").click(this._onCourseUntravelledClick.bind(this));
     }
     static async _onCourseUntravelledClick(event){
         var targetElement = event.currentTarget;
@@ -469,7 +468,6 @@ export class FortykRollDialogs {
         const message = game.messages.get(messageId);
         let modifiers=message.getFlag("fortyk", "modifiers");
         if(!modifiers)modifiers=[];
-        console.log(message);
         const actor = await fromUuid(dataset["actor"]);
         const char = dataset["char"];
         const type = dataset["rollType"];
@@ -648,14 +646,14 @@ export class FortykRollDialogs {
         return await foundry.applications.api.DialogV2.wait({
             window:{title: title,
                     width:100,
-                   height:"auto"},
+                    height:"auto"},
             content: content,
             buttons: [
                 {
                     label: "OK",
                     callback: async (html) => {
-                        console.log(html)
                         let button=html.target;
+                        button.closest('dialog').setAttribute("hidden", "hidden");
                         const bonus = Number(button.form.elements.modifier.value);
                         if (isNaN(bonus)) {
                             this.callRollDialog(
@@ -799,10 +797,13 @@ export class FortykRollDialogs {
     static async callMeldDialog(actor, testTarget) {
         let modifier = 0;
 
-        return await Dialog.prompt({
-            title: "Melding test",
+        return await foundry.applications.api.DialogV2.prompt({
+            window:{title: "Melding test"},
+            position:{width:100},
             content: `<p><label>Modifier:</label> <input id="modifier" type="number" name="modifier" value="${modifier}" autofocus/></p>`,
-            callback: async (html) => {
+            callback: async (event) => {
+                let html=event.target.form;
+                html.closest('dialog').setAttribute("hidden", "hidden");
                 const bonus = Number($(html).find('input[name="modifier"]').val());
                 if (isNaN(bonus)) {
                     return await this.callMeldDialog(actor, testTarget);
@@ -810,10 +811,7 @@ export class FortykRollDialogs {
                     testTarget = parseInt(testTarget) + parseInt(bonus);
                     return await FortykRolls.fortykTest("wp", "skill", testTarget, actor, "Melding", null, false);
                 }
-            },
-            default: "submit",
-
-            width: 100
+            }
         });
     }
     static checkMelee(target) {
@@ -823,7 +821,7 @@ export class FortykRollDialogs {
             if (token.id === target.id) continue;
             if(!token.actor) continue;
             if (this.cantAssistFlags(token.actor)) continue;
-            if (token.disposition !== targetDispositon) {
+            if (token.document.disposition !== targetDispositon) {
                 let distance = tokenDistance(target, token);
                 let reach = token.actor.system.reach;
                 if (distance <= reach) {
@@ -835,7 +833,7 @@ export class FortykRollDialogs {
     }
     static checkCanAssist(assistant, target) {
         if (assistant.actor.getFlag("fortyk", "guard")) return true;
-        let tokens = canvas.tokens.children[0].children;
+        let tokens = canvas.tokens.placeables;
         let assistantDispositon = assistant.document.disposition;
         for (const token of tokens) {
             if (token.id === target.id) continue;
@@ -861,12 +859,13 @@ export class FortykRollDialogs {
     static findAssists(target, attacker) {
         let targetDisposition = target.document.disposition;
         let attackerDisposition = attacker.document.disposition;
-        let tokens = canvas.tokens.children[0].children;
+        let tokens = canvas.tokens.placeables;
         let assistCount = 0;
         let doubleTeam = false;
         for (const token of tokens) {
             if (token.id === target.id) continue;
             if (token.id === attacker.id) continue;
+            if (!token.actor)continue;
             if (this.cantAssistFlags(token.actor)) continue;
             let tokenDisposition = token.document.disposition;
             if (tokenDisposition === attackerDisposition && tokenDisposition !== targetDisposition) {
@@ -947,9 +946,9 @@ export class FortykRollDialogs {
         templateOptions["options"].counter = actor.getFlag("fortyk", "counterattack");
         templateOptions["options"].running = modifiers.running;
         templateOptions["options"].totalDef = modifiers.totalDef;
-        //templateOptions["options"].rough=actor.getFlag("core","rough");
-        //templateOptions["options"].tough=actor.getFlag("core","tough");
-        //templateOptions["options"].severe=actor.getFlag("core","severe");
+        templateOptions["options"].rough=actor.getFlag("core","rough");
+        templateOptions["options"].tough=actor.getFlag("core","tough");
+        templateOptions["options"].severe=actor.getFlag("core","severe");
         if (
             !(templateOptions["options"].rough && templateOptions["options"].tough && templateOptions["options"].severe)
         ) {
@@ -1068,221 +1067,221 @@ export class FortykRollDialogs {
         templateOptions["modifiers"].miscMods = miscMods;
         let renderedTemplate = await foundry.applications.handlebars.renderTemplate(template, templateOptions);
 
-        new Dialog({
-            title: `${item.name} Melee Attack Test.`,
+        foundry.applications.api.DialogV2.wait({
+            window:{title: `${item.name} Melee Attack Test.`},
             classes: "fortky",
             content: renderedTemplate,
-            buttons: {
-                submit: {
-                    label: "OK",
-                    callback: async (html) => {
-                        let leverage = $(html).find('input[id="leveragebox"]').is(":checked");
-                        if(leverage){
-                            testChar="inf";
-                            testTarget=actor.system.characteristics.inf.total;
-                        }
-                        modifierTracker.unshift({ value: `${testTarget}`, label: `Base Target Value` });
-                        const attackTypeBonus = Number($(html).find('input[name="attack-type"]:checked').val());
+            position:{width:400},
+            buttons: [{
+                label: "OK",
+                callback: async (event) => {
+                    let html=event.target.form;
+                    html.closest('dialog').setAttribute("hidden", "hidden");
+                    let leverage = $(html).find('input[id="leveragebox"]').is(":checked");
+                    if(leverage){
+                        testChar="inf";
+                        testTarget=actor.system.characteristics.inf.total;
+                    }
+                    modifierTracker.unshift({ value: `${testTarget}`, label: `Base Target Value` });
+                    const attackTypeBonus = Number($(html).find('input[name="attack-type"]:checked').val());
 
-                        let guarded = Number($(html).find('input[name="guarded"]:checked').val());
-                        let counter = Number($(html).find('input[name="counter"]:checked').val());
-                        const aimBonus = Number($(html).find('input[name="aim-type"]:checked').val());
-                        let aimType = html.find("input[name=aim-type]:checked")[0].attributes["aimtype"].value;
-                        const outnumberBonus = Number($(html).find('input[name="outnumber"]:checked').val());
-                        let outnumberType = html.find("input[name=outnumber]:checked")[0].attributes["outnumbertype"]
-                        .value;
-                        //const terrainBonus = Number($(html).find('input[name="terrain"]:checked').val());
-                        //let terrainType = html.find('input[name=terrain]:checked')[0].attributes["terraintype"].value;
-                        const visibilityBonus = Number($(html).find('input[name="visibility"]:checked').val());
-                        let visibilityType = html.find("input[name=visibility]:checked")[0].attributes["visibilitytype"]
-                        .value;
-                        let defensive = Number($(html).find('input[name="defensive"]:checked').val());
-                        let prone = Number($(html).find('input[name="prone"]:checked').val());
-                        let high = Number($(html).find('input[name="high"]:checked').val());
-                        let surprised = Number($(html).find('input[name="surprised"]:checked').val());
-                        let stunned = Number($(html).find('input[name="stunned"]:checked').val());
-                        let running = Number($(html).find('input[name="running"]:checked').val());
-                        let size = Number($(html).find('select[name="size"]').val());
-                        //adjust size penalty
-                        size = (size - actor.system.secChar.size.value) * 10;
-                        if (actor.getFlag("fortyk", "preysense")) {
-                            if (size < 0) {
-                                let preysense = parseInt(actor.getFlag("fortyk", "preysense")) * 10;
-                                size = Math.min(0, size + preysense);
-                            }
+                    let guarded = Number($(html).find('input[name="guarded"]:checked').val());
+                    let counter = Number($(html).find('input[name="counter"]:checked').val());
+                    const aimBonus = Number($(html).find('input[name="aim-type"]:checked').val());
+                    let aimType = $(html).find("input[name=aim-type]:checked")[0]?.attributes["aimtype"]?.value;
+                    const outnumberBonus = Number($(html).find('input[name="outnumber"]:checked').val());
+                    let outnumberType = $(html).find("input[name=outnumber]:checked")[0]?.attributes["outnumbertype"]
+                    .value;
+                    const terrainBonus = Number($(html).find('input[name="terrain"]:checked').val());
+                    let terrainType = $(html).find('input[name=terrain]:checked')[0].attributes["terraintype"].value;
+                    const visibilityBonus = Number($(html).find('input[name="visibility"]:checked').val());
+                    let visibilityType = $(html).find("input[name=visibility]:checked")[0]?.attributes["visibilitytype"]
+                    .value;
+                    let defensive = Number($(html).find('input[name="defensive"]:checked').val());
+                    let prone = Number($(html).find('input[name="prone"]:checked').val());
+                    let high = Number($(html).find('input[name="high"]:checked').val());
+                    let surprised = Number($(html).find('input[name="surprised"]:checked').val());
+                    let stunned = Number($(html).find('input[name="stunned"]:checked').val());
+                    let running = Number($(html).find('input[name="running"]:checked').val());
+                    let size = Number($(html).find('select[name="size"]').val());
+                    //adjust size penalty
+                    size = (size - actor.system.secChar.size.value) * 10;
+                    if (actor.getFlag("fortyk", "preysense")) {
+                        if (size < 0) {
+                            let preysense = parseInt(actor.getFlag("fortyk", "preysense")) * 10;
+                            size = Math.min(0, size + preysense);
                         }
-                        if (actor.getFlag("fortyk", "versatility")) {
-                            actor.setFlag("fortyk", "versatile", versatile);
-                        }
-                        let other = Number($(html).find('input[name="other"]').val());
-                        let addLabel = html.find("input[name=attack-type]:checked")[0].attributes["label"].value;
+                    }
+                    if (actor.getFlag("fortyk", "versatility")) {
+                        actor.setFlag("fortyk", "versatile", versatile);
+                    }
+                    let other = Number($(html).find('input[name="other"]').val());
+                    let addLabel = $(html).find("input[name=attack-type]:checked")[0]?.attributes["data-label"]?.value;
 
-                        let attackType = html.find("input[name=attack-type]:checked")[0].attributes["attacktype"].value;
-                        let attacklabel = html.find("input[name=attack-type]:checked")[0].attributes["label"].value;
-                        let update = {};
-                        update["system.secChar.lastHit.attackType"] = attackType;
-                        if (attackType === "allout") {
-                            let aeData = {};
-                            aeData.id = "evasion";
-                            aeData.name = "Evasion";
-                            if (!actor.getFlag("core", "evasion")) {
-                                aeData.icon = "systems/fortyk/icons/evasion.png";
-                                aeData.flags = { fortyk: { evasion: 99 } };
-                                aeData.statuses = ["evasion"];
-                                aeData.duration = {
-                                    rounds: 0
-                                };
-                                await FortykRolls.applyActiveEffect(actor, [aeData]);
-                            } else {
-                                for (let ae of actor.effects) {
-                                    if (ae.statuses.has("evasion")) {
-                                        let count = 9;
-                                        count++;
-                                        if (count > 9) {
-                                            count = 9;
-                                        }
-                                        let update = {};
-                                        update["icon"] = `systems/fortyk/icons/evasion${count}.png`;
-                                        update["flags.fortyk.evasion"] = count;
-                                        await ae.update(update);
-                                        await actor.setFlag("core", "evasion", count);
+                    let attackType = $(html).find("input[name=attack-type]:checked")[0]?.attributes["attacktype"]?.value;
+                    let attacklabel = $(html).find("input[name=attack-type]:checked")[0]?.attributes["data-label"]?.value;
+                    let update = {};
+                    update["system.secChar.lastHit.attackType"] = attackType;
+                    if (attackType === "allout") {
+                        let aeData = {};
+                        aeData.id = "evasion";
+                        aeData.name = "Evasion";
+                        if (!actor.getFlag("core", "evasion")) {
+                            aeData.icon = "systems/fortyk/icons/evasion.png";
+                            aeData.flags = { fortyk: { evasion: 99 } };
+                            aeData.statuses = ["evasion"];
+                            aeData.duration = {
+                                rounds: 0
+                            };
+                            await FortykRolls.applyActiveEffect(actor, [aeData]);
+                        } else {
+                            for (let ae of actor.effects) {
+                                if (ae.statuses.has("evasion")) {
+                                    let count = 9;
+                                    count++;
+                                    if (count > 9) {
+                                        count = 9;
                                     }
+                                    let update = {};
+                                    update["icon"] = `systems/fortyk/icons/evasion${count}.png`;
+                                    update["flags.fortyk.evasion"] = count;
+                                    await ae.update(update);
+                                    await actor.setFlag("core", "evasion", count);
                                 }
                             }
                         }
+                    }
 
-                        if (guarded) {
-                            let guardActiveEffect = foundry.utils.duplicate(
-                                game.fortyk.FORTYK.StatusEffects[
-                                    game.fortyk.FORTYK.StatusEffectsIndex.get("holyShield")
-                                ]
-                            );
-                            guardActiveEffect.duration = {
-                                rounds: 0
-                            };
-                            FortykRolls.applyActiveEffect(actor, [guardActiveEffect]);
-                        }
-                        if (attackType === "called") {
-                            update["system.secChar.lastHit.called"] = $(html)
-                                .find('select[name="calledLoc"] option:selected')
+                    if (guarded) {
+                        let guardActiveEffect = foundry.utils.duplicate(
+                            game.fortyk.FORTYK.StatusEffects[
+                                game.fortyk.FORTYK.StatusEffectsIndex.get("holyShield")
+                            ]
+                        );
+                        guardActiveEffect.duration = {
+                            rounds: 0
+                        };
+                        FortykRolls.applyActiveEffect(actor, [guardActiveEffect]);
+                    }
+                    if (attackType === "called") {
+                        update["system.secChar.lastHit.called"] = $(html)
+                            .find('select[name="calledLoc"] option:selected')
+                            .val();
+                        if (
+                            !vehicle &&
+                            actor.getFlag("fortyk", "fieldvivisection") &&
+                            actor.getFlag("fortyk", "fieldvivisection").includes(tarRace) &&
+                            actor.getFlag("fortyk", "fieldpractitioner")
+                        ) {
+                            update["system.secChar.lastHit.fieldPractice"] = $(html)
+                                .find('select[name="fieldPracticeAmt"] option:selected')
                                 .val();
-                            if (
-                                !vehicle &&
-                                actor.getFlag("fortyk", "fieldvivisection") &&
-                                actor.getFlag("fortyk", "fieldvivisection").includes(tarRace) &&
-                                actor.getFlag("fortyk", "fieldpractitioner")
-                            ) {
-                                update["system.secChar.lastHit.fieldPractice"] = $(html)
-                                    .find('select[name="fieldPracticeAmt"] option:selected')
-                                    .val();
-                            } else {
-                                update["system.secChar.lastHit.fieldPractice"] = null;
-                            }
                         } else {
                             update["system.secChar.lastHit.fieldPractice"] = null;
                         }
-                        await actor.update(update);
-                        if (html.find('input[name="guarded"]').is(":checked")) {
-                            addLabel = html.find('input[name="guarded"]')[0].attributes["label"].value + " " + addLabel;
-                        }
-                        if (html.find('input[name="counter"]').is(":checked")) {
-                            addLabel = html.find('input[name="counter"]')[0].attributes["label"].value + " " + addLabel;
-                        }
-                        testLabel = addLabel + " " + testLabel;
-                        if (isNaN(running)) {
-                            running = 0;
-                        } else {
-                            modifierTracker.push({ value: `${running}`, label: `Running Target Modifier` });
-                        }
-                        if (isNaN(guarded)) {
-                            guarded = 0;
-                        } else {
-                            modifierTracker.push({ value: `${guarded}`, label: `Guarded Action Modifier` });
-                        }
-                        if (isNaN(counter)) {
-                            counter = 0;
-                        } else {
-                            modifierTracker.push({ value: `${counter}`, label: `Counter Attack Modifier` });
-                        }
-                        if (isNaN(defensive)) {
-                            defensive = 0;
-                        } else {
-                            modifierTracker.push({ value: `${defensive}`, label: `Total Defense Modifier` });
-                        }
-                        if (isNaN(prone)) {
-                            prone = 0;
-                        } else {
-                            modifierTracker.push({ value: `${prone}`, label: `Prone Target Modifier` });
-                        }
-                        if (isNaN(high)) {
-                            high = 0;
-                        } else {
-                            modifierTracker.push({ value: `${high}`, label: `Higher Ground Modifier` });
-                        }
-                        if (isNaN(surprised)) {
-                            surprised = 0;
-                        } else {
-                            modifierTracker.push({ value: `${surprised}`, label: `Surprised Target Modifier` });
-                        }
-                        if (isNaN(stunned)) {
-                            stunned = 0;
-                        } else {
-                            modifierTracker.push({ value: `${stunned}`, label: `Stunned Target Modifier` });
-                        }
-                        if (isNaN(other)) {
-                            other = 0;
-                        } else {
-                            modifierTracker.push({ value: `${other}`, label: `Input Modifier` });
-                        }
-
-                        modifierTracker.push({ value: `${attackTypeBonus}`, label: `${attacklabel} Attack Modifier` });
-                        modifierTracker.push({ value: `${aimBonus}`, label: `${aimType} Aim Modifier` });
-                        modifierTracker.push({
-                            value: `${visibilityBonus}`,
-                            label: `${visibilityType} Visibility Modifier`
-                        });
-                        //modifierTracker.push({"value":`${terrainBonus}`,"label":`${terrainType} Terrain Modifier`});
-                        modifierTracker.push({ value: `${outnumberBonus}`, label: `${outnumberType} Modifier` });
-                        modifierTracker.push({ value: `${size}`, label: `Size Modifier` });
-                        testTarget =
-                            miscMods +
-                            parseInt(testTarget) +
-                            parseInt(running) +
-                            parseInt(attackTypeBonus) +
-                            parseInt(guarded) +
-                            parseInt(counter) +
-                            parseInt(aimBonus) +
-                            parseInt(outnumberBonus) /*+parseInt(terrainBonus)*/ +
-                            parseInt(visibilityBonus) +
-                            parseInt(defensive) +
-                            parseInt(prone) +
-                            parseInt(high) +
-                            parseInt(surprised) +
-                            parseInt(stunned) +
-                            parseInt(size) +
-                            parseInt(other);
-                        actor.system.secChar.lastHit.attackRange = "melee";
-                        actor.system.secChar.lastHit.vehicle = vehicle;
-                        actor.system.secChar.lastHit.facing = modifiers.facing;
-                        FortykRolls.fortykTest(
-                            testChar,
-                            testType,
-                            testTarget,
-                            actor,
-                            testLabel,
-                            item,
-                            false,
-                            "",
-                            false,
-                            modifierTracker
-                        );
+                    } else {
+                        update["system.secChar.lastHit.fieldPractice"] = null;
                     }
-                }
-            },
-            default: "submit",
+                    await actor.update(update);
+                    if ($(html).find('input[name="guarded"]').is(":checked")) {
+                        addLabel = $(html).find('input[name="guarded"]')[0].attributes["data-label"].value + " " + addLabel;
+                    }
+                    if ($(html).find('input[name="counter"]').is(":checked")) {
+                        addLabel = $(html).find('input[name="counter"]')[0].attributes["data-label"].value + " " + addLabel;
+                    }
+                    testLabel = addLabel + " " + testLabel;
+                    if (isNaN(running)) {
+                        running = 0;
+                    } else {
+                        modifierTracker.push({ value: `${running}`, label: `Running Target Modifier` });
+                    }
+                    if (isNaN(guarded)) {
+                        guarded = 0;
+                    } else {
+                        modifierTracker.push({ value: `${guarded}`, label: `Guarded Action Modifier` });
+                    }
+                    if (isNaN(counter)) {
+                        counter = 0;
+                    } else {
+                        modifierTracker.push({ value: `${counter}`, label: `Counter Attack Modifier` });
+                    }
+                    if (isNaN(defensive)) {
+                        defensive = 0;
+                    } else {
+                        modifierTracker.push({ value: `${defensive}`, label: `Total Defense Modifier` });
+                    }
+                    if (isNaN(prone)) {
+                        prone = 0;
+                    } else {
+                        modifierTracker.push({ value: `${prone}`, label: `Prone Target Modifier` });
+                    }
+                    if (isNaN(high)) {
+                        high = 0;
+                    } else {
+                        modifierTracker.push({ value: `${high}`, label: `Higher Ground Modifier` });
+                    }
+                    if (isNaN(surprised)) {
+                        surprised = 0;
+                    } else {
+                        modifierTracker.push({ value: `${surprised}`, label: `Surprised Target Modifier` });
+                    }
+                    if (isNaN(stunned)) {
+                        stunned = 0;
+                    } else {
+                        modifierTracker.push({ value: `${stunned}`, label: `Stunned Target Modifier` });
+                    }
+                    if (isNaN(other)) {
+                        other = 0;
+                    } else {
+                        modifierTracker.push({ value: `${other}`, label: `Input Modifier` });
+                    }
 
-            width: 400
-        }).render(true);
+                    modifierTracker.push({ value: `${attackTypeBonus}`, label: `${attacklabel} Attack Modifier` });
+                    modifierTracker.push({ value: `${aimBonus}`, label: `${aimType} Aim Modifier` });
+                    modifierTracker.push({
+                        value: `${visibilityBonus}`,
+                        label: `${visibilityType} Visibility Modifier`
+                    });
+                    modifierTracker.push({"value":`${terrainBonus}`,"label":`${terrainType} Terrain Modifier`});
+                    modifierTracker.push({ value: `${outnumberBonus}`, label: `${outnumberType} Modifier` });
+                    modifierTracker.push({ value: `${size}`, label: `Size Modifier` });
+                    testTarget =
+                        miscMods +
+                        parseInt(testTarget) +
+                        parseInt(running) +
+                        parseInt(attackTypeBonus) +
+                        parseInt(guarded) +
+                        parseInt(counter) +
+                        parseInt(aimBonus) +
+                        parseInt(outnumberBonus) +
+                        parseInt(terrainBonus) +
+                        parseInt(visibilityBonus) +
+                        parseInt(defensive) +
+                        parseInt(prone) +
+                        parseInt(high) +
+                        parseInt(surprised) +
+                        parseInt(stunned) +
+                        parseInt(size) +
+                        parseInt(other);
+                    actor.system.secChar.lastHit.attackRange = "melee";
+                    actor.system.secChar.lastHit.vehicle = vehicle;
+                    actor.system.secChar.lastHit.facing = modifiers.facing;
+                    FortykRolls.fortykTest(
+                        testChar,
+                        testType,
+                        testTarget,
+                        actor,
+                        testLabel,
+                        item,
+                        false,
+                        "",
+                        false,
+                        modifierTracker
+                    );
+                }
+            }
+                     ]
+        });
     }
     static async callRangedAttackDialog(
         testChar,
@@ -1295,8 +1294,9 @@ export class FortykRollDialogs {
         modifierTracker = []
     ) {
         //check if in melee
-        if (item.system.class.value !== "Pistol" && this.checkMelee(getActorToken(actor))) {
-            return ui.notifications.warn("You are enegaged in melee!");
+        let isPistol = item.system.class.value === "Pistol";
+        if (!isPistol && this.checkMelee(getActorToken(actor))) {
+            ui.notifications.warn("You are engaged in melee!");
         }
         if (actor.getFlag("core", "blind")) {
             return ui.notification.warn("You are blind and can't shoot!");
@@ -1462,7 +1462,8 @@ export class FortykRollDialogs {
             let target = targets.values().next().value;
             let tarActor = target.actor;
             let tar = tarActor;
-            templateOptions["options"].inmelee = this.checkMelee(target);
+
+
             let conceal = tar.getFlag("fortyk", "conceal");
             if (conceal) {
                 miscMods -= parseInt(conceal);
@@ -1552,7 +1553,13 @@ export class FortykRollDialogs {
             let long = false;
             let extreme = false;
             let range = item.system.range.value;
-            if (item.system.class.value === "Pistol" && distance <= 1) {
+            if(!isPistol){
+                let targetIt = targets.values();
+                let target = targetIt.next().value;
+                templateOptions["options"].inmelee = this.checkMelee(target); 
+            }
+            if (isPistol && distance <= 1) {
+                templateOptions["options"].inmelee=false;
                 normal = true;
             } else if (distance <= 2 || distance <= 2 * canvas.dimensions.distance) {
                 pointblank = true;
@@ -1570,20 +1577,18 @@ export class FortykRollDialogs {
                 extreme = true;
                 attackRange = "extreme";
             } else {
-                new Dialog({
-                    title: `Out of range`,
+                foundry.applications.api.DialogV2.wait({
+                    window:{title: `Out of range`},
+                    position:{width:400},
                     classes: "fortky",
                     content: "You are out of range!",
-                    buttons: {
-                        submit: {
-                            label: "OK",
-                            callback: null
-                        }
-                    },
-                    default: "submit",
+                    buttons: [ {
+                        label: "OK",
+                        callback: null
+                    }
+                             ],
 
-                    width: 400
-                }).render(true);
+                });
                 return;
             }
             templateOptions["options"].pointblank = pointblank;
@@ -1596,236 +1601,239 @@ export class FortykRollDialogs {
         templateOptions["modifiers"].miscMods = miscMods;
         let renderedTemplate = await foundry.applications.handlebars.renderTemplate(template, templateOptions);
 
-        new Dialog({
-            title: `${item.name} Ranged Attack Test.`,
+        foundry.applications.api.DialogV2.wait({
+            window: {title: `${item.name} Ranged Attack Test.`},
             classes: "fortky",
             content: renderedTemplate,
-            buttons: {
-                submit: {
-                    label: "OK",
-                    callback: async (html) => {
-                        let leverage = $(html).find('input[id="leveragebox"]').is(":checked");
-                        if(leverage){
-                            testChar="inf";
-                            testTarget=actor.system.characteristics.inf.total;
-                        }
-                        modifierTracker.unshift({ value: `${testTarget}`, label: `Base Target Value` });
-                        const attackTypeBonus = Number($(html).find('input[name="attack-type"]:checked').val());
+            buttons: [{
+                label: "OK",
+                callback: async (event) => {
+                    let html=event.target.form;
+                    html.closest('dialog').setAttribute("hidden", "hidden");
+                    let leverage = $(html).find('input[id="leveragebox"]').is(":checked");
+                    if(leverage){
+                        testChar="inf";
+                        testTarget=actor.system.characteristics.inf.total;
+                    }
+                    modifierTracker.unshift({ value: `${testTarget}`, label: `Base Target Value` });
+                    const attackTypeBonus = Number($(html).find('input[name="attack-type"]:checked').val());
 
-                        let guarded = Number($(html).find('input[name="guarded"]:checked').val());
-                        let overwatch = Number($(html).find('input[name="overwatch"]:checked').val());
-                        let aimBonus = Number($(html).find('input[name="aim-type"]:checked').val());
-                        try {
-                            var aimType = html.find("input[name=aim-type]:checked")[0].attributes["aimtype"].value;
-                        } catch (e) {
-                            var aimType = 0;
-                        }
-                        const rangeBonus = Number($(html).find('input[name="distance"]:checked').val());
-                        let rangeType = html.find("input[name=distance]:checked")[0].attributes["rangetype"].value;
-                        if (isNaN(aimBonus)) {
-                            aimBonus = 0;
-                        }
+                    let guarded = Number($(html).find('input[name="guarded"]:checked').val());
+                    let overwatch = Number($(html).find('input[name="overwatch"]:checked').val());
+                    let aimBonus = Number($(html).find('input[name="aim-type"]:checked').val());
+                    let aimType = 0;
+                    try {
+                        aimType = $(html).find("input[name=aim-type]:checked")[0]?.attributes["aimtype"]?.value;
+                    } catch (e) {
 
-                        const visibilityBonus = Number($(html).find('input[name="visibility"]:checked').val());
-                        let visibilityType = html.find("input[name=visibility]:checked")[0].attributes["visibilitytype"]
-                        .value;
-                        let concealed = Number($(html).find('input[name="concealed"]:checked').val());
-                        let prone = Number($(html).find('input[name="prone"]:checked').val());
-                        let high = Number($(html).find('input[name="high"]:checked').val());
-                        let surprised = Number($(html).find('input[name="surprised"]:checked').val());
-                        let running = Number($(html).find('input[name="running"]:checked').val());
-                        let stunned = Number($(html).find('input[name="stunned"]:checked').val());
-                        let size = Number($(html).find('select[name="size"]').val());
-                        //adjust size penalty
-                        size = (size - actor.system.secChar.size.value) * 10;
-                        if (actor.getFlag("fortyk", "preysense")) {
-                            if (size < 0) {
-                                let preysense = parseInt(actor.getFlag("fortyk", "preysense")) * 10;
-                                size = Math.min(0, size + preysense);
-                            }
-                        }
-                        if (item.getFlag("fortyk", "scatter")) {
-                            if (size < 0) {
-                                size = 0;
-                            }
-                        }
-                        if (actor.getFlag("fortyk", "versatility")) {
-                            actor.setFlag("fortyk", "versatile", versatile);
-                        }
-                        if (guarded) {
-                            let guardActiveEffect = foundry.utils.duplicate(
-                                game.fortyk.FORTYK.StatusEffects[
-                                    game.fortyk.FORTYK.StatusEffectsIndex.get("holyShield")
-                                ]
-                            );
-                            guardActiveEffect.duration = {
-                                rounds: 0
-                            };
-                            FortykRolls.applyActiveEffect(actor, [guardActiveEffect]);
-                        }
-                        let other = Number($(html).find('input[name="other"]').val());
-                        let melee = Number($(html).find('input[name="melee"]:checked').val());
-                        //get attack type name for title
+                    }
+                    const rangeBonus = Number($(html).find('input[name="distance"]:checked').val());
+                    let rangeType = $(html).find("input[name=distance]:checked")[0]?.attributes["rangetype"]?.value;
+                    if (isNaN(aimBonus)) {
+                        aimBonus = 0;
+                    }
 
-                        let addLabel = html.find("input[name=attack-type]:checked")[0].attributes["label"].value;
-                        if (html.find('input[name="guarded"]').is(":checked")) {
-                            addLabel = html.find('input[name="guarded"]')[0].attributes["label"].value + " " + addLabel;
+                    const visibilityBonus = Number($(html).find('input[name="visibility"]:checked').val());
+                    let visibilityType = $(html).find("input[name=visibility]:checked")[0]?.attributes["visibilitytype"]
+                    .value;
+                    let concealed = Number($(html).find('input[name="concealed"]:checked').val());
+                    let prone = Number($(html).find('input[name="prone"]:checked').val());
+                    let high = Number($(html).find('input[name="high"]:checked').val());
+                    let surprised = Number($(html).find('input[name="surprised"]:checked').val());
+                    let running = Number($(html).find('input[name="running"]:checked').val());
+                    let stunned = Number($(html).find('input[name="stunned"]:checked').val());
+                    let size = Number($(html).find('select[name="size"]').val());
+                    //adjust size penalty
+                    size = (size - actor.system.secChar.size.value) * 10;
+                    if (actor.getFlag("fortyk", "preysense")) {
+                        if (size < 0) {
+                            let preysense = parseInt(actor.getFlag("fortyk", "preysense")) * 10;
+                            size = Math.min(0, size + preysense);
                         }
-                        if (html.find('input[name="overwatch"]').is(":checked")) {
-                            addLabel =
-                                html.find('input[name="overwatch"]')[0].attributes["label"].value + " " + addLabel;
+                    }
+                    if (item.getFlag("fortyk", "scatter")) {
+                        if (size < 0) {
+                            size = 0;
                         }
-                        testLabel = addLabel + " " + testLabel;
+                    }
+                    if (actor.getFlag("fortyk", "versatility")) {
+                        actor.setFlag("fortyk", "versatile", versatile);
+                    }
+                    if (guarded) {
+                        let guardActiveEffect = foundry.utils.duplicate(
+                            game.fortyk.FORTYK.StatusEffects[
+                                game.fortyk.FORTYK.StatusEffectsIndex.get("holyShield")
+                            ]
+                        );
+                        guardActiveEffect.duration = {
+                            rounds: 0
+                        };
+                        FortykRolls.applyActiveEffect(actor, [guardActiveEffect]);
+                    }
+                    let other = Number($(html).find('input[name="other"]').val());
+                    let melee = Number($(html).find('input[name="melee"]:checked').val());
+                    //get attack type name for title
 
-                        let attackType = html.find("input[name=attack-type]:checked")[0].attributes["attacktype"].value;
-                        let attacklabel = html.find("input[name=attack-type]:checked")[0].attributes["label"].value;
-                        let update = {};
-                        update["system.secChar.lastHit.attackType"] = attackType;
-                        if (attackType === "called") {
-                            update["system.secChar.lastHit.called"] = $(html)
-                                .find('select[name="calledLoc"] option:selected')
+                    let addLabel = $(html).find("input[name=attack-type]:checked")[0]?.attributes["data-label"]?.value;
+                    if ($(html).find('input[name="guarded"]').is(":checked")) {
+                        addLabel = $(html).find('input[name="guarded"]')[0]?.attributes["data-label"]?.value + " " + addLabel;
+                    }
+                    if ($(html).find('input[name="overwatch"]').is(":checked")) {
+                        addLabel =
+                            $(html).find('input[name="overwatch"]')[0]?.attributes["data-label"]?.value + " " + addLabel;
+                    }
+                    testLabel = addLabel + " " + testLabel;
+
+                    let attackType = $(html).find("input[name=attack-type]:checked")[0]?.attributes["attacktype"]?.value;
+                    let attacklabel = $(html).find("input[name=attack-type]:checked")[0]?.attributes["data-label"]?.value;
+                    let update = {};
+                    update["system.secChar.lastHit.attackType"] = attackType;
+                    if (attackType === "called") {
+                        update["system.secChar.lastHit.called"] = $(html)
+                            .find('select[name="calledLoc"] option:selected')
+                            .val();
+
+                        if (
+                            !vehicle &&
+                            actor.getFlag("fortyk", "fieldvivisection") &&
+                            actor.getFlag("fortyk", "fieldvivisection").includes(tarRace) &&
+                            actor.getFlag("fortyk", "fieldpractitioner")
+                        ) {
+                            update["system.secChar.lastHit.fieldPractice"] = $(html)
+                                .find('select[name="fieldPracticeAmt"] option:selected')
                                 .val();
-
-                            if (
-                                !vehicle &&
-                                actor.getFlag("fortyk", "fieldvivisection") &&
-                                actor.getFlag("fortyk", "fieldvivisection").includes(tarRace) &&
-                                actor.getFlag("fortyk", "fieldpractitioner")
-                            ) {
-                                update["system.secChar.lastHit.fieldPractice"] = $(html)
-                                    .find('select[name="fieldPracticeAmt"] option:selected')
-                                    .val();
-                            } else {
-                                update["system.secChar.lastHit.fieldPractice"] = null;
-                            }
                         } else {
                             update["system.secChar.lastHit.fieldPractice"] = null;
                         }
-                        await actor.update(update);
-                        //spend ammo on gun
-                        let rofIndex = parseInt(
-                            html.find("input[name=attack-type]:checked")[0].attributes["index"].value
-                        );
+                    } else {
+                        update["system.secChar.lastHit.fieldPractice"] = null;
+                    }
+                    await actor.update(update);
+                    //spend ammo on gun
 
-                        let rof = 0;
-                        if (rofIndex === 3) {
-                            rof = Math.max(rofSemi, rofFull) * consump;
-                        } else if (rofIndex === 2) {
-                            rof = rofFull * consump;
-                        } else if (rofIndex === 1) {
-                            rof = rofSemi * consump;
-                        } else if (rofIndex === 0) {
-                            rof = rofSingle * consump;
-                        }
+                    let rofIndex = parseInt(
+                        $(html).find("input[name=attack-type]:checked")[0].attributes["data-index"].value
+                    );
 
-                        await item.update({ "system.clip.value": curAmmo - rof });
+                    let rof = 0;
+                    if (rofIndex === 3) {
+                        rof = Math.max(rofSemi, rofFull) * consump;
+                    } else if (rofIndex === 2) {
+                        rof = rofFull * consump;
+                    } else if (rofIndex === 1) {
+                        rof = rofSemi * consump;
+                    } else if (rofIndex === 0) {
+                        rof = rofSingle * consump;
+                    }
+                    let newAmmo=curAmmo-rof;
+                    await item.update({ "system.clip.value": newAmmo });
 
-                        //convert unchosen checkboxes into 0s
-                        if (isNaN(running)) {
-                            running = 0;
-                        } else {
-                            modifierTracker.push({ value: `${running}`, label: `Running Target Modifier` });
-                        }
-                        if (isNaN(guarded)) {
-                            guarded = 0;
-                        } else {
-                            modifierTracker.push({ value: `${guarded}`, label: `Guarded Action Modifier` });
-                        }
-                        if (isNaN(overwatch)) {
-                            overwatch = 0;
-                        } else {
-                            modifierTracker.push({ value: `${overwatch}`, label: `Overwatch Action Modifier` });
-                        }
-                        if (isNaN(prone)) {
-                            prone = 0;
-                        } else {
-                            modifierTracker.push({ value: `${prone}`, label: `Prone Target Modifier` });
-                        }
-                        if (isNaN(high)) {
-                            high = 0;
-                        } else {
-                            modifierTracker.push({ value: `${high}`, label: `Higher Ground Modifier` });
-                        }
-                        if (isNaN(surprised)) {
-                            surprised = 0;
-                        } else {
-                            modifierTracker.push({ value: `${surprised}`, label: `Surprised Target Modifier` });
-                        }
-                        if (isNaN(stunned)) {
-                            stunned = 0;
-                        } else {
-                            modifierTracker.push({ value: `${stunned}`, label: `Stunned Target Modifier` });
-                        }
-                        if (isNaN(concealed)) {
-                            concealed = 0;
-                        } else {
-                            modifierTracker.push({ value: `${concealed}`, label: `Concealed Target Modifier` });
-                        }
-                        if (isNaN(other)) {
-                            other = 0;
-                        } else {
-                            modifierTracker.push({ value: `${other}`, label: `Input Modifier` });
-                        }
-                        if (isNaN(melee)) {
-                            melee = 0;
-                        } else {
-                            modifierTracker.push({ value: `${melee}`, label: `Melee Modifier` });
-                        }
-                        modifierTracker.push({ value: `${attackTypeBonus}`, label: `${attacklabel} Attack Modifier` });
-                        modifierTracker.push({ value: `${aimBonus}`, label: `${aimType} Aim Modifier` });
-                        modifierTracker.push({
-                            value: `${visibilityBonus}`,
-                            label: `${visibilityType} Visibility Modifier`
-                        });
-                        modifierTracker.push({ value: `${rangeBonus}`, label: `${rangeType} Range Modifier` });
-                        modifierTracker.push({ value: `${size}`, label: `Size Modifier` });
+                    //convert unchosen checkboxes into 0s
+                    if (isNaN(running)) {
+                        running = 0;
+                    } else {
+                        modifierTracker.push({ value: `${running}`, label: `Running Target Modifier` });
+                    }
+                    if (isNaN(guarded)) {
+                        guarded = 0;
+                    } else {
+                        modifierTracker.push({ value: `${guarded}`, label: `Guarded Action Modifier` });
+                    }
+                    if (isNaN(overwatch)) {
+                        overwatch = 0;
+                    } else {
+                        modifierTracker.push({ value: `${overwatch}`, label: `Overwatch Action Modifier` });
+                    }
+                    if (isNaN(prone)) {
+                        prone = 0;
+                    } else {
+                        modifierTracker.push({ value: `${prone}`, label: `Prone Target Modifier` });
+                    }
+                    if (isNaN(high)) {
+                        high = 0;
+                    } else {
+                        modifierTracker.push({ value: `${high}`, label: `Higher Ground Modifier` });
+                    }
+                    if (isNaN(surprised)) {
+                        surprised = 0;
+                    } else {
+                        modifierTracker.push({ value: `${surprised}`, label: `Surprised Target Modifier` });
+                    }
+                    if (isNaN(stunned)) {
+                        stunned = 0;
+                    } else {
+                        modifierTracker.push({ value: `${stunned}`, label: `Stunned Target Modifier` });
+                    }
+                    if (isNaN(concealed)) {
+                        concealed = 0;
+                    } else {
+                        modifierTracker.push({ value: `${concealed}`, label: `Concealed Target Modifier` });
+                    }
+                    if (isNaN(other)) {
+                        other = 0;
+                    } else {
+                        modifierTracker.push({ value: `${other}`, label: `Input Modifier` });
+                    }
+                    if (isNaN(melee)) {
+                        melee = 0;
+                    } else {
+                        modifierTracker.push({ value: `${melee}`, label: `Melee Modifier` });
+                    }
+                    modifierTracker.push({ value: `${attackTypeBonus}`, label: `${attacklabel} Attack Modifier` });
+                    modifierTracker.push({ value: `${aimBonus}`, label: `${aimType} Aim Modifier` });
+                    modifierTracker.push({
+                        value: `${visibilityBonus}`,
+                        label: `${visibilityType} Visibility Modifier`
+                    });
+                    modifierTracker.push({ value: `${rangeBonus}`, label: `${rangeType} Range Modifier` });
+                    modifierTracker.push({ value: `${size}`, label: `Size Modifier` });
 
-                        testTarget =
-                            miscMods +
-                            parseInt(testTarget) +
-                            parseInt(running) +
-                            parseInt(attackTypeBonus) +
-                            parseInt(guarded) +
-                            parseInt(overwatch) +
-                            parseInt(aimBonus) +
-                            parseInt(visibilityBonus) +
-                            parseInt(prone) +
-                            parseInt(high) +
-                            parseInt(surprised) +
-                            parseInt(stunned) +
-                            parseInt(size) +
-                            parseInt(other) +
-                            parseInt(concealed) +
-                            parseInt(rangeBonus) +
-                            parseInt(melee);
-                        actor.system.secChar.lastHit.attackRange = attackRange;
-                        actor.system.secChar.lastHit.vehicle = vehicle;
-                        actor.system.secChar.lastHit.facing = modifiers.facing;
-                        await FortykRolls.fortykTest(
-                            testChar,
-                            testType,
-                            testTarget,
-                            actor,
-                            testLabel,
-                            item,
-                            false,
-                            attackType,
-                            false,
-                            modifierTracker
-                        );
-                        if (aimBonus > 0) {
-                            await actor.update({ "system.secChar.lastHit.aim": true });
-                            actor.system.secChar.lastHit.aim = true;
-                        } else {
-                            await actor.update({ "system.secChar.lastHit.aim": false });
-                        }
+                    testTarget =
+                        miscMods +
+                        parseInt(testTarget) +
+                        parseInt(running) +
+                        parseInt(attackTypeBonus) +
+                        parseInt(guarded) +
+                        parseInt(overwatch) +
+                        parseInt(aimBonus) +
+                        parseInt(visibilityBonus) +
+                        parseInt(prone) +
+                        parseInt(high) +
+                        parseInt(surprised) +
+                        parseInt(stunned) +
+                        parseInt(size) +
+                        parseInt(other) +
+                        parseInt(concealed) +
+                        parseInt(rangeBonus) +
+                        parseInt(melee);
+                    actor.system.secChar.lastHit.attackRange = attackRange;
+                    actor.system.secChar.lastHit.vehicle = vehicle;
+                    actor.system.secChar.lastHit.facing = modifiers.facing;
+                    await FortykRolls.fortykTest(
+                        testChar,
+                        testType,
+                        testTarget,
+                        actor,
+                        testLabel,
+                        item,
+                        false,
+                        attackType,
+                        false,
+                        modifierTracker
+                    );
+                    if (aimBonus > 0) {
+                        await actor.update({ "system.secChar.lastHit.aim": true });
+                        actor.system.secChar.lastHit.aim = true;
+                    } else {
+                        await actor.update({ "system.secChar.lastHit.aim": false });
                     }
                 }
-            },
+            }
+                     ],
             default: "submit",
 
             width: 400
-        }).render(true);
+        });
     }
     static async navigatorPowerPostTest(item, actor, training, gaze, fog, focusGaze, sheet, affectsUnliving, warned, test) {
         let name=actor.getName();
@@ -2106,7 +2114,7 @@ export class FortykRollDialogs {
                 );
                 let hit = 0;
                 if (!targetTest.value||targetTest.value&&targetTest.dos<test.dos) {
-                    updatedtargets.push(token.id);
+                    updatedtargets.push(token._object);
                     hit++;
                 }
 
@@ -2120,9 +2128,11 @@ export class FortykRollDialogs {
                 i++;
             }
             messageContent += `<div class="chat-target">Selected targets can roll their forcefields to negate if available.</div>`;
-            game.user.targets.clear();
-            game.user.targets.add(...updatedtargets);
-            game.user.broadcastActivity({ targets: updatedtargets });
+            game.user._onUpdateTokenTargets([]);
+            for(let target of updatedtargets){
+                target.setTarget(true,{user:game.user, releaseOthers:false, groupSelection:true});
+            }
+            game.user.broadcastActivity({ targets: game.user.targets.ids });
 
 
             let name = actor.getName();
@@ -2179,134 +2189,132 @@ export class FortykRollDialogs {
         modifierTracker = modifierTracker.concat(item.system.modifiers);
         let renderedTemplate = await foundry.applications.handlebars.renderTemplate(template, templateOptions);
 
-        new Dialog({
-            title: `${item.name} Navigator Power Test.`,
+        foundry.applications.api.DialogV2.wait({
+            window: {title: `${item.name} Navigator Power Test.`},
             classes: "fortky",
             content: renderedTemplate,
-            buttons: {
-                submit: {
-                    label: "OK",
-                    callback: async (html) => {
-                        let other = Number($(html).find('input[name="other"]').val());
-                        modifierTracker.push({ value: other, label: "Input Modifier" });
-                        let fog;
-                        let warned;
-                        let focusGaze;
+            position:{width:200},
+            buttons: [{
+                label: "OK",
+                callback: async (event) => {
+                    let html=event.target.form;
+                    let other = Number($(html).find('input[name="other"]').val());
+                    modifierTracker.push({ value: other, label: "Input Modifier" });
+                    let fog;
+                    let warned;
+                    let focusGaze;
+                    html.closest('dialog').setAttribute("hidden", "hidden");
+                    testTarget = parseInt(testTarget) + parseInt(other);
+                    let affectsUnliving=false;
+                    if(item.getFlag("fortyk","stackingthedeck")){
+                        if(training==="Master"){
+                            let fat = parseInt(actor.system.secChar.fatigue.value);
 
-                        testTarget = parseInt(testTarget) + parseInt(other);
-                        let affectsUnliving=false;
-                        if(item.getFlag("fortyk","stackingthedeck")){
-                            if(training==="Master"){
-                                let fat = parseInt(actor.system.secChar.fatigue.value);
 
+                            fat+=2;
 
-                                fat+=2;
-
-                                await actor.update({ "system.secChar.fatigue.value": fat });
-                            }
+                            await actor.update({ "system.secChar.fatigue.value": fat });
                         }
-                        if(item.getFlag("fortyk","stupefythesoul")){
-                            if(training==="Master"){
-                                let fat = parseInt(actor.system.secChar.fatigue.value);
-
-
-                                fat+=2;
-
-                                await actor.update({ "system.secChar.fatigue.value": fat });
-                            }
-                        }
-                        if(item.getFlag("fortyk","scourgeoftheredtide")){
-
-                            let wounds=parseInt(actor.system.secChar.wounds.value);
-                            if(training==="Adept"){
-                                affectsUnliving=true;
-                                if(!reroll){
-                                    wounds--;
-                                    actor.update({"system.secChar.wounds.value":wounds});
-                                    let chatOptions = {
-                                        author: game.user._id,
-                                        speaker: { actor, alias: name },
-                                        content: "Loses 1 wound",
-                                        classes: ["fortyk"],
-                                        flavor: `Scourge of the Red Tide wound loss`
-                                    };
-
-                                    await ChatMessage.create(chatOptions, {});
-                                }
-
-                            }else if(training==="Master"){
-                                warned=false;
-                                affectsUnliving=true;
-                                if(!reroll){
-                                    let woundRoll=new Roll("1d5",{});
-                                    await woundRoll.evaluate();
-                                    let woundLoss=woundRoll._total;
-                                    wounds-=woundLoss;
-                                    actor.update({"system.secChar.wounds.value":wounds});
-                                    let chatOptions = {
-                                        author: game.user._id,
-                                        speaker: { actor, alias: name },
-                                        content: `Loses ${woundLoss} wounds`,
-                                        classes: ["fortyk"],
-                                        flavor: `Scourge of the Red Tide wound loss`
-                                    };
-
-                                    await ChatMessage.create(chatOptions, {});
-                                }
-
-                            }
-                        }
-                        if (gaze) {
-                            fog = document.getElementById("fog").checked;
-                            warned = document.getElementById("warned").checked;
-                            if(!reroll){
-                                let fat = parseInt(actor.system.secChar.fatigue.value);
-                                if (focusedGazed) {
-                                    focusGaze = document.getElementById("focus").checked;
-
-                                    if(focusGaze)fat++;
-                                }
-
-                                fat++;
-
-                                await actor.update({ "system.secChar.fatigue.value": fat });
-                            }
-
-                        }
-                        if(!reroll){
-                            if(item.getFlag("fortyk","thecourseuntravelled")){
-                                let fat = parseInt(actor.system.secChar.fatigue.value);
-                                fat++;
-                                await actor.update({ "system.secChar.fatigue.value": fat });
-                            }
-                            if(item.getFlag("fortyk","tidesoftimeandspace")){
-                                let fat = parseInt(actor.system.secChar.fatigue.value);
-                                fat++;
-                                await actor.update({ "system.secChar.fatigue.value": fat });
-                            }      
-                        }
-
-
-                        let test = await FortykRolls.fortykTest(
-                            testChar,
-                            testType,
-                            testTarget,
-                            actor,
-                            testLabel,
-                            item,
-                            false,
-                            "",
-                            false,
-                            modifierTracker
-                        );
-                        return this.navigatorPowerPostTest(item, actor, training, gaze, fog, focusGaze, sheet, affectsUnliving, warned, test);
                     }
-                }
-            },
-            default: "submit",
+                    if(item.getFlag("fortyk","stupefythesoul")){
+                        if(training==="Master"){
+                            let fat = parseInt(actor.system.secChar.fatigue.value);
 
-            width: 200
-        }).render(true);
+
+                            fat+=2;
+
+                            await actor.update({ "system.secChar.fatigue.value": fat });
+                        }
+                    }
+                    if(item.getFlag("fortyk","scourgeoftheredtide")){
+
+                        let wounds=parseInt(actor.system.secChar.wounds.value);
+                        if(training==="Adept"){
+                            affectsUnliving=true;
+                            if(!reroll){
+                                wounds--;
+                                actor.update({"system.secChar.wounds.value":wounds});
+                                let chatOptions = {
+                                    author: game.user._id,
+                                    speaker: { actor, alias: name },
+                                    content: "Loses 1 wound",
+                                    classes: ["fortyk"],
+                                    flavor: `Scourge of the Red Tide wound loss`
+                                };
+
+                                await ChatMessage.create(chatOptions, {});
+                            }
+
+                        }else if(training==="Master"){
+                            warned=false;
+                            affectsUnliving=true;
+                            if(!reroll){
+                                let woundRoll=new Roll("1d5",{});
+                                await woundRoll.evaluate();
+                                let woundLoss=woundRoll._total;
+                                wounds-=woundLoss;
+                                actor.update({"system.secChar.wounds.value":wounds});
+                                let chatOptions = {
+                                    author: game.user._id,
+                                    speaker: { actor, alias: name },
+                                    content: `Loses ${woundLoss} wounds`,
+                                    classes: ["fortyk"],
+                                    flavor: `Scourge of the Red Tide wound loss`
+                                };
+
+                                await ChatMessage.create(chatOptions, {});
+                            }
+
+                        }
+                    }
+                    if (gaze) {
+                        fog = document.getElementById("fog").checked;
+                        warned = document.getElementById("warned").checked;
+                        if(!reroll){
+                            let fat = parseInt(actor.system.secChar.fatigue.value);
+                            if (focusedGazed) {
+                                focusGaze = document.getElementById("focus").checked;
+
+                                if(focusGaze)fat++;
+                            }
+
+                            fat++;
+
+                            await actor.update({ "system.secChar.fatigue.value": fat });
+                        }
+
+                    }
+                    if(!reroll){
+                        if(item.getFlag("fortyk","thecourseuntravelled")){
+                            let fat = parseInt(actor.system.secChar.fatigue.value);
+                            fat++;
+                            await actor.update({ "system.secChar.fatigue.value": fat });
+                        }
+                        if(item.getFlag("fortyk","tidesoftimeandspace")){
+                            let fat = parseInt(actor.system.secChar.fatigue.value);
+                            fat++;
+                            await actor.update({ "system.secChar.fatigue.value": fat });
+                        }      
+                    }
+
+
+                    let test = await FortykRolls.fortykTest(
+                        testChar,
+                        testType,
+                        testTarget,
+                        actor,
+                        testLabel,
+                        item,
+                        false,
+                        "",
+                        false,
+                        modifierTracker
+                    );
+                    return this.navigatorPowerPostTest(item, actor, training, gaze, fog, focusGaze, sheet, affectsUnliving, warned, test);
+                }
+            }
+                     ]
+        });
     }
     static async callFocusPowerDialog(
         testChar,
@@ -2329,18 +2337,20 @@ export class FortykRollDialogs {
         modifierTracker = modifierTracker.concat(item.system.modifiers);
         templateOptions.leverage=actor.getFlag("fortyk", "leverage");
         let renderedTemplate = await foundry.applications.handlebars.renderTemplate(template, templateOptions);
-
-        new Dialog({
-            title: `${item.name} Focus Power Test.`,
-            classes: "fortky",
+        foundry.applications.api.DialogV2.wait({
+            window:{title: `${item.name} Focus Power Test.`,
+                    width: 200},
+            classes: ["fortky"],
             content: renderedTemplate,
-            buttons: {
-                submit: {
+            buttons: [
+                {
                     label: "OK",
                     callback: async (html) => {
-                        let other = Number($(html).find('input[name="other"]').val());
+                        let elements=$(html).target.form.elements;
+                        html.target.closest('dialog').setAttribute("hidden", "hidden");
+                        let other = Number(elements.other.value);
                         modifierTracker.push({ value: other, label: "Input Modifier" });
-                        let leverage = $(html).find('input[id="leveragebox"]').is(":checked");
+                        let leverage = elements.leveragebox?.checked;
                         if(leverage){
                             testChar="inf";
                             let inf=actor.system.characteristics.inf.total;
@@ -2350,7 +2360,6 @@ export class FortykRollDialogs {
                             testTarget+=inf;
                             modifierTracker.unshift({value:inf,label:"Power Base"});
                         }
-                        console.log(modifierTracker);
                         testTarget = parseInt(testTarget) + parseInt(other);
 
                         let test = await FortykRolls.fortykTest(
@@ -2371,14 +2380,13 @@ export class FortykRollDialogs {
                         }
                     }
                 }
-            },
-            default: "submit",
+            ],
+            default: "submit"
 
-            width: 200
-        }).render(true);
+        });
     }
     static async soulBlaze(actor, pr, icon) {
-        let tokens = canvas.tokens.children[0].children;
+        let tokens = canvas.tokens.placeables;
 
         let sourceToken = getActorToken(actor);
         let messageContent = "";
@@ -2480,136 +2488,146 @@ export class FortykRollDialogs {
             modifier -= pr * 5;
         }
         foundry.applications.api.DialogV2.wait({
-            window:{title: title,
-                    width: 100},
+            window:{title: title
+                   },
+            position:{width: 100},
             content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="${modifier}" autofocus/></p>`,
             buttons: [
-                {label: "OK",
-                callback: async (html) => {
-                    const templateData = {
-                        t: "cone",
+                {
+                    label: "OK",
+                    callback: async (event) => {
+                        let html=event.target.form;
+                        html.closest('dialog').setAttribute("hidden", "hidden");
+                        return parseInt(html.elements.modifier.value);
 
-                        author: game.userId,
-
-                        distance: weapon.system.range.value,
-
-                        direction: 45,
-                        angle: 30,
-
-                        x: 1000,
-
-                        y: 1000,
-
-                        fillColor: game.user.color
-                    };
-
-                    const templateDoc = new MeasuredTemplateDocument(templateData, { parent: canvas.scene });
-
-                    const template = new game.fortyk.FortykTemplate(templateDoc);
-                    sheet.minimize();
-                    await template.drawPreview();
-                    sheet.maximize();
-
-                    let scene = game.canvas.scene;
-                    let targets = this.getSprayTargets(template, scene, actor)[0];
-
-                    let mod = Number($(html).find('input[name="modifier"]').val());
-
-                    if (targets.size === 0) {
-                        this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "No targets");
-                        return;
                     }
-
-                    if (isNaN(mod)) {
-                        this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "Invalid Number");
-                        return;
-                    }
-
-                    let messageContent = "";
-                    let updatedtargets = [];
-                    let rolls = [];
-                    let i = 1;
-                    for (let token of targets) {
-
-                        let tokenActor = token.actor;
-                        if (tokenActor.id === actor.id) continue;
-                        if (tokenActor.getFlag("core", "dead")) continue;
-                        let tokenActorData = token.actor;
-                        let data = token.actor.system;
-
-                        let testTarget = 0;
-                        let tough = false;
-                        if (weapon.getFlag("fortyk", "sprayTough")) {
-                            tough = true;
-                        }
-                        if (tokenActor.type === "vehicle") {
-                            testTarget = data.crew.ratingTotal + mod;
-                        } else {
-                            if (tough) {
-                                testTarget = data.characteristics.t.total + mod;
-                            } else {
-                                testTarget = data.characteristics.agi.total + mod;
-                            }
-                        }
-                        let testThingy = "agi";
-                        if (tough) {
-                            testThingy = "t";
-                        }
-                        let test = await game.fortyk.FortykRolls.fortykTest(
-                            testThingy,
-                            "Test",
-                            testTarget,
-                            tokenActor,
-                            "Avoid Spray Attack",
-                            weapon,
-                            false,
-                            "",
-                            true
-                        );
-                        let hit = 0;
-                        if (!test.value) {
-                            updatedtargets.push(token.id);
-                            hit++;
-                        }
-
-                        messageContent +=
-                            `<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="${hit}" data-token="${token.id}">${token.name}'s</a> ` +
-                            test.template +
-                            `</div>`;
-                        let r = test.roll;
-                        r.dice[0].options.rollOrder = i;
-                        rolls.push(test.roll);
-                        i++;
-                    }
-                    messageContent += `<div class="chat-target">Selected targets may attempt to evade if they have a reaction remaining and have enough movement from their half-move to exit the attack's area of effect.</div>`;
-                    game.user.targets.clear();
-                    game.user.targets.add(...updatedtargets);
-                    game.user.broadcastActivity({ targets: updatedtargets });
-                    let name;
-                    if (actor.isToken) {
-                        name = actor.token.name;
-                    } else {
-                        name = actor.name;
-                    }
-                    let chatOptions = {
-                        author: game.user._id,
-                        speaker: { actor, alias: name },
-                        rolls: rolls,
-                        content: messageContent,
-                        classes: ["fortyk"],
-                        sound: "sounds/dice.wav",
-                        flavor: `Spray Attack result`
-                    };
-
-                    await ChatMessage.create(chatOptions, {});
-                    if (!psy) {
-                        await weapon.update({ "system.clip.value": ammo - consumption });
-                    }
-                }}
+                }
 
             ],
-            default: "submit"
-        }).render(true);
+            submit: async (mod)=>{
+                const templateData = {
+                    t: "cone",
+
+                    author: game.userId,
+
+                    distance: weapon.system.range.value,
+
+                    direction: 45,
+                    angle: 30,
+
+                    x: 1000,
+
+                    y: 1000,
+
+                    fillColor: game.user.color
+                };
+
+                const templateDoc = new MeasuredTemplateDocument(templateData, { parent: canvas.scene });
+
+                const template = new game.fortyk.FortykTemplate(templateDoc);
+                sheet.minimize();
+                await template.drawPreview();
+                sheet.maximize();
+
+                let scene = game.canvas.scene;
+                let targets = this.getSprayTargets(template, scene, actor)[0];
+
+
+
+                if (targets.size === 0) {
+                    this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "No targets");
+                    return;
+                }
+
+                if (isNaN(mod)) {
+                    this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "Invalid Number");
+                    return;
+                }
+
+                let messageContent = "";
+                let updatedtargets = [];
+                let rolls = [];
+                let i = 1;
+                for (let token of targets) {
+
+                    let tokenActor = token.actor;
+                    if (tokenActor.id === actor.id) continue;
+                    if (tokenActor.getFlag("core", "dead")) continue;
+                    let tokenActorData = token.actor;
+                    let data = token.actor.system;
+
+                    let testTarget = 0;
+                    let tough = false;
+                    if (weapon.getFlag("fortyk", "sprayTough")) {
+                        tough = true;
+                    }
+                    if (tokenActor.type === "vehicle") {
+                        testTarget = data.crew.ratingTotal + mod;
+                    } else {
+                        if (tough) {
+                            testTarget = data.characteristics.t.total + mod;
+                        } else {
+                            testTarget = data.characteristics.agi.total + mod;
+                        }
+                    }
+                    let testThingy = "agi";
+                    if (tough) {
+                        testThingy = "t";
+                    }
+                    let test = await game.fortyk.FortykRolls.fortykTest(
+                        testThingy,
+                        "Test",
+                        testTarget,
+                        tokenActor,
+                        "Avoid Spray Attack",
+                        weapon,
+                        false,
+                        "",
+                        true
+                    );
+                    let hit = 0;
+                    if (!test.value) {
+                        updatedtargets.push(token._object);
+                        hit++;
+                    }
+
+                    messageContent +=
+                        `<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="${hit}" data-token="${token.id}">${token.name}'s</a> ` +
+                        test.template +
+                        `</div>`;
+                    let r = test.roll;
+                    r.dice[0].options.rollOrder = i;
+                    rolls.push(test.roll);
+                    i++;
+                }
+                messageContent += `<div class="chat-target">Selected targets may attempt to evade if they have a reaction remaining and have enough movement from their half-move to exit the attack's area of effect.</div>`;
+                game.user._onUpdateTokenTargets([]);
+                for(let target of updatedtargets){
+                    target.setTarget(true,{user:game.user, releaseOthers:false, groupSelection:true});
+                }
+                game.user.broadcastActivity({ targets: game.user.targets.ids });
+                let name;
+                if (actor.isToken) {
+                    name = actor.token.name;
+                } else {
+                    name = actor.name;
+                }
+                let chatOptions = {
+                    author: game.user._id,
+                    speaker: { actor, alias: name },
+                    rolls: rolls,
+                    content: messageContent,
+                    classes: ["fortyk"],
+                    sound: "sounds/dice.wav",
+                    flavor: `Spray Attack result`
+                };
+
+                await ChatMessage.create(chatOptions, {});
+                if (!psy) {
+                    await weapon.update({ "system.clip.value": ammo - consumption });
+                }
+            }
+        });
     }
     static async callTorrentAttackDialog(actor, testLabel, weapon, options, sheet, title = "Enter test modifier") {
         let torrent = weapon.getFlag("fortyk", "torrent");
@@ -2629,170 +2647,169 @@ export class FortykRollDialogs {
                 return;
             }
         }
-        new Dialog({
-            title: title,
+        foundry.applications.api.DialogV2.wait({
+            window:{title: title},
+            position:{width:100},
             content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="${tesmod}" autofocus/></p>`,
-            buttons: {
-                submit: {
-                    label: "OK",
-                    callback: async (html) => {
-                        const templateData = {
-                            t: "cone",
+            buttons: [{
+                label: "OK",
+                callback: async (event) => {
+                    let html=event.target.form;
+                    html.closest('dialog').setAttribute("hidden", "hidden");
+                    const templateData = {
+                        t: "cone",
 
-                            author: game.userId,
+                        author: game.userId,
 
-                            distance: weapon.system.range.value,
+                        distance: weapon.system.range.value,
 
-                            direction: 45,
-                            angle: torrent,
+                        direction: 45,
+                        angle: torrent,
 
-                            x: 1000,
+                        x: 1000,
 
-                            y: 1000,
+                        y: 1000,
 
-                            fillColor: game.user.color
-                        };
+                        fillColor: game.user.color
+                    };
 
-                        const templateDoc = new MeasuredTemplateDocument(templateData, { parent: canvas.scene });
+                    const templateDoc = new MeasuredTemplateDocument(templateData, { parent: canvas.scene });
 
-                        const template = new game.fortyk.FortykTemplate(templateDoc);
-                        sheet.minimize();
-                        await template.drawPreview();
-                        sheet.maximize();
+                    const template = new game.fortyk.FortykTemplate(templateDoc);
+                    sheet.minimize();
+                    await template.drawPreview();
+                    sheet.maximize();
 
-                        let scene = game.canvas.scene;
-                        let targets = this.getSprayTargets(template, scene, actor)[0];
+                    let scene = game.canvas.scene;
+                    let targets = this.getSprayTargets(template, scene, actor)[0];
 
-                        let mod = Number($(html).find('input[name="modifier"]').val());
+                    let mod = Number($(html).find('input[name="modifier"]').val());
+                    $(html).closest('dialog').setAttribute("hidden", "hidden");
+                    if (targets.size === 0) {
+                        this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "No targets");
+                        return;
+                    }
 
-                        if (targets.size === 0) {
-                            this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "No targets");
-                            return;
-                        }
+                    if (isNaN(mod)) {
+                        this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "Invalid Number");
+                        return;
+                    }
+                    let attackerToken=getActorToken(actor);
+                    let messageContent = "";
+                    let updatedtargets = [];
+                    let rolls = [];
+                    let i = 1;
+                    let targetList = [];
+                    for (let token of targets) {
+                        const collision = CONFIG.Canvas.polygonBackends['move'].testCollision(token._object.center, attackerToken.center, {mode:"any", type:"move"});
+                        if(collision)continue;
+                        let tokenActor = token.actor;
+                        if (tokenActor.id === actor.id) continue;
+                        if (tokenActor.getFlag("core", "dead")) continue;
+                        let tokenActorData = token.actor;
+                        let data = token.actor.system;
 
-                        if (isNaN(mod)) {
-                            this.callSprayAttackDialog(actor, testLabel, weapon, options, sheet, "Invalid Number");
-                            return;
-                        }
-                        let attackerToken=getActorToken(actor);
-                        let messageContent = "";
-                        let updatedtargets = [];
-                        let rolls = [];
-                        let i = 1;
-                        let targetList = [];
-                        for (let token of targets) {
-                            const collision = CONFIG.Canvas.polygonBackends['move'].testCollision(token._object.center, attackerToken.center, {mode:"any", type:"move"});
-                            if(collision)continue;
-                            let tokenActor = token.actor;
-                            if (tokenActor.id === actor.id) continue;
-                            if (tokenActor.getFlag("core", "dead")) continue;
-                            let tokenActorData = token.actor;
-                            let data = token.actor.system;
-
-                            let testTarget = 0;
-                            if (tokenActor.type === "vehicle") {
-                                testTarget = data.crew.ratingTotal + mod;
-                            } else {
-                                testTarget = data.characteristics.agi.total + mod;
-                            }
-                            let test = await game.fortyk.FortykRolls.fortykTest(
-                                "agi",
-                                "Test",
-                                testTarget,
-                                tokenActor,
-                                "Avoid Torrent Attack",
-                                weapon,
-                                false,
-                                "",
-                                true
-                            );
-
-                            if (!test.value) {
-                                //updatedtargets.push(token.id);
-                                targetList.push({ name: token.name, test: test, hits: 0, tokenId: token.id });
-                            } else {
-                                messageContent +=
-                                    `<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="0" data-token="${token.id}">${token.name}'s</a> ` +
-                                    test.template +
-                                    `</div>`;
-                            }
-
-                            let r = test.roll;
-                            r.dice[0].options.rollOrder = i;
-                            rolls.push(r);
-                            i++;
-                        }
-                        let allocatedHits = 0;
-                        let elligibleTargets = targetList.length;
-                        targetList.sort((a, b) => {
-                            if (a.test.dos > b.test.dos) {
-                                return -1;
-                            } else {
-                                return 1;
-                            }
-                        });
-                        let counter = 0;
-                        while (allocatedHits < rof && elligibleTargets > 0) {
-                            if (counter === targetList.length) {
-                                counter = 0;
-                            }
-
-                            let target = targetList[counter];
-                            let dos = target.test.dos;
-                            if (storm) dos *= 2;
-                            if (target.hits < dos) {
-                                if (storm) {
-                                    target.hits += 2;
-                                    allocatedHits += 2;
-                                } else {
-                                    target.hits++;
-                                    allocatedHits++;
-                                }
-
-                                if (target.hits === dos) {
-                                    elligibleTargets--;
-                                }
-                            }
-                            counter++;
-                        }
-                        for (const target of targetList) {
-                            messageContent += `<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="${target.hits}" data-token="${target.tokenId}">${target.name}'s</a> ${target.test.template} takes ${target.hits} hits!</div>`;
-                        }
-                        messageContent += `<div class="chat-target">Targets who suffer hits must pass an evasion test with degrees of success equal to the number of hits or take the remaining hits.</div>`;
-                        game.user.targets.clear();
-                        game.user.targets.add(...updatedtargets);
-                        game.user.broadcastActivity({ targets: updatedtargets });
-                        let name;
-                        if (actor.isToken) {
-                            name = actor.token.name;
+                        let testTarget = 0;
+                        if (tokenActor.type === "vehicle") {
+                            testTarget = data.crew.ratingTotal + mod;
                         } else {
-                            name = actor.name;
+                            testTarget = data.characteristics.agi.total + mod;
                         }
-                        let chatOptions = {
-                            author: game.user._id,
-                            speaker: { actor, alias: name },
-                            rolls: rolls,
-                            content: messageContent,
-                            classes: ["fortyk"],
-                            sound: "sounds/dice.wav",
-                            flavor: `Torrent Attack result`,
-                            flags: { fortyk: { targets: targetList } }
-                        };
-                        await ChatMessage.create(chatOptions, {});
-                        if (!psy) {
-                            let ammoConsumed = rof * consumption;
-                            if (ammoConsumed > 0) {
-                                let newAmmo = ammo - ammoConsumed;
-                                await weapon.update({ "system.clip.value": newAmmo });
+                        let test = await game.fortyk.FortykRolls.fortykTest(
+                            "agi",
+                            "Test",
+                            testTarget,
+                            tokenActor,
+                            "Avoid Torrent Attack",
+                            weapon,
+                            false,
+                            "",
+                            true
+                        );
+
+                        if (!test.value) {
+                            //updatedtargets.push(token);
+                            targetList.push({ name: token.name, test: test, hits: 0, tokenId: token.id });
+                        } else {
+                            messageContent +=
+                                `<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="0" data-token="${token.id}">${token.name}'s</a> ` +
+                                test.template +
+                                `</div>`;
+                        }
+
+                        let r = test.roll;
+                        r.dice[0].options.rollOrder = i;
+                        rolls.push(r);
+                        i++;
+                    }
+                    let allocatedHits = 0;
+                    let elligibleTargets = targetList.length;
+                    targetList.sort((a, b) => {
+                        if (a.test.dos > b.test.dos) {
+                            return -1;
+                        } else {
+                            return 1;
+                        }
+                    });
+                    let counter = 0;
+                    while (allocatedHits < rof && elligibleTargets > 0) {
+                        if (counter === targetList.length) {
+                            counter = 0;
+                        }
+
+                        let target = targetList[counter];
+                        let dos = target.test.dos;
+                        if (storm) dos *= 2;
+                        if (target.hits < dos) {
+                            if (storm) {
+                                target.hits += 2;
+                                allocatedHits += 2;
+                            } else {
+                                target.hits++;
+                                allocatedHits++;
                             }
+
+                            if (target.hits === dos) {
+                                elligibleTargets--;
+                            }
+                        }
+                        counter++;
+                    }
+                    for (const target of targetList) {
+                        messageContent += `<div class="chat-target"><a class="spray-torrent-ping" data-weapon="${weapon.id}" data-user="${game.user.id}" data-hits="${target.hits}" data-token="${target.tokenId}">${target.name}'s</a> ${target.test.template} takes ${target.hits} hits!</div>`;
+                    }
+                    messageContent += `<div class="chat-target">Targets who suffer hits must pass an evasion test with degrees of success equal to the number of hits or take the remaining hits.</div>`;
+                    game.user._onUpdateTokenTargets([]);
+
+                    game.user.broadcastActivity({ targets: [] });
+                    let name;
+                    if (actor.isToken) {
+                        name = actor.token.name;
+                    } else {
+                        name = actor.name;
+                    }
+                    let chatOptions = {
+                        author: game.user._id,
+                        speaker: { actor, alias: name },
+                        rolls: rolls,
+                        content: messageContent,
+                        classes: ["fortyk"],
+                        sound: "sounds/dice.wav",
+                        flavor: `Torrent Attack result`,
+                        flags: { fortyk: { targets: targetList } }
+                    };
+                    await ChatMessage.create(chatOptions, {});
+                    if (!psy) {
+                        let ammoConsumed = rof * consumption;
+                        if (ammoConsumed > 0) {
+                            let newAmmo = ammo - ammoConsumed;
+                            await weapon.update({ "system.clip.value": newAmmo });
                         }
                     }
                 }
-            },
-            default: "submit",
-
-            width: 100
-        }).render(true);
+            }
+                     ]
+        });
     }
     static getSprayTargets(template, scene, attacker) {
         let attackerToken = getActorToken(attacker);
@@ -2872,25 +2889,24 @@ export class FortykRollDialogs {
         return lineIntersect(rectangle, polygon, 0);
     }
     static async callForcefieldDialog(forcefield, actor, title = "Enter number of hits") {
-        new Dialog({
-            title: title,
+        foundry.applications.api.DialogV2.wait({
+            window:{title: title},
+            position:{width:100},
             content: `<p><label>Number of Hits:</label> <input id="modifier" type="number" name="modifier" value="1" autofocus/></p>`,
-            buttons: {
-                submit: {
-                    label: "OK",
-                    callback: (html) => {
-                        const hits = Number($(html).find('input[name="modifier"]').val());
-                        if (isNaN(hits)) {
-                            this.callForcefieldDialog(forcefield, actor, "Invalid Number");
-                        } else {
-                            FortykRolls.fortykForcefieldTest(forcefield, actor, hits);
-                        }
+            buttons: [{
+                label: "OK",
+                callback: (event) => {
+                    let html=event.target.form;
+                    html.closest('dialog').setAttribute("hidden", "hidden");
+                    const hits = Number($(html).find('input[name="modifier"]').val());
+                    if (isNaN(hits)) {
+                        this.callForcefieldDialog(forcefield, actor, "Invalid Number");
+                    } else {
+                        FortykRolls.fortykForcefieldTest(forcefield, actor, hits);
                     }
                 }
-            },
-            default: "submit",
-
-            width: 100
-        }).render(true);
+            }
+                     ]
+        });
     }
 }

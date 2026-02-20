@@ -324,6 +324,9 @@ export const applySceneAuras = async function (activeAuras, tokenObject){
         if(aura.system.notSelf){
             targets=targets.filter((token)=>caster.id!==token.actor.id);
         }
+        if(tokenObject.actor.id!==caster.id){
+            targets=[tokenObject];
+        }
         let auraItemType=aura.type;
         let range;
         let auraType;

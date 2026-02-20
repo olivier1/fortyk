@@ -1,5 +1,5 @@
 
-<form id="aeMod" class="aeMod">
+<section id="aeMod" class="aeMod">
     <div class="grid grid-3col">
         {{#each actor.effects as |ae key|}}
         <div class="flexrow list-item">
@@ -16,9 +16,8 @@
         </div>
         {{/each}}
     </div>
-    {{debug this}}
     <a class="ae-create aeMod button" title="Add Ae" data-item-id="{{item.uuid}}" data-actor-id="{{actor.uuid}}" data-token-id="{{../actor.token.id}}">Add Active Effect</a>
 
 
 
-</form>
+</section>

@@ -407,7 +407,7 @@ export class FortyKItem extends Item {
                     } else if (this.getFlag("fortyk", "lasMode") === 2) {
                         item.system.clip.consumption = 4;
                         item.system.damageFormula.value += "+2";
-                        item.system.pen.value = parseInt(item.system.pen.formula) + 2;
+                        item.system.pen.value = parseInt(item.system.pen.formula) + 5;
                         item.flags.fortyk.reliable = false;
                         item.flags.fortyk.unreliable = true;
                     }
@@ -1321,7 +1321,7 @@ export class FortyKItem extends Item {
             let aes=[];
             let effects;
             if(actor.isToken){
-                 let baseActor= actor.parent.baseActor;
+                let baseActor= actor.parent.baseActor;
                 let basePower= baseActor.getEmbeddedDocument("Item", powerId);
                 effects=basePower.effects;
             }else{
@@ -1340,7 +1340,7 @@ export class FortyKItem extends Item {
 
                 aeData.disabled = false;
                 aeData.origin = power.uuid;
-                aeData.statuses = [ae.name];
+                aeData.statuses.push(power.name);
                 aes.push(aeData);
             }
 
@@ -1420,8 +1420,7 @@ export class FortyKItem extends Item {
 
             aeData.disabled = false;
             aeData.origin = power.uuid;
-            aeData.statuses = [power.name];
-
+            aeData.statuses.push(power.name);
             let effectUuIds = [];
             for (let i = 0; i < targets.length; i++) {
                 let target = targets[i];

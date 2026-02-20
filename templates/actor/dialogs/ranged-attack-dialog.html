@@ -2,27 +2,27 @@
     <div class="flexcol dialog-column">
         <div class="flexcol attack-section">
             <label class="section-title">Attack Action</label>
-            <div class="list-item flexrow"{{#unless single}} hidden{{/unless}}>
+            <div class="list-item flexrow" {{#unless single}} hidden{{/unless}}>
 
-                <input type="radio" name="attack-type" value="{{modifiers.standard}}" index='0'attacktype="standard"label="Standard" {{#if single}}checked{{/if}}><label>Standard: +{{modifiers.standard}}</label>
+                <input type="radio" name="attack-type" value="{{modifiers.standard}}" data-index="0" attacktype="standard" data-label="Standard" {{#if single}}checked{{/if}}><label>Standard: +{{modifiers.standard}}</label>
             </div>
             <div class="list-item flexrow" {{#unless semi}} hidden{{/unless}}>
 
-                <input type="radio" name="attack-type" value="{{modifiers.semi}}" index='1' attacktype="semi"label="Semi-Auto"><label>Semi-Auto: +{{modifiers.semi}}</label>
+                <input type="radio" name="attack-type" value="{{modifiers.semi}}" data-index="1" attacktype="semi" data-label="Semi-Auto"><label>Semi-Auto: +{{modifiers.semi}}</label>
             </div>
             <div class="list-item flexrow" {{#unless full}} hidden{{/unless}}>
 
-                <input type="radio" name="attack-type" value="{{modifiers.full}}" index='2'attacktype="full"label="Full-Auto"{{#unless single}}checked{{/unless}}><label>Full-Auto: {{#if (greaterThan modifiers.full -1)}}+{{/if}}{{modifiers.full}}</label>
+                <input type="radio" name="attack-type" value="{{modifiers.full}}" data-index="2" attacktype="full" data-label="Full-Auto"{{#unless single}}checked{{/unless}}><label>Full-Auto: {{#if (greaterThan modifiers.full -1)}}+{{/if}}{{modifiers.full}}</label>
             </div>
             <div class="list-item flexrow" {{#unless supp}} hidden{{/unless}}>
 
-                <input type="radio" name="attack-type" value="{{modifiers.suppressive}}" index='3' attacktype="full"label="Suppressing Fire"><label>Suppressing Fire: {{modifiers.suppressive}}</label>
+                <input type="radio" name="attack-type" value="{{modifiers.suppressive}}" data-index="3" attacktype="full" data-label="Suppressing Fire"><label>Suppressing Fire: {{modifiers.suppressive}}</label>
             </div>
 
             <div class="list-item flexcol"{{#unless single}} hidden{{/unless}}>
                 {{#if vehicle}}
                 <div class="flexrow">
-                    <input type="radio" name="attack-type" value="{{modifiers.called}}"index='0' label="Called Shot" attacktype="called"><label>Called Shot: {{#if (greaterThan modifiers.called -1)}}+{{/if}}{{modifiers.called}}</label>
+                    <input type="radio" name="attack-type" value="{{modifiers.called}}" data-index="0" data-label="Called Shot" attacktype="called"><label>Called Shot: {{#if (greaterThan modifiers.called -1)}}+{{/if}}{{modifiers.called}}</label>
                     <select name="calledLoc">
                         <option value="20">Motive System</option>
                         <option value="60">Hull</option>
@@ -32,7 +32,7 @@
                 </div>
                 {{else}}
                 <div class="flexrow">
-                    <input type="radio" name="attack-type" value="{{modifiers.called}}" index='0' label="Called Shot" attacktype="called"><label>Called Shot: {{#if (greaterThan modifiers.called -1)}}+{{/if}}{{modifiers.called}}</label>
+                    <input type="radio" name="attack-type" value="{{modifiers.called}}" data-index="0" data-label="Called Shot" attacktype="called"><label>Called Shot: {{#if (greaterThan modifiers.called -1)}}+{{/if}}{{modifiers.called}}</label>
                     <select name="calledLoc">
                         <option value="9">Head</option>
                         <option value="69">Body</option>
@@ -57,11 +57,11 @@
             </div>
             <div class="list-item flexrow">
 
-                <div><input type="checkbox" name="guarded" value="{{modifiers.guarded}}" label="Guarded"></div><label>Guarded: {{modifiers.guarded}}</label>
+                <div><input type="checkbox" name="guarded" value="{{modifiers.guarded}}" data-label="Guarded"></div><label>Guarded: {{modifiers.guarded}}</label>
             </div>
             <div class="list-item flexrow">
 
-                <div><input type="checkbox" name="overwatch" value="-20" label="Overwatch"></div><label>Overwatch: -20</label>
+                <div><input type="checkbox" name="overwatch" value="-20" data-label="Overwatch"></div><label>Overwatch: -20</label>
             </div>
 
 

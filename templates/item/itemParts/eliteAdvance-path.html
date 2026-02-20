@@ -10,7 +10,6 @@
                 <label>Choose Ability:</label>
                 <select id="path-ability-select" data-index="{{@index}}">
                     <option value="">None</option>
-                    {{debug this}}
                     {{#each paths}}
                     <option value="{{uuid}}">{{_source.name}}</option>
                     {{/each}}

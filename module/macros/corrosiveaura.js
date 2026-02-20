@@ -1,4 +1,4 @@
-console.log("hey")
+
 for(let target of canvas.tokens.controlled){
     let ae=foundry.utils.duplicate(
                             game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("corrode")]

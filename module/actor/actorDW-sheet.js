@@ -440,7 +440,6 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let pointBuy = characterType.system.pointBuy;
         let base = characterType.system.characteristics.all;
         let chars = characterType.system.characteristics;
-        console.log(characterType.system.characteristics);
         let characteristics = {
             ws: {
                 label: "Weapon Skill",
@@ -1204,6 +1203,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         this.featureGear = undefined;
         this.featureSkills = undefined;
         this.featureAptitude = undefined;
+        this.featureEAs = undefined;
         this.feature = undefined;
     }
 

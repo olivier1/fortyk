@@ -45,6 +45,7 @@
   --terminal-glow: 0 0 2px #009900, 0 0 4px #009900, 0 0 6px #009900;
   --terminal-innerglow: inset 0 0 2px #009900, inset 0 0 4px #009900, inset 0 0 6px #009900;
   --terminal-error-glow: 0 0 2px #cc0000, 0 0 4px #cc0000, 0 0 6px #cc0000;
+  --terminal-warning-glow: 0 0 2px #cccc00, 0 0 4px #cccc00, 0 0 6px #cccc00;
   --terminal-text-shadow: 0 0 1px #009900;
   --terminal-font-size: 18px;
   --terminal-border-image: url('../assets/emptyslate.png');
@@ -78,7 +79,67 @@
 }
 .application {
   padding-bottom: 0.85em;
-  overflow:visible;
+  overflow:visible !important;
+}
+#sidebar-content{
+  padding-top:1em;
+  padding-bottom:2em;
+  padding-right:0.25em;
+}
+#sidebar-content.expanded:after{
+  position: absolute;
+  content: '';
+  pointer-events: none;
+  height: 100%;
+  width: 50%;
+  border-image-source: var(--terminal-border-image) !important;
+  border-image-slice: 33 29 65 33 fill !important;
+  /*border-image-outset: 1em 1em 0.4em 0.7em !important;*/
+  border-image-repeat: stretch !important;
+  border-image-width: 1.3em 1.3em 2em 1.3em !important;
+  background: none;
+  top: 0;
+  left: 350px;
+  z-index: 5;
+  overflow: visible;
+}
+#sidebar-tabs{
+  padding-right:30px;
+}
+#players::after{
+  display: block;
+  content: '';
+  position: absolute;
+  height:100%;
+  width:200px;
+  border-image-source: var(--terminal-border-image) !important;
+  border-image-slice: 33 29 65 33 fill !important;
+  border-image-outset: 0.95em 0.95em 0.85em 0.95em !important;
+  border-image-repeat: stretch !important;
+  border-image-width: 1em 1em 2em 1em !important;
+
+}
+
+
+#players{
+  position: relative;
+  width:200px;
+}
+#players-active{
+  padding-bottom:1em;
+}
+#players:not(.expanded){
+  gap:0;
+}
+#players:not(.expanded)>#players-inactive{
+  height:0;
+  padding:0;
+  border:0;
+}
+#scene-navigation-expand{
+  height: 32px;
+  width: fit-content;
+  top: 0;
 }
 .application:after{
   position:absolute;
@@ -101,9 +162,21 @@
 
 
 }
+/*highlights selected icons*/
+button.ui-control[aria-pressed=true], 
+a.ui-control[aria-pressed=true], 
+li.ui-control[aria-pressed=true], 
+.placeable-hud .control-icon[aria-pressed=true], 
+.placeable-hud input[aria-pressed=true]{
+  background: var(--terminal-dim) !important;
+  border-color: var(--terminal-warning) !important;
+  color: var(--terminal-success) !important;
+  border:2px solid;
+  box-shadow: var(--terminal-warning-glow) !important;
+}
 /* SPECIFIC EXCLUSIONS FOR ICONS - VERY IMPORTANT */
 /* DO NOT apply terminal styles to icon elements */
-i, .fa, .fas, .far, .fab, .fal, .fad, .fass, .fasr, .fasl,
+i:not(.region-color), .fa, .fas, .far, .fab, .fal, .fad, .fass, .fasr, .fasl,
 [class*="fa-"]:before,
 [class^="fa-"]:before,
 .icon:before,
@@ -142,9 +215,14 @@ input[name="search"]{
   box-shadow: var(--terminal-glow) !important;
 }
 
+button > span {
+  flex-shrink: 0;
+  max-width: 100%;
+}
 
 /* Buttons */
 button:not([class*="fsc-"], [class*="fa-"]), .button:not([class*="fsc-"], [class*="fa-"]) {
+
   background: none;
   color: var(--terminal-primary);
   border: 3px double var(--terminal-border) !important;
@@ -156,11 +234,10 @@ button:not([class*="fsc-"], [class*="fa-"]), .button:not([class*="fsc-"], [class
   display: inline-flex;
   justify-content: center;
   align-content: center;
-  flex-wrap: wrap;
   line-height: 14px !important;
   width:100%;
 }
-button.icon.toggle{
+button.icon.toggle:not(.ui-control){
   width:unset !important;
 }
 button.icon.toggle:disabled{
@@ -169,7 +246,7 @@ button.icon.toggle:disabled{
 button:hover:not([class*="fsc-"]), .button:hover:not([class*="fsc-"]) {
   box-shadow: var(--terminal-glow) !important;
   color: var(--terminal-bg) !important;
-  text-shadow: var(--terminal-text-shadow) !important;
+  text-shadow: var(--terminal-glow) !important;
 }
 
 
@@ -317,12 +394,12 @@ nav>a.active>*{
 #chat-log .inline-roll{
   background-image: none;
   background:none;
-  color: var(--terminal-text) !important;
+  color: var(--terminal-text) ;
 }
 #chat-log .inline-roll{
   background-image: none !important;
   background: none !important;
-  color: var(--terminal-text) !important;
+  color: var(--terminal-text) ;
 }
 #chat-log .inline-roll:hover{
   box-shadow: var(--terminal-glow) !important;
@@ -440,6 +517,7 @@ nav>a.active>*{
   color: var(--terminal-text);
   font-size: var(--terminal-font-size) !important;
   font-family: var(--terminal-font) !important;
+
 }
 
 /* Timestamps and metadata */
@@ -525,6 +603,7 @@ section.chat-sidebar .jump-to-bottom > a{
 
 .message-content {
   color: var(--terminal-text) !important;
+  overflow:visible;
 }
 
 #chat-log > * > * > * > * {
@@ -936,6 +1015,7 @@ select{
   border: 1px solid var(--terminal-border) !important;
   font-family: var(--terminal-font) !important;
   font-size: var(--terminal-font-size) !important;
+  width:auto !important;
 }
 
 /* Exclude icons from forced background styles */
@@ -1126,6 +1206,21 @@ i:not([class*="fa-"]):not(.colored-icon),
   text-shadow: 0 0 6px var(--terminal-primary) !important;
   font-family: 'Font Awesome 6 Pro'
 }
+.fa-user:before {
+  color: var(--terminal-warning); 
+  text-shadow: 0 0 6px var(--terminal-warning-glow) !important;
+  font-family: 'Font Awesome 6 Pro'
+}
+.fa-suitcase:before {
+  color: var(--terminal-primary); 
+  text-shadow: 0 0 6px var(--terminal-success-glow) !important;
+  font-family: 'Font Awesome 6 Pro'
+}
+.fa-folder:before {
+  color: var(--terminal-text); 
+  text-shadow: 0 0 6px var(--terminal-glow) !important;
+  font-family: 'Font Awesome 6 Pro'
+}
 .fa-trash:before {
   color: var(--terminal-error); 
   text-shadow: var(--terminal-error-glow) !important;
@@ -1210,8 +1305,8 @@ i:not([class*="fa-"]):not(.colored-icon),
 input[type="checkbox"]:before {
   position: absolute;
   display: block;
-  width: 20px;
-  height: 20px;
+  width: 20px !important;
+  height: 20px ;
   border: 1px solid var(--terminal-border);
   content: "";
   background: var(--terminal-bg);
@@ -1222,8 +1317,8 @@ input[type="checkbox"]:after {
   display: block;
   left: 2px;
   top: 2px;
-  width: 16px;
-  height: 16px;
+  width: 16px !important;
+  height: 16px !important;
   border-width: 1px;
   border-style: solid;
   border-color: var(--terminal-secondary);
@@ -1257,9 +1352,9 @@ input[type="checkbox"]:not(:disabled):hover:before {
   border-color: var(--terminal-primary);
 }
 input[type="checkbox"]{
-  position:relative !important;
-  width: 20px;
-  height: 20px;
+  position: relative !important;
+  width: 20px !important;
+  height: 20px !important;
 }
 h1, h2, h3, h4, h5, h6{
   font-family: "Inquisitor";
@@ -1273,13 +1368,21 @@ h1, h2, h3, h4, h5, h6{
   font-size:var(--terminal-font-size);
   font-family: var(--terminal-font);
 }
+header.folder-header{
+  background-color: var(--terminal-bg) !important;
+}
+.folder-header,
 a,
+a>*,
 u{
   transition: all 0.3s ease !important;
   background-color: none !important;
   background: none !important;
+  color:var(--terminal-text);
 }
+.folder-header:hover,
 a:hover,
+a:hover>*,
 u:hover{
 
   color: var(--terminal-bg) !important;
@@ -1302,13 +1405,25 @@ u:hover{
   display: flex;
 }
 .grid,
+.grid-1col{
+  display: grid;
+  grid-column: span 1 / span 1;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  grid-template-rows: max-content;
+  grid-auto-rows: max-content;
+  grid-gap: 0;
+  margin: 10px 0;
+  padding: 0;
+  place-items: center;
+  grid-auto-flow: dense;
+}
 .grid-2col {
   display: grid;
   grid-column: span 2 / span 2;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: max-content;
   grid-auto-rows: max-content;
-  grid-gap: 0px;
+  grid-gap: 0;
   margin: 10px 0;
   padding: 0;
   place-items: center;
@@ -1447,6 +1562,18 @@ u:hover{
   -ms-flex-pack: end;
   justify-content: flex-end;
   text-align: right;
+}
+.flex-start{
+  display: flex;
+  -webkit-box-align: flex-start;
+  -ms-flex-align:flex-start;
+  align-items: flex-start;
+  -webkit-box-pack: flex-start;
+  -ms-flex-pack: flex-start;
+  justify-content: flex-start;
+  text-align: flex-start;
+  align-self: flex-start;
+  justify-self: flex-start;
 }
 .flex-center {
   display: flex;
@@ -2249,7 +2376,7 @@ prose-mirror{
   font-weight: bolder;
 }
 .fortyk .psy-grid-overflow{
-  height:calc(100vh - 460px);
+  height:calc(100vh - 650px);
   overflow-y:auto;
 }
 .fortyk .psykana{
@@ -2355,9 +2482,12 @@ prose-mirror{
   flex:4;
 }
 .tntselect{
-  width:100%;
+
   height:530px;
   overflow: auto;
+}
+.hidden{
+  display:none;
 }
 .tntitem{
   border: 1px solid #999;

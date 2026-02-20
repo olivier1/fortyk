@@ -1320,7 +1320,6 @@ returns the roll message*/
         lastHit = null,
         targets = null
     ) {
-        console.log(fortykWeapon);
         let name = actor.getName();
         let weapon = foundry.utils.deepClone(fortykWeapon);
         if (!weapon.system.isPrepared) {
@@ -8250,7 +8249,7 @@ returns the roll message*/
                 effect = this.filterAeDupplicates(effect);
 
                 let actor;
-                if (token instanceof Token) {
+                if (token instanceof foundry.canvas.placeables.Token) {
                     actor = token.actor;
                 } else {
                     actor = token;

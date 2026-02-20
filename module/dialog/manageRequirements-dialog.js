@@ -165,7 +165,6 @@ export class ManageRequirementsDialog extends HandlebarsApplicationMixin(Applica
         let el=event.currentTarget;
         let label=el.options[el.selectedIndex].innerHTML;
         let flagId=el.value;
-        console.log(el)
         let spec=el.options[el.selectedIndex].dataset.spec;
         let type=el.options[el.selectedIndex].dataset.type;
         this.chosenFlag={flagId:flagId, label:label, spec:spec, type:type};
@@ -334,7 +333,6 @@ export class ManageRequirementsDialog extends HandlebarsApplicationMixin(Applica
     _onDeleteSkillClick(event){
         let flag=event.currentTarget.dataset.id;
         this.flag.skills[flag]=null;
-        console.log(this);
         this.render();
     }
     async _onCompendiumChange(event){

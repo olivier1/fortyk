@@ -1,6 +1,6 @@
-<form class="{{cssClass}} item-sheet flexcol">
+<section class="{{cssClass}} item-sheet flexcol">
     <header class="sheet-header">
-        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{name}}"/>
+        <img class="profile-img" src="{{img}}" data-action="editImage" data-field="img" alt="Portrait">
 
     </header>
     {{#if isGM}}
@@ -48,13 +48,13 @@
     </div>
     {{#if system.isAura.value}}
     <div class="flexcol">
-            <label>Aura Type:</label>
+        <label>Aura Type:</label>
 
-            <select class="power-char" name="system.isAura.auraType">
-                {{selectOptions FORTYK.auraTypes selected=system.isAura.auraType valueAttr="value" labelAttr="label"}}
+        <select class="power-char" name="system.isAura.auraType">
+            {{selectOptions FORTYK.auraTypes selected=system.isAura.auraType valueAttr="value" labelAttr="label"}}
 
-            </select>
-        </div>
+        </select>
+    </div>
     <div class="flexrow">
         <label>Doesn't Affect Self:</label>
         <input type="checkbox" name="system.isAura.notSelf" {{checked system.isAura.notSelf}}>
@@ -109,4 +109,4 @@
         {{{enrichedDescription}}}
         {{/if}}
     </div>
-</form>
+</section>

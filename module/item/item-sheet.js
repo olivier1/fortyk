@@ -25,13 +25,14 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
                     icon: 'fas fa-asterisk',
                     label: 'Manage AEs',
                     action: 'manageAEs',
-                    visible: this.isGM // Only show if the user is the owner (GM)
+                    visible: this.isGM // Only show if the user is the GM
                 }
             ]
         },
         actions: {
 
-            manageAEs: this._onModifierClick
+            manageAEs: this._onModifierClick,
+            editImage: this.#onEditImage
         }
 
     }
@@ -40,15 +41,16 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
             template: 'systems/fortyk/templates/item/item-sheet.html',
             scrollable: ['']
         },
+        description: {
+            template: 'systems/fortyk/templates/item/itemParts/description.html'
+        },
         ammunitionMain: {
             template: 'systems/fortyk/templates/item/itemParts/ammunition-main.html'
         },
         mods: {
             template: 'systems/fortyk/templates/item/itemParts/mods.html'
         },
-        description: {
-            template: 'systems/fortyk/templates/item/itemParts/description.html'
-        },
+
         armorMain: {
             template: 'systems/fortyk/templates/item/itemParts/armor-main.html'
         },
@@ -95,7 +97,6 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
 
         const item = this.document;
         const itemType=item.type;
-        console.log(itemType);
         // Modify tabs based on document properties
         switch(itemType){
             case "ammunition":
@@ -239,7 +240,14 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
         parts.form.template = templatePath;
         return parts;
     }
-
+    async activateEditor(name, options = {}, initialContent = "") {
+        const editor = this.editors[name];
+        options.engine = "prosemirror";
+        // Additional configuration for plugins or collaborative editing can be added here
+        TextEditor.create(options, initialContent, this.entity, name).then(editor => {
+            this.editors[name] = editor;
+        });
+    }
 
 
     /* -------------------------------------------- */
@@ -248,7 +256,8 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
     async _prepareContext(options) {
 
         const item = this.document;
-        const data = this.document;
+        const data = foundry.utils.mergeObject(this.document, super._prepareContext(options));
+
         data.tabs=this._prepareTabs("sheet");
         data.enrichedDescription= await foundry.applications.ux.TextEditor.implementation.enrichHTML(data.system.description.value,
                                                                                                      {
@@ -515,10 +524,7 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
             event.stopImmediatePropagation();
             event.preventDefault();
         });
-        $("select:not([class])").change(function (event){
-            event.stopImmediatePropagation();
-            event.preventDefault();
-        });
+
     }
     async _onNavFlagConfirmClick(event){
         let navFlagInput=document.getElementById("navpowerflaginput");
@@ -1033,7 +1039,7 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
         }
     }
     static async _onSubmitForm(event, form, formData){
-        console.log(event,formData);
+        console.log(formData);
         event.preventDefault();
         let object=formData.object;
         let description=object.system?.description?.value;
@@ -1048,5 +1054,17 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
 
         }
         await this.document.update(formData.object);
+    }
+    static async #onEditImage(event, target) {
+        const field = target.dataset.field || "img"
+        const current = foundry.utils.getProperty(this.document, field)
+
+        const fp = new foundry.applications.apps.FilePicker({
+            type: "image",
+            current: current,
+            callback: (path) => this.document.update({ [field]: path })
+        })
+
+        fp.render(true)
     }
 }
