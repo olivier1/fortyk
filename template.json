@@ -698,6 +698,7 @@
                 "fuel": 0,
                 "fuelMax":0,
                 "profit": 0,
+                "trade":0,
                 "type": "Number"
             }
         },
@@ -1498,7 +1499,7 @@
             },
             "range": {
                 "value": 0,
-                "type": "Number"
+                "type": "String"
             },
             "strength": {
                 "value": "0",

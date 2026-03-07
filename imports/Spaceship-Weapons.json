@@ -1,0 +1,306 @@
+{
+  "Pyros Melta-Cannons": {
+    "Type": "Macrobatteries",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Strength": 3,
+    "Range": "Short",
+    "Note": "Rolls of 10s on this weapons attack dice starts a fire on the opposing ship if the attack roll is successful"
+  },
+  "Stygies-Pattern Bombardment Cannons": {
+    "Type": "Macrobatteries",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Strength": 3,
+    "Range": "Short",
+    "Note": "Very effective against ground and stationary targets, roll an extra die against such targets"
+  },
+  "Disruption Macrocannon Broadside": {
+    "Type": "Macrobatteries",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Strength": 1,
+    "Range": "Short",
+    "Note": "Broadside, negates 4 levels of the oponent's shield"
+  },
+  "Disruption Macrocannons": {
+    "Type": "Macrobatteries",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Strength": 0,
+    "Range": "Short",
+    "Note": "Negates two levels of the oponent's shield"
+  },
+  "Lathe Grav-Culverin Broadside": {
+    "Type": "Macrobatteries",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Strength": 2,
+    "Range": "Medium",
+    "Note": "Broadside, Self propelled Warhead"
+  },
+  "Ryza Pattern Plasma Battery": {
+    "Type": "Macrobatteries",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Strength": 3,
+    "Range": "Short",
+    "Note": "Vapourisation"
+  },
+  "Mars Pattern Macrocannon Broadside": {
+    "Type": "Macrobatteries",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Strength": 3,
+    "Range": "Short",
+    "Note": "Broadside (requires port or starport slot)"
+  },
+  "Mars Pattern Macrocannons": {
+    "Type": "Macrobatteries",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Strength": 1,
+    "Range": "Short",
+    "Note": null
+  },
+  "Sunsear Las-Broadside": {
+    "Type": "Macrobatteries",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 1,
+    "Strength": 3,
+    "Range": "Medium",
+    "Note": "Broadside"
+  },
+  "Sunsear Laser Battery": {
+    "Type": "Macrobatteries",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Strength": 2,
+    "Range": "Medium",
+    "Note": null
+  },
+  "Hecutor-Pattern Plasma Battery": {
+    "Type": "Macrobatteries",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 1,
+    "Strength": 3,
+    "Range": "Medium",
+    "Note": "Vapourisation"
+  },
+  "Hecutor-Pattern Plasma Broadside": {
+    "Type": "Macrobatteries",
+    "Appropriate Hull Types": "Battlecruisers, Grand Cruisers",
+    "Power": 1,
+    "Strength": 5,
+    "Range": "Medium",
+    "Note": "Vapourisation, Broadside"
+  },
+  "Grapple Cannon": {
+    "Type": "Macrobatteries",
+    "Appropriate Hull Types": "Raiders",
+    "Power": 0,
+    "Strength": null,
+    "Range": "Short",
+    "Note": "Special YARR"
+  },
+  "Staravar Laser Macrobattery (AT)": {
+    "Type": "Macrobatteries",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Strength": 4,
+    "Range": "Medium",
+    "Note": "Archaeotech"
+  },
+  "Las-burner": {
+    "Type": "Lances",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 2,
+    "Strength": 3,
+    "Range": "Short",
+    "Note": "Small Weapon, Versatile"
+  },
+  "Mezoa Lance Battery": {
+    "Type": "Lances",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 3,
+    "Strength": 6,
+    "Range": "Medium",
+    "Note": null
+  },
+  "Mezoa Lance Weapon": {
+    "Type": "Lances",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Strength": 3,
+    "Range": "Medium",
+    "Note": null
+  },
+  "Starbreaker Lance WEapon": {
+    "Type": "Lances",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Strength": 2,
+    "Range": "Medium",
+    "Note": null
+  },
+  "Titanforge Lance Battery": {
+    "Type": "Lances",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 2,
+    "Strength": 3,
+    "Range": "Medium",
+    "Note": null
+  },
+  "Titanforge Lance Weapon": {
+    "Type": "Lances",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Strength": 1,
+    "Range": "Medium",
+    "Note": null
+  },
+  "Voidsunder Lance Battery": {
+    "Type": "Lances",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 4,
+    "Strength": 7,
+    "Range": "Medium",
+    "Note": "Heavy Weapon"
+  },
+  "Sunhammer Lance": {
+    "Type": "Lances",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 3,
+    "Strength": 3,
+    "Range": "Medium",
+    "Note": null
+  },
+  "Sunhammer Lance Battery": {
+    "Type": "Lances",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 6,
+    "Strength": 6,
+    "Range": "Medium",
+    "Note": null
+  },
+  "Godsbane Lance": {
+    "Type": "Lances",
+    "Appropriate Hull Types": "Battlecruisers, Grand Cruisers",
+    "Power": 3,
+    "Strength": 4,
+    "Range": "Medium",
+    "Note": "Beam DispersionEffect"
+  },
+  "Godsbane Lance Battery": {
+    "Type": "Lances",
+    "Appropriate Hull Types": "Battlecruisers, Grand Cruisers",
+    "Power": 6,
+    "Strength": 8,
+    "Range": "Medium",
+    "Note": "Beam DispersionEffect"
+  },
+  "Star-flare Lance (AT)": {
+    "Type": "Lances",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 3,
+    "Strength": 6,
+    "Range": "Medium",
+    "Note": "Archaeotech. Pinpoint Accuracy"
+  },
+  "Mars-Pattern Nova Cannon": {
+    "Type": "Nova Cannons",
+    "Appropriate Hull Types": "Cruisers",
+    "Power": 2,
+    "Strength": 4,
+    "Range": "Medium-Long",
+    "Note": "Core Architecture"
+  },
+  "Ryza Pattern Nova Cannon": {
+    "Type": "Nova Cannons",
+    "Appropriate Hull Types": "Cruisers",
+    "Power": 3,
+    "Strength": 5,
+    "Range": "Medium-Long",
+    "Note": "Core Architecture, Overheating Systems"
+  },
+  "Jovian-Pattern Nova Cannon (AT)": {
+    "Type": "Nova Cannons",
+    "Appropriate Hull Types": "Cruisers",
+    "Power": 4,
+    "Strength": 6,
+    "Range": "Medium-Long",
+    "Note": "Archaeotech, Vortex Warhead, Core Architecture, Unstable Ammunition"
+  },
+  "Fortis Pattern TT": {
+    "Type": "Torpedo Tubes",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Strength": 6,
+    "Range": "Long",
+    "Note": "Volatile, Enhanced Magnetic Coils"
+  },
+  "Gryphonne pattern TT": {
+    "Type": "Torpedo Tubes",
+    "Appropriate Hull Types": "Raiders, Frigates, Light Cruisers, Cruisers",
+    "Power": 0,
+    "Strength": 4,
+    "Range": "Long",
+    "Note": "Volatile"
+  },
+  "Mars Pattern TT": {
+    "Type": "Torpedo Tubes",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Strength": 6,
+    "Range": "Long",
+    "Note": "Volatile"
+  },
+  "Voss Pattern TT": {
+    "Type": "Torpedo Tubes",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Strength": 2,
+    "Range": "Long",
+    "Note": "Volatile"
+  },
+  "Plasma Accelerated TT (AT)": {
+    "Type": "Torpedo Tubes",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Strength": 6,
+    "Range": "Long",
+    "Note": "Archaeotech, Hot Launch, Augur Accuracy (+10 to hit), Volatile"
+  },
+  "Hold Landing Bay": {
+    "Type": "Landing Bays",
+    "Appropriate Hull Types": "Transports",
+    "Power": 0,
+    "Strength": 2,
+    "Range": "Long",
+    "Note": "Jury-Rigged, Retrofit, Structural Impact"
+  },
+  "Jovian-Pattern Escort Bay": {
+    "Type": "Landing Bays",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Strength": 1,
+    "Range": "Long",
+    "Note": null
+  },
+  "Jovian-Pattern Landing Bay": {
+    "Type": "Landing Bays",
+    "Appropriate Hull Types": "Crusiers",
+    "Power": 0,
+    "Strength": 2,
+    "Range": "Long",
+    "Note": null
+  },
+  "Lathe Pattern Landing Bay": {
+    "Type": "Landing Bays",
+    "Appropriate Hull Types": "Crusiers",
+    "Power": 0,
+    "Strength": 2,
+    "Range": "Long",
+    "Note": "Energy Field"
+  }
+}

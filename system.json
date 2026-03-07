@@ -2,7 +2,7 @@
   "id": "fortyk",
   "title": "fortyk",
   "description": "The fortyk system for FoundryVTT!",
-  "version": "3.4.2.1",
+  "version": "3.4.3",
   "compatibility": {
     "minimum": "13",
     "verified": "13",
@@ -32,6 +32,11 @@
       "flags": {}
     }
   ],
+  "documentTypes": {
+    "RegionBehavior": {
+      "fortykElevationBehavior": {}
+    }
+  },
   "packs": [
     {
       "name": "skills",
@@ -460,6 +465,32 @@
         "ASSISTANT": "OWNER"
       },
       "flags": {}
+    },
+    {
+      "label": "Ship Components",
+      "type": "Item",
+      "name": "ship-components",
+      "path": "packs/ship-components",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {},
+      "package": "system"
+    },
+    {
+      "label": "Ship Hulls",
+      "type": "Actor",
+      "name": "ship-hulls",
+      "path": "packs/ship-hulls",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {},
+      "package": "system"
     }
   ],
   "packFolders": [
@@ -478,7 +509,8 @@
             "psychic-powers",
             "navigator-powers",
             "skills",
-            "elite-advances"
+            "elite-advances",
+            "ship-components"
           ],
           "folders": [
             {
@@ -538,7 +570,8 @@
           "sorting": "m",
           "color": "#228b22",
           "packs": [
-            "fortyk-actors"
+            "fortyk-actors",
+            "ship-hulls"
           ],
           "folders": []
         },
@@ -569,7 +602,7 @@
   "socket": true,
   "url": "https://github.com/olivier1/fortyk",
   "manifest": "https://raw.githubusercontent.com/olivier1/fortyk/master/system.json",
-  "download": "https://github.com/olivier1/fortyk/archive/3.4.2.1.zip",
+  "download": "https://github.com/olivier1/fortyk/archive/3.4.3.zip",
   "license": "LICENSE.txt",
   "grid": {
     "units": "m"

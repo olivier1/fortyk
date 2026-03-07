@@ -444,7 +444,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                     }
                 ],
                 default: "submit"
-            }).render(true);
+            });
         });
     }
 

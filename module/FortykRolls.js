@@ -3862,7 +3862,7 @@ returns the roll message*/
             };
             await ChatMessage.create(hayOptions, {});
         }
-        if (actor.getFlag("fortyk", "hammerblow") && lastHit.attackType === "All Out") {
+        if (actor.getFlag("fortyk", "hammerblow") && lastHit.attackType === "allout") {
             if (hammer) {
                 await fortykWeapon.setFlag("fortyk", "concussive", false);
             } else {

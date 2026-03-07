@@ -21,7 +21,7 @@ export class tntDialog extends HandlebarsApplicationMixin(ApplicationV2) {
             scrollable:['.tntgrid']
         }
     }
-    
+
     async _prepareContext(options){
         let context=await super._prepareContext(options);
         let tnts;
@@ -32,7 +32,7 @@ export class tntDialog extends HandlebarsApplicationMixin(ApplicationV2) {
             tnts = await vehicleTraits.getDocuments();
         } else {
             var dh2Talents = await game.packs.get("fortyk.talent-core-dh2");
-             this.#compendiums.dh2Talents=dh2Talents;
+            this.#compendiums.dh2Talents=dh2Talents;
             tnts = await dh2Talents.getDocuments();
 
             var dh2Traits = await game.packs.get("fortyk.traits-core-dh2");
@@ -147,8 +147,29 @@ export class tntDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         html.find(".tntfilter").keyup(this._onTntFilterChange.bind(this));
         html.find(".tntfilter").ready(this._onPopupReady.bind(this));
         html.find(".submitBtn").click(this._onSubmit.bind(this));
+        html.find('.tntdescr-button').click(this._onTntDescrClick.bind(this));
     }
-
+    _onTntDescrClick(event){
+        event.preventDefault();
+        let descr = event.target.attributes["data-description"].value;
+        var options = {
+            width: 300,
+            height: 400
+        };
+        var name=event.currentTarget.dataset["name"];
+        let dlg = new Dialog({
+            title: `${name} Description`,
+            content: "<p>"+descr+"</p>",
+            buttons: {
+                submit: {
+                    label: "OK",
+                    callback: null
+                }
+            },
+            default: "submit",
+        }, options);
+        dlg.render(true);
+    }
 
     _onTntFilterChange(event) {
         let tnts=document.getElementsByName("tntEntry");
@@ -174,7 +195,7 @@ export class tntDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     async _onSubmit(event){
         let actor=this.options.actor;
-       let html = document.getElementById(this.id);
+        let html = document.getElementById(this.id);
         let selectedIds = [];
         $(html)
             .find("input:checked")

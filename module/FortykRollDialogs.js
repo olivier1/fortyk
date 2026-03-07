@@ -2346,7 +2346,7 @@ export class FortykRollDialogs {
                 {
                     label: "OK",
                     callback: async (html) => {
-                        let elements=$(html).target.form.elements;
+                        let elements=html.target.form.elements;
                         html.target.closest('dialog').setAttribute("hidden", "hidden");
                         let other = Number(elements.other.value);
                         modifierTracker.push({ value: other, label: "Input Modifier" });

@@ -1,0 +1,164 @@
+{
+  "Mimic Engine": {
+    "Component type": "Plasma Drive",
+    "Appropriate Hull Types": "Crs",
+    "Power": "18 Gen.",
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "HA74",
+    "Notes": "-20 Perception, Appear on Sensors as different type of Vessel"
+  },
+  "Ghost Field": {
+    "Component type": "Void Shields",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 8,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "RT207",
+    "Notes": "-20% Ballistic Skill to Target Ship; -30% Ballistic for Lance Weapons and Hit & Run Actions; Cannot work at the same time as Void Shields"
+  },
+  "Shard Cannon Battery": {
+    "Component type": "Macrobatteries",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "RT208",
+    "Notes": "Can never become Unpowered; If Destroyed 2d5 additional Hull Integrity Damage"
+  },
+  "Dark Cannon": {
+    "Component type": "Macrobatteries",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 3,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "HA74",
+    "Notes": "If Hit, -15% Ballistic Skill during following Round"
+  },
+  "Energy Drain Matrix": {
+    "Component type": "Macrobatteries",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 3,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "HA74",
+    "Notes": "If Hit, -1 Speed or -5 Manoeuvrability per Attack; Lasts 2 Rounds"
+  },
+  "Runecaster": {
+    "Component type": "Augments & Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "RT208",
+    "Notes": "Reduces time dilation by half. +20 to all navigate warp tests"
+  },
+  "Micro Laser Defence Grid": {
+    "Component type": "Augments & Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 2,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "RT208",
+    "Notes": "Wall of Light: Increase the ship’s turret rating by 2.\rExternal: This Component does not require hull space.\rAlthough it is external, it can only be destroyed or damaged\rby a Critical Hit."
+  },
+  "Gravity Sails": {
+    "Component type": "Augments & Enhancements",
+    "Appropriate Hull Types": "L-Crs, Crs",
+    "Power": 5,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "RT208",
+    "Notes": "The Currents of Space: A starship with this Component\rgains +1 Speed and +5 Manoeuvrability.\r\nExternal: This Component does not require hull space.\rAlthough it is external, it can only be destroyed or damaged\rby a Critical Hit."
+  },
+  "Chameleon Hull": {
+    "Component type": "Augments & Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "HA74",
+    "Notes": "-10 Tech-Use changed Hull Colours/Markings; -20% Tech-Use to Program additional Patterns; External Component"
+  },
+  "Grav Repulsors": {
+    "Component type": "Augments & Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": "2023-02-28T23:00:00.000Z",
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "HA74",
+    "Notes": "Reduce Hull Integrity Damage by 1-3 against Slow Moving Ordinance; External Component"
+  },
+  "Shadowfield": {
+    "Component type": "Augments & Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 8,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "HA75",
+    "Notes": "Darkened Craft: This Component grants a +20 bonus to the Silent Running Manoeuvre. Any Active Augury or Focused Augury Extended Action attempted against the vessel suffers a –20 penalty. Rolling Fog: All ships firing at a ship with a functioning Shadowfield suffer a –20 to their Ballistic Skill Tests. Any Pilot Tests to perform Hit and Run attacks suffer a –30. Energetic Interference: A ship with a Shadowfield must choose whether it is using its Void Shields or Shadowfield at the beginning of combat."
+  },
+  "Warp Disrupter": {
+    "Component type": "Augments & Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 3,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "HA75",
+    "Notes": "Pskyer 2d5 Damage, reduced by Toughness, 1d5-1 Fatigue; -10% Focus Power; -10% x DoS for Warp Communication"
+  },
+  "Recovery Chambers": {
+    "Component type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 3,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "HA74",
+    "Notes": "Lightly Damaged Patients Pass Medicae 1/hour; Heavily/Critically Damaged Patients Pass Medicae 1/day; Next Game Session, if Fate Point spent 1-2 has no effect"
+  },
+  "Warp Gate Map": {
+    "Component type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "HA74",
+    "Notes": "Navigation (Warp) to Locate; -20% Navigation (Warp) to Traverse; On Failure, vessel went somewhere else"
+  },
+  "Xenos Librarium": {
+    "Component type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "HA74",
+    "Notes": "A collection of Xenos writings and common artefacts has been compiled aboard the vessel. The very presence of these objects constitutes a heretical offence to all but the most curious and compassionate members of the Inquisition. Alien Tomes: Any Forbidden Lore Tests that the gamemaster deems applicable receive a +10 bonus when made aboard this vessel."
+  },
+  "Living Metal Structure": {
+    "Component type": "Augments & Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Custom",
+    "Notes": "The ship recovers one hull integrity per game turn"
+  },
+  "Dream chambers": {
+    "Component type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Custom",
+    "Notes": "These chambers constructed from an odd bonelike materiel, allows users to experience concious dreams where they can wrestle and appease their subconcious. Characters may use this facility during downtime, in which they must pass a willpower test. If sucessful they appease their subconcious and lose 1d5 insanity. If they fail, their subconcious rebels and they gain 1 insanity point."
+  },
+  "": {
+    "Component type": null,
+    "Appropriate Hull Types": null,
+    "Power": null,
+    "Space": null,
+    "Rarity": null,
+    "Source": null,
+    "Notes": null
+  }
+}

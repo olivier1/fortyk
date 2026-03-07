@@ -3,6 +3,14 @@
          data-group="{{tabs.cargo.group}}">
             <div class="flexrow resources">
                 <div class="resource flex-group-center">
+                    <label for="system.secChar.fatigue.value" class="resource-label">Trade Capacity</label>
+                    <div class="resource-content flexcol flex-center flex-between">
+                 
+
+                        <input type="text" class="combat-resources" data-target="system.cargo.trade" value="{{system.cargo.trade}}" data-dtype="Number"/>
+                    </div>
+                </div>
+                <div class="resource flex-group-center">
                     <label for="system.secChar.fatigue.value" class="resource-label">Cargo Capacity</label>
                     <div class="resource-content flexcol flex-center flex-between">
                         {{system.cargo.value}}

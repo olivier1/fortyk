@@ -1,0 +1,542 @@
+{
+  "Cargo Hold and Passenger Compartments": {
+    "Type": null,
+    "Appropriate Hull Types": null,
+    "Power": null,
+    "Space": null,
+    "Rarity": null,
+    "Source": null,
+    "Notes": null
+  },
+  "Cargo Hold and Ligther Bay": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "Raiders, Frigates, Light Cruisers, Cruisers",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "Core 205",
+    "Notes": "Provides limited spaces to hide some illicit cargo, Unbalanced (-3 manoeuvrability)(30 cargo space; 2 trade capacity)"
+  },
+  "Compartmentalized Cargo Hold": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "Raiders, Frigates, Light Cruisers, Cruisers",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "Core 205",
+    "Notes": "45 cargo space; 3 trade capacity, loading and unloading cargo takes +1 game turn."
+  },
+  "Main Cargo Hold": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "Transports",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "Core 205",
+    "Notes": "60 cargo space; 4 trade capacity"
+  },
+  "Gargantua Holding Bay": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "All but raider and frigates",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Extremely Rare",
+    "Source": "Custom",
+    "Notes": "Unbalanced. This takes the place of a port or starboard weapon, or a main cargo hold. Allows the storing and maintenance of vehicles and super heavy vehicles, Repairs take 50% longer and cost 40% more. Can repair one super heavy vehicle at a time."
+  },
+  "Titanicus Pattern Repair Bay": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "All",
+    "Power": 0,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "Custom",
+    "Notes": "This component permits repairs of an additional super heavy vehicle. This component does not provide storage for super heavy vehicles."
+  },
+  "Luxury Passenger Quarters": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "Core 205",
+    "Notes": "Increases value of Trade Routes of this vessel by 1, -1 Morale"
+  },
+  "Barracks": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "Core 205",
+    "Notes": "Soldiers, Reinforcements (conditional +20 Boarding actions / Hit n Run)"
+  },
+  "Evacuation Bay *": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "Raiders, Frigates, Ligth Cruisers, Cruisers",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "HAq 73",
+    "Notes": "60 cargo space; 4 trade capacity; the contents of the cargo hold may be expelled into the void as a free action."
+  },
+  "Shadowblind Bays": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 3,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "Storm 161",
+    "Notes": "45 cargo, 3 trade capacity; the contents of the bays are obscured by voidshields and static screens requiring a -40 scrutiny test to detect their contents."
+  },
+  "Xenos Habitats": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "Storm 161",
+    "Notes": "Grants confortable spaces for xeno passengers, granting a +10 to interaction tests with them, -1 Morale"
+  },
+  "Brig": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "BFK 42",
+    "Notes": "Provides a secure place to imprison prisoners. Also reduces the risk of riots when at lows morale."
+  },
+  "Ship's Stores": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers, Transports, Grand Cruisers",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "BFK 42",
+    "Notes": "Allows the ship to repair itself as long as it is not missing more than half of its hull integrity."
+  },
+  "": {
+    "Type": null,
+    "Appropriate Hull Types": null,
+    "Power": null,
+    "Space": null,
+    "Rarity": null,
+    "Source": null,
+    "Notes": null
+  },
+  "Augments and Enhancements": {
+    "Type": null,
+    "Appropriate Hull Types": null,
+    "Power": null,
+    "Space": null,
+    "Rarity": null,
+    "Source": null,
+    "Notes": null
+  },
+  "Augmented Retro-thrusters": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "Cruisers",
+    "Power": 3,
+    "Space": 0,
+    "Rarity": "Rare",
+    "Source": "Core 205",
+    "Notes": "Agile (+5 Maneuvrability)"
+  },
+  "Reinforced Interior Bulkheads": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "Core 205",
+    "Notes": "Hard to Breach (+2 Hull Integrity)"
+  },
+  "Armoured Prow *": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "Cruisers",
+    "Power": 0,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "Core 205",
+    "Notes": "Imposing (+4 fore arc armor, +1d10 ramming damage, no prow macro batteries or lances)"
+  },
+  "Tenebro-Maze *": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "Core 205",
+    "Notes": "The Interior of the ship is maze like and intruders can be easily led into ambush spots. Grants a +20 bonus to defend boarding actions . Intruders must also pass a -40 navigate surface test to be able to navigate the maze"
+  },
+  "Variable Figurehead *": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 0,
+    "Rarity": "Rare",
+    "Source": "HAq 73",
+    "Notes": "External"
+  },
+  "Auxiliary Plasma Banks": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": "4 Gen",
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "Storm 161",
+    "Notes": "Is detroyed if damaged, deals 1 damage to the voidship when destroyed"
+  },
+  "Drop Pod Launch Bays": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "Storm 161",
+    "Notes": "Drop Pods are cool"
+  },
+  "Empyrean Mantle *": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 5,
+    "Space": 0,
+    "Rarity": "Rare",
+    "Source": "Storm 161",
+    "Notes": "Shadow in the Void, External"
+  },
+  "Reinforced Prow *": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "Storm 161",
+    "Notes": "Adamantine Plates (+2 front armor, +1d5 ram damage)"
+  },
+  "Defensive Countermeasures *": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "BFK 42",
+    "Notes": "Single Use"
+  },
+  "Flak Turrets *": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "BFK 42",
+    "Notes": "can test BS vs pilot to prevent boarders and torpedos"
+  },
+  "Field Bracing": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": "2021-02-28T23:00:00.000Z",
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "BFK 42",
+    "Notes": "each power point fed to this component gives 1 hull integrity"
+  },
+  "Fire Suppression System *": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "Grand Cruisers",
+    "Power": 3,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "BFK 42",
+    "Notes": "Flame Extinguisher"
+  },
+  "Lux Net": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": "5 generated",
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "BFK 42",
+    "Notes": "Power Source"
+  },
+  "Minelayer Bay": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "Transports, Light Cruisers, Cruisers",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "BFK 42",
+    "Notes": "Minefield Ahead!"
+  },
+  "Power Ram *": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 2,
+    "Space": 0,
+    "Rarity": "Rare",
+    "Source": "BFK 42",
+    "Notes": "External, Power Field"
+  },
+  "Lightened Structure": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Space": 0,
+    "Rarity": "Scarce",
+    "Source": "Custom",
+    "Notes": "Lower structural integrity by 1, increase space by 1."
+  },
+  "Additional Facilities": {
+    "Type": null,
+    "Appropriate Hull Types": null,
+    "Power": null,
+    "Space": null,
+    "Rarity": null,
+    "Source": null,
+    "Notes": null
+  },
+  "Extended Supply Vaults": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "Core 205",
+    "Notes": "Ship increases supply capacity by 30, +1 morale"
+  },
+  "Larger Fuel Reserves": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "custom",
+    "Notes": "Ship increases warp fuel capacity by 5"
+  },
+  "Crew Reclamation Facility": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "Core 205",
+    "Notes": "When you lose population gain 10 supply; lose 1 morale"
+  },
+  "Munitorium": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 3,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "Core 205",
+    "Notes": "Macro cannons gain +1 strength, the ship can provide any default aumminition types for non-exotic small arms, can explode and damage the ship on a critical"
+  },
+  "Temple-shrine to the God Emperor": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "Core 205",
+    "Notes": "grants +1 morale, allows to pray to the god emperor during downtime"
+  },
+  "Librarium Vault": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "Core 205",
+    "Notes": "Grants +10 to non forbidden lore tests"
+  },
+  "Trophy Room": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "Core 205",
+    "Notes": "can show to guests to make an impression, +10 to interaction tests with guests."
+  },
+  "Observation Dome": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "Core 205",
+    "Notes": "Grants +10 to Navigate(Stellar) tests"
+  },
+  "Murder-Servitors": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "Core 205",
+    "Notes": "Can be used to repel boarders at no risk to ship population"
+  },
+  "Auto Temple *": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "HAq 73",
+    "Notes": "Grants +1 morale, can be deployed on a planet's surface to help convert the locals, granting +10 to relevant tests."
+  },
+  "Laboratorium *": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Extremely Rare",
+    "Source": "HAq 73",
+    "Notes": "Grants +10 bonus to siency tests"
+  },
+  "Pharmacia *": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "HAq 73",
+    "Notes": "Can be used to replicate drugs, will supply any non exotic drugs"
+  },
+  "Sensorium *": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "HAq 73",
+    "Notes": "grants +1 morale and gives a +10 bonus to charm tests against guests which are sucetible against such pleasures."
+  },
+  "Arboretum": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "Storm 161",
+    "Notes": "Suplies deplete at half rate."
+  },
+  "Asteroid Mining Facility": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 4,
+    "Space": 1,
+    "Rarity": "Extremely Rare",
+    "Source": "Storm 161",
+    "Notes": "Can be used to harvest minerals from asteroids."
+  },
+  "Astropathic Choir-chambers": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "Storm 161",
+    "Notes": "Doubles the effective range of the astropath."
+  },
+  "Broadband Hymn-Casters": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 2,
+    "Space": 0,
+    "Rarity": "Scarce",
+    "Source": "Storm 161",
+    "Notes": "Can be used to flood vox waves with loud prayers to the god emperor."
+  },
+  "Cloudmining Facility *": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "Transports",
+    "Power": 3,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "BFK 42",
+    "Notes": "Can be used to harvest comets for refined plasma, can harvest 15 cargo capacity of exotic material per game turn if a sufficient comet has been located"
+  },
+  "Hydraphuran Jamming System *": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 2,
+    "Space": 0,
+    "Rarity": "Scarce",
+    "Source": "BFK 42",
+    "Notes": "External, cant silent run but -20 to detect vessel with augurs"
+  },
+  "Manufactorum *": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Rare",
+    "Source": "BFK 42",
+    "Notes": "Characters who are crafting items gain double the normal amount of crafting tests."
+  },
+  "Medicae Deck *": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "BFK 42",
+    "Notes": "Counts as adequate surgery equipment for implanting cybernetics and major surgeries."
+  },
+  "Melodium *": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "BFK 42",
+    "Notes": "Song in the Void (+1 morale and +10 to scocial skill tests)"
+  },
+  "Plasma Scoop *": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Extremely Rare",
+    "Source": "BFK 42",
+    "Notes": "can gather warp fuel from gas giants, this is a piloting test+0 failer damages void ship by 1d3"
+  },
+  "Pilot's Chamber *": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "BFK 42",
+    "Notes": "Increase strength of combat craft by 1."
+  },
+  "Salvage Systems *": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "Transports, Light Cruisers, Cruisers",
+    "Power": 3,
+    "Space": 1,
+    "Rarity": "Extremely Rare",
+    "Source": "BFK 42",
+    "Notes": "Increases yield of salvage operations by 100% (-5 maneuver)"
+  },
+  "Small Craft Repair Deck *": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Scarce",
+    "Source": "BFK 42",
+    "Notes": "Reduces fighter loses by half."
+  },
+  "Spacedock Piers *": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "Transport with 50+ Space, Grand Cruiser",
+    "Power": 7,
+    "Space": 2,
+    "Rarity": "Near Unique",
+    "Source": "BFK 42",
+    "Notes": "Smaller ships can anchor."
+  }
+}

@@ -1,0 +1,626 @@
+{
+  "Jovian Pattern Class 1 Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Transports",
+    "Power": "6 Generated",
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Lathe Pattern Class 1 Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Transports",
+    "Power": "4 Generated",
+    "Source": "Core 202",
+    "Rarity": "Rare",
+    "Notes": null
+  },
+  "Jovian Pattern Class 2 Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Raiders, Frigates",
+    "Power": "6 Generated",
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Jovian Pattern Class 3 Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Light Cruisers",
+    "Power": "8 Generated",
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Jovian Pattern Class 4 Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Cruisers",
+    "Power": "10 Generated",
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Segrazian \"Viperdrive\" Pirate Engine": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Raider, Frigate",
+    "Power": "8 Generated",
+    "Source": "HAq 71",
+    "Rarity": "Very Rare",
+    "Notes": "Oversized Engines (+2 Speed, +5 Manoeuverability), Fragile"
+  },
+  "Jovian-Pattern \"Warcruiser\" Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Cruisers",
+    "Power": "12 Generated",
+    "Source": "Storm 158",
+    "Rarity": "Very Rare",
+    "Notes": null
+  },
+  "Lathe-Pattern 2a \"Sprint Trader\" Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Transports",
+    "Power": "7 Generated",
+    "Source": "Storm 158",
+    "Rarity": "Very Rare",
+    "Notes": "Oversized Engines (+1 Speed, +3 Manoeuverability)"
+  },
+  "Lathe-Pattern 2b \"Escort\" Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Raiders, Frigates",
+    "Power": "10 Generated",
+    "Source": "Storm 158",
+    "Rarity": "Very Rare",
+    "Notes": "Oversized Engines (+1 Speed, +3 Manoeuverability)"
+  },
+  "Jovian-Pattern Class 8.1 Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Frigates",
+    "Power": "10 Generated",
+    "Source": "BFK 34",
+    "Rarity": "Rare",
+    "Notes": "Reliable"
+  },
+  "Jovian-Pattern Class 8.2 Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Light Cruisers",
+    "Power": "12 Generated",
+    "Source": "BFK 34",
+    "Rarity": "Rare",
+    "Notes": "Reliable"
+  },
+  "Jovian-Pattern Class 8.3 Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Cruisers",
+    "Power": "14 Generated",
+    "Source": "BFK 34",
+    "Rarity": "Rare",
+    "Notes": "Reliable"
+  },
+  "Jovian-Pattern Class 8.4 Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Grand Cruisers",
+    "Power": "16 Generated",
+    "Source": "BFK 34",
+    "Rarity": "Rare",
+    "Notes": "Reliable"
+  },
+  "Saturine-Pattern Class 4A \"Ultra\" Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Battlecruisers",
+    "Power": "18 Generated",
+    "Source": "BFK 34",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Saturine-Pattern Class 5 Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Grand Cruisers",
+    "Power": "20 Generated",
+    "Source": "BFK 34",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Mezoa Pattern Theta-7 Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "???",
+    "Power": "??",
+    "Source": "BFK 34",
+    "Rarity": "Rare",
+    "Notes": "Oversized Engines (+2 Speed, +5 Manoeuverability), Fragile Engines"
+  },
+  "Strelov 1 Warp Engine": {
+    "Type": "Warp Engines",
+    "Appropriate Hull Types": "Transports, Raiders, Frigates",
+    "Power": 1,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Strelov 2 Warp Engine(Cruiser)": {
+    "Type": "Warp Engines",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 2,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Albanov 1 Warp Engine": {
+    "Type": "Warp Engines",
+    "Appropriate Hull Types": "Transports, Raiders, Frigates",
+    "Power": 1,
+    "Source": "HAq 71",
+    "Rarity": "Rare",
+    "Notes": "Double travel time, +20 to warp encounter table, +10 to tests to rectify trajectory during reentry"
+  },
+  "Klenova Class M Warp Engine": {
+    "Type": "Warp Engines",
+    "Appropriate Hull Types": "Transports, Raiders, Frigates",
+    "Power": 2,
+    "Source": "HAq 71",
+    "Rarity": "Scarce",
+    "Notes": "Can only be used along with best quality warp routes, the vessel functions without a navigator. Roll once on the warp enounter table for each LY traveled."
+  },
+  "Markov 1 Warp Engine": {
+    "Type": "Warp Engines",
+    "Appropriate Hull Types": "Transports, Raiders, Frigates",
+    "Power": 2,
+    "Source": "Storm 158",
+    "Rarity": "Rare",
+    "Notes": null
+  },
+  "Markov 2 Warp Engine(Cruiser)": {
+    "Type": "Warp Engines",
+    "Appropriate Hull Types": "Light Cruisers",
+    "Power": 3,
+    "Source": "Storm 158",
+    "Rarity": "Rare",
+    "Notes": null
+  },
+  "Miloslav H-616.b Warp Engine(Cruiser)": {
+    "Type": "Warp Engines",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 2,
+    "Source": "BFK 34",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Miloslav G-616.b Warp Engine": {
+    "Type": "Warp Engines",
+    "Appropriate Hull Types": "Transports, Raiders, Frigates",
+    "Power": 2,
+    "Source": "BFK 34",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Geller Field": {
+    "Type": "Geller Fields",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Warpsbane Hull": {
+    "Type": "Geller Fields",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Source": "Core 200",
+    "Rarity": "Very Rare",
+    "Notes": "+10 to navigate warp tests, roll twice on warp encounter table and choose best result"
+  },
+  "Mezoa Geller Void Integrant": {
+    "Type": "Geller Fields",
+    "Appropriate Hull Types": "Transport ,Raiders",
+    "Power": 0,
+    "Source": "HAq 71",
+    "Rarity": "Scarce",
+    "Notes": "-5 to warp encounter table, if the void shield is damaged so is this component"
+  },
+  "Emergency Field": {
+    "Type": "Geller Fields",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Source": "Storm 158",
+    "Rarity": "Scarce",
+    "Notes": "The field can still function if damaged, but will be destroyed once the journey is finished"
+  },
+  "Belecane-Pattern 90.r Gellar Field": {
+    "Type": "Geller Fields",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Source": "BFK 34",
+    "Rarity": "Scarce",
+    "Notes": "+10 to navigate warp tests but you gain a -20 penalty to the warp encounter table rolls"
+  },
+  "Single Void Shield": {
+    "Type": "Void Shields",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": "Provides 1 Shield"
+  },
+  "Multiple Void Shield Array": {
+    "Type": "Void Shields",
+    "Appropriate Hull Types": "Cruisers",
+    "Power": 2,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": "Provides 2 Shields"
+  },
+  "Repulsor Shield": {
+    "Type": "Void Shields",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Source": "Storm 158",
+    "Rarity": "Rare",
+    "Notes": "Provides 1 Shield, No penalty to manoeuver through nebulas, ice rings plasma clouds or other celestial phenomena consisting of small particles"
+  },
+  "Repulsor Shield Array": {
+    "Type": "Void Shields",
+    "Appropriate Hull Types": "Cruisers",
+    "Power": 2,
+    "Source": "Storm 158",
+    "Rarity": "Rare",
+    "Notes": "Provides 2 Shields, No penalty to manoeuver through nebulas, ice rings plasma clouds or other celestial phenomena consisting of small particles"
+  },
+  "Triple Void Shield Array": {
+    "Type": "Void Shields",
+    "Appropriate Hull Types": "Grand Cruisers",
+    "Power": 3,
+    "Source": "BFK 34",
+    "Rarity": "Scarce",
+    "Notes": "Provides 3 Shields"
+  },
+  "Voss \"Glimmer\"-pattern Void Shield": {
+    "Type": "Void Shields",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Source": "BFK 34",
+    "Rarity": "Scarce",
+    "Notes": "Provides 1 Shield, on hit 1d10 3 or less hit isnt canceled"
+  },
+  "Voss \"Glimmer\"-pattern Multiple Void Shield Array": {
+    "Type": "Void Shields",
+    "Appropriate Hull Types": "Cruisers",
+    "Power": 0,
+    "Source": "BFK 34",
+    "Rarity": "Scarce",
+    "Notes": "Provides 2 Shield, on hit 1d10 3 or less hit isnt canceled"
+  },
+  "Combat Bridge": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Transports, Raiders, Frigates",
+    "Power": 0,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": "Damage Control Station (+10 Tech use to repair)"
+  },
+  "Combat Bridge(Cruiser)": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": "Damage Control Station (+10 Tech use to repair)"
+  },
+  "Command Bridge": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Raiders, Frigates",
+    "Power": 0,
+    "Source": "Core 202",
+    "Rarity": "Rare",
+    "Notes": "Enhanced Cogiator Relays (+5 Command, +5 BS)"
+  },
+  "Command Bridge(Cruiser)": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Ligth Cruisers, Cruisers",
+    "Power": 0,
+    "Source": "Core 202",
+    "Rarity": "Rare",
+    "Notes": "Enhanced Cogiator Relays (+5 Command, +5 BS)"
+  },
+  "Commerce Bridge": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Transports",
+    "Power": 0,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": "Gives a +10 to commerce tests"
+  },
+  "Armoured Command Bridge": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Raiders, Frigates",
+    "Power": 0,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": "Reinforced (component unharmed on 4+)"
+  },
+  "Armoured Command Bridge(Cruiser)": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": "Reinforced (component unharmed on 4+)"
+  },
+  "Ship Master's Bridge": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Cruisers",
+    "Power": 0,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": "Master Plotting Table (+5 Navigation and Piloting), Imrpoved Fire Direction (+10 BS)"
+  },
+  "Smuggler's Bridge": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Transports",
+    "Power": 0,
+    "Source": "HAq 71",
+    "Rarity": "Scarce",
+    "Notes": "Makes the ship's communications -20% harder to decrypt, also allows to smuggle small items inside the bridge, they are -30% harder to find if the bridge is searched."
+  },
+  "Exploration Bridge": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Transports, Raiders, Frigates",
+    "Power": 0,
+    "Source": "Storm 158",
+    "Rarity": "Rare",
+    "Notes": "+5 to long range scans, +10 to navigate stellar tests"
+  },
+  "Exploration Bridge(Cruiser)": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Source": "Storm 158",
+    "Rarity": "Rare",
+    "Notes": "+5 to long range scans, +10 to navigate stellar tests"
+  },
+  "Fleet Flag bridge": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Battlecruisers, Grand Cruisers",
+    "Power": 0,
+    "Source": "BFK 34",
+    "Rarity": "Rare",
+    "Notes": "+10 to command tests and +5 to pilot this ship or any allied ship within medium range"
+  },
+  "Flight Command Bridge": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Ligth Cruisers, Cruisers",
+    "Power": 0,
+    "Source": "BFK 34",
+    "Rarity": "Scarce",
+    "Notes": "+5 to command test when commanding attack craft, Reduces the total time to load or unload cargo by 1 game turn minimum 1."
+  },
+  "Invasion Bridge": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Cruisers",
+    "Power": 0,
+    "Source": "BFK 34",
+    "Rarity": "Scarce",
+    "Notes": "+10 to BS for land targets, additionally grants the effects of a multicompass to any ground crew or forces."
+  },
+  "M-1.r Life Sustainer": {
+    "Type": "Life Sustainers",
+    "Appropriate Hull Types": "Transport, Raiders, Frigates",
+    "Power": 1,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": "When losing morale roll 1d10, on a 1 lose another morale"
+  },
+  "M-1.r Life Sustainer(Cruiser)": {
+    "Type": "Life Sustainers",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 1,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": "When losing morale roll 1d10, on a 1 lose another morale"
+  },
+  "Vitae Pattern Life Sustainer": {
+    "Type": "Life Sustainers",
+    "Appropriate Hull Types": "Transport, Raiders, Frigates",
+    "Power": 0,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Vitae Pattern Life Sustainer(Cruiser)": {
+    "Type": "Life Sustainers",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Euphoric Life Sustainer": {
+    "Type": "Life Sustainers",
+    "Appropriate Hull Types": "Transport, Raiders, Frigates",
+    "Power": 0,
+    "Source": "HAq 71",
+    "Rarity": "Rare",
+    "Notes": "-20 to crew boarding effectiveness"
+  },
+  "Euphoric Life Sustainer(Cruiser)": {
+    "Type": "Life Sustainers",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Source": "HAq 71",
+    "Rarity": "Rare",
+    "Notes": "-20 to crew boarding effectiveness"
+  },
+  "Clemency-patern Life Sustainer": {
+    "Type": "Life Sustainers",
+    "Appropriate Hull Types": "Transport, Raiders, Frigates",
+    "Power": 0,
+    "Source": "BFK 34",
+    "Rarity": "Rare",
+    "Notes": "On depressurisation roll 1d10, on a 4+ the population loss is averted"
+  },
+  "Clemency-patern Life Sustainer(Cruiser)": {
+    "Type": "Life Sustainers",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Source": "BFK 34",
+    "Rarity": "Rare",
+    "Notes": "On depressurisation roll 1d10, on a 4+ the population loss is averted"
+  },
+  "Pressed-crew Quaters": {
+    "Type": "Crew Quarters",
+    "Appropriate Hull Types": "Transport, Raiders, Frigates",
+    "Power": 0,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Pressed-crew Quaters(Cruiser)": {
+    "Type": "Crew Quarters",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Voidsmen Quarters": {
+    "Type": "Crew Quarters",
+    "Appropriate Hull Types": "Transport, Raiders, Frigates",
+    "Power": 0,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Voidsmen Quarters(Cruiser)": {
+    "Type": "Crew Quarters",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Slave Quarters": {
+    "Type": "Crew Quarters",
+    "Appropriate Hull Types": "Transport, Raiders, Frigates",
+    "Power": 0,
+    "Source": "HAq 71",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Slave Quarters(Cruiser)": {
+    "Type": "Crew Quarters",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Source": "HAq 71",
+    "Rarity": "Scarce",
+    "Notes": null
+  },
+  "Clan-kin Quarters": {
+    "Type": "Crew Quarters",
+    "Appropriate Hull Types": "Transports, Raiders, Frigates",
+    "Power": 0,
+    "Source": "Storm 158",
+    "Rarity": "Rare",
+    "Notes": "Grants +10 to repel boarders"
+  },
+  "Clan-kin Quarters(Cruiser)": {
+    "Type": "Crew Quarters",
+    "Appropriate Hull Types": "Light Cruisres, Cruisers",
+    "Power": 0,
+    "Source": "Storm 158",
+    "Rarity": "Rare",
+    "Notes": "Grants +10 to repel boarders"
+  },
+  "Cold Quarters": {
+    "Type": "Crew Quarters",
+    "Appropriate Hull Types": "Transports, Raiders, Frigates",
+    "Power": 1,
+    "Source": "Storm 158",
+    "Rarity": "Rare",
+    "Notes": "When losing population roll 1d10; on a 4+ the crew loss is prevented. Each successfull use of this ability imposes a stacking -1 penaltey to the roll. This penalty can be removed by either sacrificng population to this component, each population point removes 1 penalty. Or recruiting more crew, each -1 would cost the same as 1 crew population."
+  },
+  "Cold Quarters(Cruiser)": {
+    "Type": "Crew Quarters",
+    "Appropriate Hull Types": "Light Cruisres, Cruisers",
+    "Power": 1,
+    "Source": "Storm 158",
+    "Rarity": "Rare",
+    "Notes": "When losing population roll 1d10; on a 4+ the crew loss is prevented. Each successfull use of this ability imposes a stacking -1 penaltey to the roll. This penalty can be removed by either sacrificng population to this component, each population point removes 1 penalty. Or recruiting more crew, each -1 would cost the same as 1 crew population."
+  },
+  "Bilge-Rat Quarters": {
+    "Type": "Crew Quarters",
+    "Appropriate Hull Types": "Transports, Raiders, Frigates",
+    "Power": 0,
+    "Source": "BFK 34",
+    "Rarity": "Scarce",
+    "Notes": "When losing population due to depressurization, roll 1d10 on a 4+ the population loss is averted"
+  },
+  "Bilge-Rat Quarters(Cruiser)": {
+    "Type": "Crew Quarters",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 0,
+    "Source": "BFK 34",
+    "Rarity": "Scarce",
+    "Notes": "When losing population due to depressurization, roll 1d10 on a 4+ the population loss is averted"
+  },
+  "M-100 Auger Array": {
+    "Type": "Augur Arrays",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": "External"
+  },
+  "M-201.b Auger Array": {
+    "Type": "Augur Arrays",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": "External, Sensitive( Increased power draw gives +5 Detection)"
+  },
+  "R-50 Auspex Multi-Band": {
+    "Type": "Augur Arrays",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Source": "Core 202",
+    "Rarity": "Scarce",
+    "Notes": "External, +5 to manouevres to avoid celestial objects, -2 detection rating, +10 to long range scans"
+  },
+  "Deep Void Auger Array": {
+    "Type": "Augur Arrays",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Source": "Core 202",
+    "Rarity": "Rare",
+    "Notes": "External, +10 to detection"
+  },
+  "W-240 Passive Detection Array": {
+    "Type": "Augur Arrays",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Source": "HAq 71",
+    "Rarity": "Rare",
+    "Notes": "External, May use array when silent running without chance of being detected"
+  },
+  "BG-15 Assault Scanners": {
+    "Type": "Augur Arrays",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Source": "BFK 34",
+    "Rarity": "Scarce",
+    "Notes": "External, +5 to BS for land based targets, +10 to command tests to command a land invasion"
+  },
+  "X-470 Ultimo Array": {
+    "Type": "Augur Arrays",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Source": "BFK 34",
+    "Rarity": "Scarce",
+    "Notes": "External, +10 to detection, +15 to detect ships on silent running, ships targetting this ship get a +5 to BS"
+  },
+  "P93-Prospecting Array": {
+    "Type": "Augur Arrays",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Source": "custom",
+    "Rarity": "Rare",
+    "Notes": "External, +15 to detection when scanning for mineral deposits"
+  }
+}

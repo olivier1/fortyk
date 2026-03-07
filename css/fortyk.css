@@ -68,14 +68,23 @@
     --terminal-font-size: 18px;
   }
 }
+
 .item-piles-player-list-trade-button{
   margin:0 !important;
 }
+.item-piles-chat-card li{
+  background-color: rgb(0 0 0 / 0%) !important;
+}
 .tokenizer .title .box-button{
-  width:100% !important;
+  width: 100% !important;
 }
 #tokenizer div{
   background-color: var(--terminal-bg) !important;
+}
+#pause>img{
+  content: url("../icons/skull3.webp");
+  height: 120px;
+  width: 120px;
 }
 .application {
   padding-bottom: 0.85em;
@@ -2346,8 +2355,6 @@ prose-mirror{
 }
 .fortyk .item-description{
   flex-grow:10;
-  height: 300px;
-  min-height: 300px;
 }
 .description-popup{
   margin:5px;

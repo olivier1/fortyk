@@ -1,0 +1,299 @@
+{
+  "Castellan Shield": {
+    "Type": "Void Shield",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 2,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "Storm 163",
+    "Notes": "Void Shield 2"
+  },
+  "Castellan Shield Array": {
+    "Type": "Void Shield",
+    "Appropriate Hull Types": "Cruisers",
+    "Power": 3,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "Storm 163",
+    "Notes": "Void Shield 4"
+  },
+  "Cogitator Interlink * ": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Storm 163",
+    "Notes": "Sophisticated Cogitation operation (+5 Crew rating)"
+  },
+  "Energistic Conversion Matrix *": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Storm 163",
+    "Notes": "exchange power for 1 speed; frigates 1power, light cruisers 2 power, transports and cruisers 3 power"
+  },
+  "Gyro-stabilisation Matrix *": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Storm 163",
+    "Notes": "removes any penalty from manoeuvrability of the ship when making manoeuvres"
+  },
+  "Ancient Life Sustainer": {
+    "Type": "Life Sustainers",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Core 207",
+    "Notes": "gives 5 morale, when losing crew from non combat sources roll 1d10, the loss is ignored on a 5+"
+  },
+  "Any STC Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Respective",
+    "Power": "Special",
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "Core 207",
+    "Notes": "Overcharged (+1 Speed, curious Mechanicus)"
+  },
+  "Bridge of Antiquity": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Transports, Raiders, Cruisers",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Core 207",
+    "Notes": "Eyes everywhere (+10 command and social on bridge), Hololithic Display Tanks (+5 maneuverability)"
+  },
+  "Bridge of Antiquity(Cruiser)": {
+    "Type": "Ship's Bridge",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Core 207",
+    "Notes": "Eyes everywhere (+10 command and social on bridge), Hololithic Display Tanks (+5 maneuverability)"
+  },
+  "Auto-Stabilised Logis-targeter": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 5,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "Core 207",
+    "Notes": "External, Image of the Void (+5 Detect), Targeting Matrix (+5 BS)"
+  },
+  "Teleportarium": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Core 207",
+    "Notes": "Surprise Strike (and other benefits of teleporting)"
+  },
+  "Emergency Energy Reserves *": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "Transports, Raiders, Frigates",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "HAq 74",
+    "Notes": "May have either weapons or other systems unaffected by lack of crew penalties"
+  },
+  "Emergency Energy Reserves *(Cruiser)": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 3,
+    "Space": 2,
+    "Rarity": "Near Unique",
+    "Source": "HAq 74",
+    "Notes": "May have either weapons or other systems unaffected by lack of crew penalties"
+  },
+  "Graviton Flare": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "Raiders, Frigates",
+    "Power": 2,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "HAq 74",
+    "Notes": "Can blind all vessels in a star system and impose a -30 to their detection for 2 strategic turns. 24h cooldown"
+  },
+  "Suspension Chambers": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "Transports, Raiders, Frigates",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "HAq 74",
+    "Notes": "can store half of population in slumber, when enacted lose 1 morale. can awake population later but morale doesnt recover. While asleep poulation doe snot cosume supplies"
+  },
+  "Suspension Chambers(Cruiser)": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 3,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "HAq 74",
+    "Notes": "can store half of population in slumber, when enacted lose 1 morale. can awake population later but morale doesnt recover. While asleep poulation doe snot cosume supplies"
+  },
+  "Witch Augur *": {
+    "Type": "Augur Arrays",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "HAq 74",
+    "Notes": "allows the navigator to make awareness tests to detect incoming vessels transitioning out of the immaterium"
+  },
+  "Cypra Pattern Class 1 Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Transports",
+    "Power": "15 Generated",
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "BFK 42",
+    "Notes": "Dampen Drives  (+15 Silent running & -15 to detect vessel)"
+  },
+  "Cypra Pattern Class 2 Drive": {
+    "Type": "Plasma Drive",
+    "Appropriate Hull Types": "Raiders, Frigates",
+    "Power": "13 Generatad",
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "BFK 42",
+    "Notes": "Dampen Drives  (+15 Silent running & -15 to detect vessel)"
+  },
+  "Warp Antenna": {
+    "Type": "Augur Arrays",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "BFK 42",
+    "Notes": "navigator gets +20 to locate astronomican; vessel is easier to locate in the warp -10 to warp encounter rolls."
+  },
+  "Warp Sextant": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 3,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "BFK 42",
+    "Notes": "navigator gets +20 to all perception based tests and Navigate(warp) tests while steering the vessel through the warp."
+  },
+  "Gravitational Chute": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 3,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Custom",
+    "Notes": "Allows the ship to deploy cargo, vehicles and superheavy vehicles from orbit directly onto a planet's surface. The precision of the delivery is based on a scrutiny test modified by the ship's sensors."
+  },
+  "Titanicus Pattern Holding Bays": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "Transports, Light Cruisers, Cruisers, Grand Cruisers",
+    "Power": 4,
+    "Space": 2,
+    "Rarity": "Near Unique",
+    "Source": "Custom",
+    "Notes": "This takes the place of a port or starboard weapon, or a main cargo hold. Allows the storing and maintenance of super heavy vehicles. Unbalanced, Repairs on vehicles aboard the vessel are not penalized in time. The cost of those repairs is increased by 20%. The Ship counts as having full maintenance bays. Can repair up to 4 super heavy vehicles at a time."
+  },
+  "Ethereum Double Layer Field": {
+    "Type": "Geller Field",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 2,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "Custom",
+    "Notes": "Gellar Field which grants the vessel a +20 to all warp encounter rolls"
+  },
+  "Nano machine swarm": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "all ships",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Custom",
+    "Notes": "The swarm can be directed against nearby void vessels or structures to strip them bare, either damaging an enemy voidship or speeding up the salvage of wrecked vessels. May also be used to harvest from asteroids."
+  },
+  "Spine Grav Rails": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "Frigate or larger",
+    "Power": 1,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Custom",
+    "Notes": "A system of rails runs down the spine of the vessel. This speeds up the loading and unloading of cargo and materiel. Reduce the time taken for loading/unloading or installing new components by 1 game turn, to a minimum of 1."
+  },
+  "Voidcore Warp Engine": {
+    "Type": "Warp Engine",
+    "Appropriate Hull Types": "all ships",
+    "Power": 2,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "Custom",
+    "Notes": "A warp engine from the Dark Age of Technology, the manner in which it functions how how it was made is an inscrutable mystery. This warp engine does not consume warp fuel to travel and halves the required DoS to complete a warp journey."
+  },
+  "Matter Extractor and synthisizer": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "Light Cruisers, Cruisers",
+    "Power": 3,
+    "Space": 2,
+    "Rarity": "Near Unique",
+    "Source": "Custom",
+    "Notes": "A device of arcane technology, it allows a vessel to harvest matter from black holes. A ship with this component can harvest 15 cargo space of any type of mineral resource of their choice per game turn from a black hole."
+  },
+  "Subspace Communications Array": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "all ships",
+    "Power": 2,
+    "Space": 0,
+    "Rarity": "Near Unique",
+    "Source": "Custom",
+    "Notes": "An ancient communications engine which allows the use of vox techonology over inimaginable distances. THis component allows the vessel to use vox communication at instant speed over distances equal to 10 lightyears"
+  },
+  "Memetic Hyperreality Booths": {
+    "Type": "Additional Facilities",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Custom",
+    "Notes": "These devices can be used to teach individuals complex and technical information at an incredible rate. The process tends to rattle the mind of users, but the gain in productivity is often worth the cost. This component grants a 50% discount when learning skills. The user gains an amount of insanity points equal to two times the rank of the skill purchased this way. Each of these components comes with a group of 5 skills it can teach."
+  },
+  "Stasis Storage vaults": {
+    "Type": "Cargo Hold and Passenger Compartments",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 3,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Custom",
+    "Notes": "These Archaic storage vaults have integrated stasis fields keeping everything they contain in suspended and timeless preservation. These storage vaults grant 30 cargo capacity and 2 trade capacity. Everything stored within cannot expire or move as long as the stasis fields remain functional."
+  },
+  "Precision Bombardment Cogitator Array": {
+    "Type": "Augur Arrays",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 2,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Custom",
+    "Notes": "Allows to use macro cannons in close void to surface battlefield support. Once per combat you may use the following ability: Orbital Bombardment\r\nSelect a point on the battlefield, three 10m templates are placed on the point, the templates each scatter 2d10 meters in a random direction. All units under a template suffer a 5d10+20 pen 10 hit."
+  },
+  "Modular Structure": {
+    "Type": "Augments and Enhancements",
+    "Appropriate Hull Types": "All Ships",
+    "Power": 0,
+    "Space": 1,
+    "Rarity": "Near Unique",
+    "Source": "Custom",
+    "Notes": "The Ships structure is not set in stone and can be modified and rearranged at a whim. Adding or removing any component always takes 1 game turn."
+  }
+}

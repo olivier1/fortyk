@@ -2,7 +2,11 @@
 import { FortyKActor } from "./actor/actor.js";
 import { ActorDialogs } from "./actor/actor-dialogs.js";
 import { FortyKToken } from "./token/fortykToken.js";
+import { FortyKPlaceableToken } from "./token/fortykPlaceableToken.js";
 import { FortyKTokenRuler } from "./ruler/fortykTokenRuler.js";
+import { FortyKTerrain } from "./terrain/fortykTerrain.js";
+import { FortyKElevationBehavior } from "./terrain/behaviors/fortykElevation.js";
+import { FortyKElevationConfig } from "./terrain/behaviors/configs/fortykElevationConfig.js";
 import FortyKDWActorSheet from "./actor/actorDW-sheet.js";
 import { FortyKDHActorSheet } from "./actor/actorDH-sheet.js";
 import { FortyKOWActorSheet } from "./actor/actorOW-sheet.js";
@@ -16,9 +20,8 @@ import { FortyKItem } from "./item/item.js";
 import { FortyKItemSheet } from "./item/item-sheet.js";
 import { FortyKActiveEffect } from "./activeEffect/activeEffect.js";
 import { FortyKActiveEffectConfig } from "./activeEffect/activeEffectConfig.js";
-import { preloadHandlebarsTemplates } from "./utilities.js";
-import { preLoadHandlebarsPartials } from "./utilities.js";
-import { parseHtmlForInline } from "./utilities.js";
+import { migrate } from "./migration.js";
+
 import { FortykRolls } from "./FortykRolls.js";
 import { FortykRollDialogs } from "./FortykRollDialogs.js";
 import { FortyKNPCSheet } from "./actor/actor-npc-sheet.js";
@@ -30,12 +33,9 @@ import { ActiveEffectDialog } from "./dialog/activeEffect-dialog.js";
 import { FortyKCards } from "./card/card.js";
 import { FortykTemplate } from "./measuredTemplate/template.js";
 import { objectByString } from "./utilities.js";
-import { migrate } from "./migration.js";
-import { tokenDistance } from "./utilities.js";
-import { getActorToken } from "./utilities.js";
-import { sleep } from "./utilities.js";
-import { turnOffActorAuras } from "./utilities.js";
-import { applySceneAuras } from "./utilities.js";
+
+import { tokenDistance, applySceneAuras, getActorToken, parseHtmlForInline, preloadHandlebarsTemplates, preLoadHandlebarsPartials, sleep, turnOffActorAuras, isFirstGM } from "./utilities.js";
+
 
 function manageColorScheme() {
     const colorScheme = game.settings.get("fortyk", "colorScheme");
@@ -203,7 +203,7 @@ Hooks.once("init", async function () {
     CONFIG.statusEffects = FORTYK.StatusEffects;
     //set default font
     CONFIG.fontDefinitions["CaslonAntique"] = { editor: true, fonts: [] };
-    CONFIG.defaultFontFamily = "CaslonAntique";
+    CONFIG.defaultFontFamily = "Inquisitor";
     //preload handlebars templates
     preloadHandlebarsTemplates();
     preLoadHandlebarsPartials();
@@ -212,6 +212,12 @@ Hooks.once("init", async function () {
     CONFIG.Item.documentClass = FortyKItem;
     CONFIG.Token.rulerClass = FortyKTokenRuler;
     CONFIG.Token.documentClass = FortyKToken;
+    CONFIG.Token.objectClass = FortyKPlaceableToken;
+    CONFIG.Token.movement.TerrainData = FortyKTerrain;
+    CONFIG.RegionBehavior.dataModels.fortykElevationBehavior = FortyKElevationBehavior;
+    CONFIG.RegionBehavior.typeLabels.fortykElevationBehavior = "fortykElevation";
+    CONFIG.RegionBehavior.typeIcons.fortykElevationBehavior = "fas fa-stairs";
+
     //CONFIG.ActiveEffect.entityClass = FortyKActiveEffect;
     // Register sheet application classes
     const Actors = foundry.documents.collections.Actors;
@@ -365,29 +371,33 @@ Hooks.once("setup", async function () {
     await migrate(systemVer);
 });
 //HOOKS
+
+
 Hooks.once("ready", async function () {
     //change dice so nice setting
     try {
         //game.settings.set("dice-so-nice","enabledSimultaneousRollForMessage",false);
     } catch (err) {}
-    if (window.EffectCounter) {
-        CounterTypes.setDefaultType("icons/svg/daze.svg", "statuscounter.countdown_round");
-        CounterTypes.setDefaultType("icons/svg/net.svg", "statuscounter.countdown_round");
-        CounterTypes.setDefaultType("icons/svg/blind.svg", "statuscounter.countdown_round");
-        CounterTypes.setDefaultType("icons/svg/deaf.svg", "statuscounter.countdown_round");
-        CounterTypes.setDefaultType("systems/fortyk/icons/cryo.png", "statuscounter.countdown_round");
-        CounterTypes.setDefaultType("systems/fortyk/icons/spiral.png", "statuscounter.countdown_round");
-        CounterTypes.setDefaultType("icons/svg/upgrade.svg", "statuscounter.countdown_round");
-        CounterTypes.setDefaultType("icons/svg/downgrade.svg", "statuscounter.countdown_round");
-        CounterTypes.setDefaultType("icons/svg/target.svg", "statuscounter.countdown_round");
-        CounterTypes.setDefaultType("icons/svg/eye.svg", "statuscounter.countdown_round");
-    }
+
     //search for vehicles with pilots to assign them their stats
     let vehicles = Array.from(game.actors.values()).filter((actor) => actor.type === "vehicle");
     for (let i = 0; i < vehicles.length; i++) {
         let vehicle = vehicles[i];
         vehicle.preparePilot();
     }
+    console.log(CONFIG.RegionBehavior.sheetClasses);
+    CONFIG.RegionBehavior.sheetClasses["fortykElevationBehavior"]={"core.RegionBehaviorConfig":{
+        canBeDefault: true,
+        canConfigure: true,
+        cls:FortyKElevationConfig,
+        default: true,
+        id:"core.RegionBehaviorConfig",
+        label:"Default Region Behavior Sheet",
+        themes:{
+            dark:"SETTINGS.UI.FIELDS.colorScheme.choices.dark",
+            light:"SETTINGS.UI.FIELDS.colorScheme.choices.light"
+        }
+    }};
     //for actors with psychic buffs, we need to re prepare them once all the actors have been prepared
     //prevents infinite loops when two psyker buff each other
     let actors = game.actors.values();
@@ -454,7 +464,7 @@ Hooks.once("ready", async function () {
             token.setTarget(false, { releaseOthers: false });
         }
 
-        if (game.user.isGM) {
+        if (isFirstGM()) {
             let id = "";
             let actor = null;
             let token = null;
@@ -758,7 +768,7 @@ Hooks.once("ready", async function () {
 });
 //handle start of combat effects
 Hooks.on("combatStart", (combat, updateData) => {
-    if (game.user.isGM) {
+    if (isFirstGM()) {
         let enemyFears = [];
         let pcFears = [];
         let combatants = combat.combatants;
@@ -825,7 +835,7 @@ Hooks.on("updateCombat", async (combat) => {
     let actor = token.actor;
     //PAN CAMERA TO ACTIVE TOKEN
     await canvas.animatePan({ x: token.x, y: token.y });
-    if (game.user.isGM) {
+    if (isFirstGM()) {
         //previous combatant stuff
         try {
             let previousToken = canvas.tokens.get(combat.previous.tokenId);
@@ -1428,6 +1438,7 @@ Hooks.on("renderCompendium", (compendium, html, data) => {
     };
     let onDragComponent = async function (event) {
         let compendiumId = compendium.id.replace("compendium-", "");
+        compendiumId = compendiumId.replace("_", ".");
 
         let compendiumObj = await game.packs.get(compendiumId);
         let transfer = {};
@@ -1471,7 +1482,7 @@ Hooks.on("preCreateItem", (actor, data, options) => {});
 
 //set flags on the actor when adding an active effect if it should activate a flag
 Hooks.on("createActiveEffect", async (ae, options, id) => {
-    if (game.user.isGM) {
+    if (isFirstGM()) {
         let actor = ae.parent;
         ae.statuses.forEach(async function (value1, value2) {
             let flag = value1;
@@ -1488,7 +1499,7 @@ Hooks.on("createActiveEffect", async (ae, options, id) => {
 });
 //unset flags on the actor when removing an active effect if it had a flag
 Hooks.on("deleteActiveEffect", async (ae, options, id) => {
-    if (game.user.isGM) {
+    if (isFirstGM()) {
         let actor = ae.parent;
 
         ae.statuses.forEach(async function (value1, value2, ae) {
@@ -1507,10 +1518,10 @@ Hooks.on("deleteActiveEffect", async (ae, options, id) => {
 
 Hooks.on("preCreateActor", (createData) => {});
 Hooks.on("preDeleteToken", async (tokenDocument, options, userId) => {
-    if (!game.user.isGM) return;
+    if (!isFirstGM()) return;
 });
 Hooks.on("preCreateToken", async (document, data, options, userId) => {
-    if (!game.user.isGM) return;
+    if (!isFirstGM()) return;
     //modify token dimensions if scene ratio isnt 1
     let gridRatio = canvas.dimensions.distance;
     let newHeight = Math.max(0.1, document.height / gridRatio);
@@ -1627,7 +1638,7 @@ function _translateToTopLeftGrid(event) {
     return canvas.grid.getTopLeftPoint({x:tx, y:ty});
 }
 Hooks.on("createToken", async (tokenDocument, options, userId) => {
-    if (!game.user.isGM) return;
+    if (!isFirstGM()) return;
     let actor = tokenDocument.actor;
     if (actor.getFlag("core", "dead")) return;
     let tokenObject = tokenDocument.object;
@@ -1747,17 +1758,47 @@ let moveTokens = {};
 async function fetchData(promise, time){
     if (!moveTokens[time].promise){
         moveTokens[time].promise=true;
-        await handleMoveAuras(promise, time);
+
+        await handlePostMovement(promise, time);
     }
 }
 function isOnFinalWaypoint(movement) {
     return movement.pending.waypoints.length===0;
 }
-async function handleMoveAuras(promise, time){
+async function handlePostMovement(promise, time){
     let tokens=moveTokens[time];
     await promise;
     for(let token of tokens){
-        let tokenDocument = token.document;
+        //handle region elevation stuff
+        let tokenRegions=token.regions;
+        let heightBehavior=false;
+        for (const region of tokenRegions) {
+            
+            for (const behavior of region.behaviors) {
+                if(behavior.disabled)continue;
+                if (behavior.type === "fortykElevationBehavior") { 
+                    if(heightBehavior)continue;
+                    heightBehavior=true;
+                    let elevation=behavior.system.elevation;
+                    let newElevation=elevation;
+                    let tokenElevation=token.elevation;
+                    let movementAction=token.movementAction;
+                    if(movementAction==="fly"){
+                       newElevation=Math.max(elevation,tokenElevation);
+                    }else if(movementAction==="burrow"){
+                        newElevation=Math.min(elevation, tokenElevation);
+                    }
+                    if(newElevation!==tokenElevation){
+                        await token.update({elevation:newElevation});
+                        
+                    }
+                     
+                }
+                
+            }
+        }
+        
+
         let scene = game.scenes.current;
         let actor = token.actor;
         if(!actor)return;
@@ -1886,6 +1927,7 @@ async function handleMoveAuras(promise, time){
         await applySceneAuras(auras, token);
     }
     moveTokens[time]=undefined;
+    return;
 }
 async function addToPromiseQueue(token, movement, promise){
     let time=Math.floor(performance.now()/1000);
@@ -1897,93 +1939,84 @@ async function addToPromiseQueue(token, movement, promise){
 
     await fetchData(promise, time);
 }
+function clearDifficultTerrain(token){
+    let actor=token.actor;
+    if(actor.getFlag("core","rough")){
+        for(const effect of actor.effects){
+
+            if(effect.statuses.has("rough"))effect.delete();
+        }
+    }
+    if(actor.getFlag("core","tough")){
+        for(const effect of actor.effects){
+
+            if(effect.statuses.has("tough"))effect.delete();
+        }
+    }
+    if(actor.getFlag("core","severe")){
+        for(const effect of actor.effects){
+
+            if(effect.statuses.has("severe"))effect.delete();
+        }
+    }
+}
+async function handleTerrain(token, promise){
+
+    let regions=token.regions;
+    let difficulties;
+    for (const region of regions) {
+        for (const behavior of region.behaviors) {
+
+            if (behavior.type === "modifyMovementCost") { 
+                difficulties=behavior.system.difficulties;
+            }
+        }
+    }
+    if(difficulties){
+        let actor=token.actor;
+        let movementType=token.movementAction;
+        let difficulty=difficulties[movementType];
+        switch(true){
+            case (difficulty>1&&difficulty<=2):{
+                if(!actor.statuses.has("rough")){
+                    game.fortyk.FortykRolls.applyActiveEffect(actor,[game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("rough")]]);
+                }
+                break;
+            }
+            case (difficulty>2&&difficulty<=3):{
+                if(!actor.statuses.has("tough")){
+                    game.fortyk.FortykRolls.applyActiveEffect(actor,[game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("tough")]]);
+                }
+                break; 
+            }
+            case (difficulty>3):{
+                if(!actor.statuses.has("severe")){
+                    game.fortyk.FortykRolls.applyActiveEffect(actor,[game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("severe")]]);
+                }
+                break; 
+            }
+            default:
+                clearDifficultTerrain(token);
+        }
+    }else{
+        clearDifficultTerrain(token);
+    }
+}
 Hooks.on("moveToken", async (token, movement, operation, user) => {
 
-    if (!game.user.isGM) return;
+    if (!isFirstGM()) return;
+    handleTerrain(token, token._object.movementAnimationPromise);
     if(!isOnFinalWaypoint(movement)) return;
     addToPromiseQueue(token, movement, token._object.movementAnimationPromise);
     return true;
 });
 
 Hooks.on("updateToken", async (token, diff, options, id) => {
-    /*
-    let effects=null;
-    let data=null;
-    if(changes.actorData!==undefined){
-        effects=changes.actorData.effects;
-        data=changes.actorData;
-    }else{
-        effects=changes.effects;
-        data=changes;
-    }
-    if(effects){
-        let flags={core:foundry.utils.duplicate(game.fortyk.FORTYK.StatusFlags)};
-        effects.forEach((effect)=>{
-            flags.core[`${effect.flags.core.statusId}`]=true;
-        });
-        data.flags=flags;
-    }
-    let fullToken=await canvas.tokens.get(token._id);
-    let tokenActor=fullToken.actor;
-    try{
-        let newFatigue=system.secChar.fatigue.value;
-        if(newFatigue>=tokenActor.system.secChar.fatigue.max*2){
-            await game.fortyk.FortykRolls.applyDead(fullToken,tokenActor,"fatigue");
-        }else if(!tokenActor.getFlag("core","frenzy")&&!tokenActor.getFlag("core","unconscious")&&newFatigue>=tokenActor.system.secChar.fatigue.max){
-            let effect=[];
-            effect.push(foundry.utils.duplicate(game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("unconscious")]));
-            let chatUnconscious={author: game.user._id,
-                                 speaker:{tokenActor,alias:tokenactor.getName()},
-                                 content:`${tokenactor.getName()} falls unconscious from fatigue!`,
-                                 classes:["fortyk"],
-                                 flavor:`Fatigue pass out`};
-            await ChatMessage.create(chatUnconscious,{});
-            await game.fortyk.FortykRolls.applyActiveEffect(fullToken,effect);
-        }
-    }catch(err){}
-    // Apply changes in Actor size to Token width/height
-    let newSize= 0;
-    let wounds=false;
-    try{
-        wounds=system.secChar.wounds.value;
-    }catch(err){
-        wounds=false;
-    }
-    let size=false;
-    try{
-        size=system.secChar.size.value; 
-    }catch(err){
-        size=false;
-    }
-    if(wounds&&(tokenActor.system.horde.value||tokenActor.system.formation.value)||size){
-        if(tokenActor.system.horde.value||tokenActor.system.formation.value){
-            newSize= system.secChar.wounds.value;
-            if(newSize<0){newSize=0}
-        }else{
-            newSize= system.secChar.size.value;
-        }
-        if ( (!tokenActor.system.horde.value&&!tokenActor.system.formation.value&&newSize && (newSize !== tokenActor.system.secChar.size.value))||((tokenActor.system.horde.value||tokenActor.system.formation.value)&&newSize!==undefined && (newSize !== tokenActor.system.secChar.wounds.value)) ) {
-            let size= 0;
-            if(tokenActor.system.horde.value||tokenActor.system.formation.value){
-                size= FORTYKTABLES.hordeSizes[newSize];
-                //modify token dimensions if scene ratio isnt 1
-                let gridRatio=canvas.dimensions.distance;
-                size=Math.max(1,size/gridRatio);
 
-            }else{
-                size= game.fortyk.FORTYK.size[newSize].size;
-            }
-            if ( tokenActor.isToken ) tokenActor.token.update({height: size, width: size});
-            else if ( !data["token.width"] && !foundry.utils.hasProperty(data, "token.width") ) {
-                data["token.height"] = size;
-                data["token.width"] = size;
-            }
-        }
-    }*/
 });
 
 Hooks.on("simple-calendar-date-time-change", async (dateData) => {
-    if (!SimpleCalendar.api.isPrimaryGM()) {
+    if (!SimpleCalendar.api.isFirstGM()) {
         return;
     }
     let timeElapsed = dateData.diff;
@@ -2159,38 +2192,7 @@ Hooks.on("simple-calendar-date-time-change", async (dateData) => {
         });
     });
 });
-Hooks.once("enhancedTerrainLayer.ready", (RuleProvider) => {
-    class FortykSystemRuleProvider extends RuleProvider {
-        calculateCombinedCost(terrain, options) {
-            if (terrain.length === 0) {
-                return 1;
-            }
 
-            let cost = terrain[0].cost;
-            if (!cost) {
-                cost = 1;
-            }
-            let token = options.token;
-            let actor;
-            if (token) {
-                actor = token.actor;
-            }
-
-            if (
-                actor &&
-                (actor.getFlag("fortyk", "jump") ||
-                 actor.getFlag("fortyk", "crawler") ||
-                 actor.getFlag("fortyk", "hoverer") ||
-                 actor.getFlag("fortyk", "flyer") ||
-                 actor.getFlag("fortyk", "skimmer"))
-            ) {
-                cost = 1;
-            }
-            return cost;
-        }
-    }
-    enhancedTerrainLayer.registerSystem("fortyk", FortykSystemRuleProvider);
-});
 Hooks.once("item-piles-ready", async () => {
     let priceString = "system.price.value";
     let currencyName = "Imperial Eagle";

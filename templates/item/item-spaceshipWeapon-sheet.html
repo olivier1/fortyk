@@ -36,7 +36,11 @@
     </div>
     <div class="flexcol">
         <label>Range:</label>
-        <input type="text" class="weapon-mod" value="{{system.range.value}}" data-target="system.range.value">
+         <select class="damage-type" name="system.range.value">
+             
+            {{selectOptions FORTYK.spaceshipWeaponRanges selected=system.range.value valueAttr="value" labelAttr="value"}}
+            
+        </select>
     </div>
     <div class="flexcol">
         <label>Strength:</label>

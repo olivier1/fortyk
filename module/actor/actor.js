@@ -66,8 +66,9 @@ export class FortyKActor extends Actor {
         var statuses = data.statuses;
         if(statuses){
             let token=getActorToken(this);
-            let detectionModes=token.document.detectionModes;
-          
+            if(token){
+                let detectionModes=token.document.detectionModes;
+
                 let seeInvisibilityMode = detectionModes.find(mode => mode.id === "seeInvisibility");
                 if(!seeInvisibilityMode){
                     detectionModes.push({
@@ -95,7 +96,7 @@ export class FortyKActor extends Actor {
 
                 }
                 token.document.update({"detectionModes":detectionModes});
-            
+            }
         }
         if (dead) {
             let token = getActorToken(this).document;

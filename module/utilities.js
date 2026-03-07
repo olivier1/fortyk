@@ -265,6 +265,18 @@ export const preLoadHandlebarsPartials = async function () {
 export const sleep = function (ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 };
+/**
+ * Locates a single active gm.
+ * @returns {User|undefined}
+ */
+export function firstGM() { return game.users?.find(u => u.isGM && u.active); }
+
+/**
+ * Is the current user the first active GM user?
+ * @returns {boolean}
+ */
+export function isFirstGM() { return game.user && game.user.id === firstGM()?.id; }
+//turns off all of an actor's active auras
 export const turnOffActorAuras= async function (tokenDocument){
     let actor=tokenDocument.actor;
     let tokenObject=tokenDocument.object;
@@ -447,7 +459,6 @@ export const tokenDistance = function (token1, token2) {
     if(token1 instanceof FortyKToken)token1=token1._object;
     if(token2 instanceof FortyKToken)token2=token2._object;
     if (canvas.scene.grid.type === CONST.GRID_TYPES.GRIDLESS) {
-        //let distancePx=Math.sqrt(Math.pow(gridRatio*(token1x-token2x),2)+Math.pow(gridRatio*(token1y-token2y),2)+Math.pow((token1.document.elevation-token2.document.elevation),2));
 
         return tokenDistanceGridless(token1, token2);
     }
@@ -507,7 +518,7 @@ export const tokenDistance = function (token1, token2) {
     let yDistance = Math.abs(gridRatio * (token1y - token2y));
     //Z DISTANCE IS NOT IN PIXELS
     let zDistance = Math.abs(token1.document.elevation - token2.document.elevation);
-
+    console.log(xDistance, yDistance, zDistance);
     return Math.max(xDistance, yDistance, zDistance);
 
 };

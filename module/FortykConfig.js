@@ -490,7 +490,8 @@ FORTYK.vehicleRepairTypes = {
     }
 };
 FORTYK.coreIntegrities = { Common: 3, Poor: 1, Good: 4, Best: 5 };
-FORTYK.spaceshipWeaponTypes = [{ value: "Macrocannon" }, { value: "Lance" }, { value: "Torpedo" }, { value: "Hangar" }];
+FORTYK.spaceshipWeaponTypes = [{ value: "Macrocannon" }, { value: "Lance" },{ value: "Nova Cannon" }, { value: "Torpedo Tube" }, { value: "Torpedo" }, { value: "Hangar" }];
+FORTYK.spaceshipWeaponRanges = [{value:"Short"}, {value:"Medium"}, {value:"Medium-Long"}, {value:"Long"}];
 FORTYK.spaceshipCargoTypes = [
     { value: "Food Supplies" },
     { value: "Unrefined Materials" },
@@ -1815,7 +1816,7 @@ FORTYK.StatusEffects = [
     },
     {
         id: "severe",
-        name: "Arduous Terrain",
+        name: "Severe Terrain",
         img: "systems/fortyk/icons/quarry-512.png",
         statuses: ["severe"],
         changes: [
