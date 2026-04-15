@@ -336,7 +336,7 @@ export const applySceneAuras = async function (activeAuras, tokenObject){
         if(aura.system.notSelf){
             targets=targets.filter((token)=>caster.id!==token.actor.id);
         }
-        if(tokenObject.actor.id!==caster.id){
+        if(tokenObject?.actor?.id!==caster.id){
             targets=[tokenObject];
         }
         let auraItemType=aura.type;
@@ -408,11 +408,10 @@ export const applySceneAuras = async function (activeAuras, tokenObject){
             }
             if (distance > range) continue;
             if(los){
-                const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(target.center, casterToken.center, {mode:"any", type:"sight"});
+                const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(target._object.center, casterToken.center, {mode:"any", type:"sight"});
                 if(collision)continue;
             }
             let render = false;
-
             let effect = await target.actor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
             target.actor.flags.core[auraName]=true;
             let newAe = effect[0];
@@ -518,7 +517,6 @@ export const tokenDistance = function (token1, token2) {
     let yDistance = Math.abs(gridRatio * (token1y - token2y));
     //Z DISTANCE IS NOT IN PIXELS
     let zDistance = Math.abs(token1.document.elevation - token2.document.elevation);
-    console.log(xDistance, yDistance, zDistance);
     return Math.max(xDistance, yDistance, zDistance);
 
 };

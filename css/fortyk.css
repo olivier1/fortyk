@@ -90,6 +90,9 @@
   padding-bottom: 0.85em;
   overflow:visible !important;
 }
+.application .window-header .window-title{
+  font-size: x-large;
+}
 #sidebar-content{
   padding-top:1em;
   padding-bottom:2em;
@@ -236,6 +239,7 @@ button:not([class*="fsc-"], [class*="fa-"]), .button:not([class*="fsc-"], [class
   color: var(--terminal-primary);
   border: 3px double var(--terminal-border) !important;
   font-family: var(--terminal-font);
+  cursor: pointer;
   font-size: var(--terminal-font-size) !important;
   text-shadow: var(--terminal-text-shadow) !important;
   transition: all 0.3s ease !important;
@@ -446,6 +450,7 @@ nav>a.active>*{
 }
 
 
+
 /* NUCLEAR OVERRIDE FOR BACKGROUND - Apply to absolutely EVERYTHING in chat */
 #chat *, 
 #chat-log *, 
@@ -552,7 +557,7 @@ nav>a.active>*{
 
 /* Whispers */
 
-#chat-log .message.whisper
+.chat-message.whisper
 {
   background-color: #132617 !important;
   color: var(--terminal-secondary);
@@ -993,6 +998,7 @@ section.chat-sidebar .jump-to-bottom > a{
 .dialog form,
 .window-app .window-content form:not([class*="fsc-"]) {
   background-color: var(--terminal-bg) ;
+  font-size: var(--terminal-font-size);
   color: var(--terminal-text) !important;
 }
 .dialog-content{
@@ -1857,6 +1863,9 @@ u:hover{
 }
 prose-mirror{
   height: 300px !important;
+}
+.prosemirror button.toggle, prose-mirror button.toggle{
+  display: revert-layer;
 }
 .fortyk .sheet-content .tab{
   height: 100%;

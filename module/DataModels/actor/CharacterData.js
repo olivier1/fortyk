@@ -9,14 +9,14 @@ function resourceField(initialValue, initialMax) {
     max: new fields.NumberField({ initial: initialMax }),
   });
 }
-class CharacterData extends foundry.abstract.TypeDataModel {
+export class CharacterData extends foundry.abstract.TypeDataModel {
 
   static defineSchema() {
     return {
 
-      skillmods: new SchemaField({}),
-      secChar: new SchemaField({
-        tempMod: new SchemaField({
+      "skillmods": new SchemaField({}),
+      "secChar": new SchemaField({
+        "tempMod": new SchemaField({
           "value": new NumberField({ required: true, integer: true, initial: 0 }),
           "command": new NumberField({ required: true, integer: true, initial: 0 })
         }),
@@ -336,7 +336,29 @@ class CharacterData extends foundry.abstract.TypeDataModel {
       "riding": new SchemaField({
         "id": new StringField({ initial: "" })
       }),
-      "sort":new SchemaField({})
+      "sort":new SchemaField({}),
+      "sex": new SchemaField({
+        "value": new StringField({ initial: "" })
+      }),
+      "age": new SchemaField({
+        "value": new NumberField({ required: true, integer: true, initial: 0})
+      }),
+      "build": new SchemaField({
+        "value": new StringField({ initial: "" })
+      }),
+      "hair": new SchemaField({
+        "value": new StringField({ initial: "" })
+      }),
+      "eye": new SchemaField({
+        "value": new StringField({ initial: "" })
+      }),
+      "race": new SchemaField({
+        "value": new StringField({ initial: "" })
+      }),
+      "notesAndBackground": new SchemaField({
+        "background": new HTMLField({ initial: "" }),
+        "notes": new HTMLField({ initial: "" })
+      })
 
 
     };

@@ -152,23 +152,16 @@ export class tntDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     _onTntDescrClick(event){
         event.preventDefault();
         let descr = event.target.attributes["data-description"].value;
-        var options = {
-            width: 300,
-            height: 400
-        };
+       
         var name=event.currentTarget.dataset["name"];
-        let dlg = new Dialog({
-            title: `${name} Description`,
-            content: "<p>"+descr+"</p>",
-            buttons: {
-                submit: {
-                    label: "OK",
-                    callback: null
-                }
-            },
-            default: "submit",
-        }, options);
-        dlg.render(true);
+        foundry.applications.api.DialogV2.prompt({
+            window:{title: `${name} Description`,
+                    width: 300,
+                    height: 400},
+            content: "<p>"+descr+"</p>"});
+
+
+
     }
 
     _onTntFilterChange(event) {

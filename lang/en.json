@@ -7,7 +7,8 @@
     "TYPES.Actor.vehicle" : "Vehicle",
     "TYPES.Actor.owRegiment" : "Only War Regiment",
     "TYPES.Actor.knightHouse" : "Knight House",
-    
+    "TYPES.RegionBehvior.fortykCover" : "Fortyk Cover Behavior",
+    "TYPES.RegionBehvior.fortykElevation" : "Fortyk Elevation Behavior",
     "TYPES.Item.advancement" : "Advancement",
     "TYPES.Item.ammunition" : "Ammunition",
     "TYPES.Item.armor" : "Armor",

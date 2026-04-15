@@ -17,7 +17,7 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
             submitOnChange: true
         },
         classes: ["fortyk", "sheet", "item"],
-        position:{width: 520,
+        position:{width: 600,
                   height: "auto"},
         window: {
             controls: [

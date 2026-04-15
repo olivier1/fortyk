@@ -764,7 +764,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                 foundry.applications.api.DialogV2.wait({
                     window: { title: `Number of Hits & Bonus Damage` },
                     content: content,
-                    position: { width: 100 },
+                    position: { width: 300 },
                     buttons: [
                         {
                             label: "OK",

@@ -7,6 +7,8 @@ import { FortyKTokenRuler } from "./ruler/fortykTokenRuler.js";
 import { FortyKTerrain } from "./terrain/fortykTerrain.js";
 import { FortyKElevationBehavior } from "./terrain/behaviors/fortykElevation.js";
 import { FortyKElevationConfig } from "./terrain/behaviors/configs/fortykElevationConfig.js";
+import { FortyKCoverBehavior } from "./terrain/behaviors/fortykCover.js";
+import { FortyKCoverConfig } from "./terrain/behaviors/configs/fortykCoverConfig.js";
 import FortyKDWActorSheet from "./actor/actorDW-sheet.js";
 import { FortyKDHActorSheet } from "./actor/actorDH-sheet.js";
 import { FortyKOWActorSheet } from "./actor/actorOW-sheet.js";
@@ -215,8 +217,11 @@ Hooks.once("init", async function () {
     CONFIG.Token.objectClass = FortyKPlaceableToken;
     CONFIG.Token.movement.TerrainData = FortyKTerrain;
     CONFIG.RegionBehavior.dataModels.fortykElevationBehavior = FortyKElevationBehavior;
-    CONFIG.RegionBehavior.typeLabels.fortykElevationBehavior = "fortykElevation";
+    CONFIG.RegionBehavior.typeLabels.fortykElevationBehavior = "TYPES.RegionBehvior.fortykElevation";
     CONFIG.RegionBehavior.typeIcons.fortykElevationBehavior = "fas fa-stairs";
+    CONFIG.RegionBehavior.dataModels.fortykCoverBehavior = FortyKCoverBehavior;
+    CONFIG.RegionBehavior.typeLabels.fortykCoverBehavior = "TYPES.RegionBehvior.fortykCover";
+    CONFIG.RegionBehavior.typeIcons.fortykCoverBehavior = "fas fa-tarp-droplet";
 
     //CONFIG.ActiveEffect.entityClass = FortyKActiveEffect;
     // Register sheet application classes
@@ -398,6 +403,18 @@ Hooks.once("ready", async function () {
             light:"SETTINGS.UI.FIELDS.colorScheme.choices.light"
         }
     }};
+    CONFIG.RegionBehavior.sheetClasses["fortykCoverBehavior"]={"core.RegionBehaviorConfig":{
+        canBeDefault: true,
+        canConfigure: true,
+        cls:FortyKCoverConfig,
+        default: true,
+        id:"core.RegionBehaviorConfig",
+        label:"Default Region Behavior Sheet",
+        themes:{
+            dark:"SETTINGS.UI.FIELDS.colorScheme.choices.dark",
+            light:"SETTINGS.UI.FIELDS.colorScheme.choices.light"
+        }
+    }};
     //for actors with psychic buffs, we need to re prepare them once all the actors have been prepared
     //prevents infinite loops when two psyker buff each other
     let actors = game.actors.values();
@@ -415,21 +432,12 @@ Hooks.once("ready", async function () {
             };
             let img = data.package.img;
             let title = data.package.title;
-            let dlg = new Dialog(
-                {
-                    title: title,
-                    content: `<img src="${img}"  width="auto" height="700">`,
-                    buttons: {
-                        submit: {
-                            label: "OK",
-                            callback: null
-                        }
-                    },
-                    default: "submit"
-                },
-                options
-            );
-            dlg.render(true);
+            foundry.applications.api.DialogV2.prompt({
+                window:{title: title,
+                        width:"auto",
+                        height:700},
+                content: `<img src="${img}"  width="auto" height="700">`});
+
         }
         let actors;
         if (data.type === "prepActors") {
@@ -1555,7 +1563,7 @@ async function handleMultiDrop(actor, canvas, dragEvent) {
 function numberOfCopiesDialog(actor) {
     return new Promise((resolve, reject) => {
         const dialog = foundry.applications.api.DialogV2.wait({
-            window: { title: game.i18n.localize("md.no-of-copies-title") },
+            window: { title: game.i18n.localize("Number of Tokens") },
             content: `<section class="md-dialog">
                         <h5>Actor to create: ${actor.name}</h1>
                         <label for="noOfCopies">How many</label>
@@ -1765,6 +1773,13 @@ async function fetchData(promise, time){
 function isOnFinalWaypoint(movement) {
     return movement.pending.waypoints.length===0;
 }
+function isStartOfMovement(movement){
+    let origin=movement.origin;
+    let destination=movement.destination;
+    let check=true;
+    if(origin.x===destination.x&&origin.y==destination.y)check=false;
+    return check;
+}
 async function handlePostMovement(promise, time){
     let tokens=moveTokens[time];
     await promise;
@@ -1773,7 +1788,7 @@ async function handlePostMovement(promise, time){
         let tokenRegions=token.regions;
         let heightBehavior=false;
         for (const region of tokenRegions) {
-            
+
             for (const behavior of region.behaviors) {
                 if(behavior.disabled)continue;
                 if (behavior.type === "fortykElevationBehavior") { 
@@ -1784,24 +1799,24 @@ async function handlePostMovement(promise, time){
                     let tokenElevation=token.elevation;
                     let movementAction=token.movementAction;
                     if(movementAction==="fly"){
-                       newElevation=Math.max(elevation,tokenElevation);
+                        newElevation=Math.max(elevation,tokenElevation);
                     }else if(movementAction==="burrow"){
                         newElevation=Math.min(elevation, tokenElevation);
                     }
                     if(newElevation!==tokenElevation){
                         await token.update({elevation:newElevation});
-                        
+
                     }
-                     
+
                 }
-                
+
             }
         }
-        
+
 
         let scene = game.scenes.current;
         let actor = token.actor;
-        if(!actor)return;
+        if(!actor)continue;
         let aes = actor.effects;
         for (const ae of aes) {
             if (!ae) continue;
@@ -1811,6 +1826,7 @@ async function handlePostMovement(promise, time){
                 let casterToken = game.scenes.current.tokens.find((child) => child.id === casterId);
                 if (!casterToken) {
                     await ae.delete();
+                    actor.flags.core[ae.name]=false;
                     continue;
                 }
                 let distance = tokenDistance(token, casterToken);
@@ -1821,15 +1837,19 @@ async function handlePostMovement(promise, time){
                 let los = ae.getFlag("fortyk", "los");
                 if (los) {
                     const collision = CONFIG.Canvas.polygonBackends["sight"].testCollision(
-                        token.center,
-                        casterToken.center,
+                        token._object.center,
+                        casterToken._object.center,
                         { mode: "any", type: "sight" }
                     );
                     if (collision) {
                         del=true;
                     }
                 }
-                if(del)ae.delete();
+                if(del){
+                    
+                    await ae.delete();
+                    actor.flags.core[ae.name]=false;
+                }
             }
 
         }
@@ -1864,7 +1884,11 @@ async function handlePostMovement(promise, time){
                             }
 
                         }
-                        if(del)buff.delete();
+                        if(del){
+                            
+                            buff.delete();
+                            actor.flags.core[buff.name]=false;
+                        }
                     }
                 }
                 buffs=buffs.filter((buff)=>fromUuidSync(buff));
@@ -1906,7 +1930,11 @@ async function handlePostMovement(promise, time){
                                 del=true;
                             }
                         }
-                        if(del)await buff.delete();
+                        if(del){
+                            
+                            await buff.delete();
+                            actor.flags.core[buff.name]=false;
+                        }
                     }
                 }
                 buffs=buffs.filter((buff)=>fromUuidSync(buff));
@@ -1926,7 +1954,7 @@ async function handlePostMovement(promise, time){
         await scene.setFlag("fortyk", "activeAuras", auras);
         await applySceneAuras(auras, token);
     }
-    moveTokens[time]=undefined;
+    delete moveTokens[time];
     return;
 }
 async function addToPromiseQueue(token, movement, promise){
@@ -1934,7 +1962,10 @@ async function addToPromiseQueue(token, movement, promise){
     if(!moveTokens[time]){
         moveTokens[time]=[token];
     }else{
-        moveTokens[time].push(token);
+        if(!moveTokens[time].find((oneToken)=>oneToken.id===token.id)){
+            moveTokens[time].push(token);
+        }
+        
     }
 
     await fetchData(promise, time);
@@ -1960,6 +1991,15 @@ function clearDifficultTerrain(token){
         }
     }
 }
+function clearOneTerrain(token, terrain){
+    let actor=token.actor;
+    if(actor.getFlag("core",terrain)){
+        for(const effect of actor.effects){
+
+            if(effect.statuses.has(terrain))effect.delete();
+        }
+    }
+}
 async function handleTerrain(token, promise){
 
     let regions=token.regions;
@@ -1981,18 +2021,24 @@ async function handleTerrain(token, promise){
                 if(!actor.statuses.has("rough")){
                     game.fortyk.FortykRolls.applyActiveEffect(actor,[game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("rough")]]);
                 }
+                clearOneTerrain(token,"tough");
+                clearOneTerrain(token,"severe");
                 break;
             }
             case (difficulty>2&&difficulty<=3):{
                 if(!actor.statuses.has("tough")){
                     game.fortyk.FortykRolls.applyActiveEffect(actor,[game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("tough")]]);
                 }
+                clearOneTerrain(token,"rough");
+                clearOneTerrain(token,"severe");
                 break; 
             }
             case (difficulty>3):{
                 if(!actor.statuses.has("severe")){
                     game.fortyk.FortykRolls.applyActiveEffect(actor,[game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("severe")]]);
                 }
+                clearOneTerrain(token,"tough");
+                clearOneTerrain(token,"rough");
                 break; 
             }
             default:
@@ -2007,6 +2053,7 @@ Hooks.on("moveToken", async (token, movement, operation, user) => {
     if (!isFirstGM()) return;
     handleTerrain(token, token._object.movementAnimationPromise);
     if(!isOnFinalWaypoint(movement)) return;
+    if(!isStartOfMovement(movement)) return;
     addToPromiseQueue(token, movement, token._object.movementAnimationPromise);
     return true;
 });

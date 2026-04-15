@@ -161,7 +161,7 @@
             </div>
             <div class="list-item flexrow">
 
-                <div><input type="checkbox" name="concealed" value="-30" ></div><label>Fully Concealed: -30</label>
+                <div><input type="checkbox" name="concealed" value="-30" {{#if options.fullConceal}} checked{{/if}}></div><label>Fully Concealed: -30</label>
 
             </div>
             {{#unless options.targetselection}}
@@ -186,6 +186,7 @@
     </div>
 
 </div>
+
 <div class="flexcol">
     {{#if leverage}}
     <div class="fit-content flexrow">
@@ -193,6 +194,7 @@
         <input type="checkbox" id="leveragebox">
     </div>
     {{/if}}
+    
     <label class="section-title">Misc Modifiers: {{#if (greaterThan modifiers.miscMods -1)}}+{{/if}}{{modifiers.miscMods}}</label>
     <label class="section-title">Other Modifiers</label>
     <input type="number" id="modifier" name="other" value="{{modifiers.testMod}}">

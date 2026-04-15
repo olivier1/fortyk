@@ -481,7 +481,7 @@ export class FortykRollDialogs {
         if (type === "focuspower") {
             if (actor.system.psykana.psykerType.value === "navigator") {
 
-                let training = item.system.training.value;
+                let training = weapon.system.training.value;
                 let sheet;
 
                 for (const key in actor.apps) {
@@ -1283,6 +1283,7 @@ export class FortykRollDialogs {
                      ]
         });
     }
+    
     static async callRangedAttackDialog(
         testChar,
         testType,
@@ -1295,7 +1296,8 @@ export class FortykRollDialogs {
     ) {
         //check if in melee
         let isPistol = item.system.class.value === "Pistol";
-        if (!isPistol && this.checkMelee(getActorToken(actor))) {
+        var token = getActorToken(actor);
+        if (!isPistol && this.checkMelee(token)) {
             ui.notifications.warn("You are engaged in melee!");
         }
         if (actor.getFlag("core", "blind")) {
@@ -1462,6 +1464,10 @@ export class FortykRollDialogs {
             let target = targets.values().next().value;
             let tarActor = target.actor;
             let tar = tarActor;
+
+            
+            
+            
 
 
             let conceal = tar.getFlag("fortyk", "conceal");
@@ -1821,12 +1827,15 @@ export class FortykRollDialogs {
                         false,
                         modifierTracker
                     );
+                    let attackUpdate={};
                     if (aimBonus > 0) {
-                        await actor.update({ "system.secChar.lastHit.aim": true });
+                       attackUpdate["system.secChar.lastHit.aim"]= true;
                         actor.system.secChar.lastHit.aim = true;
                     } else {
-                        await actor.update({ "system.secChar.lastHit.aim": false });
+                        attackUpdate["system.secChar.lastHit.aim"]= false;
+                        actor.system.secChar.lastHit.aim = false;
                     }
+                     await actor.update(attackUpdate);
                 }
             }
                      ],

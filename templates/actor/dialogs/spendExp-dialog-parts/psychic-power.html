@@ -29,7 +29,7 @@
         <span {{#unless (compareString ../discipline this.system.discipline.value)}}style="display:none;"{{/unless}} name="tntEntry" class="tntname tntitem" data-discipline="{{this.system.discipline.value}}" data-search="{{this.name}}{{this.system.tags.value}}">{{this.name}}</span>
         <span {{#unless (compareString ../discipline this.system.discipline.value)}}style="display:none;"{{/unless}} name="tntEntry" class="tntprereqs tntitem" data-discipline="{{this.system.discipline.value}}" data-search="{{this.name}}{{this.system.tags.value}}">{{this.system.reqs.value}}</span>
         <span {{#unless (compareString ../discipline this.system.discipline.value)}}style="display:none;"{{/unless}} name="tntEntry" class="tntdescr tntitem" data-discipline="{{this.system.discipline.value}}" data-search="{{this.name}}{{this.system.tags.value}}">{{this.system.cost.value}}xp</span>
-        <a {{#unless (compareString ../discipline this.system.discipline.value)}}style="display:none;"{{/unless}} name="tntEntry" class="tntdescr tntitem tntdescr-button" class="tnt-desscription" data-discipline="{{this.system.discipline.value}}" data-name="{{this.name}}" data-description="{{this.system.description.value}}" data-search="{{this.name}}{{this.system.tags.value}}">Descr</a>
+        <a {{#unless (compareString ../discipline this.system.discipline.value)}}style="display:none;"{{/unless}} name="tntEntry" class="tntdescr tntitem tntdescr-button button" class="tnt-desscription" data-discipline="{{this.system.discipline.value}}" data-name="{{this.name}}" data-description="{{this.system.description.value}}" data-search="{{this.name}}{{this.system.tags.value}}">Descr</a>
         {{/if}}
 
 

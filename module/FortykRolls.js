@@ -563,7 +563,7 @@ returns the roll message*/
                 content: renderedTemplate,
                 classes: ["fortyk"],
                 flags: { fortyk: { templateOptions: templateOptions,
-                                 modifiers: modifiers}}
+                                  modifiers: modifiers}}
             });
         }
         if(templateOptions.success&&char==="wp"&&actor.getFlag("fortyk","warpopened")){
@@ -2229,7 +2229,7 @@ returns the roll message*/
                             chatDamage += viscRoll._total;
                         }
                         //handle cover
-                        let cover = parseFloat(data.secChar.cover.value);
+                        let cover = this.getCover(tar, attackerToken);
 
                         if (
                             !self &&
@@ -2239,7 +2239,7 @@ returns the roll message*/
                             (weapon.type === "rangedWeapon" || weapon.type === "psychicPower")
                         ) {
                             if (actor.getFlag("fortyk", "nowheretohide")) {
-                                cover = Math.max(0, cover - 0.2);
+                                cover = Math.max(0, cover - 0.25);
                                 damageOptions.results.push(
                                     `<span>Nowhere to hide reduces cover to ${Math.round(cover * 100)}%</span>`
                                 );
@@ -3901,6 +3901,42 @@ returns the roll message*/
         }
 
         return damageDone;
+    }
+    static getCover(target, attacker){
+        const regions=game.scenes.current.regions;
+        const coverRegions=regions.filter((region)=>{
+            let behaviors=region.behaviors;
+            return behaviors.find((behavior)=>behavior.type==="fortykCoverBehavior");
+        });
+        let targetActor=target.actor;
+        let totalCover=parseFloat(targetActor.system.secChar.cover.value);
+        let attackerPosition=attacker.center;
+        attackerPosition.elevation=attacker.document.elevation;
+        let targetPosition=target.center;
+        targetPosition.elevation=target.document.elevation;
+        for(let region of coverRegions){
+
+            const segments=region.segmentizeMovementPath([attackerPosition, targetPosition],[{x:0,y:0,elevation:0}]);
+            for(let segment of segments){
+                if(segment.type === 1){
+                    let biggestDistance=1;
+                    segment.from.h=1;
+                    segment.from.w=1;
+                    segment.from.document={elevation:segment.from.elevation};
+                    let distance=tokenDistance(attacker,segment.from);
+                    if(distance<biggestDistance)continue;
+                    let coverBehavior=region.behaviors.find((behavior)=>behavior.type==="fortykCoverBehavior");
+                    if(!coverBehavior.disabled){
+                        let cover=(coverBehavior.system.cover/100);
+                        totalCover+=cover;  
+                    }
+
+                }
+            }
+        }
+
+        totalCover=Math.max(0, Math.min(totalCover, 1));
+        return totalCover;
     }
     //reports damage to a target's owners
     static async reportDamage(tarActor, chatDamage) {

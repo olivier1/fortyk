@@ -75,9 +75,9 @@ FORTYK.carry = [
 ];
 FORTYK.coverTypes = [
     { value: 0, label: "None" },
-    { value: 0.1, label: "Light Cover" },
-    { value: 0.3, label: "Medium Cover" },
-    { value: 0.5, label: "Heavy Cover" }
+    { value: 0.25, label: "Light Cover" },
+    { value: 0.5, label: "Medium Cover" },
+    { value: 0.75, label: "Heavy Cover" }
 ];
 FORTYK.extraHits = {
     head: [
