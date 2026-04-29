@@ -2,6 +2,7 @@ import { FortykRolls } from "./FortykRolls.js";
 import { getActorToken } from "./utilities.js";
 import { tokenDistance } from "./utilities.js";
 import { isBlastTarget } from "./utilities.js";
+import { psychicPowerDialog } from "./dialog/psychicPowerDialog.js";
 export class FortykRollDialogs {
     //activate chatlisteners
     static chatListeners(log) {
@@ -1283,7 +1284,7 @@ export class FortykRollDialogs {
                      ]
         });
     }
-    
+
     static async callRangedAttackDialog(
         testChar,
         testType,
@@ -1465,9 +1466,9 @@ export class FortykRollDialogs {
             let tarActor = target.actor;
             let tar = tarActor;
 
-            
-            
-            
+
+
+
 
 
             let conceal = tar.getFlag("fortyk", "conceal");
@@ -1829,13 +1830,13 @@ export class FortykRollDialogs {
                     );
                     let attackUpdate={};
                     if (aimBonus > 0) {
-                       attackUpdate["system.secChar.lastHit.aim"]= true;
+                        attackUpdate["system.secChar.lastHit.aim"]= true;
                         actor.system.secChar.lastHit.aim = true;
                     } else {
                         attackUpdate["system.secChar.lastHit.aim"]= false;
                         actor.system.secChar.lastHit.aim = false;
                     }
-                     await actor.update(attackUpdate);
+                    await actor.update(attackUpdate);
                 }
             }
                      ],
@@ -2335,7 +2336,7 @@ export class FortykRollDialogs {
         modifiers,
         modifierTracker = []
     ) {
-        let template = "systems/fortyk/templates/actor/dialogs/psychic-power-attack-dialog.html";
+        let template = "systems/fortyk/templates/actor/dialogs/psychic-power-dialog.html";
         let templateOptions = {};
         let actionType = item.system.action.value;
         if (actionType.toLowerCase() === "reaction") {
@@ -2343,135 +2344,26 @@ export class FortykRollDialogs {
             let spentReactions = actor.getFlag("core", "evasion");
             if (spentReactions >= reactions) return ui.notifications.warn("Out of reactions!");
         }
-        modifierTracker = modifierTracker.concat(item.system.modifiers);
-        templateOptions.leverage=actor.getFlag("fortyk", "leverage");
-        let renderedTemplate = await foundry.applications.handlebars.renderTemplate(template, templateOptions);
-        foundry.applications.api.DialogV2.wait({
-            window:{title: `${item.name} Focus Power Test.`,
-                    width: 200},
+        //modifierTracker = modifierTracker.concat(item.system.modifiers);
+        let leverage=actor.getFlag("fortyk", "leverage");
+        new psychicPowerDialog({
+            window:{title: `${item.name} Test`
+                   },
+            position:{ width: 300},
             classes: ["fortky"],
-            content: renderedTemplate,
-            buttons: [
-                {
-                    label: "OK",
-                    callback: async (html) => {
-                        let elements=html.target.form.elements;
-                        html.target.closest('dialog').setAttribute("hidden", "hidden");
-                        let other = Number(elements.other.value);
-                        modifierTracker.push({ value: other, label: "Input Modifier" });
-                        let leverage = elements.leveragebox?.checked;
-                        if(leverage){
-                            testChar="inf";
-                            let inf=actor.system.characteristics.inf.total;
-                            let baseObject=modifierTracker.shift();
-                            let baseAmt=baseObject.value;
-                            testTarget-=baseAmt;
-                            testTarget+=inf;
-                            modifierTracker.unshift({value:inf,label:"Power Base"});
-                        }
-                        testTarget = parseInt(testTarget) + parseInt(other);
-
-                        let test = await FortykRolls.fortykTest(
-                            testChar,
-                            testType,
-                            testTarget,
-                            actor,
-                            testLabel,
-                            item,
-                            false,
-                            "",
-                            false,
-                            modifierTracker
-                        );
-                        if (actor.getFlag("fortyk", "soulblaze") && test.value) {
-                            let pr = actor.system.psykana.pr.effective;
-                            this.soulBlaze(actor, pr, actor.getFlag("fortyk", "iconofburningflame"));
-                        }
-                    }
-                }
-            ],
-            default: "submit"
-
-        });
-    }
-    static async soulBlaze(actor, pr, icon) {
-        let tokens = canvas.tokens.placeables;
-
-        let sourceToken = getActorToken(actor);
-        let messageContent = "";
-        let tests = [];
-        for (let token of tokens) {
-            let tokenActor = token.actor;
-            if (token.id === sourceToken.id) continue;
-            if (tokenActor.getFlag("fortyk", "daemonic")) {
-                let distance = tokenDistance(token, sourceToken);
-                if (distance > pr)continue;
-                const collision = CONFIG.Canvas.polygonBackends['move'].testCollision(token.center, sourceToken.center, {mode:"any", type:"move"});
-                if (collision) continue;
-                let test = await FortykRolls.fortykTest(
-                    "wp",
-                    "char",
-                    tokenActor.system.characteristics.wp.total,
-                    tokenActor,
-                    "Soulblaze",
-                    null,
-                    false,
-                    "",
-                    true,
-                    []
-                );
-                messageContent +=
-                    `<div class="chat-target"><a class="blast-ping" data-token="${token.id}">` +
-                    token.name +
-                    `'s</a> ` +
-                    test.template +
-                    `</div>`;
-                test.token = token;
-                test.tokenActor = tokenActor;
-                tests.push(test);
-
+            data:{
+                actor:actor,
+                power:item,
+                modifierTracker:modifierTracker,
+                testChar:testChar,
+                testType:testType,
+                testTarget:testTarget,
+                testLabel:testLabel,
+                leverage:leverage
             }
-        }
-        if (!messageContent) return;
-        let chatOptions = {
-            author: game.user._id,
-            speaker: { actor, alias: actor.getName() },
-            content: messageContent,
-            classes: ["fortyk"],
-            sound: "sounds/dice.wav",
-            flavor: `Soul Blaze Tests`
-        };
-
-        await ChatMessage.create(chatOptions, {});
-        for (let test of tests) {
-            if (!test.value) {
-                let token = test.token;
-                let tokenActor = test.tokenActor;
-
-                let fireData = { name: "Purifying Fire", type: "rangedWeapon" };
-                let fire = await Item.create(fireData, { temporary: true });
-
-                fire.system.damageType.value = "Energy";
-                fire.system.pen.value = 99999;
-
-                fire.flags.fortyk = { ignoreSoak: true };
-                fire.system.damageFormula.value = `${pr}`;
-
-                await FortykRolls.damageRoll(fire.system.damageFormula, tokenActor, fire, 1, true);
-                let fireActiveEffect = foundry.utils.duplicate(
-                    game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("purifyingflame")]
-                );
-                fireActiveEffect.flags = {
-                    fortyk: { damageString: `1d10+${pr}` }
-                };
-                fireActiveEffect.flags.fortyk.pr = pr;
-                if (icon) {
-                    fireActiveEffect.flags.fortyk.iconofburningflame = true;
-                }
-                FortykRolls.applyActiveEffect(token, [fireActiveEffect], false);
-            }
-        }
+        }).render(true);
     }
+    
     static async callSprayAttackDialog(actor, testLabel, weapon, options, sheet, title = "Enter test modifier") {
         let modifier = 0;
         let pr = actor.system.psykana.pr.effective;

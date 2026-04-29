@@ -147,8 +147,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             // For Actors and Items
             relativeTo: this.document
         });
-
-
+        data.asuryani=actor.getFlag("fortyk","asuryani");
+        data.masteredPaths=actor.system.masteredPathIntances;
+        if(data.masteredPaths.length==0){
+            data.masteredPaths=false;
+        }
         data.tabs=this._prepareTabs("sheet");
         data.actorAptitudes = this.prepareActorAptitudes(actor.system.aptitudes);
         let disciplines = [];

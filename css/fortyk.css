@@ -91,7 +91,7 @@
   overflow:visible !important;
 }
 .application .window-header .window-title{
-  font-size: x-large;
+  font-size: 20px;
 }
 #sidebar-content{
   padding-top:1em;
@@ -237,7 +237,7 @@ button:not([class*="fsc-"], [class*="fa-"]), .button:not([class*="fsc-"], [class
 
   background: none;
   color: var(--terminal-primary);
-  border: 3px double var(--terminal-border) !important;
+  border: 3px double var(--terminal-border);
   font-family: var(--terminal-font);
   cursor: pointer;
   font-size: var(--terminal-font-size) !important;
@@ -2465,6 +2465,7 @@ prose-mirror{
   text-shadow: 0 0 10px goldenrod;
 }
 .power-push{
+  color: var(--terminal-error) !important;
   border-color: var(--terminal-error) !important;
 }
 .power-push:hover{

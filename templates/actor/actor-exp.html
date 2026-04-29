@@ -35,6 +35,21 @@
                 <span class="exp-item">{{system.experience.value}}</span>
             </div>
         </div>
+        {{#if asuryani}}
+        <label class="section-title">Mastered Paths</label>
+        {{#if masteredPaths}}
+        <div class="grid grid-4col">
+            
+            {{#each masteredPaths}}
+            <label>{{this.name}}</label>
+            {{/each}}
+        </div>
+        {{else}}
+        <label>No Path Mastered</label>
+        {{/if}}
+
+        {{/if}}
+        {{debug role}}
         <label class="section-title">Advancements</label>
         {{#if system.lostChoice}}
         <a class="lost-choice button">Make Lost Choice!</a>

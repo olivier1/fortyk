@@ -1,0 +1,36 @@
+<div class="flexcol">
+    {{#if leverage}}
+    <div class="flexrow fit-content">
+        <label>Leverage:</label>
+        <input type="checkbox" id="leveragebox">
+    </div>
+    {{/if}}
+    <div class="flexrow">
+        <label>Effective PR: </label>
+        <label>{{effectivePR}}</label>
+    </div>
+    <div class="flexrow">
+        <label>Max Push: </label>
+        <label>{{maxPR}}</label>
+    </div>
+    <div class="flexrow">
+        <label>PR Used: </label> <input type="number" id="prInput" min="1" max="{{maxPR}}" value="{{currentPR}}">
+    </div>
+    <div class="flexrow">
+        <label id="phenomena">Phenomena Modifier: </label>
+        <label id="phenomenaModLabel">{{phenomenaMod}}</label>
+    </div>
+    <div class="flexrow">
+        <label>Additional Modifier:</label>
+        <input type="number" id="modifier" name="other" value="0">
+    </div>
+    <div class="flexrow">
+        <label>Total Modifier: </label>
+        <label id="modifierLabel">{{modifiers}}</label>
+    </div>
+    <div class="flexrow">
+        <label>Test Target: </label>
+        <label id="targetLabel">{{testTarget}}</label>
+    </div>
+    <span id="confirmBtn" class="button submitBtn{{#if push}} power-push{{/if}}">Confirm{{#if push}} Push{{/if}}</span>
+</div>

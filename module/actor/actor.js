@@ -346,6 +346,9 @@ export class FortyKActor extends Actor {
             data.psykana.psykerType.value = "navigator";
             data.psykana.disciplines = ["Navigator"];
         }
+        if(data.psykana.psykerType.value==="unbound"){
+            data.psykana.phenomena.value+=10;
+        }
         if (this.getFlag("fortyk", "sanguinethirst") && this.getFlag("core", "frenzy")) {
             let butcher = this.getFlag("fortyk", "butchercounter");
             if (butcher) {
@@ -461,6 +464,7 @@ export class FortyKActor extends Actor {
             data.carry.value = 0;
             let masteredPowers = 0;
             let masteredPaths = 0;
+            let masteredPathIntances=[];
             let forRaces = [];
             this.items.forEach((fortykItem, id, items) => {
                 let item = fortykItem;
@@ -581,6 +585,7 @@ export class FortyKActor extends Actor {
                 }
                 if(item.type === "eliteAdvance"&&item.getFlag("fortyk","mastered")){
                     masteredPaths++;
+                    masteredPathIntances.push(item);
                 }
             });
             //store known xenos for deathwatchtraining
@@ -592,6 +597,7 @@ export class FortyKActor extends Actor {
             }
             data.masteredPowers = masteredPowers;
             data.masteredPaths = masteredPaths;
+            data.masteredPathIntances  = masteredPathIntances;
             data.characteristics.inf.total = data.characteristics.inf.value + data.characteristics.inf.advance;
             data.experience.value =
                 parseInt(data.experience.starting) + parseInt(data.experience.earned) - parseInt(data.experience.spent);

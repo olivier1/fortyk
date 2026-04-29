@@ -144,7 +144,7 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
                         break;
                     case "asuryanipath":
 
-                        tabs.tabs.push( { id: 'eaPath', group: 'sheet', label: `Path Req &amp; Abilities` });
+                        tabs.tabs.push( { id: 'eaPath', group: 'sheet', label: `Path Req & Abilities` });
                         break;
                 }
                 tabs.tabs.push( { id: 'description', group: 'sheet', label: `Description` });

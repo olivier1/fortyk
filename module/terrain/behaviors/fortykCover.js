@@ -22,6 +22,12 @@ export class FortyKCoverBehavior extends foundry.data.regionBehaviors.RegionBeha
             label: "Cover",
             localize: false,
         });
+        schema.areaCover = new foundry.data.fields.BooleanField({
+            required:true,
+            initial:false,
+            label:"Is Area Cover",
+            localize:false
+        })
 
         return schema;
     }

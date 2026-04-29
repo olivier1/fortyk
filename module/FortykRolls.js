@@ -3918,19 +3918,21 @@ returns the roll message*/
 
             const segments=region.segmentizeMovementPath([attackerPosition, targetPosition],[{x:0,y:0,elevation:0}]);
             for(let segment of segments){
-                if(segment.type === 1){
-                    let biggestDistance=1;
-                    segment.from.h=1;
-                    segment.from.w=1;
-                    segment.from.document={elevation:segment.from.elevation};
-                    let distance=tokenDistance(attacker,segment.from);
-                    if(distance<biggestDistance)continue;
+                console.log(segment)
+                if(segment.type === 0){
                     let coverBehavior=region.behaviors.find((behavior)=>behavior.type==="fortykCoverBehavior");
-                    if(!coverBehavior.disabled){
-                        let cover=(coverBehavior.system.cover/100);
-                        totalCover+=cover;  
+                    if(!coverBehavior)continue;
+                    if(coverBehavior.disabled)continue;
+                    if(!coverBehavior.system.areaCover){
+                        let biggestDistance=1;
+                        segment.from.h=1;
+                        segment.from.w=1;
+                        segment.from.document={elevation:segment.from.elevation};
+                        let distance=tokenDistance(attacker,segment.from);
+                        if(distance<biggestDistance)continue;
                     }
-
+                    let cover=(coverBehavior.system.cover/100);
+                    totalCover+=cover;
                 }
             }
         }
