@@ -46,7 +46,7 @@ returns the roll message*/
         let tempMod = actor.system.secChar.tempMod.value;
         if (tempMod) {
             target += actor.system.secChar.tempMod.value;
-            if(modifiers){
+            if (modifiers) {
                 modifiers.push({ value: tempMod, label: "Temporary Modifier" });
             }
             await actor.update({ "system.secChar.tempMod.value": 0 });
@@ -54,7 +54,7 @@ returns the roll message*/
         let command = actor.system.secChar.tempMod.command;
         if (command) {
             target += actor.system.secChar.tempMod.command;
-            if(modifiers){
+            if (modifiers) {
                 modifiers.push({ value: command, label: "Command Bonus" });
             }
             await actor.update({ "system.secChar.tempMod.command": 0 });
@@ -98,15 +98,14 @@ returns the roll message*/
         if (
             type === "rangedAttack" ||
             type === "meleeAttack" ||
-            (type === "focuspower" &&
-             (fortykWeapon.flags.fortyk.attack ))
+            (type === "focuspower" && fortykWeapon.flags.fortyk.attack)
         ) {
             attack = true;
         }
         //prepare chat output
         let title = "";
-        if(opposed&&!reroll){
-            label = "Opposed "+label;
+        if (opposed && !reroll) {
+            label = "Opposed " + label;
         }
         if (delayMsg) {
             title = label.charAt(0).toUpperCase() + label.slice(1) + " test";
@@ -155,7 +154,7 @@ returns the roll message*/
             fireRate: fireRate,
             modifiers: modifiers,
             id: foundry.utils.randomID(5),
-            opposed:opposed
+            opposed: opposed
         };
         if (!reroll) {
             templateOptions["actor"] = actor.uuid;
@@ -256,17 +255,17 @@ returns the roll message*/
             if (type === "meleeAttack" && actor.getFlag("fortyk", "bonusmeleeattackdos")) {
                 testDos += parseInt(actor.getFlag("fortyk", "bonusmeleeattackdos"));
             }
-            let khaine = actor.getFlag("fortyk","wrathofkhaine");
-            if(khaine){
-                if(khaine.toLowerCase.includes("weapon skill")&&char==="ws"){
-                    testDos*=2;
-                }else if(khaine.toLowerCase.includes("ballistic skill")&&char==="bs"){
-                    testDos*=2;
+            let khaine = actor.getFlag("fortyk", "wrathofkhaine");
+            if (khaine) {
+                if (khaine.toLowerCase.includes("weapon skill") && char === "ws") {
+                    testDos *= 2;
+                } else if (khaine.toLowerCase.includes("ballistic skill") && char === "bs") {
+                    testDos *= 2;
                 }
             }
-            if(actor.system.secChar.tempMod.asuryan){
-                testDos*=2;
-                await actor.update({"system.secChar.tempMod.asuryan":false});
+            if (actor.system.secChar.tempMod.asuryan) {
+                testDos *= 2;
+                await actor.update({ "system.secChar.tempMod.asuryan": false });
             }
             templateOptions["dos"] = "with " + testDos.toString() + " degree";
             if (testDos === 1) {
@@ -274,24 +273,22 @@ returns the roll message*/
                 templateOptions["dos"] += "s";
             }
             templateOptions["dos"] += " of success!";
-            if(opposed){
-                let opposedDos=opposed.dos;
-                let opposedTarget=opposed.target;
-                if(testDos>opposedDos){
-                    templateOptions["success"] = true; 
-                }else if(opposedDos===testDos){
-                    if(target>opposedTarget){
-                        templateOptions["success"] = true; 
-                    }else{
-                        templateOptions["success"] = false; 
+            if (opposed) {
+                let opposedDos = opposed.dos;
+                let opposedTarget = opposed.target;
+                if (testDos > opposedDos) {
+                    templateOptions["success"] = true;
+                } else if (opposedDos === testDos) {
+                    if (target > opposedTarget) {
+                        templateOptions["success"] = true;
+                    } else {
+                        templateOptions["success"] = false;
                     }
-                }else{
-                    templateOptions["success"] = false; 
+                } else {
+                    templateOptions["success"] = false;
                 }
-
-            }else{
-
-                templateOptions["success"] = true; 
+            } else {
+                templateOptions["success"] = true;
             }
             templateOptions["pass"] = "Success!";
         } else {
@@ -475,9 +472,9 @@ returns the roll message*/
                 attackType !== "swift" &&
                 attackType !== "lightning" &&
                 ((actor.getFlag("fortyk", "inescapableattack").toLowerCase().indexOf("ranged") !== -1 &&
-                  type === "rangedAttack") ||
-                 (actor.getFlag("fortyk", "inescapableattack").toLowerCase().indexOf("melee") !== -1 &&
-                  type === "meleeAttack"))
+                    type === "rangedAttack") ||
+                    (actor.getFlag("fortyk", "inescapableattack").toLowerCase().indexOf("melee") !== -1 &&
+                        type === "meleeAttack"))
             ) {
                 let inescPenalty = testDos * -10;
                 evadepenalty += inescPenalty;
@@ -504,14 +501,14 @@ returns the roll message*/
                     templateOptions["sizePenalty"] = `Evasion penalty due to size difference: ${penalty}`;
                 }
             }
-            let ebbandflow = actor.getFlag("fortyk","ebbandflow");
-            if(ebbandflow){
-                evadepenalty+=parseInt(ebbandflow);
+            let ebbandflow = actor.getFlag("fortyk", "ebbandflow");
+            if (ebbandflow) {
+                evadepenalty += parseInt(ebbandflow);
                 templateOptions["ebbandflow"] = `Evasion penalty due to Ebb and Flow: ${ebbandflow}`;
             }
-            let seekpath= actor.getFlag("fortyk","seekthepath");
-            if(seekpath){
-                evadepenalty+=parseInt(seekpath);
+            let seekpath = actor.getFlag("fortyk", "seekthepath");
+            if (seekpath) {
+                evadepenalty += parseInt(seekpath);
                 templateOptions["ebbandflow"] = `Evasion penalty due to Seek the Path: ${seekpath}`;
             }
             //evadepenalty = Math.max(evadepenalty, -60);
@@ -534,16 +531,18 @@ returns the roll message*/
         }
         //save the test result in a flag
 
-
-        if(actor.isOwner){
-            let testResultFlag={};
-            testResultFlag.success=templateOptions.success;
-            testResultFlag.dos=testDos;
+        if (actor.isOwner) {
+            let testResultFlag = {};
+            testResultFlag.success = templateOptions.success;
+            testResultFlag.dos = testDos;
             await actor.setFlag("fortyk", "lasttest", testResultFlag);
-        }else{
+        } else {
             //if user isnt GM use socket to have gm roll the forcefield tests
-            let socketOp={type:"settestflag",package:{success:templateOptions.success,dos:testDos, actor:actor.uuid}};
-            await game.socket.emit("system.fortyk",socketOp);
+            let socketOp = {
+                type: "settestflag",
+                package: { success: templateOptions.success, dos: testDos, actor: actor.uuid }
+            };
+            await game.socket.emit("system.fortyk", socketOp);
         }
         //give the chat object options and stuff
         let result = {};
@@ -553,7 +552,10 @@ returns the roll message*/
             let id = foundry.utils.randomID(5);
             let popupTemplate = "systems/fortyk/templates/chat/chat-test-popup.html";
             templateOptions.id = id;
-            let renderedPopupTemplate = await foundry.applications.handlebars.renderTemplate(popupTemplate, templateOptions);
+            let renderedPopupTemplate = await foundry.applications.handlebars.renderTemplate(
+                popupTemplate,
+                templateOptions
+            );
             result.template = renderedPopupTemplate;
         } else {
             let renderedTemplate = await foundry.applications.handlebars.renderTemplate(template, templateOptions);
@@ -562,18 +564,17 @@ returns the roll message*/
                 speaker: { actor, alias: name },
                 content: renderedTemplate,
                 classes: ["fortyk"],
-                flags: { fortyk: { templateOptions: templateOptions,
-                                  modifiers: modifiers}}
+                flags: { fortyk: { templateOptions: templateOptions, modifiers: modifiers, navpoweroptions: modifiers.navPowerOptions } }
             });
         }
-        if(templateOptions.success&&char==="wp"&&actor.getFlag("fortyk","warpopened")){
-            let ae=await fromUuid(actor.getFlag("fortyk","warpopened"));
+        if (templateOptions.success && char === "wp" && actor.getFlag("fortyk", "warpopened")) {
+            let ae = await fromUuid(actor.getFlag("fortyk", "warpopened"));
             ae.delete();
-
         }
         //get first and second digits for hit locations and perils
         let firstDigit = Math.floor(testRoll / 10);
         let secondDigit = testRoll - firstDigit * 10;
+        let update = {};
         //determine hitlocation if the attack is a success
         if (attack && templateOptions["success"]) {
             //reverse roll to get hit location
@@ -601,16 +602,15 @@ returns the roll message*/
                 hitlocation = FORTYKTABLES.hitLocations[1];
                 vehicleHitlocation = FORTYKTABLES.vehicleHitLocations[81];
             }
-            await actor.update({
-                "system.secChar.lastHit.value": hitlocation.value,
-                "system.secChar.lastHit.label": hitlocation.label,
-                "system.secChar.lastHit.dos": testDos,
-                "system.secChar.lastHit.hits": hits,
-                "system.secChar.lastHit.vehicleHitLocation": vehicleHitlocation,
-                "system.secChar.lastHit.vehicle": vehicle,
-                "system.secChar.lastHit.facing": facing,
-                "system.secChar.lastHit.type": type
-            });
+            update["system.secChar.lastHit.value"] = hitlocation.value;
+            update["system.secChar.lastHit.label"] = hitlocation.label;
+            update["system.secChar.lastHit.dos"] = testDos;
+            update["system.secChar.lastHit.hits"] = hits;
+            update["system.secChar.lastHit.vehicleHitLocation"] = vehicleHitlocation;
+            update["system.secChar.lastHit.vehicle"] = vehicle;
+            update["system.secChar.lastHit.facing"] = facing;
+            update["system.secChar.lastHit.type"] = type;
+            await actor.update(update);
             let content = "";
             if (vehicle) {
                 content = `Location: ${vehicleHitlocation.label}`;
@@ -626,11 +626,10 @@ returns the roll message*/
             };
             await ChatMessage.create(chatOp, {});
         } else if (attack) {
-            actor.update({
-                "system.secChar.lastHit.vehicle": vehicle,
-                "system.secChar.lastHit.facing": facing,
-                "system.secChar.lastHit.type": type
-            });
+            update["system.secChar.lastHit.vehicle"] = vehicle;
+            update["system.secChar.lastHit.facing"] = facing;
+            update["system.secChar.lastHit.type"] = type;
+            await actor.update(update);
         }
 
         if (attack && (type === "rangedAttack" || (type === "focuspower" && testResult))) {
@@ -641,11 +640,13 @@ returns the roll message*/
             }
             let rof = 1;
             if (type === "focuspower") {
-                if (fortykWeapon.system.class.value === "Psychic Barrage" || fortykWeapon.system.class.value === "Psychic Storm") {
+                if (
+                    fortykWeapon.system.class.value === "Psychic Barrage" ||
+                    fortykWeapon.system.class.value === "Psychic Storm"
+                ) {
                     let pr = weapon.system.curPR.value;
                     rof = pr;
-                } 
-
+                }
             } else if (attackType === "semi") {
                 rof = parseInt(weapon.system.rof[1].value);
             } else if (attackType === "full") {
@@ -950,7 +951,7 @@ returns the roll message*/
             }
         } else if (type === "fear" && !templateOptions["success"]) {
             //generating insanity when degrees of failure are high enough
-            if(actor.type==="npc"){
+            if (actor.type === "npc") {
                 let chatShock = {
                     author: game.user,
                     speaker: { actor, alias: name },
@@ -966,7 +967,7 @@ returns the roll message*/
                 ae.push(shockEffect);
 
                 await this.applyActiveEffect(actor, ae);
-            }else if (testDos >= 3) {
+            } else if (testDos >= 3) {
                 let damageOptions = {
                     author: game.user._id,
                     speaker: { actor, alias: actor.getName() },
@@ -1053,14 +1054,14 @@ returns the roll message*/
             if (!jQuery.isEmptyObject(forcefield) && !forcefield.system.broken.value) {
                 lineArray.push(
                     `<div class="chat-target"><a class="blast-evade" data-hits="${hits}" data-remaining-hits={{hits}} data-token="${tokenId}">` +
-                    token.name +
-                    ` has forcefield</a>: ${hits} ${hitLabel}</div>`
+                        token.name +
+                        ` has forcefield</a>: ${hits} ${hitLabel}</div>`
                 );
             } else {
                 lineArray.push(
                     `<div class="chat-target"><a class="blast-evade" data-hits="${hits}" data-remaining-hits={{hits}} data-token="${tokenId}">` +
-                    token.name +
-                    `</a>: ${hits} ${hitLabel}</div>`
+                        token.name +
+                        `</a>: ${hits} ${hitLabel}</div>`
                 );
             }
         }
@@ -1443,12 +1444,12 @@ returns the roll message*/
             return;
         }
         //prepare attacker coords for knockbacks
-        let attackerPos = { x: attackerToken.center.x, y: attackerToken.center.y , attackerActor:actor};
+        let attackerPos = { x: attackerToken.center.x, y: attackerToken.center.y, attackerActor: actor };
 
         //if weapon is blast the knockback origin is different
         if (weapon.getFlag("fortyk", "blast") || weapon.getFlag("fortyk", "blast") === 0) {
             attackerPos = fortykWeapon.template;
-            attackerPos.attackerActor=actor;
+            attackerPos.attackerActor = actor;
         }
 
         var hammer = false;
@@ -1508,11 +1509,14 @@ returns the roll message*/
         let selfToxic = false;
         let damageDone = [];
         let butcher = 0;
-        if(actor.getFlag("fortyk","sanguinethirst")&&actor.getFlag("core","frenzy")&&lastHit.type==="meleeAttack"){
-            butcher=actor.getFlag("fortyk","butchercounter");
+        if (
+            actor.getFlag("fortyk", "sanguinethirst") &&
+            actor.getFlag("core", "frenzy") &&
+            lastHit.type === "meleeAttack"
+        ) {
+            butcher = actor.getFlag("fortyk", "butchercounter");
 
-
-            if(isNaN(butcher))butcher=0;
+            if (isNaN(butcher)) butcher = 0;
         }
         //loop for the number of hits
         for (let h = 0; h < hits; h++) {
@@ -1702,7 +1706,7 @@ returns the roll message*/
                             } else if (curHit.value === "turret") {
                                 let turretWeapons = tarActor.itemTypes.rangedWeapon.filter(
                                     (weapon) =>
-                                    weapon.system.mounting.value === "turret" && weapon.system.state.value !== "X"
+                                        weapon.system.mounting.value === "turret" && weapon.system.state.value !== "X"
                                 );
                                 let wpnnmbr = turretWeapons.length;
                                 if (turretWeapons.length > 0) {
@@ -1956,7 +1960,7 @@ returns the roll message*/
                         let pen = 0;
                         //random pen logic
                         if (isNaN(weapon.system.pen.value)) {
-                            let scope=actor.getScope();
+                            let scope = actor.getScope();
                             let randomPen = new Roll(weapon.system.pen.value, scope);
                             await randomPen.evaluate();
                             damageOptions.results.push(
@@ -2030,10 +2034,12 @@ returns the roll message*/
                                 `<span>The weapon ignores ${tarActor.getFlag("fortyk", "naturalarmor")} natural armor.</span>`
                             );
                         }
-                        if(!vehicle){
-                            var psyArmor = parseInt(data.characterHitLocations[curHit.value].psy); 
-                            if (tarActor.getFlag("fortyk", "telekinedome") && !actor.getFlag("fortyk", "telekinedome")) {
-
+                        if (!vehicle) {
+                            var psyArmor = parseInt(data.characterHitLocations[curHit.value].psy);
+                            if (
+                                tarActor.getFlag("fortyk", "telekinedome") &&
+                                !actor.getFlag("fortyk", "telekinedome")
+                            ) {
                                 soak += tarActor.getFlag("fortyk", "telekinedome");
                                 armor += tarActor.getFlag("fortyk", "telekinedome");
                                 psyArmor += tarActor.getFlag("fortyk", "telekinedome");
@@ -2129,10 +2135,10 @@ returns the roll message*/
                         if (
                             daemonic &&
                             (weapon.type === "psychicPower" ||
-                             fortykWeapon.getFlag("fortyk", "force") ||
-                             fortykWeapon.getFlag("fortyk", "warp") ||
-                             fortykWeapon.getFlag("fortyk", "sanctified") ||
-                             fortykWeapon.getFlag("fortyk", "daemonbane"))
+                                fortykWeapon.getFlag("fortyk", "force") ||
+                                fortykWeapon.getFlag("fortyk", "warp") ||
+                                fortykWeapon.getFlag("fortyk", "sanctified") ||
+                                fortykWeapon.getFlag("fortyk", "daemonbane"))
                         ) {
                             daemonic = parseInt(daemonic);
                             if (!isNaN(daemonic)) {
@@ -2189,6 +2195,18 @@ returns the roll message*/
                                 damageOptions.results.push(`<span>Graviton extra damage: ${gravitonDmg}</span>`);
                             }
                         }
+                        //scourge of the red tide extra dmg
+                        /* if(fortykWeapon.getFlag("fortyk","scourgeoftheredtide")){
+                            let dos=lastHit.dos;
+                            let redTideForm=dos+"d10";
+                            let redTideRoll= new Roll(redTideForm, {});
+                            await redTideRoll.evaluate();
+                            damageOptions.results.push(
+                                    `<span>Scourge of the Red Tide extra damage: ${redTideRoll.dice[0].values.join("+")}</span>`
+                                );
+                            damage += redTideRoll._total;
+                            chatDamage += redTideRoll._total;
+                        }*/
                         //accurate weapon logic
                         if (fortykWeapon.getFlag("fortyk", "accurate") && lastHit.aim) {
                             if (actor.getFlag("fortyk", "marksmanshonor") || distance > 2) {
@@ -2267,16 +2285,16 @@ returns the roll message*/
                                 `<span>Swarm enemies take reduced damage against non blast, spray, flame or scatter weapons.</span>`
                             );
                         }
-                        if(fortykWeapon.getFlag("fortyk","immolatethesoul")&&daemonic){
-                            daemonic=parseInt(daemonic);
-                            if(fortykWeapon.system.training.value==="Adept"){
-                                damage+=daemonic*2;
-                            }else if(fortykWeapon.system.training.value==="Master"){
-                                damage+=daemonic*4; 
+                        if (fortykWeapon.getFlag("fortyk", "immolatethesoul") && daemonic) {
+                            daemonic = parseInt(daemonic);
+                            if (fortykWeapon.system.training.value === "Adept") {
+                                damage += daemonic * 2;
+                            } else if (fortykWeapon.system.training.value === "Master") {
+                                damage += daemonic * 4;
                             }
                         }
                         //make sure soak isnt negative
-                        soak=Math.max(0,soak);
+                        soak = Math.max(0, soak);
                         damage = damage - soak;
                         let punchThrough = false;
                         //check for RF and if no dmg, toggle bool for the text blurb later
@@ -2397,12 +2415,12 @@ returns the roll message*/
                         }
                         let messages = [];
                         //soulrazor
-                        if(!vehicle && damage > 0 && fortykWeapon.getFlag("fortyk", "soulrazor") && !isHordelike){
+                        if (!vehicle && damage > 0 && fortykWeapon.getFlag("fortyk", "soulrazor") && !isHordelike) {
                             damageOptions.results.push(`<div class="chat-target flexcol">`);
                             let soulraze = await this.fortykTest(
                                 "wp",
                                 "char",
-                                tarActor.system.characteristics.wp.total-20,
+                                tarActor.system.characteristics.wp.total - 20,
                                 tarActor,
                                 "Resist soul razor",
                                 null,
@@ -2412,13 +2430,12 @@ returns the roll message*/
                             );
                             damageOptions.results.push(soulraze.template);
                             if (!soulraze.value) {
-                                damage+=2*soulraze.dos;
-                                chatDamage+=2*soulraze.dos;
+                                damage += 2 * soulraze.dos;
+                                chatDamage += 2 * soulraze.dos;
 
                                 damageOptions.results.push(
-                                    `Soulraze extra damage and insanity: ${soulraze.dos*2} damage.`
+                                    `Soulraze extra damage and insanity: ${soulraze.dos * 2} damage.`
                                 );
-
                             }
                             damageOptions.results.push(`</div>`);
                         }
@@ -2700,7 +2717,7 @@ returns the roll message*/
                                 let halluRoll = new Roll("1d10", {});
                                 await halluRoll.evaluate();
                                 let halluText = FORTYKTABLES.hallucinogenic[halluRoll._total - 1];
-                                halluActiveEffect.flags={"fortyk":{startofround:halluText}};
+                                halluActiveEffect.flags = { fortyk: { startofround: halluText } };
                                 let id = foundry.utils.randomID(5);
                                 damageOptions.results.push(
                                     `<label class="popup" data-id="${id}"> Hallucinating for ${hallu.dos + 1} rounds. <span class="popuptext chat-background" id="${id}">${halluText}</span></label>`
@@ -3319,49 +3336,49 @@ returns the roll message*/
                             );
                         }
                         //check if attack is psychic and caster is a navigator to run the navigator talents function
-                        if(damage>0&&fortykWeapon.type === "psychicPower"&&actor.getFlag("fortyk","navigator")){
+                        if (
+                            damage > 0 &&
+                            fortykWeapon.type === "psychicPower" &&
+                            actor.getFlag("fortyk", "navigator")
+                        ) {
                             await FortyKItem.navigatorPsyTalents(actor, [tar]);
                         }
                         //lidless stare
-                        if(damage>0&&fortykWeapon.getFlag("fortyk","lidlessstare")){
+                        if (damage > 0 && fortykWeapon.getFlag("fortyk", "lidlessstare")) {
                             damageOptions.results.push(`<div class="chat-target flexcol">`);
-                            let duration=1;
-                            if(fortykWeapon.system.training.value!=="Novice"){
+                            let duration = 1;
+                            if (fortykWeapon.system.training.value !== "Novice") {
                                 let stunRoll = new Roll("1d5");
                                 await stunRoll.evaluate();
                                 duration = stunRoll.total;
                             }
-                            let stunString=`<span>The Lidless Stare stuns for ${duration} round`;
-                            if(duration>1){
-                                stunString+="s!</span>";
-                            }else{
-                                stunString+="!</span>";
+                            let stunString = `<span>The Lidless Stare stuns for ${duration} round`;
+                            if (duration > 1) {
+                                stunString += "s!</span>";
+                            } else {
+                                stunString += "!</span>";
                             }
-                            damageOptions.results.push(
-                                stunString
-                            );
+                            damageOptions.results.push(stunString);
                             let stunActiveEffect = foundry.utils.duplicate(
-                                game.fortyk.FORTYK.StatusEffects[
-                                    game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")
-                                ]
+                                game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                             );
                             stunActiveEffect.duration = {
                                 rounds: 1
                             };
                             activeEffects.push(stunActiveEffect);
-                            if(fortykWeapon.system.training.value==="Adept"){
+                            if (fortykWeapon.system.training.value === "Adept") {
                                 let insRoll = new Roll("1d5");
                                 await insRoll.evaluate();
-                                let insanity= insRoll.total;
+                                let insanity = insRoll.total;
                                 damageOptions.results.push(
                                     `<span>The Lidless Stare inflicts ${insanity} Insanity Points!</span>`
                                 );
-                                let actorInsanity=parseInt(tarActor.system.secChar.insanity.value);
-                                insanity+=actorInsanity;
-                                await tarActor.update({"system.secChar.insanity.value":insanity});
-                            }else if(fortykWeapon.system.training.value==="Master"){
-                                let targetInt=tarActor.system.characteristics.int.total;
-                                if(targetInt>=20){
+                                let actorInsanity = parseInt(tarActor.system.secChar.insanity.value);
+                                insanity += actorInsanity;
+                                await tarActor.update({ "system.secChar.insanity.value": insanity });
+                            } else if (fortykWeapon.system.training.value === "Master") {
+                                let targetInt = tarActor.system.characteristics.int.total;
+                                if (targetInt >= 20) {
                                     let death = await this.fortykTest(
                                         "t",
                                         "char",
@@ -3374,35 +3391,31 @@ returns the roll message*/
                                         true
                                     );
                                     damageOptions.results.push(death.template);
-                                    if(!death.value){
-                                        let fate=tarActor.system.secChar.fate.max;
-                                        if(fate>0){
+                                    if (!death.value) {
+                                        let fate = tarActor.system.secChar.fate.max;
+                                        if (fate > 0) {
                                             let lidDmgRoll = new Roll("2d10");
                                             await lidDmgRoll.evaluate();
-                                            let lidlessDmg= lidDmgRoll.total;
+                                            let lidlessDmg = lidDmgRoll.total;
                                             damageOptions.results.push(
                                                 `<span>${tarActor.getName()}'s fate prevents them from dying outright but they still take 2d10(${lidlessDmg}) extra damage!</span>`
                                             );
-                                        }else{
-                                            damageOptions.results.push(
-                                                `<span>${tarActor.getName()} dies!</span>`
-                                            );
+                                        } else {
+                                            damageOptions.results.push(`<span>${tarActor.getName()} dies!</span>`);
                                             await this.applyDead(tar, tarActor, actor, "The Lidless Stare!");
                                         }
                                     }
-
                                 }
                                 let insRoll = new Roll("1d10");
                                 await insRoll.evaluate();
-                                let insanity= insRoll.total;
+                                let insanity = insRoll.total;
                                 damageOptions.results.push(
                                     `<span>The Lidless Stare inflicts ${insanity} Insanity Points!</span>`
                                 );
-                                let actorInsanity=parseInt(tarActor.system.secChar.insanity.value);
-                                insanity+=actorInsanity;
-                                await tarActor.update({"system.secChar.insanity.value":insanity});
+                                let actorInsanity = parseInt(tarActor.system.secChar.insanity.value);
+                                insanity += actorInsanity;
+                                await tarActor.update({ "system.secChar.insanity.value": insanity });
                             }
-
                         }
                         // true grit!@!!@
                         if (
@@ -3553,9 +3566,12 @@ returns the roll message*/
                                     damage += additionalHits;
                                     chatDamage += additionalHits;
                                 }
-                                if(actor.getFlag("fortyk","sanguinethirst")&&actor.getFlag("core","frenzy")&&lastHit.type==="meleeAttack"){
-                                    butcher+=Math.min(newWounds[tarNumbr],damage);
-
+                                if (
+                                    actor.getFlag("fortyk", "sanguinethirst") &&
+                                    actor.getFlag("core", "frenzy") &&
+                                    lastHit.type === "meleeAttack"
+                                ) {
+                                    butcher += Math.min(newWounds[tarNumbr], damage);
                                 }
                             }
                             //process damage against formations
@@ -3586,9 +3602,12 @@ returns the roll message*/
                                         );
                                     }
                                 }
-                                if(actor.getFlag("fortyk","sanguinethirst")&&actor.getFlag("core","frenzy")&&lastHit.type==="meleeAttack"){
-                                    butcher+=Math.min(newWounds[tarNumbr],damage);
-
+                                if (
+                                    actor.getFlag("fortyk", "sanguinethirst") &&
+                                    actor.getFlag("core", "frenzy") &&
+                                    lastHit.type === "meleeAttack"
+                                ) {
+                                    butcher += Math.min(newWounds[tarNumbr], damage);
                                 }
                             }
                         }
@@ -3635,7 +3654,10 @@ returns the roll message*/
                             messages.push(chatOptions);
                         }
                         damageOptions.results.push(`</div>`);
-                        let renderedDamageTemplate = await foundry.applications.handlebars.renderTemplate(damageTemplate, damageOptions);
+                        let renderedDamageTemplate = await foundry.applications.handlebars.renderTemplate(
+                            damageTemplate,
+                            damageOptions
+                        );
                         var txt = document.createElement("textarea");
                         txt.innerHTML = renderedDamageTemplate;
                         renderedDamageTemplate = txt.value;
@@ -3794,7 +3816,6 @@ returns the roll message*/
                     if (h === hits - 1) {
                         //update wounds
                         if (game.user.isGM || tar.isOwner) {
-
                             if (tarNumbr <= newWounds.length - 1) {
                                 await this.applyActiveEffect(tar, activeEffectTargetArray[tarNumbr], ignoreSON);
                                 await tarActor.update({ "system.secChar.wounds.value": newWounds[tarNumbr] });
@@ -3837,12 +3858,12 @@ returns the roll message*/
             }
             hitNmbr++;
         }
-        if(butcher>0){
-            await actor.setFlag("fortyk","butchercounter",butcher);
+        if (butcher > 0) {
+            await actor.setFlag("fortyk", "butchercounter", butcher);
             let chatOptions = {
                 author: game.user,
                 speaker: { attackerPos, alias: name },
-                content:`${actor.getName()} continues his rampage with a ${butcher} killstreak!`,
+                content: `${actor.getName()} continues his rampage with a ${butcher} killstreak!`,
                 classes: ["fortyk"],
                 flavor: `Sanguine Thirst`
             };
@@ -3902,42 +3923,44 @@ returns the roll message*/
 
         return damageDone;
     }
-    static getCover(target, attacker){
-        const regions=game.scenes.current.regions;
-        const coverRegions=regions.filter((region)=>{
-            let behaviors=region.behaviors;
-            return behaviors.find((behavior)=>behavior.type==="fortykCoverBehavior");
+    static getCover(target, attacker) {
+        const regions = game.scenes.current.regions;
+        const coverRegions = regions.filter((region) => {
+            let behaviors = region.behaviors;
+            return behaviors.find((behavior) => behavior.type === "fortykCoverBehavior");
         });
-        let targetActor=target.actor;
-        let totalCover=parseFloat(targetActor.system.secChar.cover.value);
-        let attackerPosition=attacker.center;
-        attackerPosition.elevation=attacker.document.elevation;
-        let targetPosition=target.center;
-        targetPosition.elevation=target.document.elevation;
-        for(let region of coverRegions){
-
-            const segments=region.segmentizeMovementPath([attackerPosition, targetPosition],[{x:0,y:0,elevation:0}]);
-            for(let segment of segments){
-                console.log(segment)
-                if(segment.type === 0){
-                    let coverBehavior=region.behaviors.find((behavior)=>behavior.type==="fortykCoverBehavior");
-                    if(!coverBehavior)continue;
-                    if(coverBehavior.disabled)continue;
-                    if(!coverBehavior.system.areaCover){
-                        let biggestDistance=1;
-                        segment.from.h=1;
-                        segment.from.w=1;
-                        segment.from.document={elevation:segment.from.elevation};
-                        let distance=tokenDistance(attacker,segment.from);
-                        if(distance<biggestDistance)continue;
+        let targetActor = target.actor;
+        let totalCover = parseFloat(targetActor.system.secChar.cover.value);
+        let attackerPosition = attacker.center;
+        attackerPosition.elevation = attacker.document.elevation;
+        let targetPosition = target.center;
+        targetPosition.elevation = target.document.elevation;
+        for (let region of coverRegions) {
+            const segments = region.segmentizeMovementPath(
+                [attackerPosition, targetPosition],
+                [{ x: 0, y: 0, elevation: 0 }]
+            );
+            for (let segment of segments) {
+                console.log(segment);
+                if (segment.type === 0) {
+                    let coverBehavior = region.behaviors.find((behavior) => behavior.type === "fortykCoverBehavior");
+                    if (!coverBehavior) continue;
+                    if (coverBehavior.disabled) continue;
+                    if (!coverBehavior.system.areaCover) {
+                        let biggestDistance = 1;
+                        segment.from.h = 1;
+                        segment.from.w = 1;
+                        segment.from.document = { elevation: segment.from.elevation };
+                        let distance = tokenDistance(attacker, segment.from);
+                        if (distance < biggestDistance) continue;
                     }
-                    let cover=(coverBehavior.system.cover/100);
-                    totalCover+=cover;
+                    let cover = coverBehavior.system.cover / 100;
+                    totalCover += cover;
                 }
             }
         }
 
-        totalCover=Math.max(0, Math.min(totalCover, 1));
+        totalCover = Math.max(0, Math.min(totalCover, 1));
         return totalCover;
     }
     //reports damage to a target's owners
@@ -3945,8 +3968,8 @@ returns the roll message*/
         let name = tarActor.getName();
         if (game.settings.get("fortyk", "privateDamage")) {
             let user_ids = Object.entries(tarActor.ownership)
-            .filter((p) => p[0] !== `default` && p[1] === 3)
-            .map((p) => p[0]);
+                .filter((p) => p[0] !== `default` && p[1] === 3)
+                .map((p) => p[0]);
 
             for (let user of user_ids) {
                 let userInstance = game.users.get(user);
@@ -8356,7 +8379,13 @@ returns the roll message*/
                     }
                     if (newAe.id === "prone" && actor.getFlag("fortyk", "graceoftheasuryani")) {
                         skip = (
-                            await this.fortykTest("agi", "char", actor.system.characteristics.agi.total, actor, "Grace of the Asuryani")
+                            await this.fortykTest(
+                                "agi",
+                                "char",
+                                actor.system.characteristics.agi.total,
+                                actor,
+                                "Grace of the Asuryani"
+                            )
                         ).value;
                     }
                     if (newAe.id === "stunned" && actor.getFlag("core", "frenzy")) {
@@ -8545,29 +8574,33 @@ returns the roll message*/
         if (actor.flags.fortyk.slaughterTarget) {
             await this.slaughterHealing(attacker);
         }
-        if (attacker){
-            let lastHit=attacker.system.secChar.lastHit.type;
-            let isHordelike=false;
+        if (attacker) {
+            let lastHit = attacker.system.secChar.lastHit.type;
+            let isHordelike = false;
             if (actor.system.horde.value || actor.system.formation.value) {
                 isHordelike = true;
             }
-            if(!isHordelike&&attacker.getFlag("fortyk","sanguinethirst")&&attacker.getFlag("core","frenzy")&&lastHit==="meleeAttack"){
-                let butcherCounter=attacker.getFlag("fortyk","butchercounter");
+            if (
+                !isHordelike &&
+                attacker.getFlag("fortyk", "sanguinethirst") &&
+                attacker.getFlag("core", "frenzy") &&
+                lastHit === "meleeAttack"
+            ) {
+                let butcherCounter = attacker.getFlag("fortyk", "butchercounter");
 
                 butcherCounter++;
-                if(isNaN(butcherCounter))butcherCounter=1;
-                attacker.setFlag("fortyk","butchercounter",butcherCounter);
+                if (isNaN(butcherCounter)) butcherCounter = 1;
+                attacker.setFlag("fortyk", "butchercounter", butcherCounter);
                 let chatOptions = {
                     author: game.user,
                     speaker: { attacker, alias: name },
-                    content:`${attacker.getName()} continues his rampage with a ${butcherCounter} killstreak!`,
+                    content: `${attacker.getName()} continues his rampage with a ${butcherCounter} killstreak!`,
                     classes: ["fortyk"],
                     flavor: `Sanguine Thirst`
                 };
                 await ChatMessage.create(chatOptions, {});
             }
         }
-
 
         if (game.user.isGM || target.isOwner) {
             let msg = target.name + " is killed";

@@ -598,7 +598,7 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
     _onCompendiumChange(event) {
         let compendium = event.target.value;
         this.chosenPack = compendium;
-        this._render();
+        this.render();
     }
     _onItemChange(event) {
         let item = event.target.value;

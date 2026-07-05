@@ -490,6 +490,7 @@ export class FortykRollDialogs {
                     sheet=actor.apps[key];
                     break;
                 }
+                console.log(modifiers)
 
                 this.callNavigatorPowerDialog(
                     char,
@@ -501,7 +502,7 @@ export class FortykRollDialogs {
                     sheet,
                     [],
                     [],
-                    true
+                    message.getFlag("fortyk", "navpoweroptions")
                 );
 
             }else{
@@ -575,7 +576,7 @@ export class FortykRollDialogs {
         modifier += global;
         modifierTracker.push({ value: global, label: "Global modifier" });
         if (testType === "skill" || testType === "evasion") {
-            let training = item?.system?.value;
+            let training = parseInt(item?.system?.value);
             if (training) {
                 modifier += training;
             }
@@ -2072,7 +2073,7 @@ export class FortykRollDialogs {
                 let scene = game.canvas.scene;
                 targetTokens = this.getSprayTargets(template, scene, actor)[0];
             }else{
-                targetTokens = canvas.tokens.placeables.filter((token) => {
+                targetTokens = game.canvas.scene.tokens.filter((token) => {
                     return tokenDistance(token, casterToken) <= range;
                 });
 
@@ -2161,7 +2162,16 @@ export class FortykRollDialogs {
 
 
         }else if( gaze && !test.value){
-            await actor.update({ "system.secChar.fatigue.value": 2 });
+             let damageOptions = {
+                    author: user,
+                    speaker: { actor, alias: actor.getName() },
+                    content: `<div class="button add-fatigue-wounds" data-actor="${actor.uuid}" data-fatigue="2" data-wounds="0">Add 2 fatigue</div>`,
+                    classes: ["fortyk"],
+                    flavor: `Failing Gaze power`,
+                    whisper: recipient,
+                    rollMode: "blindroll"
+                };
+                await ChatMessage.create(damageOptions, {});
         }
     }
 
@@ -2180,6 +2190,12 @@ export class FortykRollDialogs {
     ) {
         let template = "systems/fortyk/templates/actor/dialogs/navigator-power-dialog.html";
         let templateOptions = {};
+        console.log(reroll)
+        if(reroll){
+            templateOptions.focusGaze=reroll.focusGaze;
+            templateOptions.fog=reroll.fog;
+            templateOptions.warned=reroll.warned;
+        }
         let actionType = item.system.action.value;
         if (actionType.toLowerCase() === "reaction") {
             let reactions = actor.system.reactions;
@@ -2224,6 +2240,15 @@ export class FortykRollDialogs {
                             fat+=2;
 
                             await actor.update({ "system.secChar.fatigue.value": fat });
+                            let chatOptions = {
+                                    author: game.user._id,
+                                    speaker: { actor, alias: name },
+                                    content: `Gained 2 fatigue`,
+                                    classes: ["fortyk"],
+                                    flavor: `Stacking the Deck`
+                                };
+
+                                await ChatMessage.create(chatOptions, {});
                         }
                     }
                     if(item.getFlag("fortyk","stupefythesoul")){
@@ -2234,6 +2259,15 @@ export class FortykRollDialogs {
                             fat+=2;
 
                             await actor.update({ "system.secChar.fatigue.value": fat });
+                            let chatOptions = {
+                                    author: game.user._id,
+                                    speaker: { actor, alias: name },
+                                    content: `Gained 2 fatigue`,
+                                    classes: ["fortyk"],
+                                    flavor: `Stupefy the Soul`
+                                };
+
+                                await ChatMessage.create(chatOptions, {});
                         }
                     }
                     if(item.getFlag("fortyk","scourgeoftheredtide")){
@@ -2286,9 +2320,27 @@ export class FortykRollDialogs {
                                 focusGaze = document.getElementById("focus").checked;
 
                                 if(focusGaze)fat++;
+                                let chatOptions = {
+                                    author: game.user._id,
+                                    speaker: { actor, alias: name },
+                                    content: `Gained 1 fatigue`,
+                                    classes: ["fortyk"],
+                                    flavor: `Focused Gaze`
+                                };
+
+                                await ChatMessage.create(chatOptions, {});
                             }
 
                             fat++;
+                            let chatOptions = {
+                                    author: game.user._id,
+                                    speaker: { actor, alias: name },
+                                    content: `Gained 1 fatigue`,
+                                    classes: ["fortyk"],
+                                    flavor: `Gaze Power`
+                                };
+
+                                await ChatMessage.create(chatOptions, {});
 
                             await actor.update({ "system.secChar.fatigue.value": fat });
                         }
@@ -2299,13 +2351,36 @@ export class FortykRollDialogs {
                             let fat = parseInt(actor.system.secChar.fatigue.value);
                             fat++;
                             await actor.update({ "system.secChar.fatigue.value": fat });
+                            let chatOptions = {
+                                    author: game.user._id,
+                                    speaker: { actor, alias: name },
+                                    content: `Gained 1 fatigue`,
+                                    classes: ["fortyk"],
+                                    flavor: `The Course Untravelled`
+                                };
+
+                                await ChatMessage.create(chatOptions, {});
                         }
                         if(item.getFlag("fortyk","tidesoftimeandspace")){
                             let fat = parseInt(actor.system.secChar.fatigue.value);
                             fat++;
                             await actor.update({ "system.secChar.fatigue.value": fat });
+                            let chatOptions = {
+                                    author: game.user._id,
+                                    speaker: { actor, alias: name },
+                                    content: `Gained 1 fatigue`,
+                                    classes: ["fortyk"],
+                                    flavor: `Tides of Time and Space`
+                                };
+
+                                await ChatMessage.create(chatOptions, {});
                         }      
                     }
+                    let navPowerOptions={};
+                    navPowerOptions.fog=fog;
+                    navPowerOptions.focusGaze=focusGaze;
+                    navPowerOptions.warned=warned;
+                    modifierTracker.navPowerOptions=navPowerOptions;
 
 
                     let test = await FortykRolls.fortykTest(
@@ -2315,7 +2390,7 @@ export class FortykRollDialogs {
                         actor,
                         testLabel,
                         item,
-                        false,
+                        reroll,
                         "",
                         false,
                         modifierTracker

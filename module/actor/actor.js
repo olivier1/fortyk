@@ -987,7 +987,7 @@ export class FortyKActor extends Actor {
         if (this.getFlag("fortyk", "neverquit")) {
             data.secChar.fatigue.max += 2;
         }
-
+        console.log(data.characteristics.per.total)
         //modify total characteristics depending on fatigue
         var fatigueMult = 1;
         if (this.getFlag("fortyk", "unrelenting")) {
@@ -1000,6 +1000,7 @@ export class FortyKActor extends Actor {
                 }
             }
         }
+         console.log(data.characteristics.per.total)
         let fearPreview = data.characteristics.wp.total + data.secChar.fearMod;
         if (data.secChar.fearRes) {
             fearPreview += data.secChar.fearRes;
@@ -1110,7 +1111,7 @@ export class FortyKActor extends Actor {
                 data.secChar.initiative.value += 2;
             }
         }
-        if(!this.getFlag("fortyk","lost")){
+        if(this.getFlag("fortyk","asuryani")&&!this.getFlag("fortyk","lost")){
             if(parseInt(data.secChar.insanity.value)>=50){
                 this.system.lostChoice=true;
             }
@@ -2908,6 +2909,7 @@ export class FortyKActor extends Actor {
         pr = system.psykana.pr.effective;
 
         if (!this.system.isPrepared) {
+            let fatigue=system.secChar.fatigue.value;
             for (let [key, char] of Object.entries(characteristics)) {
                 if (key === "inf") {
                     char.total = Math.min(char.total, char.max);
@@ -2922,6 +2924,9 @@ export class FortyKActor extends Actor {
                     char.bonus *= char.bonusMulti;
                     char.preGlobal = char.total;
                     char.total += parseInt(system.globalMOD.value);
+                    if(!this.getFlag("fortyk","frenzy")&&!this.getFlag("fortyk","tireless")&&char.bonus<fatigue){
+                        char.total=Math.ceil(char.total/2);
+                    }
                 }
             }
             pr =

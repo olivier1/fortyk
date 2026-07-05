@@ -108,7 +108,6 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         data.alternateWounds = game.settings.get("fortyk", "alternateWounds");
         data.bcCorruption = game.settings.get("fortyk", "bcCorruption");
         data.coverTypes = game.fortyk.FORTYK.coverTypes;
-
         return data;
     }
     /** @override */
@@ -979,7 +978,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                 ],
                 default: "submit",
                 width: 100
-            }).render(true);
+            });
         });
     }
 

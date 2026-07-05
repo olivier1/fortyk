@@ -3,16 +3,16 @@
     {{#if gaze}}
     
         <label>Fog</label>
-        <input class="fex-center" type="checkbox" id="fog">
+        <input class="fex-center" type="checkbox" id="fog" {{#if fog}}checked{{/if}}>
   
     
         <label>Warn Friends</label>
-        <input class="fex-center" type="checkbox" id="warned">
+        <input class="fex-center" type="checkbox" id="warned" {{#if warned}}checked{{/if}}>
 
     {{#if focusedGaze}}
    
         <label>Focus Gaze</label>
-        <input class="fex-center" type="checkbox" id="focus">
+        <input class="fex-center" type="checkbox" id="focus" {{#if focusGaze}}checked{{/if}}>
 
     {{/if}}
     {{/if}}

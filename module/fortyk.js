@@ -1867,6 +1867,7 @@ async function handlePostMovement(promise, time){
                             parent = parent.actor;
                         }
                         let buffTarget = getActorToken(parent);
+                        if(!buffTarget)continue;
                         let distance = tokenDistance(buffTarget, token);
                         let del=false;
                         if (distance > range) {

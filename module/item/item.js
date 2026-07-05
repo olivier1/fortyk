@@ -507,7 +507,9 @@ export class FortyKItem extends Item {
                         modifiers.push({ value: char, label: "Power Base" });
                         modifiers.push({ value: training, label: "Power Training" });
                         modifiers.push({ value: parseInt(item.system.testMod.value), label: "Power Modifier" });
-                        item.system.target.value = char + training + parseInt(item.system.testMod.value);
+                        modifiers.push({ value: parseInt(data.psykana.mod.value), label: "Psykana Modifier" });
+                      
+                        item.system.target.value = char + training + parseInt(item.system.testMod.value) + parseInt(data.psykana.mod.value);
                     } else {
                         try {
                             let range = item.system.range.formula.toLowerCase();
@@ -540,8 +542,13 @@ export class FortyKItem extends Item {
                             item.system.pen.value = "";
                             item.system.damageFormula.value = "";
                         }
+                        if(parseInt(item.system.curPR.value)>parseInt(data.psykana.pr.effective)){
+                            item.system.pushed=true;
+                        }else{
+                            item.system.pushed=false;
+                        }
                         let derivedPR = parseInt(data.psykana.pr.effective) - parseInt(item.system.curPR.value);
-
+                        
                         if (game.settings.get("fortyk", "pushingPRHouseRule")) {
                             derivedPR = Math.abs(derivedPR);
                         }

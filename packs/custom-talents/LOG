@@ -1,3 +1,5 @@
-2026/04/27-18:00:09.327 150c Recovering log #5190
-2026/04/27-18:00:09.336 150c Delete type=0 #5190
-2026/04/27-18:00:09.336 150c Delete type=3 #5189
+2026/07/05-06:39:14.425 dcc Recovering log #5332
+2026/07/05-06:39:14.425 dcc Level-0 table #5334: started
+2026/07/05-06:39:14.433 dcc Level-0 table #5334: 5426 bytes OK
+2026/07/05-06:39:14.443 dcc Delete type=0 #5332
+2026/07/05-06:39:14.444 dcc Delete type=3 #5331

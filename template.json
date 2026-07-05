@@ -1017,19 +1017,19 @@
                     "type": "String"
                 },
                 "damageType": {
-                    "value": "",
+                    "value": "Explosive",
                     "type": "String"
                 },
                 "class": {
-                    "value": "",
+                    "value": "Basic",
                     "type": "String"
                 },
                 "type": {
-                    "value": "",
+                    "value": "Bolt",
                     "type": "String"
                 },
                 "twohanded": {
-                    "value": false,
+                    "value": true,
                     "type": "Boolean"
                 },
                 "facing": {

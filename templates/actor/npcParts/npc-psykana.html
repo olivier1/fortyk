@@ -37,7 +37,7 @@
                 </div>
                 <div class="flexrow list-item">
                     <label>Psy Modifier:</label>
-                    <input type="number" class="combat-resources" data-target="system.psykana.mod.value" value="{{system.psykana.mod.value}}">
+                    <input type="number" class="combat-resources" data-dtype="Number" data-target="system.psykana.mod.value" value="{{system.psykana.mod.value}}">
                 </div>
                 <div class="flexrow list-item2">
                     <label>Show:</label>
@@ -50,7 +50,7 @@
 
 
             </div>
-            {{#if (greaterThan system.psykana.pr.value 0)}}
+            
             <a class="item-create button" data-type="psychicPower" title="Add a new Psychic Power">Add Psychic Power</a>
             <div class="psy-powers grid grid-2col item-list">
                 {{#each psychicPowers as |power key|}}
@@ -121,7 +121,7 @@
 
                         <div class="list-item flexcol">
                             <label>Test Target: </label>
-                            <span data-item-id="{{power._id}}" class="rollable powerItem button{{#if (greaterThan power.system.curPR.value ../system.psykana.pr.effective)}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-target="{{power.system.target.value}}" data-PR="{{power.system.curPR.value}}" data-label="{{power.name}}" data-char="{{power.system.testChar.type}}">{{power.system.target.value}}</span>
+                            <span data-item-id="{{power._id}}" class="rollable powerItem button{{#if power.system.pushed}} power-push{{else}} power-safe{{/if}}" data-roll-type="focuspower" data-target="{{power.system.target.value}}" data-PR="{{power.system.curPR.value}}" data-label="{{power.name}}" data-char="{{power.system.testChar.type}}">{{power.system.target.value}}</span>
                         </div>
                         {{#if (contains power.system.class.value "psychic")}}
                         {{#if power.flags.fortyk.spray}}
@@ -163,6 +163,5 @@
                 </div>
                 {{/each}}
             </div>
-            {{/if}}
         </div>
     </section>

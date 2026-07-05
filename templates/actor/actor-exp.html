@@ -49,7 +49,6 @@
         {{/if}}
 
         {{/if}}
-        {{debug role}}
         <label class="section-title">Advancements</label>
         {{#if system.lostChoice}}
         <a class="lost-choice button">Make Lost Choice!</a>
@@ -65,7 +64,9 @@
         <a class="button change-path">Pick New Path</a>
         <br>
         {{/unless}}
-
+        {{else if asuryani}}
+         <a class="button change-path">Pick New Path</a>
+        <br>
         {{/if}}
         <a class="spend-exp button" data-type="advancement" title="Add a new Advancement">Add Advancement</a>
         <div class="list list4col grid grid-4col">

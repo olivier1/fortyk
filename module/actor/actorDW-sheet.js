@@ -428,8 +428,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                     }
                 }
                 let FORTYKaptitude = FORTYKaptitudes.find((apt) => apt.key === aptitude);
-                aptitudeObj.label = FORTYKaptitude.label;
-                aptitudeObj.description = FORTYKaptitude.description;
+                aptitudeObj.label = FORTYKaptitude?.label;
+                aptitudeObj.description = FORTYKaptitude?.description;
                 aptitudeArray.push(aptitudeObj);
             }else{
                 aptitudeArray.push("");
@@ -1065,7 +1065,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     createItemArray() {
         let baseItemArray = [];
         let processedArray = [];
-        if (this.featureBoni) {
+        if (this.featureBoni&&this.feature.system.type.value !== "asuryanipath") {
             baseItemArray = baseItemArray.concat(this.featureBoni);
         }
         if (this.featureEAs) {
@@ -1591,13 +1591,13 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                                 let pathDocument= await fromUuid(selectedId);
                                 let pathCopy= foundry.utils.duplicate(pathDocument);
                                 let currentPath=this.actor.role;
-                                if(this.actor.system.lostChoice){
-                                    let baseAbilityId=currentPath.system.asuryani.base.id;
+                                if(!currentPath.getFlag("fortyk", "mastered")||this.actor.system.lostChoice){
+                                    let baseAbilityId=currentPath.getFlag("fortyk","pathBaseBonusId");
                                     let baseAbility=actor.getEmbeddedDocument("Item", baseAbilityId);
                                     if(baseAbility){
                                         await baseAbility.delete();
                                     }
-                                    let masterAbilityId=currentPath.system.asuryani.master.id;
+                                    let masterAbilityId=currentPath.getFlag("fortyk","masterid");
                                     let masterAbility=actor.getEmbeddedDocument("Item", masterAbilityId);
                                     if(masterAbility){
                                         await currentPath.setFlag("fortyk", "mastered", "false");
