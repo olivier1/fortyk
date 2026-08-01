@@ -4,18 +4,24 @@
     {{#each actorAptitudes}}
     {{#if this.isCharDuplicate}}
     <div class="fit-content">
-        <select class="apt-duplicate-select margin-left-23" id="system.aptitudes.{{@index}}" data-dtype="String">  
+        <select class="apt-duplicate-select margin-left-23" id="system.aptitudes.{{@index}}">  
             <option value="{{this.aptitude}}" hidden>Choose</option>
-            {{selectOptions ../charAptitudes selected=this.aptitude valueAttr="key" labelAttr="label"}}
+            {{#each ../charAptitudes}}
+            <option value="{{key}}">{{label}}</option>
+            {{/each}}
+           
 
         </select>
         <a class="duplicate-aptitude-icon" data-id="system.aptitudes.{{@index}}"></a>
     </div>
     {{else if this.isWildcardDuplicate}}
     <div class="fit-content">
-        <select class="apt-duplicate-select margin-left-23" id="system.aptitudes.{{@index}}" data-dtype="String">   
+        <select class="apt-duplicate-select margin-left-23" id="system.aptitudes.{{@index}}">   
             <option value="{{this.aptitude}}" hidden>Choose</option>
-            {{selectOptions ../aptitudes selected=this.aptitude valueAttr="key" labelAttr="label"}}
+            {{#each ../aptitudes}}
+            <option value="{{key}}">{{label}}</option>
+            {{/each}}
+            
         </select>
         <a class="duplicate-aptitude-icon" data-id="system.aptitudes.{{@index}}"></a>
     </div>

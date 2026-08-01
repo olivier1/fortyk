@@ -1438,6 +1438,11 @@ FORTYK.lasModes = [
 ];
 FORTYK.itemQualities = [{ value: "Poor" }, { value: "Common" }, { value: "Good" }, { value: "Best" }];
 FORTYK.itemQualityAbrv = { Poor: "P", Common: "C", Good: "G", Best: "B" };
+FORTYK.forceFieldTypes = [{"value":"field","label":"Field"},{"value":"barrier", "label":"Barrier"}];
+FORTYK.barrierQualityAttributes = {"Poor":{"rechargeQuotient":0.2, "cooldown":5},
+                                  "Common":{"rechargeQuotient":0.33, "cooldown":3},
+                                  "Good":{"rechargeQuotient":0.5, "cooldown":2},
+                                  "Best":{"rechargeQuotient":1, "cooldown":1}};
 FORTYK.skillChars = {
     ws: { name: "ws", caps: "WS" },
     bs: { name: "bs", caps: "BS" },

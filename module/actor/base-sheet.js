@@ -1094,6 +1094,9 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         if (updates.length > 0) {
             await this.actor.updateEmbeddedDocuments("Item", updates);
         }
+        //set barrier to zero
+        await this.actor.update({"system.secChar.barrier.value":0,
+                                "system.secChar.barrier.currentCD":0});
     }
     //handles force weapon special damage rolls
     async _onForceRoll(event) {
@@ -1326,6 +1329,8 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
     }
     static async _onSubmitForm(event, form, formData) {
         event.preventDefault();
+        console.log(event, form, formData);
+        if(this.actor.getFlag("fortyk", "charactercreation"))return;
         let object = formData.object;
         let background = object.system?.notesAndBackground?.background;
         let notes = object.system?.notesAndBackground?.notes;

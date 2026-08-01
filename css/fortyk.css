@@ -1000,9 +1000,12 @@ section.chat-sidebar .jump-to-bottom > a{
   background-color: var(--terminal-bg) ;
   font-size: var(--terminal-font-size);
   color: var(--terminal-text) !important;
+  
+  overflow-y: auto;
 }
 .dialog-content{
   display:block;
+  
 }
 /* Dialog buttons */
 .dialog .dialog-buttons,

@@ -11,6 +11,12 @@
         <input type="text" class="weapon-mod" value="{{_source.name}}" data-target="name" data-dtype="String">
     </div>
     <div class="flexcol">
+        <label>Type:</label>
+        <select class="quality"  name="system.type.value">
+            {{selectOptions FORTYK.forceFieldTypes selected=system.type.value valueAttr="value" labelAttr="label"}}
+        </select>
+    </div>
+    <div class="flexcol">
         <label>Weight:</label>
         <input type="text" class="weapon-mod" value="{{system.weight.value}}" data-target="system.weight.value">
     </div>
@@ -27,6 +33,7 @@
             {{selectOptions FORTYK.itemRarity selected=system.rarity.value valueAttr="value" labelAttr="label"}}
         </select>
     </div>
+    {{#if (equals system.type.value "field")}}
     <div class="flexcol">
         <label>Rating:</label>
         <input type="text" class="weapon-mod" value="{{system.rating.value}}" data-target="system.rating.value">
@@ -47,6 +54,20 @@
         <label>Broken:</label>
         <input type="checkbox" name="system.broken.value" {{checked system.broken.value}}>
     </div>
+    {{else}}
+    <div class="flexcol">
+        <label>Barrier maximum:</label>
+        <input type="text" class="weapon-mod" value="{{system.barrier.max}}" data-target="system.barrier.max" data-dtype="Number">
+    </div>
+    <div class="flexcol">
+        <label>Recharge Rate:</label>
+        <input type="text" class="weapon-mod" value="{{system.barrier.rate}}" data-target="system.barrier.rate" data-dtype="Number" disabled>
+    </div>
+    <div class="flexcol">
+        <label>Cooldown on Overload:</label>
+        <input type="number" class="weapon-mod" value="{{system.barrier.cooldown}}" data-target="system.barrier.cooldown" data-dtype="Number" disabled>
+    </div>
+    {{/if}}
     <div class="item-description">
         <div class="flexrow">
             <label>is Hidden:</label>
