@@ -17,7 +17,8 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
     }
     static PARTS = {
         header: {
-            template: 'systems/fortyk/templates/actor/vehicle-sheet.html'
+            template: 'systems/fortyk/templates/actor/vehicle-sheet.html',
+            scrollable: ['']
         }
     }
     /* -------------------------------------------- */

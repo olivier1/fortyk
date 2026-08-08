@@ -26,6 +26,13 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
           "max": new NumberField({ required: true, integer: true, initial: 10 }),
           "bonus": new NumberField({ required: true, integer: true, initial: 0 })
         }),
+        "barrier":new SchemaField({
+          "max":new NumberField({ required: true, integer: true, initial: 0 }),
+          "value":new NumberField({ required: true, integer: true, initial: 0 }),
+          "rate":new NumberField({ required: true, integer: true, initial: 0 }),
+          "cooldown":new NumberField({ required: true, integer: true, initial: 0 }),
+          "currentCD":new NumberField({ required: true, integer: true, initial: 0 })
+        }),
         "fatigue": new SchemaField({
           "min": new NumberField({ required: true, integer: true, initial: 0 }),
           "value": new NumberField({ required: true, integer: true, initial: 0 }),

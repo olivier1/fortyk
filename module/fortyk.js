@@ -1,10 +1,10 @@
 // Import Modules
 import PCData from "./DataModels/actor/PCData.js";
 import NPCData from "./DataModels/actor/NPCData.js";
-//import { SpaceshipData } from "./DataModels/actor/SpaceshipData.js";
-//import { VehicleData } from "./DataModels/actor/VehicleData.js";
-//import { ComradeData } from "./DataModels/actor/ComradeData.js";
-//import { RegimentData } from "./DataModels/actor/RegimentData.js";
+import SpaceshipData from "./DataModels/actor/SpaceshipData.js";
+import VehicleData from "./DataModels/actor/VehicleData.js";
+//import ComradeData from "./DataModels/actor/ComradeData.js";
+//import RegimentData from "./DataModels/actor/RegimentData.js";
 import { FortyKActor } from "./actor/actor.js";
 import { ActorDialogs } from "./actor/actor-dialogs.js";
 import { FortyKToken } from "./token/fortykToken.js";
@@ -223,8 +223,8 @@ Hooks.once("init", async function () {
      //Assign custom data models
     CONFIG.Actor.dataModels.dwPC = PCData;
     CONFIG.Actor.dataModels.npc = NPCData;
-    //CONFIG.Actor.dataModels.vehicle = VehicleData;
-    //CONFIG.Actor.dataModels.spaceship = SpaceshipData;
+    CONFIG.Actor.dataModels.vehicle = VehicleData;
+    CONFIG.Actor.dataModels.spaceship = SpaceshipData;
     //CONFIG.Actor.dataModels.owComrade = ComradeData;
     //CONFIG.Actor.dataModels.owRegiment = RegimentData;
     CONFIG.RegionBehavior.dataModels.fortykElevationBehavior = FortyKElevationBehavior;
