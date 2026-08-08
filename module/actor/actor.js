@@ -155,6 +155,11 @@ export class FortyKActor extends Actor {
                     data["system.secChar.size.value"] = newSize;
                 }
             }
+            let barrier = false;
+            barrier=data["system.secChar.barrier.value"];
+            if(barrier===0){
+                data["system.secChar.barrier.currentCD"]=this.system.secChar.barrier.cooldown;
+            }
             let wounds = false;
 
             wounds = data["system.secChar.wounds.value"];
@@ -671,6 +676,10 @@ export class FortyKActor extends Actor {
                 let item = fortykItem;
                 if (item.type === "forceField" && item.system.isEquipped) {
                     data.secChar.wornGear.forceField = item;
+                    
+                    if(item.system.type.value==="barrier"){
+                        this.prepareBarrier(item);
+                    }
                 }
                 if (item.type === "meleeWeapon") {
                     data.reach = Math.min(data.reach, item.system.range.value);
@@ -987,7 +996,6 @@ export class FortyKActor extends Actor {
         if (this.getFlag("fortyk", "neverquit")) {
             data.secChar.fatigue.max += 2;
         }
-        console.log(data.characteristics.per.total)
         //modify total characteristics depending on fatigue
         var fatigueMult = 1;
         if (this.getFlag("fortyk", "unrelenting")) {
@@ -1000,7 +1008,6 @@ export class FortyKActor extends Actor {
                 }
             }
         }
-         console.log(data.characteristics.per.total)
         let fearPreview = data.characteristics.wp.total + data.secChar.fearMod;
         if (data.secChar.fearRes) {
             fearPreview += data.secChar.fearRes;
@@ -1498,6 +1505,10 @@ export class FortyKActor extends Actor {
         if (!Array.isArray(data.secChar.wornGear.weapons)) {
             wornWeapons = Object.values(data.secChar.wornGear.weapons);
         }
+        let forceField=data.secChar.wornGear.forceField;
+        if(!jQuery.isEmptyObject(forceField)&&forceField.system.type.value==="barrier"){
+            this.prepareBarrier(forceField);
+        }
         var rightHandWeapon;
         try {
             rightHandWeapon = data.secChar.wornGear.weapons[0];
@@ -1644,6 +1655,13 @@ export class FortyKActor extends Actor {
         }
 
         data.secChar.movement.run = data.secChar.movement.half * 6;
+    }
+    prepareBarrier(item){
+        let barrierChars=item.system.barrier;
+        this.system.secChar.barrier.max=barrierChars.max;
+        this.system.secChar.barrier.cooldown=barrierChars.cooldown;
+        this.system.secChar.barrier.rate=barrierChars.rate;
+        this.system.secChar.barrier.name=item.name;
     }
     async prepare() {
         let preparedData = this;
@@ -2424,7 +2442,7 @@ export class FortyKActor extends Actor {
     }
     _onUpdateDescendantDocuments(parent, collection, documents, changes, options, userId) {
         if (this.dialog) {
-            this.dialog.updateDialog(this);
+            //this.dialog?.updateDialog(this);
         }
         if (this.type === "knightHouse") {
             this.updateKnights();

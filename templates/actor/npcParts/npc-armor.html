@@ -102,17 +102,39 @@
                             {{/if}}
                         </div>
                         {{#if system.secChar.wornGear.forceField._id}}
+                        
                         <div class="forcefield flexrow flex-group-center">
-                            {{#unless system.secChar.wornGear.forceField.system.broken.value}}
-                            <label>Overload: {{system.secChar.wornGear.forceField.system.rating.overload}}</label>
-                            <label>Rating: </label>
+                        {{#if (equals system.secChar.wornGear.forceField.system.type.value "field")}}
+                        {{#unless system.secChar.wornGear.forceField.system.broken.value}}
+                        <label>Overload: {{system.secChar.wornGear.forceField.system.rating.overload}}</label>
+                        <label>Rating: </label>
 
-                            <span class="forcefield rollable button" data-roll-type="forcefield" data-id="{{system.secChar.wornGear.forceField._id}}">{{system.secChar.wornGear.forceField.system.rating.value}}</span>
-                            {{else}}
-                            <span class="forcefield repairForcefield button" data-id="{{system.secChar.wornGear.forceField._id}}" >Repair</span>
-                            {{/unless}}
-
+                        <span class="forcefield rollable button" data-roll-type="forcefield" data-id="{{system.secChar.wornGear.forceField._id}}">{{system.secChar.wornGear.forceField.system.rating.value}}</span>
+                        {{else}}
+                        <span class="forcefield repairForcefield button" data-id="{{system.secChar.wornGear.forceField._id}}" >Repair</span>
+                        {{/unless}}
+                        {{else}}
+                        {{#unless (greaterThan system.secChar.barrier.currentCD 0)}}
+                        <div class="flexcol">
+                            <label>Value: </label>
+                            <input type="number" class="combat-resources" data-target="system.secChar.barrier.value" value="{{system.secChar.barrier.value}}" data-dtype="Number">
                         </div>
+                        <div class="flexcol">
+                            <label>Max: </label>
+                            <input type="number" class="combat-resources" data-target="system.secChar.barrier.max" value="{{system.secChar.barrier.max}}" data-dtype="Number" disabled>
+                        </div>
+                        <div class="flexcol">
+                            <label>Recharge Rate: </label>
+                            <input type="number" class="combat-resources" data-target="system.secChar.barrier.rate" value="{{system.secChar.barrier.rate}}" data-dtype="Number" disabled>
+                        </div>
+                        {{else}}
+                         <div class="flexcol">
+                            <label>Overload Cooldown Remaing: </label>
+                            <input type="number" class="combat-resources" data-target="system.secChar.barrier.currentCD" value="{{system.secChar.barrier.currentCD}}" data-dtype="Number" disabled>
+                        </div>
+                        {{/unless}}
+                        {{/if}}
+                    </div>
 
 
                         {{/if}}

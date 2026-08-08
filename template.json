@@ -94,6 +94,14 @@
                         "max": 10,
                         "bonus": 0
                     },
+                    "barrier":{
+                        "type":"Number",
+                        "max":0,
+                        "value":0,
+                        "recharge":0,
+                        "cooldown":0,
+                        "currentCD":0
+                    },
                     "fatigue": {
                         "type": "Number",
                         "min": 0,
@@ -742,6 +750,14 @@
                         "4": 0
                     }
                 },
+                "barrier":{
+                    "type":"Number",
+                    "max":0,
+                    "value":0,
+                    "rate":0,
+                    "cooldown":0,
+                    "currentCD":0
+                },
                 "attacks": {
                     "standard": 10,
                     "charge": 20,
@@ -1245,6 +1261,15 @@
             "broken": {
                 "value": false,
                 "type": "Boolean"
+            },
+            "type":{
+                "value":"field",
+                "type":"String"
+            },
+            "barrier":{
+                "max":0,
+                "rate":0,
+                "cooldown":0
             }
         },
         "mod": {

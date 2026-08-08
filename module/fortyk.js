@@ -804,6 +804,10 @@ Hooks.on("combatStart", (combat, updateData) => {
             if (actor.getFlag("fortyk", "sanguinethirst")) {
                 actor.setFlag("fortyk", "butchercounter", 0);
             }
+            if(actor.system.secChar.barrier.max!==0){
+                actor.update({"system.secChar.barrier.value":actor.system.secChar.barrier.max,
+                              "system.secChar.barrier.currentCD":0});
+            }
         }
         if (enemyFears.length > 0) {
             let chosenFear = { name: "", fear: -1 };
@@ -904,6 +908,41 @@ Hooks.on("updateCombat", async (combat) => {
                 bubble.broadcast(token, content);
                 actor.setFlag("fortyk", "tidesreaction", true);
             }
+        }
+        if(actor.system.secChar.barrier.max>0){
+            let barrier=actor.system.secChar.barrier;
+            let content="";
+            if(barrier.currentCD>0){
+                let currentCD=barrier.currentCD;
+                content=`${barrier.name} cooldown overload turns remaining: ${currentCD}`;
+                currentCD--;
+                await actor.update({"system.secChar.barrier.currentCD":currentCD});
+            }else if(barrier.currentCD===0&&barrier.value===0){
+                content=`${barrier.name} cooldown overload finished, barrier is now at full capacity: ${barrier.max}`;
+                await actor.update({"system.secChar.barrier.value":barrier.max});
+            }else{
+                let oldValue=barrier.value;
+                if(oldValue===barrier.max){
+                    content=`${barrier.name} is at max capacity: ${barrier.max}`;
+                }else{
+                    let newValue=oldValue+barrier.rate;
+                    newValue=Math.min(newValue,barrier.max);
+                    content=`${barrier.name} recharged, old value: ${oldValue} new value:${newValue}`;
+                    await actor.update({"system.secChar.barrier.value":newValue});
+                }
+
+            }
+            if(content){
+                let barrierOptions = {
+                    author: game.user._id,
+                    speaker: ChatMessage.getSpeaker({ token: token }),
+                    content: content,
+                    classes: ["fortyk"],
+                    flavor: `${barrier.name} effects`
+                };
+                await ChatMessage.create(barrierOptions, {});
+            }
+
         }
         if (actor.type !== "vehicle" && actor.system.psykana.pr.sustained.length > 0) {
             let sustainedIds = actor.system.psykana.pr.sustained;
@@ -1857,7 +1896,7 @@ async function handlePostMovement(promise, time){
                     }
                 }
                 if(del){
-                    
+
                     await ae.delete();
                     actor.flags.core[ae.name]=false;
                 }
@@ -1897,7 +1936,7 @@ async function handlePostMovement(promise, time){
 
                         }
                         if(del){
-                            
+
                             buff.delete();
                             actor.flags.core[buff.name]=false;
                         }
@@ -1943,7 +1982,7 @@ async function handlePostMovement(promise, time){
                             }
                         }
                         if(del){
-                            
+
                             await buff.delete();
                             actor.flags.core[buff.name]=false;
                         }
@@ -1977,7 +2016,7 @@ async function addToPromiseQueue(token, movement, promise){
         if(!moveTokens[time].find((oneToken)=>oneToken.id===token.id)){
             moveTokens[time].push(token);
         }
-        
+
     }
 
     await fetchData(promise, time);

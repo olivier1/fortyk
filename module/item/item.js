@@ -125,6 +125,15 @@ export class FortyKItem extends Item {
             }
             item.system.mods.max += qualityMods[item.system.quality.value];
         }
+        if(item.type==="forceField"){
+            if(item.system.type.value==="barrier"){
+                //recharge rate and cooldown is calculated by the item's quality
+                let barrierAttributes=this.FORTYK.barrierQualityAttributes[item.system.quality.value];
+                let maxCharge=item.system.barrier.max;
+                item.system.barrier.rate=Math.ceil(barrierAttributes.rechargeQuotient*maxCharge);
+                item.system.barrier.cooldown=barrierAttributes.cooldown;
+            }
+        }
         //ensure this is an owned item
 
         if (this.actor) {

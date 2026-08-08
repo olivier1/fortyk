@@ -333,7 +333,7 @@ export const applySceneAuras = async function (activeAuras, tokenObject){
         if(!casterToken) continue;
         let targets = game.scenes.current.tokens;
         
-        if(aura.system.notSelf){
+        if(aura.system.isAura.notSelf){
             targets=targets.filter((token)=>caster.id!==token.actor.id);
         }
         if(tokenObject?.actor?.id!==caster.id){
