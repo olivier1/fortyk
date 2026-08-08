@@ -1,5 +1,3 @@
-2026/07/05-06:39:14.600 dcc Recovering log #3126
-2026/07/05-06:39:14.601 dcc Level-0 table #3128: started
-2026/07/05-06:39:14.616 dcc Level-0 table #3128: 166021 bytes OK
-2026/07/05-06:39:14.626 dcc Delete type=0 #3126
-2026/07/05-06:39:14.627 dcc Delete type=3 #3125
+2026/07/06-14:13:17.625 1c9c Recovering log #3129
+2026/07/06-14:13:17.636 1c9c Delete type=0 #3129
+2026/07/06-14:13:17.636 1c9c Delete type=3 #3127

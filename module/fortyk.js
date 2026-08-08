@@ -1,4 +1,10 @@
 // Import Modules
+import PCData from "./DataModels/actor/PCData.js";
+import NPCData from "./DataModels/actor/NPCData.js";
+//import { SpaceshipData } from "./DataModels/actor/SpaceshipData.js";
+//import { VehicleData } from "./DataModels/actor/VehicleData.js";
+//import { ComradeData } from "./DataModels/actor/ComradeData.js";
+//import { RegimentData } from "./DataModels/actor/RegimentData.js";
 import { FortyKActor } from "./actor/actor.js";
 import { ActorDialogs } from "./actor/actor-dialogs.js";
 import { FortyKToken } from "./token/fortykToken.js";
@@ -10,8 +16,6 @@ import { FortyKElevationConfig } from "./terrain/behaviors/configs/fortykElevati
 import { FortyKCoverBehavior } from "./terrain/behaviors/fortykCover.js";
 import { FortyKCoverConfig } from "./terrain/behaviors/configs/fortykCoverConfig.js";
 import FortyKDWActorSheet from "./actor/actorDW-sheet.js";
-import { FortyKDHActorSheet } from "./actor/actorDH-sheet.js";
-import { FortyKOWActorSheet } from "./actor/actorOW-sheet.js";
 import { FortyKOWComradeSheet } from "./actor/comradeOW-sheet.js";
 import { FortyKOWRegimentSheet } from "./actor/regimentOW-sheet.js";
 import { FortyKSpaceshipSheet } from "./actor/spaceship-sheet.js";
@@ -216,6 +220,13 @@ Hooks.once("init", async function () {
     CONFIG.Token.documentClass = FortyKToken;
     CONFIG.Token.objectClass = FortyKPlaceableToken;
     CONFIG.Token.movement.TerrainData = FortyKTerrain;
+     //Assign custom data models
+    CONFIG.Actor.dataModels.dwPC = PCData;
+    CONFIG.Actor.dataModels.npc = NPCData;
+    //CONFIG.Actor.dataModels.vehicle = VehicleData;
+    //CONFIG.Actor.dataModels.spaceship = SpaceshipData;
+    //CONFIG.Actor.dataModels.owComrade = ComradeData;
+    //CONFIG.Actor.dataModels.owRegiment = RegimentData;
     CONFIG.RegionBehavior.dataModels.fortykElevationBehavior = FortyKElevationBehavior;
     CONFIG.RegionBehavior.typeLabels.fortykElevationBehavior = "TYPES.RegionBehvior.fortykElevation";
     CONFIG.RegionBehavior.typeIcons.fortykElevationBehavior = "fas fa-stairs";
@@ -1923,7 +1934,7 @@ async function handlePostMovement(promise, time){
                         let los = buff.getFlag("fortyk", "los");
                         if (los) {
                             const collision = CONFIG.Canvas.polygonBackends["sight"].testCollision(
-                                token.center,
+                                token._object.center,
                                 buffTarget.center,
                                 { mode: "any", type: "sight" }
                             );

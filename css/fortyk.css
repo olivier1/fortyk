@@ -1192,7 +1192,7 @@ i:not([class*="fa-"]):not(.colored-icon),
 }
 
 /* Specific Foundry VTT icons */
-.fa-dice-d20:before { color: #ff6b6b !important; text-shadow: 0 0 3px #ff6b6b !important; font-family: 'Font Awesome 6 Pro' }
+.fa-dice-d20:before { color: #ff6b6b !important; text-shadow: 0 0 3px #ff6b6b  }
 .fa-crosshairs:before { color: #4ecdc4 !important; text-shadow: 0 0 3px #4ecdc4 !important; }
 .fa-users:before { color: #45b7d1 !important; text-shadow: 0 0 3px #45b7d1 !important; }
 .fa-map:before { color: #96ceb4 !important; text-shadow: 0 0 3px #96ceb4 !important; }
@@ -1204,42 +1204,33 @@ i:not([class*="fa-"]):not(.colored-icon),
 .fa-star:before { color: goldenrod !important; text-shadow: 0 0 6px goldenrod !important; }
 .fa-question:before { color: purple!important; text-shadow: 0 0 6px purple !important; }
 .fa-file-import:before { color: goldenrod; 
-  text-shadow: 0 0 6px goldenrod !important;
-  font-family: 'Font Awesome 6 Pro'}
+  text-shadow: 0 0 6px goldenrod !important;}
 .fa-passport:before { color: #0096FF; 
   text-shadow: 0 0 6px #0096FF !important;
-  opacity:1;
-  font-family: 'Font Awesome 6 Pro'}
+  opacity:1;}
 .fa-times:before { color: goldenrod; 
-  text-shadow: 0 0 6px goldenrod !important;
-  font-family: 'Font Awesome 6 Pro'}
+  text-shadow: 0 0 6px goldenrod !important;}
 .fa-cog:before { color: goldenrod; 
-  text-shadow: 0 0 6px goldenrod !important;
-  font-family: 'Font Awesome 6 Pro'}
+  text-shadow: 0 0 6px goldenrod !important;}
 .fa-save:before {
   color: var(--terminal-primary); 
   text-shadow: 0 0 6px var(--terminal-primary) !important;
-  font-family: 'Font Awesome 6 Pro'
 }
 .fa-user:before {
   color: var(--terminal-warning); 
   text-shadow: 0 0 6px var(--terminal-warning-glow) !important;
-  font-family: 'Font Awesome 6 Pro'
 }
 .fa-suitcase:before {
   color: var(--terminal-primary); 
   text-shadow: 0 0 6px var(--terminal-success-glow) !important;
-  font-family: 'Font Awesome 6 Pro'
 }
 .fa-folder:before {
   color: var(--terminal-text); 
   text-shadow: 0 0 6px var(--terminal-glow) !important;
-  font-family: 'Font Awesome 6 Pro'
 }
 .fa-trash:before {
   color: var(--terminal-error); 
   text-shadow: var(--terminal-error-glow) !important;
-  font-family: 'Font Awesome 6 Pro'
 }
 .window-app .window-header .window-title .document-id-link{
   opacity:1;

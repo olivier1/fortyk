@@ -1,3 +1,5 @@
-2026/07/05-06:31:02.716 8a4c Recovering log #5330
-2026/07/05-06:31:02.726 8a4c Delete type=0 #5330
-2026/07/05-06:31:02.726 8a4c Delete type=3 #5329
+2026/07/05-06:39:14.425 dcc Recovering log #5332
+2026/07/05-06:39:14.425 dcc Level-0 table #5334: started
+2026/07/05-06:39:14.433 dcc Level-0 table #5334: 5426 bytes OK
+2026/07/05-06:39:14.443 dcc Delete type=0 #5332
+2026/07/05-06:39:14.444 dcc Delete type=3 #5331

@@ -56,7 +56,7 @@ export class FortyKActor extends Actor {
             });
         }
         //resume actor creation
-        super.create(data, options);
+        return super.create(data, options);
     }
     //@Override the update function to modify token size for hordes and larger entities
     async update(data, options = {}) {

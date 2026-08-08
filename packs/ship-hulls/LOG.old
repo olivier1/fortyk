@@ -1,9 +1,1 @@
-2026/07/05-06:39:15.037 32c4 Log #354: 38 ops saved to Table #358 OK
-2026/07/05-06:39:15.039 32c4 Archiving C:\Users\Olivier\AppData\Local\FoundryVTT\Data\systems\fortyk\packs\ship-hulls/000354.log: OK
-2026/07/05-06:39:15.039 32c4 Log #357: 0 ops saved to Table #359 OK
-2026/07/05-06:39:15.040 32c4 Archiving C:\Users\Olivier\AppData\Local\FoundryVTT\Data\systems\fortyk\packs\ship-hulls/000357.log: OK
-2026/07/05-06:39:15.041 32c4 Table #344: 38 entries OK
-2026/07/05-06:39:15.041 32c4 Table #356: 38 entries OK
-2026/07/05-06:39:15.041 32c4 Table #358: 38 entries OK
-2026/07/05-06:39:15.048 32c4 Archiving C:\Users\Olivier\AppData\Local\FoundryVTT\Data\systems\fortyk\packs\ship-hulls/MANIFEST-000353: OK
-2026/07/05-06:39:15.057 32c4 **** Repaired leveldb C:\Users\Olivier\AppData\Local\FoundryVTT\Data\systems\fortyk\packs\ship-hulls; recovered 3 files; 110038 bytes. Some data may have been lost. ****
+2026/07/05-06:39:15.073 32c4 Delete type=3 #1
