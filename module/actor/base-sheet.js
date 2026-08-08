@@ -213,9 +213,10 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         let draggedId = data.id;
 
         let targetId = event.target.dataset["id"];
-        if (draggedId !== targetId) {
-            let draggedItem = await this.actor.items.get(draggedId);
 
+        if (draggedId&&(draggedId !== targetId)) {
+
+            let draggedItem = await this.actor.items.get(draggedId);
             let targetItem = await this.actor.items.get(targetId);
 
             let sortDrag = draggedItem.sort;
@@ -718,7 +719,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                 actor.getFlag("fortyk", "twohandedbrutality") &&
                 fortykWeapon.system.twohanded.value &&
                 (actor.system.secChar.lastHit.attackType === "charge" ||
-                    actor.system.secChar.lastHit.attackType === "allout")
+                 actor.system.secChar.lastHit.attackType === "allout")
             ) {
                 dmg += actor.system.characteristics.s.bonus;
             }
@@ -890,8 +891,8 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                                     weapon.template = targets[i].template;
                                     let targetNames = "";
                                     let targetTokens = canvas.tokens.placeables.filter((token) =>
-                                        curTargets.includes(token.id)
-                                    );
+                                                                                       curTargets.includes(token.id)
+                                                                                      );
                                     for (let j = 0; j < targetTokens.length; j++) {
                                         let token = targetTokens[j];
                                         if (j === targetTokens.length - 1) {
@@ -1096,7 +1097,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         }
         //set barrier to zero
         await this.actor.update({"system.secChar.barrier.value":0,
-                                "system.secChar.barrier.currentCD":0});
+                                 "system.secChar.barrier.currentCD":0});
     }
     //handles force weapon special damage rolls
     async _onForceRoll(event) {

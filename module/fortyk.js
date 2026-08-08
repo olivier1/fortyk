@@ -783,7 +783,7 @@ Hooks.on("combatStart", (combat, updateData) => {
         for (const combatant of combatants) {
             let actor = combatant.actor;
             let token = combatant.token;
-                      if (actor.getFlag("fortyk", "fear")) {
+            if (actor.getFlag("fortyk", "fear")) {
                 if (token.disposition === -1) {
                     enemyFears.push({ name: actor.getName(), fear: actor.getFlag("fortyk", "fear"), token: token });
                 } else if (token.disposition === 1) {
