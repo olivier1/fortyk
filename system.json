@@ -35,7 +35,8 @@
   "documentTypes": {
     "RegionBehavior": {
       "fortykElevationBehavior": {},
-      "fortykCoverBehavior": {}
+      "fortykCoverBehavior": {},
+      "fortykAuraBehavior":{}
     },
     "Actor":{
       "dwPC":{
@@ -43,7 +44,9 @@
                       "system.notesAndBackground.notes"]
       },
       "npc":{
-        "htmlFields":["system.description.value"]
+        "htmlFields":["system.description.value",
+                     "system.skills.value",
+                     "system.equipment.value"]
       },
       "spaceship":{
 
@@ -637,6 +640,19 @@
       },
       "flags": {},
       "package": "system"
+    },
+    {
+      "label": "fortykActiveEffects",
+      "type": "ActiveEffect",
+      "name": "fortyk-activeeffects",
+      "path": "packs/fortykactiveeffects",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {},
+      "package": "system"
     }
   ],
   "packFolders": [
@@ -708,6 +724,15 @@
           "color": "#07575b",
           "packs": [
             "fortykmacros"
+          ],
+          "folders": []
+        },
+        {
+          "name": "Active Effects",
+          "sorting": "m",
+          "color": "#07575b",
+          "packs": [
+            "fortyk-activeeffects"
           ],
           "folders": []
         },

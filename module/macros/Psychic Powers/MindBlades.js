@@ -58,11 +58,12 @@ new Dialog({
                         aeData.disabled=false;
                         aeData.transfer=false;
                         aeData.origin=power.uuid;
+                        aeData.showIcon=2;
                         aeData.changes=[];
                         if(weapon.getFlag("fortyk","razorsharp")){
-                            aeData.changes.push({key:"flags.fortyk.shredding",value:true,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM});
+                            aeData.changes.push({key:"flags.fortyk.shredding",value:true,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom});
                         }else{
-                            aeData.changes.push({key:"flags.fortyk.razorsharp",value:true,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM});
+                            aeData.changes.push({key:"flags.fortyk.razorsharp",value:true,mode:game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom});
                         }
                         let ae=await weapon.createEmbeddedDocuments("ActiveEffect",[aeData]);
                         effectIds.push(ae[0].uuid);

@@ -5,14 +5,14 @@ import { objectByString } from "../utilities.js";
 export class FortyKKnightSheet extends FortyKBaseActorSheet {
     /** @override */
     static DEFAULT_OPTIONS ={
-            tag: 'form',
-            classes: ["fortyk", "sheet", "actor"],
-            template: "systems/fortyk/templates/actor/knight-sheet.html",
-            width: 980,
-            height: 700,
-            tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "mechbay" }],
-            default: null,
-            scrollY: [".left-mechbay", ".info4", ".sheet-content", ".sheet-content-knight"]
+        tag: 'form',
+        classes: ["fortyk", "sheet", "actor"],
+        template: "systems/fortyk/templates/actor/knight-sheet.html",
+        width: 980,
+        height: 700,
+        tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-content", initial: "mechbay" }],
+        default: null,
+        scrollY: [".left-mechbay", ".info4", ".sheet-content", ".sheet-content-knight"]
 
     }
     /** @override */
@@ -123,8 +123,8 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             );
             data.auxiliaryWeapons = house.itemTypes.rangedWeapon.filter(
                 (weapon) =>
-                    weapon.system.class.value !== "Titanic Ranged Weapon" &&
-                    weapon.system.class.value !== "Titanic Artillery Weapon"
+                weapon.system.class.value !== "Titanic Ranged Weapon" &&
+                weapon.system.class.value !== "Titanic Artillery Weapon"
             );
 
             data.auxiliaryWeapons = data.auxiliaryWeapons.map((x) => {
@@ -635,12 +635,14 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         };
 
         renderedTemplate.then((content) => {
-            new Dialog(
+            new foundry.applications.api.DialogV2(
                 {
-                    title: "Pick a Chassis",
+                    window:{title: "Pick a Chassis"},
                     content: content,
-                    buttons: {
-                        submit: {
+                    actor:actor,
+                    buttons: [
+                        {
+                            action:"submit",
                             label: "Add selected to Character",
                             callback: async (html) => {
                                 let selectedId = $(html).find("input:checked").val();
@@ -685,14 +687,14 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                                 await actor.setFlag("fortyk", "superheavy", true);
                                 await actor.setFlag("fortyk", "enclosed", true);
                                 await actor.setFlag("fortyk", "walker", true);
-                                this.render(true);
+                                this.render({force:true});
                             }
                         }
-                    },
+                    ],
                     default: "submit"
                 },
                 options
-            ).render(true);
+            ).render({force:true});
         });
     }
     async _onSpiritPick(event) {
@@ -723,12 +725,14 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         };
 
         renderedTemplate.then((content) => {
-            new Dialog(
+            new foundry.applications.api.DialogV2(
                 {
-                    title: "Pick a Machine Spirit",
+                    window:{title: "Pick a Machine Spirit"},
                     content: content,
-                    buttons: {
-                        submit: {
+                    actor:actor,
+                    buttons: [
+                        {
+                            action:"submit",
                             label: "Add selected to Character",
                             callback: async (html) => {
                                 let selectedId = $(html).find("input:checked").val();
@@ -743,14 +747,14 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                                 let update = {};
                                 update["system.knight.spirit"] = id;
                                 actor.update(update);
-                                this.render(true);
+                                this.render({force:true});
                             }
                         }
-                    },
+                    ],
                     default: "submit"
                 },
                 options
-            ).render(true);
+            ).render({force:true});
         });
     }
     async _onMeldClick(event) {
@@ -770,7 +774,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         knightAeData.changes.push({
             key: "system.secChar.manoeuvrability.value",
             value: manoeuvrability,
-            mode: FORTYK.ACTIVE_EFFECT_MODES.ADD
+            mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
         });
         if (meldType === "default") {
             meldContent = `<p><b>Melding Bonus:</b> +${manoeuvrability} manoeuvrability and ${meldBonus}</p>`;
@@ -819,7 +823,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 pilotAeData.changes.push({
                     key: "system.characteristics.int.mod",
                     value: 10,
-                    mode: FORTYK.ACTIVE_EFFECT_MODES.ADD
+                    mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                 });
                 break;
             case "blasphemoustendencies":
@@ -866,33 +870,33 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 pilotAeData.changes.push({
                     key: "system.characteristics.wp.mod",
                     value: 10,
-                    mode: FORTYK.ACTIVE_EFFECT_MODES.ADD
+                    mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                 });
                 break;
             case "martialhubris":
                 pilotAeData.changes.push({
                     key: "system.characteristics.ws.mod",
                     value: 5,
-                    mode: FORTYK.ACTIVE_EFFECT_MODES.ADD
+                    mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                 });
                 pilotAeData.changes.push({
                     key: "system.characteristics.bs.mod",
                     value: 5,
-                    mode: FORTYK.ACTIVE_EFFECT_MODES.ADD
+                    mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                 });
                 break;
             case "nosefortrouble":
                 pilotAeData.changes.push({
                     key: "system.characteristics.per.mod",
                     value: 10,
-                    mode: FORTYK.ACTIVE_EFFECT_MODES.ADD
+                    mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                 });
                 break;
             case "rebellious":
                 pilotAeData.changes.push({
                     key: "system.secChar.initiative.value",
                     value: 5,
-                    mode: FORTYK.ACTIVE_EFFECT_MODES.ADD
+                    mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                 });
                 if (game.combats.active) {
                     for (const combatant of game.combats.active.combatants) {
@@ -908,7 +912,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 knightAeData.changes.push({
                     key: "system.secChar.speed.mod",
                     value: 10,
-                    mode: FORTYK.ACTIVE_EFFECT_MODES.ADD
+                    mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                 });
                 if (!pilot.getFlag("fortyk", "sprint")) {
                     let dh2pack = await game.packs.get("fortyk.talent-core-dh2");
@@ -925,7 +929,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 knightAeData.changes.push({
                     key: "system.knight.heat.mod",
                     value: 2,
-                    mode: FORTYK.ACTIVE_EFFECT_MODES.ADD
+                    mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                 });
                 if (!pilot.getFlag("fortyk", "unrelenting")) {
                     let dwPack = await game.packs.get("fortyk.deathwatch-bonus-and-drawbacks");
@@ -942,12 +946,12 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                 knightAeData.changes.push({
                     key: "flags.fortyk.wrothful",
                     value: true,
-                    mode: FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                    mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                 });
                 pilotAeData.changes.push({
                     key: "flags.fortyk.wrothful",
                     value: true,
-                    mode: FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                    mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                 });
                 break;
         }
@@ -1021,26 +1025,29 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
         let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
         renderedTemplate.then((content) => {
-            new Dialog({
-                title: "Deletion Confirmation",
+            new foundry.applications.api.DialogV2({
+                window:{title: "Deletion Confirmation"},
+                actor:this.actor,
                 content: content,
-                buttons: {
-                    submit: {
+                buttons: [
+                    {
+                        action:"submit",
                         label: "Yes",
                         callback: async (dlg) => {
                             await this.actor.update({ "system.knight.chassis": "" });
                             await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
 
-                            this.render(true);
+                            this.render({force:true});
                         }
                     },
-                    cancel: {
+                    {
+                        action:"cancel",
                         label: "No",
                         callback: null
                     }
-                },
+                ],
                 default: "submit"
-            }).render(true);
+            }).render({force:true});
         });
     }
     async _onDeleteSpirit(event) {
@@ -1052,26 +1059,28 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
         let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
         renderedTemplate.then((content) => {
-            new Dialog({
-                title: "Deletion Confirmation",
+            new foundry.applications.api.DialogV2({
+                window:{title: "Deletion Confirmation"},
+                actor:this.actor,
                 content: content,
-                buttons: {
-                    submit: {
+                buttons: [
+                    {
+                        action:"submit",
                         label: "Yes",
                         callback: async (dlg) => {
                             await this.actor.update({ "system.knight.spirit": "" });
                             await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
 
-                            this.render(true);
+                            this.render({force:true});
                         }
                     },
-                    cancel: {
-                        label: "No",
-                        callback: null
+                    {action:"cancel",
+                     label: "No",
+                     callback: null
                     }
-                },
+                ],
                 default: "submit"
-            }).render(true);
+            }).render({force:true});
         });
     }
     async _onDeleteWeapon(event) {
@@ -1081,11 +1090,13 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
         let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
         renderedTemplate.then((content) => {
-            new Dialog({
-                title: "Deletion Confirmation",
+            new foundry.applications.api.DialogV2({
+                window:{title: "Deletion Confirmation"},
                 content: content,
-                buttons: {
-                    submit: {
+                actor:this.actor,
+                buttons: [
+                    {
+                        action:"submit",
                         label: "Yes",
                         callback: async (dlg) => {
                             let index = parseInt(event.target.dataset["index"]);
@@ -1127,16 +1138,17 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
                             await actor.deleteEmbeddedDocuments("Item", [itemId]);
 
-                            this.render(true);
+                            this.render({force:true});
                         }
                     },
-                    cancel: {
-                        label: "No",
-                        callback: null
+                    {action:"cancel",
+                     label: "No",
+                     callback: null
+
                     }
-                },
+                ],
                 default: "submit"
-            }).render(true);
+            }).render({force:true});
         });
     }
     async _onDeleteComponent(event) {
@@ -1145,11 +1157,13 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         let item = await this.actor.getEmbeddedDocument("Item", itemId);
         let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
         renderedTemplate.then((content) => {
-            new Dialog({
-                title: "Deletion Confirmation",
+            new foundry.applications.api.DialogV2({
+                window:{title: "Deletion Confirmation"},
                 content: content,
-                buttons: {
-                    submit: {
+                actor:this.actor,
+                buttons: [
+                    {
+                        action:"submit",
                         label: "Yes",
                         callback: async (dlg) => {
                             let index = parseInt(event.target.dataset["index"]);
@@ -1187,16 +1201,17 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
                             await actor.deleteEmbeddedDocuments("Item", [itemId]);
 
-                            this.render(true);
+                            this.render({force:true});
                         }
                     },
-                    cancel: {
-                        label: "No",
-                        callback: null
+                    {action:"cancel",
+                     label: "No",
+                     callback: null
+
                     }
-                },
+                ],
                 default: "submit"
-            }).render(true);
+            }).render({force:true});
         });
     }
     async _onDeleteOtherComponent(event) {
@@ -1205,11 +1220,13 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         let item = await this.actor.getEmbeddedDocument("Item", itemId);
         let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
         renderedTemplate.then((content) => {
-            new Dialog({
-                title: "Deletion Confirmation",
+            new foundry.applications.api.DialogV2({
+                window:{title: "Deletion Confirmation"},
                 content: content,
-                buttons: {
-                    submit: {
+                actor:this.actor,
+                buttons: [
+                    {
+                        action:"submit",
                         label: "Yes",
                         callback: async (dlg) => {
                             let index = parseInt(event.target.dataset["index"]);
@@ -1248,16 +1265,16 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
 
                             await actor.deleteEmbeddedDocuments("Item", [itemId]);
 
-                            this.render(true);
+                            this.render({force:true});
                         }
                     },
-                    cancel: {
-                        label: "No",
-                        callback: null
+                    {action:"cancel",
+                     label: "No",
+                     callback: null
                     }
-                },
+                ],
                 default: "submit"
-            }).render(true);
+            }).render({force:true});
         });
     }
     async _onHouseChange(event) {
@@ -1294,7 +1311,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         weaponUpdate["system.ammo._id"] = ammoID;
 
         if (previousAmmo !== undefined && previousAmmo.system !== undefined) {
-            previousAmmo.update({ "system.currentClip.value": weapon.system.clip.value, "system.isEquipped": false });
+            previousAmmo.update({ "system.currentClip.value": weapon.system.clip.value, "system.isEquipped": "" });
         }
         if (ammo !== undefined) {
             let ammoUpdate = {};
@@ -1373,11 +1390,14 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/damage-dialog.html", options);
         let formula = dataset["formula"];
         renderedTemplate.then((content) => {
-            new Dialog({
-                title: `Number of Hits & Bonus Damage`,
+            new foundry.applications.api.DialogV2({
+                window:{title: `Number of Hits & Bonus Damage`,
+                width: 100},
                 content: content,
-                buttons: {
-                    submit: {
+                actor: actor,
+                buttons: [
+                    {
+                        action:"submit",
                         label: "OK",
                         callback: async (el) => {
                             const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
@@ -1395,11 +1415,11 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                             stomp.system.damageFormula.value = formula;
                             await FortykRolls.damageRoll(stomp.system.damageFormula, actor, stomp, 1);
                         }
+
                     }
-                },
-                default: "submit",
-                width: 100
-            }).render(true);
+                ],
+                default: "submit"
+            }).render({force:true});
         });
     }
     async _onKnightOverheat(event) {

@@ -4,7 +4,6 @@ import { FORTYKTABLES } from "../FortykTables.js";
 import { objectByString } from "../utilities.js";
 import { setNestedKey } from "../utilities.js";
 import { radToDeg } from "../utilities.js";
-import { turnOffActorAuras } from "../utilities.js";
 import { getActorToken } from "../utilities.js";
 
 /**
@@ -69,17 +68,16 @@ export class FortyKActor extends Actor {
             if(token){
                 let detectionModes=token.document.detectionModes;
 
-                let seeInvisibilityMode = detectionModes.find(mode => mode.id === "seeInvisibility");
+                let seeInvisibilityMode = detectionModes.seeInvisibility;
                 if(!seeInvisibilityMode){
-                    detectionModes.push({
-                        id: "seeInvisibility",
+                    detectionModes.seeInvisibility={
                         enabled: false,
                         range: 60 
-                    });
+                    };
                 }
-                seeInvisibilityMode = detectionModes.find(mode => mode.id === "seeInvisibility");
+                seeInvisibilityMode = detectionModes.seeInvisibility;
 
-                for(let mode of detectionModes){
+                for (const [key, mode] of Object.entries(detectionModes)) {
                     if(mode.range=== Infinity){
                         mode.range=60;
                     }
@@ -100,7 +98,6 @@ export class FortyKActor extends Actor {
         }
         if (dead) {
             let token = getActorToken(this).document;
-            await turnOffActorAuras(token);
         }
         if (actorData.type === "dwPC" || actorData.type === "npc" || actorData.type === "vehicle") {
             //check for fatigue unconsciousness/death
@@ -159,6 +156,14 @@ export class FortyKActor extends Actor {
             barrier=data["system.secChar.barrier.value"];
             if(barrier===0){
                 data["system.secChar.barrier.currentCD"]=this.system.secChar.barrier.cooldown;
+                let barrierItem=this.system.secChar.wornGear.forceField;
+                if(barrierItem){
+                    try {
+                        barrierItem.update({"system.broken.value":true});
+                    } catch (e) {
+                        //Catch Statement
+                    }
+                }
             }
             let wounds = false;
 
@@ -340,7 +345,7 @@ export class FortyKActor extends Actor {
             for (let i = 0; i < data.psykana.disciplineSlots; i++) {
                 let discipline = disciplines[i];
                 if (!discipline) {
-                    disciplines[i] = "";
+                    disciplines.push('');
                 }
             }
             //data.psykana.pr.sustain = data.psykana.pr.sustained.length;
@@ -588,6 +593,9 @@ export class FortyKActor extends Actor {
                 if (item.type === "psychicPower" && item.getFlag("fortyk", "sustained")) {
                     data.psykana.pr.sustained.push(item.id);
                 }
+                if (item.type === "psychicPower" && item.getFlag("fortyk", "sustainedAura")) {
+                    data.psykana.pr.sustained.push(item.id);
+                }
                 if(item.type === "eliteAdvance"&&item.getFlag("fortyk","mastered")){
                     masteredPaths++;
                     masteredPathIntances.push(item);
@@ -676,7 +684,7 @@ export class FortyKActor extends Actor {
                 let item = fortykItem;
                 if (item.type === "forceField" && item.system.isEquipped) {
                     data.secChar.wornGear.forceField = item;
-                    
+
                     if(item.system.type.value==="barrier"){
                         this.prepareBarrier(item);
                     }
@@ -728,6 +736,8 @@ export class FortyKActor extends Actor {
         let actorData = this;
         let data = this.system;
         let selfPsy = [];
+        let tokenChanges = [];
+        this.tokenActiveEffectChanges={"initial":[],"final":[]};
         //data.postEffects=false;
 
         let otherAes = [];
@@ -744,6 +754,9 @@ export class FortyKActor extends Actor {
 
 
                 let powerActor = null;
+                if(powerOrigin&&powerOrigin.type!=="fortykAuraBehavior"){
+                    powerOrigin=fromUuidSync(powerOrigin.system.originId);
+                }
                 if (powerOrigin) {
                     powerActor = powerOrigin.parent;
                     if (!powerActor) continue;
@@ -776,6 +789,8 @@ export class FortyKActor extends Actor {
                         } else {
                             proceed = false;
                         }
+                    }else{
+                        proceed=true;
                     }
                 } else {
                     proceed = true;
@@ -784,8 +799,14 @@ export class FortyKActor extends Actor {
                 if (proceed) {
                     for (let change of ae.changes) {
                         let path = change.key.split(".");
+                        if(path[0]==="token"){
+                            const copy = foundry.utils.deepClone(change);
+                            copy.key=copy.key.slice(6);
+                            tokenChanges.push(copy);
+                            continue;
+                        }
                         let changeValue = change.value;
-                        if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
+                        if (change.type === "custom") {
                             if (typeof changeValue === "string") {
                                 if (changeValue.toLowerCase() === "true") {
                                     setNestedKey(actorData, path, true);
@@ -820,11 +841,13 @@ export class FortyKActor extends Actor {
                                 actor.system.psykana.pr.value +
                                 actor.system.psykana.pr.bonus -
                                 Math.max(0, actor.getPrAdjust());
-                            if (changeValue.indexOf("pr") !== -1) {
-                                try {
-                                    let changestr = changeValue;
-                                    changeValue = Math.ceil(math.evaluate(changestr, { pr: pr }));
-                                } catch (err) {}
+                            if (typeof changeValue === "string") {
+                                if (changeValue.indexOf("pr") !== -1) {
+                                    try {
+                                        let changestr = changeValue;
+                                        changeValue = Math.ceil(math.evaluate(changestr, { pr: pr }));
+                                    } catch (err) {}
+                                }
                             }
                         }
                         let basevalue = parseFloat(objectByString(actorData, change.key));
@@ -837,32 +860,32 @@ export class FortyKActor extends Actor {
                         }*/
                         if (isNaN(basevalue) || (!isNaN(basevalue) && !isNaN(newvalue))) {
                             let changedValue = 0;
-                            if (change.mode === CONST.ACTIVE_EFFECT_MODES.MULTIPLY) {
+                            if (change.type === "multiply") {
                                 changedValue = basevalue * newvalue;
                                 setNestedKey(actorData, path, changedValue);
-                            } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.ADD) {
+                            } else if (change.type === "add") {
                                 changedValue = basevalue + newvalue;
                                 setNestedKey(actorData, path, changedValue);
-                            } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.DOWNGRADE) {
+                            } else if (change.type === "downgrade") {
                                 if (changeValue < basevalue) {
                                     changedValue = newvalue;
                                     setNestedKey(actorData, path, changedValue);
                                 }
-                            } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.UPGRADE) {
+                            } else if (change.type === "upgrade") {
                                 if (changeValue > basevalue) {
                                     changedValue = newvalue;
                                     setNestedKey(actorData, path, changedValue);
                                 }
-                            } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.OVERRIDE) {
+                            } else if (change.type === "override") {
                                 setNestedKey(actorData, path, newvalue);
-                            } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
+                            } else if (change.type === "custom") {
                                 setNestedKey(actorData, path, changeValue);
                             }
                         } else {
                             //custom mode
-                            if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
+                            if (change.type === "custom") {
                                 setNestedKey(actorData, path, changeValue);
-                            } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.ADD) {
+                            } else if (change.type === "add") {
                                 setNestedKey(actorData, path, changeValue);
                             }
                         }
@@ -870,7 +893,7 @@ export class FortyKActor extends Actor {
                 }
             }
         }
-
+        this.tokenActiveEffectChanges['initial'] = tokenChanges;
         if (selfPsy.length > 0) {
             for (let i = 0; i < selfPsy.length; i++) {
                 let ae = selfPsy[i];
@@ -902,35 +925,36 @@ export class FortyKActor extends Actor {
                         }*/
                     if (!isNaN(basevalue) && !isNaN(newvalue)) {
                         let changedValue = 0;
-                        if (change.mode === 1) {
+                        if (change.type === "multiply") {
                             changedValue = basevalue * newvalue;
                             setNestedKey(actorData, path, changedValue);
-                        } else if (change.mode === 2) {
+                        } else if (change.type === "add") {
                             changedValue = basevalue + newvalue;
                             setNestedKey(actorData, path, changedValue);
-                        } else if (change.mode === 3) {
+                        } else if (change.type === "downgrade") {
                             if (changeValue < basevalue) {
                                 changedValue = newvalue;
                                 setNestedKey(actorData, path, changedValue);
                             }
-                        } else if (change.mode === 4) {
+                        } else if (change.type === "upgrade") {
                             if (changeValue > basevalue) {
                                 changedValue = newvalue;
                                 setNestedKey(actorData, path, changedValue);
                             }
-                        } else if (change.mode === 5) {
+                        } else if (change.type === "override") {
                             setNestedKey(actorData, path, newvalue);
-                        } else if (change.mode === 0) {
+                        } else if (change.type === "custom") {
                             setNestedKey(actorData, path, changeValue);
                         }
                     } else {
-                        if (change.mode === 0) {
+                        if (change.type === "custom") {
                             setNestedKey(actorData, path, changeValue);
                         }
                     }
                 });
             }
         }
+        this._completedActiveEffectPhases.add("initial");
     }
     prepareDerivedData() {
         const actorData = this;

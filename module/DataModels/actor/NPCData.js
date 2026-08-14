@@ -8,7 +8,7 @@ export default class NPCData extends CharacterData {
         return {
             ...commonData,
             "skills": new SchemaField({
-                "value": new StringField({ initial: "" })
+                "value": new HTMLField({ initial: "" })
             }),
             "equipment": new SchemaField({
                 "value": new HTMLField({ initial: "" })

@@ -517,7 +517,7 @@ export class FortyKItem extends Item {
                         modifiers.push({ value: training, label: "Power Training" });
                         modifiers.push({ value: parseInt(item.system.testMod.value), label: "Power Modifier" });
                         modifiers.push({ value: parseInt(data.psykana.mod.value), label: "Psykana Modifier" });
-                      
+
                         item.system.target.value = char + training + parseInt(item.system.testMod.value) + parseInt(data.psykana.mod.value);
                     } else {
                         try {
@@ -557,7 +557,7 @@ export class FortyKItem extends Item {
                             item.system.pushed=false;
                         }
                         let derivedPR = parseInt(data.psykana.pr.effective) - parseInt(item.system.curPR.value);
-                        
+
                         if (game.settings.get("fortyk", "pushingPRHouseRule")) {
                             derivedPR = Math.abs(derivedPR);
                         }
@@ -759,6 +759,7 @@ export class FortyKItem extends Item {
         let data = this.system;
         let actor = this.actor;
         let scope = actor.getScope();
+        let actorTokenChanges = actor.tokenActiveEffectChanges["initial"];
         let pr;
         if (actor.getFlag("fortyk", "psyrating")) {
             pr =
@@ -771,7 +772,9 @@ export class FortyKItem extends Item {
                 //if item is equipped and/or not disabled
                 let proceed = false;
                 let equipped = item.system.isEquipped;
-                if (actor.type === "npc") {
+                if (item.system?.broken?.value){
+                    proceed = false;
+                }else if (actor.type === "npc") {
                     proceed = true;
                 } else if (equipped === undefined) {
                     proceed = true;
@@ -790,8 +793,14 @@ export class FortyKItem extends Item {
                 if (!proceed) return;
                 ae.changes.forEach(function (change, i) {
                     let path = change.key.split(".");
+                    if(path[1]==="token"){
+                        const copy = foundry.utils.deepClone(change);
+                        copy.key=copy.key.slice(12);
+                        actorTokenChanges.push(copy);
+                        return;
+                    }
                     var changeValue = change.value;
-                    if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
+                    if (change.type === "custom") {
                         if (typeof changeValue === "string") {
                             if (changeValue.toLowerCase() === "true") {
                                 return setNestedKey(itemData, path, true);
@@ -802,15 +811,17 @@ export class FortyKItem extends Item {
                     }
 
                     if (actor.getFlag("fortyk", "psyrating")) {
-                        if (changeValue.indexOf("pr") !== -1) {
-                            try {
-                                let value = math.evaluate(changeValue, scope);
+                        if (typeof changeValue === "string") {
+                            if (changeValue.indexOf("pr") !== -1) {
+                                try {
+                                    let value = math.evaluate(changeValue, scope);
 
-                                if (!Number.isNaN(value)) {
-                                    changeValue = value;
+                                    if (!Number.isNaN(value)) {
+                                        changeValue = value;
+                                    }
+                                } catch (err) {
+                                    console.log(err, item);
                                 }
-                            } catch (err) {
-                                console.log(err, item);
                             }
                         }
                     }
@@ -834,31 +845,31 @@ export class FortyKItem extends Item {
                         }*/
                     if (!isNumber || (!Number.isNaN(basevalue) && !Number.isNaN(newvalue))) {
                         let changedValue = 0;
-                        if (change.mode === CONST.ACTIVE_EFFECT_MODES.MULTIPLY) {
+                        if (change.type === "multiply") {
                             changedValue = basevalue * newvalue;
                             setNestedKey(itemData, path, changedValue);
-                        } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.ADD) {
+                        } else if (change.type === "add") {
                             changedValue = basevalue + newvalue;
                             setNestedKey(itemData, path, changedValue);
-                        } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.DOWNGRADE) {
+                        } else if (change.type === "downgrade") {
                             if (changeValue < basevalue) {
                                 changedValue = newvalue;
                                 setNestedKey(itemData, path, changedValue);
                             }
-                        } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.UPGRADE) {
+                        } else if (change.type === "upgrade") {
                             if (changeValue > basevalue) {
                                 changedValue = newvalue;
                                 setNestedKey(itemData, path, changedValue);
                             }
-                        } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.OVERRIDE) {
+                        } else if (change.type === "override") {
                             setNestedKey(itemData, path, newvalue);
-                        } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
+                        } else if (change.type === "custom") {
                             setNestedKey(itemData, path, changeValue);
                         }
                     } else {
-                        if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
+                        if (change.type === "custom") {
                             setNestedKey(itemData, path, changeValue);
-                        }else if (change.mode === CONST.ACTIVE_EFFECT_MODES.ADD) {
+                        }else if (change.type === "add") {
 
                             setNestedKey(actorData, path, changeValue);
                         }
@@ -1357,6 +1368,7 @@ export class FortyKItem extends Item {
                 aeData.disabled = false;
                 aeData.origin = power.uuid;
                 aeData.statuses.push(power.name);
+                aeData.showIcon=2;
                 aes.push(aeData);
             }
 
@@ -1399,63 +1411,67 @@ export class FortyKItem extends Item {
             let actor = await fromUuid(actorId);
             let actorToken = getActorToken(actor);
             let power = actor.getEmbeddedDocument("Item", powerId);
-            let scene = game.scenes.current;
-            let activeAuras = scene.getFlag("fortyk", "activeAuras");
-            if(!activeAuras)activeAuras=[];
-            activeAuras.push(power.uuid);
-            scene.setFlag("fortyk", "activeAuras", activeAuras);
             let auraType = power.system.auraType;
-            let targets;
-            let tokens = game.scenes.current.tokens;
+            /*
 
-            switch (auraType) {
-                case "friendly":
-                    tokens = tokens.filter((token) => token.document.disposition === actorToken.document.disposition);
-                    break;
-                case "hostile":
-                    tokens = tokens.filter((token) => token.document.disposition !== actorToken.document.disposition);
-                    break;
-            }
-            if (power.system.notSelf) {
-                tokens = tokens.filter((token) => token.id !== actorToken.id);
-            }
+            let notSelf = power.system.isAura.notSelf;
+            let reqFlags = power.system.isAura.reqFlags;
+            let negReqFlags = power.system.isAura.negReqFlags;
+
+            let los = power.system.isAura.los;
+            */
+            let notSelf = false;
+            let reqFlags = "";
+            let negReqFlags = "";
+            let los = true;
             let range = parseInt(power.system.range.value);
 
-            targets = tokens.filter((token) => !token.actor.getFlag("core", power.name));
-            targets = targets.filter((token) => range >= tokenDistance(token, actorToken));
-
-            let ae = power.effects.entries().next().value[1];
-            let aeData = foundry.utils.duplicate(ae);
-
-            aeData.name = power.name;
-
-
-            aeData.flags = {
-                fortyk: { psy: true, range: range, casterTokenId: actorToken.id }
+            const circleShape={
+                type: "circle",
+                x: actorToken.x+math.ceil(actorToken.w/2),
+                y: actorToken.y+math.ceil(actorToken.h/2),
+                radius: range*game.canvas.dimensions.size
             };
+            let ae = power.effects.entries().next().value[1];
+            let aeData = foundry.utils.deepClone(ae);
+
+            aeData.name = power._source.name;
+
+
 
             aeData.disabled = false;
             aeData.origin = power.uuid;
-            aeData.statuses.push(power.name);
-            let effectUuIds = [];
-            for (let i = 0; i < targets.length; i++) {
-                let target = targets[i];
+            aeData.statuses = [ae.name];
+            let status=ae.name;
+            let region =await game.canvas.scene.createEmbeddedDocuments("Region", [{
+                name:`${aeData.name} Aura`,
+                color: "#ff4500", // Bright orange-red
+                shapes: [circleShape],
+                events: ["tokenEnter"],
+                behaviors: [
+                    {
+                        type: "fortykAuraBehavior", // Triggers an automation workflow
+                        name: `${aeData.name} Aura`,
+                        enabled: true,
+                        system: {
+                            los:los,
+                            notSelf:notSelf,
+                            auraType:auraType,
+                            effects:[ae.uuid],
+                            negReqFlags:negReqFlags,
+                            reqFlags:reqFlags,
+                            disableOnExit: true,
+                            status:status,
+                            originId:actorId
+                        }
+                    }
+                ]
+            }]);
+            region[0].update({"attachment.token":actorToken.id});
 
-                let targetActor = target.actor;
-                let render = false;
 
-                let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
+            await power.setFlag("fortyk", "sustainedAura", [region[0].uuid]);
 
-                let ae = effect[0];
-                let effectuuid = await ae.uuid;
-
-                effectUuIds.push(effectuuid);
-            }
-
-            if (power.system.sustain.value !== "No") {
-                await power.setFlag("fortyk", "sustained", effectUuIds);
-                await power.setFlag("fortyk", "sustainedrange", range);
-            }
         } else {
             //if user isnt GM use socket to have gm apply the buffs/debuffs
 
@@ -1468,15 +1484,7 @@ export class FortyKItem extends Item {
             let actor = await fromUuid(actorId);
             let power = actor.getEmbeddedDocument("Item", powerId);
 
-            if (power.system.class.value === "Aura") {
-                let powerUuid = power.uuid;
-                let scene=game.scenes.current;
 
-                let auras = scene.getFlag("fortyk", "activeAuras");
-                if(!auras)auras=[];
-                auras = auras.filter((e) => e !== powerUuid);
-                scene.setFlag("fortyk", "activeAuras", auras);
-            }
             let buffs = power.getFlag("fortyk", "sustained");
             for (let i = 0; i < buffs.length; i++) {
                 let buffId = buffs[i];
@@ -1486,7 +1494,15 @@ export class FortyKItem extends Item {
                 } catch (err) {}
             }
             await power.setFlag("fortyk", "sustained", false);
-
+            let sustainedAura= power.getFlag("fortyk", "sustainedAura");
+            for (let i = 0; i < sustainedAura.length; i++) {
+                let auraId = sustainedAura[i];
+                let aura = await fromUuid(auraId);
+                try {
+                    await aura.delete();
+                } catch (err) {}
+            }
+            await power.setFlag("fortyk", "sustainedAura", false);
             if (power.getFlag("fortyk", "initmods")) {
                 let combat = game.combats.active;
                 let inits = power.getFlag("fortyk", "initmods");

@@ -16,11 +16,12 @@ for(const rangedWeapon of rangedWeapons){
     aeData.disabled=false;
     aeData.transfer=false;
     aeData.origin=power.id;
+    aeData.showIcon=2;
     aeData.changes=[];
     if(rangedWeapon.getFlag("fortyk","vengeful")){
-        aeData.changes.push({key:"flags.fortyk.vengeful",value:-1*Math.ceil(pr/2),mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD});
+        aeData.changes.push({key:"flags.fortyk.vengeful",value:-1*Math.ceil(pr/2),mode:game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add});
     }else{
-        aeData.changes.push({key:"flags.fortyk.vengeful",value:10-Math.ceil(pr/2),mode:game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM});
+        aeData.changes.push({key:"flags.fortyk.vengeful",value:10-Math.ceil(pr/2),mode:game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom});
     }
     let ae=await rangedWeapon.createEmbeddedDocuments("ActiveEffect",[aeData]);
     effectIds.push(ae[0].uuid);

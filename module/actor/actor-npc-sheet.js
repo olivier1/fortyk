@@ -16,7 +16,8 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
         classes: ["fortyk", "sheet", "actor"],
         template: "systems/fortyk/templates/actor/actor-npc-sheet.html",
         window:{width: 600,
-        height: "auto"}
+                height: 900,
+                resizable: true}
 
     }
     static PARTS = {
@@ -74,22 +75,22 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
     async _prepareContext(options) {
         const context= await super._prepareContext(options);
         context.tabs=this._prepareTabs("sheet");
-         context.enrichedDescription= await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.system.description.value,
-                                                                                               {
+        context.enrichedDescription= await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.system.description.value,
+                                                                                                        {
             // Only show secret blocks to owner
             secrets: this.document.isOwner,
             // For Actors and Items
             relativeTo: this.document
         });
         context.enrichedSkills= await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.system.skills.value,
-                                                                                               {
+                                                                                                   {
             // Only show secret blocks to owner
             secrets: this.document.isOwner,
             // For Actors and Items
             relativeTo: this.document
         });
         context.enrichedEquipment= await foundry.applications.ux.TextEditor.implementation.enrichHTML(context.system.equipment.value,
-                                                                                               {
+                                                                                                      {
             // Only show secret blocks to owner
             secrets: this.document.isOwner,
             // For Actors and Items
@@ -97,15 +98,19 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
         });
         return context;
     }
-   _onRender(context, options) {
-        super._onRender(context, options);
+   async _onRender(context, options) {
+        await super._onRender(context, options);
+
         const html=$(this.element);
+
+        if (this._listenersBound) return;
         //right click profile img
         html.find(".npc-img").contextmenu(this._onImgRightClick.bind(this));
 
         if (!this.options.editable) return;
 
         html.find(".parse-tnt").click(this._onTntParse.bind(this));
+        this._listenersBound = true;
     }
 
     _onImgRightClick(event) {
@@ -116,21 +121,23 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
             height: "auto"
         };
         let img = this.actor.img;
-        let dlg = new Dialog(
+        let dlg = new foundry.applications.api.DialogV2(
             {
-                title: `Profile Image`,
+                window:{title: `Profile Image`},
+                actor:this.actor,
                 content: `<img src="${img}"  width="auto" height="auto">`,
-                buttons: {
-                    submit: {
+                buttons: [
+                    {
+                        action:"submit",
                         label: "OK",
                         callback: null
                     }
-                },
+                ],
                 default: "submit"
             },
             options
         );
-        dlg.render(true);
+        dlg.render({force:true});
     }
 
     async _onTntParse(event) {

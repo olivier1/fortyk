@@ -1,9 +1,9 @@
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-export class ManageRequirementsDialog extends HandlebarsApplicationMixin(ApplicationV2) {
+const { DialogV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class ManageRequirementsDialog extends HandlebarsApplicationMixin(DialogV2) {
 
     static DEFAULT_OPTIONS= {
 
-            tag: 'form',
+            tag: 'dialog',
             classes: ["fortyk"],
             position:{width: 666,
             height: 605}

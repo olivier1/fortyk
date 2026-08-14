@@ -1,12 +1,12 @@
 import {FortyKItem} from "../item/item.js";
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-export class CreateRepairEntryDialog extends HandlebarsApplicationMixin(ApplicationV2) {
+const { DialogV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class CreateRepairEntryDialog extends HandlebarsApplicationMixin(DialogV2) {
 
     /** @override */
 
     static DEFAULT_OPTIONS= {
 
-            tag: 'form',
+            tag: 'dialog',
             classes: ["fortyk"],
             template: "systems/fortyk/templates/actor/dialogs/createRepairEntry-dialog.html",
             width: 666,
@@ -224,21 +224,21 @@ export class CreateRepairEntryDialog extends HandlebarsApplicationMixin(Applicat
 
     }
     validateThresholds(){
-        let firstThresholdCheckBox=document.getElementsByName("firstthresholddmg")[0];
+        let firstThresholdCheckBox=this.element.ownerDocument.getElementsByName("firstthresholddmg")[0];
         let firstrepair=this.options.repairs[0];
-        let secondThresholdCheckBox=document.getElementsByName("secondthresholddmg")[0];
+        let secondThresholdCheckBox=this.element.ownerDocument.getElementsByName("secondthresholddmg")[0];
         let secondrepair=this.options.repairs[1];
-        let thirdThresholdCheckBox=document.getElementsByName("thirdthresholddmg")[0];
+        let thirdThresholdCheckBox=this.element.ownerDocument.getElementsByName("thirdthresholddmg")[0];
         let thirdrepair=this.options.repairs[2];
-        let fourthThresholdCheckBox=document.getElementsByName("fourththresholddmg")[0];
+        let fourthThresholdCheckBox=this.element.ownerDocument.getElementsByName("fourththresholddmg")[0];
         let fourthrepair=this.options.repairs[3];
-        let criticalCheckBox=document.getElementsByName("criticaldmg")[0];
+        let criticalCheckBox=this.element.ownerDocument.getElementsByName("criticaldmg")[0];
         let criticalrepair=this.options.repairs[4];
 
 
         if(criticalCheckBox){
             let criticalMax=criticalrepair.amount;
-            let criticalInput=document.getElementById("4input");
+            let criticalInput=this.element.ownerDocument.getElementById("4input");
             let criticalAmt=criticalInput.valueAsNumber;
 
             if(criticalCheckBox.checked&&criticalAmt===criticalMax){
@@ -251,7 +251,7 @@ export class CreateRepairEntryDialog extends HandlebarsApplicationMixin(Applicat
         if(fourthThresholdCheckBox){
 
             let fourthMax=fourthrepair.amount;
-            let fourthInput=document.getElementById("3input");
+            let fourthInput=this.element.ownerDocument.getElementById("3input");
             let fourthAmt=fourthInput.valueAsNumber;
 
             if(fourthThresholdCheckBox.checked&&fourthAmt===fourthMax){
@@ -264,7 +264,7 @@ export class CreateRepairEntryDialog extends HandlebarsApplicationMixin(Applicat
         }
         if(thirdThresholdCheckBox){
             let thirdMax=thirdrepair.amount;
-            let thirdInput=document.getElementById("2input");
+            let thirdInput=this.element.ownerDocument.getElementById("2input");
             let thirdAmt=thirdInput.valueAsNumber;
 
             if(thirdThresholdCheckBox.checked&&thirdAmt===thirdMax){
@@ -279,7 +279,7 @@ export class CreateRepairEntryDialog extends HandlebarsApplicationMixin(Applicat
 
         if(secondThresholdCheckBox){
             let secondMax=secondrepair.amount;
-            let secondInput=document.getElementById("1input");
+            let secondInput=this.element.ownerDocument.getElementById("1input");
             let secondAmt=secondInput.valueAsNumber;
 
             if(secondThresholdCheckBox.checked&&secondAmt===secondMax){
@@ -338,9 +338,9 @@ export class CreateRepairEntryDialog extends HandlebarsApplicationMixin(Applicat
             let componentRefits=this.options.components;
             let weaponRefits=this.options.weapons;
             let armorPointRefits=this.options.armorpoints;
-            let armorChange=document.getElementById('armor').checked;
-            let structureChange=document.getElementById('structure').checked;
-            let coreChange=document.getElementById('core').checked;
+            let armorChange=this.element.ownerDocument.getElementById('armor').checked;
+            let structureChange=this.element.ownerDocument.getElementById('structure').checked;
+            let coreChange=this.element.ownerDocument.getElementById('core').checked;
             const repairTypeConfig=game.fortyk.FORTYK.vehicleRepairCostTimeDiff;
             let armorPointsConfig=repairTypeConfig.armordmg;
             let difficulty=[];
@@ -443,11 +443,11 @@ export class CreateRepairEntryDialog extends HandlebarsApplicationMixin(Applicat
         this.options.description=chatString;
         this.options.woundsRepair=wounds;
         this.options.selectedRepairs=chosenRepairs;
-        let baseCostNode=document.getElementById("basecost");
+        let baseCostNode=this.element.ownerDocument.getElementById("basecost");
         baseCostNode.innerHTML=totalCost;
-        let baseTimeNode=document.getElementById("basetime");
+        let baseTimeNode=this.element.ownerDocument.getElementById("basetime");
         baseTimeNode.innerHTML=this.timeString(totalTime,"");
-        let repairType=document.getElementById("repair-type").value;
+        let repairType=this.element.ownerDocument.getElementById("repair-type").value;
         const FORTYK=game.fortyk.FORTYK;
         let typeTime=FORTYK.vehicleRepairTypes[repairType].time;
         let typeCost=FORTYK.vehicleRepairTypes[repairType].cost;
@@ -457,7 +457,7 @@ export class CreateRepairEntryDialog extends HandlebarsApplicationMixin(Applicat
         let actorTech=actor.system.skills["tech-use"];
         difficulty+=actorTech;
         difficulty=Math.max(1,difficulty);
-        document.getElementById("difficulty").innerHTML=difficulty;
+        this.element.ownerDocument.getElementById("difficulty").innerHTML=difficulty;
         this.options.difficulty=difficulty;
         let miscTime=this.options.timeMod/100;
         let miscCost=this.options.costMod/100;
@@ -469,8 +469,8 @@ export class CreateRepairEntryDialog extends HandlebarsApplicationMixin(Applicat
             miscTime*=0.75;
 
         }
-        document.getElementById("time-input").value=(miscTime*100).toFixed(2);
-        document.getElementById("cost-input").value=(miscCost*100).toFixed(2);
+        this.element.ownerDocument.getElementById("time-input").value=(miscTime*100).toFixed(2);
+        this.element.ownerDocument.getElementById("cost-input").value=(miscCost*100).toFixed(2);
         let dos=this.options.dos;
         let dosTime=null;
         var i=0;
@@ -486,9 +486,9 @@ export class CreateRepairEntryDialog extends HandlebarsApplicationMixin(Applicat
         moddedTime=Math.ceil(moddedTime);
         this.options.totalModdedTime=moddedTime;
         let timeString=this.timeString(moddedTime,"");
-        document.getElementById("modtime").innerHTML=timeString;
+        this.element.ownerDocument.getElementById("modtime").innerHTML=timeString;
         let moddedCost=Math.ceil(totalCost*Math.max(0.2,(miscCost*(1-dos*0.05))));
-        document.getElementById("modcost").innerHTML=moddedCost;
+        this.element.ownerDocument.getElementById("modcost").innerHTML=moddedCost;
         this.options.totalModdedCost=moddedCost;
 
     }
@@ -635,14 +635,14 @@ export class CreateRepairEntryDialog extends HandlebarsApplicationMixin(Applicat
 
 
             width:100});
-        let dosNode=document.getElementById("dos");
+        let dosNode=this.element.ownerDocument.getElementById("dos");
         dosNode.innerHTML=repairTest.dos;
         if(this.options.reroll){
             this.options.rerolled=true;
-            document.getElementById("testButton").innerHTML="Tests Finished";
+            this.element.ownerDocument.getElementById("testButton").innerHTML="Tests Finished";
         }else{
             this.options.reroll=true; 
-            document.getElementById("testButton").innerHTML="Reroll Test";
+            this.element.ownerDocument.getElementById("testButton").innerHTML="Reroll Test";
         }
 
 
@@ -691,8 +691,8 @@ export class CreateRepairEntryDialog extends HandlebarsApplicationMixin(Applicat
         let index=parseInt(event.currentTarget.dataset.index);
         let repairs=this.options.repairs;
         let repair=repairs[index];
-        let timeNode=document.getElementById(index+"time");
-        let costNode=document.getElementById(index+"cost");
+        let timeNode=this.element.ownerDocument.getElementById(index+"time");
+        let costNode=this.element.ownerDocument.getElementById(index+"cost");
         this.prepareRepair(repair,amount);
         repair.selectedAmount=amount;
         timeNode.innerHTML=repair.timeLabel;

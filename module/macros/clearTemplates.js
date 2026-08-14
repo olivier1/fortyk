@@ -1,5 +1,8 @@
-let scene=game.scenes.active;
-let templates=scene.templates;
-for(const template of templates){
-    await template.delete()
+let scene=game.canvas.scene;
+let regions=scene.regions;
+for(const region of regions){
+if(region.getFlag("fortyk", "damagetemplate")){
+
+    await region.delete()
+}
 }

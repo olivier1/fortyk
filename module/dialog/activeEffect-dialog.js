@@ -1,13 +1,14 @@
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-export class ActiveEffectDialog extends HandlebarsApplicationMixin(ApplicationV2) {
+const { DialogV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class ActiveEffectDialog extends HandlebarsApplicationMixin(DialogV2) {
 
     static DEFAULT_OPTIONS = {
 
-            tag: 'form',
-            classes: ["fortyk"],
-            template: "systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html",
-            default:null,
-            position:{height:"auto"}
+        tag: 'dialog',
+        classes: ["fortyk"],
+        template: "systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html",
+        default:null,
+        position:{height:"auto",
+                 width:"auto"}
 
     }
     static PARTS = {
@@ -31,6 +32,9 @@ export class ActiveEffectDialog extends HandlebarsApplicationMixin(ApplicationV2
         let context=await super._prepareContext(options);
         context.actor=this.options.actor;
         context.item=this.options.item;
+        if(context.actor===context.item){
+            context.actor=undefined;
+        }
         return context;
     }
     async _onAeClick(event){
@@ -38,8 +42,8 @@ export class ActiveEffectDialog extends HandlebarsApplicationMixin(ApplicationV2
 
 
         let effect = await fromUuid(effectId);
-
-        new ActiveEffectConfig(effect).render(true);
+        let options= {"document":effect};
+        new foundry.applications.sheets.ActiveEffectConfig(options).render({force:true});
     }
     async _onAeCreate(event){
         let actorId = event.currentTarget.attributes["data-actor-id"].value;
@@ -74,11 +78,13 @@ export class ActiveEffectDialog extends HandlebarsApplicationMixin(ApplicationV2
         let item=this.item;
         let effectId = event.currentTarget.attributes["data-ae-id"].value;
         let effect = await fromUuid(effectId);
-        new Dialog({
-            title: `Delete ${effect.name}?`,
+        new foundry.applications.api.DialogV2({
+            window:{title: `Delete ${effect.name}?`},
             content: "Are you sure you want to delete this Active Effect?",
-            buttons:{
-                submit:{
+            actor:actor,
+            buttons:[
+                {
+                    action:"submit",
                     label:"Yes",
                     callback: async dlg => { 
 
@@ -90,13 +96,14 @@ export class ActiveEffectDialog extends HandlebarsApplicationMixin(ApplicationV2
                         this.updateDialog(actor,item);
                     }
                 },
-                cancel:{
+                {
+                    action:"cancel",
                     label: "No",
                     callback: null
                 }
-            },
+            ],
             default: "submit"
-        }).render(true);
+        }).render({force:true});
 
 
 
@@ -111,6 +118,6 @@ export class ActiveEffectDialog extends HandlebarsApplicationMixin(ApplicationV2
         let renderedTemplate=await foundry.applications.handlebars.renderTemplate('systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html', templateOptions);
         this.content=renderedTemplate;
 
-        this.render(true);
+        this.render({force:true});
     }
 }

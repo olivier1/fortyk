@@ -22,7 +22,7 @@ export default class VehicleData extends foundry.abstract.TypeDataModel {
                 }),
                 "speed": new SchemaField({
                     "tactical": new NumberField({ required: true, integer: true, initial: 0 }),
-                    "cruising": new NumberField({ required: true, integer: true, initial: 0 }),
+                    "cruising": new StringField({ required: true, initial: "" }),
                     "motive": new StringField({ initial: "O" }),
                     "mod": new NumberField({ required: true, integer: true, initial: 0 }),
                     "multi": new NumberField({ required: true, integer: true, initial: 1 })

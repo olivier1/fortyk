@@ -1,12 +1,12 @@
 import { FortykRolls } from "../FortykRolls.js";
 import { getActorToken } from "../utilities.js";
 import { tokenDistance } from "../utilities.js";
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-export class psychicPowerDialog extends HandlebarsApplicationMixin(ApplicationV2) {
+const { DialogV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class psychicPowerDialog extends HandlebarsApplicationMixin(DialogV2) {
     #compendiums = {};
     static DEFAULT_OPTIONS = {
 
-        tag: 'form',
+        tag: 'dialog',
         classes: ["fortyk"],
 
         position:{
@@ -75,12 +75,12 @@ export class psychicPowerDialog extends HandlebarsApplicationMixin(ApplicationV2
         let powerPR=data.powerPR;
         let effectivePR=data.effectivePR;
         let modifiers=data.modifiers;
-        let totalModLabel=document.getElementById("modifierLabel");
+        let totalModLabel=this.element.ownerDocument.getElementById("modifierLabel");
         totalModLabel.innerHTML=modifiers;
         let psykerTypes=game.fortyk.FORTYK.psykerTypes;
         let psykerType=psykerTypes[actor.system.psykana.psykerType.value];
         let phenomenaMod=actor.system.psykana.phenomena.value+Math.max(powerPR-effectivePR,0)*psykerType.perils;
-        let phenomenaLabel=document.getElementById("phenomenaModLabel");
+        let phenomenaLabel=this.element.ownerDocument.getElementById("phenomenaModLabel");
         let power=data.power;
         phenomenaLabel.innerHTML=phenomenaMod;
         let psyniscience = 0;
@@ -90,7 +90,7 @@ export class psychicPowerDialog extends HandlebarsApplicationMixin(ApplicationV2
         } catch (err) {}
         let testChar = power.system.testChar.value;
         let char = 0;
-        let leverage = document.getElementById("leveragebox")?.checked;
+        let leverage = this.element.ownerDocument.getElementById("leveragebox")?.checked;
 
 
         if(leverage){
@@ -105,7 +105,7 @@ export class psychicPowerDialog extends HandlebarsApplicationMixin(ApplicationV2
         data.testBase=char;
         data.testTarget=char+data.modifiers;
         data.testChar=testChar;
-        let targetLabel=document.getElementById("targetLabel");
+        let targetLabel=this.element.ownerDocument.getElementById("targetLabel");
         targetLabel.innerHTML=data.testTarget;
     }
     _onRender(context, options) {
@@ -133,7 +133,7 @@ export class psychicPowerDialog extends HandlebarsApplicationMixin(ApplicationV2
         let power=data.power;
         let powerPR=data.powerPR;
         let effectivePR=actor.system.psykana.pr.effective;
-        let confirmBtn=document.getElementById("confirmBtn");
+        let confirmBtn=this.element.ownerDocument.getElementById("confirmBtn");
         value=Math.min(value,maxPR);
         if(value<=0)value=1;
         if(value>effectivePR){
@@ -161,7 +161,7 @@ export class psychicPowerDialog extends HandlebarsApplicationMixin(ApplicationV2
 
     async _onSubmit(event){
         this.updateAllNumbers();
-        let html = document.getElementById(this.id);
+        let html = this.element.ownerDocument.getElementById(this.id);
         let data=this.options.data;
         let modifierTracker=data.modifierTracker;
         let power=data.power;

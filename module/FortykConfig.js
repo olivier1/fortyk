@@ -1496,13 +1496,13 @@ FORTYK.skillTraining = {
     3: { name: "Experienced", value: 20 },
     4: { name: "Veteran", value: 30 }
 };
-FORTYK.ACTIVE_EFFECT_MODES = {
-    CUSTOM: 0,
-    MULTIPLY: 1,
-    ADD: 2,
-    DOWNGRADE: 3,
-    UPGRADE: 4,
-    OVERRIDE: 5
+FORTYK.ACTIVE_EFFECT_CHANGE_TYPES = {
+    custom: 0,
+    multiply: 1,
+    add: 2,
+    downgrade: 3,
+    upgrade: 4,
+    override: 5
 };
 FORTYK.StatusEffects = [
     {
@@ -1510,12 +1510,14 @@ FORTYK.StatusEffects = [
         name: "Dead",
         img: "icons/svg/skull.svg",
         overlay: true,
+        showIcon:2,
         statuses: ["dead"],
         flags: { core: { overlay: true, statusId: "dead" } }
     },
     {
         id: "unconscious",
         name: "Unconscious",
+        showIcon:2,
         img: "icons/svg/unconscious.svg",
         statuses: ["unconscious"],
         flags: { core: { overlay: true } }
@@ -1524,6 +1526,7 @@ FORTYK.StatusEffects = [
         id: "running",
         name: "Running",
         img: "systems/fortyk/icons/running.png",
+        showIcon:2,
         statuses: ["running"],
         duration: {
             rounds: 0
@@ -1533,6 +1536,7 @@ FORTYK.StatusEffects = [
         id: "totalDef",
         name: "Total Defense",
         img: "systems/fortyk/icons/defense.png",
+        showIcon:2,
         statuses: ["totalDef"],
         duration: {
             rounds: 0
@@ -1542,6 +1546,7 @@ FORTYK.StatusEffects = [
         id: "holyShield",
         name: "Guarded Action",
         img: "icons/svg/holy-shield.svg",
+        showIcon:2,
         statuses: ["holyShield"],
         duration: {
             rounds: 0
@@ -1551,6 +1556,7 @@ FORTYK.StatusEffects = [
         id: "evasion",
         name: "Evasion",
         img: "systems/fortyk/icons/evasion.png",
+        showIcon:2,
         statuses: ["evasion"],
         duration: {
             rounds: 0
@@ -1565,55 +1571,64 @@ FORTYK.StatusEffects = [
         id: "stunned",
         name: "Stunned",
         img: "icons/svg/daze.svg",
+        showIcon:2,
         statuses: ["stunned"]
     },
     {
         id: "prone",
         name: "Prone",
         img: "icons/svg/falling.svg",
+        showIcon:2,
         statuses: ["prone"]
     },
     {
         id: "snare",
         name: "Snare",
         img: "icons/svg/net.svg",
+        showIcon:2,
         statuses: ["snare"]
     },
     {
         id: "blind",
         name: "Blind",
         img: "icons/svg/blind.svg",
+        showIcon:2,
         statuses: ["blind"]
     },
     {
         id: "deaf",
         name: "Deaf",
         img: "icons/svg/deaf.svg",
+        showIcon:2,
         statuses: ["deaf"]
     },
     {
         id: "shock",
         name: "Shocked",
         img: "icons/svg/terror.svg",
+        showIcon:2,
         statuses: ["shock"],
-        changes: [{ key: "system.globalMOD.value", value: -10, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD }]
+        changes: [{ key: "system.globalMOD.value", value: -10, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add }]
     },
     {
         id: "fire",
         name: "Fire",
         img: "icons/svg/fire.svg",
+        showIcon:2,
         statuses: ["fire"]
     },
     {
         id: "purifyingflame",
         name: "Purifying Flame",
         img: "systems/fortyk/icons/purefire.png",
+        showIcon:2,
         statuses: ["purifyingflame"]
     },
     {
         id: "corrode",
         name: "Corroded",
         img: "icons/svg/acid.svg",
+        showIcon:2,
         statuses: ["corrode"],
         flags: { fortyk: { stackable: true } }
     },
@@ -1621,6 +1636,7 @@ FORTYK.StatusEffects = [
         id: "bleeding",
         name: "Bleeding",
         img: "icons/svg/blood.svg",
+        showIcon:2,
         tint: "#8a0303",
         statuses: ["bleeding"]
     },
@@ -1628,18 +1644,21 @@ FORTYK.StatusEffects = [
         id: "cryogenic",
         name: "Cryogenic",
         img: "systems/fortyk/icons/cryo.png",
+        showIcon:2,
         statuses: ["cryogenic"]
     },
     {
         id: "invisible",
         name: "Invisible",
         img: "icons/svg/invisible.svg",
+        showIcon:2,
         statuses: ["invisible"]
     },
     {
         id: "toxic",
         name: "Toxic",
         img: "icons/svg/poison.svg",
+        showIcon:2,
         statuses: ["toxic"]
     },
 
@@ -1647,87 +1666,100 @@ FORTYK.StatusEffects = [
         id: "rad",
         name: "Radiation",
         img: "icons/svg/radiation.svg",
+        showIcon:2,
         statuses: ["rad"]
     },
     {
         id: "frenzy",
         name: "Frenzy",
         img: "systems/fortyk/icons/frenzy.png",
+        showIcon:2,
         statuses: ["frenzy"],
         changes: [
-            { key: "system.characteristics.s.value", value: 10, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD },
-            { key: "system.characteristics.t.value", value: 10, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD },
-            { key: "system.characteristics.wp.value", value: 10, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD },
-            { key: "system.characteristics.ws.value", value: 10, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD },
-            { key: "system.characteristics.bs.value", value: -20, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD },
-            { key: "system.characteristics.int.value", value: -20, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD },
-            { key: "system.characteristics.fel.value", value: -20, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD }
+            { key: "system.characteristics.s.value", value: 10, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add },
+            { key: "system.characteristics.t.value", value: 10, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add },
+            { key: "system.characteristics.wp.value", value: 10, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add },
+            { key: "system.characteristics.ws.value", value: 10, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add },
+            { key: "system.characteristics.bs.value", value: -20, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add },
+            { key: "system.characteristics.int.value", value: -20, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add },
+            { key: "system.characteristics.fel.value", value: -20, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add }
         ]
     },
     {
         id: "hallucinogenic",
         name: "Hallucinogenic",
         img: "systems/fortyk/icons/spiral.png",
+        showIcon:2,
         statuses: ["hallucinogenic"]
     },
     {
         id: "buff",
         name: "Buff",
         img: "icons/svg/upgrade.svg",
+        showIcon:2,
         statuses: ["buff"]
     },
     {
         id: "weakened",
         name: "Weakened",
         img: "icons/svg/downgrade.svg",
+        showIcon:2,
         statuses: ["weakened"]
     },
     {
         id: "target",
         name: "Target",
         img: "icons/svg/target.svg",
+        showIcon:2,
         statuses: ["target"]
     },
     {
         id: "seeInvis",
         name: "Soul Sight",
         img: "icons/svg/eye.svg",
+        showIcon:2,
         statuses: ["seeInvis"]
     },
     {
         id: "crippled",
         name: "Crippled",
         img: "icons/svg/sun.svg",
+        showIcon:2,
         statuses: ["crippled"]
     },
     {
         id: "blessed",
         name: "Blessed",
         img: "icons/svg/angel.svg",
+        showIcon:2,
         statuses: ["blessed"]
     },
     {
         id: "fireShield",
         name: "FireShield",
         img: "icons/svg/fire-shield.svg",
+        showIcon:2,
         statuses: ["fireShield"]
     },
     {
         id: "coldShield",
         name: "IceShield",
         img: "icons/svg/ice-shield.svg",
+        showIcon:2,
         statuses: ["coldShield"]
     },
     {
         id: "magicShield",
         name: "MagicShield",
         img: "icons/svg/mage-shield.svg",
+        showIcon:2,
         statuses: ["magicShield"]
     },
     {
         id: "ws",
         name: "Weapon Skill Damage",
         img: "systems/fortyk/icons/ws.png",
+        showIcon:2,
         statuses: ["ws"],
         flags: { fortyk: { stackable: true } }
     },
@@ -1735,6 +1767,7 @@ FORTYK.StatusEffects = [
         id: "bs",
         name: "Ballistic Skill Damage",
         img: "systems/fortyk/icons/bs.png",
+        showIcon:2,
         statuses: ["bs"],
         flags: { fortyk: { stackable: true } }
     },
@@ -1742,6 +1775,7 @@ FORTYK.StatusEffects = [
         id: "s",
         name: "Strength Damage",
         img: "systems/fortyk/icons/s.png",
+        showIcon:2,
         statuses: ["s"],
         flags: { fortyk: { stackable: true } }
     },
@@ -1749,6 +1783,7 @@ FORTYK.StatusEffects = [
         id: "t",
         name: "Toughness Damage",
         img: "systems/fortyk/icons/t.png",
+        showIcon:2,
         statuses: ["t"],
         flags: { fortyk: { stackable: true } }
     },
@@ -1756,6 +1791,7 @@ FORTYK.StatusEffects = [
         id: "agi",
         name: "Agility Damage",
         img: "systems/fortyk/icons/agi.png",
+        showIcon:2,
         statuses: ["agi"],
         flags: { fortyk: { stackable: true } }
     },
@@ -1763,6 +1799,7 @@ FORTYK.StatusEffects = [
         id: "int",
         name: "Intelligence Damage",
         img: "systems/fortyk/icons/int.png",
+        showIcon:2,
         statuses: ["int"],
         flags: { fortyk: { stackable: true } }
     },
@@ -1770,6 +1807,7 @@ FORTYK.StatusEffects = [
         id: "per",
         name: "Perception Damage",
         img: "systems/fortyk/icons/per.png",
+        showIcon:2,
         statuses: ["per"],
         flags: { fortyk: { stackable: true } }
     },
@@ -1777,6 +1815,7 @@ FORTYK.StatusEffects = [
         id: "wp",
         name: "Willpower Damage",
         img: "systems/fortyk/icons/wp.png",
+        showIcon:2,
         statuses: ["wp"],
         flags: { fortyk: { stackable: true } }
     },
@@ -1784,6 +1823,7 @@ FORTYK.StatusEffects = [
         id: "fel",
         name: "Fellowship Damage",
         img: "systems/fortyk/icons/fel.png",
+        showIcon:2,
         statuses: ["fel"],
         flags: { fortyk: { stackable: true } }
     },
@@ -1791,42 +1831,47 @@ FORTYK.StatusEffects = [
         id: "arm",
         name: "Arm Injury",
         img: "systems/fortyk/icons/arm.png",
+        showIcon:2,
         statuses: ["arm"]
     },
     {
         id: "leg",
         name: "Leg Injury",
         img: "systems/fortyk/icons/leg.png",
+        showIcon:2,
         statuses: ["leg"]
     },
     {
         id: "rough",
         name: "Rough Terrain",
         img: "systems/fortyk/icons/sticky-boot.png",
+        showIcon:2,
         statuses: ["rough"],
         changes: [
-            { key: "system.characteristics.ws.value", value: -10, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD },
-            { key: "system.skillmods.dodge", value: -10, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD }
+            { key: "system.characteristics.ws.value", value: -10, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add },
+            { key: "system.skillmods.dodge", value: -10, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add }
         ]
     },
     {
         id: "tough",
         name: "Tough Terrain",
         img: "systems/fortyk/icons/232784.png",
+        showIcon:2,
         statuses: ["tough"],
         changes: [
-            { key: "system.characteristics.ws.value", value: -20, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD },
-            { key: "system.skillmods.dodge", value: -20, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD }
+            { key: "system.characteristics.ws.value", value: -20, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add },
+            { key: "system.skillmods.dodge", value: -20, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add }
         ]
     },
     {
         id: "severe",
         name: "Severe Terrain",
         img: "systems/fortyk/icons/quarry-512.png",
+        showIcon:2,
         statuses: ["severe"],
         changes: [
-            { key: "system.characteristics.ws.value", value: -30, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD },
-            { key: "system.skillmods.dodge", value: -30, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD }
+            { key: "system.characteristics.ws.value", value: -30, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add },
+            { key: "system.skillmods.dodge", value: -30, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add }
         ]
     }
 ];

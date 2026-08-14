@@ -20,7 +20,7 @@ export default class SpaceshipData extends foundry.abstract.TypeDataModel {
                     "value": new StringField({ initial: ""})
                 }),
                 "speed": new SchemaField({
-                    "value": new NumberField({ initial: 0 })
+                    "value": new StringField({ initial: 0 })
                 }),
                 "manoeuvrability": new SchemaField({
                     "value": new NumberField({ initial: 0 })

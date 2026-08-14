@@ -37,7 +37,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         },
         combat: {
             template: "systems/fortyk/templates/actor/actor-combat.html",
-            scrollable: ['.combat']
+            scrollable: ['']
         },
         gear: {
             template: "systems/fortyk/templates/actor/actor-gear.html",
@@ -102,7 +102,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     static DEFAULT_OPTIONS = {
         tag: 'form',
         classes: ["fortyk", "sheet", "actor"],
-        position: { width: 680, height: 'auto' }
+        position: { width: 690, height: 875 },
+        window:{
+            resizable:true
+        }
 
     }
     /** @override **/
@@ -325,10 +328,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     }
 
     /** @override */
-    _onRender(context, options) {
-        super._onRender(context, options);
+    async _onRender(context, options) {
+        await super._onRender(context, options);
         const html=$(this.element);
         if(!this.isEditable)return;
+        if (this._listenersBound) return;
         let characterCreation = this.actor.getFlag("fortyk", "charactercreation");
         if (characterCreation) {
             //confirm character type choice
@@ -397,6 +401,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         //shared listeners
         //spend exp button
         html.find(".spend-exp").click(this._onSpendExp.bind(this));
+        this._listernersBound = true;
     }
 
     /*character creation functions*/
@@ -700,7 +705,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         }
         amount -= spent;
         pointBuy.remaining = amount;
-        let remainInput = document.getElementById("remaining-points-input");
+        let remainInput = this.element.ownerDocument.getElementById("remaining-points-input");
         if (remainInput) {
             remainInput.value = pointBuy.remaining;
         }
@@ -708,7 +713,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     _onConfirmAnySkillChoice(event) {
         let button = event.currentTarget;
         let dataset = button.dataset;
-        let input = document.getElementById(dataset.id);
+        let input = this.element.ownerDocument.getElementById(dataset.id);
         let value = input.value;
         if (!value) return;
         let index = parseInt(dataset.index);
@@ -736,7 +741,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     _onConfirmAnySpecChoice(event) {
         let button = event.currentTarget;
         let dataset = button.dataset;
-        let input = document.getElementById(dataset.id);
+        let input = this.element.ownerDocument.getElementById(dataset.id);
         let value = input.value;
         if (!value) return;
         let index = parseInt(dataset.index);
@@ -764,7 +769,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     _onConfirmAptitudeChoice(event) {
         let button = event.currentTarget;
         let id = button.dataset.id;
-        let select = document.getElementById(id);
+        let select = this.element.ownerDocument.getElementById(id);
         let aptitude = select.value;
         let actor = this.actor;
         let update = {};
@@ -797,7 +802,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         char.spent = newAmt;
         char.total = char.base + char.spent;
         this.updateSpentChar();
-        let totalInput = document.getElementById(`${key}total`);
+        let totalInput = this.element.ownerDocument.getElementById(`${key}total`);
         totalInput.value = char.total;
         element.value = newAmt;
     }
@@ -1297,7 +1302,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         await actor.setFlag("fortyk", "creationstage", stage);
         this.resetStage();
-        await this.render(true);
+        await this.render({force: true});
     }
     async _onFeatureChange(event) {
         event.preventDefault();
@@ -1410,12 +1415,14 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         if (duplicate) {
             return ui.notifications.warn("You still have duplicate aptitudes.");
         }
-        new Dialog({
-            title: "Finish Character Creation",
+        new foundry.applications.api.DialogV2({
+            window:{title: "Finish Character Creation"},
             content:
             "Are you sure you want to finish Character Creation? You will no longer be able to purchase advances which require it.",
-            buttons: {
-                submit: {
+            actor: this.actor,
+            buttons: [
+                {
+                    action:"submit",
                     label: "Yes",
                     callback: async (dlg) => {
                         this.resetStage();
@@ -1436,13 +1443,14 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                         this.render();
                     }
                 },
-                cancel: {
+                {
+                    action:"cancel",
                     label: "No",
                     callback: null
                 }
-            },
+            ],
             default: "submit"
-        }).render(true);
+        }).render({force:true});
     }
     async _onGoToPreviousStage(event) {
         let actor = this.actor;
@@ -1573,12 +1581,14 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         };
 
         renderedTemplate.then((content) => {
-            new Dialog(
+            new foundry.applications.api.DialogV2(
                 {
-                    title: "Pick new path",
+                    window:{title: "Pick new path"},
                     content: content,
-                    buttons: {
-                        submit: {
+                    actor:this.actor,
+                    buttons: [
+                        {
+                            action:"submit",
                             label: "Confirm New Path",
                             callback: async (html) => {
                                 let selectedId;
@@ -1610,22 +1620,24 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                                 await actor.update({"system.secChar.insanity.value":0});
 
 
-                                this.render(true);
+                                this.render({force: true});
                             }
                         }
-                    },
+                    ],
                     default: "submit"
                 },
                 options
-            ).render(true);
+            ).render({force:true});
         });
     }
     _onLostChoiceClick(event){
-        new Dialog({
-            title: `Your mind is fraying, make a choice!`,
+        new foundry.applications.api.DialogV2({
+            window:{title: `Your mind is fraying, make a choice!`},
             content: ``,
-            buttons: {
-                lost: {
+            actor:this.actor,
+            buttons: [
+                {
+                    action:"lost",
                     label: "Become Lost",
                     callback: async (html)=>{
                         let currentPath=this.actor.role;
@@ -1638,23 +1650,24 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                         await this.actor.update({"system.secChar.insanity.value":0});
                     }
                 },
-                abandon: {
+                {
+                    action:"abandon",
                     label: "Abandon Path",
                     callback: async (html)=>{
                         await this._onChangePathClick(html);
                     }
                 }
-            },
+            ],
             default: "submit",
 
             width: 100
-        }).render(true);
+        }).render({force:true});
     }
     _onSkillsTab(event) {
         const tab = $(event.target.closest("[data-tab]")).html();
 
         if (tab === "SKILLS") {
-            document.getElementById("skillfilter").select();
+            this.element.ownerDocument.getElementById("skillfilter").select();
         }
     }
     async _onSpendExp(event) {
@@ -1683,12 +1696,14 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         );
 
         renderedTemplate.then((content) => {
-            new Dialog({
-                title: "New Wargear Type",
+            new foundry.applications.api.DialogV2({
+                window:{title: "New Wargear Type"},
+                actor:this.actor,
                 content: content,
-                buttons: {
-                    submit: {
-                        label: "Yes",
+                buttons: [
+                    {
+                        action:'submit',
+                        label: "Ok",
                         callback: async (html) => {
                             const type = html.find('select[name="wargear-type"]').val();
                             const itemData = {
@@ -1702,13 +1717,15 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                             });
                         }
                     },
-                    cancel: {
-                        label: "No",
+                    {
+                        action:"cancel",
+                        label: "Cancel",
                         callback: null
+
                     }
-                },
+                ],
                 default: "submit"
-            }).render(true);
+            }).render({force:true});
         });
     }
 
@@ -1798,7 +1815,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             updates.push({ _id: weaponId, "system.isEquipped": str });
         }
         if (previousWeaponId !== undefined) {
-            updates.push({ _id: previousWeaponId, "system.isEquipped": false });
+            updates.push({ _id: previousWeaponId, "system.isEquipped": "" });
         }
         if (updates.length > 0) {
             await actor.updateEmbeddedDocuments("Item", updates);
@@ -1822,11 +1839,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         weaponUpdate["system.ammo._id"] = ammoID;
 
         if (previousAmmo !== undefined && previousAmmo.system !== undefined) {
-            previousAmmo.update({ "system.currentClip.value": weapon.system.clip.value, "system.isEquipped": false });
+            previousAmmo.update({ "system.currentClip.value": weapon.system.clip.value, "system.isEquipped": "" });
         }
         if (ammo !== undefined) {
             weaponUpdate["system.clip.value"] = ammo.system.currentClip.value;
-            ammo.update({ "system.isEquipped": true });
+            ammo.update({ "system.isEquipped": "true" });
         } else {
             weaponUpdate["system.clip.value"] = 0;
         }
@@ -1875,19 +1892,20 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         }
         //check if out of ammo to reload
         if (ooa) {
-            new Dialog({
-                title: `Out of Ammunition!`,
+            new foundry.applications.api.DialogV2({
+                window:{title: `Out of Ammunition!`},
                 content: `You are out of ammunition and cannot reload.`,
-                buttons: {
-                    submit: {
+                buttons: [
+                    {
+                        action:"submit",
                         label: "OK",
                         callback: null
                     }
-                },
+                ],
                 default: "submit",
 
                 width: 100
-            }).render(true);
+            }).render({force:true});
         }
     }
     //handles when weapons are swapped and stuff
@@ -1901,21 +1919,21 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         const weaponID = event.currentTarget.value;
         const hand = event.currentTarget.dataset["hand"];
-        const leftHand = document.getElementById("left");
-        const rightHand = document.getElementById("right");
+        const leftHand = this.element.ownerDocument.getElementById("left");
+        const rightHand = this.element.ownerDocument.getElementById("right");
         var update = [];
         var previousWeaponID = "";
         if (hand === "right") {
             previousWeaponID = data.secChar.wornGear.weapons[1].id;
             if (previousWeaponID) {
-                update.push({ _id: previousWeaponID, "system.isEquipped": false });
+                update.push({ _id: previousWeaponID, "system.isEquipped": "" });
             }
             if (weaponID !== "") {
                 if (weapon.system.twohanded.value) {
                     update.push({ _id: weaponID, "system.isEquipped": "rightleft" });
                     let offHandWeaponId = data.secChar.wornGear.weapons[0].id;
                     if (offHandWeaponId) {
-                        update.push({ _id: offHandWeaponId, "system.isEquipped": false });
+                        update.push({ _id: offHandWeaponId, "system.isEquipped": "" });
                     }
                 } else {
                     update.push({ _id: weaponID, "system.isEquipped": "right" });
@@ -1924,14 +1942,14 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         } else if (hand === "left") {
             previousWeaponID = data.secChar.wornGear.weapons[0].id;
             if (previousWeaponID) {
-                update.push({ _id: previousWeaponID, "system.isEquipped": false });
+                update.push({ _id: previousWeaponID, "system.isEquipped": "" });
             }
             if (weaponID !== "") {
                 if (weapon.system.twohanded.value) {
                     update.push({ _id: weaponID, "system.isEquipped": "rightleft" });
                     let offHandWeaponId = data.secChar.wornGear.weapons[1].id;
                     if (offHandWeaponId) {
-                        update.push({ _id: offHandWeaponId, "system.isEquipped": false });
+                        update.push({ _id: offHandWeaponId, "system.isEquipped": "" });
                     }
                 } else {
                     update.push({ _id: weaponID, "system.isEquipped": "left" });
@@ -1940,7 +1958,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         }
 
         if (update.length > 0) {
-            await this.actor.updateEmbeddedDocuments("Item", update);
+            console.log(await this.actor.updateEmbeddedDocuments("Item", update));
         }
     }
     async _onFavoriteClick(event) {
@@ -1960,10 +1978,10 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     _onSkillFilterChange(event) {
         event.preventDefault();
         event.stopImmediatePropagation();
-        let skills = document.getElementsByName("skill");
-        let skillHeads = document.getElementsByName("skillheads");
+        let skills = this.element.ownerDocument.getElementsByName("skill");
+        let skillHeads = this.element.ownerDocument.getElementsByName("skillheads");
 
-        let filterInput = document.getElementById("skillfilter");
+        let filterInput = this.element.ownerDocument.getElementById("skillfilter");
         let filter = filterInput.value.toLowerCase();
         for (let i = 0; i < skills.length; i++) {
             let skill = skills[i];
@@ -1985,11 +2003,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         }
     }
     _onPsyFilterChange(event) {
-         event.preventDefault();
-            event.stopImmediatePropagation();
-        let powers = document.getElementsByName("psypower");
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        let powers = this.element.ownerDocument.getElementsByName("psypower");
 
-        let filterInput = document.getElementById("psyfilter");
+        let filterInput = this.element.ownerDocument.getElementById("psyfilter");
         let filter = filterInput.value.toLowerCase();
         for (let i = 0; i < powers.length; i++) {
             let power = powers[i];

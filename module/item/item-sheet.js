@@ -22,7 +22,7 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
         window: {
             controls: [
                 {
-                    icon: 'fas fa-asterisk',
+                    icon: 'fa-solid fa-person-rays',
                     label: 'Manage AEs',
                     action: 'manageAEs',
                     visible: this.isGM // Only show if the user is the GM
@@ -557,11 +557,13 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
 
         let renderedTemplate = foundry.applications.handlebars.renderTemplate("systems/fortyk/templates/actor/dialogs/delete-item-dialog.html");
         renderedTemplate.then((content) => {
-            new Dialog({
-                title: "Deletion Confirmation",
+            new foundry.applications.api.DialogV2({
+                window:{title: "Deletion Confirmation"},
                 content: content,
-                buttons: {
-                    submit: {
+                actor:this.item,
+                buttons: [
+                    {
+                    action:"submit",
                         label: "Yes",
                         callback: async (dlg) => {
                             if (activeEffect.getFlag("fortyk", "modsystem")) {
@@ -578,21 +580,21 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
                                 }
                             } 
                             await this.document.deleteEmbeddedDocuments("ActiveEffect", [itemId]);
-                            this.render(true);
+                            this.render({force:true});
                             let apps = item.parent.apps;
                             for (const appKey in apps) {
-                                apps[appKey].render(true);
+                                apps[appKey].render({force:true});
                             }
-                            this.render(true);
+                            this.render({force:true});
                         }
                     },
-                    cancel: {
+                    {action:"cancel",
                         label: "No",
                         callback: null
                     }
-                },
+                ],
                 default: "submit"
-            }).render(true);
+            }).render({force:true});
         });
     }
     _onCompendiumChange(event) {
@@ -770,7 +772,7 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
 
 
 
-        new ActiveEffectConfig(ae).render(true);*/
+        new ActiveEffectConfig(ae).render({force:true});*/
         let item = this.document;
         let sheet = this;
 
@@ -779,22 +781,23 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
         };
         var d = new ActiveEffectDialog(
             {
-                title: "Active Effects",
-                item: item,
-                buttons: {
-                    button: {
+                window:{title: "Active Effects"},
+                actor: item,
+                item:item,
+                buttons: [{
+                    action:"submit",
                         label: "Ok",
                         callback: async (html) => {
                             sheet.item.dialog = undefined;
                         }
                     }
-                },
+                ],
                 close: function () {
                     sheet.item.dialog = undefined;
                 }
             },
             options
-        ).render(true);
+        ).render({force:true});
         sheet.item.dialog = d;
     }
 
@@ -1065,6 +1068,6 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
             callback: (path) => this.document.update({ [field]: path })
         })
 
-        fp.render(true)
+        fp.render(true);
     }
 }

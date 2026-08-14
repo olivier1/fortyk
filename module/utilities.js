@@ -276,152 +276,8 @@ export function firstGM() { return game.users?.find(u => u.isGM && u.active); }
  * @returns {boolean}
  */
 export function isFirstGM() { return game.user && game.user.id === firstGM()?.id; }
-//turns off all of an actor's active auras
-export const turnOffActorAuras= async function (tokenDocument){
-    let actor=tokenDocument.actor;
-    let tokenObject=tokenDocument.object;
-    let tnts=actor.itemTypes.talentntrait;
-    let powers=actor.itemTypes.psychicPower;
-    let scene=game.scenes.current;
-    let activeAuras = scene.getFlag("fortyk", "activeAuras");
-    if(!activeAuras)activeAuras=[];
-    for(let talent of tnts){
-        if(talent.system.isAura.value){
-            let auraBuffs=talent.getFlag("fortyk","sustained");
-            if(!auraBuffs)continue;
-            for(let buffId of auraBuffs){
-                let auraBuff= await fromUuid(buffId);
-                if(auraBuff){
-                    let auraRecipient= auraBuff.parent;
-                    await auraBuff.delete();
-                    let name = auraBuff.name;
-                    auraRecipient.flags.core[name]=false;
-                }
 
-            }
-            activeAuras=activeAuras.filter((aura)=>aura!==talent.uuid);
-            
-        }
-    }
-    for (let power of powers){
-        if(power.getFlag("fortyk", "sustained")){
-            await FortyKItem.cancelPsyBuffs(actor.uuid, power.id);
-            activeAuras=activeAuras.filter((aura)=>aura!==power.uuid);
-        }
-    }
-    await scene.setFlag("fortyk", "activeAuras", activeAuras);
-    scene.flags.fortyk.activeAuras=activeAuras;
-    await applySceneAuras(activeAuras,tokenObject);
-};
-export const applySceneAuras = async function (activeAuras, tokenObject){
-    for (const auraId of activeAuras) {
-        let aura = await fromUuid(auraId);
-        if(!aura)continue;
-        let caster = aura.actor;
-        let ae;
-        if(caster.isToken){
-            let baseActor= caster.parent.baseActor;
-            let baseActorTnts=baseActor.itemTypes.talentntrait;
-            baseActorTnts=baseActorTnts.concat(baseActor.itemTypes.wargear);
-            let baseAura=baseActorTnts.find((tnt)=>tnt.name===aura.name);
-            ae=baseAura.effects.entries().next().value[1];  
-        }else{
-            ae = aura.effects.entries().next().value[1];  
-        }
-        if(caster.getFlag("core","dead"))continue;
-        let casterToken = getActorToken(caster);
-        if(!casterToken) continue;
-        let targets = game.scenes.current.tokens;
-        
-        if(aura.system.isAura.notSelf){
-            targets=targets.filter((token)=>caster.id!==token.actor.id);
-        }
-        if(tokenObject?.actor?.id!==caster.id){
-            targets=[tokenObject];
-        }
-        let auraItemType=aura.type;
-        let range;
-        let auraType;
-        let psy=false;
-        let auraFlag=false;
-        if(auraItemType!=="psychicPower"){
-            auraType=aura.system.isAura.auraType;
-            range=aura.system.isAura.range;
-            auraFlag=true;
-        }else{
-            psy=true;
-            auraType = aura.system.auraType;
-            range = parseInt(aura.getFlag("fortyk", "sustainedrange"));
-        }
-        let casterTokenDocument = casterToken.document;
 
-        let auraName = aura._source.name;
-        let auraRecipients = aura.getFlag("fortyk", "sustained");
-        if(!auraRecipients)continue;
-
-        let aeData = foundry.utils.duplicate(ae);
-
-        aeData.name = auraName;
-        let los=aura.system?.isAura?.los;
-
-        aeData.flags = { fortyk: { psy: psy, los: los, aura: auraFlag, range: range, casterTokenId: casterToken.id } };
-
-        aeData.disabled = false;
-        aeData.origin = auraId;
-        aeData.statuses = [ae.name];
-        for (const target of targets) {
-            if(!target)continue;
-            if(!casterToken)continue;
-            let targetActor=target.actor;
-            
-            if (targetActor.getFlag("core", auraName)) continue;
-            switch (auraType) {
-                case "friendly":
-                    if (target.disposition !== casterTokenDocument.disposition) continue;
-                    break;
-                case "hostile":
-                    if (target.disposition === casterTokenDocument.disposition) continue;
-            }
-            if(auraFlag){
-                let reqFlags=aura.system.isAura.reqFlags.split(",");
-                let negReqFlags=aura.system.isAura.negReqFlags.split(",");
-                let skip=false;
-
-                for(let reqFlag of reqFlags){
-                    reqFlag=reqFlag.trim();
-                    if(reqFlag==="")continue;
-                    if(!targetActor.getFlag("fortyk",reqFlag))skip=true;
-                }
-                for(let negReqFlag of negReqFlags){
-                    negReqFlag=negReqFlag.trim();
-                    if(negReqFlag==="")continue;
-                    if(targetActor.getFlag("fortyk",negReqFlag))skip=true;
-                }
-                if(skip)continue;
-            }
-            
-            let distance;
-            try {
-                distance = tokenDistance(target, casterToken);
-            } catch (e) {
-                continue;
-            }
-            if (distance > range) continue;
-            if(los){
-                const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(target._object.center, casterToken.center, {mode:"any", type:"sight"});
-                if(collision)continue;
-            }
-            let render = false;
-            let effect = await target.actor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
-            target.actor.flags.core[auraName]=true;
-            let newAe = effect[0];
-            let effectuuid = await newAe.uuid;
-
-            auraRecipients.push(effectuuid);
-        }
-        aura.setFlag("fortyk", "sustained", auraRecipients);
-    }
-};
 //returns an actors token object, not the token document. Will search the active canvas for the current token.
 export const getActorToken = function (actor) {
     if (actor.token) {
@@ -726,76 +582,26 @@ export const degToRad = function (degrees) {
 export const radToDeg = function (rad) {
     return rad / (Math.PI / 180);
 };
-export const getBlastTargets = function (templates) {
+export const getBlastTargets = function (regions) {
     let scene = game.scenes.active;
     let tokens = scene.tokens;
     let targets = [];
     let gridRatio = scene.dimensions.size / scene.dimensions.distance;
 
-    for (let i = 0; i < templates.length; i++) {
-        let targetted = [];
-        let template = templates[i];
-        let bounds = template._object._computeShape();
-        bounds.x = template.x;
-        bounds.y = template.y;
-        let ignoreArray=template.getFlag("fortyk","ignores");
-
-        tokens.forEach((token) => {
-            if(ignoreArray?.includes(token.id))return;
-            const collision = CONFIG.Canvas.polygonBackends['move'].testCollision(token._object.center, template, {mode:"any", type:"move"});
-            if(collision) return;
-            let tokenBounds = token._object.bounds;
-            let bottomIn = false;
-            let topIn = false;
-            let rightIn = false;
-            let leftIn = false;
-            let tempInToken = false;
-            let tokenInTemp = bounds.contains(token._object.center.x - template.x, token._object.center.y - template.y);
-            if (
-                bounds.x > tokenBounds.left &&
-                bounds.x < tokenBounds.right &&
-                bounds.y > tokenBounds.top &&
-                bounds.y < tokenBounds.bottom
-            ) {
-                tempInToken = true;
+    for (let i = 0; i < regions.length; i++) {
+        
+        let region = regions[i];
+        let ignores=region.getFlag("fortyk", "ignores");
+        let targetted = region.tokens;
+        let targetIds=[];
+        targetted.map((target)=>{
+            if(ignores){
+                if(ignores.includes(target.id))return;
             }
-
-            let bottomIntersect = foundry.utils.lineCircleIntersection(
-                tokenBounds.bottomEdge.A,
-                tokenBounds.bottomEdge.B,
-                { x: bounds.x, y: bounds.y },
-                bounds.radius
-            );
-            bottomIn = !bottomIntersect.outside;
-            let topIntersect = foundry.utils.lineCircleIntersection(
-                tokenBounds.topEdge.A,
-                tokenBounds.topEdge.B,
-                { x: bounds.x, y: bounds.y },
-                bounds.radius
-            );
-            topIn = !topIntersect.outside;
-            let leftIntersect = foundry.utils.lineCircleIntersection(
-                tokenBounds.leftEdge.A,
-                tokenBounds.leftEdge.B,
-                { x: bounds.x, y: bounds.y },
-                bounds.radius
-            );
-            leftIn = !leftIntersect.outside;
-            let rightIntersect = foundry.utils.lineCircleIntersection(
-                tokenBounds.rightEdge.A,
-                tokenBounds.rightEdge.B,
-                { x: bounds.x, y: bounds.y },
-                bounds.radius
-            );
-            rightIn = !rightIntersect.outside;
-            if (tokenInTemp || bottomIn || topIn || leftIn || rightIn || tempInToken) {
-                targetted.push(token.id);
-            }
-            /*if(bounds.overlaps(tokenBounds)){
-                    targetted.push(token.id);
-                }*/
+            targetIds.push(target.id);
         });
-        let blastTargets = { template: { x: template.x, y: template.y, uuid:template.uuid }, targets: targetted };
+       
+        let blastTargets = { template: { x: region.x, y: region.y, uuid:region.uuid }, targets: targetIds };
         targets.push(blastTargets);
     }
 

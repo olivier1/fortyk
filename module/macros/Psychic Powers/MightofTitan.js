@@ -7,6 +7,7 @@ aeData.name=aeData.name;
 aeData.flags={fortyk:{psy:true, expireafterattack:true}};
 aeData.disabled=false;
 aeData.origin=power.uuid;
+aeData.showIcon=2;
 aeData.statuses = [aeData.name];
 
 let aeInstance=await actor.createEmbeddedDocuments("ActiveEffect",[aeData]);

@@ -24,6 +24,13 @@ export class FortyKElevationBehavior extends foundry.data.regionBehaviors.Region
 
         return schema;
     }
-
+    static async #onTokenEnter(event) {
+        const token=event.data.token;
+        token.update({"elevation":this.elevation});
+        console.log(event);
+    }
+    static events = {
+        [CONST.REGION_EVENTS.TOKEN_ENTER]: this.#onTokenEnter
+    }
 
 }

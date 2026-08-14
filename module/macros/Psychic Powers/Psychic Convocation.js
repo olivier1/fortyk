@@ -19,6 +19,7 @@ aeData.name=aeData.name;
 aeData.flags={fortyk:{psy:true, range: range, casterTokenId: actorToken.id}};
 aeData.disabled=false;
 aeData.origin=actor.uuid;
+aeData.showIcon=2;
 aeData.statuses = [aeData.name];
 let effectIds=[];
 let originalInitiatives=[];

@@ -6,10 +6,11 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
     /** @override */
     static DEFAULT_OPTIONS= {
 
-            tag: 'form',
-            classes: ["fortyk", "sheet", "actor"],
-            window:{width: 666,
-            height: 660}
+        tag: 'form',
+        classes: ["fortyk", "sheet", "actor"],
+        window:{width: 666,
+                height: 660,
+                resizable:true}
 
 
 
@@ -25,26 +26,29 @@ export class FortyKVehicleSheet extends FortyKBaseActorSheet {
     /** @override */
     async _prepareContext(options) {
         const data = await super._prepareContext(options);
-        
-        
+
+
         let actor=this.actor;
         if(actor.getFlag("fortyk","superheavy")){
             let components=[]
             data.components=components.concat(actor.itemTypes.ammunition,actor.itemTypes.forceField,actor.itemTypes.knightComponent,actor.itemTypes.knightCore);
         }
         data.vehicleTypes=game.fortyk.FORTYK.vehicleTypes;
-       
+
         return data;
     }
 
     /** @override */
-    _onRender(context, options) {
-        super._onRender(context, options);
+    async _onRender(context, options) {
+        await super._onRender(context, options);
+        
         const html=$(this.element);
+        if (this._listenersBound) return;
         // Everything below here is only needed if the sheet is editable
 
 
         html.find('.knight-overheat').click(this._onKnightOverheat.bind(this));
+        this._listenersBound = true;
 
     }
 

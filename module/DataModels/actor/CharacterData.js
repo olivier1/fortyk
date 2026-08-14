@@ -328,7 +328,7 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
         "phenomena": new SchemaField({
           "value": new NumberField({ required: true, integer: true, initial: 0})
         }),
-        "disciplines": new SchemaField({})
+        "disciplines": new ArrayField(new StringField({initial:""}))
       }),
       "suddenDeath": new SchemaField({
         "value": new BooleanField({required: true, initial:false})
