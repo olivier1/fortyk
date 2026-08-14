@@ -16,7 +16,7 @@ for(let target of canvas.tokens.controlled){
         let change = {
             key: `system.characterHitLocations.${key}.armorMod`,
             value: corrosiveAmount,
-            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
         };
         changes.push(change);
     }

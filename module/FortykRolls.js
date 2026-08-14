@@ -693,10 +693,10 @@ returns the roll message*/
                 if (targets.size > 0) {
                     //clear templates before proceeding
                     let scene = game.scenes.active;
-                    let userTemplates = scene.templates;
-                    for (const template of userTemplates) {
-                        if (template.isOwner) {
-                            await template.delete();
+                    let userRegions = scene.regions;
+                    for (const region of userRegions) {
+                        if (region.getFlag("fortyk","damagetemplate")) {
+                            await region.delete();
                         }
                     }
                     let attackTarget = game.user.targets.first();
@@ -725,15 +725,10 @@ returns the roll message*/
                         "<div class='flexcol'><img class='fortyk' src='../systems/fortyk/icons/scatter.png'>";
                     let templates = [];
                     for (let i = 0; i < rof; i++) {
-                        let template = {};
-                        template.angle = 0;
-                        template.borderColor = "#000000";
-                        template.direction = 2;
-                        template.distance = Math.max(0.1, fortykWeapon.getFlag("fortyk", "blast"));
-
-                        template.fillColor = game.user.color;
-                        template.hidden = false;
-                        template.t = "circle";
+                        const circleShape={
+                            type: "circle",
+                            radius: Math.max(0.1, fortykWeapon.getFlag("fortyk", "blast")*canvas.dimensions.size)
+                        };
                         if (i >= rof - missedHits) {
                             //if the hit is a miss roll random scatter direction
                             let directionRoll = new Roll("1d10");
@@ -757,26 +752,37 @@ returns the roll message*/
                             let radianAngle = modifiedAngle * (Math.PI / 180);
                             let xDistance = -(pixelDistance * Math.sin(radianAngle));
                             let yDistance = pixelDistance * Math.cos(radianAngle);
-                            template.x = Math.min(xDistance + targetx, canvas.dimensions.width);
-                            if (template.x < 0) {
-                                template.x = 0;
+                            circleShape.x = Math.min(xDistance + targetx, canvas.dimensions.width);
+                            if (circleShape.x < 0) {
+                                circleShape.x = 0;
                             }
-                            template.y = Math.min(yDistance + targety, canvas.dimensions.height);
-                            if (template.y < 0) {
-                                template.y = 0;
+                            circleShape.y = Math.min(yDistance + targety, canvas.dimensions.height);
+                            if (circleShape.y < 0) {
+                                circleShape.y = 0;
                             }
-                            contentStr += `<div><a class="ping-template" data-x="${template.x}" data-y="${template.y}">Shot #${i + 1}</a> scatters (${distanceRoll._total}x${mult})m to the ${directionRoll._total}</div>`;
+                            contentStr += `<div><a class="ping-template" data-x="${circleShape.x}" data-y="${circleShape.y}">Shot #${i + 1}</a> scatters (${distanceRoll._total}x${mult})m to the ${directionRoll._total}</div>`;
                         } else {
-                            template.x = targetx;
-                            template.y = targety;
-                            contentStr += `<div><a class="ping-template" data-x="${template.x}" data-y="${template.y}">Shot #${i + 1}</a> is a direct hit!</div>`;
+                            circleShape.x = targetx;
+                            circleShape.y = targety;
+                            contentStr += `<div><a class="ping-template" data-x="${circleShape.x}" data-y="${circleShape.y}">Shot #${i + 1}</a> is a direct hit!</div>`;
                         }
+                        let region = {
+                            name:`${weapon.name} Damage Template #${i+1}`,
+                            color: game.user.color, // Bright orange-red
+                            shapes: [circleShape],
+                            displayMeasurements:true,
+                            hidden:false,
+                            highlightMode:"shapes",
+                            visibility:2,
+                            flags:{fortyk:{"damagetemplate":true}},
+                            behaviors: [
 
-                        templates.push(template);
+                            ]};
+                        templates.push(region);
                     }
                     contentStr += "</div>";
 
-                    let instancedTemplates = await scene.createEmbeddedDocuments("MeasuredTemplate", templates);
+                    let instancedRegions = await canvas.scene.createEmbeddedDocuments("Region",templates);
 
                     let chatScatter = {
                         author: game.user,
@@ -785,7 +791,7 @@ returns the roll message*/
                         flavor: "Shot Scatters!"
                     };
                     await ChatMessage.create(chatScatter, {});
-                    this.handleBlastTargetMessage(instancedTemplates, actor);
+                    this.handleBlastTargetMessage(instancedRegions, actor);
                 }
 
                 /*let chatScatter={author: game.user,
@@ -1911,9 +1917,9 @@ returns the roll message*/
                         if(curBarrier>0){
                             barrier=!fortykWeapon.getFlag("fortyk","shieldbreaker");
                             if(!barrier){
-                                 damageOptions.results.push(`<div class="chat-target flexcol">`);
-                                 damageOptions.results.push(`<span>Shieldbreaker weapon ignores ${actor.system.secChar.barrier.name}!</span>`);
-                                 damageOptions.results.push(`</div>`);
+                                damageOptions.results.push(`<div class="chat-target flexcol">`);
+                                damageOptions.results.push(`<span>Shieldbreaker weapon ignores ${actor.system.secChar.barrier.name}!</span>`);
+                                damageOptions.results.push(`</div>`);
                             }
                         }
                         if(barrier){
@@ -2344,7 +2350,7 @@ returns the roll message*/
                             let changes = {
                                 key: path,
                                 value: gaussAmount,
-                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                             };
                             gaussActiveEffect.changes.push(changes);
                             activeEffects.push(gaussActiveEffect);
@@ -2377,7 +2383,7 @@ returns the roll message*/
                             let changes = {
                                 key: path,
                                 value: corrosiveAmount,
-                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                             };
                             corrodeActiveEffect.changes.push(changes);
                             activeEffects.push(corrodeActiveEffect);
@@ -2514,7 +2520,7 @@ returns the roll message*/
                             drainActiveEffect.changes.push({
                                 key: `system.characteristics.s.value`,
                                 value: -1 * tDmg._total,
-                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                             });
                             activeEffects.push(drainActiveEffect);
                             damageOptions.results.push(`Enfeebled for ${tDmg.result} strength damage!`);
@@ -2536,7 +2542,7 @@ returns the roll message*/
                             drainActiveEffect.changes.push({
                                 key: `system.characteristics.agi.value`,
                                 value: -1 * tDmg._total,
-                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                             });
                             activeEffects.push(drainActiveEffect);
                             damageOptions.results.push(`Degenerated for ${tDmg.result} agility damage!`);
@@ -2558,7 +2564,7 @@ returns the roll message*/
                             drainActiveEffect.changes.push({
                                 key: `system.characteristics.t.value`,
                                 value: -1 * tDmg._total,
-                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                             });
                             activeEffects.push(drainActiveEffect);
                             damageOptions.results.push(`Voidchill drains for ${tDmg.result} toughness damage!`);
@@ -2594,14 +2600,14 @@ returns the roll message*/
                                 drainActiveEffect.changes.push({
                                     key: `system.characteristics.s.value`,
                                     value: -1 * strDmg._total,
-                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                                 });
                                 let tDmg = new Roll("2d10", {});
                                 await tDmg.evaluate();
                                 drainActiveEffect.changes.push({
                                     key: `system.characteristics.t.value`,
                                     value: -1 * tDmg._total,
-                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                                 });
                                 activeEffects.push(drainActiveEffect);
                                 damageOptions.results.push(
@@ -2639,7 +2645,7 @@ returns the roll message*/
                                 drainActiveEffect.changes.push({
                                     key: `system.characteristics.t.value`,
                                     value: -1 * tDmg._total,
-                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                                 });
                                 activeEffects.push(drainActiveEffect);
                                 let plagueEffect = foundry.utils.duplicate(
@@ -2764,7 +2770,7 @@ returns the roll message*/
                             let luminagenActiveEffect = {
                                 id: "luminagen",
                                 name: "Luminagen",
-                                icon: "icons/svg/eye.svg",
+                                img: "icons/svg/eye.svg",
                                 flags: { core: { statusId: "luminagen" } }
                             };
                             let lumiRoll = new Roll("1d5", {});
@@ -3520,23 +3526,23 @@ returns the roll message*/
                             drainActiveEffect.changes.push({
                                 key: `system.characteristics.int.value`,
                                 value: -1 * mindDamage,
-                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                             });
 
                             drainActiveEffect.changes.push({
                                 key: `system.characteristics.per.value`,
                                 value: -1 * mindDamage,
-                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                             });
                             drainActiveEffect.changes.push({
                                 key: `system.characteristics.wp.value`,
                                 value: -1 * mindDamage,
-                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                             });
                             drainActiveEffect.changes.push({
                                 key: `system.characteristics.fel.value`,
                                 value: -1 * mindDamage,
-                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                             });
                             activeEffects.push(drainActiveEffect);
                             damageOptions.results.push(`Mind Eater drains ${mindDamage} from Int/Per/Wp/Fel!`);
@@ -4296,7 +4302,7 @@ returns the roll message*/
                         ae.changes.push({
                             key: `system.characteristics.${char}.total`,
                             value: -10,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                         });
                     }
                 }
@@ -4352,7 +4358,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.fel.value`,
                         value: -1,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 await actor.createEmbeddedDocuments("Item", [{ type: "injury", name: "Facial scarring" }]);
@@ -4371,7 +4377,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.per.value`,
                         value: -1 * rolls.rolls[2],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -4382,7 +4388,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.fel.value`,
                         value: -1 * rolls.rolls[2],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 await actor.createEmbeddedDocuments("Item", [{ type: "injury", name: "Severe facial scarring" }]);
@@ -4402,7 +4408,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.fel.value`,
                         value: rolls.rolls[1],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 activeEffects.push(ae);
@@ -4468,7 +4474,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.t.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -4536,7 +4542,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.t.value`,
                         value: -1 * rolls.rolls[1],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 ae = foundry.utils.duplicate(
@@ -4563,12 +4569,12 @@ returns the roll message*/
                     {
                         key: `system.characteristics.s.value`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.MULTIPLY
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.multiply
                     },
                     {
                         key: `system.characteristics.s.advance`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.MULTIPLY
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.multiply
                     }
                 ];
                 activeEffects.push(ae);
@@ -4579,12 +4585,12 @@ returns the roll message*/
                     {
                         key: `system.characteristics.t.value`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.MULTIPLY
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.multiply
                     },
                     {
                         key: `system.characteristics.t.advance`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.MULTIPLY
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.multiply
                     }
                 ];
                 activeEffects.push(ae);
@@ -4595,12 +4601,12 @@ returns the roll message*/
                     {
                         key: `system.characteristics.agi.value`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.MULTIPLY
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.multiply
                     },
                     {
                         key: `system.characteristics.agi.advance`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.MULTIPLY
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.multiply
                     }
                 ];
                 activeEffects.push(ae);
@@ -4611,7 +4617,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.fel.value`,
                         value: -1 * rolls.rolls[1],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -4714,7 +4720,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.ws.value`,
                         value: -1 * rolls.rolls[1],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -4725,7 +4731,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.bs.value`,
                         value: -1 * rolls.rolls[1],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -4844,7 +4850,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.movement.multi`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 activeEffects.push(ae);
@@ -4857,7 +4863,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.movement.multi`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 activeEffects.push(ae);
@@ -4878,7 +4884,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.movement.multi`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 activeEffects.push(ae);
@@ -4893,7 +4899,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.movement.multi`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 if (tTest.value) {
@@ -4921,7 +4927,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.movement.multi`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 await this._createInjury(actor, "Broken " + leg + " leg", injury);
@@ -4949,7 +4955,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.movement.multi`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 await this._createInjury(actor, "Lost " + leg + " leg", injury);
@@ -4971,7 +4977,7 @@ returns the roll message*/
                         {
                             key: `system.secChar.movement.multi`,
                             value: 0.5,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         }
                     ];
                     await this._createInjury(actor, "Lost " + leg + " leg", injury);
@@ -5058,13 +5064,13 @@ returns the roll message*/
                         {
                             key: `system.characteristics.per.value`,
                             value: -1 * rolls.rolls[0],
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                         }
                     ];
                     injury.changes.push({
                         key: `system.characteristics.fel.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     });
                     await this._createInjury(actor, "Facial scar", injury);
                 }
@@ -5081,7 +5087,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.int.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -5100,7 +5106,7 @@ returns the roll message*/
                         {
                             key: `system.characteristics.int.value`,
                             value: -1,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                         }
                     ];
                     activeEffects.push(ae);
@@ -5121,7 +5127,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.fel.value`,
                         value: -1 * rolls.rolls[1],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 await this._createInjury(actor, "Severe facial scarring", injury);
@@ -5235,7 +5241,7 @@ returns the roll message*/
                         {
                             key: `system.characteristics.t.value`,
                             value: -1,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                         }
                     ];
                     activeEffects.push(ae);
@@ -5332,7 +5338,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.ws.value`,
                         value: -1 * rolls.rolls[1],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -5343,7 +5349,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.bs.value`,
                         value: -1 * rolls.rolls[2],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -5378,7 +5384,7 @@ returns the roll message*/
                         {
                             key: `system.characteristics.ws.value`,
                             value: -1,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                         }
                     ];
                     activeEffects.push(ae);
@@ -5389,7 +5395,7 @@ returns the roll message*/
                         {
                             key: `system.characteristics.bs.value`,
                             value: -1,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                         }
                     ];
                     activeEffects.push(ae);
@@ -5501,7 +5507,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.agi.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -5521,7 +5527,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.movement.multi`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 activeEffects.push(ae);
@@ -5539,7 +5545,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.agi.value`,
                         value: -1 * rolls.rolls[1],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -5553,7 +5559,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.movement.multi`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 activeEffects.push(ae);
@@ -5593,7 +5599,7 @@ returns the roll message*/
                         {
                             key: `system.secChar.movement.multi`,
                             value: 0.5,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         }
                     ];
                     activeEffects.push(ae);
@@ -5671,7 +5677,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.per.value`,
                         value: -10,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -5685,7 +5691,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.int.value`,
                         value: -10,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -5741,7 +5747,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.int.value`,
                         value: -1,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -5779,7 +5785,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.movement.multi`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 activeEffects.push(ae);
@@ -5853,7 +5859,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.t.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -5902,7 +5908,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.t.value`,
                         value: -1 * rolls.rolls[1],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -5915,7 +5921,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.t.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -5979,7 +5985,7 @@ returns the roll message*/
                         {
                             key: `system.characteristics.ws.value`,
                             value: -1 * rolls.rolls[0],
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                         }
                     ];
                     activeEffects.push(ae);
@@ -5990,7 +5996,7 @@ returns the roll message*/
                         {
                             key: `system.characteristics.bs.value`,
                             value: -1 * rolls.rolls[1],
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                         }
                     ];
                     activeEffects.push(ae);
@@ -6014,7 +6020,7 @@ returns the roll message*/
                         {
                             key: `system.characteristics.ws.value`,
                             value: -2,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                         }
                     ];
                     activeEffects.push(ae);
@@ -6025,7 +6031,7 @@ returns the roll message*/
                         {
                             key: `system.characteristics.bs.value`,
                             value: -2,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                         }
                     ];
                     activeEffects.push(ae);
@@ -6109,7 +6115,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.movement.multi`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 activeEffects.push(ae);
@@ -6140,7 +6146,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.agi.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -6157,7 +6163,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.agi.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -6182,7 +6188,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.movement.multi`,
                         value: 1 / base,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 activeEffects.push(ae);
@@ -6196,7 +6202,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.movement.multi`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 tTest = rolls.tests[0];
@@ -6227,7 +6233,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.movement.multi`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 await this._createInjury(actor, "Useless " + leg + " leg", injury);
@@ -6254,7 +6260,7 @@ returns the roll message*/
                         {
                             key: `system.secChar.movement.multi`,
                             value: 0.5,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         }
                     ];
                     await this._createInjury(actor, "Lost " + leg + " leg", injury);
@@ -6266,7 +6272,7 @@ returns the roll message*/
                         {
                             key: `system.characteristics.agi.value`,
                             value: -1 * rolls.rolls[0],
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                         }
                     ];
                     activeEffects.push(ae);
@@ -6336,7 +6342,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.ws.value`,
                         value: -10,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -6350,7 +6356,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.bs.value`,
                         value: -10,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -6381,7 +6387,7 @@ returns the roll message*/
                     {
                         key: `system.characterHitLocations.head.armorMod`,
                         value: -99,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 activeEffects.push(ae);
@@ -6394,7 +6400,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.per.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -6425,7 +6431,7 @@ returns the roll message*/
                             {
                                 key: `system.characteristics.fel.value`,
                                 value: -1,
-                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                                mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                             }
                         ];
                         activeEffects.push(ae);
@@ -6442,7 +6448,7 @@ returns the roll message*/
                         {
                             key: `system.characterHitLocations.head.armorMod`,
                             value: -99,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         }
                     ];
                     activeEffects.push(ae);
@@ -6467,7 +6473,7 @@ returns the roll message*/
                         {
                             key: `system.characteristics.fel.value`,
                             value: -1 * rolls.rolls[2],
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                         }
                     ];
                     activeEffects.push(injury);
@@ -6491,7 +6497,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.fel.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -6595,7 +6601,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.t.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -6612,7 +6618,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.t.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -6629,7 +6635,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.t.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -6659,7 +6665,7 @@ returns the roll message*/
                         {
                             key: `system.characteristics.t.value`,
                             value: -1 * rolls.rolls[0],
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                         }
                     ];
                     activeEffects.push(ae);
@@ -6769,7 +6775,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.s.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -6864,7 +6870,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.agi.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -6877,7 +6883,7 @@ returns the roll message*/
                     {
                         key: `system.characteristics.agi.value`,
                         value: -1 * rolls.rolls[0],
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 activeEffects.push(ae);
@@ -6892,7 +6898,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.movement.multi`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 activeEffects.push(ae);
@@ -6911,7 +6917,7 @@ returns the roll message*/
                         {
                             key: `system.characteristics.agi.value`,
                             value: -1,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                         }
                     ];
                     activeEffects.push(ae);
@@ -6929,7 +6935,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.movement.multi`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 activeEffects.push(injury);
@@ -6972,7 +6978,7 @@ returns the roll message*/
                         {
                             key: `system.secChar.movement.multi`,
                             value: 0.5,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         }
                     ];
                     activeEffects.push(injury);
@@ -7019,7 +7025,7 @@ returns the roll message*/
                 {
                     key: `system.facings.${facing.path}.armor`,
                     value: -1,
-                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                 }
             ];
             ae.flags = { fortyk: { repair: "armordmg" } };
@@ -7036,7 +7042,7 @@ returns the roll message*/
                 {
                     key: `system.facings.${facing.path}.armor`,
                     value: -armorReduction,
-                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                 }
             ];
             ae.flags = { fortyk: { repair: "armordmg" } };
@@ -7128,12 +7134,12 @@ returns the roll message*/
                                 {
                                     key: `system.secChar.speed.mod`,
                                     value: -speedReduction,
-                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                                 },
                                 {
                                     key: `system.secChar.speed.motive`,
                                     value: "I",
-                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                                 }
                             ];
                             ae.flags = { fortyk: { repair: "motiveimpaired" } };
@@ -7144,12 +7150,12 @@ returns the roll message*/
                                 {
                                     key: `system.secChar.speed.multi`,
                                     value: 0.5,
-                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                                 },
                                 {
                                     key: `system.secChar.speed.motive`,
                                     value: "C",
-                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                                 }
                             ];
                             ae.flags = { fortyk: { repair: "motivecrippled" } };
@@ -7160,12 +7166,12 @@ returns the roll message*/
                                 {
                                     key: `system.secChar.speed.multi`,
                                     value: "0",
-                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                                 },
                                 {
                                     key: `system.secChar.speed.motive`,
                                     value: "D",
-                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                                    mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                                 }
                             ];
                             ae.flags = { fortyk: { repair: "motivedestroyed" } };
@@ -7242,7 +7248,7 @@ returns the roll message*/
                 ae = foundry.utils.duplicate(
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("bs")]
                 );
-                ae.changes = [{ key: `system.crew.bs`, value: -10, mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD }];
+                ae.changes = [{ key: `system.crew.bs`, value: -10, mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add }];
                 ae.duration = {
                     rounds: 1
                 };
@@ -7279,7 +7285,7 @@ returns the roll message*/
                     {
                         key: `system.facings.${facing.path}.armor`,
                         value: -armorRoll,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 ae.flags = { fortyk: { repair: "armordmg" } };
@@ -7318,7 +7324,7 @@ returns the roll message*/
                     {
                         key: `system.facings.${facing.path}.armor`,
                         value: -armor,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 ae.flags = { fortyk: { repair: "armordmg" } };
@@ -7334,7 +7340,7 @@ returns the roll message*/
                     {
                         key: `system.facings.${facing.path}.armor`,
                         value: -armor,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 ae.flags = { fortyk: { repair: "armordmg" } };
@@ -7413,7 +7419,7 @@ returns the roll message*/
             case 1:
                 disabledAe = {
                     name: "Weapon Disabled",
-                    changes: [{ key: "flags.fortyk.disabled", value: true, mode: FORTYK.ACTIVE_EFFECT_MODES.CUSTOM }],
+                    changes: [{ key: "flags.fortyk.disabled", value: true, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom }],
                     duration: {
                         rounds: 1
                     },
@@ -7428,7 +7434,7 @@ returns the roll message*/
             case 3:
                 let penaltyAe = {
                     name: "Weapon Penalised",
-                    changes: [{ key: "system.testMod.value", value: -10, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD }],
+                    changes: [{ key: "system.testMod.value", value: -10, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add }],
                     duration: {
                         rounds: rolls.rolls[0]
                     },
@@ -7451,7 +7457,7 @@ returns the roll message*/
             case 6:
                 let targettingAe = {
                     name: "Targetting destroyed",
-                    changes: [{ key: "system.testMod.value", value: -20, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD }],
+                    changes: [{ key: "system.testMod.value", value: -20, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add }],
                     transfer: false
                 };
                 ae.flags = { fortyk: { repair: "targetting" } };
@@ -7461,7 +7467,7 @@ returns the roll message*/
             case 7:
                 let explosionAe = {
                     name: "Weapon Explosion",
-                    changes: [{ key: "flags.fortyk.explosion", value: true, mode: FORTYK.ACTIVE_EFFECT_MODES.CUSTOM }],
+                    changes: [{ key: "flags.fortyk.explosion", value: true, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom }],
                     transfer: false
                 };
                 ae.flags = { fortyk: { repair: "explosion" } };
@@ -7575,12 +7581,12 @@ returns the roll message*/
                         {
                             key: `system.secChar.speed.mod`,
                             value: -speedReduction,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         },
                         {
                             key: `system.secChar.speed.motive`,
                             value: "I",
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                         }
                     ];
                     ae.flags = { fortyk: { repair: "motiveimpaired" } };
@@ -7590,12 +7596,12 @@ returns the roll message*/
                         {
                             key: `system.secChar.speed.multi`,
                             value: 0.5,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         },
                         {
                             key: `system.secChar.speed.motive`,
                             value: "C",
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                         }
                     ];
                     ae.flags = { fortyk: { repair: "motivecrippled" } };
@@ -7605,12 +7611,12 @@ returns the roll message*/
                         {
                             key: `system.secChar.speed.multi`,
                             value: "0",
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         },
                         {
                             key: `system.secChar.speed.motive`,
                             value: "D",
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                         }
                     ];
                     ae.flags = { fortyk: { repair: "motivedestroyed" } };
@@ -7657,12 +7663,12 @@ returns the roll message*/
                         {
                             key: `system.secChar.speed.mod`,
                             value: -speedReduction,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         },
                         {
                             key: `system.secChar.speed.motive`,
                             value: "I",
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                         }
                     ];
                     ae.flags = { fortyk: { repair: "motiveimpaired" } };
@@ -7672,12 +7678,12 @@ returns the roll message*/
                         {
                             key: `system.secChar.speed.multi`,
                             value: 0.5,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         },
                         {
                             key: `system.secChar.speed.motive`,
                             value: "C",
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                         }
                     ];
                     ae.flags = { fortyk: { repair: "motivecrippled" } };
@@ -7687,12 +7693,12 @@ returns the roll message*/
                         {
                             key: `system.secChar.speed.multi`,
                             value: "0",
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         },
                         {
                             key: `system.secChar.speed.motive`,
                             value: "D",
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                         }
                     ];
                     ae.flags = { fortyk: { repair: "motivedestroyed" } };
@@ -7738,12 +7744,12 @@ returns the roll message*/
                     {
                         key: `system.secChar.speed.multi`,
                         value: "0",
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     },
                     {
                         key: `system.secChar.speed.motive`,
                         value: "D",
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                     }
                 ];
                 activeEffects.push(ae);
@@ -7767,12 +7773,12 @@ returns the roll message*/
                     {
                         key: `system.secChar.speed.multi`,
                         value: "0",
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     },
                     {
                         key: `system.secChar.speed.motive`,
                         value: "D",
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                     }
                 ];
                 activeEffects.push(ae);
@@ -7802,12 +7808,12 @@ returns the roll message*/
                     {
                         key: `system.secChar.speed.multi`,
                         value: "0",
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     },
                     {
                         key: `system.secChar.speed.motive`,
                         value: "D",
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                     }
                 ];
                 activeEffects.push(ae);
@@ -7835,7 +7841,7 @@ returns the roll message*/
             case 1:
                 disabledAe = {
                     name: "Weapon Disabled",
-                    changes: [{ key: "flags.fortyk.disabled", value: true, mode: FORTYK.ACTIVE_EFFECT_MODES.CUSTOM }],
+                    changes: [{ key: "flags.fortyk.disabled", value: true, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom }],
                     duration: {
                         rounds: 1
                     },
@@ -7849,7 +7855,7 @@ returns the roll message*/
             case 3:
                 let penaltyAe = {
                     name: "Weapon Penalised",
-                    changes: [{ key: "system.testMod.value", value: -10, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD }],
+                    changes: [{ key: "system.testMod.value", value: -10, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add }],
                     duration: {
                         rounds: rolls.rolls[0]
                     },
@@ -7862,7 +7868,7 @@ returns the roll message*/
             case 5:
                 disabledAe = {
                     name: "Weapon Disabled",
-                    changes: [{ key: "flags.fortyk.disabled", value: true, mode: FORTYK.ACTIVE_EFFECT_MODES.CUSTOM }],
+                    changes: [{ key: "flags.fortyk.disabled", value: true, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom }],
 
                     transfer: false
                 };
@@ -7872,7 +7878,7 @@ returns the roll message*/
             case 6:
                 let targettingAe = {
                     name: "Targetting destroyed",
-                    changes: [{ key: "system.testMod.value", value: -20, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD }],
+                    changes: [{ key: "system.testMod.value", value: -20, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add }],
                     transfer: false
                 };
                 targettingAe.flags = { fortyk: { repair: "targetting" } };
@@ -7881,7 +7887,7 @@ returns the roll message*/
             case 7:
                 let rearAe = {
                     name: "Turret Armor Damaged",
-                    changes: [{ key: "flags.fortyk.rear", value: true, mode: FORTYK.ACTIVE_EFFECT_MODES.CUSTOM }],
+                    changes: [{ key: "flags.fortyk.rear", value: true, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom }],
                     transfer: false
                 };
                 weapon.createEmbeddedDocuments("ActiveEffect", [rearAe]);
@@ -8022,7 +8028,7 @@ returns the roll message*/
                     {
                         key: `system.facings.${facing.path}.armor`,
                         value: -armorReduction,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                     }
                 ];
                 ae.flags = { fortyk: { repair: "armordmg" } };
@@ -8100,7 +8106,7 @@ returns the roll message*/
             case 1:
                 let disabledAe = {
                     name: "Weapon Disabled",
-                    changes: [{ key: "flags.fortyk.disabled", value: true, mode: FORTYK.ACTIVE_EFFECT_MODES.CUSTOM }],
+                    changes: [{ key: "flags.fortyk.disabled", value: true, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom }],
                     duration: {
                         rounds: 1
                     },
@@ -8111,7 +8117,7 @@ returns the roll message*/
             case 2:
                 let targetAe = {
                     name: "Targetting Damaged",
-                    changes: [{ key: "system.testMod.value", value: -20, mode: FORTYK.ACTIVE_EFFECT_MODES.ADD }],
+                    changes: [{ key: "system.testMod.value", value: -20, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add }],
                     transfer: false
                 };
                 targetAe.flags = { fortyk: { repair: "targetting" } };
@@ -8163,7 +8169,7 @@ returns the roll message*/
                     {
                         key: `system.secChar.speed.multi`,
                         value: 0.5,
-                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                        mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
                 ae.duration = { rounds: 1 };
@@ -8187,12 +8193,12 @@ returns the roll message*/
                         {
                             key: `system.secChar.speed.mod`,
                             value: -speedReduction,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         },
                         {
                             key: `system.secChar.speed.motive`,
                             value: "I",
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                         }
                     ];
                     ae.flags = { fortyk: { repair: "motiveimpaired" } };
@@ -8202,12 +8208,12 @@ returns the roll message*/
                         {
                             key: `system.secChar.speed.multi`,
                             value: 0.5,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         },
                         {
                             key: `system.secChar.speed.motive`,
                             value: "C",
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                         }
                     ];
                     ae.flags = { fortyk: { repair: "motivecrippled" } };
@@ -8217,12 +8223,12 @@ returns the roll message*/
                         {
                             key: `system.secChar.speed.multi`,
                             value: "0",
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         },
                         {
                             key: `system.secChar.speed.motive`,
                             value: "D",
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                         }
                     ];
                     ae.flags = { fortyk: { repair: "motivedestroyed" } };
@@ -8261,12 +8267,12 @@ returns the roll message*/
                         {
                             key: `system.secChar.speed.multi`,
                             value: 0.5,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         },
                         {
                             key: `system.secChar.speed.motive`,
                             value: "C",
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                         }
                     ];
                     ae.flags = { fortyk: { repair: "motivecrippled" } };
@@ -8276,12 +8282,12 @@ returns the roll message*/
                         {
                             key: `system.secChar.speed.multi`,
                             value: "0",
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.OVERRIDE
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                         },
                         {
                             key: `system.secChar.speed.motive`,
                             value: "D",
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.CUSTOM
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.custom
                         }
                     ];
                     ae.flags = { fortyk: { repair: "motivedestroyed" } };
@@ -8365,9 +8371,9 @@ returns the roll message*/
                                     newAe.changes.push(change);
                                     upg = true;
                                     /*for(const newChange of newAe.changes){
-                                        if((change.key===newChange.key)&&change.mode===newChange.mode){
+                                        if((change.key===newChange.key)&&change.type===newChange.mode){
 
-                                            if(change.mode===CONST.ACTIVE_EFFECT_MODES.OVERRIDE||change.mode===CONST.ACTIVE_EFFECT_MODES.CUSTOM){
+                                            if(change.type===CONST.ACTIVE_EFFECT_CHANGE_TYPES.override||change.type===CONST.ACTIVE_EFFECT_CHANGE_TYPES.custom){
 
                                             }else{
                                                 if(!isNaN(parseInt(newChange.value))){

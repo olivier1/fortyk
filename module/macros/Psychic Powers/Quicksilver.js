@@ -11,6 +11,7 @@ if(!combat)return;
 aeData.name=aeData.name;
 aeData.flags={fortyk:{psy:true,range: range, casterTokenId: actorToken.id}};
 aeData.disabled=false;
+aeData.showIcon=2;
 aeData.origin=power.uuid;
 aeData.statuses = [aeData.name];
 let effectIds=[];

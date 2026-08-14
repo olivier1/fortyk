@@ -5,8 +5,8 @@
   "version": "3.4.7",
   "compatibility": {
     "minimum": "13",
-    "verified": "13",
-    "maximum": "13.400"
+    "verified": "14",
+    "maximum": "14.400"
   },
   "authors": [
     {
@@ -35,7 +35,155 @@
   "documentTypes": {
     "RegionBehavior": {
       "fortykElevationBehavior": {},
-      "fortykCoverBehavior": {}
+      "fortykCoverBehavior": {},
+      "fortykAuraBehavior":{}
+    },
+    "Actor":{
+      "dwPC":{
+        "htmlFields":["system.notesAndBackground.background",
+                      "system.notesAndBackground.notes"]
+      },
+      "npc":{
+        "htmlFields":["system.description.value",
+                     "system.skills.value",
+                     "system.equipment.value"]
+      },
+      "spaceship":{
+
+      },
+      "vehicle":{
+
+      }
+    },
+    "Item":{
+      "meleeWeapon":{
+        "htmlFields":["system.description.gm",
+                     "system.description.value"]
+      },
+      "rangedWeapon":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "ammunition":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "wargear":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "cybernetic":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "armor":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "forceField":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "mod":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "consummable":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "psychicPower":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "skill":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "mutation":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "malignancy":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "disorder":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "injury":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "talentntrait":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "advancement":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "mission":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "spaceshipComponent":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "spaceshipWeapon":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "spaceshipCargo":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "spaceshipSquadron":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "knightCore":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "knightArmor":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "knightStructure":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "knightComponent":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "knightChassis":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "cadetHouse":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "repairEntry":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "outpost":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "knightSpirit":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      },
+      "eliteAdvance":{
+        "htmlFields":["system.description.gm",
+                      "system.description.value"]
+      }
     }
   },
   "packs": [
@@ -411,7 +559,7 @@
         "ASSISTANT": "OWNER"
       }
     },
-    
+
     {
       "label": "Navigator Powers",
       "type": "Item",
@@ -492,6 +640,19 @@
       },
       "flags": {},
       "package": "system"
+    },
+    {
+      "label": "fortykActiveEffects",
+      "type": "ActiveEffect",
+      "name": "fortyk-activeeffects",
+      "path": "packs/fortykactiveeffects",
+      "system": "fortyk",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {},
+      "package": "system"
     }
   ],
   "packFolders": [
@@ -563,6 +724,15 @@
           "color": "#07575b",
           "packs": [
             "fortykmacros"
+          ],
+          "folders": []
+        },
+        {
+          "name": "Active Effects",
+          "sorting": "m",
+          "color": "#07575b",
+          "packs": [
+            "fortyk-activeeffects"
           ],
           "folders": []
         },

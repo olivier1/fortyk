@@ -1,4 +1,3 @@
-import { applySceneAuras } from "../utilities.js";
 import { tokenDistance } from "../utilities.js";
 import { getActorToken } from "../utilities.js";
 export class FortyKTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler{

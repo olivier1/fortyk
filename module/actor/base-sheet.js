@@ -34,7 +34,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         window: {
             controls: [
                 {
-                    icon: "fas fa-asterisk",
+                    icon: "fa-solid fa-person-rays",
                     label: "Manage AEs",
                     action: "manageAEs",
                     visible: this.isGM // Only show if the user is the owner (GM)
@@ -110,10 +110,30 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         data.coverTypes = game.fortyk.FORTYK.coverTypes;
         return data;
     }
+    /*_refit(positionUpdate={}){
+        return;
+    }*/
+    async _preRender(context, options) {
+        await super._preRender(context, options);
+
+        // If the window is being detached or re-rendered from scratch, 
+        // force a reset of the listener binding flag
+        if (options.renderContext?.parts || options.detached) {
+            this._listenersBound = false;
+        }
+    }
+  
+
     /** @override */
-    _onRender(context, options) {
-        super._onRender(context, options);
+    async _onRender(context, options) {
+        const scrolltop=this.element.scrollTop;
+        await super._onRender(context, options);
+        this.element.scrollTop=scrolltop;
+
         const html = $(this.element);
+
+
+        if (this._listenersBound) return;
         //right click profile img
         html.find(".profile-img").contextmenu(this._onImgRightClick.bind(this));
 
@@ -196,6 +216,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         });
 
         this.#dragDrop.forEach((d) => d.bind(this.element));
+        this._refit();
     }
     _onDragListItem(event) {
         let data = {};
@@ -412,14 +433,14 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
             position: { width: 666, height: "auto" },
             actor: actor,
             classes: []
-        }).render(true);
+        }).render({force:true});
     }
     //Edits the item that was clicked
     async _onItemEdit(event) {
         event.preventDefault();
         let itemId = event.currentTarget.attributes["data-item-id"].value;
         const item = this.actor.items.find((i) => i._id == itemId);
-        item.sheet.render(true);
+        item.sheet.render({force:true});
     }
     //deletes the selected item from the actor
     async _onItemDelete(event) {
@@ -439,7 +460,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                         label: "Ok",
                         callback: async (dlg) => {
                             await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
-                            this.render(true);
+                            this.render({force:true});
                         }
                     }
                 ],
@@ -829,14 +850,14 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
     }
     async _onBlastDamageRoll(event, weapon) {
         let scene = game.scenes.active;
-        let templates = scene.templates.reduce(function (templates, template) {
-            if (template.isOwner) {
-                templates.push(template);
+        let regions = scene.regions.reduce(function (regions, region) {
+            if (region.getFlag("fortyk","damagetemplate")) {
+                regions.push(region);
             }
-            return templates;
+            return regions;
         }, []);
 
-        let targets = getBlastTargets(templates);
+        let targets = getBlastTargets(regions);
         let actor = this.actor;
         let oldTargets = game.user.targets;
         let options = { dfa: false };
@@ -893,6 +914,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                                     let targetTokens = canvas.tokens.placeables.filter((token) =>
                                                                                        curTargets.includes(token.id)
                                                                                       );
+
                                     for (let j = 0; j < targetTokens.length; j++) {
                                         let token = targetTokens[j];
                                         if (j === targetTokens.length - 1) {
@@ -903,10 +925,10 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                                             targetNames += token.name + ", ";
                                         }
                                     }
-                                    if (curTargets.length !== 0) {
+                                    if (targetTokens.length !== 0) {
                                         game.user._onUpdateTokenTargets([]);
                                         for (let target of targetTokens) {
-                                            target.setTarget(true, {
+                                            target._object.setTarget(true, {
                                                 user: game.user,
                                                 releaseOthers: false,
                                                 groupSelection: true
@@ -935,7 +957,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                                         );
 
                                         for (let target of targetTokens) {
-                                            target.setTarget(false, {
+                                            target._object.setTarget(false, {
                                                 user: game.user,
                                                 releaseOthers: false,
                                                 groupSelection: true
@@ -944,10 +966,10 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                                         game.user.broadcastActivity({ targets: game.user.targets.ids });
                                         //clean templates after
                                         let scene = game.scenes.active;
-                                        let templates = scene.templates;
-                                        for (const template of templates) {
-                                            if (template.isOwner) {
-                                                await template.delete();
+                                        let regions = scene.regions;
+                                        for (const region of regions) {
+                                            if (region.getFlag("fortyk","damagetemplate")) {
+                                                await region.delete();
                                             }
                                         }
                                     }
@@ -957,6 +979,8 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                                 //if user isnt GM use socket to have gm process the damage roll
 
                                 let lastHit = this.actor.system.secChar.lastHit;
+
+
                                 let socketOp = {
                                     type: "blastDamageRoll",
                                     package: {
@@ -1067,10 +1091,10 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         let updates = [];
 
         if (!jQuery.isEmptyObject(oldArmor)) {
-            updates.push({ _id: oldArmorId, "system.isEquipped": false });
+            updates.push({ _id: oldArmorId, "system.isEquipped": "" });
         }
         if (!jQuery.isEmptyObject(newArmor)) {
-            updates.push({ _id: newArmorId, "system.isEquipped": true });
+            updates.push({ _id: newArmorId, "system.isEquipped": "true" });
         }
 
         if (updates.length > 0) {
@@ -1087,10 +1111,10 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         let oldForceField = this.actor.system.secChar.wornGear.forceField;
         let updates = [];
         if (!jQuery.isEmptyObject(oldForceField)) {
-            updates.push({ _id: oldForceFieldId, "system.isEquipped": false });
+            updates.push({ _id: oldForceFieldId, "system.isEquipped": "" });
         }
         if (!jQuery.isEmptyObject(newForceField)) {
-            updates.push({ _id: newForceFieldId, "system.isEquipped": true });
+            updates.push({ _id: newForceFieldId, "system.isEquipped": "true" });
         }
         if (updates.length > 0) {
             await this.actor.updateEmbeddedDocuments("Item", updates);
@@ -1149,7 +1173,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
             },
             default: "submit",
             width: 100
-        }).render(true);
+        }).render({force:true});
     }
     //OVERRIDE
     async _onDropItem(event, data) {
@@ -1287,7 +1311,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                             return false;
                         } else {
                             applyMod(actor, itemId);
-                            this.render(true);
+                            this.render({force: true});
                             return true;
                         }
                     }
@@ -1310,22 +1334,22 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         };
         var d = new ActiveEffectDialog(
             {
-                title: "Active Effects",
+                window:{title: "Active Effects"},
                 actor: actor,
-                buttons: {
-                    button: {
+                buttons: [{
+                    action:"button",
                         label: "Ok",
                         callback: async (html) => {
                             this.document.dialog = undefined;
                         }
                     }
-                },
+                ],
                 close: function () {
                     this.document.dialog = undefined;
                 }
             },
             options
-        ).render(true);
+        ).render({force:true});
         this.document.dialog = d;
     }
     static async _onSubmitForm(event, form, formData) {

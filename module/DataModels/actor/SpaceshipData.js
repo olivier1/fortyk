@@ -1,99 +1,96 @@
-"name": {
-                "value": "",
-                "type": "String"
-            },
-            "class": {
-                "value": "",
-                "type": "String"
-            },
-            "hull": {
-                "value": "",
-                "type": "String"
-            },
-            "speed": {
-                "value": 0,
-                "type": "Number"
-            },
-            "manoeuvrability": {
-                "value": 0,
-                "type": "Number"
-            },
-            "detection": {
-                "value": 0,
-                "type": "Number"
-            },
-            "turret": {
-                "value": 0,
-                "type": "Number"
-            },
-            "shields": {
-                "value": 0,
-                "type": "Number"
-            },
-            "armor": {
-                "value": 0,
-                "type": "Number"
-            },
-            "hullIntegrity": {
-                "value": 40,
-                "max": 40,
-                "min": 0,
-                "type": "Number"
-            },
-            "space": {
-                "value": 0,
-                "max": 0,
-                "min": 0,
-                "type": "Number"
-            },
-            "power": {
-                "value": 0,
-                "max": 0,
-                "min": 0,
-                "type": "Number"
-            },
-            "crew": {
-                "value": 100,
-                "max": 100,
-                "min": 0,
-                "rating": 30,
-                "capacity": "",
-                "type": "Number"
-            },
-            "morale": {
-                "value": 100,
-                "max": 100,
-                "min": 0,
-                "type": "Number"
-            },
-            "weaponCapacity": {
-                "dorsal": 0,
-                "prow": 0,
-                "keel": 0,
-                "port": 0,
-                "starboard": 0,
-                "type": "Number"
-            },
-            "complications": {
-                "0": "",
-                "1": "",
-                "type": "String"
-            },
-            "shipPoints": {
-                "value": 0,
-                "spent": 0,
-                "remaining": 0,
-                "type": "Number"
-            },
-            "cargo": {
-                "value": 0,
-                "max": 0,
-                "min": 0,
-                "supplies": 180,
-                "suppliesMax": 180,
-                "fuel": 0,
-                "fuelMax":0,
-                "profit": 0,
-                "trade":0,
-                "type": "Number"
-            }
+const {
+    BooleanField, HTMLField, SchemaField, NumberField, StringField, FilePathField, ArrayField
+} = foundry.data.fields;
+function resourceField(initialValue, initialMax) {
+    return new SchemaField({
+        // Make sure to call new so you invoke the constructor!
+        min: new NumberField({ initial: 0 }),
+        value: new NumberField({ initial: initialValue }),
+        max: new NumberField({ initial: initialMax }),
+    });
+}
+export default class SpaceshipData extends foundry.abstract.TypeDataModel {
+
+    static defineSchema() {
+        return {
+                "class": new SchemaField({
+                    "value": new StringField({ initial: ""})
+                }),
+                "hull": new SchemaField({
+                    "value": new StringField({ initial: ""})
+                }),
+                "speed": new SchemaField({
+                    "value": new StringField({ initial: 0 })
+                }),
+                "manoeuvrability": new SchemaField({
+                    "value": new NumberField({ initial: 0 })
+                }),
+                "detection": new SchemaField({
+                    "value": new NumberField({ initial: 0 })
+                }),
+                "turret": new SchemaField({
+                    "value": new NumberField({ initial: 0 })
+                }),
+                "shields": new SchemaField({
+                    "value": new NumberField({ initial: 0 })
+                }),
+                "armor": new SchemaField({
+                    "value": new NumberField({ initial: 0 })
+                }),
+                "hullIntegrity": new SchemaField({
+                    "value": new NumberField({ initial: 40 }),
+                    "max": new NumberField({ initial: 40 }),
+                    "min": new NumberField({ initial: 0 })
+                }),
+                "space": new SchemaField({
+                    "value": new NumberField({ initial: 0 }),
+                    "max": new NumberField({ initial: 0 }),
+                    "min": new NumberField({ initial: 0 })
+                }),
+                "power": new SchemaField({
+                    "value": new NumberField({ initial: 0 }),
+                    "max": new NumberField({ initial: 0 }),
+                    "min": new NumberField({ initial: 0 })
+                }),
+                "crew": new SchemaField({
+                    "value": new NumberField({ initial: 100 }),
+                    "max": new NumberField({ initial: 100 }),
+                    "min": new NumberField({ initial: 0 }),
+                    "rating": new NumberField({ initial: 30 }),
+                    "capacity": new StringField({ initial: ""})
+                }),
+                "morale": new SchemaField({
+                    "value": new NumberField({ initial: 100 }),
+                    "max": new NumberField({ initial: 100 }),
+                    "min": new NumberField({ initial: 0 })
+                }),
+                "weaponCapacity": new SchemaField({
+                    "dorsal": new NumberField({ initial: 0 }),
+                    "prow": new NumberField({ initial: 0 }),
+                    "keel": new NumberField({ initial: 0 }),
+                    "port": new NumberField({ initial: 0 }),
+                    "starboard": new NumberField({ initial: 0 })
+                }),
+                "complications": new SchemaField({
+                    "0": new StringField({ initial: ""}),
+                    "1": new StringField({ initial: ""})
+                }),
+                "shipPoints": new SchemaField({
+                    "value": new NumberField({ initial: 0 }),
+                    "spent": new NumberField({ initial: 0 }),
+                    "remaining": new NumberField({ initial: 0 })
+                }),
+                "cargo": new SchemaField({
+                    "value": new NumberField({ initial: 0 }),
+                    "max": new NumberField({ initial: 0 }),
+                    "min": new NumberField({ initial: 0 }),
+                    "supplies": new NumberField({ initial: 180 }),
+                    "suppliesMax": new NumberField({ initial: 180 }),
+                    "fuel": new NumberField({ initial: 0 }),
+                    "fuelMax":new NumberField({ initial: 0 }),
+                    "profit": new NumberField({ initial: 0 }),
+                    "trade":new NumberField({ initial: 0 })
+                })
+               };
+    }
+}

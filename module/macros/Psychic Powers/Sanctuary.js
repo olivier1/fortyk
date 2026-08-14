@@ -29,6 +29,7 @@ aeData.name=ae.name;
 aeData.flags={fortyk:{psy:true, range: range, casterTokenId: actorToken.id}};
 aeData.disabled=false;
 aeData.origin=power.uuid;
+aeData.showIcon=2;
 aeData.statuses = [aeData.name];
 let itemUuIds=[]
 for(let i=0; i<targets.length;i++){

@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Martel:wght@400;800&family=Roboto:wght@300;400;500&display=swap");
-@import url("https://fontawesome.com/icons/check?f=classic&s=solid");
 /* Global styles */
 @font-face {
   font-family: "CaslonAntique";
@@ -87,11 +86,19 @@
   width: 120px;
 }
 .application {
-  padding-bottom: 0.85em;
+  padding:1em;
+  padding-bottom: 1.85em;
+ 
   overflow:visible !important;
 }
 .application .window-header .window-title{
   font-size: 20px;
+}
+.application.sheet.active-effect-config{
+  width:600px !important;
+}
+.application.sheet.region-config{
+  width:600px !important;
 }
 #sidebar-content{
   padding-top:1em;
@@ -164,7 +171,7 @@
   width:100%;
   border-image-source: var(--terminal-border-image) !important;
   border-image-slice: 33 29 65 33 fill !important;
-  border-image-outset: 0.95em 0.95em 0.85em 0.95em !important;
+  /*border-image-outset: 0.95em 0.95em 0.85em 0.95em !important;*/
   border-image-repeat: stretch !important;
   border-image-width: 1em 1em 2em 1em !important;
   background:none;
@@ -233,7 +240,16 @@ button > span {
 }
 
 /* Buttons */
-button:not([class*="fsc-"], [class*="fa-"]), .button:not([class*="fsc-"], [class*="fa-"]) {
+.source-code-edit>button,
+.text>button{
+  background: none;
+  color: var(--terminal-primary);
+  border: 1px double var(--terminal-border);
+  font-family: var(--terminal-font);
+  cursor: pointer;
+}
+:not(li) >button:not([class*="fsc-"], [class*="fa-"]), 
+.button:not([class*="fsc-"], [class*="fa-"]) {
 
   background: none;
   color: var(--terminal-primary);
@@ -1176,6 +1192,9 @@ a[data-action="duplicate"] i,
   background-color: var(--terminal-bg)!important;
   color: var(--terminal-text) !important;
 }
+#chat-message{
+  height:140px !important;
+}
 /* Tool icons in left bar - different colors */
 #controls .control-tool:nth-child(1) i { color: #ff6666 !important; text-shadow: 0 0 3px #ff6666 !important; }
 #controls .control-tool:nth-child(2) i { color: #66ff66 !important; text-shadow: 0 0 3px #66ff66 !important; }
@@ -1195,7 +1214,7 @@ i:not([class*="fa-"]):not(.colored-icon),
 }
 
 /* Specific Foundry VTT icons */
-.fa-dice-d20:before { color: #ff6b6b !important; text-shadow: 0 0 3px #ff6b6b !important; font-family: 'Font Awesome 6 Pro' }
+.fa-dice-d20:before { color: #ff6b6b !important; text-shadow: 0 0 3px #ff6b6b  }
 .fa-crosshairs:before { color: #4ecdc4 !important; text-shadow: 0 0 3px #4ecdc4 !important; }
 .fa-users:before { color: #45b7d1 !important; text-shadow: 0 0 3px #45b7d1 !important; }
 .fa-map:before { color: #96ceb4 !important; text-shadow: 0 0 3px #96ceb4 !important; }
@@ -1207,42 +1226,33 @@ i:not([class*="fa-"]):not(.colored-icon),
 .fa-star:before { color: goldenrod !important; text-shadow: 0 0 6px goldenrod !important; }
 .fa-question:before { color: purple!important; text-shadow: 0 0 6px purple !important; }
 .fa-file-import:before { color: goldenrod; 
-  text-shadow: 0 0 6px goldenrod !important;
-  font-family: 'Font Awesome 6 Pro'}
+  text-shadow: 0 0 6px goldenrod !important;}
 .fa-passport:before { color: #0096FF; 
   text-shadow: 0 0 6px #0096FF !important;
-  opacity:1;
-  font-family: 'Font Awesome 6 Pro'}
+  opacity:1;}
 .fa-times:before { color: goldenrod; 
-  text-shadow: 0 0 6px goldenrod !important;
-  font-family: 'Font Awesome 6 Pro'}
+  text-shadow: 0 0 6px goldenrod !important;}
 .fa-cog:before { color: goldenrod; 
-  text-shadow: 0 0 6px goldenrod !important;
-  font-family: 'Font Awesome 6 Pro'}
+  text-shadow: 0 0 6px goldenrod !important;}
 .fa-save:before {
   color: var(--terminal-primary); 
   text-shadow: 0 0 6px var(--terminal-primary) !important;
-  font-family: 'Font Awesome 6 Pro'
 }
 .fa-user:before {
   color: var(--terminal-warning); 
   text-shadow: 0 0 6px var(--terminal-warning-glow) !important;
-  font-family: 'Font Awesome 6 Pro'
 }
 .fa-suitcase:before {
   color: var(--terminal-primary); 
   text-shadow: 0 0 6px var(--terminal-success-glow) !important;
-  font-family: 'Font Awesome 6 Pro'
 }
 .fa-folder:before {
   color: var(--terminal-text); 
   text-shadow: 0 0 6px var(--terminal-glow) !important;
-  font-family: 'Font Awesome 6 Pro'
 }
 .fa-trash:before {
   color: var(--terminal-error); 
   text-shadow: var(--terminal-error-glow) !important;
-  font-family: 'Font Awesome 6 Pro'
 }
 .window-app .window-header .window-title .document-id-link{
   opacity:1;
@@ -1862,7 +1872,9 @@ u:hover{
 .fortyk .sheet-content .tab,
 .fortyk .sheet-content .tab .editor {
   height: 100%;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
 }
 prose-mirror{
   height: 300px !important;
@@ -2184,8 +2196,9 @@ prose-mirror{
   height:100%;
 }
 .fortyk .skills .skills-header .skillSubItem:before{
-  font-family:'Font Awesome 6 Pro';
-  content:" \f105";
+  font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", "Font Awesome 5 Free", "Font Awesome 5 Pro", "Font Awesome 5 Brands", "FontAwesome";
+  content:"\f105 ";
+  font-weight: 900;
 }
 .margin-left-23{
   margin-left:23px;

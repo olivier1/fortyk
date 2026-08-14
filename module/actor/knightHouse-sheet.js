@@ -84,11 +84,13 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         let knight=game.actors.get(item.system.knight.value);
         let renderedTemplate=foundry.applications.handlebars.renderTemplate('systems/fortyk/templates/actor/dialogs/delete-item-dialog.html');
         renderedTemplate.then(content => {
-            new Dialog({
-                title: "Deletion Confirmation",
+            new foundry.applications.api.DialogV2({
+                window:{title: "Deletion Confirmation"},
                 content: content,
-                buttons:{
-                    submit:{
+                actor:house,
+                buttons:[
+                    {
+                    action:"submit",
                         label:"Yes",
                         callback: async dlg => { 
                             if(queue==="queue"){
@@ -134,13 +136,13 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
                             this.render(true,{focus:false});
                         }
                     },
-                    cancel:{
+                    {action:"cancel",
                         label: "No",
                         callback: null
                     }
-                },
+                ],
                 default: "submit"
-            }).render(true)
+            }).render({force:true});
         });
     }
     _repairEntryCreate(evet){
@@ -173,11 +175,13 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         let renderedTemplate=foundry.applications.handlebars.renderTemplate('systems/fortyk/templates/actor/dialogs/select-wargear-type-dialog.html', templateOptions);
 
         renderedTemplate.then(content => { 
-            new Dialog({
-                title: "New Component Type",
+            new foundry.applications.api.DialogV2({
+                window:{title: "New Component Type"},
                 content: content,
-                buttons:{
-                    submit:{
+                actor:this.actor,
+                buttons:[
+                    {
+                    action:"submit",
                         label:"Yes",
                         callback: async html => {
                             const type = html.find('select[name="wargear-type"]').val();
@@ -195,13 +199,13 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
 
                         }
                     },
-                    cancel:{
+                    {action:"cancel",
                         label: "No",
                         callback: null
                     }
-                },
+                ],
                 default: "submit"
-            }).render(true)
+            }).render({force:true});
         });
     }
     _onAddIncome(event){

@@ -1,6 +1,6 @@
 import {FortyKItem} from "../item/item.js";
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
+const { DialogV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
 
     /** @override */
     #talents=null;
@@ -20,7 +20,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     #mode = "Custom";
     static DEFAULT_OPTIONS= {
 
-        tag: 'form',
+        tag: 'dialog',
         classes: ["fortyk"],
         position:{
             width: 666,
@@ -85,9 +85,9 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
             data.advancementTypes.push({value:"Navigator Power"});
             data.disciplines=data.FORTYK.psychicDisciplines;
             data.psyPowers=this.#psyPowers;
-            
+
             data.discipline=this.#discipline;
-            
+
         }else if(actor.system.psykana.pr.value>0){
             data.pr=actor.system.psykana.pr.value;
             data.pr1=actor.system.psykana.pr.value+1;
@@ -96,9 +96,9 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
             data.disciplines=data.FORTYK.psychicDisciplines;
 
             data.psyPowers=this.#psyPowers;
-          
+
             data.discipline=this.#discipline;
-            
+
         }
         data.mode=this.#mode;
         data.skills=actor.skills;
@@ -176,14 +176,14 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
             $(this).select();
         });
         //stop the change event on all inputs because its jank
-      $("input").change(function (event){
-          event.stopImmediatePropagation();
-          event.preventDefault();
-      });
-       $("select:not([class])").change(function (event){
-          event.stopImmediatePropagation();
-          event.preventDefault();
-       });
+        $("input").change(function (event){
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        });
+        $("select:not([class])").change(function (event){
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        });
 
 
     } 
@@ -200,18 +200,18 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     _onTalentLoad(event){
         if(this.#mode==="Custom"){
-            let input=document.getElementById("custom-name").select();
+            let input=this.element.ownerDocument.getElementById("custom-name").select();
         }else if(this.#mode==="New Skill"){
-            let input=document.getElementById("name").select();
+            let input=this.element.ownerDocument.getElementById("name").select();
         }else if(this.#mode==="Talent"){
 
-            let input=document.getElementById("talentfilter").select();
+            let input=this.element.ownerDocument.getElementById("talentfilter").select();
         }
         else if(this.#mode==="Signature Wargear"){
-            let input=document.getElementById("name").select();
+            let input=this.element.ownerDocument.getElementById("name").select();
         }
         if(this.#mode==="Talent"||this.#mode==="Skill Upgrade"||this.#mode==="Characteristic Upgrade"||this.#mode==="Psychic Power"||this.#mode==="Navigator Power"){
-            document.getElementById("submitButton").setAttribute("disabled",true);
+            this.element.ownerDocument.getElementById("submitButton").setAttribute("disabled",true);
         }
 
 
@@ -221,30 +221,30 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         event.preventDefault();
         let actor=this.options.actor;
         if(this.remainingExp<0){
-            new Dialog({
-                title: `Insufficient Experience.`,
+            new foundry.applications.api.DialogV2({
+                window:{title: `Insufficient Experience.`},
+                actor:actor,
                 classes:"fortky",
                 content: "You have insufficient experience points to purchase this advance!",
-                buttons: {
-                    submit: {
+                buttons: [
+                    {
+                        action:"submit",
                         label: 'OK',
                         callback: (html) => {
-
                         }
-
                     }
-                },
+                ],
                 default: "submit",
 
 
                 width:200}
-                      ).render(true);
+                                                 ).render({force:true});
             return;
         }
         const type = "advancement";
         if(this.#mode==="Custom"){
 
-            const name = document.getElementById("custom-name").value;
+            const name = this.element.ownerDocument.getElementById("custom-name").value;
             const itemData = {
                 name: `${name}`,
                 type: type,
@@ -284,17 +284,17 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
             this.#cost=0;
         }else if(this.#mode==="New Skill"){
             let advanceName="";
-            let skillName=document.getElementById("name").value;
-            let parent=document.getElementById("skill-type").value;
+            let skillName=this.element.ownerDocument.getElementById("name").value;
+            let parent=this.element.ownerDocument.getElementById("skill-type").value;
             if(parent){advanceName=parent+": ";}
             advanceName+=skillName+" +0";
-            let children=document.getElementById("children").checked;
+            let children=this.element.ownerDocument.getElementById("children").checked;
             let aptitudes="";
-            let apt1=document.getElementById("aptitude1").value;
-            let apt2=document.getElementById("aptitude2").value;
+            let apt1=this.element.ownerDocument.getElementById("aptitude1").value;
+            let apt2=this.element.ownerDocument.getElementById("aptitude2").value;
             aptitudes=apt1+","+apt2;
-            let skillUse=document.getElementById("skillUse").value;
-            let skillDescr=document.getElementById("description").value;
+            let skillUse=this.element.ownerDocument.getElementById("skillUse").value;
+            let skillDescr=this.element.ownerDocument.getElementById("description").value;
             const skillData = {
                 name: `${skillName}`,
                 type: "skill",
@@ -375,7 +375,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
                         return choosenSpec;
                     },
                     render: (html)=>{
-                        document.getElementById('specInput').select();
+                        this.element.ownerDocument.getElementById('specInput').select();
                     },
                     width:100});
 
@@ -422,7 +422,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
             this.talents=this.talents;
 
         }else if(this.#mode==="Signature Wargear"){
-            const wargearName = document.getElementById("name").value;
+            const wargearName = this.element.ownerDocument.getElementById("name").value;
             const itemData = {
                 name: `Signature Wargear: ${wargearName}`,
                 type: type,
@@ -569,7 +569,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         }
 
         try {
-            let discount=parseInt(document.getElementById("discount").value);
+            let discount=parseInt(this.element.ownerDocument.getElementById("discount").value);
             this.#cost-=discount;
             this._updateCost();
         } catch (e) {
@@ -614,9 +614,9 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         event.stopImmediatePropagation();
         let newSkillType=event.target.value;
         if(newSkillType!==""){
-            document.getElementById("children").setAttribute("disabled",true);
+            this.element.ownerDocument.getElementById("children").setAttribute("disabled",true);
         }else{
-            document.getElementById("children").removeAttribute("disabled");
+            this.element.ownerDocument.getElementById("children").removeAttribute("disabled");
         }
     }
     async _onChildrenClick(event){
@@ -624,9 +624,9 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         let children=event.target.checked;
 
         if(children){
-            document.getElementById("skill-type").setAttribute("disabled",true);
+            this.element.ownerDocument.getElementById("skill-type").setAttribute("disabled",true);
         }else{
-            document.getElementById("skill-type").removeAttribute("disabled");
+            this.element.ownerDocument.getElementById("skill-type").removeAttribute("disabled");
         }
     }
     async _onAptitudeChange(event){
@@ -641,7 +641,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         let skill=await this.options.actor.getEmbeddedDocument("Item",skillId);
         this.#chosenSkill=skill;
         this.calculateSkillCost(skill.system.aptitudes.value,skill.system.value);
-        document.getElementById("submitButton").removeAttribute("disabled");
+        this.element.ownerDocument.getElementById("submitButton").removeAttribute("disabled");
 
     }
     async _onCharUpgrade(event){
@@ -652,7 +652,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         let charAptitudes=this.FORTYK.characteristics[charKey].aptitudes;
         this.#chosenChar=charKey;
         this.calculateCharCost(charAptitudes,charAdv);
-        document.getElementById("submitButton").removeAttribute("disabled");
+        this.element.ownerDocument.getElementById("submitButton").removeAttribute("disabled");
     }
     async _onPowerChoice(event){
         let node=event.target;
@@ -676,7 +676,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         this.#chosenPower=power;
         this.calculatePsyPowerCost();
 
-        document.getElementById("submitButton").removeAttribute("disabled");
+        this.element.ownerDocument.getElementById("submitButton").removeAttribute("disabled");
     }
     async _onEliteAdvanceChoice(event){
         let node=event.target;
@@ -701,7 +701,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         this.calculateEliteAdvanceCost();
 
 
-        document.getElementById("submitButton").removeAttribute("disabled");
+        this.element.ownerDocument.getElementById("submitButton").removeAttribute("disabled");
     }
     async _onTalentChoice(event){
         let node=event.target;
@@ -727,7 +727,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         let tier=parseInt(talent.system.tier.value);
         if(isNaN(tier)){tier=3;}
         this.calculateTalentCost(aptitudes,tier);
-        document.getElementById("submitButton").removeAttribute("disabled");
+        this.element.ownerDocument.getElementById("submitButton").removeAttribute("disabled");
     }
 
     async calculateTalentCost(aptitudes,tier){
@@ -748,7 +748,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         if(matchingAptitudes>2){matchingAptitudes=2;}
 
         let cost=this.FORTYK.talentCosts[matchingAptitudes][tier-1];
-        let discount=parseInt(document.getElementById("discount").value);
+        let discount=parseInt(this.element.ownerDocument.getElementById("discount").value);
         cost=cost-discount;
         this.#cost=cost;
         this._updateCost();
@@ -767,7 +767,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         if(matchingAptitudes>2){matchingAptitudes=2;}
         training+=5;
         let cost=this.FORTYK.characteristicUpgradeCosts[matchingAptitudes][training];
-        let discount=parseInt(document.getElementById("discount").value);
+        let discount=parseInt(this.element.ownerDocument.getElementById("discount").value);
         cost=cost-discount;
         this.#cost=cost;
         this.#charUpg=training;
@@ -775,8 +775,8 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     async newSkillCost(){
         let aptitudes="";
-        let apt1=document.getElementById("aptitude1").value;
-        let apt2=document.getElementById("aptitude2").value;
+        let apt1=this.element.ownerDocument.getElementById("aptitude1").value;
+        let apt2=this.element.ownerDocument.getElementById("aptitude2").value;
         aptitudes=apt1+","+apt2;
 
         this.calculateSkillCost(aptitudes,-20);
@@ -802,7 +802,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         if(training===-20){training=0;}else{training+=10;}
         let cost=this.FORTYK.skillUpgradeCosts[matchingAptitudes][training];
         let discount=0;
-        try{discount=parseInt(document.getElementById("discount").value);}
+        try{discount=parseInt(this.element.ownerDocument.getElementById("discount").value);}
         catch(err){}
         cost=cost-discount;
         this.#cost=cost;
@@ -819,8 +819,8 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         this.calculateWargearCost();
     }
     calculateWargearCost(){
-        let quality=document.getElementById("quality").value;
-        let rarity=parseFloat(document.getElementById("rarity").value);
+        let quality=this.element.ownerDocument.getElementById("quality").value;
+        let rarity=parseFloat(this.element.ownerDocument.getElementById("rarity").value);
         let cost=0;
 
         if(rarity>=-20){
@@ -835,7 +835,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         }else if(quality==="Best"){
             cost=cost*2;
         }
-        try{discount=parseInt(document.getElementById("discount").value);}
+        try{discount=parseInt(this.element.ownerDocument.getElementById("discount").value);}
         catch(err){}
         cost=cost-discount;
         this.#cost=cost;
@@ -845,7 +845,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         let power=this.#chosenPower;
         let cost=parseInt(power.system.cost.value);
         let discount=0;
-        try{discount=parseInt(document.getElementById("discount").value);}
+        try{discount=parseInt(this.element.ownerDocument.getElementById("discount").value);}
         catch(err){}
         cost=cost-discount;
         this.#cost=cost;
@@ -855,7 +855,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         let ea=this.#chosenEliteAdvance;
         let cost=ea.system.cost.value;
         let discount=0;
-        try{discount=parseInt(document.getElementById("discount").value);}
+        try{discount=parseInt(this.element.ownerDocument.getElementById("discount").value);}
         catch(err){}
         cost=cost-discount;
         this.#cost=cost;
@@ -906,24 +906,25 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
             height: 400
         };
         var name=event.currentTarget.dataset["name"];
-        let dlg = new Dialog({
-            title: `${name} Description`,
+        let dlg = newfoundry.applications.api.DialogV2({
+            window:{title: `${name} Description`},
+            actor:this.options.actor,
             content: "<p>"+descr+"</p>",
-            buttons: {
-                submit: {
-                    label: "OK",
-                    callback: null
-                }
-            },
+            buttons: [{
+                action:"submit",
+                label: "OK",
+                callback: null
+            }]
+            ,
             default: "submit",
         }, options);
-        dlg.render(true);
+        dlg.render({force:true});
     }
     _onTntFilterChange(event){
 
-        let tnts=document.getElementsByName("tntEntry");
+        let tnts=this.element.ownerDocument.getElementsByName("tntEntry");
 
-        let filterInput=document.getElementById("talentfilter");
+        let filterInput=this.element.ownerDocument.getElementById("talentfilter");
         let filter=filterInput.value.toLowerCase();
         for(let i=0;i<tnts.length;i++){
             let tnt=tnts[i];
@@ -940,7 +941,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     _onDisciplineChange(event){
         event.preventDefault();
         event.stopImmediatePropagation();
-        let powers=document.getElementsByName("tntEntry");
+        let powers=this.element.ownerDocument.getElementsByName("tntEntry");
         let discipline=event.target.value;
         this.#discipline=discipline;
         for(let i=0;i<powers.length;i++){
@@ -965,9 +966,9 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         this._updateCost();
     }
     _updateCost(){
-        document.getElementById("cost").textContent=`${this.#cost} EXP`;
+        this.element.ownerDocument.getElementById("cost").textContent=`${this.#cost} EXP`;
         this.remainingExp=this.actorExp-this.#cost;
-        document.getElementById("remainingExp").textContent=`${this.remainingExp} EXP`;
+        this.element.ownerDocument.getElementById("remainingExp").textContent=`${this.remainingExp} EXP`;
 
 
     }

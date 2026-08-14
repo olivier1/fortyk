@@ -27,7 +27,7 @@ export class FortyKCoverBehavior extends foundry.data.regionBehaviors.RegionBeha
             initial:false,
             label:"Is Area Cover",
             localize:false
-        })
+        });
 
         return schema;
     }

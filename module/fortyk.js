@@ -1,4 +1,42 @@
 // Import Modules
+import PCData from "./DataModels/actor/PCData.js";
+import NPCData from "./DataModels/actor/NPCData.js";
+import SpaceshipData from "./DataModels/actor/SpaceshipData.js";
+import VehicleData from "./DataModels/actor/VehicleData.js";
+//import ComradeData from "./DataModels/actor/ComradeData.js";
+//import RegimentData from "./DataModels/actor/RegimentData.js";
+import RangedWeaponItemData from "./DataModels/item/RangedWeaponItemData.js";
+import MeleeWeaponItemData from "./DataModels/item/MeleeWeaponItemData.js";
+import AdvancementItemData from "./DataModels/item/AdvancementItemData.js";
+import AmmunitionItemData from "./DataModels/item/AmmunitionItemData.js";
+import ArmorItemData from "./DataModels/item/ArmorItemData.js";
+import CadetHouseItemData from "./DataModels/item/CadetHouseItemData.js";
+import ConsummableItemData from "./DataModels/item/ConsummableItemData.js";
+import CyberneticItemData from "./DataModels/item/CyberneticItemData.js";
+import DisorderItemData from "./DataModels/item/DisorderItemData.js";
+import EliteAdvanceItemData from "./DataModels/item/EliteAdvanceItemData.js";
+import ForcefieldItemData from "./DataModels/item/ForcefieldItemData.js";
+import InjuryItemData from "./DataModels/item/InjuryItemData.js";
+import KnightArmorItemData from "./DataModels/item/KnightArmorItemData.js";
+import KnightChassisItemData from "./DataModels/item/KnightChassisItemData.js";
+import KnightComponentItemData from "./DataModels/item/KnightComponentItemData.js";
+import KnightCoreItemData from "./DataModels/item/KnightCoreItemData.js";
+import KnightSpiritItemData from "./DataModels/item/KnightSpiritItemData.js";
+import KnightStructureItemData from "./DataModels/item/KnightStructureItemData.js";
+import MalignancyItemData from "./DataModels/item/MalignancyItemData.js";
+import MissionItemData from "./DataModels/item/MissionItemData.js";
+import ModItemData from "./DataModels/item/ModItemData.js";
+import MutationItemData from "./DataModels/item/MutationItemData.js";
+import OutpostItemData from "./DataModels/item/OutpostItemData.js";
+import PsychicPowerItemData from "./DataModels/item/PsychicPowerItemData.js";
+import RepairEntryItemData from "./DataModels/item/RepairEntryItemData.js";
+import SkillItemData from "./DataModels/item/SkillItemData.js";
+import SpaceshipCargoItemData from "./DataModels/item/SpaceshipCargoItemData.js";
+import SpaceshipComponentItemData from "./DataModels/item/SpaceshipComponentItemData.js";
+import SpaceshipSquadronItemData from "./DataModels/item/SpaceshipSquadronItemData.js";
+import SpaceshipWeaponItemData from "./DataModels/item/SpaceshipWeaponItemData.js";
+import TalentnTraitItemData from "./DataModels/item/TalentnTraitItemData.js";
+import WargearItemData from "./DataModels/item/WargearItemData.js";
 import { FortyKActor } from "./actor/actor.js";
 import { ActorDialogs } from "./actor/actor-dialogs.js";
 import { FortyKToken } from "./token/fortykToken.js";
@@ -9,9 +47,8 @@ import { FortyKElevationBehavior } from "./terrain/behaviors/fortykElevation.js"
 import { FortyKElevationConfig } from "./terrain/behaviors/configs/fortykElevationConfig.js";
 import { FortyKCoverBehavior } from "./terrain/behaviors/fortykCover.js";
 import { FortyKCoverConfig } from "./terrain/behaviors/configs/fortykCoverConfig.js";
+import { FortyKAuraBehavior } from "./terrain/behaviors/fortykAura.js";
 import FortyKDWActorSheet from "./actor/actorDW-sheet.js";
-import { FortyKDHActorSheet } from "./actor/actorDH-sheet.js";
-import { FortyKOWActorSheet } from "./actor/actorOW-sheet.js";
 import { FortyKOWComradeSheet } from "./actor/comradeOW-sheet.js";
 import { FortyKOWRegimentSheet } from "./actor/regimentOW-sheet.js";
 import { FortyKSpaceshipSheet } from "./actor/spaceship-sheet.js";
@@ -36,7 +73,7 @@ import { FortyKCards } from "./card/card.js";
 import { FortykTemplate } from "./measuredTemplate/template.js";
 import { objectByString } from "./utilities.js";
 
-import { tokenDistance, applySceneAuras, getActorToken, parseHtmlForInline, preloadHandlebarsTemplates, preLoadHandlebarsPartials, sleep, turnOffActorAuras, isFirstGM } from "./utilities.js";
+import { tokenDistance,  getActorToken, parseHtmlForInline, preloadHandlebarsTemplates, preLoadHandlebarsPartials, sleep, isFirstGM } from "./utilities.js";
 
 
 function manageColorScheme() {
@@ -202,7 +239,14 @@ Hooks.once("init", async function () {
     };
     Combatant.prototype._getInitiativeFormula = _getInitiativeFormula;
     //set custom system status effects
-    CONFIG.statusEffects = FORTYK.StatusEffects;
+    let copyStatusArray= foundry.utils.duplicate(FORTYK.StatusEffects);
+    for(let i= 0; i<copyStatusArray.length; i++){
+        let status=copyStatusArray[i];
+        status.order=i;
+
+    }
+    CONFIG.statusEffects = copyStatusArray;
+
     //set default font
     CONFIG.fontDefinitions["CaslonAntique"] = { editor: true, fonts: [] };
     CONFIG.defaultFontFamily = "Inquisitor";
@@ -216,12 +260,54 @@ Hooks.once("init", async function () {
     CONFIG.Token.documentClass = FortyKToken;
     CONFIG.Token.objectClass = FortyKPlaceableToken;
     CONFIG.Token.movement.TerrainData = FortyKTerrain;
+    //Assign custom data models
+    CONFIG.Actor.dataModels.dwPC = PCData;
+    CONFIG.Actor.dataModels.npc = NPCData;
+    CONFIG.Actor.dataModels.vehicle = VehicleData;
+    CONFIG.Actor.dataModels.spaceship = SpaceshipData;
+    CONFIG.Item.dataModels.rangedWeapon = RangedWeaponItemData;
+    CONFIG.Item.dataModels.meleeWeapon = MeleeWeaponItemData;
+    CONFIG.Item.dataModels.advancement = AdvancementItemData;
+    CONFIG.Item.dataModels.ammunition = AmmunitionItemData;
+    CONFIG.Item.dataModels.armor = ArmorItemData;
+    CONFIG.Item.dataModels.cadetHouse = CadetHouseItemData;
+    CONFIG.Item.dataModels.consummable = ConsummableItemData;
+    CONFIG.Item.dataModels.cybernetic = CyberneticItemData;
+    CONFIG.Item.dataModels.disorder = DisorderItemData;
+    CONFIG.Item.dataModels.eliteAdvance = EliteAdvanceItemData;
+    CONFIG.Item.dataModels.forcefield = ForcefieldItemData;
+    CONFIG.Item.dataModels.injury = InjuryItemData;
+    CONFIG.Item.dataModels.knightArmor = KnightArmorItemData;
+    CONFIG.Item.dataModels.knightChassis = KnightChassisItemData;
+    CONFIG.Item.dataModels.knightComponent = KnightComponentItemData;
+    CONFIG.Item.dataModels.knightCore = KnightCoreItemData;
+    CONFIG.Item.dataModels.knightSpirit = KnightSpiritItemData;
+    CONFIG.Item.dataModels.knightStructure = KnightStructureItemData;
+    CONFIG.Item.dataModels.malignancy = MalignancyItemData;
+    CONFIG.Item.dataModels.mission = MissionItemData;
+    CONFIG.Item.dataModels.mod = ModItemData;
+    CONFIG.Item.dataModels.mutation = MutationItemData;
+    CONFIG.Item.dataModels.outpost = OutpostItemData;
+    CONFIG.Item.dataModels.pyschicPower = PsychicPowerItemData;
+    CONFIG.Item.dataModels.repairEntry = RepairEntryItemData;
+    CONFIG.Item.dataModels.skill = SkillItemData;
+    CONFIG.Item.dataModels.spaceshipCargo = SpaceshipCargoItemData;
+    CONFIG.Item.dataModels.spaceshipComponent = SpaceshipComponentItemData;
+    CONFIG.Item.dataModels.spaceshipSquadron = SpaceshipSquadronItemData;
+    CONFIG.Item.dataModels.spaceshipWeapon = SpaceshipWeaponItemData;
+    CONFIG.Item.dataModels.talentntrait = TalentnTraitItemData;
+    CONFIG.Item.dataModels.wargear =WargearItemData;
+    //CONFIG.Actor.dataModels.owComrade = ComradeData;
+    //CONFIG.Actor.dataModels.owRegiment = RegimentData;
     CONFIG.RegionBehavior.dataModels.fortykElevationBehavior = FortyKElevationBehavior;
-    CONFIG.RegionBehavior.typeLabels.fortykElevationBehavior = "TYPES.RegionBehvior.fortykElevation";
+    CONFIG.RegionBehavior.typeLabels.fortykElevationBehavior = "TYPES.RegionBehavior.fortykElevation";
     CONFIG.RegionBehavior.typeIcons.fortykElevationBehavior = "fas fa-stairs";
     CONFIG.RegionBehavior.dataModels.fortykCoverBehavior = FortyKCoverBehavior;
-    CONFIG.RegionBehavior.typeLabels.fortykCoverBehavior = "TYPES.RegionBehvior.fortykCover";
+    CONFIG.RegionBehavior.typeLabels.fortykCoverBehavior = "TYPES.RegionBehavior.fortykCover";
     CONFIG.RegionBehavior.typeIcons.fortykCoverBehavior = "fas fa-tarp-droplet";
+    CONFIG.RegionBehavior.dataModels.fortykAuraBehavior = FortyKAuraBehavior;
+    CONFIG.RegionBehavior.typeLabels.fortykAuraBehavior = "TYPES.RegionBehavior.fortykAura";
+    CONFIG.RegionBehavior.typeIcons.fortykAuraBehavior = "fas fa-tarp-droplet";
 
     //CONFIG.ActiveEffect.entityClass = FortyKActiveEffect;
     // Register sheet application classes
@@ -587,10 +673,10 @@ Hooks.once("ready", async function () {
 
                             //clean templates after
                             let scene = game.scenes.active;
-                            let templates = scene.templates;
-                            for (const template of templates) {
-                                if (template.isOwner) {
-                                    await template.delete();
+                            let regions = scene.regions;
+                            for (const region of regions) {
+                                if (region.getFlag("fortyk","damagetemplate")) {
+                                    await region.delete();
                                 }
                             }
                         }
@@ -796,6 +882,10 @@ Hooks.on("combatStart", (combat, updateData) => {
             if(actor.system.secChar.barrier.max!==0){
                 actor.update({"system.secChar.barrier.value":actor.system.secChar.barrier.max,
                               "system.secChar.barrier.currentCD":0});
+                let barrierItem=actor.system.secChar.wornGear.forceField;
+                if(barrierItem){
+                    barrierItem.update({"system.broken.value":false});
+                }
             }
         }
         if (enemyFears.length > 0) {
@@ -864,7 +954,7 @@ Hooks.on("updateCombat", async (combat) => {
             if (window[1].actor) await window[1].close();
         }
         if (actor.type === "npc") {
-            await actor.sheet.render(true);
+            await actor.sheet.render({force:true});
         }
         if (actor.getFlag("fortyk", "hardtargetEvasion")) {
             await actor.setFlag("fortyk", "hardtargetEvasion", false);
@@ -909,6 +999,10 @@ Hooks.on("updateCombat", async (combat) => {
             }else if(barrier.currentCD===0&&barrier.value===0){
                 content=`${barrier.name} cooldown overload finished, barrier is now at full capacity: ${barrier.max}`;
                 await actor.update({"system.secChar.barrier.value":barrier.max});
+                let barrierItem=actor.system.secChar.wornGear.forceField;
+                if(barrierItem){
+                    barrierItem.update({"system.broken.value":false});
+                }
             }else{
                 let oldValue=barrier.value;
                 if(oldValue===barrier.max){
@@ -1283,7 +1377,7 @@ Hooks.on("updateCombat", async (combat) => {
                         {
                             key: `system.characteristics.t.value`,
                             value: -1 * tDmg,
-                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_MODES.ADD
+                            mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add
                         }
                     ];
                     await FortykRolls.applyActiveEffect(token, ae);
@@ -1484,7 +1578,7 @@ Hooks.on("renderCompendium", (compendium, html, data) => {
         return false;
     };
     let onDragComponent = async function (event) {
-        let compendiumId = compendium.id.replace("compendium-", "");
+        let compendiumId = compendium.id.replace("Compendium-", "");
         compendiumId = compendiumId.replace("_", ".");
 
         let compendiumObj = await game.packs.get(compendiumId);
@@ -1577,6 +1671,7 @@ Hooks.on("preCreateToken", async (document, data, options, userId) => {
         await document.updateSource({ height: newHeight, width: newWidth });
     }
 });
+
 //adapted the module multidrop
 Hooks.on("dropCanvasData", (canvas, dropData, dragEvent) => {
 
@@ -1688,6 +1783,7 @@ Hooks.on("createToken", async (tokenDocument, options, userId) => {
     if (!isFirstGM()) return;
     let actor = tokenDocument.actor;
     if (actor.getFlag("core", "dead")) return;
+    console.log(actor)
     let tokenObject = tokenDocument.object;
     tokenObject.x = tokenDocument.x;
     tokenObject.y = tokenDocument.y;
@@ -1695,109 +1791,66 @@ Hooks.on("createToken", async (tokenDocument, options, userId) => {
 
     tnts = tnts.concat(actor.itemTypes.wargear);
     let scene = game.scenes.current;
-    let activeAuras = scene.getFlag("fortyk", "activeAuras");
-    if (!activeAuras) activeAuras = [];
+
     for (let talent of tnts) {
         if (talent.system.isAura.value) {
-            let auraBuffs = talent.getFlag("fortyk", "sustained");
-            if (auraBuffs) {
-                for (let buffId of auraBuffs) {
-                    let auraBuff = await fromUuid(buffId);
-                    if (auraBuff) {
-                        await auraBuff.delete();
-                    }
-                }
-            }
 
-            activeAuras.push(talent.uuid);
 
             let auraType = talent.system.isAura.auraType;
-            let targets;
-            let tokens = game.scenes.current.tokens;
 
-            switch (auraType) {
-                case "friendly":
-                    tokens = tokens.filter((token) => token.disposition === tokenDocument.disposition);
-                    break;
-                case "hostile":
-                    tokens = tokens.filter((token) => token.disposition !== tokenDocument.disposition);
-                    break;
-            }
-            if (talent.system.isAura.notSelf) {
-                tokens = tokens.filter((token) => token.id !== tokenDocument.id);
-            }
 
-            let reqFlags = talent.system.isAura.reqFlags.split(",");
-            let negReqFlags = talent.system.isAura.negReqFlags.split(",");
-            tokens = tokens.filter((token) => {
-                let targetActor = token.actor;
-                let skip = false;
-                for (let reqFlag of reqFlags) {
-                    reqFlag = reqFlag.trim();
-                    if (reqFlag === "") continue;
-                    if (!targetActor.getFlag("fortyk", reqFlag)) skip = true;
-                }
-                return !skip;
-            });
-            tokens = tokens.filter((token) => {
-                let targetActor = token.actor;
-                let skip = false;
-                for (let negReqFlag of negReqFlags) {
-                    negReqFlag = negReqFlag.trim();
-                    if (negReqFlag === "") continue;
-                    if (targetActor.getFlag("fortyk", negReqFlag)) skip = true;
-                }
-                return !skip;
-            });
+            let notSelf = talent.system.isAura.notSelf;
+            let reqFlags = talent.system.isAura.reqFlags;
+            let negReqFlags = talent.system.isAura.negReqFlags;
+
             let los = talent.system.isAura.los;
-            if (los) {
-                tokens = tokens.filter((token) => {
-                    const collision = CONFIG.Canvas.polygonBackends["sight"].testCollision(
-                        tokenObject.center,
-                        token._object.center,
-                        { mode: "any", type: "sight" }
-                    );
-                    return !collision;
-                });
-            }
+
             let range = parseInt(talent.system.isAura.range);
 
-            targets = tokens.filter((token) => !token.actor.getFlag("core", talent._source.name));
-            targets = targets.filter((token) => range >= tokenDistance(token, tokenObject));
-
+            const circleShape={
+                type: "circle",
+                x: tokenObject.x+math.ceil(tokenObject.w/2),
+                y: tokenObject.y+math.ceil(tokenObject.h/2),
+                radius: range*canvas.dimensions.size
+            };
             let ae = talent.effects.entries().next().value[1];
-            let aeData = foundry.utils.duplicate(ae);
+            let aeData = foundry.utils.deepClone(ae);
 
             aeData.name = talent._source.name;
 
-            aeData.flags = {
-                fortyk: { aura: true, los: los, range: range, casterTokenId: tokenDocument.id }
-            };
+
 
             aeData.disabled = false;
             aeData.origin = talent.uuid;
             aeData.statuses = [ae.name];
-
-            let effectUuIds = [];
-            for (let i = 0; i < targets.length; i++) {
-                let target = targets[i];
-
-                let targetActor = target.actor;
-                let render = false;
-
-                let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
-
-                let ae = effect[0];
-                let effectuuid = await ae.uuid;
-
-                effectUuIds.push(effectuuid);
-            }
-
-            await talent.setFlag("fortyk", "sustained", effectUuIds);
-            await talent.setFlag("fortyk", "sustainedrange", range);
+            let status=ae.name;
+            let region =await canvas.scene.createEmbeddedDocuments("Region", [{
+                name:`${aeData.name} Aura`,
+                color: "#ff4500", // Bright orange-red
+                shapes: [circleShape],
+                events: ["tokenEnter"],
+                behaviors: [
+                    {
+                        type: "fortykAuraBehavior", // Triggers an automation workflow
+                        name: `${aeData.name} Aura`,
+                        enabled: true,
+                        system: {
+                            los:los,
+                            notSelf:notSelf,
+                            auraType:auraType,
+                            effects:[ae.uuid],
+                            negReqFlags:negReqFlags,
+                            reqFlags:reqFlags,
+                            disableOnExit: true,
+                            status:status,
+                            originId:actor.uuid
+                        }
+                    }
+                ]
+            }]);
+            region[0].update({"attachment.token":tokenObject.id});
         }
     }
-    scene.setFlag("fortyk", "activeAuras", activeAuras);
 });
 
 
@@ -1826,7 +1879,7 @@ async function handlePostMovement(promise, time){
         //handle region elevation stuff
         let tokenRegions=token.regions;
         let heightBehavior=false;
-        for (const region of tokenRegions) {
+        /*for (const region of tokenRegions) {
 
             for (const behavior of region.behaviors) {
                 if(behavior.disabled)continue;
@@ -1850,7 +1903,7 @@ async function handlePostMovement(promise, time){
                 }
 
             }
-        }
+        }*/
 
 
         let scene = game.scenes.current;
@@ -1859,7 +1912,7 @@ async function handlePostMovement(promise, time){
         let aes = actor.effects;
         for (const ae of aes) {
             if (!ae) continue;
-            if (ae.getFlag("fortyk", "psy") || ae.getFlag("fortyk", "aura")) {
+            if (ae.getFlag("fortyk", "psy")) {
                 let range = parseInt(ae.getFlag("fortyk", "range"));
                 let casterId = ae.getFlag("fortyk", "casterTokenId");
                 let casterToken = game.scenes.current.tokens.find((child) => child.id === casterId);
@@ -1935,64 +1988,6 @@ async function handlePostMovement(promise, time){
                 await talent.setFlag("fortyk", "sustained", buffs);
             }
         }
-        let tnts = actor.itemTypes.talentntrait;
-        tnts = tnts.concat(actor.itemTypes.wargear);
-        for (const talent of tnts) {
-            if (talent.system.isAura.value) {
-                let range = parseInt(talent.system.isAura.range);
-                let buffs = talent.getFlag("fortyk", "sustained");
-                if (!buffs) continue;
-
-
-                for (const buffId of buffs) {
-                    let buff = await fromUuid(buffId);
-                    if (buff) {
-                        let parent = buff.parent;
-                        if (parent instanceof Item) {
-                            parent = parent.actor;
-                        }
-                        let buffTarget = getActorToken(parent);
-                        if(!buffTarget)continue;
-                        let distance = tokenDistance(buffTarget, token);
-                        let del=false;
-                        if (distance > range) {
-                            del=true;
-
-                        }
-                        let los = buff.getFlag("fortyk", "los");
-                        if (los) {
-                            const collision = CONFIG.Canvas.polygonBackends["sight"].testCollision(
-                                token._object.center,
-                                buffTarget.center,
-                                { mode: "any", type: "sight" }
-                            );
-                            if (collision) {
-                                del=true;
-                            }
-                        }
-                        if(del){
-
-                            await buff.delete();
-                            actor.flags.core[buff.name]=false;
-                        }
-                    }
-                }
-                buffs=buffs.filter((buff)=>fromUuidSync(buff));
-                await talent.setFlag("fortyk", "sustained", buffs);
-            }
-        }
-        let auras = scene.getFlag("fortyk", "activeAuras");
-        if (!auras) auras = [];
-        auras = auras.filter((aura) => {
-            let instance = fromUuidSync(aura);
-            if (instance) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        await scene.setFlag("fortyk", "activeAuras", auras);
-        await applySceneAuras(auras, token);
     }
     delete moveTokens[time];
     return;
@@ -2100,6 +2095,42 @@ Hooks.on("moveToken", async (token, movement, operation, user) => {
 
 Hooks.on("updateToken", async (token, diff, options, id) => {
 
+});
+Hooks.on("renderApplicationV2", (application, element, context, options) => {
+
+
+    if(application.options.tag!=="dialog")return;
+    const actor=application.options.actor;
+    if(!actor)return;
+    const sheet=actor.sheet;
+    if(!sheet)return;
+    if(!options.isFirstRender)return;
+    if(sheet.element.ownerDocument.defaultView === window){
+        const window = sheet.element.ownerDocument.defaultView;
+         const dialogWidth = application.element.clientWidth/2;
+        const dialogHeight = application.element.clientHeight/2;
+        var sheetWidth = sheet.element.clientWidth/2;
+        var sheetLeft = sheet.position.left;
+        var sheetHeight = sheet.element.clientHeight/2;
+        var sheetTop = sheet.position.top;
+        const leftPos = Math.max(0, sheetLeft+sheetWidth - dialogWidth);
+        
+        const topPos = Math.max(0, sheetTop+sheetHeight - dialogHeight);
+        //sheet.element.ownerDocument.body.appendChild(application.element);
+        // 7. Force Foundry to redraw and align the window container layout
+        application.setPosition({ left: leftPos, top: topPos });
+    }else{
+        const detachedWindow = sheet.element.ownerDocument.defaultView;
+        const dialogWidth = application.element.clientWidth;
+        const dialogHeight = application.element.clientHeight;
+        const leftPos = Math.max(0, (detachedWindow.innerWidth - dialogWidth) / 2);
+        const topPos = Math.max(0, (detachedWindow.innerHeight - dialogHeight) / 2);
+        sheet.element.ownerDocument.body.appendChild(application.element);
+
+        // 7. Force Foundry to redraw and align the window container layout
+        application.setPosition({ left: leftPos, top: topPos });
+
+    }
 });
 
 Hooks.on("simple-calendar-date-time-change", async (dateData) => {

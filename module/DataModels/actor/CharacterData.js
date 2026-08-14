@@ -4,12 +4,12 @@ const {
 function resourceField(initialValue, initialMax) {
   return new SchemaField({
     // Make sure to call new so you invoke the constructor!
-    min: new fields.NumberField({ initial: 0 }),
-    value: new fields.NumberField({ initial: initialValue }),
-    max: new fields.NumberField({ initial: initialMax }),
+    min: new NumberField({ initial: 0 }),
+    value: new NumberField({ initial: initialValue }),
+    max: new NumberField({ initial: initialMax }),
   });
 }
-export class CharacterData extends foundry.abstract.TypeDataModel {
+export default class CharacterData extends foundry.abstract.TypeDataModel {
 
   static defineSchema() {
     return {
@@ -25,6 +25,13 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
           "value": new NumberField({ required: true, integer: true, initial: 10 }),
           "max": new NumberField({ required: true, integer: true, initial: 10 }),
           "bonus": new NumberField({ required: true, integer: true, initial: 0 })
+        }),
+        "barrier":new SchemaField({
+          "max":new NumberField({ required: true, integer: true, initial: 0 }),
+          "value":new NumberField({ required: true, integer: true, initial: 0 }),
+          "rate":new NumberField({ required: true, integer: true, initial: 0 }),
+          "cooldown":new NumberField({ required: true, integer: true, initial: 0 }),
+          "currentCD":new NumberField({ required: true, integer: true, initial: 0 })
         }),
         "fatigue": new SchemaField({
           "min": new NumberField({ required: true, integer: true, initial: 0 }),
@@ -43,14 +50,13 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
           "malice": new NumberField({ required: true, integer: true, initial: 0 })
         }),
         "insanity": new SchemaField({
-          "type": "Number",
           "value": new NumberField({ required: true, integer: true, initial: 0 , min: 0 }),
           "shock": new StringField({ initial: "" }),
           "mod":  new NumberField({ required: true, integer: true, initial: 0 })
         }),
         "wornGear": new SchemaField({
-          "weapons": new ArrayField(),
-          "extraWeapons": new ArrayField(),
+          "weapons": new ArrayField(new StringField({ initial: "" })),
+          "extraWeapons": new ArrayField(new StringField({ initial: "" })),
           "armor": new SchemaField({}),
           "forceField": new SchemaField({})
         }),
@@ -310,7 +316,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
           "bonus": new NumberField({ required: true, integer: true, initial: 0}),
           "maxPush": new NumberField({ required: true, integer: true, initial: 0}),
           "sustain": new NumberField({ required: true, integer: true, initial: 0}),
-          "sustained": new ArrayField(),
+          "sustained": new ArrayField(new StringField({ initial: "" })),
           "effective": new NumberField({ required: true, integer: true, initial: 0})
         }),
         "psykerType": new SchemaField({
@@ -322,7 +328,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
         "phenomena": new SchemaField({
           "value": new NumberField({ required: true, integer: true, initial: 0})
         }),
-        "disciplines": new SchemaField({})
+        "disciplines": new ArrayField(new StringField({initial:""}))
       }),
       "suddenDeath": new SchemaField({
         "value": new BooleanField({required: true, initial:false})

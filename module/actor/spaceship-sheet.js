@@ -6,19 +6,20 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
     /** @override */
     static DEFAULT_OPTIONS= {
 
-            tag: 'form',
-            classes: ["fortyk", "sheet", "actor"],
-            template: "systems/fortyk/templates/actor/spaceship-sheet.html",
-            width: 666,
-            height: 660,
-            tabs: [{ navSelector: ".sheet-tabs2", contentSelector: ".sheet-content", initial: "components" }],
-            default:null,
-            scrollY: [
-                ".components",
-                ".spaceship-weapons",
-                ".cargo",
-                ".hangar"
-            ]
+        tag: 'form',
+        classes: ["fortyk", "sheet", "actor"],
+        template: "systems/fortyk/templates/actor/spaceship-sheet.html",
+        window:{width: 666,
+                height: 660,
+                resizable:true},
+        tabs: [{ navSelector: ".sheet-tabs2", contentSelector: ".sheet-content", initial: "components" }],
+        default:null,
+        scrollY: [
+            ".components",
+            ".spaceship-weapons",
+            ".cargo",
+            ".hangar"
+        ]
 
 
 
@@ -104,8 +105,9 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
     }
 
     /** @override */
-    _onRender(context, options) {
-        super._onRender(context, options);
+    async _onRender(context, options) {
+        await super._onRender(context, options);
+        if (this._listenersBound) return;
         const html=$(this.element);
         // Everything below here is only needed if the sheet is editable
 
@@ -119,6 +121,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
         html.find('.component-status').change(this._onComponentStatusEdit.bind(this));
         //Add ship weapons of components to actor
         html.find('.shipComponent-create').click(this._onShipComponentCreate.bind(this));
+        this._listenersBound = true;
 
     }
     /**
@@ -134,28 +137,29 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
         if (dataset.formula) {
             let formula=dataset.formula;
             let label = dataset.label ? `Rolling ${dataset.label} damage` : '';
-            new Dialog({
-                title: `Number of Hits & Bonus Damage`,
+            new foundry.applications.api.DialogV2({
+                window:{title: `Number of Hits & Bonus Damage`},
+                actor:this.actor,
                 content: `<div class="flexcol">
 <div class="flexrow"><label>Number of Hits:</label> <input type="text" id="modifier" name="hits" value="1" data-dtype="Number" autofocus/></div>
 <div class="flexrow"><label>Bonus Damage:</label> <input type="text" id="dmg" name="dmg" value="0" data-dtype="Number" /></div>
 </div>`,
-                buttons: {
-                    submit: {
+                buttons: [
+                    {
+                        action:"submit",
                         label: 'OK',
                         callback: (el) => {
                             const hits = parseInt(Number($(el).find('input[name="hits"]').val()));
                             const dmg = parseInt(Number($(el).find('input[name="dmg"]').val()));
                             if(dmg>0){
-                                formula.value+=`+${dmg}`
+                                formula.value+=`+${dmg}`;
                             }
                             this._damageRoll(formula,label,hits);
                         }
                     }
-                },
+                ],
                 default: "submit",
-                width:100}
-                      ).render(true);
+                width:100}).render({force:true});
 
         }
     }
@@ -177,11 +181,13 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
         let renderedTemplate=foundry.applications.handlebars.renderTemplate('systems/fortyk/templates/actor/dialogs/select-wargear-type-dialog.html', templateOptions);
 
         renderedTemplate.then(content => { 
-            new Dialog({
-                title: "New Component Type",
+            new foundry.applications.api.DialogV2({
+                window:{title: "New Component Type"},
                 content: content,
-                buttons:{
-                    submit:{
+                actor:this.actor,
+                buttons:[
+                    {
+                        action:'submit',
                         label:"Yes",
                         callback: async html => {
                             const type = html.find('select[name="wargear-type"]').val();
@@ -201,13 +207,14 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
 
                         }
                     },
-                    cancel:{
+                    {
+                        action:"cancel",
                         label: "No",
                         callback: null
                     }
-                },
+                ],
                 default: "submit"
-            }).render(true)
+            }).render({force:true});
         });
 
 

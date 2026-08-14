@@ -1,10 +1,10 @@
 import {FortyKItem} from "../item/item.js";
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-export class tntDialog extends HandlebarsApplicationMixin(ApplicationV2) {
+const { DialogV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class tntDialog extends HandlebarsApplicationMixin(DialogV2) {
     #compendiums = {};
     static DEFAULT_OPTIONS = {
 
-        tag: 'form',
+        tag: 'dialog',
         classes: ["fortyk"],
 
         position:{

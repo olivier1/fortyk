@@ -27,21 +27,22 @@ export class ActorDialogs {
             height: 400
         };
         var name = event.currentTarget.dataset["name"];
-        let dlg = new Dialog(
+        let dlg = new foundry.applications.api.DialogV2(
             {
-                title: `${name} Description`,
+                window:{title: `${name} Description`},
                 content: "<p>" + descr + "</p>",
-                buttons: {
-                    submit: {
+                
+                buttons: [{
+                    action:"submit",
                         label: "OK",
                         callback: null
                     }
-                },
+                ],
                 default: "submit"
             },
             options
         );
-        dlg.render(true);
+        dlg.render({force:true});
     }
    
    
