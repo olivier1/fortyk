@@ -141,23 +141,35 @@ export class tntDialog extends HandlebarsApplicationMixin(DialogV2) {
 
         return context;
     }
+    async _preRender(context, options) {
+        await super._preRender(context, options);
+
+        // If the window is being detached or re-rendered from scratch, 
+        // force a reset of the listener binding flag
+        if (options.isFirstRender || options.renderContext || options.detached) {
+            this._listenersBound = false;
+        }
+    }
     _onRender(context, options) {
         super._onRender(context, options);
+        if (this._listenersBound) return;
         const html=$(this.element);
         html.find(".tntfilter").keyup(this._onTntFilterChange.bind(this));
-        html.find(".tntfilter").ready(this._onPopupReady.bind(this));
+        //html.find(".tntfilter").ready(this._onPopupReady.bind(this));
         html.find(".submitBtn").click(this._onSubmit.bind(this));
-        html.find('.tntdescr-button').click(this._onTntDescrClick.bind(this));
+        //html.find('.tntdescr-button').click(this._onTntDescrClick.bind(this));
+        this._listenersBound=true;
     }
     _onTntDescrClick(event){
         event.preventDefault();
         let descr = event.target.attributes["data-description"].value;
-       
+
         var name=event.currentTarget.dataset["name"];
         foundry.applications.api.DialogV2.prompt({
-            window:{title: `${name} Description`,
-                    width: 300,
-                    height: 400},
+            window:{title: `${name} Description`
+                   },
+            position:{width: 300,
+                      height: 400},
             content: "<p>"+descr+"</p>"});
 
 
@@ -281,15 +293,19 @@ export class tntDialog extends HandlebarsApplicationMixin(DialogV2) {
                 if (spec === "N/A") {
                     //await actor.setFlag("fortyk",flag,true);
                 } else {
-                    let chosenSpec = await Dialog.prompt({
-                        title: `Choose specialisation for ${tnt.name}`,
+                    let chosenSpec = await foundry.applications.api.DialogV2.prompt({
+                        window:{title: `Choose specialisation for ${tnt.name}`},
                         content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${itemData.system.specialisation.value}" autofocus/></p>`,
-                        callback: async (html) => {
-                            const choosenSpec = $(html).find('input[name="spec"]').val();
-                            //await actor.setFlag("fortyk",flag,choosenSpec);
-                            return choosenSpec;
-                        },
-                        width: 100
+                        ok:{
+                            label:"Confirm choice",
+                            callback: async (event) => {
+                                let html=event.target.form;
+
+                                const choosenSpec = $(html).find('input[name="spec"]').val();
+                                //await actor.setFlag("fortyk",flag,choosenSpec);
+                                return choosenSpec;
+                            }},
+                        position:{width: 250}
                     });
                     itemData.system.specialisation.value = chosenSpec;
                     if (itemData.system.isAura.value) {

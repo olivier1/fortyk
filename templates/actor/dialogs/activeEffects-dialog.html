@@ -1,17 +1,17 @@
 
 <section id="aeMod" class="aeMod">
-    <div class="grid grid-3col">
+    <div class="grid grid-3col effects-list">
         {{#each actor.effects as |ae key|}}
-        <div class="flexrow list-item">
+        <div class="flexrow list-item ">
 
-            <a class="ae" data-ae-id="{{this.uuid}}" >{{this.name}}</a>
+            <a class="ae effect-item" data-name="{{this.name}}"  data-effect-id="{{this.id}}" data-type="ActiveEffect" data-ae-id="{{this.uuid}}" draggable="true">{{this.name}}</a>
             <a class="ae-delete item-delete" title="Delete" data-ae-id="{{this.uuid}}" ></a>
         </div>
         {{/each}}
         {{#each item.effects as |ae key|}}
         <div class="flexrow list-item">
 
-            <a class="ae" data-ae-id="{{this.uuid}}" >{{this.name}}</a>
+            <a class="ae effect-item" data-name="{{this.name}}"  data-effect-id="{{this.id}}" data-type="ActiveEffect" data-ae-id="{{this.uuid}}" draggable="true">{{this.name}}</a>
             <a class="ae-delete item-delete" title="Delete" data-ae-id="{{this.uuid}}" ></a>
         </div>
         {{/each}}

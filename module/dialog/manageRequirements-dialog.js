@@ -99,8 +99,18 @@ export class ManageRequirementsDialog extends HandlebarsApplicationMixin(DialogV
         });
         return data;
     }
+    async _preRender(context, options) {
+        await super._preRender(context, options);
+
+        // If the window is being detached or re-rendered from scratch, 
+        // force a reset of the listener binding flag
+        if (options.isFirstRender || options.renderContext || options.detached) {
+            this._listenersBound = false;
+        }
+    }
     _onRender(context, options) {
         super._onRender(context, options);
+        if (this._listenersBound) return;
         const html=$(this.element);
         html.find('.compendium-select').change(this._onCompendiumChange.bind(this));
         html.find('.req-select').change(this._onRequirementChange.bind(this));
@@ -131,6 +141,7 @@ export class ManageRequirementsDialog extends HandlebarsApplicationMixin(DialogV
 
             $(this).select();
         });
+        this._listenersBound=true;
     }
     _onCharCreationClick(event){
         let value=event.currentTarget.checked;
@@ -183,24 +194,25 @@ export class ManageRequirementsDialog extends HandlebarsApplicationMixin(DialogV
         if(type==="talentntrait"){
 
             if(flag.spec!=="N/A"){
-                let chosenSpec=await Dialog.prompt({
-                    title: `Choose specialisation for ${flag.label}`,
-                    content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${flag.spec}" autofocus/></p>`,
+                let chosenSpec=await foundry.applications.api.DialogV2.prompt({
+                    window:{title: "Choose specialisation"},
+                    content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${tntData.specialisation.value}" autofocus/></p>`,
 
 
 
-                    callback: async(html) => {
-                        const choosenSpec = $(html).find('input[name="spec"]').val();
+                    ok:{label:"Confirm Choice",
+                        callback: async(event) => {
+                            let html=event.target.form;
 
-                        return choosenSpec;
+
+                            const choosenSpec = $(html).find('input[name="spec"]').val();
+
+                            return choosenSpec;
+                        }},
+                    render: (html)=>{
+                        this.element.ownerDocument.getElementById('specInput').select();
                     },
-
-
-
-
-
-
-                    width:100});
+                    position:{width:250}});
                 spec=chosenSpec.toLowerCase();
 
             }
@@ -220,7 +232,7 @@ export class ManageRequirementsDialog extends HandlebarsApplicationMixin(DialogV
             }
             return true;
         });
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     async _onAddORFlagClick(event){
         let flag=this.chosenFlag;
@@ -230,24 +242,26 @@ export class ManageRequirementsDialog extends HandlebarsApplicationMixin(DialogV
         if(type==="talentntrait"){
 
             if(flag.spec!=="N/A"){
-                let chosenSpec=await Dialog.prompt({
-                    title: `Choose specialisation for ${flag.label}`,
-                    content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${flag.spec}" autofocus/></p>`,
+                let chosenSpec=await foundry.applications.api.DialogV2.prompt({
+                    window:{title: "Choose specialisation"},
+                    content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${tntData.specialisation.value}" autofocus/></p>`,
 
 
 
-                    callback: async(html) => {
-                        const choosenSpec = $(html).find('input[name="spec"]').val();
+                    ok:{label:"Confirm Choice",
+                        callback: async(event) => {
+                            let html=event.target.form;
 
-                        return choosenSpec;
+
+                            const choosenSpec = $(html).find('input[name="spec"]').val();
+                           
+
+                            return choosenSpec;
+                        }},
+                    render: (html)=>{
+                        this.element.ownerDocument.getElementById('specInput').select();
                     },
-
-
-
-
-
-
-                    width:100});
+                    position:{width:250}});
                 spec=chosenSpec.toLowerCase();
 
             }
@@ -268,7 +282,7 @@ export class ManageRequirementsDialog extends HandlebarsApplicationMixin(DialogV
             }
             return true;
         });
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     async _onAddPsyClick(event){
 
@@ -283,7 +297,7 @@ export class ManageRequirementsDialog extends HandlebarsApplicationMixin(DialogV
         }
         
         this.chosenFlag=undefined;
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     _onAddSkillClick(event){
         let skillNameElement=document.getElementById("skillname");
@@ -307,33 +321,33 @@ export class ManageRequirementsDialog extends HandlebarsApplicationMixin(DialogV
 
         this.flag.skills[stringID]={name:name, skillName:skillName, parentSkillName:parentSkillName, rank:skillRank};
 
-        this.render();
+        this.render({renderContext:"refresh"});
 
     }
     _onDeleteFlagClick(event){
         let flag=event.currentTarget.dataset.id;
         this.flag.flags[flag]=null;
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     _onDeleteORFlagClick(event){
         let flag=event.currentTarget.dataset.id;
         this.flag.ORflags[flag]=null;
-        this.render();  
+        this.render({renderContext:"refresh"});  
     }
     _onDeletePsyClick(event){
         let flag=event.currentTarget.dataset.id;
         this.flag.psychicPowers[flag]=null;
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     _onDeleteNegPsyClick(event){
         let flag=event.currentTarget.dataset.id;
         this.flag.negativePsyPowers[flag]=null;
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     _onDeleteSkillClick(event){
         let flag=event.currentTarget.dataset.id;
         this.flag.skills[flag]=null;
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     async _onCompendiumChange(event){
         let newCompendium=event.target.value;
@@ -360,7 +374,7 @@ export class ManageRequirementsDialog extends HandlebarsApplicationMixin(DialogV
             // a must be equal to b
             return 0;
         });
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     async _onSaveReqsClick(event){
         let flag=this.options.flag;

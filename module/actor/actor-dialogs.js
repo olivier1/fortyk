@@ -23,27 +23,29 @@ export class ActorDialogs {
         event.preventDefault();
         let descr = event.target.attributes["data-description"].value;
         var options = {
-            width: 300,
-            height: 400
+
         };
         var name = event.currentTarget.dataset["name"];
         let dlg = new foundry.applications.api.DialogV2(
             {
                 window:{title: `${name} Description`},
                 content: "<p>" + descr + "</p>",
-                
+                position:{
+                    width: 300,
+                    height: 400
+                },
                 buttons: [{
                     action:"submit",
-                        label: "OK",
-                        callback: null
-                    }
-                ],
+                    label: "OK",
+                    callback: null
+                }
+                         ],
                 default: "submit"
             },
             options
         );
         dlg.render({force:true});
     }
-   
-   
+
+
 }

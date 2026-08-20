@@ -42,7 +42,7 @@ FORTYK.size = [
     { name: "Average", mod: 0, stealth: 0, movement: 0, size: 1, scale: 1, index: 3 },
     { name: "Hulking", mod: 10, stealth: -10, movement: 1, size: 1, scale: 1.2, index: 4 },
     { name: "Enormous", mod: 20, stealth: -20, movement: 2, size: 2, scale: 1, index: 5 },
-    { name: "Massive", mod: 30, stealth: -30, movement: 3, size: 5, index: 6 },
+    { name: "Massive", mod: 30, stealth: -30, movement: 3, size: 5, scale: 1, index: 6 },
     { name: "Immense", mod: 40, stealth: -40, movement: 4, size: 8, scale: 1, index: 7 },
     { name: "Monumental", mod: 50, stealth: -50, movement: 5, size: 10, scale: 1, index: 8 },
     { name: "Titanic", mod: 60, stealth: -60, movement: 6, size: 15, scale: 1, index: 9 },

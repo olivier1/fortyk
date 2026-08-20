@@ -39,15 +39,16 @@
       "fortykAuraBehavior":{}
     },
     "Actor":{
-      "dwPC":{
-        "htmlFields":["system.notesAndBackground.background",
-                      "system.notesAndBackground.notes"]
-      },
       "npc":{
         "htmlFields":["system.description.value",
                      "system.skills.value",
                      "system.equipment.value"]
       },
+      "dwPC":{
+        "htmlFields":["system.notesAndBackground.background",
+                      "system.notesAndBackground.notes"]
+      },
+      
       "spaceship":{
 
       },

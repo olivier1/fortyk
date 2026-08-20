@@ -634,7 +634,7 @@ export class CreateRepairEntryDialog extends HandlebarsApplicationMixin(DialogV2
 
 
 
-            width:100});
+            width:250});
         let dosNode=this.element.ownerDocument.getElementById("dos");
         dosNode.innerHTML=repairTest.dos;
         if(this.options.reroll){

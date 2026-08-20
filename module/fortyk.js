@@ -512,17 +512,16 @@ Hooks.once("ready", async function () {
     //SOCKET used to update actors via the damage scripts
     game.socket.on("system.fortyk", async (data) => {
         if (data.type === "cardSplash") {
-            var options = {
-                width: "auto",
-                height: "800"
-            };
+            
             let img = data.package.img;
             let title = data.package.title;
             foundry.applications.api.DialogV2.prompt({
-                window:{title: title,
-                        width:"auto",
-                        height:700},
-                content: `<img src="${img}"  width="auto" height="700">`});
+                window:{title: title
+                        },
+                position:{width:"auto",
+                        height:800},
+                
+                content: `<img src="${img}"  height="625">`});
 
         }
         let actors;
@@ -624,7 +623,7 @@ Hooks.once("ready", async function () {
                     rerollNum = data.package.rerollNum;
                     for (let i = 0; i < targetIds.length; i++) {
                         let curTargets = targetIds[i].targets;
-                        fortykWeapon.template = targetIds[i].template;
+                        fortykWeapon.template = targetIds[i].template.bounds;
                         let targetNames = "";
                         let targetTokens = canvas.tokens.placeables.filter((token) => curTargets.includes(token.id));
                         let targetSet = new Set(targetTokens);
@@ -1705,6 +1704,7 @@ function numberOfCopiesDialog(actor) {
                       </section>`,
             buttons: [
                 {
+                    action:"create",
                     label: "Create",
                     callback: (event) => {
                         let html=event.target.form;
@@ -2097,32 +2097,41 @@ Hooks.on("updateToken", async (token, diff, options, id) => {
 
 });
 Hooks.on("renderApplicationV2", (application, element, context, options) => {
-
-
-    if(application.options.tag!=="dialog")return;
-    const actor=application.options.actor;
-    if(!actor)return;
+    
+    let subApp=false;
+    if(application.options.tag==="dialog"||application?.item?.parent){
+        subApp=true;
+    }
+    if(!subApp)return;
+    const actor=application.options.actor ?? application.actor;
+    if(!actor){
+        return;
+    }
     const sheet=actor.sheet;
     if(!sheet)return;
     if(!options.isFirstRender)return;
     if(sheet.element.ownerDocument.defaultView === window){
         const window = sheet.element.ownerDocument.defaultView;
-         const dialogWidth = application.element.clientWidth/2;
-        const dialogHeight = application.element.clientHeight/2;
+        const dialogHeightisAuto= application.options.position.height==="auto";
+        const dialogHeight = dialogHeightisAuto ? application.element.clientHeight/2: application.options.position.height/2;
+        const dialogWidthisAuto= application.options.position.width==="auto";
+        const dialogWidth = dialogWidthisAuto ? application.element.clientWidth/2 : application.options.position.width/2;
         var sheetWidth = sheet.element.clientWidth/2;
         var sheetLeft = sheet.position.left;
         var sheetHeight = sheet.element.clientHeight/2;
         var sheetTop = sheet.position.top;
         const leftPos = Math.max(0, sheetLeft+sheetWidth - dialogWidth);
-        
+
         const topPos = Math.max(0, sheetTop+sheetHeight - dialogHeight);
         //sheet.element.ownerDocument.body.appendChild(application.element);
         // 7. Force Foundry to redraw and align the window container layout
         application.setPosition({ left: leftPos, top: topPos });
     }else{
         const detachedWindow = sheet.element.ownerDocument.defaultView;
-        const dialogWidth = application.element.clientWidth;
-        const dialogHeight = application.element.clientHeight;
+        const dialogHeightisAuto= application.options.position.height==="auto";
+        const dialogHeight = dialogHeightisAuto ? application.element.clientHeight/2: application.options.position.height/2;
+        const dialogWidthisAuto= application.options.position.width==="auto";
+        const dialogWidth = dialogWidthisAuto ? application.element.clientWidth/2 : application.options.position.width/2;
         const leftPos = Math.max(0, (detachedWindow.innerWidth - dialogWidth) / 2);
         const topPos = Math.max(0, (detachedWindow.innerHeight - dialogHeight) / 2);
         sheet.element.ownerDocument.body.appendChild(application.element);

@@ -33,7 +33,8 @@ export default class PCData extends CharacterData {
                 "income": new NumberField({ required: true, integer: true, initial: 0 })
             }),
             "goal": new SchemaField({
-                "value": new StringField({ initial: "" })
+                "short": new StringField({ initial: "" }),
+                 "long": new StringField({ initial: "" })
             }),
             "chapter": new SchemaField({
                 "value": new StringField({ initial: "" })

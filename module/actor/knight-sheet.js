@@ -629,8 +629,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             templateOptions
         );
         var options = {
-            width: 666,
-            height: 600,
+
             classes: ["systems/fortyk/css/fortyk.css"]
         };
 
@@ -640,6 +639,10 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                     window:{title: "Pick a Chassis"},
                     content: content,
                     actor:actor,
+                    position:{
+                        width: 666,
+                        height: 600
+                    },
                     buttons: [
                         {
                             action:"submit",
@@ -719,8 +722,7 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
             templateOptions
         );
         var options = {
-            width: 666,
-            height: 600,
+
             classes: ["systems/fortyk/css/fortyk.css"]
         };
 
@@ -730,6 +732,10 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
                     window:{title: "Pick a Machine Spirit"},
                     content: content,
                     actor:actor,
+                    position:{
+                        width: 666,
+                        height: 600
+                    },
                     buttons: [
                         {
                             action:"submit",
@@ -1391,8 +1397,11 @@ export class FortyKKnightSheet extends FortyKBaseActorSheet {
         let formula = dataset["formula"];
         renderedTemplate.then((content) => {
             new foundry.applications.api.DialogV2({
-                window:{title: `Number of Hits & Bonus Damage`,
-                width: 100},
+                window:{title: `Number of Hits & Bonus Damage`
+                        },
+                position:{
+                    width: 100
+                },
                 content: content,
                 actor: actor,
                 buttons: [

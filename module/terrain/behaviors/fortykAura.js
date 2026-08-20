@@ -108,8 +108,10 @@ export class FortyKAuraBehavior extends foundry.data.regionBehaviors.ApplyActive
             create.disabled=false;
             create.showIcon=2;
             create.statuses.push(create.name);
+            create.origin=casterActor.uuid;
             actor.statuses.add(create.name);
             actor.flags.core[create.name]=true;
+            
         }
         if ( toCreate.length ) await actor.createEmbeddedDocuments("ActiveEffect", toCreate);
         await resumeMovement?.();

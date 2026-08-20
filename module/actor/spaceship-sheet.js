@@ -9,17 +9,11 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
         tag: 'form',
         classes: ["fortyk", "sheet", "actor"],
         template: "systems/fortyk/templates/actor/spaceship-sheet.html",
-        window:{width: 666,
-                height: 660,
+        window:{
                 resizable:true},
-        tabs: [{ navSelector: ".sheet-tabs2", contentSelector: ".sheet-content", initial: "components" }],
-        default:null,
-        scrollY: [
-            ".components",
-            ".spaceship-weapons",
-            ".cargo",
-            ".hangar"
-        ]
+        position:{width: 666,
+                height: 900},
+        default:null
 
 
 
@@ -108,6 +102,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
     async _onRender(context, options) {
         await super._onRender(context, options);
         if (this._listenersBound) return;
+         if (!this.isEditable) return;
         const html=$(this.element);
         // Everything below here is only needed if the sheet is editable
 
@@ -159,7 +154,7 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
                     }
                 ],
                 default: "submit",
-                width:100}).render({force:true});
+                positionL:{width:250}}).render({force:true});
 
         }
     }
@@ -189,7 +184,8 @@ export class FortyKSpaceshipSheet extends FortyKBaseActorSheet {
                     {
                         action:'submit',
                         label:"Yes",
-                        callback: async html => {
+                        callback: async event => {
+                            let html=$(event.target.form);
                             const type = html.find('select[name="wargear-type"]').val();
                             const itemData = {
                                 name: `new ${type}`,

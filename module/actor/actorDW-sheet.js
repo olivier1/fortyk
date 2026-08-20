@@ -102,7 +102,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     static DEFAULT_OPTIONS = {
         tag: 'form',
         classes: ["fortyk", "sheet", "actor"],
-        position: { width: 690, height: 875 },
+        position: { width: 690, height: 950 },
         window:{
             resizable:true
         }
@@ -736,7 +736,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         node.label = node.label.replaceAll("anyxenos", value);
         node.key = node.key.replaceAll("any", value);
         node.label = node.label.replaceAll("any", value);
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     _onConfirmAnySpecChoice(event) {
         let button = event.currentTarget;
@@ -764,7 +764,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         node.name = node.name.replaceAll("anyxenos", value);
         node.spec = node.spec.replaceAll("any", value);
         node.name = node.name.replaceAll("any", value);
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     _onConfirmAptitudeChoice(event) {
         let button = event.currentTarget;
@@ -775,7 +775,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let update = {};
         update[id] = aptitude;
         actor.update(update);
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     _onCharSpentInputConfirm(event) {
         this._onCharSpentInput(event);
@@ -823,7 +823,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 this.feature.system.characteristics.minus = choice;
                 break;
         }
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     _onAptitudeAnyChange(event) {
         event.preventDefault();
@@ -835,7 +835,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         let aptChoice = aptitudes.find((apti) => apti.key === choice);
         let index = parseInt(aptitudeAnySelect.dataset.index);
         this.featureAptitude[index] = aptChoice;
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     async _onAptitudeClicked(event) {
         let radioButton = event.currentTarget;
@@ -952,7 +952,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             this.feature.system.fate.threshold++;
         }
         this.hideEmpBless = true;
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     async _onRollWounds(event) {
         let rollWoundsButton = event.currentTarget;
@@ -965,7 +965,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         this.rolledWounds = result;
 
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     async _onRollInsanity(event) {
         let rollInsanityButton = event.currentTarget;
@@ -978,7 +978,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         this.rolledInsanity = result;
 
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     async _onRollCorruption(event) {
         let rollCorruptionButton = event.currentTarget;
@@ -991,7 +991,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         this.rolledCorruption = result;
 
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     /* async _onConfirmCharacterType(event) {
         let characterTypeSelect = document.getElementById("charater-type-select");
@@ -1026,7 +1026,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         update["flags.fortyk.creationstage"] = 3;
         update["flags.fortyk.pointbuy"] = pointBuy;
         await this.actor.update(update);
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     getSkillDescriptions() {
         let actor = this.actor;
@@ -1196,7 +1196,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         await actor.createEmbeddedDocuments("Item", [planet]);
         await actor.setFlag("fortyk", "creationstage", 2);
         this.resetStage();
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     resetStage() {
         this.rolledWounds = undefined;
@@ -1302,7 +1302,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         await actor.setFlag("fortyk", "creationstage", stage);
         this.resetStage();
-        await this.render({force: true});
+        await this.render({force: true, renderContext:"refresh"});
     }
     async _onFeatureChange(event) {
         event.preventDefault();
@@ -1376,7 +1376,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         this.featureSkill = this.parseSkills(this.feature.system.skills);
         this.featureCost = parseInt(featureDoc.system.cost.value);
 
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     async createStartingAmmo() {
         let actor = this.actor;
@@ -1440,7 +1440,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                             "system.currency.value": startMoney
                         };
                         await this.actor.update(update);
-                        this.render();
+                        this.render({renderContext:"refresh"});
                     }
                 },
                 {
@@ -1477,26 +1477,26 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 if (advances.length === 0) {
                     proceed = true;
                 } else {
-                    await Dialog.wait({
-                        title: "Are you sure you want to go back?",
+                    await foundry.applications.api.DialogV2.wait({
+                        window:{title: "Are you sure you want to go back?"},
                         content: "Going back will remove any advances you have purchased.",
-                        buttons: {
-                            submit: {
+                        buttons: [{
+                            action:"submit",
                                 label: "Go Back",
                                 callback: (html) => {
                                     proceed = true;
                                 }
-                            },
-                            cancel: {
+                        },
+                                  {action:"cancel",
                                 label: "Nevermind",
                                 callback: (html) => {
                                     proceed = false;
                                 }
                             }
-                        },
+                        ],
                         render: (html) => {},
                         default: "submit",
-                        width: 100
+                        position:{width: 250}
                     });
                 }
 
@@ -1525,7 +1525,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         }
 
         this.resetStage();
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     /* -------------------------------------------- */
     async _onGetMastery(event){
@@ -1586,6 +1586,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                     window:{title: "Pick new path"},
                     content: content,
                     actor:this.actor,
+                    position:{width:666},
                     buttons: [
                         {
                             action:"submit",
@@ -1620,7 +1621,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                                 await actor.update({"system.secChar.insanity.value":0});
 
 
-                                this.render({force: true});
+                                this.render({force: true, renderContext:"refresh"});
                             }
                         }
                     ],
@@ -1660,7 +1661,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             ],
             default: "submit",
 
-            width: 100
+            position:{width: 250}
         }).render({force:true});
     }
     _onSkillsTab(event) {
@@ -1672,7 +1673,12 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
     }
     async _onSpendExp(event) {
         event.preventDefault();
-        let dialog = new SpendExpDialog({ actor: this.actor });
+        let dialog = new SpendExpDialog({ actor: this.actor,
+
+            buttons:[
+                {action:"close",
+                 label:"Close"}
+            ] });
         dialog.render(true, { title: "Add Advancements" });
     }
 
@@ -1904,7 +1910,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                 ],
                 default: "submit",
 
-                width: 100
+                position:{width: 250}
             }).render({force:true});
         }
     }

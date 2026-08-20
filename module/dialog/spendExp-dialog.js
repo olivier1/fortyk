@@ -134,9 +134,21 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
         data.eliteAdvances=this.#eliteAdvances;
         return data;
     }
+     async _preRender(context, options) {
+        await super._preRender(context, options);
+
+        // If the window is being detached or re-rendered from scratch, 
+        // force a reset of the listener binding flag
+        if (options.isFirstRender || options.renderContext || options.detached) {
+            this._listenersBound = false;
+        }
+    }
+    
     _onRender(context, options) {
         super._onRender(context, options);
+        if (this._listenersBound) return;
         const html=$(this.element);
+
         //select dialog mode
         html.find('.mode').change(this._onModeChange.bind(this));
         //select new skill type
@@ -159,7 +171,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
         html.find('.tntcheckbox').click(this._onTalentChoice.bind(this));
         html.find('.talentfilter').keyup(this._onTntFilterChange.bind(this));
         html.find('.talentfilter').ready(this._onTalentLoad.bind(this));
-        html.find('.tntdescr-button').click(this._onTntDescrClick.bind(this));
+        //html.find('.tntdescr-button').click(this._onTntDescrClick.bind(this));
         //select discipline change
         html.find('.discipline-select').change(this._onDisciplineChange.bind(this));
         html.find('.powercheckbox').click(this._onPowerChoice.bind(this));
@@ -176,7 +188,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
             $(this).select();
         });
         //stop the change event on all inputs because its jank
-        $("input").change(function (event){
+        $("input").change(function (event){      
             event.stopImmediatePropagation();
             event.preventDefault();
         });
@@ -184,8 +196,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
             event.stopImmediatePropagation();
             event.preventDefault();
         });
-
-
+        this._listenersBound = true;
     } 
     _upgradeableChars(actorChars,chars){
         let upgChars={};
@@ -237,7 +248,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
                 default: "submit",
 
 
-                width:200}
+                position:{width:200}}
                                                  ).render({force:true});
             return;
         }
@@ -361,23 +372,27 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
             var talentId="";
             var chosenSpec=true;
             if(spec!=="N/A"){
-                chosenSpec=await Dialog.prompt({
-                    title: "Choose specialisation",
+                chosenSpec=await foundry.applications.api.DialogV2.prompt({
+                    window:{title: "Choose specialisation"},
                     content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${tntData.specialisation.value}" autofocus/></p>`,
 
 
 
-                    callback: async(html) => {
-                        const choosenSpec = $(html).find('input[name="spec"]').val();
-                        advanceName+=" ("+choosenSpec+")";
+                    ok:{label:"Confirm Choice",
+                        callback: async(event) => {
+                            let html=event.target.form;
 
 
-                        return choosenSpec;
-                    },
+                            const choosenSpec = $(html).find('input[name="spec"]').val();
+                            advanceName+=" ("+choosenSpec+")";
+
+
+                            return choosenSpec;
+                        }},
                     render: (html)=>{
                         this.element.ownerDocument.getElementById('specInput').select();
                     },
-                    width:100});
+                    position:{width:250}});
 
                 itemData.system.specialisation.value=chosenSpec;
 
@@ -556,7 +571,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
             this.#cost=0;
             await this.loadDocuments(actor, true);
         }
-        await this.render();
+        await this.render({renderContext:"refresh"});
     }
 
     calculatePRCost() {
@@ -580,7 +595,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
         let node=event.target;
         let value=node.checked;
         this.ineligibles=value;
-        this.render();
+        this.render({renderContext:"refresh"});
     }
 
     async _onModeChange(event){
@@ -606,7 +621,8 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
         this.#chosenPower=undefined;
         this.#chosenEliteAdvance=undefined;
         this._updateCost();
-        await this.render();
+        //this._listenersBound = false;
+        await this.render({force:true, renderContext:"refresh"});
 
     }
     async _onSkillTypeChange(event){
@@ -902,14 +918,17 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
         event.preventDefault();
         let descr = event.target.attributes["data-description"].value;
         var options = {
-            width: 300,
-            height: 400
+
         };
         var name=event.currentTarget.dataset["name"];
-        let dlg = newfoundry.applications.api.DialogV2({
+        let dlg = new foundry.applications.api.DialogV2({
             window:{title: `${name} Description`},
             actor:this.options.actor,
             content: "<p>"+descr+"</p>",
+            position:{
+                width: 300,
+                height: 400
+            },
             buttons: [{
                 action:"submit",
                 label: "OK",

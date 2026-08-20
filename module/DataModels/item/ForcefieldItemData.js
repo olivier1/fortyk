@@ -34,7 +34,7 @@ export default class ForcefieldItemData extends PhysicalItemData {
     }
     static migrateData(data){
         if(data.isEquipped===false || data.isEquipped===true){
-            data.isEquipped="";
+            data.isEquipped="true";
         }
         return super.migrateData(data);
     }

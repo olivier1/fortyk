@@ -110,19 +110,17 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         data.coverTypes = game.fortyk.FORTYK.coverTypes;
         return data;
     }
-    /*_refit(positionUpdate={}){
-        return;
-    }*/
+  
     async _preRender(context, options) {
         await super._preRender(context, options);
 
         // If the window is being detached or re-rendered from scratch, 
         // force a reset of the listener binding flag
-        if (options.renderContext?.parts || options.detached) {
+        if (options.isFirstRender || options.renderContext || options.detached) {
             this._listenersBound = false;
         }
     }
-  
+
 
     /** @override */
     async _onRender(context, options) {
@@ -278,23 +276,21 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
     _onImgRightClick(event) {
         event = event || window.event;
 
-        var options = {
-            width: "auto",
-            height: "auto"
-        };
+        
         let img = this.actor.img;
         let dlg = foundry.applications.api.DialogV2.wait(
             {
                 window: { title: `Profile Image` },
-                content: `<img src="${img}"  width="auto" height="auto">`,
+                content: `<img src="${img}"  width="auto" height="625">`,
+                position:{height:800,
+                         width:"auto"},
                 buttons: [
                     {
                         label: "OK",
                         callback: null
                     }
                 ]
-            },
-            options
+            }
         );
     }
     //handles the duplicate inputs for wounds fatigue fate points etc on the combat tab
@@ -430,9 +426,13 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
 
         new tntDialog({
             window: { title: "Add Talents, Traits and Bonus" },
-            position: { width: 666, height: "auto" },
             actor: actor,
-            classes: []
+            classes: [],
+
+            buttons:[
+                {action:"close",
+                 label:"Close"}
+            ]
         }).render({force:true});
     }
     //Edits the item that was clicked
@@ -460,7 +460,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                         label: "Ok",
                         callback: async (dlg) => {
                             await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
-                            this.render({force:true});
+                            
                         }
                     }
                 ],
@@ -909,7 +909,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                             if (game.user.isGM) {
                                 for (let i = 0; i < targets.length; i++) {
                                     let curTargets = targets[i].targets;
-                                    weapon.template = targets[i].template;
+                                    weapon.template = targets[i].template.bounds;
                                     let targetNames = "";
                                     let targetTokens = canvas.tokens.placeables.filter((token) =>
                                                                                        curTargets.includes(token.id)
@@ -1002,7 +1002,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                     }
                 ],
                 default: "submit",
-                width: 100
+                position:{width: 250}
             });
         });
     }
@@ -1172,7 +1172,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                 }
             },
             default: "submit",
-            width: 100
+            position:{width: 250}
         }).render({force:true});
     }
     //OVERRIDE
@@ -1287,7 +1287,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
         }
         return foundry.applications.api.DialogV2.wait({
             window: { title: "Choose item to apply upgrade" },
-            position: { width: 100 },
+            position: { width: 250 },
             content: content,
             actions: {
                 inventory: async function addToInventory(event) {
@@ -1311,7 +1311,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                             return false;
                         } else {
                             applyMod(actor, itemId);
-                            this.render({force: true});
+                            
                             return true;
                         }
                     }
@@ -1338,12 +1338,12 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                 actor: actor,
                 buttons: [{
                     action:"button",
-                        label: "Ok",
-                        callback: async (html) => {
-                            this.document.dialog = undefined;
-                        }
+                    label: "Ok",
+                    callback: async (html) => {
+                        this.document.dialog = undefined;
                     }
-                ],
+                }
+                         ],
                 close: function () {
                     this.document.dialog = undefined;
                 }

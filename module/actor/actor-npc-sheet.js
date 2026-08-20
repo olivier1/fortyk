@@ -22,7 +22,8 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
     }
     static PARTS = {
         form: {
-            template: 'systems/fortyk/templates/actor/actor-npc-sheet.html'
+            template: 'systems/fortyk/templates/actor/actor-npc-sheet.html',
+            scrollable: ['']
         },
         weapons: {
             template: 'systems/fortyk/templates/actor/npcParts/npc-weapons.html',
@@ -98,47 +99,19 @@ export class FortyKNPCSheet extends FortyKBaseActorSheet {
         });
         return context;
     }
-   async _onRender(context, options) {
+    async _onRender(context, options) {
         await super._onRender(context, options);
 
         const html=$(this.element);
 
         if (this._listenersBound) return;
-        //right click profile img
-        html.find(".npc-img").contextmenu(this._onImgRightClick.bind(this));
-
         if (!this.options.editable) return;
 
         html.find(".parse-tnt").click(this._onTntParse.bind(this));
         this._listenersBound = true;
     }
 
-    _onImgRightClick(event) {
-        event = event || window.event;
-
-        var options = {
-            width: "auto",
-            height: "auto"
-        };
-        let img = this.actor.img;
-        let dlg = new foundry.applications.api.DialogV2(
-            {
-                window:{title: `Profile Image`},
-                actor:this.actor,
-                content: `<img src="${img}"  width="auto" height="auto">`,
-                buttons: [
-                    {
-                        action:"submit",
-                        label: "OK",
-                        callback: null
-                    }
-                ],
-                default: "submit"
-            },
-            options
-        );
-        dlg.render({force:true});
-    }
+    
 
     async _onTntParse(event) {
         let actor = this.actor;

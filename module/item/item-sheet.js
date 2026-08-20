@@ -481,8 +481,18 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
     /* -------------------------------------------- */
 
     /** @override */
+    async _preRender(context, options) {
+        await super._preRender(context, options);
+
+        // If the window is being detached or re-rendered from scratch, 
+        // force a reset of the listener binding flag
+        if (options.isFirstRender || options.renderContext || options.detached) {
+            this._listenersBound = false;
+        }
+    }
     _onRender(context, options) {
         super._onRender(context, options);
+        if(this._listenersBound)return;
         const html=$(this.element);
 
         // Everything below here is only needed if the sheet is editable
@@ -524,7 +534,7 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
             event.stopImmediatePropagation();
             event.preventDefault();
         });
-
+        this._listenersBound=true;
     }
     async _onNavFlagConfirmClick(event){
         let navFlagInput=document.getElementById("navpowerflaginput");
@@ -541,12 +551,12 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
     }
     async _onManageReqsClick(event) {
         event.preventDefault();
-        let dialog = new ManageRequirementsDialog({ item: this.document, flag:"requirements" });
+        let dialog = new ManageRequirementsDialog({ item: this.document, flag:"requirements", buttons:[{}] });
         dialog.render(true, { title: "Manage Requirements" });
     }
     async _onManageMasteryReqsClick(event){
         event.preventDefault();
-        let dialog = new ManageRequirementsDialog({ item: this.document, flag:"masteryrequirements" });
+        let dialog = new ManageRequirementsDialog({ item: this.document, flag:"masteryrequirements", buttons:[{}] });
         dialog.render(true, { title: "Manage Mastery Requirements" });
     }
     async _onDeleteModClick(event) {
@@ -580,12 +590,12 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
                                 }
                             } 
                             await this.document.deleteEmbeddedDocuments("ActiveEffect", [itemId]);
-                            this.render({force:true});
+                            this.render({force:true, renderContext:"refresh"});
                             let apps = item.parent.apps;
                             for (const appKey in apps) {
                                 apps[appKey].render({force:true});
                             }
-                            this.render({force:true});
+                            this.render({force:true, renderContext:"refresh"});
                         }
                     },
                     {action:"cancel",
@@ -600,7 +610,7 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
     _onCompendiumChange(event) {
         let compendium = event.target.value;
         this.chosenPack = compendium;
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     _onItemChange(event) {
         let item = event.target.value;
@@ -635,32 +645,34 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
         let bonus = { uuid: this.chosenItem, name: this.chosenItemName, isOR: isOR, isAND: isAND };
 
         if (typeof spec === "string" && spec !== "N/A") {
-            let chosenSpec = await Dialog.prompt({
-                title: `Choose specialisation for ${item.name}`,
+            let chosenSpec = await foundry.applications.api.DialogV2.prompt({
+                window:{title: `Choose specialisation for ${item.name}`},
                 content: `<p><label>Specialisation:</label> <input id="specInput" type="text" name="spec" value="${item.system.specialisation.value}" autofocus/></p>`,
 
-                callback: async (html) => {
+                ok: {callback:async (event, button, dialog) => {
+                    let html=event.target.form;
                     const choosenSpec = $(html).find('input[name="spec"]').val();
                     return choosenSpec;
-                },
+                }},
 
-                width: 100
+                position:{width: 250}
             });
             bonus.spec = chosenSpec;
             bonus.name += `: ${chosenSpec}`;
         }
         let amount = item.system.amount?.value;
         if (amount) {
-            let newAmount = await Dialog.prompt({
-                title: `Choose amount for ${item.name}`,
+            let newAmount = await foundry.applications.api.DialogV2.prompt({
+                window:{title: `Choose amount for ${item.name}`},
                 content: `<p><label>Amount:</label> <input id="amountInput" type="text" name="amount" value="${item.system.amount.value}" autofocus/></p>`,
 
-                callback: async (html) => {
+                ok: {callback:async (event, button, dialog) => {
+                    let html=event.target.form;
                     const chosenAmount = parseInt($(html).find('input[name="amount"]').val());
                     return chosenAmount;
-                },
+                }},
 
-                width: 100
+                position:{width: 250}
             });
             if (newAmount > 1) {
                 bonus.amount = newAmount;
@@ -672,7 +684,7 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
         this.chosenItem = null;
         this.chosenItemName = null;
         document.getElementById("add").setAttribute("disabled", "");
-        this.render();
+        this.render({renderContext:"refresh"});
     }
     _onRemoveItemClick(event) {
         let bonuses = this.document.system.items;

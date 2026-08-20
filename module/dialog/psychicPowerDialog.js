@@ -108,12 +108,23 @@ export class psychicPowerDialog extends HandlebarsApplicationMixin(DialogV2) {
         let targetLabel=this.element.ownerDocument.getElementById("targetLabel");
         targetLabel.innerHTML=data.testTarget;
     }
+    async _preRender(context, options) {
+        await super._preRender(context, options);
+
+        // If the window is being detached or re-rendered from scratch, 
+        // force a reset of the listener binding flag
+        if (options.isFirstRender || options.renderContext || options.detached) {
+            this._listenersBound = false;
+        }
+    }
     _onRender(context, options) {
         super._onRender(context, options);
+        if (this._listenersBound) return;
         const html=$(this.element);
         html.find(".submitBtn").click(this._onSubmit.bind(this));
         html.find("#prInput").keyup(this._onPRChange.bind(this));
         html.find("#modifier").keyup(this._onModifierChange.bind(this));
+        this._listenersBound=true;
     }
     _onModifierChange(event){
         let value=parseInt(event.target.value);

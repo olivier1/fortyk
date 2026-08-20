@@ -159,6 +159,7 @@
   height: 32px;
   width: fit-content;
   top: 0;
+  left: 7.5em;
 }
 .application:after{
   position:absolute;
@@ -210,8 +211,8 @@ i:not(.region-color), .fa, .fas, .far, .fab, .fal, .fad, .fass, .fasr, .fasl,
   -moz-osx-font-smoothing: grayscale !important;
   display: inline-block;
   text-decoration: none !important;
-  background: none !important;
-  background-color: transparent !important;
+  background: none;
+  background-color: transparent;
 }
 input[name="search"]{
   background: none !important;
@@ -1193,7 +1194,7 @@ a[data-action="duplicate"] i,
   color: var(--terminal-text) !important;
 }
 #chat-message{
-  height:140px !important;
+  height:7em !important;
 }
 /* Tool icons in left bar - different colors */
 #controls .control-tool:nth-child(1) i { color: #ff6666 !important; text-shadow: 0 0 3px #ff6666 !important; }

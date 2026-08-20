@@ -8,7 +8,13 @@ export class ActiveEffectDialog extends HandlebarsApplicationMixin(DialogV2) {
         template: "systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html",
         default:null,
         position:{height:"auto",
-                 width:"auto"}
+                  width:"auto"},
+        dragDrop: [
+            { 
+                dragSelector: ".effects-list .effect-item", // CSS selector for your items
+                dropSelector: ".effects-list"              // CSS selector for the drop zone
+            }
+        ]
 
     }
     static PARTS = {
@@ -16,9 +22,33 @@ export class ActiveEffectDialog extends HandlebarsApplicationMixin(DialogV2) {
             template:"systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html"
         }
     }
+    _onDragStart(event) {
+        const li = event.currentTarget;
+        if ( li.dataset.effectId ) {
+            const effect = this.actor.effects.get(li.dataset.effectId);
+            if ( !effect ) return;
 
+            // Foundry expects a clean object structure to trigger drop events
+            const dragData = {
+                type: "ActiveEffect",
+                uuid: effect.uuid
+            };
+
+            event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+        }
+    }
+    async _preRender(context, options) {
+        await super._preRender(context, options);
+
+        // If the window is being detached or re-rendered from scratch, 
+        // force a reset of the listener binding flag
+        if (options.isFirstRender || options.renderContext || options.detached) {
+            this._listenersBound = false;
+        }
+    }
     _onRender(context, options) {
         super._onRender(context, options);
+        if (this._listenersBound) return;
         const html=$(this.element);
 
 
@@ -26,7 +56,7 @@ export class ActiveEffectDialog extends HandlebarsApplicationMixin(DialogV2) {
         html.find('.ae-create').click(this._onAeCreate.bind(this));
         html.find('.ae-delete').click(this._onAeDelete.bind(this));
 
-
+        this._listenersBound=true;
     } 
     async _prepareContext(options){
         let context=await super._prepareContext(options);
@@ -118,6 +148,6 @@ export class ActiveEffectDialog extends HandlebarsApplicationMixin(DialogV2) {
         let renderedTemplate=await foundry.applications.handlebars.renderTemplate('systems/fortyk/templates/actor/dialogs/activeEffects-dialog.html', templateOptions);
         this.content=renderedTemplate;
 
-        this.render({force:true});
+        this.render({force:true, renderContext:"refresh"});
     }
 }

@@ -158,11 +158,11 @@ export class FortyKActor extends Actor {
                 data["system.secChar.barrier.currentCD"]=this.system.secChar.barrier.cooldown;
                 let barrierItem=this.system.secChar.wornGear.forceField;
                 if(barrierItem){
-                    try {
+                    if(barrierItem?.system?.type==="barrier"){
                         barrierItem.update({"system.broken.value":true});
-                    } catch (e) {
-                        //Catch Statement
                     }
+
+
                 }
             }
             let wounds = false;
@@ -735,14 +735,16 @@ export class FortyKActor extends Actor {
         let actor = this;
         let actorData = this;
         let data = this.system;
-        let selfPsy = [];
+        //let selfPsy = [];
         let tokenChanges = [];
         this.tokenActiveEffectChanges={"initial":[],"final":[]};
         //data.postEffects=false;
 
         let otherAes = [];
         let prBuffs = [];
+        let validChanges = [];
         for (const ae of this.effects) {
+
             if (!ae.disabled) {
                 let powerOriginId = ae.origin;
                 let powerOrigin;
@@ -754,14 +756,18 @@ export class FortyKActor extends Actor {
 
 
                 let powerActor = null;
-                if(powerOrigin&&powerOrigin.type!=="fortykAuraBehavior"){
+                /*if(powerOrigin&&powerOrigin.type!=="fortykAuraBehavior"){
                     powerOrigin=fromUuidSync(powerOrigin.system.originId);
-                }
+                }*/
                 if (powerOrigin) {
                     powerActor = powerOrigin.parent;
                     if (!powerActor) continue;
                     if (ae.getFlag("fortyk", "psy") && actor.uuid === powerActor.uuid) {
-                        selfPsy.push(ae);
+                        ae.changes.map((change)=>{change.powerActor=powerActor;
+                                                  change.ae=ae;
+                                                  change.selfPsy=true;});
+                        validChanges=validChanges.concat(ae.changes);
+
                         continue;
                     }
                 }
@@ -797,106 +803,123 @@ export class FortyKActor extends Actor {
                 }
                 //if item is equipped and/or not disabled
                 if (proceed) {
-                    for (let change of ae.changes) {
-                        let path = change.key.split(".");
-                        if(path[0]==="token"){
-                            const copy = foundry.utils.deepClone(change);
-                            copy.key=copy.key.slice(6);
-                            tokenChanges.push(copy);
+                    ae.changes.map((change)=>{change.powerActor=powerActor;
+                                              change.ae=ae;});
+                    validChanges=validChanges.concat(ae.changes);
+                }
+            }
+        }
+
+        validChanges=validChanges.sort((a, b)=>{
+            if(a.priority===null)a.priority=0;
+            if(b.priority===null)b.priority=0;
+            return a.priority-b.priority;
+        });
+        for (let change of validChanges) {
+            if(!change.selfPsy){
+
+                let powerActor=change.powerActor;
+                let ae=change.ae;
+                let powerOriginId = ae.origin;
+                let powerOrigin;
+                if(powerOriginId?.includes(this.id)){
+                    if(this.isToken&&!game.ready)continue;
+
+                }
+                powerOrigin = fromUuidSync(powerOriginId); 
+                let path = change.key.split(".");
+                if(path[0]==="token"){
+                    const copy = foundry.utils.deepClone(change);
+                    copy.key=copy.key.slice(6);
+                    tokenChanges.push(copy);
+                    continue;
+                }
+                let changeValue = change.value;
+                if (change.type === "custom") {
+                    if (typeof changeValue === "string") {
+                        if (changeValue.toLowerCase() === "true") {
+                            setNestedKey(actorData, path, true);
+                            continue;
+                        } else if (changeValue.toLowerCase() === "false") {
+                            setNestedKey(actorData, path, false);
                             continue;
                         }
-                        let changeValue = change.value;
-                        if (change.type === "custom") {
-                            if (typeof changeValue === "string") {
-                                if (changeValue.toLowerCase() === "true") {
-                                    setNestedKey(actorData, path, true);
-                                    continue;
-                                } else if (changeValue.toLowerCase() === "false") {
-                                    setNestedKey(actorData, path, false);
-                                    continue;
-                                }
-                            }
-                        }
-                        if (powerActor && ae.getFlag("fortyk", "aura")) {
-                            let scope = powerActor.getScope();
-                            try {
-                                let changestr = changeValue;
-                                changeValue = Math.ceil(math.evaluate(changestr, scope));
-                            } catch (err) {}
-                        } else if (powerActor && ae.getFlag("fortyk", "psy")) {
-                            /*if (!powerActor.system.isPrepared) {
+                    }
+                }
+                if (powerActor && ae.getFlag("fortyk", "aura")) {
+                    let scope = powerActor.getScope();
+                    try {
+                        let changestr = changeValue;
+                        changeValue = Math.ceil(math.evaluate(changestr, scope));
+                    } catch (err) {}
+                } else if (powerActor && ae.getFlag("fortyk", "psy")) {
+                    /*if (!powerActor.system.isPrepared) {
                                 data.postEffects=true;
                                 continue; 
                             }*/
-                            let powerPr = parseInt(powerOrigin.system.curPR.value);
-                            let prAdjust = powerActor.getPrAdjust();
-                            let scope = powerActor.getScope();
-                            scope.pr = powerPr - prAdjust;
+                    let powerPr = parseInt(powerOrigin.system.curPR.value);
+                    let prAdjust = powerActor.getPrAdjust();
+                    let scope = powerActor.getScope();
+                    scope.pr = powerPr - prAdjust;
+                    try {
+                        let changestr = changeValue;
+                        changeValue = Math.ceil(math.evaluate(changestr, scope));
+                    } catch (err) {}
+                } else if (actor.getFlag("fortyk", "psyrating")) {
+                    let pr =
+                        actor.system.psykana.pr.value +
+                        actor.system.psykana.pr.bonus -
+                        Math.max(0, actor.getPrAdjust());
+                    if (typeof changeValue === "string") {
+                        if (changeValue.indexOf("pr") !== -1) {
                             try {
                                 let changestr = changeValue;
-                                changeValue = Math.ceil(math.evaluate(changestr, scope));
+                                changeValue = Math.ceil(math.evaluate(changestr, { pr: pr }));
                             } catch (err) {}
-                        } else if (actor.getFlag("fortyk", "psyrating")) {
-                            let pr =
-                                actor.system.psykana.pr.value +
-                                actor.system.psykana.pr.bonus -
-                                Math.max(0, actor.getPrAdjust());
-                            if (typeof changeValue === "string") {
-                                if (changeValue.indexOf("pr") !== -1) {
-                                    try {
-                                        let changestr = changeValue;
-                                        changeValue = Math.ceil(math.evaluate(changestr, { pr: pr }));
-                                    } catch (err) {}
-                                }
-                            }
                         }
-                        let basevalue = parseFloat(objectByString(actorData, change.key));
+                    }
+                }
+                let basevalue = parseFloat(objectByString(actorData, change.key));
 
-                        let newvalue = parseFloat(changeValue);
-                        /*if(newvalue>=0){
+                let newvalue = parseFloat(changeValue);
+                /*if(newvalue>=0){
                             newvalue=Math.ceil(newvalue);
                         }else{
                             newvalue=Math.floor(newvalue);
                         }*/
-                        if (isNaN(basevalue) || (!isNaN(basevalue) && !isNaN(newvalue))) {
-                            let changedValue = 0;
-                            if (change.type === "multiply") {
-                                changedValue = basevalue * newvalue;
-                                setNestedKey(actorData, path, changedValue);
-                            } else if (change.type === "add") {
-                                changedValue = basevalue + newvalue;
-                                setNestedKey(actorData, path, changedValue);
-                            } else if (change.type === "downgrade") {
-                                if (changeValue < basevalue) {
-                                    changedValue = newvalue;
-                                    setNestedKey(actorData, path, changedValue);
-                                }
-                            } else if (change.type === "upgrade") {
-                                if (changeValue > basevalue) {
-                                    changedValue = newvalue;
-                                    setNestedKey(actorData, path, changedValue);
-                                }
-                            } else if (change.type === "override") {
-                                setNestedKey(actorData, path, newvalue);
-                            } else if (change.type === "custom") {
-                                setNestedKey(actorData, path, changeValue);
-                            }
-                        } else {
-                            //custom mode
-                            if (change.type === "custom") {
-                                setNestedKey(actorData, path, changeValue);
-                            } else if (change.type === "add") {
-                                setNestedKey(actorData, path, changeValue);
-                            }
+                if (isNaN(basevalue) || (!isNaN(basevalue) && !isNaN(newvalue))) {
+                    let changedValue = 0;
+                    if (change.type === "multiply") {
+                        changedValue = basevalue * newvalue;
+                        setNestedKey(actorData, path, changedValue);
+                    } else if (change.type === "add") {
+                        changedValue = basevalue + newvalue;
+                        setNestedKey(actorData, path, changedValue);
+                    } else if (change.type === "downgrade") {
+                        if (changeValue < basevalue) {
+                            changedValue = newvalue;
+                            setNestedKey(actorData, path, changedValue);
                         }
+                    } else if (change.type === "upgrade") {
+                        if (changeValue > basevalue) {
+                            changedValue = newvalue;
+                            setNestedKey(actorData, path, changedValue);
+                        }
+                    } else if (change.type === "override") {
+                        setNestedKey(actorData, path, newvalue);
+                    } else if (change.type === "custom") {
+                        setNestedKey(actorData, path, changeValue);
+                    }
+                } else {
+                    //custom mode
+                    if (change.type === "custom") {
+                        setNestedKey(actorData, path, changeValue);
+                    } else if (change.type === "add") {
+                        setNestedKey(actorData, path, changeValue);
                     }
                 }
-            }
-        }
-        this.tokenActiveEffectChanges['initial'] = tokenChanges;
-        if (selfPsy.length > 0) {
-            for (let i = 0; i < selfPsy.length; i++) {
-                let ae = selfPsy[i];
+            }else{
+                let ae = change.ae;
                 let originPower = fromUuidSync(ae.origin);
                 let pr = parseInt(originPower.system.curPR.value) - this.getPrAdjust();
 
@@ -904,56 +927,62 @@ export class FortyKActor extends Actor {
                 selfScope.TRUE=true;
                 selfScope.FALSE=false;
                 selfScope.pr = pr;
-                ae.changes.forEach(function (change, i) {
-                    var changeValue = change.value;
-                    if (ae.getFlag("fortyk", "psy")) {
-                        try {
-                            let changestr = changeValue;
-                            changeValue = Math.ceil(math.evaluate(changestr, selfScope));
-                        } catch (err) {
-                            console.log(err, changeValue, actor, selfScope);
-                        }
+                var changeValue = change.value;
+                if (ae.getFlag("fortyk", "psy")) {
+                    try {
+                        let changestr = changeValue;
+                        changeValue = Math.ceil(math.evaluate(changestr, selfScope));
+                    } catch (err) {
+                        console.log(err, changeValue, actor, selfScope);
                     }
-                    let basevalue = parseFloat(objectByString(actorData, change.key));
+                }
+                let basevalue = parseFloat(objectByString(actorData, change.key));
 
-                    let newvalue = parseFloat(changeValue);
-                    let path = change.key.split(".");
-                    /*if(newvalue>=0){
+                let newvalue = parseFloat(changeValue);
+                let path = change.key.split(".");
+                if(path[0]==="token"){
+                    const copy = foundry.utils.deepClone(change);
+                    copy.key=copy.key.slice(6);
+                    tokenChanges.push(copy);
+                    continue;
+                }
+                /*if(newvalue>=0){
                             newvalue=Math.ceil(newvalue);
                         }else{
                             newvalue=Math.floor(newvalue);
                         }*/
-                    if (!isNaN(basevalue) && !isNaN(newvalue)) {
-                        let changedValue = 0;
-                        if (change.type === "multiply") {
-                            changedValue = basevalue * newvalue;
+                if (!isNaN(basevalue) && !isNaN(newvalue)) {
+                    let changedValue = 0;
+                    if (change.type === "multiply") {
+                        changedValue = basevalue * newvalue;
+                        setNestedKey(actorData, path, changedValue);
+                    } else if (change.type === "add") {
+                        changedValue = basevalue + newvalue;
+                        setNestedKey(actorData, path, changedValue);
+                    } else if (change.type === "downgrade") {
+                        if (changeValue < basevalue) {
+                            changedValue = newvalue;
                             setNestedKey(actorData, path, changedValue);
-                        } else if (change.type === "add") {
-                            changedValue = basevalue + newvalue;
+                        }
+                    } else if (change.type === "upgrade") {
+                        if (changeValue > basevalue) {
+                            changedValue = newvalue;
                             setNestedKey(actorData, path, changedValue);
-                        } else if (change.type === "downgrade") {
-                            if (changeValue < basevalue) {
-                                changedValue = newvalue;
-                                setNestedKey(actorData, path, changedValue);
-                            }
-                        } else if (change.type === "upgrade") {
-                            if (changeValue > basevalue) {
-                                changedValue = newvalue;
-                                setNestedKey(actorData, path, changedValue);
-                            }
-                        } else if (change.type === "override") {
-                            setNestedKey(actorData, path, newvalue);
-                        } else if (change.type === "custom") {
-                            setNestedKey(actorData, path, changeValue);
                         }
-                    } else {
-                        if (change.type === "custom") {
-                            setNestedKey(actorData, path, changeValue);
-                        }
+                    } else if (change.type === "override") {
+                        setNestedKey(actorData, path, newvalue);
+                    } else if (change.type === "custom") {
+                        setNestedKey(actorData, path, changeValue);
                     }
-                });
+                } else {
+                    if (change.type === "custom") {
+                        setNestedKey(actorData, path, changeValue);
+                    }
+                }
             }
         }
+        this.tokenActiveEffectChanges['initial'] = tokenChanges;
+
         this._completedActiveEffectPhases.add("initial");
     }
     prepareDerivedData() {
@@ -1214,7 +1243,7 @@ export class FortyKActor extends Actor {
             if (key === "inf") {
                 char.total = Math.min(char.total, char.max);
             } else {
-                char.total = parseInt(char.value);
+                char.total = parseInt(char.value)+parseInt(char.mod);
                 char.bonus = Math.floor(char.total / 10) + parseInt(char.uB);
                 char.bonus *= char.bonusMulti;
                 char.preGlobal = char.total;

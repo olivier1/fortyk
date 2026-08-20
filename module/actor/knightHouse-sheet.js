@@ -149,7 +149,8 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
         event.preventDefault();
         let dialog=new CreateRepairEntryDialog({actor:this.actor,
                                                timeMod:this.actor.system.repairBays.time,
-                                               costMod:this.actor.system.repairBays.cost});
+                                               costMod:this.actor.system.repairBays.cost,
+                                               buttons:[{}]});
         dialog.render(true,{title:"Create Repair Entry"});
     }
     _onComponentCategoryChange(event){
@@ -216,8 +217,8 @@ export class FortyKKnightHouseSheet extends FortyKBaseActorSheet {
     async _onPassTime(event){
         let time=parseInt(document.getElementById("daysToPass").value);
         if(isNaN(time)){
-            document.getElementById("daysToPass").select()
-            return
+            document.getElementById("daysToPass").select();
+            return;
         }
 
         let bays=parseInt(this.actor.system.repairBays.value);

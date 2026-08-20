@@ -645,12 +645,15 @@ export class FortykRollDialogs {
         if(actor.getFlag("fortyk","leverage")){
             content="<label>Leverage:</label><input type='checkbox' id='leveragebox' name='leveragebox'> <br>"+content;
         }
-        
-        
+
+
         return await foundry.applications.api.DialogV2.wait({
-            window:{title: title,
-                    width:100,
-                    height:"auto"},
+            window:{title: title
+                   },
+            position:{
+                width:250,
+                height:"auto"                
+            },
             actor: actor,
             content: content,
             buttons: [
@@ -798,7 +801,7 @@ export class FortykRollDialogs {
             ],
             default: "submit",
             render: (event, dialog) =>{
-                
+
             }
 
         });
@@ -808,10 +811,10 @@ export class FortykRollDialogs {
 
         return await foundry.applications.api.DialogV2.prompt({
             window:{title: "Melding test"},
-            position:{width:100},
+            position:{width:250},
             actor: actor,
             content: `<p><label>Modifier:</label> <input id="modifier" type="number" name="modifier" value="${modifier}" autofocus/></p>`,
-            callback: async (event) => {
+            ok:{callback: async (event) => {
                 let html=event.target.form;
                 html.closest('dialog').setAttribute("hidden", "hidden");
                 const bonus = Number($(html).find('input[name="modifier"]').val());
@@ -822,6 +825,7 @@ export class FortykRollDialogs {
                     return await FortykRolls.fortykTest("wp", "skill", testTarget, actor, "Melding", null, false);
                 }
             }
+               }
         });
     }
     static checkMelee(target) {
@@ -1854,7 +1858,7 @@ export class FortykRollDialogs {
                      ],
             default: "submit",
 
-            width: 400
+            position:{width: 400}
         });
     }
     static async navigatorPowerPostTest(item, actor, training, gaze, fog, focusGaze, sheet, affectsUnliving, warned, test) {
@@ -2438,6 +2442,7 @@ export class FortykRollDialogs {
                    },
             position:{ width: 300},
             classes: ["fortky"],
+            buttons:[{}],
             data:{
                 actor:actor,
                 power:item,
@@ -2478,7 +2483,7 @@ export class FortykRollDialogs {
         foundry.applications.api.DialogV2.wait({
             window:{title: title
                    },
-            position:{width: 100},
+            position:{width: 250},
             actor: actor,
             content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="${modifier}" autofocus/></p>`,
             buttons: [
@@ -2646,7 +2651,7 @@ export class FortykRollDialogs {
         }
         foundry.applications.api.DialogV2.wait({
             window:{title: title},
-            position:{width:100},
+            position:{width:250},
             actor: actor,
             content: `<p><label>Modifier:</label> <input id="modifier" type="text" name="modifier" value="${tesmod}" autofocus/></p>`,
             buttons: [{
@@ -2889,7 +2894,7 @@ export class FortykRollDialogs {
     static async callForcefieldDialog(forcefield, actor, title = "Enter number of hits") {
         foundry.applications.api.DialogV2.wait({
             window:{title: title},
-            position:{width:100},
+            position:{width:250},
             actor: actor,
             content: `<p><label>Number of Hits:</label> <input id="modifier" type="number" name="modifier" value="1" autofocus/></p>`,
             buttons: [{

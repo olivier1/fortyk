@@ -761,6 +761,7 @@ export class FortyKItem extends Item {
         let scope = actor.getScope();
         let actorTokenChanges = actor.tokenActiveEffectChanges["initial"];
         let pr;
+        let validChanges=[];
         if (actor.getFlag("fortyk", "psyrating")) {
             pr =
                 actor.system.psykana.pr.value +
@@ -790,629 +791,647 @@ export class FortyKItem extends Item {
                 } else {
                     proceed = false;
                 }
-                if (!proceed) return;
-                ae.changes.forEach(function (change, i) {
-                    let path = change.key.split(".");
-                    if(path[1]==="token"){
-                        const copy = foundry.utils.deepClone(change);
-                        copy.key=copy.key.slice(12);
-                        actorTokenChanges.push(copy);
-                        return;
+                if (proceed) {
+                    ae.changes.map((change)=>{
+                        change.ae=ae;
+                    });
+                    validChanges=validChanges.concat(ae.changes);
+                }
+            }
+        });
+        validChanges=validChanges.sort((a, b)=>{
+            if(a.priority===null)a.priority=0;
+            if(b.priority===null)b.priority=0;
+            return a.priority-b.priority;
+        });
+        for(let change of validChanges) {
+            let path = change.key.split(".");
+            if(path[1]==="token"){
+                const copy = foundry.utils.deepClone(change);
+                copy.key=copy.key.slice(12);
+                actorTokenChanges.push(copy);
+                continue;
+            }
+            var changeValue = change.value;
+            if (change.type === "custom") {
+                if (typeof changeValue === "string") {
+                    if (changeValue.toLowerCase() === "true") {
+                        return setNestedKey(itemData, path, true);
+                    } else if (changeValue.toLowerCase() === "false") {
+                        return setNestedKey(itemData, path, false);
                     }
-                    var changeValue = change.value;
-                    if (change.type === "custom") {
-                        if (typeof changeValue === "string") {
-                            if (changeValue.toLowerCase() === "true") {
-                                return setNestedKey(itemData, path, true);
-                            } else if (changeValue.toLowerCase() === "false") {
-                                return setNestedKey(itemData, path, false);
+                }
+            }
+
+            if (actor.getFlag("fortyk", "psyrating")) {
+                if (typeof changeValue === "string") {
+                    if (changeValue.indexOf("pr") !== -1) {
+                        try {
+                            let value = math.evaluate(changeValue, scope);
+
+                            if (!Number.isNaN(value)) {
+                                changeValue = value;
                             }
+                        } catch (err) {
+                            console.log(err, item);
                         }
                     }
+                }
+            }
+            let basevalue = Number(objectByString(itemData, change.key));
+            let isNumber = true;
+            if (Number.isNaN(basevalue)) {
+                basevalue = objectByString(itemData, change.key);
+                isNumber = false;
+            }
+            let newvalue;
+            if (isNumber) {
+                newvalue = parseFloat(changeValue);
+            } else {
+                newvalue = changeValue;
+            }
 
-                    if (actor.getFlag("fortyk", "psyrating")) {
-                        if (typeof changeValue === "string") {
-                            if (changeValue.indexOf("pr") !== -1) {
-                                try {
-                                    let value = math.evaluate(changeValue, scope);
-
-                                    if (!Number.isNaN(value)) {
-                                        changeValue = value;
-                                    }
-                                } catch (err) {
-                                    console.log(err, item);
-                                }
-                            }
-                        }
-                    }
-                    let basevalue = Number(objectByString(itemData, change.key));
-                    let isNumber = true;
-                    if (Number.isNaN(basevalue)) {
-                        basevalue = objectByString(itemData, change.key);
-                        isNumber = false;
-                    }
-                    let newvalue;
-                    if (isNumber) {
-                        newvalue = parseFloat(changeValue);
-                    } else {
-                        newvalue = changeValue;
-                    }
-
-                    /*if(newvalue>=0){
+            /*if(newvalue>=0){
                             newvalue=Math.ceil(newvalue);
                         }else{
                             newvalue=Math.floor(newvalue);
                         }*/
-                    if (!isNumber || (!Number.isNaN(basevalue) && !Number.isNaN(newvalue))) {
-                        let changedValue = 0;
-                        if (change.type === "multiply") {
-                            changedValue = basevalue * newvalue;
-                            setNestedKey(itemData, path, changedValue);
-                        } else if (change.type === "add") {
-                            changedValue = basevalue + newvalue;
-                            setNestedKey(itemData, path, changedValue);
-                        } else if (change.type === "downgrade") {
-                            if (changeValue < basevalue) {
-                                changedValue = newvalue;
-                                setNestedKey(itemData, path, changedValue);
-                            }
-                        } else if (change.type === "upgrade") {
-                            if (changeValue > basevalue) {
-                                changedValue = newvalue;
-                                setNestedKey(itemData, path, changedValue);
-                            }
-                        } else if (change.type === "override") {
-                            setNestedKey(itemData, path, newvalue);
-                        } else if (change.type === "custom") {
-                            setNestedKey(itemData, path, changeValue);
-                        }
-                    } else {
-                        if (change.type === "custom") {
-                            setNestedKey(itemData, path, changeValue);
-                        }else if (change.type === "add") {
-
-                            setNestedKey(actorData, path, changeValue);
-                        }
+            if (!isNumber || (!Number.isNaN(basevalue) && !Number.isNaN(newvalue))) {
+                let changedValue = 0;
+                if (change.type === "multiply") {
+                    changedValue = basevalue * newvalue;
+                    setNestedKey(itemData, path, changedValue);
+                } else if (change.type === "add") {
+                    changedValue = basevalue + newvalue;
+                    setNestedKey(itemData, path, changedValue);
+                } else if (change.type === "downgrade") {
+                    if (changeValue < basevalue) {
+                        changedValue = newvalue;
+                        setNestedKey(itemData, path, changedValue);
                     }
-                });
-            }
-        });
-    }
-    applyModWeight() {
-        let effects = this.effects;
-        let weight = 0;
-        for (const effect of effects) {
-            let system = effect.getFlag("fortyk", "modsystem");
-            if (system) {
-                weight += parseFloat(system.weight.value);
-            }
-        }
-        this.system.weight.value = parseFloat(this.system.weight.value) + weight;
-    }
-    getModCount() {
-        let effects = this.effects;
-        let count = 0;
-        for (const effect of effects) {
-            if (effect.getFlag("fortyk", "modsystem")) {
-                count++;
-            }
-        }
-        return count;
-    }
-    getFlags() {
-        let flags = [];
-        let fortykFlags = this.flags.fortyk;
-        let FORTYK = this.FORTYK;
-        let FORTYKFlags;
-        if (this.type === "armor") {
-            FORTYKFlags = FORTYK.armorFlags;
-        } else {
-            FORTYKFlags = FORTYK.weaponFlags;
-        }
-        for (const key in fortykFlags) {
-            let FORTYKFlag = FORTYKFlags[key];
-            if (!FORTYKFlag) continue;
-            let value = fortykFlags[key];
-            if (!value) continue;
-            let flagObj = {};
-            flagObj.description = FORTYKFlag.description;
-            if (!Number.isNaN(parseFloat(value))) {
-                flagObj.label = `${FORTYKFlag.label} (${value})`;
+                } else if (change.type === "upgrade") {
+                    if (changeValue > basevalue) {
+                        changedValue = newvalue;
+                        setNestedKey(itemData, path, changedValue);
+                    }
+                } else if (change.type === "override") {
+                    setNestedKey(itemData, path, newvalue);
+                } else if (change.type === "custom") {
+                    setNestedKey(itemData, path, changeValue);
+                }
             } else {
-                flagObj.label = FORTYKFlag.label;
+                if (change.type === "custom") {
+                    setNestedKey(itemData, path, changeValue);
+                }else if (change.type === "add") {
+
+                    setNestedKey(itemData, path, changeValue);
+                }
             }
-            flags.push(flagObj);
         }
-        return flags;
+
+
+}
+applyModWeight() {
+    let effects = this.effects;
+    let weight = 0;
+    for (const effect of effects) {
+        let system = effect.getFlag("fortyk", "modsystem");
+        if (system) {
+            weight += parseFloat(system.weight.value);
+        }
     }
-    validateActor(actor, requirements = this.getFlag("fortyk", "requirements"), mastery=false) {
-        const FORTYK=game.fortyk.FORTYK;
-        var validated = true;
-        var failReasons = [];
-        if (!actor) {
-            failReasons.push("No valid actor!");
+    this.system.weight.value = parseFloat(this.system.weight.value) + weight;
+}
+getModCount() {
+    let effects = this.effects;
+    let count = 0;
+    for (const effect of effects) {
+        if (effect.getFlag("fortyk", "modsystem")) {
+            count++;
+        }
+    }
+    return count;
+}
+getFlags() {
+    let flags = [];
+    let fortykFlags = this.flags.fortyk;
+    let FORTYK = this.FORTYK;
+    let FORTYKFlags;
+    if (this.type === "armor") {
+        FORTYKFlags = FORTYK.armorFlags;
+    } else {
+        FORTYKFlags = FORTYK.weaponFlags;
+    }
+    for (const key in fortykFlags) {
+        let FORTYKFlag = FORTYKFlags[key];
+        if (!FORTYKFlag) continue;
+        let value = fortykFlags[key];
+        if (!value) continue;
+        let flagObj = {};
+        flagObj.description = FORTYKFlag.description;
+        if (!Number.isNaN(parseFloat(value))) {
+            flagObj.label = `${FORTYKFlag.label} (${value})`;
+        } else {
+            flagObj.label = FORTYKFlag.label;
+        }
+        flags.push(flagObj);
+    }
+    return flags;
+}
+validateActor(actor, requirements = this.getFlag("fortyk", "requirements"), mastery=false) {
+    const FORTYK=game.fortyk.FORTYK;
+    var validated = true;
+    var failReasons = [];
+    if (!actor) {
+        failReasons.push("No valid actor!");
+        validated = false;
+        return { valid: validated, reasons: failReasons };
+    }
+
+    let itemType = this.type;
+    switch (itemType) {
+        case "talentntrait":
+            let spec = this.system.specialisation.value;
+            var actorSpec = actor.getFlag("fortyk", this.system.flagId.value);
+            if (spec === "N/A") {
+                if (actorSpec) {
+                    failReasons.push("You already have this talent.");
+                    validated = false;
+                }
+            } else {
+                if (actorSpec) {
+                    if (actorSpec.includes(spec)) {
+                        failReasons.push(`You already have the ${spec} specialisation.`);
+                        validated = false;
+                    }
+                }
+            }
+            break;
+        case "eliteAdvance":
+            if(!mastery){
+                let flagId = this.system.flagId.value;
+                if (actor.getFlag("fortyk", flagId)) {
+                    failReasons.push(`You already have this elite advance.`);
+                    validated = false;
+                }
+            }
+
+            break;
+        case "psychicPower":
+            let disciplines = Object.values(actor.system.psykana.disciplines);
+            let discipline = this.system.discipline.value;
+            if (!disciplines.includes(discipline)) {
+                failReasons.push(`You do not have the ${discipline} discipline.`);
+                validated = false;
+            }
+            if (actor.getFlag("fortyk", this.id)) {
+                failReasons.push(`You already have this power.`);
+                validated = false;
+            }
+            break;
+    }
+    if (!requirements) {
+        return { valid: validated, reasons: failReasons };
+    }
+    if (requirements.characterCreation) {
+        if (!actor.getFlag("fortyk", "charactercreation")) {
+            failReasons.push("You must purchase this advancement at character creation.");
             validated = false;
-            return { valid: validated, reasons: failReasons };
         }
+    }
+    let actorChars = actor.system.characteristics;
+    let charReqs = requirements.characteristics;
+    let charBase = 0;
+    let charReq = 0;
+    let adv;
+    for (let [key, char] of Object.entries(actorChars)) {
+        charBase = parseInt(char.value) + parseInt(char.advance);
+        charReq = charReqs[key].value;
 
-        let itemType = this.type;
-        switch (itemType) {
-            case "talentntrait":
-                let spec = this.system.specialisation.value;
-                var actorSpec = actor.getFlag("fortyk", this.system.flagId.value);
-                if (spec === "N/A") {
-                    if (actorSpec) {
-                        failReasons.push("You already have this talent.");
-                        validated = false;
-                    }
-                } else {
-                    if (actorSpec) {
-                        if (actorSpec.includes(spec)) {
-                            failReasons.push(`You already have the ${spec} specialisation.`);
-                            validated = false;
-                        }
-                    }
-                }
-                break;
-            case "eliteAdvance":
-                if(!mastery){
-                    let flagId = this.system.flagId.value;
-                    if (actor.getFlag("fortyk", flagId)) {
-                        failReasons.push(`You already have this elite advance.`);
-                        validated = false;
-                    }
-                }
-
-                break;
-            case "psychicPower":
-                let disciplines = Object.values(actor.system.psykana.disciplines);
-                let discipline = this.system.discipline.value;
-                if (!disciplines.includes(discipline)) {
-                    failReasons.push(`You do not have the ${discipline} discipline.`);
-                    validated = false;
-                }
-                if (actor.getFlag("fortyk", this.id)) {
-                    failReasons.push(`You already have this power.`);
-                    validated = false;
-                }
-                break;
+        if (charBase < charReq) {
+            failReasons.push(`You do not meet the ${charReq} ${charReqs[key].label} requirement.`);
+            validated = false;
         }
-        if (!requirements) {
-            return { valid: validated, reasons: failReasons };
-        }
-        if (requirements.characterCreation) {
-            if (!actor.getFlag("fortyk", "charactercreation")) {
-                failReasons.push("You must purchase this advancement at character creation.");
+        adv = parseInt(charReqs[key].adv);
+        if(adv){
+            if(parseInt(char.advance)<adv){
+                failReasons.push(`You do not meet the +${adv} ${charReqs[key].label} advance requirement.`);
                 validated = false;
             }
         }
-        let actorChars = actor.system.characteristics;
-        let charReqs = requirements.characteristics;
-        let charBase = 0;
-        let charReq = 0;
-        let adv;
-        for (let [key, char] of Object.entries(actorChars)) {
-            charBase = parseInt(char.value) + parseInt(char.advance);
-            charReq = charReqs[key].value;
+    }
+    let prReq = charReqs.pr.value;
+    let actorPr = actor.system.psykana.pr.value;
+    if (actorPr < prReq) {
+        failReasons.push(`You do not meet the ${prReq} Psy Rating requirement.`);
+        validated = false;
+    }
+    let expReq = charReqs.exp.value;
+    let actorXp = actor.system.experience.spent;
+    if (actorXp < expReq) {
+        failReasons.push(`You do not meet the ${expReq} Experience Spent requirement.`);
+        validated = false;
+    }
+    let insReq = charReqs.ins.value;
+    let actorInsan = actor.system.secChar.insanity.value;
+    if (actorInsan < insReq) {
+        failReasons.push(`You do not meet the ${insReq} Inasnity requirement.`);
+        validated = false;
+    }
+    let corReq = charReqs.cor.value;
+    let actorCor = actor.system.secChar.corruption.value;
+    if (actorCor < corReq) {
+        failReasons.push(`You do not meet the ${corReq} Corruption requirement.`);
+        validated = false;
+    }
+    let mutReq = charReqs?.mut?.value;
+    let actorMut = actor.itemTypes.mutation.length;
+    if(actorMut<mutReq){
+        failReasons.push(`You do not have ${mutReq} mutations.`);
+        validated = false;
+    }
+    let mastPowReq=charReqs?.mastpow?.value;
+    let actorMastPows=actor.system.masteredPowers;
+    if(actorMastPows<mastPowReq){
+        failReasons.push(`You do not have ${mastPowReq} mastered powers.`);
+        validated = false;
+    }
+    let mastPathReq=charReqs?.mastpath?.value;
+    let actorMastPaths=actor.system.masteredPaths;
+    if(actorMastPaths<mastPathReq){
+        failReasons.push(`You do not have ${mastPathReq} mastered paths.`);
+        validated = false;
+    }
+    let flagRequirements = requirements.flags;
 
-            if (charBase < charReq) {
-                failReasons.push(`You do not meet the ${charReq} ${charReqs[key].label} requirement.`);
+    for (const flag in flagRequirements) {
+        //if(!flag)continue;
+
+        let flagInstance = flagRequirements[flag];
+        if (!flagInstance) continue;
+        let specs = flagInstance.spec;
+        let actorFlag = actor.getFlag("fortyk", flag);
+
+        if (specs === "anyranged") {
+            if (actor.getFlag("fortyk", "astartesweapontraining")) continue;
+
+            let hasTraining = false;
+            if (!actorFlag) {
+                failReasons.push(`You do not have ranged weapon training.`);
+                validated = false;
+                continue;
+            }
+            let actorFlagSplit = actorFlag.split(",");
+            for (let training of actorFlagSplit) {
+                if (
+                    FORTYK.rangedWeaponTypes.find(
+                        (weaponType) => weaponType.value.toLowerCase() === training.toLowerCase().trim()
+                    )
+                ) {
+                    hasTraining = true;
+                }
+            }
+            if (!hasTraining) {
+                failReasons.push(`You do not have ranged weapon training.`);
                 validated = false;
             }
-            adv = parseInt(charReqs[key].adv);
-            if(adv){
-                if(parseInt(char.advance)<adv){
-                    failReasons.push(`You do not meet the +${adv} ${charReqs[key].label} advance requirement.`);
-                    validated = false;
-                }
-            }
+            continue;
         }
-        let prReq = charReqs.pr.value;
-        let actorPr = actor.system.psykana.pr.value;
-        if (actorPr < prReq) {
-            failReasons.push(`You do not meet the ${prReq} Psy Rating requirement.`);
-            validated = false;
-        }
-        let expReq = charReqs.exp.value;
-        let actorXp = actor.system.experience.spent;
-        if (actorXp < expReq) {
-            failReasons.push(`You do not meet the ${expReq} Experience Spent requirement.`);
-            validated = false;
-        }
-        let insReq = charReqs.ins.value;
-        let actorInsan = actor.system.secChar.insanity.value;
-        if (actorInsan < insReq) {
-            failReasons.push(`You do not meet the ${insReq} Inasnity requirement.`);
-            validated = false;
-        }
-        let corReq = charReqs.cor.value;
-        let actorCor = actor.system.secChar.corruption.value;
-        if (actorCor < corReq) {
-            failReasons.push(`You do not meet the ${corReq} Corruption requirement.`);
-            validated = false;
-        }
-        let mutReq = charReqs?.mut?.value;
-        let actorMut = actor.itemTypes.mutation.length;
-        if(actorMut<mutReq){
-            failReasons.push(`You do not have ${mutReq} mutations.`);
-            validated = false;
-        }
-        let mastPowReq=charReqs?.mastpow?.value;
-        let actorMastPows=actor.system.masteredPowers;
-        if(actorMastPows<mastPowReq){
-            failReasons.push(`You do not have ${mastPowReq} mastered powers.`);
-            validated = false;
-        }
-        let mastPathReq=charReqs?.mastpath?.value;
-        let actorMastPaths=actor.system.masteredPaths;
-        if(actorMastPaths<mastPathReq){
-            failReasons.push(`You do not have ${mastPathReq} mastered paths.`);
-            validated = false;
-        }
-        let flagRequirements = requirements.flags;
-
-        for (const flag in flagRequirements) {
-            //if(!flag)continue;
-
-            let flagInstance = flagRequirements[flag];
-            if (!flagInstance) continue;
-            let specs = flagInstance.spec;
-            let actorFlag = actor.getFlag("fortyk", flag);
-
-            if (specs === "anyranged") {
-                if (actor.getFlag("fortyk", "astartesweapontraining")) continue;
-
-                let hasTraining = false;
-                if (!actorFlag) {
-                    failReasons.push(`You do not have ranged weapon training.`);
-                    validated = false;
-                    continue;
-                }
-                let actorFlagSplit = actorFlag.split(",");
-                for (let training of actorFlagSplit) {
-                    if (
-                        FORTYK.rangedWeaponTypes.find(
-                            (weaponType) => weaponType.value.toLowerCase() === training.toLowerCase().trim()
-                        )
-                    ) {
-                        hasTraining = true;
-                    }
-                }
-                if (!hasTraining) {
-                    failReasons.push(`You do not have ranged weapon training.`);
-                    validated = false;
-                }
+        if (specs === "any2") {
+            if (!actorFlag) {
+                failReasons.push(`You do not have the required 2 weapon Trainings.`);
+                validated = false;
                 continue;
             }
-            if (specs === "any2") {
-                if (!actorFlag) {
-                    failReasons.push(`You do not have the required 2 weapon Trainings.`);
-                    validated = false;
-                    continue;
-                }
-                let actorFlagSplit = actorFlag.split(",");
-                if (actorFlagSplit.length < 2) {
-                    failReasons.push(`You do not have the required 2 weapon Trainings.`);
-                    validated = false;
-                }
+            let actorFlagSplit = actorFlag.split(",");
+            if (actorFlagSplit.length < 2) {
+                failReasons.push(`You do not have the required 2 weapon Trainings.`);
+                validated = false;
+            }
+            continue;
+        }
+        if (specs === "anymelee") {
+            if (actor.getFlag("fortyk", "astartesweapontraining")) continue;
+            if (!actorFlag) {
+                failReasons.push(`You do not have melee weapon training.`);
+                validated = false;
                 continue;
             }
-            if (specs === "anymelee") {
-                if (actor.getFlag("fortyk", "astartesweapontraining")) continue;
-                if (!actorFlag) {
-                    failReasons.push(`You do not have melee weapon training.`);
-                    validated = false;
-                    continue;
-                }
-                let actorFlagSplit = actorFlag.split(",");
-                let hasTraining = false;
+            let actorFlagSplit = actorFlag.split(",");
+            let hasTraining = false;
 
-                for (let training of actorFlagSplit) {
-                    if (
-                        FORTYK.meleeWeaponTypes.find(
-                            (weaponType) => weaponType.value.toLowerCase() === training.toLowerCase().trim()
-                        )
-                    ) {
-                        hasTraining = true;
-                    }
+            for (let training of actorFlagSplit) {
+                if (
+                    FORTYK.meleeWeaponTypes.find(
+                        (weaponType) => weaponType.value.toLowerCase() === training.toLowerCase().trim()
+                    )
+                ) {
+                    hasTraining = true;
                 }
-                if (!hasTraining) {
-                    failReasons.push(`You do not have melee weapon training.`);
-                    validated = false;
-                }
+            }
+            if (!hasTraining) {
+                failReasons.push(`You do not have melee weapon training.`);
+                validated = false;
+            }
+            continue;
+        }
+        if (specs === "any2") {
+            if (!actorFlag) {
+                failReasons.push(`You do not have the required 2 weapon Trainings.`);
+                validated = false;
                 continue;
             }
-            if (specs === "any2") {
-                if (!actorFlag) {
-                    failReasons.push(`You do not have the required 2 weapon Trainings.`);
-                    validated = false;
-                    continue;
-                }
-                let actorFlagSplit = actorFlag.split(",");
-                if (actorFlagSplit.length < 2) {
-                    failReasons.push(`You do not have the required 2 weapon Trainings.`);
-                    validated = false;
-                }
-                continue;
+            let actorFlagSplit = actorFlag.split(",");
+            if (actorFlagSplit.length < 2) {
+                failReasons.push(`You do not have the required 2 weapon Trainings.`);
+                validated = false;
             }
+            continue;
+        }
 
-            let splitSpec = specs.split(",");
-            for (let spec of splitSpec) {
-                if (flagInstance.negative) {
-                    if (spec) {
-                        spec = spec.toLowerCase();
-                        if (spec.includes("any")) {
-                            if (actorFlag) {
-                                failReasons.push(`You have the ${flagInstance.label} feature.`);
-                                validated = false;
-                                continue;
-                            }
-                        } else if (actorFlag || (actorFlag && actorFlag.toLowerCase().includes(spec))) {
-                            failReasons.push(`You have the ${flagInstance.label}(${spec}) feature.`);
-                            validated = false;
-                        }
-                    } else if (actor.getFlag("fortyk", flag)) {
-                        failReasons.push(`You have the ${flagInstance.label} feature.`);
-                        validated = false;
-                    }
-                    continue;
-                }
-
+        let splitSpec = specs.split(",");
+        for (let spec of splitSpec) {
+            if (flagInstance.negative) {
                 if (spec) {
                     spec = spec.toLowerCase();
                     if (spec.includes("any")) {
-                        if (!actor.getFlag("fortyk", flag)) {
-                            failReasons.push(`You do not have the ${flagInstance.label} feature.`);
+                        if (actorFlag) {
+                            failReasons.push(`You have the ${flagInstance.label} feature.`);
                             validated = false;
+                            continue;
                         }
-                    } else if (
-                        !actor.getFlag("fortyk", flag) ||
-                        (actor.getFlag("fortyk", flag) && !actor.getFlag("fortyk", flag).toLowerCase().includes(spec))
-                    ) {
-                        failReasons.push(`You do not have the ${flagInstance.label}(${spec}) feature.`);
+                    } else if (actorFlag || (actorFlag && actorFlag.toLowerCase().includes(spec))) {
+                        failReasons.push(`You have the ${flagInstance.label}(${spec}) feature.`);
                         validated = false;
                     }
-                } else if (!actor.getFlag("fortyk", flag)) {
-                    failReasons.push(`You do not have the ${flagInstance.label} feature.`);
+                } else if (actor.getFlag("fortyk", flag)) {
+                    failReasons.push(`You have the ${flagInstance.label} feature.`);
                     validated = false;
                 }
+                continue;
+            }
+
+            if (spec) {
+                spec = spec.toLowerCase();
+                if (spec.includes("any")) {
+                    if (!actor.getFlag("fortyk", flag)) {
+                        failReasons.push(`You do not have the ${flagInstance.label} feature.`);
+                        validated = false;
+                    }
+                } else if (
+                    !actor.getFlag("fortyk", flag) ||
+                    (actor.getFlag("fortyk", flag) && !actor.getFlag("fortyk", flag).toLowerCase().includes(spec))
+                ) {
+                    failReasons.push(`You do not have the ${flagInstance.label}(${spec}) feature.`);
+                    validated = false;
+                }
+            } else if (!actor.getFlag("fortyk", flag)) {
+                failReasons.push(`You do not have the ${flagInstance.label} feature.`);
+                validated = false;
             }
         }
-        let ORflagRequirements = requirements.ORflags;
-        let ORcheck;
-        if (ORflagRequirements === undefined || jQuery.isEmptyObject(ORflagRequirements)) {
-            ORcheck = true;
-        } else {
-            ORcheck = false;
-        }
-        let ORfailLabels = [];
-        for (const flag in ORflagRequirements) {
-            let flagInstance = ORflagRequirements[flag];
-            if (!flagInstance) continue;
-            let specs = flagInstance.spec;
-            let actorFlag = actor.getFlag("fortyk", flag);
-            if (actorFlag) {
-                if (specs) {
-                    if (actorFlag.includes(specs)) {
-                        ORcheck = true;
-                    } else {
-                        ORfailLabels.push(flagInstance.label);
-                    }
-                } else {
+    }
+    let ORflagRequirements = requirements.ORflags;
+    let ORcheck;
+    if (ORflagRequirements === undefined || jQuery.isEmptyObject(ORflagRequirements)) {
+        ORcheck = true;
+    } else {
+        ORcheck = false;
+    }
+    let ORfailLabels = [];
+    for (const flag in ORflagRequirements) {
+        let flagInstance = ORflagRequirements[flag];
+        if (!flagInstance) continue;
+        let specs = flagInstance.spec;
+        let actorFlag = actor.getFlag("fortyk", flag);
+        if (actorFlag) {
+            if (specs) {
+                if (actorFlag.includes(specs)) {
                     ORcheck = true;
+                } else {
+                    ORfailLabels.push(flagInstance.label);
                 }
             } else {
-                ORfailLabels.push(flagInstance.label);
+                ORcheck = true;
             }
+        } else {
+            ORfailLabels.push(flagInstance.label);
         }
-        if (!ORcheck) {
-            let failedORstring = ORfailLabels.join(" or ");
-            failReasons.push(`You do not have ${failedORstring}.`);
+    }
+    if (!ORcheck) {
+        let failedORstring = ORfailLabels.join(" or ");
+        failReasons.push(`You do not have ${failedORstring}.`);
+        validated = false;
+    }
+    let psyRequirements = requirements.psychicPowers;
+
+    for (const psy in psyRequirements) {
+        if (!psy) continue;
+        if (!actor.getFlag("fortyk", psy)) {
+            failReasons.push(`You do not have ${psyRequirements[psy]}.`);
             validated = false;
         }
-        let psyRequirements = requirements.psychicPowers;
-
-        for (const psy in psyRequirements) {
-            if (!psy) continue;
-            if (!actor.getFlag("fortyk", psy)) {
-                failReasons.push(`You do not have ${psyRequirements[psy]}.`);
-                validated = false;
-            }
-        }
-        let negPsyRequirements = requirements.negativePsyPowers;
-        negPsyRequirements ??= [];
-        for (const psy in negPsyRequirements) {
-            if (!psy) continue;
-            if (actor.getFlag("fortyk", psy)) {
-                failReasons.push(`You have ${psyRequirements[psy]}.`);
-                validated = false;
-            }
-        }
-        let skillReqs = requirements.skills;
-        let actorSkills = actor.itemTypes.skill;
-        for (let [key, skill] of Object.entries(skillReqs)) {
-            if (!skill) continue;
-            let skillName = skill.skillName;
-            let parentName = skill.parentSkillName;
-            let rank = skill.rank;
-            let rankValueReq = FORTYK.skillTraining[rank].value;
-            let wildCardSkill = false;
-            let wildCardParent = false;
-            let match = false;
-            let anyLore = false;
-            let anyXenos = false;
-            if (skillName === "xenos-any") anyXenos = true;
-            if (parentName === "anylore") anyLore = true;
-            if (skillName === "*") wildCardSkill = true;
-            if (parentName === "*") wildCardParent = true;
-            for (const actorSkill of actorSkills) {
-                let actorSkillName = actorSkill.name;
-                let actorSkillParent = actorSkill.system.parent.value;
-                let actorSkillRank = parseInt(actorSkill.system.value);
-                let rankMatch = false;
-                let nameMatch = false;
-                let parentMatch = false;
-                if (anyXenos) {
-                    let xenos = FORTYK.races;
-                    for (const race of xenos) {
-                        if (race.value.toLowerCase() === actorSkillName.toLowerCase()) {
-                            nameMatch = true;
-                        }
-                    }
-                } else if (wildCardSkill) {
-                    nameMatch = true;
-                } else if (actorSkillName.toLowerCase() === skillName.toLowerCase()) {
-                    nameMatch = true;
-                }
-                if (anyLore) {
-                    if (actorSkillParent.toLocaleLowerCase().includes("lore")) {
-                        parentMatch = true;
-                    }
-                } else if (wildCardParent) {
-                    parentMatch = true;
-                } else if (parentName.toLowerCase() === actorSkillParent.toLowerCase()) {
-                    parentMatch = true;
-                }
-                if (actorSkillRank >= rankValueReq) {
-                    rankMatch = true;
-                }
-
-                match = nameMatch && parentMatch && rankMatch;
-                if (match) break;
-            }
-            let name = skill.name.replaceAll("*", "any");
-            if (!match) {
-                failReasons.push(`You do not have the ${name} skill of rank ${rank}.`);
-                validated = false;
-            }
-        }
-
-        let cyberReqs = requirements.cybernetics;
-        var cyberNum = cyberReqs.number;
-        var cyberLimbs = cyberReqs.limbs;
-        var cyberName = cyberReqs.name;
-        if (cyberNum || cyberLimbs || cyberName) {
-            let actorCybers = actor.itemTypes.cybernetic;
-            let actorLimbCount = 0;
-            let actorCyberCount = 0;
-            let hasCyber = false;
-            if (!cyberName) hasCyber = true;
-            for (const actorCyber of actorCybers) {
-                actorCyberCount++;
-                if (
-                    actorCyber.system.location.value.toLowerCase().includes("arm") ||
-                    actorCyber.system.location.value.toLowerCase().includes("leg")
-                ) {
-                    actorLimbCount++;
-                }
-                if (actorCyber._source.name.toLowerCase() === cyberName.toLowerCase()) {
-                    hasCyber = true;
-                }
-            }
-            if (actorLimbCount < cyberLimbs) {
-                failReasons.push(`You do not have ${cyberLimbs} cybernetic limbs.`);
-                validated = false;
-            }
-            if (actorCyberCount < cyberNum) {
-                failReasons.push(`You do not have ${cyberNum} cybernetics.`);
-                validated = false;
-            }
-            if (!hasCyber) {
-                failReasons.push(`You do not have the ${cyberName} cybernetic.`);
-                validated = false;
-            }
-        }
-
-        return { valid: validated, reasons: failReasons };
     }
-    static async applyPsyBuffs(actorId, powerId, targetIds) {
-        if (game.user.isGM) {
-            let actor = await fromUuid(actorId);
-            let actorToken = getActorToken(actor);
-            let power;
-            power = actor.getEmbeddedDocument("Item", powerId);
-            let affects = power.system.affects.value;
-            let targets;
-            if (affects === "self") {
-                targets = [actorToken];
-            } else {
-                targets = game.scenes.current.tokens.filter((token) => targetIds.includes(token.id));
-            }
-
-            let range = power.system.range.value;
-            targets = targets.filter((token) => !token.actor.getFlag("core", power.name));
-            targets = targets.filter((token) => range >= tokenDistance(token, actorToken));
-
-            if (targets.length === 0) return ui.notifications.warn("No valid targets.");
-            this.navigatorPsyTalents(actor,targets);
-            let aes=[];
-            let effects;
-            if(actor.isToken){
-                let baseActor= actor.parent.baseActor;
-                let basePower= baseActor.getEmbeddedDocument("Item", powerId);
-                effects=basePower.effects;
-            }else{
-                effects=power.effects;
-            }
-            for(let ae of effects){
-
-                let aeData = foundry.utils.duplicate(ae);
-
-                aeData.name = ae.name;
-
-
-                aeData.flags = {
-                    fortyk: { psy: true, range: range, casterTokenId: actorToken.id }
-                };
-
-                aeData.disabled = false;
-                aeData.origin = power.uuid;
-                aeData.statuses.push(power.name);
-                aeData.showIcon=2;
-                aes.push(aeData);
-            }
-
-
-            let effectUuIds = [];
-            for (let i = 0; i < targets.length; i++) {
-                let target = targets[i];
-
-                let targetActor = target.actor;
-
-                let filteredAeArray=aes.filter((ae)=>{
-                    return !targetActor.getFlag("core",ae.name);
-                });
-                let render = false;
-
-                let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", filteredAeArray, { render: render });
-
-
-                for(let ae of effect){
-                    let effectuuid = await ae.uuid;
-
-                    effectUuIds.push(effectuuid);
+    let negPsyRequirements = requirements.negativePsyPowers;
+    negPsyRequirements ??= [];
+    for (const psy in negPsyRequirements) {
+        if (!psy) continue;
+        if (actor.getFlag("fortyk", psy)) {
+            failReasons.push(`You have ${psyRequirements[psy]}.`);
+            validated = false;
+        }
+    }
+    let skillReqs = requirements.skills;
+    let actorSkills = actor.itemTypes.skill;
+    for (let [key, skill] of Object.entries(skillReqs)) {
+        if (!skill) continue;
+        let skillName = skill.skillName;
+        let parentName = skill.parentSkillName;
+        let rank = skill.rank;
+        let rankValueReq = FORTYK.skillTraining[rank].value;
+        let wildCardSkill = false;
+        let wildCardParent = false;
+        let match = false;
+        let anyLore = false;
+        let anyXenos = false;
+        if (skillName === "xenos-any") anyXenos = true;
+        if (parentName === "anylore") anyLore = true;
+        if (skillName === "*") wildCardSkill = true;
+        if (parentName === "*") wildCardParent = true;
+        for (const actorSkill of actorSkills) {
+            let actorSkillName = actorSkill.name;
+            let actorSkillParent = actorSkill.system.parent.value;
+            let actorSkillRank = parseInt(actorSkill.system.value);
+            let rankMatch = false;
+            let nameMatch = false;
+            let parentMatch = false;
+            if (anyXenos) {
+                let xenos = FORTYK.races;
+                for (const race of xenos) {
+                    if (race.value.toLowerCase() === actorSkillName.toLowerCase()) {
+                        nameMatch = true;
+                    }
                 }
-
+            } else if (wildCardSkill) {
+                nameMatch = true;
+            } else if (actorSkillName.toLowerCase() === skillName.toLowerCase()) {
+                nameMatch = true;
+            }
+            if (anyLore) {
+                if (actorSkillParent.toLocaleLowerCase().includes("lore")) {
+                    parentMatch = true;
+                }
+            } else if (wildCardParent) {
+                parentMatch = true;
+            } else if (parentName.toLowerCase() === actorSkillParent.toLowerCase()) {
+                parentMatch = true;
+            }
+            if (actorSkillRank >= rankValueReq) {
+                rankMatch = true;
             }
 
-            if (power.system.sustain.value !== "No") {
-                await power.setFlag("fortyk", "sustained", effectUuIds);
-                await power.setFlag("fortyk", "sustainedrange", range);
+            match = nameMatch && parentMatch && rankMatch;
+            if (match) break;
+        }
+        let name = skill.name.replaceAll("*", "any");
+        if (!match) {
+            failReasons.push(`You do not have the ${name} skill of rank ${rank}.`);
+            validated = false;
+        }
+    }
+
+    let cyberReqs = requirements.cybernetics;
+    var cyberNum = cyberReqs.number;
+    var cyberLimbs = cyberReqs.limbs;
+    var cyberName = cyberReqs.name;
+    if (cyberNum || cyberLimbs || cyberName) {
+        let actorCybers = actor.itemTypes.cybernetic;
+        let actorLimbCount = 0;
+        let actorCyberCount = 0;
+        let hasCyber = false;
+        if (!cyberName) hasCyber = true;
+        for (const actorCyber of actorCybers) {
+            actorCyberCount++;
+            if (
+                actorCyber.system.location.value.toLowerCase().includes("arm") ||
+                actorCyber.system.location.value.toLowerCase().includes("leg")
+            ) {
+                actorLimbCount++;
             }
+            if (actorCyber._source.name.toLowerCase() === cyberName.toLowerCase()) {
+                hasCyber = true;
+            }
+        }
+        if (actorLimbCount < cyberLimbs) {
+            failReasons.push(`You do not have ${cyberLimbs} cybernetic limbs.`);
+            validated = false;
+        }
+        if (actorCyberCount < cyberNum) {
+            failReasons.push(`You do not have ${cyberNum} cybernetics.`);
+            validated = false;
+        }
+        if (!hasCyber) {
+            failReasons.push(`You do not have the ${cyberName} cybernetic.`);
+            validated = false;
+        }
+    }
+
+    return { valid: validated, reasons: failReasons };
+}
+static async applyPsyBuffs(actorId, powerId, targetIds) {
+    if (game.user.isGM) {
+        let actor = await fromUuid(actorId);
+        let actorToken = getActorToken(actor);
+        let power;
+        power = actor.getEmbeddedDocument("Item", powerId);
+        let affects = power.system.affects.value;
+        let targets;
+        if (affects === "self") {
+            targets = [actorToken];
         } else {
-            //if user isnt GM use socket to have gm apply the buffs/debuffs
-
-            let socketOp = { type: "psyBuff", package: { actorId: actorId, powerId: powerId, targetIds: targetIds } };
-            await game.socket.emit("system.fortyk", socketOp);
+            targets = game.scenes.current.tokens.filter((token) => targetIds.includes(token.id));
         }
+
+        let range = power.system.range.value;
+        targets = targets.filter((token) => !token.actor.getFlag("core", power.name));
+        targets = targets.filter((token) => range >= tokenDistance(token, actorToken));
+
+        if (targets.length === 0) return ui.notifications.warn("No valid targets.");
+        this.navigatorPsyTalents(actor,targets);
+        let aes=[];
+        let effects;
+        if(actor.isToken){
+            let baseActor= actor.parent.baseActor;
+            let basePower= baseActor.getEmbeddedDocument("Item", powerId);
+
+            if(!basePower){
+                effects=power.effects;
+            }else{
+                effects=basePower.effects; 
+            }
+
+        }else{
+            effects=power.effects;
+        }
+        for(let ae of effects){
+
+            let aeData = foundry.utils.duplicate(ae);
+
+            aeData.name = ae.name;
+
+
+            aeData.flags = {
+                fortyk: { psy: true, range: range, casterTokenId: actorToken.id }
+            };
+
+            aeData.disabled = false;
+            aeData.origin = power.uuid;
+            aeData.statuses.push(power.name);
+            aeData.showIcon=2;
+            aes.push(aeData);
+        }
+
+
+        let effectUuIds = [];
+        for (let i = 0; i < targets.length; i++) {
+            let target = targets[i];
+
+            let targetActor = target.actor;
+
+            let filteredAeArray=aes.filter((ae)=>{
+                return !targetActor.getFlag("core",ae.name);
+            });
+            let render = false;
+
+            let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", filteredAeArray, { render: render });
+
+
+            for(let ae of effect){
+                let effectuuid = await ae.uuid;
+
+                effectUuIds.push(effectuuid);
+            }
+
+        }
+
+        if (power.system.sustain.value !== "No") {
+            await power.setFlag("fortyk", "sustained", effectUuIds);
+            await power.setFlag("fortyk", "sustainedrange", range);
+        }
+    } else {
+        //if user isnt GM use socket to have gm apply the buffs/debuffs
+
+        let socketOp = { type: "psyBuff", package: { actorId: actorId, powerId: powerId, targetIds: targetIds } };
+        await game.socket.emit("system.fortyk", socketOp);
     }
-    static async applyAura(actorId, powerId) {
-        if (game.user.isGM) {
-            let actor = await fromUuid(actorId);
-            let actorToken = getActorToken(actor);
-            let power = actor.getEmbeddedDocument("Item", powerId);
-            let auraType = power.system.auraType;
-            /*
+}
+static async applyAura(actorId, powerId) {
+    if (game.user.isGM) {
+        let actor = await fromUuid(actorId);
+        let actorToken = getActorToken(actor);
+        let power = actor.getEmbeddedDocument("Item", powerId);
+        let auraType = power.system.auraType;
+        /*
 
             let notSelf = power.system.isAura.notSelf;
             let reqFlags = power.system.isAura.reqFlags;
@@ -1420,81 +1439,82 @@ export class FortyKItem extends Item {
 
             let los = power.system.isAura.los;
             */
-            let notSelf = false;
-            let reqFlags = "";
-            let negReqFlags = "";
-            let los = true;
-            let range = parseInt(power.system.range.value);
+        let notSelf = false;
+        let reqFlags = "";
+        let negReqFlags = "";
+        let los = true;
+        let range = parseInt(power.system.range.value);
 
-            const circleShape={
-                type: "circle",
-                x: actorToken.x+math.ceil(actorToken.w/2),
-                y: actorToken.y+math.ceil(actorToken.h/2),
-                radius: range*game.canvas.dimensions.size
-            };
-            let ae = power.effects.entries().next().value[1];
-            let aeData = foundry.utils.deepClone(ae);
+        const circleShape={
+            type: "circle",
+            x: actorToken.x+math.ceil(actorToken.w/2),
+            y: actorToken.y+math.ceil(actorToken.h/2),
+            radius: range*game.canvas.dimensions.size
+        };
+        let ae = power.effects.entries().next().value[1];
+        let aeData = foundry.utils.deepClone(ae);
 
-            aeData.name = power._source.name;
+        aeData.name = power._source.name;
 
 
 
-            aeData.disabled = false;
-            aeData.origin = power.uuid;
-            aeData.statuses = [ae.name];
-            let status=ae.name;
-            let region =await game.canvas.scene.createEmbeddedDocuments("Region", [{
-                name:`${aeData.name} Aura`,
-                color: "#ff4500", // Bright orange-red
-                shapes: [circleShape],
-                events: ["tokenEnter"],
-                behaviors: [
-                    {
-                        type: "fortykAuraBehavior", // Triggers an automation workflow
-                        name: `${aeData.name} Aura`,
-                        enabled: true,
-                        system: {
-                            los:los,
-                            notSelf:notSelf,
-                            auraType:auraType,
-                            effects:[ae.uuid],
-                            negReqFlags:negReqFlags,
-                            reqFlags:reqFlags,
-                            disableOnExit: true,
-                            status:status,
-                            originId:actorId
-                        }
+        aeData.disabled = false;
+        aeData.origin = power.uuid;
+        aeData.statuses = [ae.name];
+        let status=ae.name;
+        let region =await game.canvas.scene.createEmbeddedDocuments("Region", [{
+            name:`${aeData.name} Aura`,
+            color: "#ff4500", // Bright orange-red
+            shapes: [circleShape],
+            events: ["tokenEnter"],
+            behaviors: [
+                {
+                    type: "fortykAuraBehavior", // Triggers an automation workflow
+                    name: `${aeData.name} Aura`,
+                    enabled: true,
+                    system: {
+                        los:los,
+                        notSelf:notSelf,
+                        auraType:auraType,
+                        effects:[ae.uuid],
+                        negReqFlags:negReqFlags,
+                        reqFlags:reqFlags,
+                        disableOnExit: true,
+                        status:status,
+                        originId:actorId
                     }
-                ]
-            }]);
-            region[0].update({"attachment.token":actorToken.id});
+                }
+            ]
+        }]);
+        region[0].update({"attachment.token":actorToken.id});
 
 
-            await power.setFlag("fortyk", "sustainedAura", [region[0].uuid]);
+        await power.setFlag("fortyk", "sustainedAura", [region[0].uuid]);
 
-        } else {
-            //if user isnt GM use socket to have gm apply the buffs/debuffs
+    } else {
+        //if user isnt GM use socket to have gm apply the buffs/debuffs
 
-            let socketOp = { type: "aura", package: { actorId: actorId, powerId: powerId } };
-            await game.socket.emit("system.fortyk", socketOp);
-        }
+        let socketOp = { type: "aura", package: { actorId: actorId, powerId: powerId } };
+        await game.socket.emit("system.fortyk", socketOp);
     }
-    static async cancelPsyBuffs(actorId, powerId) {
-        if (game.user.isGM) {
-            let actor = await fromUuid(actorId);
-            let power = actor.getEmbeddedDocument("Item", powerId);
+}
+static async cancelPsyBuffs(actorId, powerId) {
+    if (game.user.isGM) {
+        let actor = await fromUuid(actorId);
+        let power = actor.getEmbeddedDocument("Item", powerId);
 
 
-            let buffs = power.getFlag("fortyk", "sustained");
-            for (let i = 0; i < buffs.length; i++) {
-                let buffId = buffs[i];
-                let buff = await fromUuid(buffId);
-                try {
-                    await buff.delete();
-                } catch (err) {}
-            }
-            await power.setFlag("fortyk", "sustained", false);
-            let sustainedAura= power.getFlag("fortyk", "sustainedAura");
+        let buffs = power.getFlag("fortyk", "sustained");
+        for (let i = 0; i < buffs.length; i++) {
+            let buffId = buffs[i];
+            let buff = await fromUuid(buffId);
+            try {
+                await buff.delete();
+            } catch (err) {}
+        }
+        await power.setFlag("fortyk", "sustained", false);
+        let sustainedAura= power.getFlag("fortyk", "sustainedAura");
+        if(sustainedAura){
             for (let i = 0; i < sustainedAura.length; i++) {
                 let auraId = sustainedAura[i];
                 let aura = await fromUuid(auraId);
@@ -1503,163 +1523,165 @@ export class FortyKItem extends Item {
                 } catch (err) {}
             }
             await power.setFlag("fortyk", "sustainedAura", false);
-            if (power.getFlag("fortyk", "initmods")) {
-                let combat = game.combats.active;
-                let inits = power.getFlag("fortyk", "initmods");
-                for (const init of inits) {
-                    await combat.setInitiative(init.id, init.init);
-                }
-                await power.setFlag("fortyk", "initmods", false);
+        }
+
+        if (power.getFlag("fortyk", "initmods")) {
+            let combat = game.combats.active;
+            let inits = power.getFlag("fortyk", "initmods");
+            for (const init of inits) {
+                await combat.setInitiative(init.id, init.init);
             }
+            await power.setFlag("fortyk", "initmods", false);
+        }
+    } else {
+        //if user isnt GM use socket to have gm cancel the buffs/debuffs
+
+        let socketOp = { type: "cancelPsyBuff", package: { actorId: actorId, powerId: powerId } };
+        await game.socket.emit("system.fortyk", socketOp);
+    }
+}
+static async executePsyMacro(powerId, macroId, actorId, targets) {
+    let actor = fromUuidSync(actorId);
+    this.navigatorPsyTalents(actor,targets);
+    let power = actor.getEmbeddedDocument("Item", powerId);
+    let macroCompendium = await game.packs.get("fortyk.fortykmacros");
+    let macro = await macroCompendium.getDocument(macroId);
+    macro.execute({ actor: actor, power: power, targets: targets });
+}
+static async navigatorPsyTalents(actor, targets){
+    let talents=actor.itemTypes.talentntrait;
+    let casterToken=getActorToken(actor);
+    let casterTokenDocument=casterToken.document;
+
+    if(actor.getFlag("fortyk","empyreanward")){
+        let aeData;
+        let talent=talents.find((talent)=>talent.system.flagId.value==="empyreanward");
+        let ae = talent.effects.entries().next().value[1];
+        aeData = foundry.utils.duplicate(ae);
+        let empyrTargets=targets.filter((target)=>target.document.disposition===casterTokenDocument.disposition);
+        empyrTargets=empyrTargets.filter((target)=> !target.actor.getFlag("core",talent.name));
+        aeData.name = talent.name;
+
+        aeData.flags = {
+            fortyk: { psy:true, temp:true, range: Infinity, casterTokenId: casterToken.id }
+        };
+        aeData.duration={type:"temp"};
+        aeData.disabled = false;
+
+        //aeData.origin = talent.uuid;
+        aeData.statuses = [talent.name];
+        for(let target of empyrTargets){
+            let targetActor=target.actor;
+            let render = false;
+
+            let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
+        }
+    }
+    if(actor.getFlag("fortyk","openthewarp")){
+        let aeData;
+        let talent=talents.find((talent)=>talent.system.flagId.value==="openthewarp");
+        let ae = talent.effects.entries().next().value[1];
+        aeData = foundry.utils.duplicate(ae);
+        let empyrTargets=targets.filter((target)=>target.document.disposition!==casterTokenDocument.disposition);
+        empyrTargets=empyrTargets.filter((target)=> !target.actor.getFlag("core",talent.name));
+        aeData.name = talent.name;
+
+        aeData.flags = {
+            fortyk: { psy:true, temp:true, range: Infinity, casterTokenId: casterToken.id }
+        };
+        aeData.duration={type:"temp"};
+        aeData.disabled = false;
+
+        //aeData.origin = talent.uuid;
+        aeData.statuses = [talent.name];
+        for(let target of empyrTargets){
+            let targetActor=target.actor;
+            let render = false;
+
+            let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
+            await targetActor.setFlag("fortyk","warpopened",effect[0].uuid);
+        }
+    }
+    if(actor.getFlag("fortyk","guideofsouls")){
+        let aeData;
+        let talent=talents.find((talent)=>talent.system.flagId.value==="guideofsouls");
+        let ae = talent.effects.entries().next().value[1];
+        aeData = foundry.utils.duplicate(ae);
+        let empyrTargets=targets.filter((target)=>target.document.disposition===casterTokenDocument.disposition);
+        empyrTargets=empyrTargets.filter((target)=> !target.actor.getFlag("core",talent.name));
+        aeData.name = talent.name;
+
+        aeData.flags = {
+            fortyk: { psy:true, temp:true, range: Infinity, casterTokenId: casterToken.id }
+        };
+        aeData.duration={type:"temp"};
+        aeData.disabled = false;
+
+        //aeData.origin = talent.uuid;
+        aeData.statuses = [talent.name];
+        for(let target of empyrTargets){
+            let targetActor=target.actor;
+            let render = false;
+
+            let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
+
+        }
+    }
+
+
+}
+timeString(time, timeLabel) {
+    let calendar = SimpleCalendar.api.getCurrentCalendar().id;
+    let timeInterval = SimpleCalendar.api.secondsToInterval(time, calendar);
+    //Returns {year: 0, month: 0, day: 0, hour: 1, minute: 0, seconds: 0}
+    if (timeInterval.year) {
+        timeLabel += `${timeInterval.year} year`;
+        if (timeInterval.year > 1) {
+            timeLabel += "s ";
         } else {
-            //if user isnt GM use socket to have gm cancel the buffs/debuffs
-
-            let socketOp = { type: "cancelPsyBuff", package: { actorId: actorId, powerId: powerId } };
-            await game.socket.emit("system.fortyk", socketOp);
+            timeLabel += " ";
         }
     }
-    static async executePsyMacro(powerId, macroId, actorId, targets) {
-        let actor = fromUuidSync(actorId);
-        this.navigatorPsyTalents(actor,targets);
-        let power = actor.getEmbeddedDocument("Item", powerId);
-        let macroCompendium = await game.packs.get("fortyk.fortykmacros");
-        let macro = await macroCompendium.getDocument(macroId);
-        macro.execute({ actor: actor, power: power, targets: targets });
+    if (timeInterval.month) {
+        timeLabel += `${timeInterval.month} month`;
+        if (timeInterval.month > 1) {
+            timeLabel += "s ";
+        } else {
+            timeLabel += " ";
+        }
     }
-    static async navigatorPsyTalents(actor, targets){
-        let talents=actor.itemTypes.talentntrait;
-        let casterToken=getActorToken(actor);
-        let casterTokenDocument=casterToken.document;
-
-        if(actor.getFlag("fortyk","empyreanward")){
-            let aeData;
-            let talent=talents.find((talent)=>talent.system.flagId.value==="empyreanward");
-            let ae = talent.effects.entries().next().value[1];
-            aeData = foundry.utils.duplicate(ae);
-            let empyrTargets=targets.filter((target)=>target.document.disposition===casterTokenDocument.disposition);
-            empyrTargets=empyrTargets.filter((target)=> !target.actor.getFlag("core",talent.name));
-            aeData.name = talent.name;
-
-            aeData.flags = {
-                fortyk: { psy:true, temp:true, range: Infinity, casterTokenId: casterToken.id }
-            };
-            aeData.duration={type:"temp"};
-            aeData.disabled = false;
-
-            //aeData.origin = talent.uuid;
-            aeData.statuses = [talent.name];
-            for(let target of empyrTargets){
-                let targetActor=target.actor;
-                let render = false;
-
-                let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
-            }
+    if (timeInterval.day) {
+        timeLabel += `${timeInterval.day} day`;
+        if (timeInterval.day > 1) {
+            timeLabel += "s ";
+        } else {
+            timeLabel += " ";
         }
-        if(actor.getFlag("fortyk","openthewarp")){
-            let aeData;
-            let talent=talents.find((talent)=>talent.system.flagId.value==="openthewarp");
-            let ae = talent.effects.entries().next().value[1];
-            aeData = foundry.utils.duplicate(ae);
-            let empyrTargets=targets.filter((target)=>target.document.disposition!==casterTokenDocument.disposition);
-            empyrTargets=empyrTargets.filter((target)=> !target.actor.getFlag("core",talent.name));
-            aeData.name = talent.name;
-
-            aeData.flags = {
-                fortyk: { psy:true, temp:true, range: Infinity, casterTokenId: casterToken.id }
-            };
-            aeData.duration={type:"temp"};
-            aeData.disabled = false;
-
-            //aeData.origin = talent.uuid;
-            aeData.statuses = [talent.name];
-            for(let target of empyrTargets){
-                let targetActor=target.actor;
-                let render = false;
-
-                let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
-                await targetActor.setFlag("fortyk","warpopened",effect[0].uuid);
-            }
-        }
-        if(actor.getFlag("fortyk","guideofsouls")){
-            let aeData;
-            let talent=talents.find((talent)=>talent.system.flagId.value==="guideofsouls");
-            let ae = talent.effects.entries().next().value[1];
-            aeData = foundry.utils.duplicate(ae);
-            let empyrTargets=targets.filter((target)=>target.document.disposition===casterTokenDocument.disposition);
-            empyrTargets=empyrTargets.filter((target)=> !target.actor.getFlag("core",talent.name));
-            aeData.name = talent.name;
-
-            aeData.flags = {
-                fortyk: { psy:true, temp:true, range: Infinity, casterTokenId: casterToken.id }
-            };
-            aeData.duration={type:"temp"};
-            aeData.disabled = false;
-
-            //aeData.origin = talent.uuid;
-            aeData.statuses = [talent.name];
-            for(let target of empyrTargets){
-                let targetActor=target.actor;
-                let render = false;
-
-                let effect = await targetActor.createEmbeddedDocuments("ActiveEffect", [aeData], { render: render });
-
-            }
-        }
-
-
     }
-    timeString(time, timeLabel) {
-        let calendar = SimpleCalendar.api.getCurrentCalendar().id;
-        let timeInterval = SimpleCalendar.api.secondsToInterval(time, calendar);
-        //Returns {year: 0, month: 0, day: 0, hour: 1, minute: 0, seconds: 0}
-        if (timeInterval.year) {
-            timeLabel += `${timeInterval.year} year`;
-            if (timeInterval.year > 1) {
-                timeLabel += "s ";
-            } else {
-                timeLabel += " ";
-            }
+    if (timeInterval.hour) {
+        timeLabel += `${timeInterval.hour} hour`;
+        if (timeInterval.hour > 1) {
+            timeLabel += "s ";
+        } else {
+            timeLabel += " ";
         }
-        if (timeInterval.month) {
-            timeLabel += `${timeInterval.month} month`;
-            if (timeInterval.month > 1) {
-                timeLabel += "s ";
-            } else {
-                timeLabel += " ";
-            }
-        }
-        if (timeInterval.day) {
-            timeLabel += `${timeInterval.day} day`;
-            if (timeInterval.day > 1) {
-                timeLabel += "s ";
-            } else {
-                timeLabel += " ";
-            }
-        }
-        if (timeInterval.hour) {
-            timeLabel += `${timeInterval.hour} hour`;
-            if (timeInterval.hour > 1) {
-                timeLabel += "s ";
-            } else {
-                timeLabel += " ";
-            }
-        }
-        if (timeInterval.minute) {
-            timeLabel += `${timeInterval.minute} minute`;
-            if (timeInterval.minute > 1) {
-                timeLabel += "s ";
-            } else {
-                timeLabel += " ";
-            }
-        }
-        if (timeInterval.second) {
-            timeLabel += `${timeInterval.second} second`;
-            if (timeInterval.second > 1) {
-                timeLabel += "s ";
-            } else {
-                timeLabel += " ";
-            }
-        }
-        return timeLabel;
     }
+    if (timeInterval.minute) {
+        timeLabel += `${timeInterval.minute} minute`;
+        if (timeInterval.minute > 1) {
+            timeLabel += "s ";
+        } else {
+            timeLabel += " ";
+        }
+    }
+    if (timeInterval.second) {
+        timeLabel += `${timeInterval.second} second`;
+        if (timeInterval.second > 1) {
+            timeLabel += "s ";
+        } else {
+            timeLabel += " ";
+        }
+    }
+    return timeLabel;
+}
 }
