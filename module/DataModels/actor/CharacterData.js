@@ -113,7 +113,8 @@ export default class CharacterData extends foundry.abstract.TypeDataModel {
           "attackRange": new StringField({ initial: "" }),
           "vehicle": new BooleanField({required: true, initial:false}),
           "vehicleFacing": new StringField({ initial: "" }),
-          "vehicleHitLocation": new StringField({ initial: "" })
+          "vehicleHitLocation": new StringField({ initial: "" }),
+          "attackType": new StringField({initial: ""})
         }),
         "cover": new SchemaField({
           "value": new NumberField({ required: true, integer: false, initial: 0})

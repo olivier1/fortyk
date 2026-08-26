@@ -909,7 +909,8 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                             if (game.user.isGM) {
                                 for (let i = 0; i < targets.length; i++) {
                                     let curTargets = targets[i].targets;
-                                    weapon.template = targets[i].template.bounds;
+                                    let region= await fromUuid(targets[i].template.uuid);
+                                    weapon.template = region.bounds;
                                     let targetNames = "";
                                     let targetTokens = canvas.tokens.placeables.filter((token) =>
                                                                                        curTargets.includes(token.id)
@@ -928,7 +929,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                                     if (targetTokens.length !== 0) {
                                         game.user._onUpdateTokenTargets([]);
                                         for (let target of targetTokens) {
-                                            target._object.setTarget(true, {
+                                            target.setTarget(true, {
                                                 user: game.user,
                                                 releaseOthers: false,
                                                 groupSelection: true
@@ -957,7 +958,7 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
                                         );
 
                                         for (let target of targetTokens) {
-                                            target._object.setTarget(false, {
+                                            target.setTarget(false, {
                                                 user: game.user,
                                                 releaseOthers: false,
                                                 groupSelection: true

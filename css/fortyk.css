@@ -155,12 +155,7 @@
   padding:0;
   border:0;
 }
-#scene-navigation-expand{
-  height: 32px;
-  width: fit-content;
-  top: 0;
-  left: 7.5em;
-}
+
 .application:after{
   position:absolute;
 
@@ -374,7 +369,7 @@ nav.tabs .item,
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 5px;
 }
-nav>a {
+nav>a:not(#scene-navigation-expand) {
   line-height: 20px;
   height:50px;
   width:100%;
@@ -1681,7 +1676,7 @@ u:hover{
 }
 .fortyk .charSheet{
   overflow:auto;
-  max-height: 80vh;
+  max-height: 70vh;
 }
 .fortyk span{
   background: none !important;
@@ -2409,7 +2404,7 @@ prose-mirror{
   font-weight: bolder;
 }
 .fortyk .psy-grid-overflow{
-  height:calc(100vh - 650px);
+  max-height:calc(100vh - 28em);
   overflow-y:auto;
 }
 .fortyk .psykana{

@@ -310,10 +310,12 @@ Hooks.once("init", async function () {
     CONFIG.RegionBehavior.typeIcons.fortykAuraBehavior = "fas fa-tarp-droplet";
 
     //CONFIG.ActiveEffect.entityClass = FortyKActiveEffect;
+    registerSystemSettings();
     // Register sheet application classes
     const Actors = foundry.documents.collections.Actors;
     const ActorSheet = foundry.appv1.sheets.ActorSheet;
     Actors.unregisterSheet("core", ActorSheet);
+    FortyKDWActorSheet.DEFAULT_OPTIONS.position.height=game.settings.get("fortyk", "goals") ? 950 : 825;
     Actors.registerSheet("fortyk", FortyKDWActorSheet, {
         label: "Deathwatch Sheet",
         types: ["dwPC"],
@@ -358,7 +360,7 @@ Hooks.once("init", async function () {
     CONFIG.Cards.documentClass = FortyKCards;
 
     //register system settings
-    registerSystemSettings();
+    
     manageColorScheme();
     // Handlebars helpers
     Handlebars.registerHelper("concat", function () {
@@ -623,7 +625,8 @@ Hooks.once("ready", async function () {
                     rerollNum = data.package.rerollNum;
                     for (let i = 0; i < targetIds.length; i++) {
                         let curTargets = targetIds[i].targets;
-                        fortykWeapon.template = targetIds[i].template.bounds;
+                        let template = await fromUuid(targetIds[i].template.uuid);
+                        fortykWeapon.template = template.bounds;
                         let targetNames = "";
                         let targetTokens = canvas.tokens.placeables.filter((token) => curTargets.includes(token.id));
                         let targetSet = new Set(targetTokens);
@@ -2054,6 +2057,7 @@ async function handleTerrain(token, promise){
         switch(true){
             case (difficulty>1&&difficulty<=2):{
                 if(!actor.statuses.has("rough")){
+                    actor.statuses.add("rough");
                     game.fortyk.FortykRolls.applyActiveEffect(actor,[game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("rough")]]);
                 }
                 clearOneTerrain(token,"tough");
@@ -2062,6 +2066,7 @@ async function handleTerrain(token, promise){
             }
             case (difficulty>2&&difficulty<=3):{
                 if(!actor.statuses.has("tough")){
+                    actor.statuses.add("tough");
                     game.fortyk.FortykRolls.applyActiveEffect(actor,[game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("tough")]]);
                 }
                 clearOneTerrain(token,"rough");
@@ -2070,6 +2075,7 @@ async function handleTerrain(token, promise){
             }
             case (difficulty>3):{
                 if(!actor.statuses.has("severe")){
+                    actor.statuses.add("severe");
                     game.fortyk.FortykRolls.applyActiveEffect(actor,[game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("severe")]]);
                 }
                 clearOneTerrain(token,"tough");

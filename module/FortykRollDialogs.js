@@ -2093,7 +2093,10 @@ export class FortykRollDialogs {
                 });
 
             }
-
+            targetTokens=targetTokens.filter((token)=>{
+                const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(token._object.center, casterToken.center, {mode:"any", type:"sight"});
+                return !collision;
+            });
             let messageContent = "";
             let updatedtargets = [];
             let rolls = [];
@@ -2335,16 +2338,18 @@ export class FortykRollDialogs {
                             if (focusedGazed) {
                                 focusGaze = document.getElementById("focus").checked;
 
-                                if(focusGaze)fat++;
-                                let chatOptions = {
-                                    author: game.user._id,
-                                    speaker: { actor, alias: name },
-                                    content: `Gained 1 fatigue`,
-                                    classes: ["fortyk"],
-                                    flavor: `Focused Gaze`
-                                };
+                                if(focusGaze){
+                                    fat++;
+                                    let chatOptions = {
+                                        author: game.user._id,
+                                        speaker: { actor, alias: name },
+                                        content: `Gained 1 fatigue`,
+                                        classes: ["fortyk"],
+                                        flavor: `Focused Gaze`
+                                    };
 
-                                await ChatMessage.create(chatOptions, {});
+                                    await ChatMessage.create(chatOptions, {});
+                                }
                             }
 
                             fat++;

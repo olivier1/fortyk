@@ -596,9 +596,11 @@ export const getBlastTargets = function (regions) {
         let targetIds=[];
         targetted.map((target)=>{
             if(ignores){
-                if(ignores.includes(target.id))return;
+                if(ignores.includes(target.id))
+                    return target;
             }
             targetIds.push(target.id);
+            return target;
         });
        
         let blastTargets = { template: { x: region.x, y: region.y, uuid:region.uuid }, targets: targetIds };
@@ -737,7 +739,13 @@ export const knockbackPoint = function (knockbackPoint, token2, knockbackDistanc
     let angle;
     let x = token2.x;
     let y = token2.y;
-    if (token2.center.x === knockbackPoint.x && token2.center.y === knockbackPoint.y) {
+    const kpx=knockbackPoint.x;
+    const kpy=knockbackPoint.y;
+    const tokx=token2.center.x;
+    const toky=token2.center.y;
+    const diffx=Math.abs(kpx-tokx);
+    const diffy=Math.abs(kpy-toky);
+    if (diffx<=45 && diffy<=45) {
         random = true;
     }
     if (random) {

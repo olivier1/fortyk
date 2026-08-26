@@ -10,7 +10,14 @@ export default class EliteAdvanceItemData extends BaseItemData {
             "type": new SchemaField({
                 "value": new StringField({ initial: "ea" })
             }),
-            "items": new ArrayField(new SchemaField({})),
+            "items": new ArrayField(new SchemaField({
+                "isAND": new BooleanField({initial:false}),
+                "isOR": new BooleanField({initial:false}),
+                "name": new StringField({initial:""}),
+                "spec": new StringField({initial:"n/a"}),
+                "uuid": new StringField({initial:""}),
+                "amount": new NumberField({initial:0, required:false})
+            })),
             "itemIds": new ArrayField(new StringField({ initial: "" })),
             "requirements": new StringField({ initial: "" }),
             "skills": new StringField({ initial: "" }),

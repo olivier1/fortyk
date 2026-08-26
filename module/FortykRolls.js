@@ -564,7 +564,7 @@ returns the roll message*/
                 speaker: { actor, alias: name },
                 content: renderedTemplate,
                 classes: ["fortyk"],
-                flags: { fortyk: { templateOptions: templateOptions, modifiers: modifiers, navpoweroptions: modifiers.navPowerOptions } }
+                flags: { fortyk: { templateOptions: templateOptions, modifiers: modifiers, navpoweroptions: modifiers?.navPowerOptions } }
             });
         }
         if (templateOptions.success && char === "wp" && actor.getFlag("fortyk", "warpopened")) {
@@ -3975,7 +3975,6 @@ returns the roll message*/
                 [{ x: 0, y: 0, elevation: 0 }]
             );
             for (let segment of segments) {
-                console.log(segment);
                 if (segment.type === 0) {
                     let coverBehavior = region.behaviors.find((behavior) => behavior.type === "fortykCoverBehavior");
                     if (!coverBehavior) continue;
@@ -8651,7 +8650,7 @@ returns the roll message*/
                 flavor: `Death Report`
             };
             await ChatMessage.create(chatOptions, {});
-            let bubble = new ChatBubbles();
+            let bubble = new foundry.canvas.animation.ChatBubbles();
             bubble.broadcast(target, msg);
             let id = target.id;
 
@@ -8671,7 +8670,7 @@ returns the roll message*/
 
                 await this.applyActiveEffect(actor, activeEffect);
                 try {
-                    game.combat.getCombatantByToken(id).update({ defeated: true });
+                    game.combat.getCombatantsByToken(id)[0].update({ defeated: true });
                 } catch (err) {}
             }
         } else {

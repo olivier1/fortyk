@@ -99,10 +99,11 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
 
         return tabs;
     }
+    
     static DEFAULT_OPTIONS = {
         tag: 'form',
         classes: ["fortyk", "sheet", "actor"],
-        position: { width: 690, height: 950 },
+        position: { width: 690, height:  950},
         window:{
             resizable:true
         }
@@ -123,6 +124,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
             // a must be equal to b
             return 0;
         };
+        
         let data = await super._prepareContext(options);
         let actor = this.document;
         let characterCreation = actor.getFlag("fortyk", "charactercreation");
@@ -1717,8 +1719,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                                 type: type
                             };
 
-                            let item = await FortyKItem.create(itemData, { temporary: true });
-                            await this.actor.createEmbeddedDocuments("Item", [foundry.utils.duplicate(item)], {
+                            await this.actor.createEmbeddedDocuments("Item", [itemData], {
                                 renderSheet: true
                             });
                         }

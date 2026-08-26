@@ -816,9 +816,11 @@ export class FortyKItem extends Item {
             if (change.type === "custom") {
                 if (typeof changeValue === "string") {
                     if (changeValue.toLowerCase() === "true") {
-                        return setNestedKey(itemData, path, true);
+                         setNestedKey(itemData, path, true);
+                        continue;
                     } else if (changeValue.toLowerCase() === "false") {
-                        return setNestedKey(itemData, path, false);
+                         setNestedKey(itemData, path, false);
+                        continue;
                     }
                 }
             }

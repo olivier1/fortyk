@@ -265,8 +265,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
                 }
             };
 
-            let item=await FortyKItem.create(itemData,{temporary:true});
-            await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
+            await actor.createEmbeddedDocuments("Item",[itemData]);
             this.#cost=0;
         }else if(this.#mode==="Skill Upgrade"){
             let skill=this.#chosenSkill;
@@ -289,8 +288,8 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
                 }
             };
 
-            let item=await FortyKItem.create(itemData,{temporary:true});
-            await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
+            
+            let item= await actor.createEmbeddedDocuments("Item",[itemData]);
             await actor.updateEmbeddedDocuments("Item",[{"_id":skill.id,"system.value":skillUpgrade}]);
             this.#cost=0;
         }else if(this.#mode==="New Skill"){
@@ -350,8 +349,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
                 }
             };
 
-            let item=await new FortyKItem(itemData,{temporary:true});
-            await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
+            await actor.createEmbeddedDocuments("Item",[itemData]);
             let update={};
             let path=`system.characteristics.${char}.advance`;
             update[path]=training;
@@ -447,8 +445,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
                 }
             };
 
-            let item=await new FortyKItem(itemData,{temporary:true});
-            await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
+            await actor.createEmbeddedDocuments("Item",[itemData]);
             this.#cost=0;
         }else if(this.#mode==="Psy Rating"){
             let pr=actor.system.psykana.pr.value;
@@ -462,8 +459,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
                 }
             };
 
-            let item=await new FortyKItem(itemData,{temporary:true});
-            await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(item)]);
+            await actor.createEmbeddedDocuments("Item",[foundry.utils.duplicate(itemData)]);
             let tnts=actor.itemTypes.talentntrait;
             let prObject=tnts.find((tnt)=> (tnt.name.toLowerCase()==="psy rating"));
 
@@ -561,7 +557,7 @@ export class SpendExpDialog extends HandlebarsApplicationMixin(DialogV2) {
                 name: advanceName,
                 type: type,
                 system:{
-                    type:{value:"Psychic Power"},
+                    type:{value:"Elite Advance"},
                     cost:{value:this.#cost},
                     itemId:{value:eaId},
                     flagId:itemData.system.flagId.value
