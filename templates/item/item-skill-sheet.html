@@ -12,15 +12,9 @@
         <label>Skill Type:</label>
         <select class="skill-type" name="system.parent.value">
 
-            {{#select system.parent.value}}
+            
             <option class="new-skill-select" value="" selected>Stand Alone Skill</option>
-            {{#each skillgroups as |skill key|}}
-
-
-            <option class="new-skill-select" value="{{skill.name}}">{{skill.name}}</option>
-
-            {{/each}}
-            {{/select}}
+            {{selectOptions skillgroups selected=system.parent.value valueAttr="name" labelAttr="name"}}
 
         </select>
     </div>
@@ -36,7 +30,7 @@
     <div class="flexcol">
         <label>Characteristic</label>
         <select class="skill-characteristic" name="system.characteristic.value">
-            {{#select system.characteristic.value}}
+            
             <option value="ws">Weapon Skill</option>
             <option value="bs">Ballistic Skill</option>
             <option value="s">Strength</option>
@@ -46,7 +40,7 @@
             <option value="per">Perception</option>
             <option value="wp">Willpower</option>
             <option value="fel">Fellowship</option>   
-            {{/select}}
+          
         </select>
     </div>
     <div class="flexcol">

@@ -18,9 +18,10 @@ export class FortyKActor extends Actor {
             return super.create(data, options);
         }
         data.items = [];
-
+        data.flags={core:{},
+                   fortyk:{}};
         if (data.type === "dwPC") {
-            data["flags.fortyk.charactercreation"] = true;
+            data.flags.fortyk.charactercreation = true;
         }
 
         if (data.type === "npc") {
@@ -158,7 +159,7 @@ export class FortyKActor extends Actor {
                 data["system.secChar.barrier.currentCD"]=this.system.secChar.barrier.cooldown;
                 let barrierItem=this.system.secChar.wornGear.forceField;
                 if(barrierItem){
-                    if(barrierItem?.system?.type==="barrier"){
+                    if(barrierItem?.system?.type?.value==="barrier"){
                         barrierItem.update({"system.broken.value":true});
                     }
 
@@ -2310,6 +2311,9 @@ export class FortyKActor extends Actor {
                 }
                 if (bonus.amount) {
                     cloneCurrentInstance.system.amount.value = bonus.amount;
+                }
+                if(bonus.quality){
+                    cloneCurrentInstance.system.quality.value = bonus.quality;
                 }
                 bonusDatas.push(cloneCurrentInstance);
             }

@@ -41,9 +41,10 @@ export class FortyKAuraBehavior extends foundry.data.regionBehaviors.ApplyActive
                                          localize:false})
         };
     }
-    #getEffectsToCreate(actor, effects) {
+    #getEffectsToCreate(actor, effects, caster) {
         const toCreate = [];
         for ( const effect of effects ) {
+            if(actor.statuses.has(this.status)||actor.getFlag("core", this.status))continue;
             const data = effect.toObject();
             delete data._id;
             if ( effect.compendium ) {
@@ -54,23 +55,19 @@ export class FortyKAuraBehavior extends foundry.data.regionBehaviors.ApplyActive
                 data._stats.compendiumSource = null;
             }
             data._stats.exportSource = null;
-            data.origin = this.behavior.uuid;
+            data.disabled=false;
+            data.showIcon=2;
+            data.statuses.push(data.name);
+            data.origin=caster.uuid;
+            data.flags={fortyk:{temp:true, regionOrigin:this.behavior.uuid}};
+            actor.statuses.add(data.name);
+            actor.flags.core[data.name]=true;
             toCreate.push(data);
         }
         return toCreate;
     }
-    static async #onTokenEnter(event) {
-        if ( !event.user.isSelf ) return;
-        const {token, movement} = event.data;
-        const actor = token.actor;
-        if ( !actor ) return;
-        if(actor.statuses.has(this.status))return;
-        const casterId=this.originId;
-        const casterActor = await fromUuid(casterId);
-        if(!casterActor) return;
-        const casterToken = getActorToken(casterActor).document;
-        if(!casterToken) return;
-        
+    async _addEffects(actor, casterActor, token, casterToken, movement) {
+        if(actor.statuses.has(this.status)||actor.getFlag("core", this.status))return;
         if (casterActor && casterActor.getFlag("core", "dead")) return;
         if( this.notSelf && actor.id===casterActor.id)return;
         const auraType=this.auraType;
@@ -97,47 +94,95 @@ export class FortyKAuraBehavior extends foundry.data.regionBehaviors.ApplyActive
         }
         if(skip)return;
         if(this.los){
-            const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(token._object.center, casterToken._object.center, {mode:"any", type:"sight"});
+            let dest=token._object.center;
+            if(movement){
+                dest=movement.destination;
+            }
+            const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(dest, casterToken._object.center, {mode:"any", type:"sight"});
             if(collision)return;
         }
 
+
+
         const resumeMovement = movement ? token.pauseMovement() : undefined;
+
         const effects = await Promise.all(this.effects.map(fromUuid));
-        const toCreate = this.#getEffectsToCreate(actor, effects);
-        for(let create of toCreate){
-            create.disabled=false;
-            create.showIcon=2;
-            create.statuses.push(create.name);
-            create.origin=casterActor.uuid;
-            actor.statuses.add(create.name);
-            actor.flags.core[create.name]=true;
-            
-        }
+        const toCreate = this.#getEffectsToCreate(actor, effects, casterActor);
+
         if ( toCreate.length ) await actor.createEmbeddedDocuments("ActiveEffect", toCreate);
         await resumeMovement?.();
     }
+
+    static async #onTokenEnter(event) {
+        if ( !event.user.isSelf ) return;
+        const {token, movement} = event.data;
+        const actor = token.actor;
+        if ( !actor ) return;
+        const casterId=this.originId;
+        const casterActor = await fromUuid(casterId);
+        if(!casterActor) return;
+        const casterToken = getActorToken(casterActor).document;
+        if(!casterToken) return;
+        return this._addEffects(actor, casterActor, token, casterToken, movement);
+    }
     #getEffectsToDelete(actor) {
         return actor.effects.reduce((ids, effect) => {
-            if ( effect.origin === this.behavior.uuid ) ids.push(effect.id);
+            if ( effect.getFlag("fortyk", "regionOrigin") === this.behavior.uuid ) ids.push(effect.id);
             return ids;
         }, []);
     }
-    static async #onTokenExit(event) {
-        if ( !event.user.isSelf ) return;
-        const {token, movement} = event.data;
+    _onDelete(options, userId){
+
+    }
+    async _deleteEffects(token, movement) {
+        const isDeleted = !canvas.scene?.tokens.has(token.id);
+        if(isDeleted) return;
         const actor = token.actor;
         if ( !actor ) return;
         const toDelete = this.#getEffectsToDelete(actor);
         if ( !toDelete.length ) return;
         const resumeMovement = movement ? token.pauseMovement() : undefined;
+
         await actor.deleteEmbeddedDocuments("ActiveEffect", toDelete);
+
         await resumeMovement?.();
+    }
+
+    static async #onTokenExit(event) {
+        if ( !event.user.isSelf ) return;
+        const {token, movement} = event.data;
+        return this.deleteEffects(token, movement);
+    }
+    static async #onTokenInside(event){
+        if ( !event.user.isSelf ) return;
+        const los=this.los;
+        const {token, movement} = event.data;
+        const actor = token.actor;
+        if ( !actor ) return;
+        const casterId=this.originId;
+        const casterActor = await fromUuid(casterId);
+        if(!casterActor) return;
+        const casterToken = getActorToken(casterActor).document;
+        if(!casterToken) return;
+        if(this.los){
+            let dest=token._object.center;
+            if(movement){
+                dest=movement.destination;
+            }
+            const collision = CONFIG.Canvas.polygonBackends['sight'].testCollision(dest, casterToken._object.center, {mode:"any", type:"sight"});
+            if(collision){
+               return this._deleteEffects(token, movement);
+            }
+        }
+        this._addEffects(actor, casterActor, token, casterToken, movement);
+        
+
     }
     static events = {
         [CONST.REGION_EVENTS.TOKEN_ENTER]: this.#onTokenEnter,
         [CONST.REGION_EVENTS.TOKEN_EXIT]: this.#onTokenExit,
-        [CONST.REGION_EVENTS.TOKEN_MOVE_WITHIN]: this.#onTokenEnter,
-        [CONST.REGION_EVENTS.TOKEN_ROUND_START]: this.#onTokenEnter
+        [CONST.REGION_EVENTS.TOKEN_MOVE_WITHIN]: this.#onTokenInside,
+        [CONST.REGION_EVENTS.TOKEN_ROUND_START]: this.#onTokenInside
 
 
     }

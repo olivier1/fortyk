@@ -2,7 +2,9 @@ import { FortykRolls } from "./FortykRolls.js";
 import { getActorToken } from "./utilities.js";
 import { tokenDistance } from "./utilities.js";
 import { isBlastTarget } from "./utilities.js";
+import { sleep } from "./utilities.js";
 import { psychicPowerDialog } from "./dialog/psychicPowerDialog.js";
+
 export class FortykRollDialogs {
     //activate chatlisteners
     static chatListeners(log) {
@@ -39,7 +41,8 @@ export class FortykRollDialogs {
         }
         let stunAe=game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")];
         stunAe.duration = {
-            rounds: 1
+            value: 1,
+            units:"rounds"
         };
         game.fortyk.FortykRolls.applyActiveEffect(actor,[stunAe]);
         let messageString="";
@@ -111,7 +114,8 @@ export class FortykRollDialogs {
         aeData.transfer = false;
 
         aeData.duration = {
-            rounds: dos
+            value: dos,
+            units:"rounds"
         };
         await actor.createEmbeddedDocuments("ActiveEffect", [aeData]);
         const messageId = $(targetElement).closest(".chat-message")[0].dataset.messageId;
@@ -490,7 +494,6 @@ export class FortykRollDialogs {
                     sheet=actor.apps[key];
                     break;
                 }
-                console.log(modifiers)
 
                 this.callNavigatorPowerDialog(
                     char,
@@ -761,7 +764,8 @@ export class FortykRollDialogs {
                                         aeData.statuses = ["evasion"];
                                         aeData.showIcon = 2;
                                         aeData.duration = {
-                                            rounds: 0
+                                            value: 0,
+                                            units:"rounds"
                                         };
                                         await FortykRolls.applyActiveEffect(actor, [aeData]);
                                     } else {
@@ -1142,11 +1146,12 @@ export class FortykRollDialogs {
                         aeData.id = "evasion";
                         aeData.name = "Evasion";
                         if (!actor.getFlag("core", "evasion")) {
-                            aeData.icon = "systems/fortyk/icons/evasion.png";
+                            aeData.img = "systems/fortyk/icons/evasion.png";
                             aeData.flags = { fortyk: { evasion: 99 } };
                             aeData.statuses = ["evasion"];
                             aeData.duration = {
-                                rounds: 0
+                                value: 0,
+                                units:"rounds"
                             };
                             await FortykRolls.applyActiveEffect(actor, [aeData]);
                         } else {
@@ -1174,7 +1179,8 @@ export class FortykRollDialogs {
                             ]
                         );
                         guardActiveEffect.duration = {
-                            rounds: 0
+                            value: 0,
+                            units:"rounds"
                         };
                         FortykRolls.applyActiveEffect(actor, [guardActiveEffect]);
                     }
@@ -1689,7 +1695,8 @@ export class FortykRollDialogs {
                             ]
                         );
                         guardActiveEffect.duration = {
-                            rounds: 0
+                            value: 0,
+                            units:"rounds"
                         };
                         FortykRolls.applyActiveEffect(actor, [guardActiveEffect]);
                     }
@@ -2062,31 +2069,41 @@ export class FortykRollDialogs {
             let casterToken = getActorToken(actor);
             let targetTokens;
             if(focusGaze){
-                const templateData = {
-                    t: "cone",
-
+                 const templateData = {
+                    name:`Gaze damage template`,
                     author: game.userId,
+                    flags:{fortyk:{
+                        damagetemplate:true
+                    }},
+                    color:game.user.color,
+                    displayMeasurements:true,
+                    hidden:false,
+                    highlightMode:"shapes",
+                    visibility:2,
+                    shapes:[{
+                        type: "cone",
 
-                    distance: range,
 
-                    direction: 45,
-                    angle: 30,
 
-                    x: 1000,
+                        radius: range*canvas.dimensions.distancePixels,
 
-                    y: 1000,
+                        direction: 45,
+                        angle: 30,
 
-                    fillColor: game.user.color
-                };
+                        x: 1000,
 
-                const templateDoc = new MeasuredTemplateDocument(templateData, { parent: canvas.scene });
+                        y: 1000
+                    }]};
 
-                const template = new game.fortyk.FortykTemplate(templateDoc);
+                
+
+
                 sheet.minimize();
-                await template.drawPreview();
-                sheet.maximize(); 
-                let scene = game.canvas.scene;
-                targetTokens = this.getSprayTargets(template, scene, actor)[0];
+                const template = await canvas.regions.placeRegion(templateData);
+                sheet.maximize();
+                await sleep(100);
+                targetTokens = template.tokens;
+
             }else{
                 targetTokens = game.canvas.scene.tokens.filter((token) => {
                     return tokenDistance(token, casterToken) <= range;
@@ -2208,7 +2225,6 @@ export class FortykRollDialogs {
     ) {
         let template = "systems/fortyk/templates/actor/dialogs/navigator-power-dialog.html";
         let templateOptions = {};
-        console.log(reroll)
         if(reroll){
             templateOptions.focusGaze=reroll.focusGaze;
             templateOptions.fog=reroll.fog;
@@ -2504,40 +2520,42 @@ export class FortykRollDialogs {
 
             ],
             submit: async (mod)=>{
-                /*const coneShape={
-                    type: "cone",
-                    radius: weapon.system/range.value*canvas.dimensions.size,
-                    angle:30,
-                    x:1000,
-                    y:1000,
-                    rotation:45
-                };*/
+               
 
                 const templateData = {
-                    t: "cone",
-
+                    name:`Spray damage template`,
                     author: game.userId,
+                    flags:{fortyk:{
+                        damagetemplate:true
+                    }},
+                    color:game.user.color,
+                    displayMeasurements:true,
+                    hidden:false,
+                    highlightMode:"shapes",
+                    visibility:2,
+                    shapes:[{
+                        type: "cone",
 
-                    distance: weapon.system.range.value,
 
-                    direction: 45,
-                    angle: 30,
 
-                    x: 1000,
+                        radius: weapon.system.range.value*canvas.dimensions.distancePixels,
 
-                    y: 1000,
+                        direction: 45,
+                        angle: 30,
 
-                    fillColor: game.user.color
-                };
+                        x: 1000,
 
-                const templateDoc = new MeasuredTemplateDocument(templateData, { parent: canvas.scene });
+                        y: 1000
+                    }]};
 
-                const template = new game.fortyk.FortykTemplate(templateDoc);
+                //const templateDoc = new MeasuredTemplateDocument(templateData, { parent: canvas.scene });
+
+
                 sheet.minimize();
-                await template.drawPreview();
+                const template = await canvas.regions.placeRegion(templateData);
                 sheet.maximize();
-                let scene = game.canvas.scene;
-                let targets = this.getSprayTargets(template, scene, actor)[0];
+                await sleep(100);
+                let targets = template.tokens;
 
 
 
@@ -2664,32 +2682,42 @@ export class FortykRollDialogs {
                 callback: async (event) => {
                     let html=event.target.form;
                     html.closest('dialog').setAttribute("hidden", "hidden");
-                    const templateData = {
-                        t: "cone",
+                     const templateData = {
+                    name:`Spray damage template`,
+                    author: game.userId,
+                    flags:{fortyk:{
+                        damagetemplate:true
+                    }},
+                    color:game.user.color,
+                    displayMeasurements:true,
+                    hidden:false,
+                    highlightMode:"shapes",
+                    visibility:2,
+                    shapes:[{
+                        type: "cone",
 
-                        author: game.userId,
 
-                        distance: weapon.system.range.value,
+
+                        radius: weapon.system.range.value*canvas.dimensions.distancePixels,
 
                         direction: 45,
                         angle: torrent,
 
                         x: 1000,
 
-                        y: 1000,
+                        y: 1000
+                    }]};
 
-                        fillColor: game.user.color
-                    };
+                //const templateDoc = new MeasuredTemplateDocument(templateData, { parent: canvas.scene });
 
-                    const templateDoc = new MeasuredTemplateDocument(templateData, { parent: canvas.scene });
 
-                    const template = new game.fortyk.FortykTemplate(templateDoc);
-                    sheet.minimize();
-                    await template.drawPreview();
-                    sheet.maximize();
+                sheet.minimize();
+                const template = await canvas.regions.placeRegion(templateData);
+                sheet.maximize();
+                let scene = game.canvas.scene;
+                await sleep(100);
+                let targets = template.tokens;
 
-                    let scene = game.canvas.scene;
-                    let targets = this.getSprayTargets(template, scene, actor)[0];
 
                     let mod = Number($(html).find('input[name="modifier"]').val());
                     $(html).closest('dialog').setAttribute("hidden", "hidden");
@@ -2819,83 +2847,8 @@ export class FortykRollDialogs {
                      ]
         });
     }
-    static getSprayTargets(template, scene, attacker) {
-        let attackerToken = getActorToken(attacker);
-        let tokens = scene.tokens;
-        let targets = [];
-        let gridRatio = scene.dimensions.distance / scene.dimensions.size;
-
-        let targetted = [];
-
-        let bounds = template.shape;
-        bounds.x = template.document.x;
-        bounds.y = template.document.y;
-        tokens.forEach((token, id, tokens) => {
-            if (attackerToken.id === token.id) {
-                return;
-            }
-            if (
-                attacker.getFlag("fortyk", "divineprotection") &&
-                token.document.disposition === attackerToken.document.disposition
-            ) {
-                return;
-            }
-            let tokenBounds = token._object.bounds;
-            let isTargetted = false;
-
-            if (
-                bounds.contains(
-                    token._object.center.x - template.document.x,
-                    token._object.center.y - template.document.y
-                )
-            ) {
-                isTargetted = true;
-            }
-            if (!isTargetted) {
-                isTargetted = FortykRollDialogs.rectangleIntersectsPolygon(bounds, tokenBounds);
-            }
-            if (isTargetted) {
-                targetted.push(token);
-            }
-
-            /*if(bounds.overlaps(tokenBounds)){
-                    targetted.push(token.id);
-                }*/
-        });
-        targets.push(targetted);
-
-        return targets;
-    }
-    static rectangleIntersectsPolygon(polygon, rectangle) {
-        let lineIntersect = function (rectangle, polygon, index) {
-            let points = polygon.points;
-            if (points[index + 2] === undefined) {
-                return false;
-            }
-            let pX = polygon.x;
-            let pY = polygon.y;
-            let firstPoint = { x: pX + points[index], y: pY + points[index + 1] };
-            let secondPoint = { x: pX + points[index + 2], y: pY + points[index + 3] };
-            let topEdge = rectangle.topEdge;
-            let bottomEdge = rectangle.bottomEdge;
-            let leftEdge = rectangle.leftEdge;
-            let rightEdge = rectangle.rightEdge;
-            if (foundry.utils.lineSegmentIntersects(topEdge.A, topEdge.B, firstPoint, secondPoint)) {
-                return true;
-            }
-            if (foundry.utils.lineSegmentIntersects(bottomEdge.A, bottomEdge.B, firstPoint, secondPoint)) {
-                return true;
-            }
-            if (foundry.utils.lineSegmentIntersects(leftEdge.A, leftEdge.B, firstPoint, secondPoint)) {
-                return true;
-            }
-            if (foundry.utils.lineSegmentIntersects(rightEdge.A, rightEdge.B, firstPoint, secondPoint)) {
-                return true;
-            }
-            return lineIntersect(rectangle, polygon, index + 2);
-        };
-        return lineIntersect(rectangle, polygon, 0);
-    }
+    
+    
     static async callForcefieldDialog(forcefield, actor, title = "Enter number of hits") {
         foundry.applications.api.DialogV2.wait({
             window:{title: title},

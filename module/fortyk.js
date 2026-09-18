@@ -70,7 +70,6 @@ import { FORTYKTABLES } from "./FortykTables.js";
 import { registerSystemSettings } from "./settings.js";
 import { ActiveEffectDialog } from "./dialog/activeEffect-dialog.js";
 import { FortyKCards } from "./card/card.js";
-import { FortykTemplate } from "./measuredTemplate/template.js";
 import { objectByString } from "./utilities.js";
 
 import { tokenDistance,  getActorToken, parseHtmlForInline, preloadHandlebarsTemplates, preLoadHandlebarsPartials, sleep, isFirstGM } from "./utilities.js";
@@ -208,7 +207,6 @@ Hooks.once("init", async function () {
         FortykRolls,
         FORTYK,
         FORTYKTABLES,
-        FortykTemplate,
         getActorToken
     };
     //make a map with the indexes of the various status effects
@@ -360,7 +358,7 @@ Hooks.once("init", async function () {
     CONFIG.Cards.documentClass = FortyKCards;
 
     //register system settings
-    
+
     manageColorScheme();
     // Handlebars helpers
     Handlebars.registerHelper("concat", function () {
@@ -478,7 +476,6 @@ Hooks.once("ready", async function () {
         let vehicle = vehicles[i];
         vehicle.preparePilot();
     }
-    console.log(CONFIG.RegionBehavior.sheetClasses);
     CONFIG.RegionBehavior.sheetClasses["fortykElevationBehavior"]={"core.RegionBehaviorConfig":{
         canBeDefault: true,
         canConfigure: true,
@@ -514,15 +511,15 @@ Hooks.once("ready", async function () {
     //SOCKET used to update actors via the damage scripts
     game.socket.on("system.fortyk", async (data) => {
         if (data.type === "cardSplash") {
-            
+
             let img = data.package.img;
             let title = data.package.title;
             foundry.applications.api.DialogV2.prompt({
                 window:{title: title
-                        },
+                       },
                 position:{width:"auto",
-                        height:800},
-                
+                          height:800},
+
                 content: `<img src="${img}"  height="625">`});
 
         }
@@ -1057,8 +1054,8 @@ Hooks.on("updateCombat", async (combat) => {
         }
         var dead = {};
         let aeTime = async function (activeEffect, actor) {
-            if (!Number.isNaN(parseInt(activeEffect.duration.rounds)) && !activeEffect.disabled) {
-                let remaining = Math.ceil(activeEffect.duration.rounds);
+            if (!Number.isNaN(parseInt(activeEffect.duration.value)) && !activeEffect.disabled) {
+                let remaining = Math.ceil(activeEffect.duration.value);
                 if (remaining < 1) {
                     remaining = 0;
                 }
@@ -1089,7 +1086,7 @@ Hooks.on("updateCombat", async (combat) => {
                         return true;
                     } else {
                         remaining--;
-                        await activeEffect.update({ "duration.rounds": remaining });
+                        await activeEffect.update({ "duration.value": remaining });
                         return false;
                     }
                 } catch (err) {
@@ -1424,12 +1421,7 @@ Hooks.on("updateCombat", async (combat) => {
                     };
                     await ChatMessage.create(reanimationOptions, {});
                     await dead.delete();
-                    let activeEffect = [
-                        foundry.utils.duplicate(
-                            game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("dead")]
-                        )
-                    ];
-                    await FortykRolls.applyActiveEffect(actor, activeEffect);
+                    return token.delete();
                 }
             } else {
                 let regen = await FortykRolls.fortykTest(
@@ -1596,10 +1588,6 @@ Hooks.on("renderCompendium", (compendium, html, data) => {
         validSlots.forEach(function (item) {
             item.classList.add("highlight-slot");
         });
-        //let transferString=JSON.stringify(transfer);
-        //console.log(transferString)
-        // event.dataTransfer.setData("text1", transferString);
-        //event.dataTransfer.effectAllowed="copy";
     };
     let onStopDragComponent = function (event) {
         if (compendium.id.indexOf("knight") === -1) {
@@ -1644,6 +1632,7 @@ Hooks.on("createActiveEffect", async (ae, options, id) => {
 Hooks.on("deleteActiveEffect", async (ae, options, id) => {
     if (isFirstGM()) {
         let actor = ae.parent;
+        if(!actor)return;
 
         ae.statuses.forEach(async function (value1, value2, ae) {
             let flag = value1;
@@ -1662,9 +1651,22 @@ Hooks.on("deleteActiveEffect", async (ae, options, id) => {
 Hooks.on("preCreateActor", (createData) => {});
 Hooks.on("preDeleteToken", async (tokenDocument, options, userId) => {
     if (!isFirstGM()) return;
+    if(!tokenDocument.actorLink) return;
+    const actor = tokenDocument.actor;
+    const eas= actor.effects;
+    for(let ea of eas){
+        if(ea.getFlag("fortyk", "temp"))ea.delete();
+    }
 });
 Hooks.on("preCreateToken", async (document, data, options, userId) => {
     if (!isFirstGM()) return;
+    const actor = document.actor;
+
+    const eas= actor.effects;
+    for(let ea of eas){
+        if(ea.getFlag("fortyk", "temp"))ea.delete();
+    } 
+
     //modify token dimensions if scene ratio isnt 1
     let gridRatio = canvas.dimensions.distance;
     let newHeight = Math.max(0.1, document.height / gridRatio);
@@ -1786,7 +1788,6 @@ Hooks.on("createToken", async (tokenDocument, options, userId) => {
     if (!isFirstGM()) return;
     let actor = tokenDocument.actor;
     if (actor.getFlag("core", "dead")) return;
-    console.log(actor)
     let tokenObject = tokenDocument.object;
     tokenObject.x = tokenDocument.x;
     tokenObject.y = tokenDocument.y;
@@ -1811,10 +1812,17 @@ Hooks.on("createToken", async (tokenDocument, options, userId) => {
             let range = parseInt(talent.system.isAura.range);
 
             const circleShape={
-                type: "circle",
-                x: tokenObject.x+math.ceil(tokenObject.w/2),
-                y: tokenObject.y+math.ceil(tokenObject.h/2),
-                radius: range*canvas.dimensions.size
+                type: "emanation",
+
+                radius: range*canvas.dimensions.distancePixels,
+                base:{
+                    x: tokenObject.x-tokenObject.w*(canvas.dimensions.distance-1)/(canvas.dimensions.distance/2),
+                    y: tokenObject.y-tokenObject.h*(canvas.dimensions.distance-1)/(canvas.dimensions.distance/2),
+                    type:"token",
+                    width:tokenObject.w/canvas.dimensions.distancePixels,
+                    height:tokenObject.h/canvas.dimensions.distancePixels,
+                    shape:4
+                }
             };
             let ae = talent.effects.entries().next().value[1];
             let aeData = foundry.utils.deepClone(ae);
@@ -2103,7 +2111,7 @@ Hooks.on("updateToken", async (token, diff, options, id) => {
 
 });
 Hooks.on("renderApplicationV2", (application, element, context, options) => {
-    
+
     let subApp=false;
     if(application.options.tag==="dialog"||application?.item?.parent){
         subApp=true;

@@ -16,7 +16,8 @@ export default class EliteAdvanceItemData extends BaseItemData {
                 "name": new StringField({initial:""}),
                 "spec": new StringField({initial:"n/a"}),
                 "uuid": new StringField({initial:""}),
-                "amount": new NumberField({initial:0, required:false})
+                "amount": new NumberField({initial:0, required:false}),
+                "quality": new StringField({required: false, initial:"Common"})
             })),
             "itemIds": new ArrayField(new StringField({ initial: "" })),
             "requirements": new StringField({ initial: "" }),

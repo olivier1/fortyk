@@ -1059,7 +1059,7 @@ FORTYK.weaponFlags = {
         maximal: false,
         label: "Maximal",
         description:
-        "Many energy weapons have multiple settings, allowing the user greater tactical flexibility in combat. As a Free Action, this weapon can be switched between two modes: Standard (which uses the normal weapon profile) and Maximal. When the weapon is fired on Maximal, it adds 10 metres to its range, 1d10 to its damage, and +2 to its penetration. If it has the Blast quality, then the value of this quality is increased by 2 (i.e., Blast [3] becomes Blast [5]). The weapon also uses three times the normal amount of ammunition per shot and gains the Recharge quality."
+        "Many energy weapons have multiple settings, allowing the user greater tactical flexibility in combat. As a Free Action, this weapon can be switched between two modes: Standard (which uses the normal weapon profile) and Maximal. When the weapon is fired on Maximal, it adds 10 metres to its range, 1d10 to its damage, and +5 to its penetration. If it has the Blast quality, then the value of this quality is increased by 2 (i.e., Blast [3] becomes Blast [5]). The weapon also uses three times the normal amount of ammunition per shot and gains the Recharge quality."
     },
     mindeater: {
         value: false,
@@ -1847,6 +1847,11 @@ FORTYK.StatusEffects = [
         img: "systems/fortyk/icons/sticky-boot.png",
         showIcon:2,
         statuses: ["rough"],
+        flags:{
+            fortyk:{
+                temp:true
+            }
+        },
         changes: [
             { key: "system.characteristics.ws.value", value: -10, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add },
             { key: "system.skillmods.dodge", value: -10, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add }
@@ -1858,6 +1863,11 @@ FORTYK.StatusEffects = [
         img: "systems/fortyk/icons/232784.png",
         showIcon:2,
         statuses: ["tough"],
+        flags:{
+            fortyk:{
+                temp:true
+            }
+        },
         changes: [
             { key: "system.characteristics.ws.value", value: -20, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add },
             { key: "system.skillmods.dodge", value: -20, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add }
@@ -1869,6 +1879,11 @@ FORTYK.StatusEffects = [
         img: "systems/fortyk/icons/quarry-512.png",
         showIcon:2,
         statuses: ["severe"],
+        flags:{
+            fortyk:{
+                temp:true
+            }
+        },
         changes: [
             { key: "system.characteristics.ws.value", value: -30, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add },
             { key: "system.skillmods.dodge", value: -30, mode: FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add }

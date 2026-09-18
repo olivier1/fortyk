@@ -38,7 +38,11 @@ export class FortyKElevationBehavior extends foundry.data.regionBehaviors.Region
         const adjustedWaypoints = movement.pending.waypoints
         .filter(w => !w.intermediate)
         .map(w => ({ ...w, elevation: elevation }));
-
+        if(adjustedWaypoints.length===0){
+            let destination=foundry.utils.duplicate(movement.destination);
+            destination.elevation=elevation;
+            adjustedWaypoints.push(destination);
+        }
         // 4. Force Foundry to resume the rest of the original drag path
         await token.move(adjustedWaypoints, { ...movement.options });
         

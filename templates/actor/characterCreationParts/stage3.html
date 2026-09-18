@@ -241,20 +241,20 @@
 
                     <div class="fit-content">
                         {{#each this}}
-                        <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{#if this.amount}}{{this.amount}}x{{/if}}{{this.name}}</a>
+                        <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{#if this.amount}}{{this.amount}}x {{/if}}{{#if this.quality}}{{this.quality}} quality {{/if}}{{this.name}}</a>
                         {{#unless @last}}
                         <span class="margin-4"> &amp; </span>
                         {{/unless}}
                         {{/each}}
                     </div>
                     {{else}}
-                    <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{#if this.amount}}{{this.amount}}x{{/if}}{{this.name}}</a>
+                    <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{#if this.amount}}{{this.amount}}x {{/if}}{{#if this.quality}}{{this.quality}} quality {{/if}}{{this.name}}</a>
                     {{/if}}
                 </div>
                 {{/each}}
             </div>
             {{else}}
-            <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{#if this.amount}}{{this.amount}}x{{/if}}{{this.name}}</a>
+            <a class="item-descr fit-content" data-item-descr="{{this.description}}" data-name="{{this.name}}">{{#if this.amount}}{{this.amount}}x {{/if}}{{#if this.quality}}{{this.quality}} quality {{/if}}{{this.name}}</a>
             {{/if}}
             {{/each}}
         </div>

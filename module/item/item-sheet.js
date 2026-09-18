@@ -678,6 +678,24 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
                 bonus.amount = newAmount;
             }
         }
+        let quality = item.system.quality?.value;
+        if(quality){
+            let newQuality = await foundry.applications.api.DialogV2.prompt({
+                window:{title: `Choose quality for ${item.name}`},
+                content: `<p><label>Quality:</label> <select name='quality-select'><option>Poor</option><option selected>Common</option> <option>Good</option> <option>Best</option></select></p>`,
+
+                ok: {callback:async (event, button, dialog) => {
+                    let html=event.target.form;
+                    const chosenQuality = $(html).find('select[name="quality-select"]').val();
+                    return chosenQuality;
+                }},
+
+                position:{width: 250}
+            });
+            if (newQuality !== "Common") {
+                bonus.quality = newQuality;
+            }
+        }
 
         bonuses.push(bonus);
         this.document.update({ "system.items": bonuses });
@@ -1054,7 +1072,7 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
         }
     }
     static async _onSubmitForm(event, form, formData){
-        console.log(formData);
+        
         event.preventDefault();
         let object=formData.object;
         let description=object.system?.description?.value;

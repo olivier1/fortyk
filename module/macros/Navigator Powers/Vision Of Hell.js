@@ -65,7 +65,8 @@ for (const target of targets) {
         }
         messageStr+=` for ${duration} rounds! <br> Insanity Effect: <br>`+halluText;
         aeData.duration = {
-            rounds: duration
+            value: duration,
+                                            units:"rounds"
         };
     }
     let chatOptions = {

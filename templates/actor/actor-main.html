@@ -25,6 +25,7 @@
                     <div class="flexrow advanceElite">
                         <a class="item-descr fit-content" data-id="{{characterType.id}}" data-name="{{characterType.name}}" data-item-descr="{{characterType.system.description.value}}"><u>{{characterType.name}}</u></a>
                         {{#if isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{characterType.id}}"></a>
                         <a class="list-button item-delete" title="Delete" data-item-id="{{characterType.id}}"></a>
                         {{/if}}
                     </div>
@@ -74,6 +75,7 @@
                     <div class="flexrow advanceElite">
                         <a class="item-descr fit-content" data-id="{{planet.id}}" data-name="{{planet.name}}" data-item-descr="{{planet.system.description.value}}"><u>{{planet.name}}</u></a>
                         {{#if isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{planet.id}}"></a>
                         <a class="list-button item-delete" title="Delete" data-item-id="{{planet.id}}"></a>
                         {{/if}}
                     </div>
@@ -87,6 +89,7 @@
                     <div class="flexrow advanceElite">
                         <a class="item-descr fit-content" data-id="{{background.id}}" data-name="{{background.name}}" data-item-descr="{{background.system.description.value}}"><u>{{background.name}}</u></a>
                         {{#if isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{background.id}}"></a>
                         <a class="list-button item-delete" title="Delete" data-item-id="{{background.id}}"></a>
                         {{/if}}
                     </div>
@@ -113,6 +116,7 @@
 
                         {{/if}}
                         {{#if isGM}}
+                        <a class="list-button item-edit" title="Edit" data-item-id="{{role.id}}"></a>
                         <a class="list-button item-delete" title="Delete" data-item-id="{{role.id}}"></a>
                         {{/if}}
                     </div>

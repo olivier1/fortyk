@@ -1355,7 +1355,6 @@ export default class FortyKBaseActorSheet extends HandlebarsApplicationMixin(fou
     }
     static async _onSubmitForm(event, form, formData) {
         event.preventDefault();
-        console.log(event, form, formData);
         if(this.actor.getFlag("fortyk", "charactercreation"))return;
         let object = formData.object;
         let background = object.system?.notesAndBackground?.background;

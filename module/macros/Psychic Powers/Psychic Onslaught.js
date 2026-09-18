@@ -16,7 +16,8 @@ for(const rangedWeapon of rangedWeapons){
         aeData.disabled=false;
         aeData.transfer=false;
         aeData.origin=power.uuid;
-        aeData.duration={rounds:0};
+        aeData.duration={value: 0,
+                                            units:"rounds"};
         aeData.showIcon=2;
         aeData.changes=[];
         console.log(pr)

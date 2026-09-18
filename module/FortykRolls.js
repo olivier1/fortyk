@@ -727,7 +727,7 @@ returns the roll message*/
                     for (let i = 0; i < rof; i++) {
                         const circleShape={
                             type: "circle",
-                            radius: Math.max(0.1, fortykWeapon.getFlag("fortyk", "blast")*canvas.dimensions.size)
+                            radius: Math.max(0.1, fortykWeapon.getFlag("fortyk", "blast")*canvas.dimensions.distancePixels)
                         };
                         if (i >= rof - missedHits) {
                             //if the hit is a miss roll random scatter direction
@@ -868,7 +868,8 @@ returns the roll message*/
                     aeData.flags = { fortyk: { evasion: 1 } };
                     aeData.statuses = ["evasion"];
                     aeData.duration = {
-                        rounds: 0
+                        value: 0,
+                                            units:"rounds"
                     };
                     await FortykRolls.applyActiveEffect(actor, [aeData]);
                 } else {
@@ -1557,9 +1558,9 @@ returns the roll message*/
             if (fortykWeapon.getFlag("fortyk", "spray") && weapon.type === "rangedWeapon") {
                 //delete templates for spray weapons
                 let scene = game.scenes.active;
-                let templates = scene.templates;
+                let templates = scene.regions;
                 for (const template of templates) {
-                    if (template.isOwner) {
+                    if (template.getFlag("fortyk","damagetemplate")) {
                         await template.delete();
                     }
                 }
@@ -2483,7 +2484,8 @@ returns the roll message*/
                                 );
                                 stunActiveEffect.transfer = false;
                                 stunActiveEffect.duration = {
-                                    rounds: shock.dos
+                                   value: shock.dos,
+                                            units:"rounds"
                                 };
                                 activeEffects.push(stunActiveEffect);
                                 let id = foundry.utils.randomID(5);
@@ -2655,7 +2657,8 @@ returns the roll message*/
                                 plagueEffect.statuses = ["plague"];
                                 plagueEffect.transfer = false;
                                 plagueEffect.duration = {
-                                    rounds: 7
+                                    value: 7,
+                                            units:"rounds"
                                 };
                                 activeEffects.push(plagueEffect);
                                 damageOptions.results.push(
@@ -2691,7 +2694,8 @@ returns the roll message*/
                                 );
                                 cryoActiveEffect.transfer = false;
                                 cryoActiveEffect.duration = {
-                                    rounds: cryoDuration
+                                    value: cryoDuration,
+                                            units:"rounds"
                                 };
                                 activeEffects.push(cryoActiveEffect);
                                 let id = foundry.utils.randomID(5);
@@ -2732,7 +2736,8 @@ returns the roll message*/
                                 );
                                 halluActiveEffect.transfer = false;
                                 halluActiveEffect.duration = {
-                                    rounds: hallu.dos
+                                    value: hallu.dos,
+                                            units:"rounds"
                                 };
                                 activeEffects.push(halluActiveEffect);
                                 let halluRoll = new Roll("1d10", {});
@@ -2779,7 +2784,8 @@ returns the roll message*/
 
                             luminagenActiveEffect.transfer = false;
                             luminagenActiveEffect.duration = {
-                                rounds: lumiDuration
+                                value: lumiDuration,
+                                            units:"rounds"
                             };
                             activeEffects.push(luminagenActiveEffect);
 
@@ -2812,7 +2818,8 @@ returns the roll message*/
                                     );
                                     stunActiveEffect.transfer = false;
                                     stunActiveEffect.duration = {
-                                        rounds: stun.dos
+                                        value: stun.dos,
+                                            units:"rounds"
                                     };
                                     activeEffects.push(stunActiveEffect);
                                     let id = foundry.utils.randomID(5);
@@ -3028,7 +3035,8 @@ returns the roll message*/
                                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("blind")]
                                 );
                                 blindActiveEffect.duration = {
-                                    rounds: blind.dos
+                                    value: blind.dos,
+                                            units:"rounds"
                                 };
                                 activeEffects.push(blindActiveEffect);
                             }
@@ -3189,7 +3197,8 @@ returns the roll message*/
                                     ]
                                 );
                                 stunActiveEffect.duration = {
-                                    rounds: stun.dos
+                                    value: stun.dos,
+                                            units:"rounds"
                                 };
                                 activeEffects.push(stunActiveEffect);
                             }
@@ -3384,7 +3393,8 @@ returns the roll message*/
                                 game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                             );
                             stunActiveEffect.duration = {
-                                rounds: 1
+                                value: 1,
+                                            units:"rounds"
                             };
                             activeEffects.push(stunActiveEffect);
                             if (fortykWeapon.system.training.value === "Adept") {
@@ -4293,7 +4303,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 ae.changes = [];
                 for (let char in game.fortyk.FORTYK.skillChars) {
@@ -4312,7 +4323,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("blind")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 break;
@@ -4321,7 +4333,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("deaf")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 break;
@@ -4331,7 +4344,9 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("blind")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                   
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 break;
@@ -4340,14 +4355,16 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("blind")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                   value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 ae = foundry.utils.duplicate(
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 ae = foundry.utils.duplicate(
@@ -4450,7 +4467,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 ae["flags.fortyk.startofround"] = `${actor.getName()} may on take a Half Action this turn!`;
                 activeEffects.push(ae);
@@ -4484,7 +4502,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 ae["flags.fortyk.startofround"] = `${actor.getName()} may on take a Half Action this turn!`;
                 activeEffects.push(ae);
@@ -4507,7 +4526,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: 1
+                        value: 1,
+                                            units:"rounds"
                     };
                     activeEffects.push(ae);
                 }
@@ -4518,7 +4538,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[1]
+                    value: rolls.rolls[1],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 ae = foundry.utils.duplicate(
@@ -4548,7 +4569,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 await this._createInjury(actor, "Third degree chest burns.", injury);
@@ -4558,7 +4580,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 ae = foundry.utils.duplicate(
@@ -4652,7 +4675,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("arm")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 break;
@@ -4662,7 +4686,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("arm")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 break;
@@ -4672,7 +4697,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 ae["flags.fortyk.startofround"] = `${actor.getName()} may on take a Half Action this turn!`;
                 activeEffects.push(ae);
@@ -4682,14 +4708,16 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("arm")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 ae = foundry.utils.duplicate(
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 ae = foundry.utils.duplicate(
@@ -4702,7 +4730,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 injury = foundry.utils.duplicate(
@@ -4745,7 +4774,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                   value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 injury = foundry.utils.duplicate(
@@ -4761,7 +4791,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: rolls.rolls[1]
+                        value: rolls.rolls[1],
+                                            units:"rounds"
                     };
                     activeEffects.push(ae);
                 }
@@ -4786,7 +4817,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: 1
+                        value: 1,
+                                            units:"rounds"
                     };
                     activeEffects.push(ae);
                     injury = foundry.utils.duplicate(
@@ -4823,7 +4855,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]
                 );
                 ae.duration = {
-                    rounds: 2
+                    value: 2,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 break;
@@ -4843,7 +4876,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 ae.changes = [
                     {
@@ -4877,7 +4911,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 ae.changes = [
                     {
@@ -4915,7 +4950,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: 1
+                        value: 1,
+                                            units:"rounds"
                     };
                     activeEffects.push(ae);
                 }
@@ -4943,7 +4979,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: 1
+                        value: 1,
+                                            units:"rounds"
                     };
                 }
                 activeEffects.push(ae);
@@ -5031,7 +5068,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 ae["flags.fortyk.startofround"] = `${actor.getName()} may on take a Half Action this turn!`;
                 activeEffects.push(ae);
@@ -5041,14 +5079,16 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("blind")]
                 );
                 ae.duration = {
-                    rounds: 1
+                   value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 ae = foundry.utils.duplicate(
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("deaf")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 break;
@@ -5096,7 +5136,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: 2
+                        value: 2,
+                                            units:"rounds"
                     };
                     ae = foundry.utils.duplicate(
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("int")]
@@ -5116,7 +5157,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 injury = foundry.utils.duplicate(
@@ -5199,7 +5241,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 this.knockback(rolls.rolls[0], attacker, actorToken);
@@ -5212,7 +5255,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: 1
+                        value: 1,
+                                            units:"rounds"
                     };
                     activeEffects.push(ae);
                     ae = foundry.utils.duplicate(
@@ -5255,7 +5299,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 break;
@@ -5272,7 +5317,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 tTest = rolls.tests[0];
@@ -5323,7 +5369,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: 1
+                       value: 1,
+                                            units:"rounds"
                     };
                     activeEffects.push(ae);
                 }
@@ -5358,7 +5405,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 tTest = rolls.tests[0];
@@ -5431,7 +5479,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: rolls.rolls[1]
+                        value: rolls.rolls[1],
+                                            units:"rounds"
                     };
                     activeEffects.push(ae);
                     ae = foundry.utils.duplicate(
@@ -5494,7 +5543,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 break;
@@ -5520,7 +5570,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]
                 );
                 activeEffects.duration = {
-                    rounds: rolls.rolls[1]
+                    value: rolls.rolls[1],
+                                            units:"rounds"
                 };
                 ae.changes = [
                     {
@@ -5584,7 +5635,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: rolls.rolls[1]
+                       value: rolls.rolls[1],
+                                            units:"rounds"
                     };
                     activeEffects.push(ae);
                     ae = foundry.utils.duplicate(
@@ -5670,7 +5722,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("per")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 ae.changes = [
                     {
@@ -5684,7 +5737,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("int")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 ae.changes = [
                     {
@@ -5700,7 +5754,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("blind")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 tTest = rolls.tests[0];
@@ -5709,7 +5764,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: 1
+                        value: 1,
+                                            units:"rounds"
                     };
                 }
                 activeEffects.push(ae);
@@ -5721,7 +5777,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: 1
+                        value: 1,
+                                            units:"rounds"
                     };
                     activeEffects.push(ae);
                     ae = foundry.utils.duplicate(
@@ -5736,7 +5793,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                   value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 ae = foundry.utils.duplicate(
@@ -5757,7 +5815,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 agiTest = rolls.tests[0];
@@ -5774,7 +5833,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 ae = foundry.utils.duplicate(
@@ -5825,7 +5885,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("weakened")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 ae["flags.fortyk.startofround"] = `${actor.getName()} may on take a Half Action this turn!`;
                 activeEffects.push(ae);
@@ -5846,7 +5907,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 break;
@@ -5875,7 +5937,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 2
+                    value: 2,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 tTest = rolls.tests[0];
@@ -5893,7 +5956,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 2
+                    value: 2,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 this.knockback(rolls.rolls[1], attacker, actorToken);
@@ -5970,7 +6034,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 break;
@@ -6061,7 +6126,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: rolls.rolls[1]
+                        value: rolls.rolls[1],
+                                            units:"rounds"
                     };
                     activeEffects.push(ae);
                     ae = foundry.utils.duplicate(
@@ -6108,7 +6174,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("leg")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 ae.changes = [
                     {
@@ -6124,7 +6191,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: 1
+                        value: 1,
+                                            units:"rounds"
                     };
                     activeEffects.push(ae);
                     ae = foundry.utils.duplicate(
@@ -6176,7 +6244,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 let base = actor.system.secChar.movement.half;
@@ -6222,7 +6291,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 2
+                    value: 2,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 injury = foundry.utils.duplicate(
@@ -6335,7 +6405,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("ws")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 ae.changes = [
                     {
@@ -6349,7 +6420,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("bs")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 ae.changes = [
                     {
@@ -6372,7 +6444,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 ae = foundry.utils.duplicate(
@@ -6416,7 +6489,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 if (parseInt(actor.system.characterHitLocations.head.armor) === 0) {
@@ -6508,7 +6582,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 break;
@@ -6554,7 +6629,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: 1
+                        value: 1,
+                                            units:"rounds"
                     };
                     activeEffects.push(ae);
                 }
@@ -6564,7 +6640,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 tTest = rolls.tests[0];
@@ -6580,7 +6657,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 ae = foundry.utils.duplicate(
@@ -6672,7 +6750,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: 1
+                        value: 1,
+                                            units:"rounds"
                     };
                     activeEffects.push(ae);
                     ae = foundry.utils.duplicate(
@@ -6731,7 +6810,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("arm")]
                 );
                 ae.duration = {
-                    rounds: rolls.rolls[0]
+                    value: rolls.rolls[0],
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 break;
@@ -6751,7 +6831,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 if (!tTest.value) {
@@ -6801,7 +6882,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: rolls.rolls[0]
+                        value: rolls.rolls[0],
+                                            units:"rounds"
                     };
                     activeEffects.push(ae);
                     ae = foundry.utils.duplicate(
@@ -6948,7 +7030,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 ae = foundry.utils.duplicate(
@@ -6990,7 +7073,8 @@ returns the roll message*/
                         game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                     );
                     ae.duration = {
-                        rounds: rolls.rolls[0]
+                        value: rolls.rolls[0],
+                                            units:"rounds"
                     };
                     activeEffects.push(ae);
                 }
@@ -7249,7 +7333,8 @@ returns the roll message*/
                 );
                 ae.changes = [{ key: `system.crew.bs`, value: -10, mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.add }];
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 activeEffects.push(ae);
                 break;
@@ -7965,7 +8050,8 @@ returns the roll message*/
                             game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                         );
                         ae.duration = {
-                            rounds: 1
+                            value: 1,
+                                            units:"rounds"
                         };
                         activeEffects.push(ae);
                     }
@@ -8171,7 +8257,8 @@ returns the roll message*/
                         mode: game.fortyk.FORTYK.ACTIVE_EFFECT_CHANGE_TYPES.override
                     }
                 ];
-                ae.duration = { rounds: 1 };
+                ae.duration = { value: 1,
+                                            units:"rounds" };
                 activeEffects.push(ae);
 
                 break;
@@ -8316,10 +8403,10 @@ returns the roll message*/
             for (const filteredEffect of filteredEffects) {
                 if (effect.statuses && effect?.statuses?.includes(filteredEffect?.statuses[0])) {
                     dupplicate = true;
-                    if (effect?.duration?.rounds && filteredEffect?.duration?.rounds) {
-                        filteredEffect.duration.rounds = Math.max(
-                            effect.duration.rounds,
-                            filteredEffect.duration.rounds
+                    if (effect?.duration?.value && filteredEffect?.duration?.value) {
+                        filteredEffect.duration.value = Math.max(
+                            effect.duration.value,
+                            filteredEffect.duration.value
                         );
                     }
                     if (effect.changes) {
@@ -8392,7 +8479,7 @@ returns the roll message*/
                                 }
                             }
 
-                            if (newAe.duration?.rounds > ae.duration.rounds) {
+                            if (newAe.duration?.value > ae.duration.value) {
                                 upg = true;
                             }
 
@@ -8515,7 +8602,8 @@ returns the roll message*/
                     game.fortyk.FORTYK.StatusEffects[game.fortyk.FORTYK.StatusEffectsIndex.get("stunned")]
                 );
                 ae.duration = {
-                    rounds: 1
+                    value: 1,
+                                            units:"rounds"
                 };
                 this.applyActiveEffect(vehicle, [ae]);
                 this.applyActiveEffect(pilot, [ae]);

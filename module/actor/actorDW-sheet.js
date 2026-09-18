@@ -1600,7 +1600,6 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                                     .each(function () {
                                     selectedId=this.getAttribute("data-uuid");
                                 });
-                                console.log(selectedId);
                                 let pathDocument= await fromUuid(selectedId);
                                 let pathCopy= foundry.utils.duplicate(pathDocument);
                                 let currentPath=this.actor.role;
@@ -1712,7 +1711,8 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
                     {
                         action:'submit',
                         label: "Ok",
-                        callback: async (html) => {
+                        callback: async (event) => {
+                            let html=$(event.target.form);
                             const type = html.find('select[name="wargear-type"]').val();
                             const itemData = {
                                 name: `new ${type}`,
@@ -1965,7 +1965,7 @@ export default class FortyKDWActorSheet extends FortyKBaseActorSheet {
         }
 
         if (update.length > 0) {
-            console.log(await this.actor.updateEmbeddedDocuments("Item", update));
+            await this.actor.updateEmbeddedDocuments("Item", update);
         }
     }
     async _onFavoriteClick(event) {

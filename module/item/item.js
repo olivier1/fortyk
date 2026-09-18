@@ -429,7 +429,7 @@ export class FortyKItem extends Item {
                     let newNum = parseInt(dieNum) + 1;
                     item.system.damageFormula.value = form.slice(dPos);
                     item.system.damageFormula.value = newNum + item.system.damageFormula.value;
-                    item.system.pen.value = parseInt(item.system.pen.formula) + 2;
+                    item.system.pen.value = parseInt(item.system.pen.formula) + 5;
                     item.system.clip.consumption = 3;
                 }
             }
@@ -1448,11 +1448,18 @@ static async applyAura(actorId, powerId) {
         let range = parseInt(power.system.range.value);
 
         const circleShape={
-            type: "circle",
-            x: actorToken.x+math.ceil(actorToken.w/2),
-            y: actorToken.y+math.ceil(actorToken.h/2),
-            radius: range*game.canvas.dimensions.size
-        };
+                type: "emanation",
+
+                radius: range*canvas.dimensions.distancePixels,
+                base:{
+                    x: actorToken.x-actorToken.w*(canvas.dimensions.distance-1)/(canvas.dimensions.distance/2),
+                    y: actorToken.y-actorToken.h*(canvas.dimensions.distance-1)/(canvas.dimensions.distance/2),
+                    type:"token",
+                    width:actorToken.w/canvas.dimensions.distancePixels,
+                    height:actorToken.h/canvas.dimensions.distancePixels,
+                    shape:4
+                }
+            };
         let ae = power.effects.entries().next().value[1];
         let aeData = foundry.utils.deepClone(ae);
 

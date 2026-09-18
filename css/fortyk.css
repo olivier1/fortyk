@@ -1825,6 +1825,9 @@ u:hover{
 .fortyk .charSelect{
   width:100%;
 }
+.feature-select{
+  width: 100% !important;
+}
 .fortyk .sheet-main .header-fields .char{
   width: 100%;
 }

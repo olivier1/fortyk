@@ -119,7 +119,7 @@
         <label>Bonuses:</label>
         {{#each system.items}}
         <div class="flexrow">
-            <label>{{#if this.amount}}{{this.amount}}x{{/if}}{{this.name}}{{#if this.isOR}} OR{{else if this.isAND}} AND{{/if}}</label><a class="delete-index fit-content" data-index="{{@index}}">Delete</a>
+            <label>{{#if this.amount}}{{this.amount}}x {{/if}}{{#if this.quality}}{{this.quality}} quality {{/if}}{{this.name}}{{#if this.isOR}} OR{{else if this.isAND}} AND{{/if}}</label><a class="delete-index fit-content" data-index="{{@index}}">Delete</a>
         </div>
 
         {{/each}}

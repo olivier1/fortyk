@@ -311,6 +311,7 @@ export const parseHtmlForInline = function (html) {
     return intArray;
 };
 export const tokenDistance = function (token1, token2) {
+    const startTime=performance.now();
     if(token1 instanceof FortyKToken)token1=token1._object;
     if(token2 instanceof FortyKToken)token2=token2._object;
     if (canvas.scene.grid.type === CONST.GRID_TYPES.GRIDLESS) {
@@ -373,10 +374,13 @@ export const tokenDistance = function (token1, token2) {
     let yDistance = Math.abs(gridRatio * (token1y - token2y));
     //Z DISTANCE IS NOT IN PIXELS
     let zDistance = Math.abs(token1.document.elevation - token2.document.elevation);
+    const endTime=performance.now();
+    console.log(`Distance calc took: ${endTime-startTime}`);
     return Math.max(xDistance, yDistance, zDistance);
 
 };
 const tokenDistanceGridless = function (token1, token2) {
+    const startTime=performance.now();
     let token1Center = token1.center;
     let token2Center = token2.center;
     //find points of intersection for both
@@ -448,7 +452,8 @@ const tokenDistanceGridless = function (token1, token2) {
     let token2IntersectPoint=token2Intersects.find((intersect)=>intersect!==null);
     if(!token2IntersectPoint)return 0;
     let distancePx=Math.sqrt(Math.pow(gridRatio*(token1IntersectPoint.x-token2IntersectPoint.x),2)+Math.pow(gridRatio*(token1IntersectPoint.y-token2IntersectPoint.y),2)+Math.pow((token1.document.elevation-token2.document.elevation),2));
-
+    const endTime=performance.now();
+    console.log(`Distance calc took: ${endTime-startTime}`);
     return distancePx;
 
 };
@@ -586,10 +591,9 @@ export const getBlastTargets = function (regions) {
     let scene = game.scenes.active;
     let tokens = scene.tokens;
     let targets = [];
-    let gridRatio = scene.dimensions.size / scene.dimensions.distance;
 
     for (let i = 0; i < regions.length; i++) {
-        
+
         let region = regions[i];
         let ignores=region.getFlag("fortyk", "ignores");
         let targetted = region.tokens;
@@ -602,7 +606,7 @@ export const getBlastTargets = function (regions) {
             targetIds.push(target.id);
             return target;
         });
-       
+
         let blastTargets = { template: { x: region.x, y: region.y, uuid:region.uuid }, targets: targetIds };
         targets.push(blastTargets);
     }
@@ -613,7 +617,6 @@ export const isBlastTarget = function (token, templates) {
     let scene = game.scenes.active;
     let tokens = scene.tokens;
     let targets = [];
-    let gridRatio = scene.dimensions.size / scene.dimensions.distance;
     let isTarget=false;
     for (let i = 0; i < templates.length; i++) {
         let targetted = [];
