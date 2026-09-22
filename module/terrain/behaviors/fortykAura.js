@@ -151,7 +151,7 @@ export class FortyKAuraBehavior extends foundry.data.regionBehaviors.ApplyActive
     static async #onTokenExit(event) {
         if ( !event.user.isSelf ) return;
         const {token, movement} = event.data;
-        return this.deleteEffects(token, movement);
+        return this._deleteEffects(token, movement);
     }
     static async #onTokenInside(event){
         if ( !event.user.isSelf ) return;

@@ -58,7 +58,7 @@ import { FortyKKnightSheet } from "./actor/knight-sheet.js";
 import { FortyKItem } from "./item/item.js";
 import { FortyKItemSheet } from "./item/item-sheet.js";
 import { FortyKActiveEffect } from "./activeEffect/activeEffect.js";
-import { FortyKActiveEffectConfig } from "./activeEffect/activeEffectConfig.js";
+import FortyKActiveEffectConfig from "./activeEffect/activeEffectConfig.js";
 import { migrate } from "./migration.js";
 
 import { FortykRolls } from "./FortykRolls.js";
@@ -354,6 +354,13 @@ Hooks.once("init", async function () {
     const ItemSheet = foundry.appv1.sheets.ItemSheet;
     Items.unregisterSheet("core", ItemSheet);
     Items.registerSheet("fortyk", FortyKItemSheet, { makeDefault: true });
+    //active effect sheet
+    foundry.applications.apps.DocumentSheetConfig.unregisterSheet(ActiveEffect, "core", foundry.applications.sheets.ActiveEffectConfig);
+
+    foundry.applications.apps.DocumentSheetConfig.registerSheet(ActiveEffect, "fortyk", FortyKActiveEffectConfig, {
+        makeDefault: true,
+        label: "Fortyk System Active Effect Config"
+    });
     //setup handcards
     CONFIG.Cards.documentClass = FortyKCards;
 

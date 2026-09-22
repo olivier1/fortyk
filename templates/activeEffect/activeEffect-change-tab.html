@@ -1,0 +1,25 @@
+<div class="tab" data-tab="effects" data-group="primary">
+  <ol class="changes-list">
+    {{#each changes}}
+    <li class="effect-change" data-index="{{@index}}">
+      
+      <!-- Existing Core Inputs (Key, Mode, Value, Priority) -->
+      <input type="text" name="changes.{{@index}}.key" value="{{this.key}}">
+      <input type="text" name="changes.{{@index}}.value" value="{{this.value}}">
+
+      <!-- Your custom Phase Selection Dropdown -->
+      <div class="form-group select-phase">
+        <label>Phase</label>
+        <select name="changes.{{@index}}.phase">
+          {{selectOptions ../effectPhases selected=this.phase}}
+        </select>
+      </div>
+
+      <!-- Priority and Row Delete buttons -->
+      <input type="number" name="changes.{{@index}}.priority" value="{{this.priority}}">
+      <a class="effect-control" data-action="delete"><i class="fas fa-trash"></i></a>
+
+    </li>
+    {{/each}}
+  </ol>
+</div>

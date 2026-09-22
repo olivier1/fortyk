@@ -1502,54 +1502,132 @@ u:hover{
 .grid-row-span2{
   grid-row-end :span 2;
   flex-direction: column;
+  display:flex;
 }
 .grid-row-span3{
   grid-row-end :span 3;
   flex-direction: column;
+  display:flex;
 }
 .grid-row-span4{
   grid-row-end :span 4;
   flex-direction: column;
+  display:flex;
 }
 .grid-row-span5{
   grid-row-end :span 5;
   flex-direction: column;
+  display:flex;
 }
 .grid-row-span6{
   grid-row-end :span 6;
   flex-direction: column;
+  display:flex;
 }
 .grid-row-span7{
   grid-row-end :span 7;
   flex-direction: column;
+  display:flex;
 }
 .grid-row-span8{
   grid-row-end :span 8;
   flex-direction: column;
+  display:flex;
 }
 .grid-row-span9{
   grid-row-end :span 9;
   flex-direction: column;
+  display:flex;
 }
 .grid-row-span10{
   grid-row-end :span 10;
   flex-direction: column;
+  display:flex;
 }
 .grid-row-span11{
   grid-row-end :span 11;
   flex-direction: column;
+  display:flex;
 }
 .grid-row-span12{
   grid-row-end :span 12;
   flex-direction: column;
+  display:flex;
 }
 .grid-row-span13{
   grid-row-end :span 13;
   flex-direction: column;
+  display:flex;
 }
 .grid-row-span14{
   grid-row-end :span 14;
   flex-direction: column;
+  display:flex;
+}
+.grid-column-span2{
+  grid-column-end :span 2;
+  flex-direction: column;
+  display:flex;
+}
+.grid-column-span3{
+  grid-column-end :span 3;
+  flex-direction: column;
+  display:flex;
+}
+.grid-column-span4{
+  grid-column-end :span 4;
+  flex-direction: column;
+  display:flex;
+}
+.grid-column-span5{
+  grid-column-end :span 5;
+  flex-direction: column;
+  display:flex;
+}
+.grid-column-span6{
+  grid-column-end :span 6;
+  flex-direction: column;
+  display:flex;
+}
+.grid-column-span7{
+  grid-column-end :span 7;
+  flex-direction: column;
+  display:flex;
+}
+.grid-column-span8{
+  grid-column-end :span 8;
+  flex-direction: column;
+  display:flex;
+}
+.grid-column-span9{
+  grid-column-end :span 9;
+  flex-direction: column;
+  display:flex;
+}
+.grid-column-span10{
+  grid-column-end :span 10;
+  flex-direction: column;
+  display:flex;
+}
+.grid-column-span11{
+  grid-column-end :span 11;
+  flex-direction: column;
+  display:flex;
+}
+.grid-column-span12{
+  grid-column-end :span 12;
+  flex-direction: column;
+  display:flex;
+}
+.grid-column-span13{
+  grid-column-end :span 13;
+  flex-direction: column;
+  display:flex;
+}
+.grid-column-span14{
+  grid-column-end :span 14;
+  flex-direction: column;
+  display:flex;
 }
 .fortyk .simple-grid3{
   width:100%;

@@ -1,4 +1,5 @@
 const { DialogV2, HandlebarsApplicationMixin } = foundry.applications.api;
+import FortyKActiveEffectConfig from "../activeEffect/activeEffectConfig.js";
 export class ActiveEffectDialog extends HandlebarsApplicationMixin(DialogV2) {
 
     static DEFAULT_OPTIONS = {
@@ -73,7 +74,7 @@ export class ActiveEffectDialog extends HandlebarsApplicationMixin(DialogV2) {
 
         let effect = await fromUuid(effectId);
         let options= {"document":effect};
-        new foundry.applications.sheets.ActiveEffectConfig(options).render({force:true});
+        new FortyKActiveEffectConfig(options).render({force:true});
     }
     async _onAeCreate(event){
         let actorId = event.currentTarget.attributes["data-actor-id"].value;
