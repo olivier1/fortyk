@@ -273,7 +273,7 @@ Hooks.once("init", async function () {
     CONFIG.Item.dataModels.cybernetic = CyberneticItemData;
     CONFIG.Item.dataModels.disorder = DisorderItemData;
     CONFIG.Item.dataModels.eliteAdvance = EliteAdvanceItemData;
-    CONFIG.Item.dataModels.forcefield = ForcefieldItemData;
+    CONFIG.Item.dataModels.forceField = ForcefieldItemData;
     CONFIG.Item.dataModels.injury = InjuryItemData;
     CONFIG.Item.dataModels.knightArmor = KnightArmorItemData;
     CONFIG.Item.dataModels.knightChassis = KnightChassisItemData;
