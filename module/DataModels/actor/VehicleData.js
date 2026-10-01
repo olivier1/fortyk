@@ -9,7 +9,7 @@ function resourceField(initialValue, initialMax) {
         max: new NumberField({ initial: initialMax }),
     });
 }
-export default class VehicleData extends foundry.abstract.TypeDataModel {
+export class VehicleData extends foundry.abstract.TypeDataModel {
 
     static defineSchema() {
         return {

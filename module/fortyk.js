@@ -1,8 +1,5 @@
 // Import Modules
-import PCData from "./DataModels/actor/PCData.js";
-import NPCData from "./DataModels/actor/NPCData.js";
-import SpaceshipData from "./DataModels/actor/SpaceshipData.js";
-import VehicleData from "./DataModels/actor/VehicleData.js";
+
 //import ComradeData from "./DataModels/actor/ComradeData.js";
 //import RegimentData from "./DataModels/actor/RegimentData.js";
 import RangedWeaponItemData from "./DataModels/item/RangedWeaponItemData.js";
@@ -201,6 +198,7 @@ function manageColorScheme() {
 }
 
 Hooks.once("init", async function () {
+
     game.fortyk = {
         FortyKActor,
         FortyKItem,
@@ -259,10 +257,22 @@ Hooks.once("init", async function () {
     CONFIG.Token.objectClass = FortyKPlaceableToken;
     CONFIG.Token.movement.TerrainData = FortyKTerrain;
     //Assign custom data models
-    CONFIG.Actor.dataModels.dwPC = PCData;
+    /* CONFIG.Actor.dataModels.dwPC = PCData;
     CONFIG.Actor.dataModels.npc = NPCData;
     CONFIG.Actor.dataModels.vehicle = VehicleData;
-    CONFIG.Actor.dataModels.spaceship = SpaceshipData;
+    CONFIG.Actor.dataModels.spaceship = SpaceshipData;*/
+    //lazy load data classes
+    const {PCData}= await import("./DataModels/actor/PCData.js");
+    const {NPCData}= await import("./DataModels/actor/NPCData.js");
+    const {SpaceshipData}= await import("./DataModels/actor/SpaceshipData.js");
+    const {VehicleData}= await import("./DataModels/actor/VehicleData.js");
+    Object.assign(CONFIG.Actor.dataModels, {
+        dwPC: PCData,
+        npc: NPCData,
+        vehicle: VehicleData,
+        spaceship: SpaceshipData
+    });
+    console.log(SpaceshipData.schema)
     CONFIG.Item.dataModels.rangedWeapon = RangedWeaponItemData;
     CONFIG.Item.dataModels.meleeWeapon = MeleeWeaponItemData;
     CONFIG.Item.dataModels.advancement = AdvancementItemData;
@@ -306,6 +316,23 @@ Hooks.once("init", async function () {
     CONFIG.RegionBehavior.dataModels.fortykAuraBehavior = FortyKAuraBehavior;
     CONFIG.RegionBehavior.typeLabels.fortykAuraBehavior = "TYPES.RegionBehavior.fortykAura";
     CONFIG.RegionBehavior.typeIcons.fortykAuraBehavior = "fas fa-tarp-droplet";
+    CONFIG.Actor.trackableAttributes = {
+        dwPC: {
+            // Point to the sub-property that isolates your value/max pair
+            bar: ["secChar.wounds", "secChar.fatigue", "secChar.barrier"],
+            value: []
+        },
+        npc: {
+            // Point to the sub-property that isolates your value/max pair
+            bar: ["secChar.wounds", "secChar.fatigue", "secChar.barrier"],
+            value: []
+        },
+        spaceship: {
+            bar: ["hullIntegrity", "morale", "crew"],
+            value: []
+        }
+
+    };
 
     //CONFIG.ActiveEffect.entityClass = FortyKActiveEffect;
     registerSystemSettings();
@@ -866,6 +893,7 @@ Hooks.once("ready", async function () {
         }
     });
 });
+
 //handle start of combat effects
 Hooks.on("combatStart", (combat, updateData) => {
     if (isFirstGM()) {

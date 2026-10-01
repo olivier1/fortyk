@@ -758,6 +758,7 @@ export class FortyKItem extends Item {
         let itemData = item;
         let data = this.system;
         let actor = this.actor;
+        if(actor.type==="spaceship")return;
         let scope = actor.getScope();
         let actorTokenChanges = actor.tokenActiveEffectChanges["initial"];
         let pr;
@@ -775,8 +776,6 @@ export class FortyKItem extends Item {
                 let equipped = item.system.isEquipped;
                 if (item.system?.broken?.value){
                     proceed = false;
-                }else if (actor.type === "npc") {
-                    proceed = true;
                 } else if (equipped === undefined) {
                     proceed = true;
                 } else if (equipped) {

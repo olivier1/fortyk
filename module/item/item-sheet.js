@@ -494,7 +494,7 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
         super._onRender(context, options);
         if(this._listenersBound)return;
         const html=$(this.element);
-
+         html.find(".item-descr").click(this._onItemDescrGet.bind(this));
         // Everything below here is only needed if the sheet is editable
         if (!this.isEditable) return;
         html.find(".skill-type").change(this._onParentChange.bind(this));
@@ -1070,6 +1070,29 @@ export class FortyKItemSheet extends HandlebarsApplicationMixin(foundry.applicat
                 this.updateObj = undefined;
             }
         }
+    }
+    async _onItemDescrGet(event) {
+        event.preventDefault();
+        let descr = event.currentTarget.attributes["data-item-descr"].value;
+        var options = {
+            width: 300,
+            height: "auto"
+        };
+        var name = event.currentTarget.dataset["name"];
+        let dlg = foundry.applications.api.DialogV2.wait(
+            {
+                window: { title: `${name} Description` },
+                position: { height: "auto", width: 300 },
+                content: "<div class='description-popup'>" + descr + "</div>",
+                buttons: [
+                    {
+                        label: "OK",
+                        callback: null
+                    }
+                ]
+            },
+            options
+        );
     }
     static async _onSubmitForm(event, form, formData){
         

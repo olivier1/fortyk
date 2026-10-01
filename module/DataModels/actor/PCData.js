@@ -1,22 +1,23 @@
-const {
-    BooleanField, HTMLField, SchemaField, NumberField, StringField, FilePathField, ArrayField
-} = foundry.data.fields;
+
 import CharacterData from "./CharacterData.js";
-export default class PCData extends CharacterData {
+export class PCData extends CharacterData {
     static defineSchema(){
         const commonData=super.defineSchema();
+        const {
+    BooleanField, HTMLField, SchemaField, NumberField, StringField, FilePathField, ArrayField
+} = foundry.data.fields;
         return {
             ...commonData,
             "experience": new SchemaField({
-                "value": new NumberField({ required: true, integer: true, initial: 0 }),
-                "spent": new NumberField({ required: true, integer: true, initial: 0 }),
-                "starting": new NumberField({ required: true, integer: true, initial: 2000 }),
-                "earned": new NumberField({ required: true, integer: true, initial: 0 }),
+                "value": new NumberField({ required: true, initial: 0 }),
+                "spent": new NumberField({ required: true, initial: 0 }),
+                "starting": new NumberField({ required: true, initial: 2000 }),
+                "earned": new NumberField({ required: true, initial: 0 }),
             }),
             "carry": new SchemaField({
-                "value": new NumberField({ required: true, integer: true, initial: 0 }),
-                "mod": new NumberField({ required: true, integer: true, initial: 0 }),
-                "max": new NumberField({ required: true, integer: true, initial: 0 })
+                "value": new NumberField({ required: true, initial: 0 }),
+                "mod": new NumberField({ required: true, initial: 0 }),
+                "max": new NumberField({ required: true, initial: 0 })
             }),
             "aptitudes": new SchemaField({
                 "0": new StringField({ initial: "" }),
@@ -29,8 +30,8 @@ export default class PCData extends CharacterData {
                 "7": new StringField({ initial: "" })
             }),
             "currency": new SchemaField({
-                "value": new NumberField({ required: true, integer: true, initial: 0 }),
-                "income": new NumberField({ required: true, integer: true, initial: 0 })
+                "value": new NumberField({ required: true, initial: 0 }),
+                "income": new NumberField({ required: true, initial: 0 })
             }),
             "goal": new SchemaField({
                 "short": new StringField({ initial: "" }),
@@ -62,4 +63,6 @@ export default class PCData extends CharacterData {
             })
         };
     }
+     
+  
 }

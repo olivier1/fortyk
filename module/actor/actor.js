@@ -257,7 +257,7 @@ export class FortyKActor extends Actor {
         //this.reset();
 
         try {
-            this.system = foundry.utils.duplicate(this._source.system);
+            //this.system = foundry.utils.duplicate(this._source.system);
             this.prepareBaseData();
             this.prepareEmbeddedEntities();
             this.prepareDerivedData();
