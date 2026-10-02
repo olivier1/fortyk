@@ -749,9 +749,10 @@ export class FortyKItem extends Item {
                     }
                 }
             }
-            item.system.specialFlags = this.getFlags();
+            
             item.system.isPrepared = true;
         }
+        item.system.specialFlags = this.getFlags();
     }
 
     applyActiveEffects(item = this) {

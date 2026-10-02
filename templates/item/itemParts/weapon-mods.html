@@ -6,7 +6,7 @@
         <div class="flexrow">
             {{#each this.system.specialFlags}}
 
-            <a class="item-descr fit-content" data-name="{{this.label}}" data-item-descr="{{this.description}}" >{{this.label}}{{#if (isdefined this.num)}}({{this.num}}){{/if}}</a>
+            <a class="item-descr fit-content" data-name="{{this.label}}" data-item-descr="{{this.description}}" >–{{this.label}}{{#if (isdefined this.num)}}({{this.num}}){{/if}}</a>
             {{/each}}
         </div>
         <a class="special button">Special Qualities Dialog</a>
